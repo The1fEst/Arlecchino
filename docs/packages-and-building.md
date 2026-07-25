@@ -37,7 +37,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `0.1.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `0.2.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -75,7 +75,10 @@ Assert.Contains("Widebody kit", app.Frame());
 
 `ArlecchinoTestHost` builds the container exactly as `AddArlecchino` would, minus the hosted service, and
 draws into a `FakeTerminal` — a fake `ITerminal` with a fixed size, a queue of keys and a buffer of
-everything written. Nothing touches a real console, so the tests run anywhere.
+everything written. Nothing touches a real console, so the tests run anywhere. Colour is pinned to
+`ColorSupport.TrueColor` as the host is built, so a build agent that sets `NO_COLOR` does not quietly
+strip the styling a test asserts on; set `TerminalCapabilities.Color` after building to test another
+level.
 
 | Member | Use |
 |---|---|
@@ -95,7 +98,7 @@ they produce are used by the navigation tests.
 
 ## What ends up in the package
 
-`Arlecchino.0.1.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
+`Arlecchino.0.2.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
 `build/Arlecchino.props` and the README shown on the package page. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.
@@ -188,8 +191,8 @@ dotnet format analyzers src/Arlecchino/Arlecchino.csproj --diagnostics RS0016 --
 
 That writes the new entries. Deliberate removals are recorded by hand — delete the line, or move it
 under `*REMOVED*` when it was already shipped. At release time the contents of `Unshipped` move into
-`Shipped` and `Unshipped` is emptied again; until `0.1.0` actually ships, everything lives in
-`Unshipped`.
+`Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first release on NuGet, did
+with the whole surface.
 
 ## Continuous integration
 

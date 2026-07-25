@@ -20,7 +20,6 @@ public sealed class ColorModalTests
     [Fact]
     public void SwatchIsPaintedWithATrueColorSequence()
     {
-        using var scope = new ColorSupportScope(ColorSupport.TrueColor);
         using var app = new TestApplication();
 
         app.State.RequestColor("Accent", new(63, 169, 245), static _ => { });

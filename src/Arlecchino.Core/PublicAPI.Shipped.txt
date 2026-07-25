@@ -1,1 +1,348 @@
 #nullable enable
+~override Arlecchino.Input.KeyBinding.Equals(object obj) -> bool
+~override Arlecchino.Input.MouseEvent.Equals(object obj) -> bool
+~override Arlecchino.Input.MouseEvent.ToString() -> string
+~override Arlecchino.Rendering.Margin.Equals(object obj) -> bool
+~override Arlecchino.Rendering.Margin.ToString() -> string
+~override Arlecchino.Rendering.Region.Equals(object obj) -> bool
+~override Arlecchino.Rendering.Region.ToString() -> string
+~override Arlecchino.Rendering.Rgb.Equals(object obj) -> bool
+Arlecchino.Input.EscapeSequenceParser
+Arlecchino.Input.EscapeSequenceParser.EscapeSequenceParser() -> void
+Arlecchino.Input.KeyBinding
+Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out System.ConsoleModifiers Modifiers) -> void
+Arlecchino.Input.KeyBinding.Equals(Arlecchino.Input.KeyBinding other) -> bool
+Arlecchino.Input.KeyBinding.IsNone.get -> bool
+Arlecchino.Input.KeyBinding.Key.get -> System.ConsoleKey
+Arlecchino.Input.KeyBinding.Key.init -> void
+Arlecchino.Input.KeyBinding.KeyBinding() -> void
+Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, System.ConsoleModifiers Modifiers = System.ConsoleModifiers.None) -> void
+Arlecchino.Input.KeyBinding.Matches(System.ConsoleKeyInfo pressed) -> bool
+Arlecchino.Input.KeyBinding.Modifiers.get -> System.ConsoleModifiers
+Arlecchino.Input.KeyBinding.Modifiers.init -> void
+Arlecchino.Input.KeyText
+Arlecchino.Input.KeyText.KeyText(Arlecchino.Input.TextInputMode mode) -> void
+Arlecchino.Input.KeyText.Mode.get -> Arlecchino.Input.TextInputMode
+Arlecchino.Input.KeyText.Resolve(System.ConsoleKeyInfo key) -> char?
+Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseAction.Moved = 2 -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseAction.Pressed = 0 -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseAction.Released = 1 -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseAction.ScrolledDown = 4 -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseAction.ScrolledUp = 3 -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseButton.Left = 1 -> Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseButton.Middle = 2 -> Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseButton.None = 0 -> Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseButton.Right = 3 -> Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseEvent
+Arlecchino.Input.MouseEvent.Action.get -> Arlecchino.Input.MouseAction
+Arlecchino.Input.MouseEvent.Action.init -> void
+Arlecchino.Input.MouseEvent.Button.get -> Arlecchino.Input.MouseButton
+Arlecchino.Input.MouseEvent.Button.init -> void
+Arlecchino.Input.MouseEvent.Column.get -> int
+Arlecchino.Input.MouseEvent.Column.init -> void
+Arlecchino.Input.MouseEvent.Deconstruct(out Arlecchino.Input.MouseAction Action, out Arlecchino.Input.MouseButton Button, out int Row, out int Column, out System.ConsoleModifiers Modifiers) -> void
+Arlecchino.Input.MouseEvent.Equals(Arlecchino.Input.MouseEvent other) -> bool
+Arlecchino.Input.MouseEvent.IsLeftClick.get -> bool
+Arlecchino.Input.MouseEvent.IsScroll.get -> bool
+Arlecchino.Input.MouseEvent.Modifiers.get -> System.ConsoleModifiers
+Arlecchino.Input.MouseEvent.Modifiers.init -> void
+Arlecchino.Input.MouseEvent.MouseEvent() -> void
+Arlecchino.Input.MouseEvent.MouseEvent(Arlecchino.Input.MouseAction Action, Arlecchino.Input.MouseButton Button, int Row, int Column, System.ConsoleModifiers Modifiers) -> void
+Arlecchino.Input.MouseEvent.Row.get -> int
+Arlecchino.Input.MouseEvent.Row.init -> void
+Arlecchino.Input.TextInputMode
+Arlecchino.Input.TextInputMode.LatinOnly = 0 -> Arlecchino.Input.TextInputMode
+Arlecchino.Input.TextInputMode.Native = 1 -> Arlecchino.Input.TextInputMode
+Arlecchino.ITerminal
+Arlecchino.ITerminal.CopyToClipboard(string! text) -> void
+Arlecchino.ITerminal.DisableMouse() -> void
+Arlecchino.ITerminal.DisablePaste() -> void
+Arlecchino.ITerminal.EnableMouse() -> void
+Arlecchino.ITerminal.EnablePaste() -> void
+Arlecchino.ITerminal.EnterFullScreen() -> void
+Arlecchino.ITerminal.Height.get -> int
+Arlecchino.ITerminal.KeyAvailable.get -> bool
+Arlecchino.ITerminal.LeaveFullScreen() -> void
+Arlecchino.ITerminal.MouseAvailable.get -> bool
+Arlecchino.ITerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.ITerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.ITerminal.Width.get -> int
+Arlecchino.ITerminal.Write(string! text) -> void
+Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Bottom = 32 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Center = 2 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Left = 1 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Middle = 16 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Right = 4 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.Align.Top = 8 -> Arlecchino.Rendering.Align
+Arlecchino.Rendering.ColorSupport
+Arlecchino.Rendering.ColorSupport.None = 0 -> Arlecchino.Rendering.ColorSupport
+Arlecchino.Rendering.ColorSupport.Palette = 1 -> Arlecchino.Rendering.ColorSupport
+Arlecchino.Rendering.ColorSupport.TrueColor = 2 -> Arlecchino.Rendering.ColorSupport
+Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.FontStyle.Bold = 1 -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.FontStyle.Dim = 8 -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.FontStyle.Italic = 2 -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.FontStyle.None = 0 -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.FontStyle.Underline = 4 -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.ITermColor
+Arlecchino.Rendering.ITermColor.Ansi.get -> string!
+Arlecchino.Rendering.Margin
+Arlecchino.Rendering.Margin.Bottom.get -> int
+Arlecchino.Rendering.Margin.Bottom.init -> void
+Arlecchino.Rendering.Margin.Deconstruct(out int Left, out int Top, out int Right, out int Bottom) -> void
+Arlecchino.Rendering.Margin.Equals(Arlecchino.Rendering.Margin other) -> bool
+Arlecchino.Rendering.Margin.Left.get -> int
+Arlecchino.Rendering.Margin.Left.init -> void
+Arlecchino.Rendering.Margin.Margin() -> void
+Arlecchino.Rendering.Margin.Margin(int all) -> void
+Arlecchino.Rendering.Margin.Margin(int Left, int Top, int Right, int Bottom) -> void
+Arlecchino.Rendering.Margin.Right.get -> int
+Arlecchino.Rendering.Margin.Right.init -> void
+Arlecchino.Rendering.Margin.Top.get -> int
+Arlecchino.Rendering.Margin.Top.init -> void
+Arlecchino.Rendering.Region
+Arlecchino.Rendering.Region.Border(Arlecchino.Rendering.ITermColor! style, string! title = "") -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Region.Bottom.get -> int
+Arlecchino.Rendering.Region.Contains(int frameRow, int frameColumn) -> bool
+Arlecchino.Rendering.Region.Deconstruct(out Arlecchino.Rendering.Surface! Surface, out int Left, out int Top, out int Width, out int Height) -> void
+Arlecchino.Rendering.Region.Equals(Arlecchino.Rendering.Region other) -> bool
+Arlecchino.Rendering.Region.Fill(Arlecchino.Rendering.ITermColor! style, char character = ' ') -> void
+Arlecchino.Rendering.Region.Height.get -> int
+Arlecchino.Rendering.Region.Height.init -> void
+Arlecchino.Rendering.Region.Inset(Arlecchino.Rendering.Margin margin) -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Region.Inset(int all) -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Region.IsEmpty.get -> bool
+Arlecchino.Rendering.Region.Left.get -> int
+Arlecchino.Rendering.Region.Left.init -> void
+Arlecchino.Rendering.Region.Region() -> void
+Arlecchino.Rendering.Region.Region(Arlecchino.Rendering.Surface! Surface, int Left, int Top, int Width, int Height) -> void
+Arlecchino.Rendering.Region.Right.get -> int
+Arlecchino.Rendering.Region.Rows(int row, int count) -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Region.SplitLeft(int width) -> (Arlecchino.Rendering.Region Left, Arlecchino.Rendering.Region Right)
+Arlecchino.Rendering.Region.SplitTop(int height) -> (Arlecchino.Rendering.Region Top, Arlecchino.Rendering.Region Bottom)
+Arlecchino.Rendering.Region.Surface.get -> Arlecchino.Rendering.Surface!
+Arlecchino.Rendering.Region.Surface.init -> void
+Arlecchino.Rendering.Region.ToLocal(int frameRow, int frameColumn) -> (int Row, int Column)
+Arlecchino.Rendering.Region.Top.get -> int
+Arlecchino.Rendering.Region.Top.init -> void
+Arlecchino.Rendering.Region.Width.get -> int
+Arlecchino.Rendering.Region.Width.init -> void
+Arlecchino.Rendering.Region.Write(int row, int column, string! text, Arlecchino.Rendering.ITermColor! style) -> void
+Arlecchino.Rendering.Region.WriteLine(int row, string! text, Arlecchino.Rendering.ITermColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void
+Arlecchino.Rendering.Rgb
+Arlecchino.Rendering.Rgb.Blue.get -> byte
+Arlecchino.Rendering.Rgb.Blue.init -> void
+Arlecchino.Rendering.Rgb.Deconstruct(out byte Red, out byte Green, out byte Blue) -> void
+Arlecchino.Rendering.Rgb.Equals(Arlecchino.Rendering.Rgb other) -> bool
+Arlecchino.Rendering.Rgb.Green.get -> byte
+Arlecchino.Rendering.Rgb.Green.init -> void
+Arlecchino.Rendering.Rgb.Hex.get -> string!
+Arlecchino.Rendering.Rgb.Red.get -> byte
+Arlecchino.Rendering.Rgb.Red.init -> void
+Arlecchino.Rendering.Rgb.Rgb() -> void
+Arlecchino.Rendering.Rgb.Rgb(byte Red, byte Green, byte Blue) -> void
+Arlecchino.Rendering.Rgb.ToHsl() -> (int Hue, int Saturation, int Lightness)
+Arlecchino.Rendering.RgbTermColor
+Arlecchino.Rendering.RgbTermColor.Ansi.get -> string!
+Arlecchino.Rendering.RgbTermColor.Background.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.RgbTermColor.Background.init -> void
+Arlecchino.Rendering.RgbTermColor.Foreground.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.RgbTermColor.Foreground.init -> void
+Arlecchino.Rendering.RgbTermColor.RgbTermColor() -> void
+Arlecchino.Rendering.RgbTermColor.Style.get -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.RgbTermColor.Style.init -> void
+Arlecchino.Rendering.Surface
+Arlecchino.Rendering.Surface.AppendLine(string! line, Arlecchino.Rendering.ITermColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+Arlecchino.Rendering.Surface.Build() -> void
+Arlecchino.Rendering.Surface.Content.get -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Surface.FillLine() -> void
+Arlecchino.Rendering.Surface.FillLineAt(int row, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Rendering.Surface.ForgetPreviousFrame() -> void
+Arlecchino.Rendering.Surface.Frame.get -> Arlecchino.Rendering.Region
+Arlecchino.Rendering.Surface.FrameHeight.get -> int
+Arlecchino.Rendering.Surface.FrameWidth.get -> int
+Arlecchino.Rendering.Surface.HorizontalPadding.get -> int
+Arlecchino.Rendering.Surface.HorizontalPadding.set -> void
+Arlecchino.Rendering.Surface.ListWindow() -> int
+Arlecchino.Rendering.Surface.SetFixedSize(int width, int height) -> void
+Arlecchino.Rendering.Surface.SkipLine() -> void
+Arlecchino.Rendering.Surface.StartFrame() -> void
+Arlecchino.Rendering.Surface.Surface(Arlecchino.ITerminal! terminal) -> void
+Arlecchino.Rendering.Surface.VerticalPadding.get -> int
+Arlecchino.Rendering.Surface.VerticalPadding.set -> void
+Arlecchino.Rendering.Surface.WriteAt(int row, int column, string! text, Arlecchino.Rendering.ITermColor! style) -> void
+Arlecchino.Rendering.Surface.WriteBlock(System.Collections.Generic.IReadOnlyList<string!>! lines, Arlecchino.Rendering.ITermColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left | Arlecchino.Rendering.Align.Top, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+Arlecchino.Rendering.Surface.WriteLineAt(int row, string! line, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Rendering.Surface.WriteTableRow(string![]! strings, int[]! widths, Arlecchino.Rendering.ITermColor! style, string! prefix = "") -> void
+Arlecchino.Rendering.TermColor
+Arlecchino.Rendering.TermColor.Ansi.get -> string!
+Arlecchino.Rendering.TermColor.Background.get -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TermColor.Background.init -> void
+Arlecchino.Rendering.TermColor.Foreground.get -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TermColor.Foreground.init -> void
+Arlecchino.Rendering.TermColor.Style.get -> Arlecchino.Rendering.FontStyle
+Arlecchino.Rendering.TermColor.Style.init -> void
+Arlecchino.Rendering.TermColor.TermColor() -> void
+Arlecchino.Rendering.TerminalCapabilities
+Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Black = 1 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Blue = 5 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightBlack = 9 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightBlue = 13 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightCyan = 15 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightGreen = 11 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightMagenta = 14 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightRed = 10 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightWhite = 16 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.BrightYellow = 12 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Cyan = 7 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Default = 0 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Green = 3 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Magenta = 6 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Red = 2 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.White = 8 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalColor.Yellow = 4 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TextWidth
+Arlecchino.Rendering.Theme
+Arlecchino.Rendering.ThemePalette
+Arlecchino.Rendering.ThemePalette.Accent.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Accent.init -> void
+Arlecchino.Rendering.ThemePalette.Active.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Active.init -> void
+Arlecchino.Rendering.ThemePalette.ActiveSelected.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.ActiveSelected.init -> void
+Arlecchino.Rendering.ThemePalette.Default.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Default.init -> void
+Arlecchino.Rendering.ThemePalette.Error.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Error.init -> void
+Arlecchino.Rendering.ThemePalette.Header.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Header.init -> void
+Arlecchino.Rendering.ThemePalette.Info.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Info.init -> void
+Arlecchino.Rendering.ThemePalette.Input.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Input.init -> void
+Arlecchino.Rendering.ThemePalette.Muted.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Muted.init -> void
+Arlecchino.Rendering.ThemePalette.Selected.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Selected.init -> void
+Arlecchino.Rendering.ThemePalette.TableHeader.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.TableHeader.init -> void
+Arlecchino.Rendering.ThemePalette.ThemePalette() -> void
+Arlecchino.Rendering.ThemePalette.Warning.get -> Arlecchino.Rendering.TermColor!
+Arlecchino.Rendering.ThemePalette.Warning.init -> void
+Arlecchino.State.Computed<T>
+Arlecchino.State.Computed<T>.Computed(System.Func<T>! compute) -> void
+Arlecchino.State.Computed<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.State.Computed<T>.Value.get -> T
+Arlecchino.State.IReadableState<T>
+Arlecchino.State.IReadableState<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.State.IReadableState<T>.Value.get -> T
+Arlecchino.State.IStateEdit
+Arlecchino.State.IStateEdit.Owner.get -> object?
+Arlecchino.State.IStateEdit.Redo() -> void
+Arlecchino.State.IStateEdit.Undo() -> void
+Arlecchino.State.State<T>
+Arlecchino.State.State<T>.RecordsHistory.get -> bool
+Arlecchino.State.State<T>.RecordsHistory.init -> void
+Arlecchino.State.State<T>.SetWithoutHistory(T value) -> void
+Arlecchino.State.State<T>.State(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.State.State<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.State.State<T>.Value.get -> T
+Arlecchino.State.State<T>.Value.set -> void
+Arlecchino.State.StateChanges
+Arlecchino.State.StateHistory
+Arlecchino.State.StateHistory.CanRedo.get -> bool
+Arlecchino.State.StateHistory.CanUndo.get -> bool
+Arlecchino.State.StateHistory.Capacity.get -> int
+Arlecchino.State.StateHistory.Capacity.set -> void
+Arlecchino.State.StateHistory.Clear() -> void
+Arlecchino.State.StateHistory.Depth.get -> int
+Arlecchino.State.StateHistory.Dispose() -> void
+Arlecchino.State.StateHistory.Group() -> System.IDisposable!
+Arlecchino.State.StateHistory.Redo() -> bool
+Arlecchino.State.StateHistory.StateHistory() -> void
+Arlecchino.State.StateHistory.Undo() -> bool
+Arlecchino.State.StateTracking
+Arlecchino.SystemTerminal
+Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.SystemTerminal.DisableMouse() -> void
+Arlecchino.SystemTerminal.DisablePaste() -> void
+Arlecchino.SystemTerminal.EnableMouse() -> void
+Arlecchino.SystemTerminal.EnablePaste() -> void
+Arlecchino.SystemTerminal.EnterFullScreen() -> void
+Arlecchino.SystemTerminal.Height.get -> int
+Arlecchino.SystemTerminal.KeyAvailable.get -> bool
+Arlecchino.SystemTerminal.LeaveFullScreen() -> void
+Arlecchino.SystemTerminal.MouseAvailable.get -> bool
+Arlecchino.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.SystemTerminal.SystemTerminal() -> void
+Arlecchino.SystemTerminal.Width.get -> int
+Arlecchino.SystemTerminal.Write(string! text) -> void
+override Arlecchino.Input.KeyBinding.GetHashCode() -> int
+override Arlecchino.Input.KeyBinding.ToString() -> string!
+override Arlecchino.Input.MouseEvent.GetHashCode() -> int
+override Arlecchino.Rendering.Margin.GetHashCode() -> int
+override Arlecchino.Rendering.Region.GetHashCode() -> int
+override Arlecchino.Rendering.Rgb.GetHashCode() -> int
+override Arlecchino.Rendering.Rgb.ToString() -> string!
+override Arlecchino.Rendering.RgbTermColor.ToString() -> string!
+override Arlecchino.Rendering.TermColor.ToString() -> string!
+static Arlecchino.Input.EscapeSequenceParser.TryParseKey(string! sequence, out System.ConsoleKeyInfo key) -> bool
+static Arlecchino.Input.EscapeSequenceParser.TryParseMouse(string! sequence, out Arlecchino.Input.MouseEvent mouse) -> bool
+static Arlecchino.Input.KeyBinding.operator !=(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
+static Arlecchino.Input.KeyBinding.operator ==(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
+static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
+static Arlecchino.Input.KeyText.LatinOnly.get -> Arlecchino.Input.KeyText!
+static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
+static Arlecchino.Input.MouseEvent.operator !=(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
+static Arlecchino.Input.MouseEvent.operator ==(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
+static Arlecchino.Rendering.Margin.operator !=(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
+static Arlecchino.Rendering.Margin.operator ==(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
+static Arlecchino.Rendering.Region.operator !=(Arlecchino.Rendering.Region left, Arlecchino.Rendering.Region right) -> bool
+static Arlecchino.Rendering.Region.operator ==(Arlecchino.Rendering.Region left, Arlecchino.Rendering.Region right) -> bool
+static Arlecchino.Rendering.Rgb.FromHsl(int hue, int saturation, int lightness) -> Arlecchino.Rendering.Rgb
+static Arlecchino.Rendering.Rgb.operator !=(Arlecchino.Rendering.Rgb left, Arlecchino.Rendering.Rgb right) -> bool
+static Arlecchino.Rendering.Rgb.operator ==(Arlecchino.Rendering.Rgb left, Arlecchino.Rendering.Rgb right) -> bool
+static Arlecchino.Rendering.Rgb.TryParseHex(string! text, out Arlecchino.Rendering.Rgb color) -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Color.get -> Arlecchino.Rendering.ColorSupport
+static Arlecchino.Rendering.TerminalCapabilities.Color.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.DetectColor() -> Arlecchino.Rendering.ColorSupport
+static Arlecchino.Rendering.TerminalCapabilities.DetectColor(string? noColor, string? term, string? colorTerm, string? windowsTerminalSession) -> Arlecchino.Rendering.ColorSupport
+static Arlecchino.Rendering.TerminalCapabilities.NearestPaletteColor(Arlecchino.Rendering.Rgb color) -> Arlecchino.Rendering.TerminalColor
+static Arlecchino.Rendering.TextWidth.CountClusters(string! text) -> int
+static Arlecchino.Rendering.TextWidth.NextClusterEnd(string! text, int index) -> int
+static Arlecchino.Rendering.TextWidth.NextClusterLength(string! text, int index) -> int
+static Arlecchino.Rendering.TextWidth.Of(string! text) -> int
+static Arlecchino.Rendering.TextWidth.OfCluster(System.ReadOnlySpan<char> cluster) -> int
+static Arlecchino.Rendering.TextWidth.OfRune(System.Text.Rune rune) -> int
+static Arlecchino.Rendering.TextWidth.PadLeft(string! text, int width) -> string!
+static Arlecchino.Rendering.TextWidth.PadRight(string! text, int width) -> string!
+static Arlecchino.Rendering.TextWidth.PreviousClusterStart(string! text, int index) -> int
+static Arlecchino.Rendering.TextWidth.SnapToCluster(string! text, int index) -> int
+static Arlecchino.Rendering.TextWidth.Truncate(string! text, int maxWidth) -> string!
+static Arlecchino.Rendering.TextWidth.TruncateStart(string! text, int maxWidth) -> string!
+static Arlecchino.Rendering.Theme.Accent.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Active.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.ActiveSelected.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Default.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Error.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Header.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Info.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Input.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Muted.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Palette.get -> Arlecchino.Rendering.ThemePalette!
+static Arlecchino.Rendering.Theme.Palette.set -> void
+static Arlecchino.Rendering.Theme.Selected.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.TableHeader.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.Theme.Warning.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.State.StateChanges.IsRecording.get -> bool
+static Arlecchino.State.StateChanges.NotifyRecorded(Arlecchino.State.IStateEdit! edit) -> void
+static Arlecchino.State.StateChanges.NotifyWritten() -> void
+static Arlecchino.State.StateChanges.Recorded -> System.Action<Arlecchino.State.IStateEdit!>?
+static Arlecchino.State.StateChanges.Written -> System.Action?
+static Arlecchino.State.StateTracking.Capture(System.Action<System.Func<System.Action!, System.IDisposable!>!>! track) -> System.IDisposable!
+static Arlecchino.State.StateTracking.NoteRead(System.Func<System.Action!, System.IDisposable!>! subscribe) -> void

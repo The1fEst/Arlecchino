@@ -7,7 +7,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
-## Unreleased
+## 0.2.0
+
+First release published on NuGet.
 
 ### Added
 
@@ -47,6 +49,9 @@ change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 - The undo stack grew for the lifetime of the process; it is bounded by `StateHistory.Capacity`.
 - Being killed (`SIGTERM`, `SIGHUP`) or suspended (`Ctrl+Z`) left the terminal in the alternate screen
   with no cursor. Both are handled now, and `SIGCONT` restores the modes and repaints.
+- `ArlecchinoTestHost` drew whatever colour the machine running the tests happened to allow, so a build
+  agent with `NO_COLOR` set produced frames with no styling in them and assertions on colour failed. It
+  fixes `TerminalCapabilities.Color` at `TrueColor` instead.
 
 ### Changed
 

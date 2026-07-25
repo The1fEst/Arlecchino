@@ -20,13 +20,17 @@ public sealed class ArlecchinoTestHost : IDisposable
 
     /// <summary>
     /// Builds the application. The minimum size is dropped to one cell, so a test can work in a window
-    /// far smaller than a real one without hitting the too-small notice.
+    /// far smaller than a real one without hitting the too-small notice. Colour is fixed at
+    /// <see cref="ColorSupport.TrueColor"/> so that frames do not change with the environment the test
+    /// runs in — assign <see cref="TerminalCapabilities.Color"/> afterwards to test another level.
     /// </summary>
     /// <param name="width">Columns of the fake terminal.</param>
     /// <param name="height">Rows of the fake terminal.</param>
     /// <param name="configure">Registers the views, commands and services under test.</param>
     public ArlecchinoTestHost(int width = 80, int height = 24, Action<ArlecchinoBuilder>? configure = null)
     {
+        TerminalCapabilities.Color = ColorSupport.TrueColor;
+
         var services = new ServiceCollection();
 
         Terminal = new(width, height);

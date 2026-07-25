@@ -69,8 +69,8 @@ public sealed class TerminalCapabilityTests
     [Fact]
     public void FrameCarriesNoStylesWhenColorIsOff()
     {
-        using var scope = new ColorSupportScope(ColorSupport.None);
         using var app = new TestApplication();
+        using var scope = new ColorSupportScope(ColorSupport.None);
 
         app.State.RequestColor("Accent", new(63, 169, 245), static _ => { });
 
