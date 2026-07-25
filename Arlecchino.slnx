@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="src/Arlecchino.Core/Arlecchino.Core.csproj" />
+  <Project Path="src/Arlecchino/Arlecchino.csproj" />
+  <Project Path="src/Arlecchino.Generators/Arlecchino.Generators.csproj" />
+  <Project Path="samples/Arlecchino.Sample/Arlecchino.Sample.csproj" />
+  <Project Path="samples/Arlecchino.Processes/Arlecchino.Processes.csproj" />
+  <Project Path="src/Arlecchino.Testing/Arlecchino.Testing.csproj" />
+  <Project Path="tests/Arlecchino.Tests/Arlecchino.Tests.csproj" />
+  <Project Path="benchmarks/Arlecchino.Benchmarks/Arlecchino.Benchmarks.csproj" />
+</Solution>

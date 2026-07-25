@@ -1,0 +1,7 @@
+<Project>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace" />
+    <CompilerVisibleProperty Include="ArlecchinoViewNamespace" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateViews" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,59 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{yml,yaml,json,md}]
+indent_size = 2
+
+[*.cs]
+csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+dotnet_style_namespace_match_folder = false
+
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0011.severity = warning
+dotnet_diagnostic.IDE0090.severity = warning
+dotnet_diagnostic.IDE0161.severity = warning
+dotnet_diagnostic.CA1822.severity = warning
+
+dotnet_diagnostic.IDE0290.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+
+resharper_object_creation_when_type_not_evident = target_typed
+resharper_braces_for_ifelse = required
+resharper_braces_for_for = required
+resharper_braces_for_foreach = required
+resharper_braces_for_while = required
+resharper_braces_for_dowhile = required
+resharper_braces_for_lock = required
+resharper_braces_for_using = required
+resharper_braces_for_fixed = required
+
+resharper_arrange_object_creation_when_type_not_evident_highlighting = warning
+resharper_redundant_using_directive_highlighting = warning
+resharper_enforce_if_statement_braces_highlighting = warning
+resharper_enforce_for_statement_braces_highlighting = warning
+resharper_enforce_foreach_statement_braces_highlighting = warning
+resharper_enforce_while_statement_braces_highlighting = warning
+resharper_enforce_do_while_statement_braces_highlighting = warning
+resharper_enforce_lock_statement_braces_highlighting = warning
+resharper_enforce_using_statement_braces_highlighting = warning
+resharper_enforce_fixed_statement_braces_highlighting = warning
+resharper_invert_if_highlighting = warning
+resharper_member_can_be_made_static_global_highlighting = warning
+
+resharper_convert_to_primary_constructor_highlighting = none
+resharper_inconsistent_naming_highlighting = none
+resharper_loop_can_be_converted_to_query_highlighting = none
+resharper_foreach_can_be_converted_to_query_using_another_get_enumerator_highlighting = none
+resharper_empty_general_catch_clause_highlighting = none
+
+[benchmarks/**.cs]
+dotnet_diagnostic.CA1822.severity = none
