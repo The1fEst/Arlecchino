@@ -7,6 +7,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## 0.4.0
+
+### Changed
+
+- Whether an atom is undoable is now the type it is created as, not a flag set on it afterwards.
+  `State<T>` is abstract; `TrackedState<T>` records its edits on the undo stack and `LocalState<T>`
+  never does. Everything that takes an atom still takes `State<T>`, so call sites are unchanged —
+  `new State<int>(0) { RecordsHistory = false }` becomes `new LocalState<int>(0)`, and the rest
+  becomes `new TrackedState<T>(…)`.
+- `State<T>.SetWithoutHistory` is gone with it: the type of the atom is the whole answer, and undo
+  restores values through its own path.
+
 ## 0.3.0
 
 ### Fixed

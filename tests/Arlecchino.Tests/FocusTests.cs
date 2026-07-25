@@ -4,6 +4,7 @@ using Arlecchino.Focus;
 using Arlecchino.Forms;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
+using Arlecchino.State;
 using Arlecchino.Tests.Views;
 using Xunit;
 
@@ -113,7 +114,7 @@ public sealed class FocusTests
         using var app = new TestApplication();
         var form = new Form(app.State, app.Options)
         {
-            Fields = [Field.Text(static () => "Name", new(""))],
+            Fields = [Field.Text(static () => "Name", new TrackedState<string>(""))],
         };
 
         FormHostView.Hosted = form;

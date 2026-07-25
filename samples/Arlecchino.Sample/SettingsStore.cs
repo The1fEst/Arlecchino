@@ -13,21 +13,21 @@ public sealed class SettingsStore
         IsComplete = new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
     }
 
-    public State<string> Profile { get; } = new("");
+    public State<string> Profile { get; } = new TrackedState<string>("");
 
-    public State<string> Passphrase { get; } = new("");
+    public State<string> Passphrase { get; } = new TrackedState<string>("");
 
-    public State<string> Theme { get; } = new("dark");
+    public State<string> Theme { get; } = new TrackedState<string>("dark");
 
-    public State<decimal> Volume { get; } = new(60);
+    public State<decimal> Volume { get; } = new TrackedState<decimal>(60);
 
-    public State<bool> Fullscreen { get; } = new(true);
+    public State<bool> Fullscreen { get; } = new TrackedState<bool>(true);
 
-    public State<IReadOnlyList<string>> Columns { get; } = new(["Name", "Size"]);
+    public State<IReadOnlyList<string>> Columns { get; } = new TrackedState<IReadOnlyList<string>>(["Name", "Size"]);
 
-    public State<DateOnly> Release { get; } = new(new(2026, 7, 25));
+    public State<DateOnly> Release { get; } = new TrackedState<DateOnly>(new(2026, 7, 25));
 
-    public State<Rgb> Accent { get; } = new(new(63, 169, 245));
+    public State<Rgb> Accent { get; } = new TrackedState<Rgb>(new(63, 169, 245));
 
     public Computed<string> Summary { get; }
 

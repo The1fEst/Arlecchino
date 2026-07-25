@@ -1,1 +1,9 @@
 #nullable enable
+*REMOVED*Arlecchino.State.State<T>.RecordsHistory.get -> bool
+*REMOVED*Arlecchino.State.State<T>.RecordsHistory.init -> void
+*REMOVED*Arlecchino.State.State<T>.SetWithoutHistory(T value) -> void
+Arlecchino.State.LocalState<T>
+Arlecchino.State.LocalState<T>.LocalState(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.State.TrackedState<T>
+Arlecchino.State.TrackedState<T>.TrackedState(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+abstract Arlecchino.State.State<T>.RecordsHistory.get -> bool

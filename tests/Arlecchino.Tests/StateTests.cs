@@ -10,7 +10,7 @@ public sealed class StateTests
     [Fact]
     public void WritingNotifiesSubscribers()
     {
-        var name = new State<string>("");
+        var name = new TrackedState<string>("");
         var seen = new List<string>();
 
         using var subscription = name.Subscribe(() => seen.Add(name.Value));
@@ -24,7 +24,7 @@ public sealed class StateTests
     [Fact]
     public void WritingTheSameValueChangesNothing()
     {
-        var count = new State<int>(1);
+        var count = new TrackedState<int>(1);
         var notified = 0;
 
         using var subscription = count.Subscribe(() => notified++);
@@ -37,7 +37,7 @@ public sealed class StateTests
     [Fact]
     public void DisposingStopsNotifications()
     {
-        var count = new State<int>(0);
+        var count = new TrackedState<int>(0);
         var notified = 0;
 
         var subscription = count.Subscribe(() => notified++);
@@ -51,8 +51,8 @@ public sealed class StateTests
     [Fact]
     public void ComputedTracksWhatItReads()
     {
-        var first = new State<string>("a");
-        var second = new State<string>("b");
+        var first = new TrackedState<string>("a");
+        var second = new TrackedState<string>("b");
         var joined = new Computed<string>(() => first.Value + second.Value);
 
         Assert.Equal("ab", joined.Value);
@@ -67,7 +67,7 @@ public sealed class StateTests
     [Fact]
     public void ComputedNotifiesItsOwnSubscribers()
     {
-        var length = new State<int>(1);
+        var length = new TrackedState<int>(1);
         var doubled = new Computed<int>(() => length.Value * 2);
         var notified = 0;
 
@@ -82,7 +82,7 @@ public sealed class StateTests
     [Fact]
     public void ComputedChainsThroughOtherComputed()
     {
-        var price = new State<decimal>(100);
+        var price = new TrackedState<decimal>(100);
         var withTax = new Computed<decimal>(() => price.Value * 1.2m);
         var rounded = new Computed<int>(() => (int)Math.Round(withTax.Value));
 
@@ -96,7 +96,7 @@ public sealed class StateTests
     public void WritingRequestsARepaint()
     {
         using var app = new TestApplication();
-        var flag = new State<bool>(false);
+        var flag = new TrackedState<bool>(false);
 
         app.Repaint.TakeRequested();
         flag.Value = true;

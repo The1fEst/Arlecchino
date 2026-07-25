@@ -30,9 +30,9 @@ public enum LoadStatus : byte
 public sealed class AsyncState<T> : IReadableState<T?>
 {
     private readonly UiDispatcher _dispatcher;
-    private readonly State<T?> _value;
-    private readonly State<LoadStatus> _status = new(LoadStatus.Idle) { RecordsHistory = false };
-    private readonly State<Exception?> _error = new(null) { RecordsHistory = false };
+    private readonly LocalState<T?> _value;
+    private readonly LocalState<LoadStatus> _status = new(LoadStatus.Idle);
+    private readonly LocalState<Exception?> _error = new(null);
 
     private CancellationTokenSource? _running;
 
@@ -42,7 +42,7 @@ public sealed class AsyncState<T> : IReadableState<T?>
     public AsyncState(UiDispatcher dispatcher, T? initial = default)
     {
         _dispatcher = dispatcher;
-        _value = new(initial) { RecordsHistory = false };
+        _value = new(initial);
     }
 
     /// <summary>The last loaded value. It stays put while a new load runs, so the view keeps its content.</summary>

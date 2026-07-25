@@ -12,21 +12,29 @@ the terminal.
 ```csharp
 public sealed class SettingsStore
 {
-    public State<string> Profile { get; } = new("");
-    public State<decimal> Volume { get; } = new(60);
-    public State<bool> Fullscreen { get; } = new(true);
+    public State<string> Profile { get; } = new TrackedState<string>("");
+    public State<decimal> Volume { get; } = new TrackedState<decimal>(60);
+    public State<bool> Fullscreen { get; } = new TrackedState<bool>(true);
+    public State<int> Cursor { get; } = new LocalState<int>(0);
 }
 ```
 
 Declare them wherever it suits — usually a class registered in the container, so views take it as a
 constructor parameter like any other service.
 
+`State<T>` itself is abstract: an atom is created as the kind it is, and the declaration says whether
+its edits can be taken back. Everything that consumes an atom — `Field.*`, `Computed<T>`, a view's
+constructor — takes `State<T>`, so the two are interchangeable at the call site.
+
+| Type | Undo | For |
+|---|---|---|
+| `TrackedState<T>` | Yes | What the user authored: the draft being edited, a setting, the selected item |
+| `LocalState<T>` | No | What the user did not: a filter, a cursor, a load in progress |
+
 | Member | Meaning |
 |---|---|
 | `Value` | Reads and writes; writing an equal value changes nothing and notifies nobody |
 | `Subscribe(listener)` | Returns an `IDisposable`; dispose it to stop listening |
-| `SetWithoutHistory(value)` | Writes without recording an undo step |
-| `RecordsHistory` | `true` by default; set it to `false` on atoms that should stay out of the undo history |
 
 Every write also requests a repaint, so a screen driven by atoms never needs a manual
 `Repaint.Request()`.
@@ -52,13 +60,12 @@ subscription.
 
 ## Undo and redo
 
-`StateHistory` is registered by `AddArlecchino` and records every atom by default — there is no list of
-atoms to keep in sync. Take it where you need `Undo()` / `Redo()`, and opt an atom out where the undo
-stack should not see it:
+`StateHistory` is registered by `AddArlecchino` and records every `TrackedState<T>` there is — there is
+no list of atoms to keep in sync, and nothing to register. Take it where you need `Undo()` / `Redo()`:
 
 ```csharp
-public State<string> Profile { get; } = new("");                                // undoable
-public State<int> Cursor { get; } = new(0) { RecordsHistory = false };          // not
+public State<string> Profile { get; } = new TrackedState<string>("");   // on the undo stack
+public State<int> Cursor { get; } = new LocalState<int>(0);             // never on it
 ```
 
 ```csharp

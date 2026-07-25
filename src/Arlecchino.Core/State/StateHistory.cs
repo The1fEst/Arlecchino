@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Arlecchino.State;
 
 /// <summary>
-/// Undo and redo over every atom that records history. It collects from the moment it exists, so the
+/// Undo and redo over every <see cref="TrackedState{T}"/>. It collects from the moment it exists, so the
 /// hosted service resolves it at startup; a headless run has to create it before the edits it wants
 /// to undo.
 ///
@@ -29,7 +29,8 @@ public sealed class StateHistory : IDisposable
 
     /// <summary>
     /// How many steps to keep. Lowering it drops the oldest straight away; anything below one step is
-    /// treated as one, since a history that remembers nothing is what <c>RecordsHistory</c> is for.
+    /// treated as one, since a history that remembers nothing is what <see cref="LocalState{T}"/> is
+    /// for.
     /// </summary>
     public int Capacity
     {

@@ -12,7 +12,7 @@ public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, T
 public sealed class ProcessTable
 {
     private readonly AsyncState<IReadOnlyList<ProcessRow>> _rows;
-    private readonly State<string> _filter = new("") { RecordsHistory = false };
+    private readonly LocalState<string> _filter = new("");
 
     public ProcessTable(UiDispatcher dispatcher)
     {
@@ -23,7 +23,7 @@ public sealed class ProcessTable
 
     public State<string> Filter => _filter;
 
-    public State<ProcessRow?> Selected { get; } = new(null) { RecordsHistory = false };
+    public State<ProcessRow?> Selected { get; } = new LocalState<ProcessRow?>(null);
 
     public DateTimeOffset LoadedAt { get; private set; }
 

@@ -36,7 +36,7 @@ public sealed class FormTests
     public void FieldsAreDrawnAsLabelAndValue()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new(""), new(true)));
+        var frame = Show(app, CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(true)));
 
         Assert.Contains("Name = ", frame, StringComparison.Ordinal);
         Assert.Contains("Flag = Yes", frame, StringComparison.Ordinal);
@@ -47,7 +47,7 @@ public sealed class FormTests
     public void EmptyValuesFallBackToTheEmptyString()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new(""), new(false)));
+        var frame = Show(app, CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false)));
 
         Assert.Contains($"Name = {app.Options.Strings.Empty()}", frame, StringComparison.Ordinal);
     }
@@ -56,7 +56,7 @@ public sealed class FormTests
     public void ArrowsMoveTheSelection()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new(""), new(false));
+        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false));
 
         Assert.Equal(0, form.Selected);
 
@@ -71,8 +71,8 @@ public sealed class FormTests
     public void ConfirmOpensTheModalOfTheField()
     {
         using var app = new TestApplication();
-        var name = new State<string>("");
-        var form = CreateForm(app, name, new(false));
+        var name = new TrackedState<string>("");
+        var form = CreateForm(app, name, new TrackedState<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
 
@@ -88,8 +88,8 @@ public sealed class FormTests
     public void ToggleFieldWritesBackThroughItsModal()
     {
         using var app = new TestApplication();
-        var flag = new State<bool>(true);
-        var form = CreateForm(app, new(""), flag);
+        var flag = new TrackedState<bool>(true);
+        var form = CreateForm(app, new TrackedState<string>(""), flag);
 
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
@@ -106,8 +106,8 @@ public sealed class FormTests
     public void EraseResetsTheField()
     {
         using var app = new TestApplication();
-        var name = new State<string>("filled");
-        var form = CreateForm(app, name, new(false));
+        var name = new TrackedState<string>("filled");
+        var form = CreateForm(app, name, new TrackedState<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Backspace, false, false, false));
 
@@ -118,7 +118,7 @@ public sealed class FormTests
     public void ActionRunsAndCanNavigate()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new(""), new(false), () => ViewKind.Other);
+        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false), () => ViewKind.Other);
 
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
@@ -131,7 +131,7 @@ public sealed class FormTests
     {
         using var app = new TestApplication();
         var ran = false;
-        var form = CreateForm(app, new(""), new(false),
+        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false),
             () =>
             {
                 ran = true;
@@ -150,8 +150,8 @@ public sealed class FormTests
     public void ClickSelectsAndTheSecondClickActivates()
     {
         using var app = new TestApplication();
-        var name = new State<string>("");
-        var form = CreateForm(app, name, new(false));
+        var name = new TrackedState<string>("");
+        var form = CreateForm(app, name, new TrackedState<bool>(false));
 
         var lines = Show(app, form).Split("\r\n");
         var flagRow = Array.FindIndex(lines, line => line.Contains("Flag", StringComparison.Ordinal));
@@ -169,9 +169,9 @@ public sealed class FormTests
     public void EditingThroughAFieldCanBeUndone()
     {
         using var app = new TestApplication();
-        var name = new State<string>("before");
+        var name = new TrackedState<string>("before");
 
-        var form = CreateForm(app, name, new(false));
+        var form = CreateForm(app, name, new TrackedState<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
         app.Type("after");
@@ -191,8 +191,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new(""), help: static () => "help for first"),
-                Field.Text(static () => "Second", new(""), help: static () => "help for second"),
+                Field.Text(static () => "First", new TrackedState<string>(""), help: static () => "help for first"),
+                Field.Text(static () => "Second", new TrackedState<string>(""), help: static () => "help for second"),
             ],
         };
 
@@ -206,7 +206,7 @@ public sealed class FormTests
     public void PathFieldOpensTheFilePicker()
     {
         using var app = new TestApplication();
-        var folder = new State<string>("");
+        var folder = new TrackedState<string>("");
         var form = new Form(app.State, app.Options)
         {
             Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],

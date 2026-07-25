@@ -6,9 +6,14 @@ namespace Arlecchino.State;
 /// <summary>
 /// An atom: one piece of application state that notifies what reads it and marks the frame stale by
 /// itself, so a screen driven by atoms never needs a manual repaint request.
+///
+/// Whether an edit can be undone is decided by the type that is created — <see cref="TrackedState{T}"/>
+/// or <see cref="LocalState{T}"/> — rather than by a flag set afterwards, so the declaration says
+/// which kind of state it is. Everything that takes an atom takes this base type, so the two are
+/// interchangeable at the call site.
 /// </summary>
 /// <typeparam name="T">Type of the value held.</typeparam>
-public sealed class State<T> : IReadableState<T>
+public abstract class State<T> : IReadableState<T>
 {
     private readonly List<Action> _listeners = [];
     private readonly IEqualityComparer<T> _comparer;
@@ -21,21 +26,18 @@ public sealed class State<T> : IReadableState<T>
     /// How to decide that a write changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
-    public State(T initial, IEqualityComparer<T>? comparer = null)
+    protected State(T initial, IEqualityComparer<T>? comparer = null)
     {
         _value = initial;
         _comparer = comparer ?? EqualityComparer<T>.Default;
     }
 
-    /// <summary>
-    /// Whether edits of this atom enter the undo history. On by default; turn it off for state that
-    /// should not be undoable, such as a cursor position or a load in progress.
-    /// </summary>
-    public bool RecordsHistory { get; init; } = true;
+    /// <summary>Whether edits of this atom enter the undo history.</summary>
+    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// The value. Writing an equal value changes nothing and notifies nobody; any other write
-    /// notifies subscribers, records an undo step and asks for a repaint.
+    /// notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable.
     /// </summary>
     public T Value
     {
@@ -55,13 +57,6 @@ public sealed class State<T> : IReadableState<T>
         _listeners.Add(listener);
         return new Subscription(_listeners, listener);
     }
-
-    /// <summary>
-    /// Writes without recording an undo step — for restoring a value or for changes the user did not
-    /// make.
-    /// </summary>
-    /// <param name="value">The value to store.</param>
-    public void SetWithoutHistory(T value) => Write(value, recordHistory: false);
 
     private void Write(T value, bool recordHistory)
     {
@@ -101,9 +96,9 @@ public sealed class State<T> : IReadableState<T>
 
         public object Owner => _state;
 
-        public void Undo() => _state.SetWithoutHistory(_before);
+        public void Undo() => _state.Write(_before, recordHistory: false);
 
-        public void Redo() => _state.SetWithoutHistory(_after);
+        public void Redo() => _state.Write(_after, recordHistory: false);
     }
 
     private sealed class Subscription : IDisposable
