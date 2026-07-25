@@ -59,11 +59,6 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                 .ThenBy(static view => view.RouteName, StringComparer.Ordinal)
                 .ToArray();
 
-            if (viewModels.Length == 0)
-            {
-                return;
-            }
-
             foreach (var view in viewModels)
             {
                 if (!view.HasPublicConstructor)
@@ -76,7 +71,14 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
             if (!settings.NamespaceWasChosen)
             {
                 ctx.ReportDiagnostic(Diagnostic.Create(
-                    ViewDiagnostics.ViewNamespaceNotSet, viewModels[0].Location, settings.ViewNamespace));
+                    ViewDiagnostics.ViewNamespaceNotSet,
+                    viewModels.Length == 0 ? Location.None : viewModels[0].Location,
+                    settings.ViewNamespace));
+            }
+
+            if (viewModels.Length == 0)
+            {
+                ctx.ReportDiagnostic(Diagnostic.Create(ViewDiagnostics.NoViews, Location.None));
             }
 
             ctx.AddSource("ArlecchinoViewNavigation.g.cs",
@@ -99,11 +101,20 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
         var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
         var routeName = TrimViewSuffix(symbol.Name);
+        var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
+            ? string.Empty
+            : symbol.ContainingNamespace.ToDisplayString();
         var constructorParameters = GetConstructorParameters(symbol);
         var hasPublicConstructor = symbol.InstanceConstructors
             .Any(static item => item.DeclaredAccessibility == Accessibility.Public);
 
-        return new(routeName, typeName, constructorParameters, hasPublicConstructor, declaration.Identifier.GetLocation());
+        return new(
+            routeName,
+            typeName,
+            containingNamespace,
+            constructorParameters,
+            hasPublicConstructor,
+            declaration.Identifier.GetLocation());
     }
 
     private static ViewModel ReportDuplicates(SourceProductionContext context, IGrouping<string, ViewModel> group)
@@ -167,8 +178,9 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         builder.AppendLine("using Arlecchino.Navigation;");
 
         foreach (var namespaceName in views
-                     .SelectMany(static view => view.ConstructorParameters)
-                     .Select(static parameter => parameter.Namespace)
+                     .SelectMany(static view => view.ConstructorParameters
+                         .Select(static parameter => parameter.Namespace)
+                         .Concat([view.Namespace]))
                      .Where(namespaceName => namespaceName.Length > 0 &&
                                              namespaceName != "System" &&
                                              namespaceName != "System.Diagnostics.CodeAnalysis" &&
@@ -201,20 +213,30 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         builder.AppendLine("{");
         builder.AppendLine("    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view)");
         builder.AppendLine("    {");
-        builder.AppendLine("        switch (route.Name)");
-        builder.AppendLine("        {");
 
-        foreach (var view in views)
+        if (views.Count == 0)
         {
-            builder.Append("            case \"").Append(view.RouteName).AppendLine("\":");
-            builder.Append("                view = ").Append(CreateViewExpression(view)).AppendLine(";");
-            builder.AppendLine("                return true;");
+            builder.AppendLine("        view = null;");
+            builder.AppendLine("        return false;");
+        }
+        else
+        {
+            builder.AppendLine("        switch (route.Name)");
+            builder.AppendLine("        {");
+
+            foreach (var view in views)
+            {
+                builder.Append("            case \"").Append(view.RouteName).AppendLine("\":");
+                builder.Append("                view = ").Append(CreateViewExpression(view)).AppendLine(";");
+                builder.AppendLine("                return true;");
+            }
+
+            builder.AppendLine("            default:");
+            builder.AppendLine("                view = null;");
+            builder.AppendLine("                return false;");
+            builder.AppendLine("        }");
         }
 
-        builder.AppendLine("            default:");
-        builder.AppendLine("                view = null;");
-        builder.AppendLine("                return false;");
-        builder.AppendLine("        }");
         builder.AppendLine("    }");
         builder.AppendLine("}");
         builder.AppendLine();
@@ -262,12 +284,14 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         public ViewModel(
             string routeName,
             string typeName,
+            string @namespace,
             IReadOnlyList<ParameterModel> constructorParameters,
             bool hasPublicConstructor,
             Location location)
         {
             RouteName = routeName;
             TypeName = typeName;
+            Namespace = @namespace;
             ConstructorParameters = constructorParameters;
             HasPublicConstructor = hasPublicConstructor;
             Location = location;
@@ -275,6 +299,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
         public string RouteName { get; }
         public string TypeName { get; }
+        public string Namespace { get; }
         public IReadOnlyList<ParameterModel> ConstructorParameters { get; }
         public bool HasPublicConstructor { get; }
         public Location Location { get; }

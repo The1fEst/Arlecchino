@@ -45,6 +45,8 @@ it puts in the container are singletons:
 | `CommandPaletteKey` | `':'` | Key that opens the palette |
 | `TextInput` | `LatinOnly` | How typed characters are resolved |
 | `MouseInput` | `false` | Report clicks, drags and the wheel to views |
+| `BracketedPaste` | `true` | Pasted text arrives as one block instead of a burst of keys |
+| `EscapeTimeout` | `25 ms` | How long the reader waits for the rest of an escape sequence |
 | `Keymap` | `new ArlecchinoKeymap()` | Keys the framework itself reacts to |
 | `Theme` | `new ThemePalette()` | Colour roles |
 | `Strings` | `new ArlecchinoStrings()` | User-visible text |

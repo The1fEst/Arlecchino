@@ -28,5 +28,6 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | Assembly | Namespaces | Contents |
 |---|---|---|
 | `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input` | `Surface`, `Theme`, `TermColor`, `KeyText`, `ITerminal` — the renderer, no DI |
-| `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.State`, `Arlecchino.Views` | views, navigation, modals, commands, hosting, the file picker |
+| `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
+| `Arlecchino.Testing` | `Arlecchino.Testing` | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` — the headless host for tests |
 | `Arlecchino.Generators` | — | the incremental generator, shipped inside the `Arlecchino` package |

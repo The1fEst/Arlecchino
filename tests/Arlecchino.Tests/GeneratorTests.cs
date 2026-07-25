@@ -189,6 +189,50 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void ViewsOutsideTheGeneratedNamespaceAreReachedThroughAUsing()
+    {
+        const string source = """
+            using System;
+            using Arlecchino.Navigation;
+
+            namespace Sample.Screens;
+
+            public class ModsView : IView
+            {
+                public void Draw() { }
+                public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+            }
+            """;
+
+        var (generated, _) = Run(source);
+
+        Assert.Contains("using Sample.Screens;", generated, StringComparison.Ordinal);
+        Assert.Contains("view = new ModsView()", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RegistrationIsGeneratedEvenWhenNoViewExistsYet()
+    {
+        const string source = """
+            namespace Sample;
+
+            public class Nothing
+            {
+            }
+            """;
+
+        var (generated, diagnostics) = Run(source);
+
+        Assert.Contains("public static ArlecchinoBuilder AddGeneratedViews(this ArlecchinoBuilder builder)",
+            generated, StringComparison.Ordinal);
+        Assert.Contains("public static ViewRoute None => ViewRoute.None;", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("switch (route.Name)", generated, StringComparison.Ordinal);
+
+        var reported = Assert.Single(diagnostics, item => item.Id == "TSR004");
+        Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
+    }
+
+    [Fact]
     public void AbstractViewsAreSkipped()
     {
         const string source = """

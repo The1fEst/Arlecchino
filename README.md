@@ -10,6 +10,8 @@ dotnet add package Arlecchino
 ## The shortest app
 
 ```csharp
+using MyApp.Navigation;   // where the generator puts ViewKind and AddGeneratedViews
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services
@@ -20,6 +22,11 @@ builder.Services
 
 await builder.Build().RunAsync();
 ```
+
+`ViewKind` and `AddGeneratedViews` are written by the source generator into
+`$(RootNamespace).Navigation` — `MyApp.Navigation` above — so the file that starts the application
+needs that `using`. Both appear as soon as the package is referenced, and `ViewKind` fills up with a
+route per view.
 
 A view is a class implementing `IView`. Constructor parameters come from the container:
 
@@ -76,6 +83,7 @@ What changed between versions is in the [changelog](CHANGELOG.md).
 |---|---|
 | `Arlecchino.Core` | `Surface`, `Theme`, `TermColor`, `KeyText`, `ITerminal` — the renderer, no DI |
 | `Arlecchino` | views, navigation, modals, commands, hosting, DI, and the generator |
+| `Arlecchino.Testing` | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
 ## License
 

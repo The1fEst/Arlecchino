@@ -29,4 +29,12 @@ public static class ViewDiagnostics
         Category,
         DiagnosticSeverity.Info,
         isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor NoViews = new(
+        "TSR004",
+        "No views were found",
+        "No class implements IView, so ViewKind holds no routes and the application has nowhere to start",
+        Category,
+        DiagnosticSeverity.Info,
+        isEnabledByDefault: true);
 }

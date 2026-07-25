@@ -7,6 +7,27 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## 0.3.0
+
+### Fixed
+
+- The generated view factory named each view by its short name, so a view in a namespace the generated
+  file did not sit under failed to compile with `CS0246`. Namespaces of the views are emitted as
+  `using` directives now, and views may live anywhere in the project.
+- A project with no view yet had nothing generated at all, so `AddGeneratedViews` and `ViewKind` did
+  not exist and the error was `cannot resolve symbol` on the first line of the setup. Both are emitted
+  from the moment the package is referenced — `ViewKind` simply holds no routes — and the new `TSR004`
+  says why.
+
+### Documentation
+
+- The `using` for the generated namespace (`$(RootNamespace).Navigation` by default) is in the README
+  and the getting-started example; it was the one line a new application could not guess.
+- `IView` is documented with `HandlePaste` and `Commands`, the options table with `BracketedPaste` and
+  `EscapeTimeout`, the strings table with `ListPosition`, the form and the log-overlay text, and the
+  assembly table with the `Focus`, `Forms`, `Widgets` and `Diagnostics` namespaces and the
+  `Arlecchino.Testing` package.
+
 ## 0.2.0
 
 First release published on NuGet.

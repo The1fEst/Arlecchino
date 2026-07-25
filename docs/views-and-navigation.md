@@ -10,11 +10,14 @@ public interface IView
     void Draw();
     ViewRoute Handle(ConsoleKeyInfo key);
     ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;
+    ViewRoute HandlePaste(string text) => ViewRoute.None;
+    IReadOnlyList<ViewCommand> Commands() => [];
     (string Key, string Description)[] Hints() => [];
 }
 ```
 
-`HandleMouse` and `Commands` have default implementations, so a view writes only what it needs — see
+Only `Draw` and `Handle` have to be written: `HandleMouse`, `HandlePaste`, `Commands` and `Hints`
+have default implementations, so a view writes what it needs and nothing else — see
 [Commands and input](commands-and-input.md).
 
 `Draw` runs once per frame against the shared [`Surface`](rendering.md). `Handle` receives keys that

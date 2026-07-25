@@ -48,8 +48,13 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 | `OutOfRange(minimum, maximum)` | `must be between {minimum} and {maximum}` |
 | `SelectedCount(count)` | `1 selected` / `{count} selected` — shown in the multi-choice title |
 | `Filter(text)` | `Filter: {text}` |
+| `ListPosition(position, total)` | `3/40` — beside the scroll bar of a list that does not fit |
 | `NothingMatches` | `nothing matches` |
 | `Empty` | `empty` |
+| `FormMove` / `FormEdit` / `FormReset` | `move` / `edit` / `reset` — the verbs in the [form](state-and-forms.md) legend |
+| `LogTitle(count)` | `Log ({count})` — title of the [log overlay](hosting-and-options.md) |
+| `LogHints` | `↑↓ scroll · End latest · Backspace clear · Esc close` |
+| `LogEmpty` | `nothing logged yet` |
 | `ViewFailed(message)` | `error: {message}` — shown when a view or a callback throws |
 | `TerminalTooSmall` | `Terminal window is too small` |
 | `TerminalSize(width, height)` | `{width} x {height}` |

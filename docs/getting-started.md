@@ -15,6 +15,8 @@ itself.
 ## The smallest app
 
 ```csharp
+using MyApp.Navigation;   // ViewKind and AddGeneratedViews are generated here
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services
@@ -30,6 +32,12 @@ await builder.Build().RunAsync();
 the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator, and `StartAt`
 picks the route shown on the first frame. Everything after `AddArlecchino` is a call on
 `ArlecchinoBuilder` — see [Hosting and options](hosting-and-options.md).
+
+That first `using` is the one thing not visible from the code: `ViewKind` and `AddGeneratedViews` are
+written by the generator into `$(RootNamespace).Navigation`, not into a namespace of the package, so
+the file wiring the application up has to import it. Both exist from the moment the package is
+referenced — before the first view is written `ViewKind` simply holds no routes and the generator
+says so as `TSR004`. See [Source generator](source-generator.md) to put them somewhere else.
 
 ## The first view
 
@@ -59,8 +67,9 @@ route it returns navigates. `Hints` fills the box in the bottom-right corner. De
 [Views and navigation](views-and-navigation.md) and [Rendering](rendering.md).
 
 The `DefaultView` class name is what produces `ViewKind.Default`: the generator strips the `View`
-suffix. Set `<ArlecchinoViewNamespace>` in your csproj to choose where `ViewKind` lands —
-see [Source generator](source-generator.md).
+suffix. The view itself may live in any namespace — the generated factory imports whatever it needs.
+Set `<ArlecchinoViewNamespace>` in your csproj to choose where `ViewKind` lands instead of
+`$(RootNamespace).Navigation` — see [Source generator](source-generator.md).
 
 ## Running the samples
 

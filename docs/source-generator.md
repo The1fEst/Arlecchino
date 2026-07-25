@@ -38,10 +38,13 @@ public static class GeneratedViewRegistration
 
 The factory switches on `route.Name` and news each view up directly. Constructor arguments come from
 `services.GetRequiredService<T>()` — the scope the resolver opened for that screen — using the public
-constructor with the most parameters, so a view is built without reflection and stays AOT-friendly. Namespaces of those parameter types are
-emitted as `using` directives.
+constructor with the most parameters, so a view is built without reflection and stays AOT-friendly.
+Namespaces of the views and of those parameter types are emitted as `using` directives, so views may
+sit anywhere in the project.
 
-Nothing is generated when the project contains no views.
+The three types are emitted whether or not the project holds a view yet. A project with none gets an
+empty `ViewKind`, a factory that creates nothing and a working `AddGeneratedViews()`, along with
+`TSR004` — so the first thing a new application sees is a missing route rather than a missing method.
 
 ## Turning it on
 
@@ -74,8 +77,9 @@ The package's `build/Arlecchino.props` marks these properties compiler-visible; 
 </PropertyGroup>
 ```
 
-Pick a namespace your views themselves do not sit in, and add it to the `using` list of files that
-navigate — that is what makes `ViewKind.Mods` read like an enum at the call site.
+Whichever namespace it lands in, files that navigate have to import it — `using MyApp.Navigation;` by
+default — and that is what makes `ViewKind.Mods` read like an enum at the call site. Views may live in
+that namespace or anywhere else; the generated file imports what it needs either way.
 
 ## Diagnostics
 
@@ -86,6 +90,7 @@ The generator says something instead of quietly doing the wrong thing:
 | `TSR001` | Warning | Two views produce the same route — `Sample.ModsView` and `Sample.Extra.ModsView` both become `Mods`. The first one wins and the other is unreachable; rename one of them or register it explicitly |
 | `TSR002` | Warning | A view implements `IView` but has no public constructor, so the generated factory cannot create it |
 | `TSR003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
+| `TSR004` | Info | No class implements `IView`, so `ViewKind` holds no routes and the application has nowhere to start |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.
