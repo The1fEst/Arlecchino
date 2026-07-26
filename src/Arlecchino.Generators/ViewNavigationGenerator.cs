@@ -96,12 +96,12 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !ImplementsView(symbol))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !ImplementsView(symbol))
         {
             return null;
         }
 
-        var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        var typeName = TypeNames.Of(symbol);
         var routeName = TrimViewSuffix(symbol.Name);
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty

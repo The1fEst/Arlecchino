@@ -17,9 +17,15 @@
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageReleaseNotes>What changed in this version: https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md#$(Version.Replace('.', ''))</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/The1fEst/Arlecchino</PackageProjectUrl>
     <RepositoryUrl>https://github.com/The1fEst/Arlecchino</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EnablePackageValidation Condition="'$(IsPackable)' != 'false'">true</EnablePackageValidation>
+    <PackageValidationBaselineVersion Condition="'$(IsPackable)' != 'false' and '$(Version)' != '1.0.0'">1.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <PropertyGroup>

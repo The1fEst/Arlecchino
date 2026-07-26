@@ -22,20 +22,25 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: version
+  - type: textarea
+    id: report
     attributes:
-      label: Version
-      placeholder: "1.0.0"
+      label: Diagnostics
+      description: >
+        The output of `ArlecchinoReport.Describe()` — resolve it from the container and call it, or
+        paste the version, the terminal and the OS by hand. It carries versions, sizes and route
+        names only; see
+        [Hosting and options](https://github.com/The1fEst/Arlecchino/blob/master/docs/hosting-and-options.md).
+      render: text
     validations:
       required: true
 
   - type: input
     id: terminal
     attributes:
-      label: Terminal and platform
-      description: Which terminal, which OS, and whether it runs over SSH or in a multiplexer.
-      placeholder: Windows Terminal on Windows 11 / kitty on Arch / Terminal.app over ssh
+      label: Terminal
+      description: Which terminal, and whether it runs over SSH or in a multiplexer.
+      placeholder: Windows Terminal / kitty on Arch / Terminal.app over ssh, inside tmux
     validations:
       required: true
 

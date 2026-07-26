@@ -20,6 +20,10 @@ whole declaration. See [Stores](#stores) below.
 **Commands** — the same again, for `Arlecchino.Commands.IArlecchinoCommand`. See [Commands](#commands)
 below.
 
+A type nested inside another is found as readily as one at the top level and is named through its
+owner — `Screens.ModsView`. One nested *privately* is skipped instead: the generated file lives in the
+same assembly but outside that type, so naming it would not compile.
+
 Duplicate route names collapse to the first declaration seen. Routes are emitted with `Default` first,
 then the rest ordered ordinally.
 
@@ -151,6 +155,7 @@ emitting code that would not compile:
 | The class is generic | There is no single closed type to register |
 | It has no public constructor | The factory has nothing to call |
 | It has `required` members | A factory cannot fill them in — `ListBox<T>.Render` is exactly this |
+| It is nested privately in another type | The generated file cannot name it, and code that names it would not compile |
 
 The three built-in reasons cover the built-in widgets too, which is another way of saying the same
 thing: `ListBox<T>`, `Table<T>` and `Form` are constructed where they are used, with their

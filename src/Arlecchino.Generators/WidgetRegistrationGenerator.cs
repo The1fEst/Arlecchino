@@ -74,12 +74,12 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !ImplementsWidget(symbol))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !ImplementsWidget(symbol))
         {
             return null;
         }
 
-        var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        var typeName = TypeNames.Of(symbol);
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();

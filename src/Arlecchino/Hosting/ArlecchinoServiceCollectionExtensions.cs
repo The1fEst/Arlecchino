@@ -68,6 +68,7 @@ public static class ArlecchinoServiceCollectionExtensions
         services.AddSingleton<Notifications>();
         services.AddSingleton<AtomHistory>();
         services.AddSingleton<ArlecchinoState>();
+        services.AddSingleton<ArlecchinoReport>();
         services.AddScoped<ViewLifetime>();
         services.AddSingleton<IArlecchinoViewFactory, RegisteredViewFactory>();
         services.AddSingleton<ViewResolver>();
