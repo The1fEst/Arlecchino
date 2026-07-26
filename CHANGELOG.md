@@ -137,6 +137,14 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   writing atoms watched and unwatched, a computed value read cached and invalidated, undo and redo,
   and `TextWidth.Wrap`. They are what found the allocation above.
 
+### Packaging
+
+- **The package is checked against the last release.** `EnablePackageValidation` runs APICompat during
+  `dotnet pack`: the `net8.0` and `net10.0` surfaces have to match each other, and from `1.0.1` on they
+  are compared with `1.0.0` as well. The baseline is conditional on the version, so it starts applying
+  by itself after this release, and a missing baseline fails the pack rather than passing quietly.
+- Each package carries release notes pointing at its own section of the changelog, and the icon.
+
 ### Continuous integration
 
 - The build fails on a ReSharper inspection as well as on a compiler warning: `jb inspectcode` runs
