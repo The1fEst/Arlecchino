@@ -58,15 +58,15 @@ jobs:
       - name: Build an application against the packages
         run: |
           version=$(grep -oE '<Version>[^<]+' Directory.Build.props | head -1 | cut -d'>' -f2)
-          feed="$PWD/artifacts/packages"
           work="${RUNNER_TEMP}/consumer"
 
           rm -rf "$work"
           dotnet new console -o "$work" -n Consumer
           cp .github/consumer/Program.cs "$work/"
-          sed "s#../artifacts/packages#$feed#" .github/consumer/nuget.config > "$work/nuget.config"
 
           cd "$work"
+          dotnet new nugetconfig
+          dotnet nuget add source "$GITHUB_WORKSPACE/artifacts/packages" --name arlecchino-local --configfile nuget.config
           dotnet add package Arlecchino --version "$version"
           dotnet build
         shell: bash

@@ -222,7 +222,9 @@ them. The Windows leg uploads the packages as a build artifact.
 That last step is the one worth keeping. It creates a console application from scratch, points it at
 the freshly packed `.nupkg` files, writes views, a store, a widget and a command in it, and builds —
 which is exactly how the source generator is exercised from the outside. Its source lives in
-`.github/consumer`.
+`.github/consumer`, and the project itself is generated in the runner's temporary directory rather
+than inside the checkout: a consumer under this repository would inherit `Directory.Build.props` and
+the repository `.editorconfig`, and would then be testing our build settings instead of the packages.
 
 ### Committing without running it
 
