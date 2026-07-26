@@ -220,7 +220,10 @@ same release.
 repository first, and a tag that does not match the props file is fine and deliberate.
 
 Every change worth a line goes into `CHANGELOG.md` under `Unreleased`, which becomes the release
-section when the tag is pushed.
+section when the tag is pushed. That section is not only for readers: `release.yml` reads it back out
+of the file and it becomes the body of the GitHub release, with the `.nupkg` files attached — so a
+tag whose version has no section in the changelog fails the release rather than publishing something
+undocumented.
 
 ### The public API is written down
 

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -50,3 +50,27 @@ jobs:
           --source https://api.nuget.org/v3/index.json
           --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
           --skip-duplicate
+
+      - name: Release on GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          awk -v heading="## $VERSION" '
+            $0 == heading { inside = 1; next }
+            inside && /^## / { exit }
+            inside { print }
+          ' CHANGELOG.md > notes.md
+
+          if [ ! -s notes.md ]; then
+            echo "The changelog has no section for $VERSION" >&2
+            exit 1
+          fi
+
+          case "$VERSION" in
+            *-*) prerelease=--prerelease ;;
+            *) prerelease= ;;
+          esac
+
+          gh release create "$GITHUB_REF_NAME" --title "$VERSION" --notes-file notes.md $prerelease \
+            artifacts/packages/*.nupkg
