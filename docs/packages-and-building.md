@@ -295,7 +295,7 @@ them. The Windows leg uploads the packages as a build artifact.
 |---|---|
 | Build in `Release` with warnings as errors | Everything the compiler and the Roslyn style rules see |
 | The test suite, on both target frameworks | Behaviour |
-| Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 85% of lines or 70% of branches, and the figures per assembly are written to the run summary |
+| Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 85% of lines or 66% of branches, and the figures per assembly are written to the run summary |
 | Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
 | The sample published with `PublishAot` and run (Linux leg) | What `IsAotCompatible` only warns about. The native binary has to draw a frame, so a registration the trimmer removed or a type built by reflection fails the run rather than the user's `publish` |
 | `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |

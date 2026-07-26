@@ -22,6 +22,10 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
 
 ### Continuous integration
 
+- The branch-coverage floor moved from 70% to 66%, because `coverlet.collector` 10 counts branches
+  that 6 did not: with the same 490 tests, line coverage went up (88.0% to 88.7%) while branches fell
+  by three to five points in every assembly at once. The measure changed, not what is covered, and the
+  floor keeps the same headroom under the new one.
 - The consumer application is built twice, on the .NET 10 SDK and on the .NET 8 one. A generator that
   refuses to load in an older compiler is invisible to every other check in the matrix — the
   repository builds, the tests pass, the package is produced — and the only place it shows is an

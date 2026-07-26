@@ -9,7 +9,7 @@ on:
 
 env:
   COVERAGE_LINES: 85
-  COVERAGE_BRANCHES: 70
+  COVERAGE_BRANCHES: 66
 
 jobs:
   build:
