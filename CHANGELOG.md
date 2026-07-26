@@ -7,7 +7,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
-## Unreleased
+## 0.5.0
 
 ### Added
 

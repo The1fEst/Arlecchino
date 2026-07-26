@@ -7,6 +7,7 @@
 ~override Arlecchino.Rendering.Region.Equals(object obj) -> bool
 ~override Arlecchino.Rendering.Region.ToString() -> string
 ~override Arlecchino.Rendering.Rgb.Equals(object obj) -> bool
+abstract Arlecchino.State.State<T>.RecordsHistory.get -> bool
 Arlecchino.Input.EscapeSequenceParser
 Arlecchino.Input.EscapeSequenceParser.EscapeSequenceParser() -> void
 Arlecchino.Input.KeyBinding
@@ -240,14 +241,15 @@ Arlecchino.State.Computed<T>.Value.get -> T
 Arlecchino.State.IReadableState<T>
 Arlecchino.State.IReadableState<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.State.IReadableState<T>.Value.get -> T
+Arlecchino.State.IScopedStore
 Arlecchino.State.IStateEdit
 Arlecchino.State.IStateEdit.Owner.get -> object?
 Arlecchino.State.IStateEdit.Redo() -> void
 Arlecchino.State.IStateEdit.Undo() -> void
+Arlecchino.State.IStore
+Arlecchino.State.LocalState<T>
+Arlecchino.State.LocalState<T>.LocalState(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.State.State<T>
-Arlecchino.State.State<T>.RecordsHistory.get -> bool
-Arlecchino.State.State<T>.RecordsHistory.init -> void
-Arlecchino.State.State<T>.SetWithoutHistory(T value) -> void
 Arlecchino.State.State<T>.State(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.State.State<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.State.State<T>.Value.get -> T
@@ -266,6 +268,8 @@ Arlecchino.State.StateHistory.Redo() -> bool
 Arlecchino.State.StateHistory.StateHistory() -> void
 Arlecchino.State.StateHistory.Undo() -> bool
 Arlecchino.State.StateTracking
+Arlecchino.State.TrackedState<T>
+Arlecchino.State.TrackedState<T>.TrackedState(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.SystemTerminal
 Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
 Arlecchino.SystemTerminal.DisableMouse() -> void
