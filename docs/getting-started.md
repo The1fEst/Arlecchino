@@ -22,6 +22,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)
     .AddGeneratedViews()
+    .AddGeneratedStores()
     .AddCommand<QuitCommand>()
     .StartAt(ViewKind.Default);
 
@@ -29,7 +30,8 @@ await builder.Build().RunAsync();
 ```
 
 `AddArlecchino` registers the renderer, the navigator, the input router and a hosted service that owns
-the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator, and `StartAt`
+the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator,
+`AddGeneratedStores` registers every `IStore` it found alongside it, and `StartAt`
 picks the route shown on the first frame. Everything after `AddArlecchino` is a call on
 `ArlecchinoBuilder` — see [Hosting and options](hosting-and-options.md).
 

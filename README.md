@@ -17,6 +17,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)
     .AddGeneratedViews()
+    .AddGeneratedStores()
     .AddCommand<QuitCommand>()
     .StartAt(ViewKind.Default);
 
@@ -63,7 +64,7 @@ Full documentation lives in [docs](docs/README.md).
 |---|---|
 | [Getting started](docs/getting-started.md) | Installing the package, the smallest app that runs, the first view |
 | [Views and navigation](docs/views-and-navigation.md) | `IView`, `ViewRoute`, the navigator, history, view registration |
-| [Source generator](docs/source-generator.md) | How `ViewKind` and the view factory are emitted, MSBuild switches |
+| [Source generator](docs/source-generator.md) | How `ViewKind`, the view factory and the store registration are emitted, MSBuild switches |
 | [Rendering](docs/rendering.md) | `Surface`: the frame lifecycle, flow layout, absolute layout |
 | [Theming](docs/theming.md) | `Theme`, `ThemePalette`, `TermColor`, ANSI colours and font styles |
 | [Commands and input](docs/commands-and-input.md) | `IArlecchinoCommand`, the command palette, key routing, keyboard layouts |

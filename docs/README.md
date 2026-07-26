@@ -11,7 +11,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 |---|---|
 | [Getting started](getting-started.md) | Installing the package, the smallest app that runs, the first view |
 | [Views and navigation](views-and-navigation.md) | `IView`, `ViewRoute`, the navigator, history, view registration |
-| [Source generator](source-generator.md) | How `ViewKind` and the view factory are emitted, MSBuild switches |
+| [Source generator](source-generator.md) | How `ViewKind`, the view factory and the store registration are emitted, MSBuild switches |
 | [Rendering](rendering.md) | `Surface`: the frame lifecycle, flow layout, absolute layout |
 | [Theming](theming.md) | `Theme`, `ThemePalette`, `TermColor`, ANSI colours and font styles |
 | [Commands and input](commands-and-input.md) | `IArlecchinoCommand`, the command palette, key routing, keyboard layouts |

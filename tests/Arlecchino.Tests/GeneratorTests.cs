@@ -31,6 +31,54 @@ public sealed class GeneratorTests
         }
         """;
 
+    private const string TwoStores = """
+        using Arlecchino.Rendering;
+        using Arlecchino.State;
+
+        namespace Sample.Stores;
+
+        public sealed class SettingsStore : IStore
+        {
+            public State<string> Profile { get; } = new TrackedState<string>("");
+        }
+
+        public sealed class DraftStore : IScopedStore
+        {
+            public DraftStore(Surface surface) { }
+        }
+        """;
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunStores(
+        string source,
+        string? generate = null)
+    {
+        var compilation = CSharpCompilation.Create(
+            "SampleApplication",
+            [CSharpSyntaxTree.ParseText(source)],
+            LoadedReferences(),
+            new(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+
+        var options = new Dictionary<string, string>
+        {
+            ["build_property.RootNamespace"] = "Sample",
+            ["build_property.ArlecchinoViewNamespace"] = "Sample.Views",
+        };
+
+        if (generate is not null)
+        {
+            options["build_property.ArlecchinoGenerateStores"] = generate;
+        }
+
+        var driver = CSharpGeneratorDriver
+            .Create([new StoreRegistrationGenerator().AsSourceGenerator()], optionsProvider: new FixedOptions(options))
+            .RunGenerators(compilation);
+
+        var result = driver.GetRunResult();
+        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+
+        return (generated, result.Diagnostics);
+    }
+
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) Run(
         string source,
         string? viewNamespace = "Sample.Views",
@@ -230,6 +278,64 @@ public sealed class GeneratorTests
 
         var reported = Assert.Single(diagnostics, item => item.Id == "TSR004");
         Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
+    }
+
+    [Fact]
+    public void StoresAreRegisteredWithTheLifetimeTheirMarkerAsksFor()
+    {
+        var (generated, diagnostics) = RunStores(TwoStores);
+
+        Assert.Contains("namespace Sample.Views;", generated, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Stores;", generated, StringComparison.Ordinal);
+        Assert.Contains(
+            "builder.Services.AddSingleton(static services => new SettingsStore());",
+            generated,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<Surface>()));",
+            generated,
+            StringComparison.Ordinal);
+        Assert.Empty(diagnostics);
+    }
+
+    [Fact]
+    public void StoreRegistrationIsGeneratedEvenWhenNoStoreExistsYet()
+    {
+        var (generated, _) = RunStores(TwoViews);
+
+        Assert.Contains(
+            "public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)",
+            generated,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NoStoresAreGeneratedWhenTheProjectTurnsThemOff()
+    {
+        var (generated, _) = RunStores(TwoStores, generate: "false");
+
+        Assert.Equal("", generated);
+    }
+
+    [Fact]
+    public void StoreWithoutAPublicConstructorIsReported()
+    {
+        const string source = """
+            using Arlecchino.State;
+
+            namespace Sample;
+
+            public sealed class HiddenStore : IStore
+            {
+                private HiddenStore() { }
+            }
+            """;
+
+        var (_, diagnostics) = RunStores(source);
+        var reported = Assert.Single(diagnostics, item => item.Id == "TSR005");
+
+        Assert.Contains("HiddenStore", reported.GetMessage(), StringComparison.Ordinal);
     }
 
     [Fact]

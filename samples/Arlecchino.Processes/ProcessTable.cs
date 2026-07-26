@@ -9,7 +9,7 @@ namespace Arlecchino.Processes;
 
 public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, TimeSpan Cpu, DateTime? Started);
 
-public sealed class ProcessTable
+public sealed class ProcessTable : IStore
 {
     private readonly AsyncState<IReadOnlyList<ProcessRow>> _rows;
     private readonly LocalState<string> _filter = new("");

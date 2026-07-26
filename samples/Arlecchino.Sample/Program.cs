@@ -26,8 +26,6 @@ if (args is ["--keys"])
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Logging.ClearProviders();
-builder.Services.AddSingleton<SettingsStore>();
-
 
 builder.Services
     .AddArlecchino(options =>
@@ -36,6 +34,7 @@ builder.Services
         options.MinimumHeight = 16;
     })
     .AddGeneratedViews()
+    .AddGeneratedStores()
     .AddCommand<AboutCommand>()
     .AddCommand<PickFolderCommand>()
     .AddCommand<QuitCommand>()
@@ -83,12 +82,12 @@ static void Frame(string view, string size)
             options.MinimumHeight = 16;
         })
         .AddGeneratedViews()
+        .AddGeneratedStores()
         .AddCommand<AboutCommand>()
         .AddCommand<QuitCommand>()
         .WithoutHostedService();
 
     services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
-    services.AddSingleton<SettingsStore>();
 
     using var provider = services.BuildServiceProvider();
 

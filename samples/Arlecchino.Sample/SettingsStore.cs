@@ -5,7 +5,7 @@ using Arlecchino.State;
 
 namespace Arlecchino.Sample;
 
-public sealed class SettingsStore
+public sealed class SettingsStore : IStore
 {
     public SettingsStore()
     {

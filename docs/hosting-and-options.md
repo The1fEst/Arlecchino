@@ -60,6 +60,7 @@ it puts in the container are singletons:
 | `AddView<T>(route)` | Registers a view resolved through the container |
 | `AddView(route, factory)` | Registers a view built by your own factory delegate |
 | `AddViewFactory<T>()` | Adds an `IViewFactory` — this is what `AddGeneratedViews()` does |
+| `AddGeneratedStores()` | Generated: registers every `IStore` in the project, singleton or scoped — see [Source generator](source-generator.md#stores) |
 | `AddCommand<T>()` | Registers an `IArlecchinoCommand` |
 | `AddStartup<T>()` | Registers an `IArlecchinoStartup` |
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |
@@ -145,7 +146,7 @@ frame is rendered headlessly — for screenshots, layout checks or tests:
 
 ```csharp
 var services = new ServiceCollection();
-services.AddArlecchino().AddGeneratedViews().WithoutHostedService();
+services.AddArlecchino().AddGeneratedViews().AddGeneratedStores().WithoutHostedService();
 services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
 
 using var provider = services.BuildServiceProvider();

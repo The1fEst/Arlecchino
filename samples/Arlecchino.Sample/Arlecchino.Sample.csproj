@@ -23,5 +23,6 @@
     <CompilerVisibleProperty Include="RootNamespace" />
     <CompilerVisibleProperty Include="ArlecchinoViewNamespace" />
     <CompilerVisibleProperty Include="ArlecchinoGenerateViews" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateStores" />
   </ItemGroup>
 </Project>

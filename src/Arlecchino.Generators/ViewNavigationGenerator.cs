@@ -104,7 +104,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();
-        var constructorParameters = GetConstructorParameters(symbol);
+        var constructorParameters = ConstructorBinding.Of(symbol);
         var hasPublicConstructor = symbol.InstanceConstructors
             .Any(static item => item.DeclaredAccessibility == Accessibility.Public);
 
@@ -142,27 +142,6 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         return name.EndsWith("View", StringComparison.Ordinal) && name.Length > "View".Length
             ? name.Substring(0, name.Length - "View".Length)
             : name;
-    }
-
-    private static IReadOnlyList<ParameterModel> GetConstructorParameters(INamedTypeSymbol symbol)
-    {
-        var constructor = symbol.InstanceConstructors
-            .Where(static item => item.DeclaredAccessibility == Accessibility.Public)
-            .OrderByDescending(static item => item.Parameters.Length)
-            .FirstOrDefault();
-
-        if (constructor == null)
-        {
-            return Array.Empty<ParameterModel>();
-        }
-
-        return constructor.Parameters
-            .Select(static parameter => new ParameterModel(
-                parameter.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
-                parameter.Type.ContainingNamespace.IsGlobalNamespace
-                    ? string.Empty
-                    : parameter.Type.ContainingNamespace.ToDisplayString()))
-            .ToArray();
     }
 
     private static string Generate(IReadOnlyList<ViewModel> views, string viewNamespace)
@@ -227,7 +206,9 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
             foreach (var view in views)
             {
                 builder.Append("            case \"").Append(view.RouteName).AppendLine("\":");
-                builder.Append("                view = ").Append(CreateViewExpression(view)).AppendLine(";");
+                builder.Append("                view = ")
+                    .Append(ConstructorBinding.CreateExpression(view.TypeName, view.ConstructorParameters))
+                    .AppendLine(";");
                 builder.AppendLine("                return true;");
             }
 
@@ -249,20 +230,6 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         builder.AppendLine("}");
 
         return builder.ToString();
-    }
-
-    private static string CreateViewExpression(ViewModel view)
-    {
-        if (view.ConstructorParameters.Count == 0)
-        {
-            return $"new {view.TypeName}()";
-        }
-
-        var services = view.ConstructorParameters
-            .Select(static parameter =>
-                $"services.GetRequiredService<{parameter.TypeName}>()");
-
-        return $"new {view.TypeName}({string.Join(", ", services)})";
     }
 
     private sealed class Settings
@@ -303,17 +270,5 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         public IReadOnlyList<ParameterModel> ConstructorParameters { get; }
         public bool HasPublicConstructor { get; }
         public Location Location { get; }
-    }
-
-    private sealed class ParameterModel
-    {
-        public ParameterModel(string typeName, string @namespace)
-        {
-            TypeName = typeName;
-            Namespace = @namespace;
-        }
-
-        public string TypeName { get; }
-        public string Namespace { get; }
     }
 }

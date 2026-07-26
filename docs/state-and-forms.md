@@ -14,7 +14,7 @@ against; it is abstract, so the choice is made once, where the atom is declared.
 ## Atoms
 
 ```csharp
-public sealed class SettingsStore
+public sealed class SettingsStore : IStore
 {
     public State<string> Profile { get; } = new TrackedState<string>("");
     public State<decimal> Volume { get; } = new TrackedState<decimal>(60);
@@ -23,8 +23,11 @@ public sealed class SettingsStore
 }
 ```
 
-Declare them wherever it suits — usually a class registered in the container, so views take it as a
-constructor parameter like any other service.
+A class of atoms like this one is a **store**. Marking it `IStore` is all the wiring there is: the
+generator finds it and `.AddGeneratedStores()` puts it in the container as a singleton, so views and
+commands take it as a constructor parameter like any other service — nothing to register by hand and
+nothing to forget when a store is added. `IScopedStore` does the same for state that belongs to one
+screen. See [Source generator](source-generator.md#stores).
 
 `State<T>` itself is abstract: an atom is created as the kind it is, and the declaration says whether
 its edits can be taken back. Everything that consumes an atom — `Field.*`, `Computed<T>`, a view's

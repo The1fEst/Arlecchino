@@ -11,8 +11,9 @@
 | `Arlecchino.Testing` | `net10.0` | Headless host for testing an application built on Arlecchino |
 
 `Arlecchino` also carries the generator as `analyzers/dotnet/cs` and a `build/Arlecchino.props` that makes
-`RootNamespace`, `ArlecchinoViewNamespace` and `ArlecchinoGenerateViews` visible to it. Referencing
-`Arlecchino` is enough to get everything — see [Source generator](source-generator.md).
+`RootNamespace`, `ArlecchinoViewNamespace`, `ArlecchinoGenerateViews` and `ArlecchinoGenerateStores`
+visible to it. Referencing `Arlecchino` is enough to get everything — see
+[Source generator](source-generator.md).
 
 `Arlecchino.Generators` itself targets `netstandard2.0` (Roslyn's requirement for analyzers) and is never
 published on its own.
@@ -37,7 +38,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `0.4.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `0.5.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -64,7 +65,7 @@ dotnet add package Arlecchino.Testing
 
 ```csharp
 using var app = new ArlecchinoTestHost(80, 24,
-    builder => builder.AddGeneratedViews().StartAt(ViewKind.Mods));
+    builder => builder.AddGeneratedViews().AddGeneratedStores().StartAt(ViewKind.Mods));
 
 app.Press(ConsoleKey.DownArrow);
 app.Type("wide");
@@ -98,7 +99,7 @@ they produce are used by the navigation tests.
 
 ## What ends up in the package
 
-`Arlecchino.0.4.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
+`Arlecchino.0.5.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
 `build/Arlecchino.props` and the README shown on the package page. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.

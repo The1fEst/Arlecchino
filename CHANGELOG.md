@@ -9,6 +9,15 @@ change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
 ## Unreleased
 
+### Added
+
+- Stores register themselves. A class of atoms marked `IStore` is found by a second generator, and
+  `.AddGeneratedStores()` puts every one of them in the container as a singleton — built by a factory
+  calling its public constructor with the most parameters, so nothing is resolved by reflection.
+  `IScopedStore` registers as scoped instead, living exactly as long as the screen that asked for it.
+  `TSR005` reports a store the container cannot build, and `ArlecchinoGenerateStores` turns the whole
+  thing off.
+
 ### Documentation
 
 - The two atom types are named where an atom is described rather than only in the state chapter: the

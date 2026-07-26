@@ -19,8 +19,6 @@ if (args is ["--frame", ..])
 
 var builder = Host.CreateApplicationBuilder(args);
 
-builder.Services.AddSingleton<ProcessTable>();
-
 builder.Services
     .AddArlecchino(options =>
     {
@@ -28,6 +26,7 @@ builder.Services
         options.MinimumHeight = 16;
     })
     .AddGeneratedViews()
+    .AddGeneratedStores()
     .UseMouse()
     .StartAt(ViewKind.Processes);
 
@@ -37,7 +36,6 @@ static void Frame(string view, string size)
 {
     var services = new ServiceCollection();
 
-    services.AddSingleton<ProcessTable>();
     services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
     services
         .AddArlecchino(options =>
@@ -46,6 +44,7 @@ static void Frame(string view, string size)
             options.MinimumHeight = 16;
         })
         .AddGeneratedViews()
+        .AddGeneratedStores()
         .WithoutHostedService();
 
     using var provider = services.BuildServiceProvider();

@@ -2,15 +2,19 @@
 
 # Source generator
 
-`Arlecchino.Generators` is an incremental generator shipped inside the `Arlecchino` package as
-`analyzers/dotnet/cs`. It writes one file, `ArlecchinoViewNavigation.g.cs`, into the project that
-references the package.
+`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds two
+incremental generators. They write one file each into the project that references the package:
+`ArlecchinoViewNavigation.g.cs` for the routes and the view factory, and
+`ArlecchinoStoreRegistration.g.cs` for the stores. Both land in the same namespace.
 
 ## What it looks for
 
-Every class declaration with a base list, whose symbol is non-abstract and implements
+**Views** — every class declaration with a base list, whose symbol is non-abstract and implements
 `Arlecchino.Navigation.IView`. The route name is the type name with a trailing `View` stripped:
 `ModsView` becomes `Mods`, `Settings` stays `Settings`.
+
+**Stores** — the same, for `Arlecchino.State.IStore`. The name means nothing here; the marker is the
+whole declaration. See [Stores](#stores) below.
 
 Duplicate route names collapse to the first declaration seen. Routes are emitted with `Default` first,
 then the rest ordered ordinally.
@@ -61,15 +65,68 @@ builder.Services
 Without that call the generated factory is not registered and only explicit `AddView` registrations
 resolve — see [Views and navigation](views-and-navigation.md).
 
+## Stores
+
+A store is a class of atoms that outlives the screens reading it. Marking it with `IStore` is the
+whole registration:
+
+```csharp
+public sealed class SettingsStore : IStore
+{
+    public State<string> Profile { get; } = new TrackedState<string>("");
+}
+```
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .AddGeneratedViews()
+    .AddGeneratedStores()
+    .StartAt(ViewKind.Default);
+```
+
+`AddGeneratedStores()` registers every store it found, in the container, as a singleton — no
+`AddSingleton<SettingsStore>()` line to forget when a store is added, and no list to keep in sync.
+Views and commands then take the store as a constructor parameter like any other service.
+
+```csharp
+public static class GeneratedStoreRegistration
+{
+    public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)
+    {
+        builder.Services.AddSingleton(static services => new SettingsStore());
+        builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<TuiState>()));
+        return builder;
+    }
+}
+```
+
+Each registration is a factory calling the public constructor with the most parameters, so nothing is
+built by reflection and trimming keeps working — the same deal the view factory gets.
+
+`IScopedStore` is the second marker: a store that belongs to one screen rather than to the
+application. It is registered `AddScoped`, so it is built inside the scope
+[the resolver opens per screen](views-and-navigation.md), disposed with it, and built afresh when the
+screen is opened again. `IScopedStore` extends `IStore`, so it is found the same way.
+
+| Marker | Lifetime | Holds |
+|---|---|---|
+| `IStore` | Singleton | State the whole application shares: settings, the catalogue, the session |
+| `IScopedStore` | Scoped to the screen | State one screen owns but keeps out of the view: an editor's draft, a wizard's answers |
+
+Nothing forces a store to be one or the other; a class with neither marker is simply invisible to the
+generator and can still be registered by hand.
+
 ## MSBuild switches
 
 The package's `build/Arlecchino.props` marks these properties compiler-visible; set them in your csproj.
 
 | Property | Effect |
 |---|---|
-| `ArlecchinoViewNamespace` | Namespace `ViewKind`, `GeneratedViewFactory` and `AddGeneratedViews` land in |
+| `ArlecchinoViewNamespace` | Namespace `ViewKind`, `GeneratedViewFactory`, `AddGeneratedViews` and `AddGeneratedStores` land in |
 | `RootNamespace` | Fallback when `ArlecchinoViewNamespace` is unset: `$(RootNamespace).Navigation`, or `Views` if that is empty too |
-| `ArlecchinoGenerateViews` | Set to `false` to emit nothing |
+| `ArlecchinoGenerateViews` | Set to `false` to emit no routes and no view factory |
+| `ArlecchinoGenerateStores` | Set to `false` to emit no store registration |
 
 ```xml
 <PropertyGroup>
@@ -91,6 +148,7 @@ The generator says something instead of quietly doing the wrong thing:
 | `TSR002` | Warning | A view implements `IView` but has no public constructor, so the generated factory cannot create it |
 | `TSR003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
 | `TSR004` | Info | No class implements `IView`, so `ViewKind` holds no routes and the application has nowhere to start |
+| `TSR005` | Warning | A store implements `IStore` but has no public constructor, so the container cannot build it |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.
