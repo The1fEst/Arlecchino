@@ -805,3 +805,5 @@ Arlecchino.Hosting.ArlecchinoStrings.ModalTextAreaHints.set -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.init -> void
 Arlecchino.State.ArlecchinoState.RequestTextArea(string! title, string! initial, System.Action<string!>! onSubmit, System.Func<string!, string?>? validate = null, int visibleRows = 8) -> void
+Arlecchino.Diagnostics.Notifications.Capacity.get -> int
+Arlecchino.Diagnostics.Notifications.Capacity.set -> void

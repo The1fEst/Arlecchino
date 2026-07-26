@@ -82,6 +82,12 @@ public sealed class Notifications
         }
     }
 
+    /// <summary>
+    /// How many messages to keep at most, however young they are. A list bounded only by time grows
+    /// without limit when something reports in a loop, so the oldest fall off once this many are held.
+    /// </summary>
+    public int Capacity { get; set; } = 200;
+
     /// <summary>Says something. The newest line replaces whatever the output row was showing.</summary>
     /// <param name="text">What to say; an empty string clears the row instead.</param>
     /// <param name="level">How loud it is.</param>
@@ -94,6 +100,14 @@ public sealed class Notifications
         }
 
         _entries.Add(new(_time.GetUtcNow(), level, text));
+
+        var surplus = _entries.Count - Math.Max(1, Capacity);
+
+        if (surplus > 0)
+        {
+            _entries.RemoveRange(0, surplus);
+        }
+
         _repaint.Request();
     }
 

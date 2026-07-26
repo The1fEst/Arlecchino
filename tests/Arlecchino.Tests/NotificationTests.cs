@@ -112,6 +112,25 @@ public sealed class NotificationTests
     }
 
     [Fact]
+    public void TheListIsBoundedHoweverYoungTheMessagesAre()
+    {
+        using var app = new TestApplication();
+
+        app.State.Notifications.Capacity = 10;
+
+        for (var index = 0; index < 25; index++)
+        {
+            app.State.Notifications.Notify($"message {index}");
+        }
+
+        var entries = app.State.Notifications.Entries;
+
+        Assert.Equal(10, entries.Count);
+        Assert.Equal("message 24", entries[0].Text);
+        Assert.Equal("message 15", entries[^1].Text);
+    }
+
+    [Fact]
     public void AnEmptyOutputClearsTheRowAtOnce()
     {
         using var app = new TestApplication();

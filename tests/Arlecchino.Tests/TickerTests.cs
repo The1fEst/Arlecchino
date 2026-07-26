@@ -23,8 +23,28 @@ public sealed class TickerTests
         app.Advance(TimeSpan.FromMilliseconds(200));
         Assert.Equal(1, runs);
 
-        app.Advance(TimeSpan.FromSeconds(3));
-        Assert.Equal(4, runs);
+        app.Advance(TimeSpan.FromSeconds(1));
+        app.Advance(TimeSpan.FromSeconds(1));
+
+        Assert.Equal(3, runs);
+    }
+
+    [Fact]
+    public void TimeSleptThroughIsNotMadeUpFor()
+    {
+        using var app = new TestApplication();
+        var ticker = app.Services.GetRequiredService<Ticker>();
+        var runs = 0;
+
+        using var scheduled = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
+
+        app.Advance(TimeSpan.FromHours(1));
+
+        Assert.Equal(1, runs);
+
+        app.Advance(TimeSpan.FromSeconds(1));
+
+        Assert.Equal(2, runs);
     }
 
     [Fact]

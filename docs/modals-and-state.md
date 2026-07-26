@@ -296,7 +296,9 @@ raises a **notification**: the row shows the newest one for `options.Notificatio
 default) and then goes quiet by itself, so a message no longer sits on screen for the rest of the
 session. An empty string clears the row at once.
 
-The message outlives the row. It stays in the list for `options.NotificationLifetime` (10 minutes),
+The message outlives the row. It stays in the list for `options.NotificationLifetime` (10 minutes) —
+or until `Notifications.Capacity` (200) newer ones have pushed it out, so an application that reports
+in a loop cannot grow the list without limit —
 and the list is a screen of its own — `Ctrl+N`, or a click on the output row, opens `Routes.Notifications`:
 newest first, `Information`/`Warning`/`Failure` coloured by role, `Backspace` clears it, `Esc` goes
 back.

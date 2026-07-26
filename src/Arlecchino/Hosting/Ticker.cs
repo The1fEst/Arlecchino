@@ -11,6 +11,10 @@ namespace Arlecchino.Hosting;
 ///
 /// Every schedule returns the handle that cancels it. Hand it to
 /// <see cref="Navigation.ViewLifetime.Track"/> and the work stops when the screen goes away.
+///
+/// Missed time is not made up for: an action runs at most once per pass, so a loop that was held up —
+/// a window that came back from being minimised, a long operation, a debugger — resumes with a single
+/// run rather than firing everything it slept through.
 /// </summary>
 public sealed class Ticker
 {
@@ -75,26 +79,29 @@ public sealed class Ticker
 
         foreach (var entry in _entries.ToArray())
         {
-            while (!entry.IsCancelled && entry.Due <= now)
+            if (entry.IsCancelled || entry.Due > now)
             {
-                ran = true;
+                continue;
+            }
 
-                try
-                {
-                    entry.Action();
-                }
-                catch (Exception exception)
-                {
-                    onError(exception);
-                }
+            ran = true;
 
-                if (!entry.Repeating)
-                {
-                    entry.Cancel();
-                    break;
-                }
+            try
+            {
+                entry.Action();
+            }
+            catch (Exception exception)
+            {
+                onError(exception);
+            }
 
-                entry.Due += entry.Interval;
+            if (entry.Repeating)
+            {
+                entry.Due = NextDueAfter(entry, now);
+            }
+            else
+            {
+                entry.Cancel();
             }
 
             if (entry.IsCancelled)
@@ -107,6 +114,13 @@ public sealed class Ticker
         {
             _repaint.Request();
         }
+    }
+
+    private static DateTimeOffset NextDueAfter(Entry entry, DateTimeOffset now)
+    {
+        var next = entry.Due + entry.Interval;
+
+        return next > now ? next : now + entry.Interval;
     }
 
     private IDisposable Schedule(TimeSpan interval, Action action, bool repeating)

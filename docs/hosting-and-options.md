@@ -131,6 +131,10 @@ between frames on the same thread as drawing and input — no locking, no `UiDis
 repaint is asked for afterwards. One that throws is logged and reported on the output row; the rest
 still run.
 
+Missed time is not made up for. An action runs at most once per pass, so a loop that was held
+up — a window that came back from being minimised, a long operation, a debugger — resumes with a
+single run rather than firing everything it slept through, and the next run is counted from now.
+
 Nothing here uses a thread of its own: the frame loop calls the ticker on every turn, and a headless
 host moves its own clock instead. That is what makes it testable — `ArlecchinoTestHost.Advance(...)`
 moves the clock and runs whatever fell due, so a test that would wait five seconds waits none. See
