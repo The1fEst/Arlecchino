@@ -83,11 +83,6 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Fixed
 
-- **Undo groups nest.** `AtomHistory.Group()` kept no count of how many were open, so a group opened
-  inside another closed the whole thing when it was disposed and the edits that followed became a
-  second undo step. Wrapping code that groups edits of its own — a form field that batches its writes,
-  say — quietly lost the atomicity the outer group asked for. Groups are counted now: one step, undone
-  in one go.
 - **Undo groups nest.** `AtomHistory.Group()` counted nothing, so a group opened inside another closed
   the whole thing when it was disposed, and every edit after it became a second undo step. Wrapping
   code that groups edits of its own quietly lost the atomicity the outer group asked for. Groups are
@@ -189,7 +184,7 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `dotnet pack`: the `net8.0` and `net10.0` surfaces have to match each other, and from `1.0.1` on they
   are compared with `1.0.0` as well. The baseline is conditional on the version, so it starts applying
   by itself after this release, and a missing baseline fails the pack rather than passing quietly.
-- Each package carries release notes pointing at its own section of the changelog, and the icon.
+- Each package carries release notes pointing at its own section of the changelog.
 
 ### Continuous integration
 
