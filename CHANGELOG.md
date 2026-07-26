@@ -126,6 +126,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- Resizing is tested through the widgets rather than only through the diff: a list keeps its selection
+  on screen when the window shrinks, a scrolled pane comes back into range, text reflows when the
+  window narrows, nothing is drawn wider than the window, and the too-small notice appears and goes
+  away as the size crosses the minimum.
 - The file picker's `Places` are tested. Shortcuts an application puts in the sidebar had no test at
   all: that they are listed, that they come before the folders the framework offers, that one without
   an icon gets the default, and that clicking one browses to it.
