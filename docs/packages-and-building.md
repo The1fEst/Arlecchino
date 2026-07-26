@@ -241,6 +241,19 @@ What has not changed is how a break is delivered when one is due: no obsolete sh
 overloads left behind. The [changelog](../CHANGELOG.md) says what moved and the old shape goes in the
 same release.
 
+### What 2.0 is holding
+
+Breaking changes are collected rather than trickled out, so the list is short and known in advance:
+
+| Change | Why it waits |
+|---|---|
+| `IArlecchinoWidget.Draw` goes, and `Place` takes its name | Two names for one call is the price of not breaking 1.x — see [Widgets](widgets.md) |
+| [`ThemePalette.Arlecchino`](theming.md) becomes the default palette | A framework that looks like itself out of the box, but changing every existing screen's colours is a break, however visual |
+
+Both are already written and shipped in `1.x`; 2.0 only removes the old shape and moves the default.
+Anything an application does today with `Place` and `UseTheme(ThemePalette.Arlecchino)` survives that
+release untouched.
+
 `Directory.Build.props` holds the version for local builds. A release takes it from the tag instead
 (`v0.2.0` → `0.2.0`), so publishing is a matter of tagging: nothing has to be edited in the
 repository first, and a tag that does not match the props file is fine and deliberate.
@@ -357,6 +370,7 @@ that is the point of it.
 | `src/Arlecchino.Testing` | Headless test host published as a package |
 | `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
+| `samples/Arlecchino.Packages` | A dependency review of a solution: four screens over `dotnet list package` |
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, colour conversion |
 | `docs` | This documentation |

@@ -63,6 +63,11 @@ The background is left to the terminal everywhere except the two cursor rows, wh
 behind their text to be a selection at all. That is what makes it sit on a light terminal as readily
 as on a dark one — it colours the writing, not the screen.
 
+It is opt-in for the whole of `1.x` and becomes the default in 2.0, where the palette an application
+gets without asking is this one. Nothing else about it changes then: a call to
+`UseTheme(ThemePalette.Arlecchino)` written today keeps meaning exactly what it means now, and an
+application that wants the plain terminal colours after that keeps `UseTheme(new ThemePalette())`.
+
 Every entry names an exact colour *and* a palette colour, so a terminal without 24-bit shows the
 fallback its author picked rather than whatever the nearest-colour arithmetic lands on. Crimson falls
 back to `BrightRed`, bone to `BrightWhite`, the hairline to `BrightBlack`.
