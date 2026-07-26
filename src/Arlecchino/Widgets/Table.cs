@@ -123,21 +123,30 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
         Resort();
     }
 
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
     /// <summary>
     /// Works out the column widths for the space available, then draws the heading on the first row and
-    /// the rows below it.
+    /// the rows below it. The table fills whatever it is given, so nothing is left underneath it.
     /// </summary>
     /// <param name="region">Where to draw, heading included.</param>
-    public void Draw(SurfaceRegion region)
+    /// <returns>An empty region: the table uses every row it is handed.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {
-            return;
+            return region;
         }
 
         _widths = MeasureColumns(region.Width);
         region.Write(0, 0, HeaderLine(), Theme.TableHeader);
-        _rows.Draw(region.Rows(1, region.Height - 1));
+
+        return _rows.Place(region.Rows(1, region.Height - 1));
     }
 
     /// <summary>Moves the selection or confirms it. Sorting is not bound to a key; call <see cref="SortBy"/>.</summary>

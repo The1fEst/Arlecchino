@@ -8,6 +8,32 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
+## 1.1.0
+
+### Added
+
+- **A widget can now say how much of its region it used.** `IArlecchinoWidget.Place(SurfaceRegion)`
+  draws the same thing `Draw` did and returns what is left underneath, so a view stacks one thing
+  after another instead of counting rows by hand: `var rest = _header.Place(surface.Content);`. A
+  widget that fills whatever it is given — `ListBox`, `Table`, `Tree`, `ScrollPane`, `TextView` —
+  answers an empty region; one that owns a known number of rows — `StatusBar`, `ProgressBar`,
+  `Spinner`, `Tabs` — answers the rows below it, and `Form` answers whatever the fields did not need.
+  The hand-written constant that used to say how tall a header was is what this replaces.
+
+### Deprecated
+
+- **`IArlecchinoWidget.Draw` is deprecated and goes away in 2.0**, where `Place` takes its name. It
+  could not simply be changed to return a region: C# does not overload on the return type, so the two
+  have to live under different names until the old one is gone.
+- Nothing has to change at once. Both members carry a default implementation, so either one on its own
+  satisfies the contract: a widget written against 1.0 keeps compiling and its `Place` reports nothing
+  left, and a widget written against the new shape still answers a caller that has not migrated. A
+  widget that implements *neither* is the one case that does not work — the defaults call each other
+  and the frame recurses until the stack ends.
+- The warning carries its own diagnostic id, `ARL0001`, rather than plain `CS0618`, so an application
+  with `TreatWarningsAsErrors` can silence exactly this deprecation while it migrates instead of
+  turning off every obsoletion it has.
+
 ## 1.0.1
 
 ### Fixed

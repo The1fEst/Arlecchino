@@ -22,7 +22,7 @@ public sealed class FormHostView : IArlecchinoView
     public void Draw()
     {
         Rows = _surface.Content;
-        Hosted?.Draw(Rows);
+        Hosted?.Place(Rows);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => Hosted?.Handle(key).Route ?? ViewRoute.None;

@@ -64,7 +64,7 @@ public class RenderBenchmarks
     {
         _surface.StartFrame();
         _list.Selected = (_list.Selected + 1) % _items.Length;
-        _list.Draw(_surface.Frame);
+        _list.Place(_surface.Frame);
         _surface.Build();
     }
 

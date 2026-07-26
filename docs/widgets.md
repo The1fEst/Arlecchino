@@ -8,11 +8,32 @@ they are the contract a widget of your own implements as well:
 ```csharp
 public interface IArlecchinoWidget
 {
+    [Obsolete("Replaced by Place; removed in 2.0.", DiagnosticId = "ARL0001")]
     void Draw(SurfaceRegion region);
+
+    SurfaceRegion Place(SurfaceRegion region);
 }
 
 public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFocusable;
 ```
+
+`Place` draws the widget and answers what is left of the region underneath it, so a view can stack
+one thing after another without counting rows by hand:
+
+```csharp
+var rest = _header.Place(surface.Content);
+var below = _tabs.Place(rest);
+
+_list.Place(below);
+```
+
+A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that
+owns a known number of rows returns the rest, which is what replaces a hand-counted `SplitTop`.
+
+`Draw` is the 1.0 shape of the same call and is deprecated: it is removed in 2.0, where `Place` takes
+its name. Widgets written against 1.0 keep working — the interface's default `Place` draws through
+`Draw` and conservatively reports nothing left — but they should override `Place` to say how much
+they used. The warning has its own id, `ARL0001`, so it can be silenced on its own while you migrate.
 
 A widget holds no coordinates of its own — it paints the region it is handed, so the same one works
 in a pane, in a column or across the whole frame. An interactive one adds what
@@ -46,7 +67,7 @@ _authors = new ListBox<string>(options.Keymap)
     Items = authors,
 };
 
-_authors.Draw(region);
+_authors.Place(region);
 ```
 
 Arrows move, `PgUp`/`PgDn` jump ten rows, `Home`/`End` go to the ends, `Confirm` activates. The wheel
@@ -135,10 +156,10 @@ actually changes.
 
 ```csharp
 var progress = new ProgressBar { Value = 68, Caption = value => $"{value:0}%" };
-progress.Draw(region.Rows(0, 1));
+progress.Place(region.Rows(0, 1));
 
 _spinner.Advance();                       // once per frame or per tick
-_spinner.Draw(region.SplitLeft(region.Width - 1).Right);
+_spinner.Place(region.SplitLeft(region.Width - 1).Right);
 ```
 
 `ProgressBar` fills the region width minus the caption; `Minimum`/`Maximum` default to `0`/`100`.
@@ -152,7 +173,7 @@ new StatusBar
 {
     Left = [() => Loc(LocString.ItemCount, count), () => _spinner.Current],
     Right = [() => $"{keymap.NextField} {Loc(LocString.Panes)}", () => $"{keymap.Cancel} {Loc(LocString.Back)}"],
-}.Draw(region.Rows(region.Height - 1, 1));
+}.Place(region.Rows(region.Height - 1, 1));
 ```
 
 Left and right groups joined with three spaces; the right side is dropped when it would collide with
@@ -197,7 +218,7 @@ because it is one inside.
 ```csharp
 _readme = new TextView(options.Keymap) { Text = File.ReadAllText(path) };
 
-_readme.Draw(region);
+_readme.Place(region);
 ```
 
 Line breaks in the text are kept, long lines break on spaces, and a word wider than the pane is split
@@ -223,6 +244,8 @@ public API an application has:
 ```csharp
 public sealed class Badge : IArlecchinoInteractiveWidget
 {
+    private const int BorderedRows = 3;
+
     private readonly ArlecchinoKeymap _keymap;
     private SurfaceRegion _drawn;
 
@@ -232,11 +255,13 @@ public sealed class Badge : IArlecchinoInteractiveWidget
     public Func<ViewRoute>? OnActivate { get; init; }
     public bool IsFocused { get; set; }
 
-    public void Draw(SurfaceRegion region)
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         _drawn = region;
         var inner = region.Border(IsFocused ? Theme.Active : Theme.Muted);
         inner.WriteLine(0, Label(), IsFocused ? Theme.ActiveSelected : Theme.Default, Align.Center);
+
+        return region.Rows(BorderedRows, region.Height - BorderedRows);
     }
 
     public FocusResult Handle(ConsoleKeyInfo key) =>

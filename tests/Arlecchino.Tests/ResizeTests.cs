@@ -153,7 +153,7 @@ public sealed class ResizeTests
     private static void Draw(Surface surface, IArlecchinoWidget widget)
     {
         surface.StartFrame();
-        widget.Draw(surface.Frame);
+        widget.Place(surface.Frame);
         surface.Build();
     }
 

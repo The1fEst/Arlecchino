@@ -31,7 +31,7 @@ public sealed class TextViewTests
         var (surface, terminal) = CreateSurface(12);
         var view = new TextView(Keymap) { Text = "one two three four", ShowScrollBar = false };
 
-        view.Draw(surface.Frame);
+        view.Place(surface.Frame);
         var lines = Render(surface, terminal);
 
         Assert.Equal("one two", lines[0].TrimEnd());
@@ -45,7 +45,7 @@ public sealed class TextViewTests
         var (surface, terminal) = CreateSurface();
         var view = new TextView(Keymap) { Text = "first\n\nthird", ShowScrollBar = false };
 
-        view.Draw(surface.Frame);
+        view.Place(surface.Frame);
         var lines = Render(surface, terminal);
 
         Assert.Equal("first", lines[0].TrimEnd());
@@ -59,7 +59,7 @@ public sealed class TextViewTests
         var (surface, terminal) = CreateSurface(6);
         var view = new TextView(Keymap) { Text = "unbreakableword", ShowScrollBar = false };
 
-        view.Draw(surface.Frame);
+        view.Place(surface.Frame);
         var lines = Render(surface, terminal);
 
         Assert.Equal("unbrea", lines[0].TrimEnd());
@@ -73,13 +73,13 @@ public sealed class TextViewTests
         var (surface, terminal) = CreateSurface(10, 2);
         var view = new TextView(Keymap) { Text = "a\nb\nc\nd", ShowScrollBar = false };
 
-        view.Draw(surface.Frame);
+        view.Place(surface.Frame);
         Assert.Equal("a", Render(surface, terminal)[0].TrimEnd());
 
         view.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
 
         var (second, terminalAgain) = CreateSurface(10, 2);
-        view.Draw(second.Frame);
+        view.Place(second.Frame);
 
         Assert.Equal("b", Render(second, terminalAgain)[0].TrimEnd());
     }
@@ -90,14 +90,14 @@ public sealed class TextViewTests
         var (narrow, narrowTerminal) = CreateSurface(8);
         var view = new TextView(Keymap) { Text = "alpha beta gamma", ShowScrollBar = false };
 
-        view.Draw(narrow.Frame);
+        view.Place(narrow.Frame);
         var narrowLines = Render(narrow, narrowTerminal);
 
         Assert.Equal("alpha", narrowLines[0].TrimEnd());
         Assert.Equal(3, view.LineCount);
 
         var (wide, wideTerminal) = CreateSurface();
-        view.Draw(wide.Frame);
+        view.Place(wide.Frame);
 
         Assert.Equal("alpha beta gamma", Render(wide, wideTerminal)[0].TrimEnd());
         Assert.Equal(1, view.LineCount);
@@ -109,7 +109,7 @@ public sealed class TextViewTests
         var (surface, terminal) = CreateSurface(10, 2);
         var view = new TextView(Keymap) { Text = "one\ntwo\nthree" };
 
-        view.Draw(surface.Frame);
+        view.Place(surface.Frame);
         var frame = string.Join("", Render(surface, terminal));
 
         Assert.Contains("█", frame, StringComparison.Ordinal);

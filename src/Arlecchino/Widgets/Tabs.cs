@@ -53,18 +53,27 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
         OnSelected?.Invoke(Selected);
     }
 
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
     /// <summary>
     /// Draws the labels side by side and remembers where each starts, which is what lets a click be
-    /// resolved to a tab.
+    /// resolved to a tab. Returns the rows below the strip, which is where the current tab's content
+    /// belongs.
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
-    public void Draw(SurfaceRegion region)
+    /// <returns>The region below the strip.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         _drawn = region;
 
         if (region.IsEmpty)
         {
-            return;
+            return region;
         }
 
         _starts = new int[Titles.Count];
@@ -82,6 +91,8 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
             region.Write(0, column, label, style);
             column += TextWidth.Of(label) + 1;
         }
+
+        return region.Rows(1, region.Height - 1);
     }
 
     /// <summary>Switches tabs with the horizontal arrows, leaving everything else alone.</summary>

@@ -32,13 +32,24 @@ public sealed class ProgressBar : IArlecchinoWidget
     /// <summary>Colour of the filled part. The theme's active colour when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
-    /// <summary>Draws the bar across the region, leaving room for the caption when there is one.</summary>
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
+    /// <summary>
+    /// Draws the bar across the first row of the region, leaving room for the caption when there is
+    /// one, and returns the rows below it.
+    /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
-    public void Draw(SurfaceRegion region)
+    /// <returns>The region below the bar.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {
-            return;
+            return region;
         }
 
         var caption = Caption?.Invoke(Value) ?? "";
@@ -52,6 +63,8 @@ public sealed class ProgressBar : IArlecchinoWidget
         {
             region.Write(0, trackWidth + 1, caption, Theme.Accent);
         }
+
+        return region.Rows(1, region.Height - 1);
     }
 }
 
@@ -77,11 +90,24 @@ public sealed class Spinner : IArlecchinoWidget
     /// <summary>Colour to draw in. The theme's informational colour when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
     /// <summary>
-    /// Draws the current frame in the first cell of the region. One cell is all a spinner needs, so
-    /// hand it the cell it belongs in — <c>region.Rows(0, 1)</c>, a column split, or whatever the
-    /// layout gives.
+    /// Draws the current frame in the first cell of the region and returns the rows below it. One cell
+    /// is all a spinner needs, so hand it the cell it belongs in — <c>region.Rows(0, 1)</c>, a column
+    /// split, or whatever the layout gives.
     /// </summary>
     /// <param name="region">Where to draw; the top-left cell is used.</param>
-    public void Draw(SurfaceRegion region) => region.Write(0, 0, Current, Style ?? Theme.Info);
+    /// <returns>The region below the spinner's row.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
+    {
+        region.Write(0, 0, Current, Style ?? Theme.Info);
+
+        return region.Rows(1, region.Height - 1);
+    }
 }

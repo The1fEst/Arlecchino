@@ -62,7 +62,7 @@ internal class NotificationsView : IArlecchinoView
         }
 
         _list.Items = entries;
-        _list.Draw(rest);
+        _list.Place(rest);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key)

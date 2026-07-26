@@ -44,7 +44,7 @@ public sealed class ScrollPaneTests
         var (surface, terminal) = CreateSurface();
         var pane = PaneOf(40);
 
-        pane.Draw(surface.Frame.Rows(0, 4));
+        pane.Place(surface.Frame.Rows(0, 4));
         var lines = Render(surface, terminal);
 
         Assert.StartsWith("line 0", lines[0], StringComparison.Ordinal);
@@ -60,7 +60,7 @@ public sealed class ScrollPaneTests
 
         pane.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         pane.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        pane.Draw(surface.Frame.Rows(0, 4));
+        pane.Place(surface.Frame.Rows(0, 4));
 
         var lines = Render(surface, terminal);
 
@@ -77,7 +77,7 @@ public sealed class ScrollPaneTests
 
         bottom.WriteLine(0, "neighbour", Theme.Default);
         pane.Offset = 20;
-        pane.Draw(top);
+        pane.Place(top);
 
         var lines = Render(surface, terminal);
 
@@ -93,7 +93,7 @@ public sealed class ScrollPaneTests
         var pane = PaneOf(6);
 
         pane.Offset = 100;
-        pane.Draw(surface.Frame.Rows(0, 4));
+        pane.Place(surface.Frame.Rows(0, 4));
 
         Assert.Equal(2, pane.Offset);
     }
@@ -106,11 +106,11 @@ public sealed class ScrollPaneTests
         var region = surface.Frame.Rows(0, 5);
 
         pane.Handle(new('\0', ConsoleKey.End, false, false, false));
-        pane.Draw(region);
+        pane.Place(region);
         Assert.Equal(15, pane.Offset);
 
         pane.Handle(new('\0', ConsoleKey.Home, false, false, false));
-        pane.Draw(region);
+        pane.Place(region);
         Assert.Equal(0, pane.Offset);
     }
 
@@ -120,7 +120,7 @@ public sealed class ScrollPaneTests
         var (surface, terminal) = CreateSurface();
         var pane = PaneOf(2);
 
-        pane.Draw(surface.Frame.Rows(0, 5));
+        pane.Place(surface.Frame.Rows(0, 5));
         var lines = Render(surface, terminal);
 
         Assert.StartsWith("line 1", lines[1], StringComparison.Ordinal);
@@ -134,7 +134,7 @@ public sealed class ScrollPaneTests
         var pane = PaneOf(40);
         var region = surface.Frame.Rows(0, 4);
 
-        pane.Draw(region);
+        pane.Place(region);
 
         var outside = pane.HandleMouse(
             new(MouseAction.ScrolledDown, MouseButton.None, region.Bottom + 1, region.Left, default));

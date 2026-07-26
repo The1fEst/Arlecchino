@@ -23,7 +23,12 @@ public sealed class BadgeWidget : IArlecchinoWidget
 
     public BadgeWidget(SettingsStore settings) => _settings = settings;
 
-    public void Draw(SurfaceRegion region) => region.WriteLine(0, _settings.Profile.Value, Theme.Default);
+    public SurfaceRegion Place(SurfaceRegion region)
+    {
+        region.WriteLine(0, _settings.Profile.Value, Theme.Default);
+
+        return region.Rows(1, region.Height - 1);
+    }
 }
 
 public sealed class DefaultView : IArlecchinoView
@@ -37,7 +42,7 @@ public sealed class DefaultView : IArlecchinoView
         _badge = badge;
     }
 
-    public void Draw() => _badge.Draw(_surface.Content);
+    public void Draw() => _badge.Place(_surface.Content);
 
     public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
 
@@ -56,8 +61,12 @@ public sealed class CountWidget : IArlecchinoWidget
 
     public CountWidget(HistoryStore history) => _history = history;
 
-    public void Draw(SurfaceRegion region) =>
+    public SurfaceRegion Place(SurfaceRegion region)
+    {
         region.WriteLine(0, _history.Visits.Value.ToString(), Theme.Muted);
+
+        return region.Rows(1, region.Height - 1);
+    }
 }
 
 public sealed class AboutCommand : IArlecchinoCommand

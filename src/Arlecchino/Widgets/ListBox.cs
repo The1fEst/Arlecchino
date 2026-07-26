@@ -53,18 +53,27 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     /// <summary>The selected item, or the type's default when the list is empty.</summary>
     public T? SelectedItem => Items.Count == 0 ? default : Items[Math.Clamp(Selected, 0, Items.Count - 1)];
 
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
     /// <summary>
     /// Draws the rows around the selection and remembers where they landed, which is what lets clicks
-    /// and wheel events be resolved afterwards.
+    /// and wheel events be resolved afterwards. The list fills whatever it is given, so nothing is left
+    /// underneath it.
     /// </summary>
     /// <param name="region">Where to draw.</param>
-    public void Draw(SurfaceRegion region)
+    /// <returns>An empty region: the list uses every row it is handed.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         _drawn = region;
 
         if (region.IsEmpty)
         {
-            return;
+            return region;
         }
 
         Selected = Math.Clamp(Selected, 0, Math.Max(0, Items.Count - 1));
@@ -93,6 +102,8 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
         {
             ScrollBar.Draw(region, _window.First, Items.Count);
         }
+
+        return region.Rows(region.Height, 0);
     }
 
     /// <summary>Moves the selection or confirms it.</summary>

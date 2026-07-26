@@ -54,15 +54,26 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
     /// <summary>Whether the pane has focus. Only a focused pane answers keys.</summary>
     public bool IsFocused { get; set; }
 
-    /// <summary>Draws the visible slice of the content, and the scroll bar when one is needed.</summary>
+    /// <inheritdoc />
+    [Obsolete(
+        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
+        "Draw is removed in 2.0, where Place takes its name.",
+        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
+    public void Draw(SurfaceRegion region) => Place(region);
+
+    /// <summary>
+    /// Draws the visible slice of the content, and the scroll bar when one is needed. The pane is a
+    /// window onto content taller than itself, so nothing is ever left underneath it.
+    /// </summary>
     /// <param name="region">Where to draw.</param>
-    public void Draw(SurfaceRegion region)
+    /// <returns>An empty region: the pane uses every row it is handed.</returns>
+    public SurfaceRegion Place(SurfaceRegion region)
     {
         _drawn = region;
 
         if (region.IsEmpty)
         {
-            return;
+            return region;
         }
 
         var height = Math.Max(0, ContentHeight());
@@ -82,6 +93,8 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
         {
             ScrollBar.Draw(region, _offset, height);
         }
+
+        return region.Rows(region.Height, 0);
     }
 
     /// <summary>Moves the window a row, a page, or to either end.</summary>

@@ -79,7 +79,7 @@ public sealed class EmptyAndZeroInputTests
         list.Handle(new('\r', ConsoleKey.Enter, false, false, false));
 
         surface.StartFrame();
-        list.Draw(surface.Frame);
+        list.Place(surface.Frame);
         surface.Build();
 
         Assert.Null(list.SelectedItem);
@@ -98,7 +98,7 @@ public sealed class EmptyAndZeroInputTests
         };
 
         surface.StartFrame();
-        pane.Draw(surface.Frame);
+        pane.Place(surface.Frame);
         surface.Build();
 
         Assert.Equal(0, pane.Offset);
@@ -170,7 +170,7 @@ public sealed class EmptyAndZeroInputTests
         var table = new Table<string>(Keymap) { Rows = ["a", "b"], Columns = [] };
 
         surface.StartFrame();
-        table.Draw(surface.Frame);
+        table.Place(surface.Frame);
         surface.Build();
 
         Assert.NotNull(FrameText.Lines(terminal.Written));
@@ -190,7 +190,7 @@ public sealed class EmptyAndZeroInputTests
         tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
 
         surface.StartFrame();
-        tree.Draw(surface.Frame);
+        tree.Place(surface.Frame);
         surface.Build();
 
         Assert.NotNull(FrameText.Lines(terminal.Written));
