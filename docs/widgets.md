@@ -2,12 +2,32 @@
 
 # Widgets
 
-Reusable pieces a view draws into a [region](rendering.md). The interactive ones implement
-[`IFocusable`](views-and-navigation.md), so they drop straight into a `FocusRing` and answer keys and
-clicks without the view routing anything by hand.
+Reusable pieces a view draws into a [region](rendering.md). Two interfaces say which is which, and
+they are the contract a widget of your own implements as well:
+
+```csharp
+public interface IArlecchinoWidget
+{
+    void Draw(SurfaceRegion region);
+}
+
+public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IFocusable;
+```
+
+A widget holds no coordinates of its own — it paints the region it is handed, so the same one works
+in a pane, in a column or across the whole frame. An interactive one adds what
+[`IFocusable`](views-and-navigation.md) asks for (`IsFocused`, `Handle`, `HandleMouse`), which is what
+lets it drop straight into a `FocusRing` and answer keys and clicks with the view routing nothing by
+hand.
+
+| Widget | Contract |
+|---|---|
+| `ListBox<T>`, `Table<T>`, `Tree<T>`, `Tabs`, [`Form`](state-and-forms.md) | `IArlecchinoInteractiveWidget` |
+| `ProgressBar`, `StatusBar`, `Spinner` | `IArlecchinoWidget` |
 
 None of them holds user-visible text of their own: labels are `Func<string>` supplied by the
-application, which is what keeps [localization](localization.md) working.
+application, which is what keeps [localization](localization.md) working. Colour is a `Style`
+property rather than an argument to `Draw`, so the call is the same for every widget.
 
 ## ListBox
 
@@ -106,11 +126,12 @@ var progress = new ProgressBar { Value = 68, Caption = value => $"{value:0}%" };
 progress.Draw(region.Rows(0, 1));
 
 _spinner.Advance();                       // once per frame or per tick
-_spinner.Draw(region, row: 0, column: 0);
+_spinner.Draw(region.SplitLeft(region.Width - 1).Right);
 ```
 
 `ProgressBar` fills the region width minus the caption; `Minimum`/`Maximum` default to `0`/`100`.
-`Spinner` cycles a set of frames — brail dots by default, replaceable through `Frames`.
+`Spinner` cycles a set of frames — brail dots by default, replaceable through `Frames` — and paints
+the top-left cell of whatever region it is given, so hand it the one cell it belongs in.
 
 ## StatusBar
 
@@ -137,12 +158,12 @@ dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
 
 ## Writing your own
 
-A widget is any class that draws into a region and answers as an `IFocusable`. There is nothing to
-register and nothing to inherit — the ones above are written against the same public API an
-application has:
+Implement `IArlecchinoInteractiveWidget` — or `IArlecchinoWidget` for something that only draws.
+There is nothing to register and nothing to inherit; the widgets above are written against the same
+public API an application has:
 
 ```csharp
-public sealed class Badge : IFocusable
+public sealed class Badge : IArlecchinoInteractiveWidget
 {
     private readonly ArlecchinoKeymap _keymap;
     private SurfaceRegion _drawn;

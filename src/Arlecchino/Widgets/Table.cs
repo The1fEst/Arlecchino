@@ -38,7 +38,7 @@ public sealed class TableColumn<T>
 /// reorders a copy, leaving whatever was assigned to <see cref="Rows"/> untouched.
 /// </summary>
 /// <typeparam name="T">What each row holds.</typeparam>
-public sealed class Table<T> : IFocusable
+public sealed class Table<T> : IArlecchinoInteractiveWidget
 {
     private const int ColumnGap = 1;
 

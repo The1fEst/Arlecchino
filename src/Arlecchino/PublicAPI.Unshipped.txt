@@ -1,1 +1,16 @@
 #nullable enable
+*REMOVED*Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
+*REMOVED*Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, Arlecchino.Rendering.ITermColor? style = null) -> void
+*REMOVED*Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.IArlecchinoInteractiveWidget
+Arlecchino.Widgets.IArlecchinoWidget
+Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ProgressBar.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.ProgressBar.Style.init -> void
+Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.Spinner.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.Spinner.Style.init -> void
+Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.StatusBar.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.StatusBar.Style.init -> void

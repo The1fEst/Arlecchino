@@ -8,7 +8,7 @@ namespace Arlecchino.Widgets;
 /// A line of short readouts pinned to an edge. Items are delegates because a status line is redrawn
 /// every frame and is expected to show what is true now, not what was true when it was built.
 /// </summary>
-public sealed class StatusBar
+public sealed class StatusBar : IArlecchinoWidget
 {
     private const string ItemSeparator = "   ";
 
@@ -18,20 +18,22 @@ public sealed class StatusBar
     /// <summary>Items shown from the right edge.</summary>
     public IReadOnlyList<Func<string>> Right { get; init; } = [];
 
+    /// <summary>Colour to draw in. The muted theme colour when left alone.</summary>
+    public ITermColor? Style { get; init; }
+
     /// <summary>
     /// Draws both groups. The left side is truncated to fit, and the right side is dropped entirely
     /// when the two would collide, so the bar never overlaps itself.
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
-    /// <param name="style">Colour to draw in. Defaults to the muted theme colour.</param>
-    public void Draw(SurfaceRegion region, ITermColor? style = null)
+    public void Draw(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {
             return;
         }
 
-        var painted = style ?? Theme.Muted;
+        var painted = Style ?? Theme.Muted;
         var left = Join(Left);
         var right = Join(Right);
 

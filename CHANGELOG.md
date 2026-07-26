@@ -7,6 +7,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+### Added
+
+- Widgets have a contract. `IArlecchinoWidget` is `Draw(SurfaceRegion)` — what a reusable piece of a
+  screen does — and `IArlecchinoInteractiveWidget` adds the input half through `IFocusable`, which is
+  what a `FocusRing` cycles. Everything built in answers one of the two, and a widget of your own
+  implements the same interface rather than following a convention.
+
+### Changed
+
+- **Breaking.** `ProgressBar`, `StatusBar` and `Spinner` take their colour as a `Style` property
+  instead of an argument to `Draw`, so every widget is drawn by the same call. `Spinner.Draw` paints
+  the top-left cell of the region it is given rather than taking a row and a column — pass it the
+  cell, `region.SplitLeft(region.Width - 1).Right` and friends.
+
 ## 0.6.0
 
 ### Added

@@ -11,7 +11,7 @@ namespace Arlecchino.Widgets;
 /// A row of labels where one is current. The widget only tracks which that is; what each tab shows is
 /// left to the view, which draws whatever fits the selection.
 /// </summary>
-public sealed class Tabs : IFocusable
+public sealed class Tabs : IArlecchinoInteractiveWidget
 {
     private const int TabPadding = 1;
 

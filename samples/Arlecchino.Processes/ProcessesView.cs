@@ -97,7 +97,7 @@ public sealed class ProcessesView : IArlecchinoView
         if (_processes.Rows.IsLoading)
         {
             _spinner.Advance();
-            _spinner.Draw(header, 0, header.Width - 1);
+            _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
         }
     }
 

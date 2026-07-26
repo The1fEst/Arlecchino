@@ -36,7 +36,7 @@ public sealed class TreeNode<T>
 /// recomputed on demand rather than cached, so nodes may be added or expanded between frames.
 /// </summary>
 /// <typeparam name="T">What each node holds.</typeparam>
-public sealed class Tree<T> : IFocusable
+public sealed class Tree<T> : IArlecchinoInteractiveWidget
 {
     private const string ExpandedMarker = "▾ ";
     private const string CollapsedMarker = "▸ ";

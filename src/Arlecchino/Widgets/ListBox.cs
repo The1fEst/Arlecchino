@@ -13,7 +13,7 @@ namespace Arlecchino.Widgets;
 /// items, so replacing <see cref="Items"/> between frames is a normal thing to do.
 /// </summary>
 /// <typeparam name="T">What the list holds.</typeparam>
-public sealed class ListBox<T> : IFocusable
+public sealed class ListBox<T> : IArlecchinoInteractiveWidget
 {
     private const int PageRows = 10;
 

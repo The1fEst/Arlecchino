@@ -79,8 +79,9 @@ see [Hosting and options](hosting-and-options.md).
 
 ## Focus inside a view
 
-A view with more than one pane needs to know which one keys go to. `IFocusable` is that contract, and
-`FocusRing` is the `Tab` / `Shift+Tab` cycle over them:
+A view with more than one pane needs to know which one keys go to. `IFocusable` is that contract —
+the input half of [`IArlecchinoInteractiveWidget`](widgets.md), and what the ring actually cycles —
+and `FocusRing` is the `Tab` / `Shift+Tab` cycle over them:
 
 ```csharp
 _panes = new FocusRing(options.Keymap);
@@ -102,9 +103,10 @@ and moves focus to whichever item claims a mouse event.
 | `FocusRing.Add/Focus/FocusNext/FocusPrevious` | Building and moving the cycle |
 | `FocusRing.Current` / `Index` / `Items` | What is focused right now |
 
-`FocusablePane` wraps delegates when a view keeps its logic in methods rather than in objects — that
-is how the file picker holds its list and its places sidebar. [`Form`](state-and-forms.md) is a
-focusable too, so a screen can put a form beside a list and cycle between them.
+Every interactive [widget](widgets.md) is focusable by construction, so lists, tables, trees, tabs and
+[`Form`](state-and-forms.md) go into the ring as they are. `FocusablePane` covers the other case: it
+wraps delegates for a pane that draws itself elsewhere and only needs somewhere to route keys — that
+is how the file picker holds its list and its places sidebar.
 
 ## Custom view factories
 

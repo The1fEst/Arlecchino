@@ -4,7 +4,7 @@ using Arlecchino.Rendering;
 namespace Arlecchino.Widgets;
 
 /// <summary>A filled bar showing how far along something is, with an optional readout beside it.</summary>
-public sealed class ProgressBar
+public sealed class ProgressBar : IArlecchinoWidget
 {
     private const char FilledCell = '█';
     private const char EmptyCell = '░';
@@ -29,10 +29,12 @@ public sealed class ProgressBar
         ? Math.Clamp((Value - Minimum) / (Maximum - Minimum), 0m, 1m)
         : 0m;
 
+    /// <summary>Colour of the filled part. The theme's active colour when left alone.</summary>
+    public ITermColor? Style { get; init; }
+
     /// <summary>Draws the bar across the region, leaving room for the caption when there is one.</summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
-    /// <param name="style">Colour of the filled part. Defaults to the theme's active colour.</param>
-    public void Draw(SurfaceRegion region, ITermColor? style = null)
+    public void Draw(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {
@@ -43,7 +45,7 @@ public sealed class ProgressBar
         var trackWidth = Math.Max(0, region.Width - (caption.Length == 0 ? 0 : TextWidth.Of(caption) + 1));
         var filled = (int)Math.Round(Fraction * trackWidth);
 
-        region.Write(0, 0, new(FilledCell, filled), style ?? Theme.Active);
+        region.Write(0, 0, new(FilledCell, filled), Style ?? Theme.Active);
         region.Write(0, filled, new(EmptyCell, Math.Max(0, trackWidth - filled)), Theme.Muted);
 
         if (caption.Length > 0)
@@ -57,7 +59,7 @@ public sealed class ProgressBar
 /// A one-cell animation for work of unknown length. It does not run on its own: something has to step
 /// it, which keeps the framework free of timers the application did not ask for.
 /// </summary>
-public sealed class Spinner
+public sealed class Spinner : IArlecchinoWidget
 {
     private static readonly string[] DefaultFrames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
@@ -72,11 +74,14 @@ public sealed class Spinner
     /// <summary>Moves to the next frame, wrapping at the end.</summary>
     public void Advance() => _frame = (_frame + 1) % Frames.Length;
 
-    /// <summary>Draws the current frame at one spot.</summary>
-    /// <param name="region">The region the position is relative to.</param>
-    /// <param name="row">Row within the region.</param>
-    /// <param name="column">Column within the region.</param>
-    /// <param name="style">Colour to draw in. Defaults to the theme's informational colour.</param>
-    public void Draw(SurfaceRegion region, int row, int column, ITermColor? style = null) =>
-        region.Write(row, column, Current, style ?? Theme.Info);
+    /// <summary>Colour to draw in. The theme's informational colour when left alone.</summary>
+    public ITermColor? Style { get; init; }
+
+    /// <summary>
+    /// Draws the current frame in the first cell of the region. One cell is all a spinner needs, so
+    /// hand it the cell it belongs in — <c>region.Rows(0, 1)</c>, a column split, or whatever the
+    /// layout gives.
+    /// </summary>
+    /// <param name="region">Where to draw; the top-left cell is used.</param>
+    public void Draw(SurfaceRegion region) => region.Write(0, 0, Current, Style ?? Theme.Info);
 }

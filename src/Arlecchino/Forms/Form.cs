@@ -6,6 +6,7 @@ using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
+using Arlecchino.Widgets;
 
 namespace Arlecchino.Forms;
 
@@ -15,7 +16,7 @@ namespace Arlecchino.Forms;
 /// without any copying back and forth. Whether an edit made here can be undone is decided by the atom
 /// behind the field — <see cref="TrackedAtom{T}"/> or <see cref="LocalAtom{T}"/> — not by the form.
 /// </summary>
-public sealed class Form : IFocusable
+public sealed class Form : IArlecchinoInteractiveWidget
 {
     private const string ValueSeparator = " = ";
     private const string ActionMarker = "> ";
