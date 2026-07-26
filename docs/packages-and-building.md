@@ -286,6 +286,14 @@ which is exactly how the source generator is exercised from the outside. Its sou
 than inside the checkout: a consumer under this repository would inherit `Directory.Build.props` and
 the repository `.editorconfig`, and would then be testing our build settings instead of the packages.
 
+### The other two workflows
+
+`codeql.yml` runs GitHub's analysis over the C# on every push, on pull requests, and once a week on a
+schedule — the weekly run is the point of it, since a rule added after a commit was merged still finds
+what it finds. `dependabot.yml` proposes dependency updates monthly, grouped so that the
+`Microsoft.Extensions.*` packages and the testing ones arrive as one pull request each rather than
+five, and it watches the versions of the actions in these workflows as well.
+
 ### Committing without running it
 
 A half-finished commit does not need the matrix, and neither does a typo in a page of this

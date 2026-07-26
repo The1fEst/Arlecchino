@@ -146,6 +146,8 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 - Coverage is measured on every run and the build fails when it drops: 85% of lines, 70% of branches.
   The figures per assembly land in the run summary, so a change that adds code without tests is
   visible before it is merged rather than after.
+- CodeQL analyses the C# on every push and once a week, and Dependabot proposes dependency and action
+  updates monthly, grouped so they arrive as a few pull requests rather than many.
 - Every benchmark is executed on each run as a dry job. Measurements from a shared runner mean
   nothing, but a benchmark that no longer compiles or has started throwing is caught the day it
   breaks; `benchmarks.yml` runs them properly on demand and writes the tables into the run summary.
