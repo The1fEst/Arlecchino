@@ -48,6 +48,25 @@ test that changes either of them shares the change with whatever else is running
 `Theme.Header` works from a view without any plumbing. Assigning `Theme.Palette` directly also works
 when there is no container at all.
 
+### The framework's own palette
+
+`ThemePalette.Arlecchino` is the harlequin mask in colours — crimson `#C9382B`, bone `#EDE6D9`, ink
+`#141317` and the hairline `#2E2B33` of the [brand assets](../assets/README.md):
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .UseTheme(ThemePalette.Arlecchino);
+```
+
+The background is left to the terminal everywhere except the two cursor rows, which have to paint
+behind their text to be a selection at all. That is what makes it sit on a light terminal as readily
+as on a dark one — it colours the writing, not the screen.
+
+Every entry names an exact colour *and* a palette colour, so a terminal without 24-bit shows the
+fallback its author picked rather than whatever the nearest-colour arithmetic lands on. Crimson falls
+back to `BrightRed`, bone to `BrightWhite`, the hairline to `BrightBlack`.
+
 ## TermColor
 
 ```csharp
@@ -55,8 +74,23 @@ public sealed class TermColor : IArlecchinoColor
 {
     public TerminalColor Foreground { get; init; } = TerminalColor.Default;
     public TerminalColor Background { get; init; } = TerminalColor.Default;
+    public Rgb? ExactForeground { get; init; }
+    public Rgb? ExactBackground { get; init; }
     public TextStyle Style { get; init; } = TextStyle.None;
 }
+```
+
+The two `Exact` colours are drawn where the terminal can do 24-bit, and the palette colours beside
+them are what a terminal without it gets. Setting both is how a palette says a brand colour and still
+degrades to something its author chose:
+
+```csharp
+Header = new TermColor
+{
+    Foreground = TerminalColor.BrightRed,
+    ExactForeground = new Rgb(0xC9, 0x38, 0x2B),
+    Style = TextStyle.Bold,
+};
 ```
 
 `TerminalColor` is the sixteen-colour ANSI set — `Default`, the eight base colours, and their

@@ -8,6 +8,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
+## 1.2.0
+
+### Added
+
+- **A palette in the framework's own colours.** `UseTheme(ThemePalette.Arlecchino)` paints the chrome
+  in the crimson, bone and ink of the harlequin mask. The background is left to the terminal
+  everywhere except the two cursor rows — a selection has to paint behind its text to be one — so it
+  reads on a light terminal as readily as on a dark one: it colours the writing, not the screen.
+- **`TermColor` carries exact colours as well as palette ones.** `ExactForeground` and
+  `ExactBackground` are drawn where the terminal can do 24-bit, and the `Foreground` and `Background`
+  beside them are what everywhere else gets — so a palette can state a brand colour and still degrade
+  to the fallback its author picked rather than the nearest one arithmetic found. Existing palettes
+  are unaffected: leave the two unset and nothing changes.
+
 ## 1.1.0
 
 ### Added

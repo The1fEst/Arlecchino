@@ -1,1 +1,6 @@
 #nullable enable
+Arlecchino.Rendering.TermColor.ExactBackground.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.TermColor.ExactBackground.init -> void
+Arlecchino.Rendering.TermColor.ExactForeground.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.TermColor.ExactForeground.init -> void
+static Arlecchino.Rendering.ThemePalette.Arlecchino.get -> Arlecchino.Rendering.ThemePalette!

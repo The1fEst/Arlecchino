@@ -59,7 +59,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `1.1.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `1.2.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -142,7 +142,7 @@ either platform without a console anywhere.
 
 ## What ends up in the package
 
-`Arlecchino.1.1.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+`Arlecchino.1.2.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
 page. The two libraries are the same source: `net8.0` is there because that is the long-term support
 release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks

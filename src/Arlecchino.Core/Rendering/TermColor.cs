@@ -17,6 +17,17 @@ public sealed class TermColor : IArlecchinoColor
     /// <summary>Colour behind the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
     public TerminalColor Background { get; init; } = TerminalColor.Default;
 
+    /// <summary>
+    /// An exact colour for the glyphs, used where the terminal can do 24-bit. Elsewhere
+    /// <see cref="Foreground"/> is drawn instead, so a palette written in brand colours still says
+    /// what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the
+    /// author chose rather than the nearest one arithmetic found.
+    /// </summary>
+    public Rgb? ExactForeground { get; init; }
+
+    /// <summary>The same for what is behind the glyphs, falling back to <see cref="Background"/>.</summary>
+    public Rgb? ExactBackground { get; init; }
+
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
     public TextStyle Style { get; init; } = TextStyle.None;
 
@@ -67,8 +78,17 @@ public sealed class TermColor : IArlecchinoColor
             builder.Append(";4");
         }
 
-        builder.Append($";{ForegroundCode(Foreground)};{BackgroundCode(Background)}m");
-        return builder.ToString();
+        var exact = _ansiSupport == ColorSupport.TrueColor;
+
+        builder.Append(exact && ExactForeground is { } foreground
+            ? $";38;2;{foreground.Red};{foreground.Green};{foreground.Blue}"
+            : $";{ForegroundCode(Foreground)}");
+
+        builder.Append(exact && ExactBackground is { } background
+            ? $";48;2;{background.Red};{background.Green};{background.Blue}"
+            : $";{BackgroundCode(Background)}");
+
+        return builder.Append('m').ToString();
     }
 
     internal static int ForegroundCode(TerminalColor color)
