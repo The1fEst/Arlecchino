@@ -29,6 +29,12 @@ None of them holds user-visible text of their own: labels are `Func<string>` sup
 application, which is what keeps [localization](localization.md) working. Colour is a `Style`
 property rather than an argument to `Draw`, so the call is the same for every widget.
 
+A widget of your own can also come from the container: `.AddGeneratedWidgets()` registers every one
+declared in the project as a singleton, and `.AddWidget<T>()` does a single one — see
+[Source generator](source-generator.md#widgets). Shared by every screen that resolves it, state and
+focus included, so it fits a panel the application has one of; the built-in widgets keep being
+constructed in the view, since a `Render` or a `Columns` belongs to the screen using them.
+
 ## ListBox
 
 ```csharp

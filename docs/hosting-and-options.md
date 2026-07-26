@@ -62,6 +62,8 @@ it puts in the container are singletons:
 | `AddViewFactory<T>()` | Adds an `IViewFactory` — this is what `AddGeneratedViews()` does |
 | `AddGeneratedStores()` | Generated: registers every `IArlecchinoStore` in the project, singleton or scoped — see [Source generator](source-generator.md#stores) |
 | `AddGeneratedCommands()` | Generated: registers every `IArlecchinoCommand` in the project as a singleton — see [Source generator](source-generator.md#commands) |
+| `AddGeneratedWidgets()` | Generated: registers every `IArlecchinoWidget` of the project as a singleton — see [Source generator](source-generator.md#widgets) |
+| `AddWidget<T>()` | Registers one widget by hand as a singleton; an alternative to `AddGeneratedWidgets()`, not a layer on top |
 | `AddCommand<T>()` | Registers one `IArlecchinoCommand` by hand; an alternative to `AddGeneratedCommands()`, not a layer on top |
 | `AddStartup<T>()` | Registers an `IArlecchinoStartup` |
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |

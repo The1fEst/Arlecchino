@@ -52,6 +52,10 @@ public static class ArlecchinoServiceCollectionExtensions
         });
         services.AddSingleton(static provider =>
             KeyText.For(provider.GetRequiredService<ArlecchinoOptions>().TextInput));
+        services.AddSingleton(static provider =>
+            provider.GetRequiredService<ArlecchinoOptions>().Keymap);
+        services.AddSingleton(static provider =>
+            provider.GetRequiredService<ArlecchinoOptions>().Strings);
 
         services.AddSingleton<Repaint>();
         services.AddSingleton<LogBuffer>();

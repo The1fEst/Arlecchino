@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 
 namespace Arlecchino.Diagnostics;
@@ -18,11 +19,14 @@ public sealed record LogEntry(DateTimeOffset Time, LogLevel Level, string Catego
 /// overlay on request. Oldest lines are dropped once the buffer is full.
 ///
 /// Logging happens on whatever thread did the work, so the lines live in a concurrent queue and the
-/// overlay draws from a snapshot rather than from the live collection.
+/// overlay draws from a snapshot rather than from the live collection. Dropping the oldest is done
+/// under a lock: the check and the removal have to be one step, or two threads trimming at once take
+/// the buffer below its capacity.
 /// </summary>
 public sealed class LogBuffer
 {
     private readonly ConcurrentQueue<LogEntry> _entries = new();
+    private readonly Lock _trimming = new();
     private readonly Repaint _repaint;
 
     /// <summary>Creates the buffer.</summary>
@@ -51,8 +55,11 @@ public sealed class LogBuffer
     {
         _entries.Enqueue(entry);
 
-        while (_entries.Count > Capacity && _entries.TryDequeue(out _))
+        lock (_trimming)
         {
+            while (_entries.Count > Capacity && _entries.TryDequeue(out _))
+            {
+            }
         }
 
         _repaint.Request();
@@ -66,8 +73,11 @@ public sealed class LogBuffer
             return;
         }
 
-        while (_entries.TryDequeue(out _))
+        lock (_trimming)
         {
+            while (_entries.TryDequeue(out _))
+            {
+            }
         }
 
         _repaint.Request();

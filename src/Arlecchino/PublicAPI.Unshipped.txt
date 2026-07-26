@@ -1,1 +1,2 @@
 #nullable enable
+Arlecchino.Hosting.ArlecchinoBuilder.AddWidget<TWidget>() -> Arlecchino.Hosting.ArlecchinoBuilder!

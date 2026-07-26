@@ -6,6 +6,7 @@ using Arlecchino.Commands;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Widgets;
 
 namespace Arlecchino.Hosting;
 
@@ -81,6 +82,25 @@ public sealed class ArlecchinoBuilder
         where TCommand : class, IArlecchinoCommand
     {
         Services.AddSingleton<IArlecchinoCommand, TCommand>();
+        return this;
+    }
+
+    /// <summary>
+    /// Registers one widget as a singleton, resolved by its own type. An alternative to
+    /// <c>AddGeneratedWidgets()</c> for a widget the generator cannot see — one from another assembly —
+    /// rather than a layer on top of it; registering the same type both ways puts it in the container
+    /// twice.
+    ///
+    /// A singleton widget is shared by every screen that resolves it, state and focus included, so it
+    /// suits a panel the application has one of. A widget each screen needs its own copy of is built
+    /// in the view.
+    /// </summary>
+    /// <typeparam name="TWidget">The widget type.</typeparam>
+    /// <returns>The builder.</returns>
+    public ArlecchinoBuilder AddWidget<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TWidget>()
+        where TWidget : class, IArlecchinoWidget
+    {
+        Services.AddSingleton<TWidget>();
         return this;
     }
 

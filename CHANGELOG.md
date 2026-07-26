@@ -7,6 +7,30 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+### Added
+
+- Widgets of the application can come from the container. A fourth generator finds every
+  `IArlecchinoWidget` declared in the project and `.AddGeneratedWidgets()` registers each as a
+  **singleton**, built by a factory calling its public constructor with the most parameters — so one
+  instance is shared by every screen resolving it, state and focus included. Only the project's own
+  widgets are registered; the built-in ones live in the package's assembly and are still constructed
+  in the view.
+- `.AddWidget<T>()` registers one widget by hand, for a widget the generator cannot see. As with
+  commands, it is an alternative to the generated call rather than a layer on top.
+- `TSR007` names a widget the container cannot build — generic, no public constructor, or `required`
+  members — instead of emitting code that would not compile. `ArlecchinoGenerateWidgets` turns the
+  generator off.
+- `ArlecchinoKeymap` and `ArlecchinoStrings` are resolvable services now, so a widget or store built
+  by the container takes the keymap directly instead of reaching through `ArlecchinoOptions`.
+
+### Fixed
+
+- `LogBuffer` could fall below its own capacity: the check for a full buffer and the removal of the
+  oldest line were separate steps, so two threads logging at once dropped the same surplus line
+  twice. Trimming happens under a lock now.
+
 ## 0.7.0
 
 ### Added

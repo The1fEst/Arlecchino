@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
     <Authors>fEst</Authors>
     <Product>Arlecchino</Product>
     <Description>A terminal UI framework for .NET: cell-grid renderer, view navigation, modals and a command palette, wired through Microsoft.Extensions.DependencyInjection.</Description>

@@ -29,6 +29,7 @@
     <CompilerVisibleProperty Include="ArlecchinoViewNamespace" />
     <CompilerVisibleProperty Include="ArlecchinoGenerateViews" />
     <CompilerVisibleProperty Include="ArlecchinoGenerateStores" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateWidgets" />
     <CompilerVisibleProperty Include="ArlecchinoGenerateCommands" />
   </ItemGroup>
 </Project>

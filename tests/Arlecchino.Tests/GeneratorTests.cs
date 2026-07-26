@@ -48,6 +48,71 @@ public sealed class GeneratorTests
         }
         """;
 
+    private const string ThreeWidgets = """
+        using System;
+        using Arlecchino.Hosting;
+        using Arlecchino.Rendering;
+        using Arlecchino.Widgets;
+
+        namespace Sample.Panels;
+
+        public sealed class ClockWidget : IArlecchinoWidget
+        {
+            public ClockWidget(ArlecchinoKeymap keymap) { }
+            public void Draw(SurfaceRegion region) { }
+        }
+
+        public sealed class LabelWidget : IArlecchinoWidget
+        {
+            public required Func<string> Text { get; init; }
+            public void Draw(SurfaceRegion region) { }
+        }
+
+        public sealed class GaugeWidget<T> : IArlecchinoWidget
+        {
+            public void Draw(SurfaceRegion region) { }
+        }
+        """;
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunWidgets(
+        string source,
+        string? generate = null)
+    {
+        var options = new Dictionary<string, string>
+        {
+            ["build_property.RootNamespace"] = "Sample",
+            ["build_property.ArlecchinoViewNamespace"] = "Sample.Views",
+        };
+
+        if (generate is not null)
+        {
+            options["build_property.ArlecchinoGenerateWidgets"] = generate;
+        }
+
+        return RunGenerator(new WidgetRegistrationGenerator(), source, options);
+    }
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunGenerator(
+        IIncrementalGenerator generator,
+        string source,
+        Dictionary<string, string> options)
+    {
+        var compilation = CSharpCompilation.Create(
+            "SampleApplication",
+            [CSharpSyntaxTree.ParseText(source)],
+            LoadedReferences(),
+            new(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+
+        var driver = CSharpGeneratorDriver
+            .Create([generator.AsSourceGenerator()], optionsProvider: new FixedOptions(options))
+            .RunGenerators(compilation);
+
+        var result = driver.GetRunResult();
+        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+
+        return (generated, result.Diagnostics);
+    }
+
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunStores(
         string source,
         string? generate = null)
@@ -339,6 +404,46 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void WidgetsOfTheProjectAreRegisteredAsSingletons()
+    {
+        var (generated, diagnostics) = RunWidgets(ThreeWidgets);
+
+        Assert.Contains("using Sample.Panels;", generated, StringComparison.Ordinal);
+        Assert.Contains(
+            "builder.Services.AddSingleton(static services => new ClockWidget(services.GetRequiredService<ArlecchinoKeymap>()));",
+            generated,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("LabelWidget", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("GaugeWidget", generated, StringComparison.Ordinal);
+
+        var skipped = MessagesOf(diagnostics, "TSR007");
+
+        Assert.Equal(2, skipped.Count);
+        Assert.Contains(skipped, message => message.Contains("required members", StringComparison.Ordinal));
+        Assert.Contains(skipped, message => message.Contains("generic", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void WidgetRegistrationIsGeneratedEvenWhenNoWidgetExistsYet()
+    {
+        var (generated, _) = RunWidgets(TwoViews);
+
+        Assert.Contains(
+            "public static ArlecchinoBuilder AddGeneratedWidgets(this ArlecchinoBuilder builder)",
+            generated,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NoWidgetsAreGeneratedWhenTheProjectTurnsThemOff()
+    {
+        var (generated, _) = RunWidgets(ThreeWidgets, generate: "false");
+
+        Assert.Equal("", generated);
+    }
+
+    [Fact]
     public void AbstractViewsAreSkipped()
     {
         const string source = """
@@ -364,6 +469,20 @@ public sealed class GeneratorTests
 
         Assert.DoesNotContain("ViewRoute Base =", generated, StringComparison.Ordinal);
         Assert.Contains("ViewRoute Real =", generated, StringComparison.Ordinal);
+    }
+
+    private static List<string> MessagesOf(ImmutableArray<Diagnostic> diagnostics, string id)
+    {
+        var messages = new List<string>();
+        foreach (var diagnostic in diagnostics)
+        {
+            if (diagnostic.Id == id)
+            {
+                messages.Add(diagnostic.GetMessage());
+            }
+        }
+
+        return messages;
     }
 
     private static List<int> FindAll(string text, string needle)

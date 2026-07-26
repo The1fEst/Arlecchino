@@ -121,6 +121,55 @@ screen is opened again. `IArlecchinoScopedStore` extends `IArlecchinoStore`, so 
 Nothing forces a store to be one or the other; a class with neither marker is simply invisible to the
 generator and can still be registered by hand.
 
+## Widgets
+
+`.AddGeneratedWidgets()` does the same for the [widgets](widgets.md) of the project — every class
+implementing `IArlecchinoWidget`, registered as a **singleton** built by a factory:
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .AddGeneratedViews()
+    .AddGeneratedStores()
+    .AddGeneratedWidgets()
+    .StartAt(ViewKind.Default);
+```
+
+Only widgets declared in your own project are registered — the built-in ones live in the package's
+assembly, which the generator never looks at.
+
+A singleton widget is one instance for the life of the application, and a widget holds state: the
+selection, the scroll offset, whether it has the focus. Two screens resolving the same widget share
+all of it. That is the point when the widget is a shared panel, and a bug when it is not — build the
+second kind in the view instead, as before.
+
+Some widgets cannot be registered at all, and the generator says so with `TSR007` rather than
+emitting code that would not compile:
+
+| Left out when | Because |
+|---|---|
+| The class is generic | There is no single closed type to register |
+| It has no public constructor | The factory has nothing to call |
+| It has `required` members | A factory cannot fill them in — `ListBox<T>.Render` is exactly this |
+
+The three built-in reasons cover the built-in widgets too, which is another way of saying the same
+thing: `ListBox<T>`, `Table<T>` and `Form` are constructed where they are used, with their
+`Render`, `Columns` and `Fields` given at the call site.
+
+`ArlecchinoGenerateWidgets` set to `false` turns the generator off.
+
+`AddWidget<T>()` registers one widget by hand, the same singleton the generator would have made. It
+is for a widget the generator cannot see — one from another assembly — and it is an alternative to
+`AddGeneratedWidgets()`, not a layer on top: registering the same type both ways puts it in the
+container twice, exactly as `AddCommand<T>()` and `AddGeneratedCommands()` do.
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .AddWidget<SearchPanel>()
+    .StartAt(ViewKind.Default);
+```
+
 ## Commands
 
 An application command is a class implementing `IArlecchinoCommand`, and it registers the way a store
@@ -186,6 +235,7 @@ The package's `build/Arlecchino.props` marks these properties compiler-visible; 
 | `RootNamespace` | Fallback when `ArlecchinoViewNamespace` is unset: `$(RootNamespace).Navigation`, or `Views` if that is empty too |
 | `ArlecchinoGenerateViews` | Set to `false` to emit no routes and no view factory |
 | `ArlecchinoGenerateStores` | Set to `false` to emit no store registration |
+| `ArlecchinoGenerateWidgets` | Set to `false` to emit no widget registration |
 | `ArlecchinoGenerateCommands` | Set to `false` to emit no command registration |
 
 ```xml
@@ -210,6 +260,7 @@ The generator says something instead of quietly doing the wrong thing:
 | `TSR004` | Info | No class implements `IArlecchinoView`, so `ViewKind` holds no routes and the application has nowhere to start |
 | `TSR005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so the container cannot build it |
 | `TSR006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so the container cannot build it |
+| `TSR007` | Info | A widget cannot be registered — generic, no public constructor, or `required` members — and is left out of `AddGeneratedWidgets()` |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.
