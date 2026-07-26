@@ -147,6 +147,34 @@ public sealed class TextAreaModalTests
     }
 
     [Fact]
+    public void TheWholeTextIsCopiedByEitherCopyCombination()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "one\ntwo", static _ => { });
+
+        app.Press(ConsoleKey.Insert, control: true);
+        Assert.Contains("one\ntwo", app.Terminal.Copied, StringComparison.Ordinal);
+
+        app.State.RequestTextArea("Notes", "third", static _ => { });
+        app.Press(ConsoleKey.C, shift: true, control: true);
+
+        Assert.Contains("third", app.Terminal.Copied, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CopyingLeavesTheDialogOpen()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "kept", static _ => { });
+        app.Press(ConsoleKey.C, shift: true, control: true);
+
+        Assert.NotNull(app.State.Modal);
+        Assert.Equal("kept", ((TextAreaModal)app.State.Modal!).Text);
+    }
+
+    [Fact]
     public void LongTextScrollsSoTheCaretStaysVisible()
     {
         using var app = new TestApplication(60, 20);

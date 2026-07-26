@@ -11,13 +11,11 @@ abstract Arlecchino.State.Atom<T>.RecordsHistory.get -> bool
 Arlecchino.Input.EscapeSequenceParser
 Arlecchino.Input.EscapeSequenceParser.EscapeSequenceParser() -> void
 Arlecchino.Input.KeyBinding
-Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out System.ConsoleModifiers Modifiers) -> void
 Arlecchino.Input.KeyBinding.Equals(Arlecchino.Input.KeyBinding other) -> bool
 Arlecchino.Input.KeyBinding.IsNone.get -> bool
 Arlecchino.Input.KeyBinding.Key.get -> System.ConsoleKey
 Arlecchino.Input.KeyBinding.Key.init -> void
 Arlecchino.Input.KeyBinding.KeyBinding() -> void
-Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, System.ConsoleModifiers Modifiers = System.ConsoleModifiers.None) -> void
 Arlecchino.Input.KeyBinding.Matches(System.ConsoleKeyInfo pressed) -> bool
 Arlecchino.Input.KeyBinding.Modifiers.get -> System.ConsoleModifiers
 Arlecchino.Input.KeyBinding.Modifiers.init -> void

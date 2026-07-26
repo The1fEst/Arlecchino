@@ -9,32 +9,46 @@ namespace Arlecchino.Input;
 /// </summary>
 /// <param name="Key">The key itself.</param>
 /// <param name="Modifiers">Modifiers that must be held, exactly.</param>
-public readonly record struct KeyBinding(ConsoleKey Key, ConsoleModifiers Modifiers = default)
+/// <param name="AlsoKey">
+/// A second key that triggers the same thing, for actions the platforms disagree about — copying is
+/// <c>Ctrl+Insert</c> in one habit and <c>Ctrl+Shift+C</c> in another.
+/// </param>
+/// <param name="AlsoModifiers">Modifiers for that second key.</param>
+public readonly record struct KeyBinding(
+    ConsoleKey Key,
+    ConsoleModifiers Modifiers = default,
+    ConsoleKey AlsoKey = default,
+    ConsoleModifiers AlsoModifiers = default)
 {
     /// <summary>Whether this binding is unset and therefore matches nothing.</summary>
     public bool IsNone => Key == default;
 
     /// <summary>
-    /// Whether a key press is this binding. Terminals that report no virtual key are still handled:
-    /// letters, digits and the common control keys are then matched by the character typed.
+    /// Whether a key press is this binding, either of its combinations. Terminals that report no
+    /// virtual key are still handled: letters, digits and the common control keys are then matched by
+    /// the character typed.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press should trigger this binding.</returns>
-    public bool Matches(ConsoleKeyInfo pressed)
+    public bool Matches(ConsoleKeyInfo pressed) =>
+        MatchesOne(pressed, Key, Modifiers) ||
+        (AlsoKey != default && MatchesOne(pressed, AlsoKey, AlsoModifiers));
+
+    private static bool MatchesOne(ConsoleKeyInfo pressed, ConsoleKey key, ConsoleModifiers modifiers)
     {
-        if (pressed.Modifiers != Modifiers)
+        if (pressed.Modifiers != modifiers)
         {
             return false;
         }
 
-        return pressed.Key == Key || (pressed.Key == default && MatchesCharacter(pressed.KeyChar));
+        return pressed.Key == key || (pressed.Key == default && MatchesCharacter(key, pressed.KeyChar));
     }
 
-    private bool MatchesCharacter(char character) => Key switch
+    private static bool MatchesCharacter(ConsoleKey key, char character) => key switch
     {
         >= ConsoleKey.A and <= ConsoleKey.Z =>
-            char.ToUpperInvariant(character) == (char)('A' + (Key - ConsoleKey.A)),
-        >= ConsoleKey.D0 and <= ConsoleKey.D9 => character == (char)('0' + (Key - ConsoleKey.D0)),
+            char.ToUpperInvariant(character) == (char)('A' + (key - ConsoleKey.A)),
+        >= ConsoleKey.D0 and <= ConsoleKey.D9 => character == (char)('0' + (key - ConsoleKey.D0)),
         ConsoleKey.Spacebar => character == ' ',
         ConsoleKey.Enter => character is '\r' or '\n',
         ConsoleKey.Escape => character == '\e',

@@ -120,7 +120,7 @@ in the router:
 | `DeleteForward` | `Delete` | Text fields |
 | `EraseWord` / `EraseToStart` | `Ctrl+Backspace` / `Ctrl+U` | Text fields |
 | `WordLeft` / `WordRight` | `Ctrl+←` / `Ctrl+→` | Text fields |
-| `Copy` | `Ctrl+Insert` | Text fields |
+| `Copy` | `Ctrl+Insert` or `Ctrl+Shift+C` | Text fields and the multi-line dialog |
 | `Submit` | `Ctrl+Enter` | Confirms the [multi-line text dialog](modals-and-state.md), where `Enter` breaks the line |
 | `ToggleLog` | `Ctrl+L` | The [log overlay](hosting-and-options.md) |
 | `Notifications` | `Ctrl+N` | The [notifications screen](modals-and-state.md) |
@@ -257,7 +257,12 @@ public ViewRoute HandlePaste(string text)
 }
 ```
 
-`Ctrl+Insert` (the `Copy` binding) copies the field being edited. It goes through `IArlecchinoTerminal`, which
+A binding can carry a second combination for actions the platforms disagree about — that is what
+`AlsoKey` and `AlsoModifiers` on `KeyBinding` are for, and why `Copy` answers to both `Ctrl+Insert` and
+`Ctrl+Shift+C`. `ToString()` shows the first one, so hints stay short.
+
+`Ctrl+Insert` and `Ctrl+Shift+C` (the `Copy` binding) copy the field being edited, or the whole text of
+the [multi-line dialog](modals-and-state.md). It goes through `IArlecchinoTerminal`, which
 encodes it as an OSC 52 sequence — that reaches the clipboard of the machine the user is sitting at
 even over SSH. `Ctrl+C` is deliberately left alone: it is how the application is stopped. Terminals
 never acknowledge a copy, and many have the feature switched off, so there is nothing to report back.

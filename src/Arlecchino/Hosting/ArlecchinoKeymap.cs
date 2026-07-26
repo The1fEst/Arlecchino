@@ -71,10 +71,15 @@ public sealed record ArlecchinoKeymap
     public KeyBinding WordRight { get; init; } = new(ConsoleKey.RightArrow, ConsoleModifiers.Control);
 
     /// <summary>
-    /// Copies the field being edited to the clipboard. <c>Ctrl+Insert</c> by default, because
-    /// <c>Ctrl+C</c> is how the user stops the application.
+    /// Copies what is being edited to the clipboard. Two combinations, because the habits differ:
+    /// <c>Ctrl+Insert</c> and <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone — that is how the
+    /// user stops the application.
     /// </summary>
-    public KeyBinding Copy { get; init; } = new(ConsoleKey.Insert, ConsoleModifiers.Control);
+    public KeyBinding Copy { get; init; } = new(
+        ConsoleKey.Insert,
+        ConsoleModifiers.Control,
+        ConsoleKey.C,
+        ConsoleModifiers.Control | ConsoleModifiers.Shift);
 
     /// <summary>Shows or hides the log overlay. <c>Ctrl+L</c> by default.</summary>
     public KeyBinding ToggleLog { get; init; } = new(ConsoleKey.L, ConsoleModifiers.Control);

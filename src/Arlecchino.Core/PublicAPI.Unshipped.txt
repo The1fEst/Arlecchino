@@ -140,3 +140,9 @@ Arlecchino.IArlecchinoTerminal.Width.get -> int
 Arlecchino.Rendering.Surface.Surface(Arlecchino.IArlecchinoTerminal! terminal) -> void
 Arlecchino.Rendering.Surface.Clip(Arlecchino.Rendering.SurfaceRegion region) -> System.IDisposable!
 static Arlecchino.Rendering.TextWidth.Wrap(string! text, int width) -> System.Collections.Generic.List<string!>!
+Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out System.ConsoleModifiers Modifiers, out System.ConsoleKey AlsoKey, out System.ConsoleModifiers AlsoModifiers) -> void
+Arlecchino.Input.KeyBinding.AlsoKey.get -> System.ConsoleKey
+Arlecchino.Input.KeyBinding.AlsoKey.init -> void
+Arlecchino.Input.KeyBinding.AlsoModifiers.get -> System.ConsoleModifiers
+Arlecchino.Input.KeyBinding.AlsoModifiers.init -> void
+Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, System.ConsoleModifiers Modifiers = System.ConsoleModifiers.None, System.ConsoleKey AlsoKey = System.ConsoleKey.None, System.ConsoleModifiers AlsoModifiers = System.ConsoleModifiers.None) -> void

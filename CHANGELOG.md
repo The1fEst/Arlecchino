@@ -35,7 +35,12 @@ The API review before a stable release, and the features it was waiting for.
   and **`TextWidth.Wrap`** behind it, public for layout code of your own.
 - **`TextAreaModal` and `RequestTextArea`** for editing several lines: `Enter` breaks the line, the new
   `Submit` binding (`Ctrl+Enter`) confirms, the caret moves by symbols across line ends, pasted blocks
-  keep their breaks, and the validator's message is drawn under the text.
+  keep their breaks, and the validator's message is drawn under the text. `Copy` takes the whole text
+  to the clipboard.
+- **A binding can carry two combinations.** `KeyBinding` gained `AlsoKey` and `AlsoModifiers`, so
+  `Copy` answers to both `Ctrl+Insert` and `Ctrl+Shift+C` — the two habits for the same action. Pasting
+  needs nothing here: the terminal turns `Ctrl+Shift+V` into a bracketed paste, which already arrives
+  as one block.
 
 ### Changed
 

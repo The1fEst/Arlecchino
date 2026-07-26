@@ -893,6 +893,12 @@ public class InputRouter
             return;
         }
 
+        if (_keymap.Copy.Matches(key))
+        {
+            _terminal.CopyToClipboard(modal.Text);
+            return;
+        }
+
         if (MovedTextAreaCaret(modal, key) || EditedTextArea(modal, key))
         {
             return;
