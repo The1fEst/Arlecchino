@@ -65,6 +65,7 @@ public static class ArlecchinoServiceCollectionExtensions
         services.AddSingleton<UiDispatcher>();
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton<Ticker>();
+        services.AddSingleton<Notifications>();
         services.AddSingleton<AtomHistory>();
         services.AddSingleton<ArlecchinoState>();
         services.AddScoped<ViewLifetime>();
@@ -103,6 +104,7 @@ public static class ArlecchinoServiceCollectionExtensions
 
         var builder = new ArlecchinoBuilder(services, registrations, options);
         builder.AddView<FilePickerView>(FilePickerView.Route);
+        builder.AddView<NotificationsView>(NotificationsView.Route);
         return builder;
     }
 }

@@ -79,4 +79,16 @@ public sealed class ArlecchinoOptions
 
     /// <summary>How long the input loop sleeps when no key is waiting.</summary>
     public TimeSpan InputPollInterval { get; set; } = TimeSpan.FromMilliseconds(8);
+
+    /// <summary>
+    /// How long a notification stays on the output row. Once it is up the row goes quiet, and the
+    /// message is only in the notifications screen.
+    /// </summary>
+    public TimeSpan NotificationTimeout { get; set; } = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// How long a notification stays in the list behind the output row — long enough to go and read
+    /// what went past while the screen was busy.
+    /// </summary>
+    public TimeSpan NotificationLifetime { get; set; } = TimeSpan.FromMinutes(10);
 }

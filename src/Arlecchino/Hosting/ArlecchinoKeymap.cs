@@ -78,6 +78,9 @@ public sealed class ArlecchinoKeymap
     /// <summary>Shows or hides the log overlay. <c>Ctrl+L</c> by default.</summary>
     public KeyBinding ToggleLog { get; init; } = new(ConsoleKey.L, ConsoleModifiers.Control);
 
+    /// <summary>Opens the screen listing what the application has said lately.</summary>
+    public KeyBinding Notifications { get; init; } = new(ConsoleKey.N, ConsoleModifiers.Control);
+
     /// <summary>Marks a row or flips a toggle. <c>Space</c> by default.</summary>
     public KeyBinding Mark { get; init; } = new(ConsoleKey.Spacebar);
 

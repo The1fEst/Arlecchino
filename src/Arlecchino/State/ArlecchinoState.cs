@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Diagnostics;
 using Arlecchino.Rendering;
 using Arlecchino.Modals;
 
@@ -12,32 +13,34 @@ namespace Arlecchino.State;
 public class ArlecchinoState
 {
     private readonly Repaint _repaint;
+    private readonly Notifications _notifications;
 
     private readonly List<Modal> _modals = [];
 
-    private string _output = string.Empty;
     private FilePickerRequest? _filePicker;
 
     /// <summary>Creates the state.</summary>
     /// <param name="repaint">Signal raised whenever any of this changes.</param>
-    public ArlecchinoState(Repaint repaint)
+    /// <param name="notifications">Holds the output row and the notifications screen behind it.</param>
+    public ArlecchinoState(Repaint repaint, Notifications notifications)
     {
         _repaint = repaint;
+        _notifications = notifications;
     }
 
     /// <summary>
-    /// The status line at the bottom of the frame. Not cleared for you; the palette clears it when
-    /// it opens.
+    /// The status line at the bottom of the frame. Writing to it raises a notification, so the line
+    /// clears itself after <c>ArlecchinoOptions.NotificationTimeout</c> and the message stays
+    /// readable afterwards on the notifications screen. An empty string clears the row at once.
     /// </summary>
     public string Output
     {
-        get => _output;
-        set
-        {
-            _output = value;
-            _repaint.Request();
-        }
+        get => _notifications.Current?.Text ?? string.Empty;
+        set => _notifications.Notify(value);
     }
+
+    /// <summary>What the application has said lately, and the screen behind the output row.</summary>
+    public Notifications Notifications => _notifications;
 
     /// <summary>
     /// The dialog on top, or <c>null</c> when none is open. It takes every key while it is there.

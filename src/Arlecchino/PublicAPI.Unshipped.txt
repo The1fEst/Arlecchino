@@ -631,7 +631,6 @@ Arlecchino.Rendering.Screen.DrawOnce() -> void
 Arlecchino.Rendering.Screen.RedrawEverything() -> void
 Arlecchino.Rendering.Screen.Run(System.Threading.CancellationToken stoppingToken) -> System.Threading.Tasks.Task!
 Arlecchino.State.ArlecchinoState
-Arlecchino.State.ArlecchinoState.ArlecchinoState(Arlecchino.Rendering.Repaint! repaint) -> void
 Arlecchino.State.ArlecchinoState.CloseAllModals() -> void
 Arlecchino.State.ArlecchinoState.CloseModal() -> void
 Arlecchino.State.ArlecchinoState.FilePicker.get -> Arlecchino.State.FilePickerRequest?
@@ -712,3 +711,50 @@ Arlecchino.Modals.MessageModal.Text.get -> string!
 Arlecchino.Modals.MessageModal.Text.init -> void
 Arlecchino.Modals.MessageModal.OnClosed.get -> System.Action?
 Arlecchino.Modals.MessageModal.OnClosed.init -> void
+Arlecchino.Diagnostics.NotificationLevel.Information = 0 -> Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.NotificationLevel.Warning = 1 -> Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.NotificationLevel.Failure = 2 -> Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.Notification.Time.get -> System.DateTimeOffset
+Arlecchino.Diagnostics.Notification.Time.init -> void
+Arlecchino.Diagnostics.Notification.Text.get -> string!
+Arlecchino.Diagnostics.Notifications
+Arlecchino.Diagnostics.Notification.Text.init -> void
+Arlecchino.Diagnostics.Notification.Level.get -> Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.Notification.Level.init -> void
+Arlecchino.Diagnostics.Notification
+override Arlecchino.Diagnostics.Notification.ToString() -> string!
+static Arlecchino.Diagnostics.Notification.operator !=(Arlecchino.Diagnostics.Notification? left, Arlecchino.Diagnostics.Notification? right) -> bool
+static Arlecchino.Diagnostics.Notification.operator ==(Arlecchino.Diagnostics.Notification? left, Arlecchino.Diagnostics.Notification? right) -> bool
+override Arlecchino.Diagnostics.Notification.GetHashCode() -> int
+override Arlecchino.Diagnostics.Notification.Equals(object? obj) -> bool
+Arlecchino.Diagnostics.Notification.Equals(Arlecchino.Diagnostics.Notification? other) -> bool
+Arlecchino.Diagnostics.Notification.<Clone>$() -> Arlecchino.Diagnostics.Notification!
+Arlecchino.Diagnostics.Notification.Deconstruct(out System.DateTimeOffset Time, out Arlecchino.Diagnostics.NotificationLevel Level, out string! Text) -> void
+static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker, Arlecchino.Rendering.Repaint! repaint) -> void
+Arlecchino.Diagnostics.Notifications.Entries.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
+Arlecchino.Diagnostics.Notifications.Current.get -> Arlecchino.Diagnostics.Notification?
+Arlecchino.Diagnostics.Notifications.Notify(string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
+Arlecchino.Diagnostics.Notifications.Clear() -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Notifications.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset Time, Arlecchino.Diagnostics.NotificationLevel Level, string! Text) -> void
+Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.WithoutNotifications() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.get -> System.TimeSpan
+Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.get -> System.TimeSpan
+Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.set -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Notifications.init -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsTitle.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsCount.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsEmpty.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsTitle.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsEmpty.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsClear.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsClear.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsClose.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsClose.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsCount.get -> System.Func<int, string!>!
+Arlecchino.State.ArlecchinoState.ArlecchinoState(Arlecchino.Rendering.Repaint! repaint, Arlecchino.Diagnostics.Notifications! notifications) -> void
+Arlecchino.State.ArlecchinoState.Notifications.get -> Arlecchino.Diagnostics.Notifications!

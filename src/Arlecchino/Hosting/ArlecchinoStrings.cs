@@ -35,6 +35,22 @@ public sealed class ArlecchinoStrings
     /// <summary>Footer of a yes/no dialog.</summary>
     public Func<string> ModalToggleHints { get; set; } = static () => "←→ — switch   Enter — confirm   Esc — cancel";
 
+    /// <summary>Title of the notifications screen.</summary>
+    public Func<string> NotificationsTitle { get; set; } = static () => "Notifications";
+
+    /// <summary>Line under that title, saying how many are held.</summary>
+    public Func<int, string> NotificationsCount { get; set; } =
+        static count => count == 1 ? "1 message" : $"{count} messages";
+
+    /// <summary>Shown when nothing has been said lately.</summary>
+    public Func<string> NotificationsEmpty { get; set; } = static () => "nothing to report";
+
+    /// <summary>Hint for throwing the list away.</summary>
+    public Func<string> NotificationsClear { get; set; } = static () => "clear";
+
+    /// <summary>Hint for leaving the screen.</summary>
+    public Func<string> NotificationsClose { get; set; } = static () => "back";
+
     /// <summary>The key line under a dialog that only has something to say.</summary>
     public Func<string> ModalMessageHints { get; set; } = static () => "Enter — close   Esc — close";
 

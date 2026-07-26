@@ -158,6 +158,9 @@ public class InputRouter
     {
         switch (_state.Modal)
         {
+            case null when ClickedOutputRow(mouse):
+                _navigator.Apply(Routes.Notifications);
+                return;
             case null:
                 _navigator.HandleMouse(mouse);
                 return;
@@ -261,6 +264,12 @@ public class InputRouter
         _navigator.Apply(_commands.Commands[row - viewCommands.Count].Execute());
     }
 
+    private bool ClickedOutputRow(MouseEvent mouse) =>
+        _options.ShowOutputLine &&
+        mouse.IsLeftClick &&
+        mouse.Row == _terminal.Height - 1 &&
+        _navigator.CurrentRoute != Routes.Notifications;
+
     private static void ClickToggle(ToggleModal modal, MouseEvent mouse)
     {
         if (mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left)
@@ -322,6 +331,12 @@ public class InputRouter
         if (_keymap.ToggleLog.Matches(key))
         {
             _log.Toggle();
+            return;
+        }
+
+        if (_keymap.Notifications.Matches(key) && _navigator.CurrentRoute != Routes.Notifications)
+        {
+            _navigator.Apply(Routes.Notifications);
             return;
         }
 

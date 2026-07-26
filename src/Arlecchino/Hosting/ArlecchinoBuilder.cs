@@ -183,6 +183,40 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
+    /// Turns the output row on and says how long a message lives. The row shows the newest
+    /// notification until <paramref name="timeout"/> is up; the message stays readable on the
+    /// notifications screen — the <c>Notifications</c> key, or a click on the row — until
+    /// <paramref name="lifetime"/> is up.
+    /// </summary>
+    /// <param name="timeout">How long a message holds the output row; omit to keep the default.</param>
+    /// <param name="lifetime">How long it stays in the list; omit to keep the default.</param>
+    /// <returns>The builder.</returns>
+    public ArlecchinoBuilder UseNotifications(TimeSpan? timeout = null, TimeSpan? lifetime = null)
+    {
+        _options.ShowOutputLine = true;
+
+        if (timeout is { } showFor)
+        {
+            _options.NotificationTimeout = showFor;
+        }
+
+        if (lifetime is { } keepFor)
+        {
+            _options.NotificationLifetime = keepFor;
+        }
+
+        return this;
+    }
+
+    /// <summary>Leaves the output row off, so nothing the application says is drawn on the frame.</summary>
+    /// <returns>The builder.</returns>
+    public ArlecchinoBuilder WithoutNotifications()
+    {
+        _options.ShowOutputLine = false;
+        return this;
+    }
+
+    /// <summary>
     /// Turns the mouse on. It stays off by default because the terminal then stops handling selection
     /// itself, and copying text with the mouse no longer works the way the user expects. Windows reads
     /// the console's event queue for this, which also means quick-edit selection is off while it runs.
