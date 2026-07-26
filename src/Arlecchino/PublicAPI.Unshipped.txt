@@ -1,3 +1,1 @@
 #nullable enable
-*REMOVED*Arlecchino.Forms.Form.ReserveHelpRow.get -> bool
-*REMOVED*Arlecchino.Forms.Form.ReserveHelpRow.init -> void

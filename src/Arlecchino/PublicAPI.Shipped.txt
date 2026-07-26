@@ -124,8 +124,6 @@ Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchi
 Arlecchino.Forms.Form.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Forms.Form.IsFocused.get -> bool
 Arlecchino.Forms.Form.IsFocused.set -> void
-Arlecchino.Forms.Form.ReserveHelpRow.get -> bool
-Arlecchino.Forms.Form.ReserveHelpRow.init -> void
 Arlecchino.Forms.Form.Selected.get -> int
 Arlecchino.Hosting.ArlecchinoBuilder
 Arlecchino.Hosting.ArlecchinoBuilder.AddCommand<TCommand>() -> Arlecchino.Hosting.ArlecchinoBuilder!
