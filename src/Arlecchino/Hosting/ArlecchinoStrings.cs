@@ -43,6 +43,9 @@ public sealed class ArlecchinoStrings
     /// <summary>Heading over the keys the framework itself answers to.</summary>
     public Func<string> HelpFrameworkSection { get; set; } = static () => "Everywhere";
 
+    /// <summary>Heading over the commands of the screen the help was opened from, given its route.</summary>
+    public Func<string, string> HelpScreenSection { get; set; } = static route => $"On {route}";
+
     /// <summary>Heading over the application's own commands.</summary>
     public Func<string> HelpCommandsSection { get; set; } = static () => "Commands";
 

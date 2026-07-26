@@ -85,6 +85,17 @@ internal class HelpView : IArlecchinoView
             rows.Add(new(Line(binding.ToString(), action), false));
         }
 
+        if (_navigator.PreviousCommands.Count > 0)
+        {
+            rows.Add(new("", false));
+            rows.Add(new(_strings.HelpScreenSection(_navigator.PreviousRoute.Name), true));
+
+            foreach (var command in _navigator.PreviousCommands)
+            {
+                rows.Add(new(Line(command.Binding.ToString(), command.Label()), false));
+            }
+        }
+
         rows.Add(new("", false));
         rows.Add(new(_strings.HelpCommandsSection(), true));
 

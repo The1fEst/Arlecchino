@@ -44,6 +44,10 @@ public class Navigator
     /// <summary>Commands of the screen being shown, for the router and the palette.</summary>
     public IReadOnlyList<ViewCommand> CurrentCommands => _active?.View.Commands() ?? [];
 
+    internal ViewRoute PreviousRoute => _back.Count > 0 ? _back.Peek() : ViewRoute.None;
+
+    internal IReadOnlyList<ViewCommand> PreviousCommands { get; private set; } = [];
+
     /// <summary>
     /// What the hints box should show: whatever the screen returned, or its commands when it
     /// returned nothing.
@@ -169,6 +173,11 @@ public class Navigator
 
     private void Show(ViewRoute route)
     {
+        if (_active is { } leaving)
+        {
+            PreviousCommands = leaving.View.Commands();
+        }
+
         _active?.Dispose();
 
         _currentRoute = route;

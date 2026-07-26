@@ -1,5 +1,6 @@
 using System;
 using Arlecchino.Navigation;
+using Arlecchino.Tests.Views;
 using Xunit;
 
 namespace Arlecchino.Tests;
@@ -50,6 +51,32 @@ public sealed class HelpViewTests
         app.Press(ConsoleKey.F1);
 
         Assert.Contains(app.Options.Strings.HelpNoCommands(), app.Frame(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheCommandsOfTheScreenItWasOpenedFromAreListed()
+    {
+        using var app = new TestApplication(120, 40, static builder =>
+            builder.AddView<CommandingView>("Commanding"));
+
+        app.Navigator.Apply(new("Commanding"));
+        app.Press(ConsoleKey.F1);
+        var frame = app.Frame();
+
+        Assert.Contains(app.Options.Strings.HelpScreenSection("Commanding"), frame, StringComparison.Ordinal);
+        Assert.Contains("build", frame, StringComparison.Ordinal);
+        Assert.Contains("print", frame, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AScreenWithoutCommandsGetsNoSectionOfItsOwn()
+    {
+        using var app = new TestApplication(120, 40);
+
+        app.Press(ConsoleKey.F1);
+
+        Assert.DoesNotContain(app.Options.Strings.HelpScreenSection(ViewKind.Probe.Name), app.Frame(),
+            StringComparison.Ordinal);
     }
 
     [Fact]

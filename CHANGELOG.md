@@ -32,8 +32,11 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `Routes.Notifications`, where `Backspace` clears the list. `UseNotifications(key, timeout, lifetime)`
   configures all of it, `WithoutNotifications()` turns the row off.
 - **A keys screen.** `F1` opens `Routes.Help`: every key the framework answers to with what it does,
-  then the application's commands. The descriptions come from `ArlecchinoStrings.HelpKeys`, so they
-  translate like everything else.
+  then the commands of the screen it was opened from, then the application's commands. The middle
+  section is the point — a view's `Commands()` are the keys that work only there, which is what
+  somebody pressing `F1` is usually after; a screen with none gets no section rather than an empty
+  heading. The descriptions come from `ArlecchinoStrings.HelpKeys` and the heading from
+  `HelpScreenSection`, so they translate like everything else.
 - **`ScrollPane`**, a window onto content taller than its space, and **`Surface.Clip`** underneath it:
   a scope that confines every write to a rectangle whatever coordinates the caller uses, so content
   drawn at an offset cannot land on a neighbour.

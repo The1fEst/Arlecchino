@@ -150,8 +150,13 @@ else.
 
 The hints box has room for a handful of keys and the palette lists commands only, so there is a screen
 that lists everything: `F1` — the `Help` binding — opens `Routes.Help`. It shows every key the
-framework answers to with what it does, then the application's own commands with their icon and label,
-and says so plainly when none are registered. `Esc` or `F1` again goes back.
+framework answers to with what it does, then the commands of the screen it was opened from under that
+screen's route, then the application's own commands with their icon and label — and says so plainly
+when none are registered. `Esc` or `F1` again goes back.
+
+The middle section is the one worth knowing about: a view's `Commands()` are the keys that only work
+there, so they are the ones somebody pressing `F1` is usually looking for. A screen that registers
+none gets no section at all rather than an empty heading.
 
 The wording is localisable like everything else: `HelpKeys` on
 [`ArlecchinoStrings`](localization.md) is a delegate that receives the keymap and returns the pairs to

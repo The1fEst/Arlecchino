@@ -1,1 +1,3 @@
 #nullable enable
+Arlecchino.Hosting.ArlecchinoStrings.HelpScreenSection.get -> System.Func<string!, string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpScreenSection.set -> void
