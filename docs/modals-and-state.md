@@ -25,6 +25,8 @@ access to every property.
 | Type | Input | Result |
 |---|---|---|
 | `TextModal` | A single line of text; optionally masked, or checked as an email or a link | `Action<string>` |
+| `TextAreaModal` | Several lines, edited in place; `Enter` breaks the line | `Action<string>` |
+| `MessageModal` | Nothing — something to read and dismiss | `Action?` on close |
 | `NumberModal` | Digits, plus `↑↓` / `PgUp` `PgDn` stepping within `Minimum`..`Maximum` | `Action<decimal>` |
 | `SliderModal` | A track adjusted with `←→`, no typing | `Action<decimal>` |
 | `ToggleModal` | Yes / No | `Action<bool>` |
@@ -283,12 +285,69 @@ Modals draw last, on top of the view, and suppress the hints box while open. All
 hints, `nothing matches`, `Yes` / `No`, the filter prefix, the validation messages — comes from
 [`ArlecchinoStrings`](localization.md).
 
-## The output line
+## The output line and the notifications behind it
 
 ```csharp
 _state.Output = $"picked: {path}";
 ```
 
-Rendered on the last row above a rule, styled `Warning` when it carries text. It is not cleared
-automatically; the palette clears it when it opens. Turn the row off with `options.ShowOutputLine =
-false`, and the hints box with `options.ShowHints = false`.
+Rendered on the last row above a rule, styled `Warning` when it carries text. Writing to `Output`
+raises a **notification**: the row shows the newest one for `options.NotificationTimeout` (5 seconds by
+default) and then goes quiet by itself, so a message no longer sits on screen for the rest of the
+session. An empty string clears the row at once.
+
+The message outlives the row. It stays in the list for `options.NotificationLifetime` (10 minutes),
+and the list is a screen of its own — `Ctrl+N`, or a click on the output row, opens `Routes.Notifications`:
+newest first, `Information`/`Warning`/`Failure` coloured by role, `Backspace` clears it, `Esc` goes
+back.
+
+```csharp
+_state.Notifications.Notify("could not reach the server", NotificationLevel.Failure);
+```
+
+Both timeouts and the key that opens the screen are set in one call — see
+[Hosting and options](hosting-and-options.md):
+
+```csharp
+builder.Services.AddArlecchino().UseNotifications(timeout: TimeSpan.FromSeconds(3));
+```
+
+`WithoutNotifications()` leaves the row off entirely; the hints box is turned off separately with
+`options.ShowHints = false`.
+
+## Message and confirmation
+
+Two dialogs that take no value. `RequestMessage` is something to read — a result, a warning, an
+explanation of what failed — wrapped to half the frame and dismissed with either closing key:
+
+```csharp
+_state.RequestMessage("Saved", "The profile was written to disk.");
+```
+
+`RequestConfirmation` asks before something happens, with **No** selected to begin with, so a stray
+`Enter` cancels rather than deletes. The callback runs only on yes:
+
+```csharp
+_state.RequestConfirmation("Delete the profile?", () => Delete(profile));
+```
+
+## Several lines of text
+
+```csharp
+_state.RequestTextArea(
+    "Release notes",
+    current,
+    text => Save(text),
+    validate: static text => text.Length < 10 ? "at least ten characters" : null,
+    visibleRows: 12);
+```
+
+`Enter` starts a new line here, which is why confirming is a key of its own: the `Submit` binding,
+`Ctrl+Enter` by default. `Esc` still cancels.
+
+The caret is a row plus a position inside it, and everything moves and deletes by symbols rather than
+`char` values. `Backspace` at the start of a line joins it onto the one above, `Delete` at the end
+pulls the next one up, the arrows walk across line ends, `PgUp`/`PgDn` jump a page and `Home`/`End`
+go to the ends of the line. The text scrolls to keep the caret in view, a long line shifts sideways
+for the same reason, and a pasted block keeps its line breaks. The validator runs on submit and its
+message is drawn under the text while the dialog stays open.

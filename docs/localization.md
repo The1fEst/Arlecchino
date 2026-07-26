@@ -52,6 +52,12 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 | `NothingMatches` | `nothing matches` |
 | `Empty` | `empty` |
 | `FormMove` / `FormEdit` / `FormReset` | `move` / `edit` / `reset` — the verbs in the [form](state-and-forms.md) legend |
+| `ModalTextAreaHints` | `Enter — new line   Ctrl+Enter — confirm   Esc — cancel` |
+| `ModalMessageHints` | `Enter — close   Esc — close` |
+| `NotificationsTitle` / `NotificationsCount(count)` / `NotificationsEmpty` | Title, count and empty text of the [notifications screen](modals-and-state.md) |
+| `NotificationsClear` / `NotificationsClose` | `clear` / `back` — its hint line |
+| `HelpTitle` / `HelpFrameworkSection` / `HelpCommandsSection` / `HelpNoCommands` / `HelpClose` | The [keys screen](commands-and-input.md) |
+| `HelpKeys(keymap)` | Every key the framework answers to, paired with what it does — the one place to translate the descriptions |
 | `LogTitle(count)` | `Log ({count})` — title of the [log overlay](hosting-and-options.md) |
 | `LogHints` | `↑↓ scroll · End latest · Backspace clear · Esc close` |
 | `LogEmpty` | `nothing logged yet` |

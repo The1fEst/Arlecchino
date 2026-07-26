@@ -114,6 +114,7 @@ symbol. Every flow and absolute call clips, aligns and pads on that measure, so 
 |---|---|
 | `Of(text)` | Width in columns |
 | `Truncate(text, maxWidth)` | Cuts on a cluster boundary, never inside a symbol |
+| `Wrap(text, width)` | Breaks text into lines that fit, on spaces where there is one; existing line breaks are kept |
 | `PadRight(text, width)` / `PadLeft(text, width)` | Pads to a column width |
 | `OfCluster(span)`, `OfRune(rune)`, `NextClusterLength(text, index)` | The pieces the surface itself uses |
 
@@ -151,6 +152,24 @@ list.WriteLine(0, "Name", Theme.TableHeader);
 
 Both the modal boxes and the file picker are drawn this way, so the same code that positions a pane
 also answers "was this click inside it".
+
+## Clipping a whole stretch of drawing
+
+A region clips writes to its own bounds, which is enough while the coordinates belong to it. Scrolling
+breaks that: the content is drawn shifted, so it reaches outside the window on purpose and must not
+land on a neighbour. `Surface.Clip` confines every write to a rectangle until the scope is disposed,
+whatever coordinates the writing code uses:
+
+```csharp
+using (region.Surface.Clip(region))
+{
+    Content(region with { Top = region.Top - offset, Height = contentHeight });
+}
+```
+
+Scopes nest and the inner one is the intersection, so a clipped pane inside a clipped pane stays
+inside both. [`ScrollPane`](widgets.md) is built on this, and it is what to reach for when writing a
+widget that scrolls something of its own.
 
 ## Geometry
 

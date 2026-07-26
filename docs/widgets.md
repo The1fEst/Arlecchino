@@ -22,7 +22,7 @@ hand.
 
 | Widget | Contract |
 |---|---|
-| `ListBox<T>`, `Table<T>`, `Tree<T>`, `Tabs`, [`Form`](state-and-forms.md) | `IArlecchinoInteractiveWidget` |
+| `ListBox<T>`, `Table<T>`, `Tree<T>`, `Tabs`, `ScrollPane`, `TextView`, [`Form`](state-and-forms.md) | `IArlecchinoInteractiveWidget` |
 | `ProgressBar`, `StatusBar`, `Spinner` | `IArlecchinoWidget` |
 
 None of them holds user-visible text of their own: labels are `Func<string>` supplied by the
@@ -152,6 +152,52 @@ new StatusBar
 Left and right groups joined with three spaces; the right side is dropped when it would collide with
 the left instead of overwriting it. Empty entries are skipped, so a part that is only sometimes
 relevant can return `""`.
+
+## ScrollPane
+
+A window onto content taller than the space it has. Lists scroll themselves; a block of text, a long
+form or a pane of anything else does not — this is the widget for those:
+
+```csharp
+_notes = new ScrollPane(options.Keymap)
+{
+    ContentHeight = () => _lines.Count,
+    Content = region =>
+    {
+        for (var row = 0; row < _lines.Count; row++)
+        {
+            region.WriteLine(row, _lines[row], Theme.Default);
+        }
+    },
+};
+```
+
+The delegate is handed a region as tall as `ContentHeight()` and already moved up by the offset, so it
+always writes the first line at row zero and never has to know where the window is. Anything that can
+paint a region fits inside, other widgets included.
+
+`↑↓` move a row, `PgUp`/`PgDn` a page, `Home`/`End` go to the ends, and the wheel scrolls while the
+pointer is over the pane. `Offset` is the first visible row and is clamped every frame; a scroll bar
+appears down the last column when the content does not fit, unless `ShowScrollBar` says otherwise.
+
+What makes this safe is [`Surface.Clip`](rendering.md): the content is drawn at an offset that reaches
+outside the pane, and the parts that fall outside are dropped rather than landing on a neighbour.
+
+## TextView
+
+A block of text to read: wrapped to the width it is given, scrolled the same way a `ScrollPane` is —
+because it is one inside.
+
+```csharp
+_readme = new TextView(options.Keymap) { Text = File.ReadAllText(path) };
+
+_readme.Draw(region);
+```
+
+Line breaks in the text are kept, long lines break on spaces, and a word wider than the pane is split
+rather than lost. The wrap is cached and redone only when the text or the width changed, so resizing
+the terminal reflows the text instead of cutting it off. `LineCount` is how many rows it takes once
+wrapped, `Style` colours it, and `Offset` is the first wrapped line shown.
 
 ## Putting them together
 

@@ -121,7 +121,10 @@ in the router:
 | `EraseWord` / `EraseToStart` | `Ctrl+Backspace` / `Ctrl+U` | Text fields |
 | `WordLeft` / `WordRight` | `Ctrl+←` / `Ctrl+→` | Text fields |
 | `Copy` | `Ctrl+Insert` | Text fields |
+| `Submit` | `Ctrl+Enter` | Confirms the [multi-line text dialog](modals-and-state.md), where `Enter` breaks the line |
 | `ToggleLog` | `Ctrl+L` | The [log overlay](hosting-and-options.md) |
+| `Notifications` | `Ctrl+N` | The [notifications screen](modals-and-state.md) |
+| `Help` | `F1` | The keys screen below |
 | `Mark` | `Space` | Multi-choice, toggle |
 | `PickCurrentFolder` | `Ctrl+Enter` | File picker |
 
@@ -142,6 +145,17 @@ remapped key relabels itself everywhere it is shown.
 The command-palette key stays a character (`options.CommandPaletteKey`, `:` by default) rather than a
 binding: it is resolved through `KeyText`, so it keeps working on a layout where `:` sits somewhere
 else.
+
+## The keys screen
+
+The hints box has room for a handful of keys and the palette lists commands only, so there is a screen
+that lists everything: `F1` — the `Help` binding — opens `Routes.Help`. It shows every key the
+framework answers to with what it does, then the application's own commands with their icon and label,
+and says so plainly when none are registered. `Esc` or `F1` again goes back.
+
+The wording is localisable like everything else: `HelpKeys` on
+[`ArlecchinoStrings`](localization.md) is a delegate that receives the keymap and returns the pairs to
+list, so the descriptions can be translated or the order changed without touching the screen.
 
 ## Keyboard layouts
 

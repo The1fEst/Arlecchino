@@ -90,6 +90,8 @@ level.
 | `ReadFromTerminal(sequence)` | Feeds a raw escape sequence, as a real terminal would |
 | `Frame()` / `FrameLines()` / `FrameLineContaining(text)` | The composed frame as plain text |
 | `Styles()` | The ANSI style sequences of the frame, for asserting on colour |
+| `Advance(amount)` | Moves the clock and runs whatever the [ticker](hosting-and-options.md) had due — a five-second wait costs nothing |
+| `Clock` | The `TimeProvider` behind that, for asserting on times |
 | `State`, `Navigator`, `Surface`, `Options`, `History`, `Dispatcher`, `Services` | The wired services |
 
 `FrameText` is the helper behind those: `WithoutStyles`, `Lines`, `StylesIn`, `CursorJumpsIn` and

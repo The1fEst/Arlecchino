@@ -29,6 +29,9 @@ it puts in the container are singletons:
 | `Screen` | Frame composition |
 | `InputRouter` | Key dispatch |
 | `ArlecchinoKeymap`, `ArlecchinoStrings` | The keymap and the wording, for widgets and stores built by the container |
+| `Ticker` | Work on a clock, run between frames |
+| `Notifications` | What the application has said lately, behind the output row |
+| `TimeProvider` | Where the ticker and the notifications read the time; a test host replaces it |
 
 `IArlecchinoTerminal` is registered with `TryAdd`, so registering your own before `AddArlecchino` also wins.
 
@@ -52,6 +55,8 @@ it puts in the container are singletons:
 | `Strings` | `new ArlecchinoStrings()` | User-visible text |
 | `StartRoute` | `ViewRoute.None` | Route shown on the first frame |
 | `InputPollInterval` | `8 ms` | Sleep between key polls when the input queue is empty |
+| `NotificationTimeout` | `5 s` | How long a message holds the output row |
+| `NotificationLifetime` | `10 min` | How long it stays readable on the notifications screen |
 
 ## Builder API
 
@@ -70,6 +75,8 @@ it puts in the container are singletons:
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |
 | `UseTextInput(mode)`, `UseLatinOnlyInput()`, `UseNativeInput()` | Keyboard layout handling |
 | `UseKeymap(keymap)` | Replaces the key bindings |
+| `UseNotifications(key, timeout, lifetime)` | Turns the output row on, sets both timeouts and the key that opens the notifications screen |
+| `WithoutNotifications()` | Leaves the output row off |
 | `UseMouse()` | Turns on mouse reporting |
 | `UseTheme(palette)` | Replaces the colour palette |
 | `UseStrings(strings)` | Replaces user-visible text |
@@ -95,6 +102,39 @@ public sealed class ChooseStartView : IArlecchinoStartup
 
 Register with `.AddStartup<ChooseStartView>()`. Every startup runs when the hosted service begins, in
 registration order, each one applied to the navigator.
+
+## Work on a clock
+
+Frames are drawn when something asks for one, so anything that changes on its own — a spinner, a
+clock, a list that refreshes itself, a message that fades — needs someone to say when. That someone is
+`Ticker`:
+
+```csharp
+public sealed class ProcessesView : IArlecchinoView
+{
+    public ProcessesView(Ticker ticker, ViewLifetime lifetime, ProcessTable processes)
+    {
+        lifetime.Track(ticker.Every(TimeSpan.FromSeconds(5), processes.Refresh));
+    }
+}
+```
+
+| Call | Does |
+|---|---|
+| `Every(interval, action)` | Runs it over and over, waiting the interval between runs |
+| `After(delay, action)` | Runs it once |
+| `NextDue` | When the next scheduled action is due, or `null` |
+
+Both schedules return the handle that cancels them, so handing it to
+[`ViewLifetime.Track`](state-and-forms.md) stops the work when the screen goes away. The actions run
+between frames on the same thread as drawing and input — no locking, no `UiDispatcher.Post` — and a
+repaint is asked for afterwards. One that throws is logged and reported on the output row; the rest
+still run.
+
+Nothing here uses a thread of its own: the frame loop calls the ticker on every turn, and a headless
+host moves its own clock instead. That is what makes it testable — `ArlecchinoTestHost.Advance(...)`
+moves the clock and runs whatever fell due, so a test that would wait five seconds waits none. See
+[Packages and building](packages-and-building.md).
 
 ## Failures and shutdown
 

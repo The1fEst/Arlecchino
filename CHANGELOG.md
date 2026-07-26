@@ -9,17 +9,41 @@ change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
 ## Unreleased
 
-The API review before a stable release: names, namespaces and surface, all in one go. Everything here
-is breaking, and it is the last release that intends to be.
+The API review before a stable release, and the features it was waiting for.
+
+### Added
+
+- **Work on a clock.** `Ticker` schedules an action `Every(interval)` or `After(delay)`, runs it
+  between frames on the drawing thread and asks for a repaint afterwards; the handle it returns
+  cancels the work, so `ViewLifetime.Track` ties it to a screen. No thread of its own — the frame loop
+  calls it, and `ArlecchinoTestHost.Advance(...)` moves a `TestClock` instead, so a test never waits.
+- **Message and confirmation dialogs.** `RequestMessage` shows something to read, wrapped and
+  dismissed with either closing key. `RequestConfirmation` asks first with **No** preselected and runs
+  the callback only on yes.
+- **The output row times out, and keeps a history.** Writing `ArlecchinoState.Output` raises a
+  notification: the row shows it for `NotificationTimeout` and then goes quiet, while the message stays
+  readable for `NotificationLifetime` on a screen of its own — `Ctrl+N` or a click on the row opens
+  `Routes.Notifications`, where `Backspace` clears the list. `UseNotifications(key, timeout, lifetime)`
+  configures all of it, `WithoutNotifications()` turns the row off.
+- **A keys screen.** `F1` opens `Routes.Help`: every key the framework answers to with what it does,
+  then the application's commands. The descriptions come from `ArlecchinoStrings.HelpKeys`, so they
+  translate like everything else.
+- **`ScrollPane`**, a window onto content taller than its space, and **`Surface.Clip`** underneath it:
+  a scope that confines every write to a rectangle whatever coordinates the caller uses, so content
+  drawn at an offset cannot land on a neighbour.
+- **`TextView`** for reading a block of text — wrapped, scrolled, reflowed when the width changes —
+  and **`TextWidth.Wrap`** behind it, public for layout code of your own.
+- **`TextAreaModal` and `RequestTextArea`** for editing several lines: `Enter` breaks the line, the new
+  `Submit` binding (`Ctrl+Enter`) confirms, the caret moves by symbols across line ends, pasted blocks
+  keep their breaks, and the validator's message is drawn under the text.
 
 ### Changed
 
-- **Namespaces are laid out by subject.** The seven types that sat in the root `Arlecchino` moved out:
-  `IArlecchinoTerminal`, `SystemTerminal`, `TerminalInputReader` and `InputRouter` to
-  `Arlecchino.Input`, `Screen` and `Repaint` to `Arlecchino.Rendering`, `UiDispatcher` to
-  `Arlecchino.Hosting`. `Arlecchino.State` split three ways: atoms and stores to `Arlecchino.Atoms`,
-  every modal to `Arlecchino.Modals`, and `ArlecchinoState` with the file-picker request left where
-  they were.
+Everything in this section is breaking, and it is the last release that intends to be.
+
+- **`Arlecchino.State` is laid out by subject.** It split three ways: atoms and stores to
+  `Arlecchino.Atoms`, every modal to `Arlecchino.Modals`, and `ArlecchinoState` with the file-picker
+  request left where they were. `TerminalInputReader` moved to `Arlecchino.Input`.
 - **`TuiState` is `ArlecchinoState`** — the last name carrying the old prefix.
 - **The atom vocabulary is finished.** `IReadableState<T>` is `IReadableAtom<T>`, `StateHistory` is
   `AtomHistory`, `AsyncState<T>` is `AsyncAtom<T>`, and `IStateEdit` is `IAtomEdit`.
