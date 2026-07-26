@@ -133,6 +133,7 @@ Arlecchino.Hosting.ArlecchinoBuilder.AddStartup<TStartup>() -> Arlecchino.Hostin
 Arlecchino.Hosting.ArlecchinoBuilder.AddView(string! route, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>! factory) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddView<T>(string! route) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddViewFactory<TFactory>() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.AddWidget<TWidget>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.Options.get -> Arlecchino.Hosting.ArlecchinoOptions!
 Arlecchino.Hosting.ArlecchinoBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 Arlecchino.Hosting.ArlecchinoBuilder.StartAt(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Hosting.ArlecchinoBuilder!
