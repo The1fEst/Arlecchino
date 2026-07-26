@@ -57,6 +57,12 @@ where the cursor is.
 Only the visible slice is rendered — `ScrollWindow.Around(selected, count, rows)` is the same helper
 the widget uses, available for lists you draw yourself.
 
+`Items` is read while the frame is drawn, so the collection behind it belongs to the drawing thread
+like everything else: change it from a view, a command or a callback, and hand changes that arrive
+from anywhere else to [`UiDispatcher.Post`](rendering.md). A collection that empties in the middle of
+a frame no longer throws — the frame ends early and a warning names the route — but the frame it cut
+short was still a frame nobody asked for.
+
 A list with more items than rows grows a scroll bar down its last column, and the rows are truncated
 one cell earlier to make room rather than being covered by it. A list that fits keeps its full width
 and shows nothing. The thumb is at least one cell tall and only touches an end when the list does, so

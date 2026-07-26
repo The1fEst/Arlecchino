@@ -76,6 +76,13 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
         for (var row = 0; row < _window.Count; row++)
         {
             var index = _window.First + row;
+
+            if (index >= Items.Count)
+            {
+                DrawFaults.RowVanishedWhileDrawing();
+                break;
+            }
+
             var item = Items[index];
             var text = TextWidth.PadRight(TextWidth.Truncate(Render(item), textWidth), textWidth);
 

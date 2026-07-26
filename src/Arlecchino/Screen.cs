@@ -203,6 +203,16 @@ public class Screen
         DrawModals();
 
         _surface.Build();
+
+        if (DrawFaults.TakeSkippedRows() is var skipped and > 0)
+        {
+            _logger.LogWarning(
+                "A collection shrank while it was being drawn at route {Route}; {Skipped} frame(s) were " +
+                "cut short. Change what a widget draws from the drawing thread — through UiDispatcher.Post " +
+                "when the change comes from somewhere else.",
+                _navigator.CurrentRoute,
+                skipped);
+        }
     }
 
     private void DrawOutput()

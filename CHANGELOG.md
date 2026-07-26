@@ -12,6 +12,18 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
 
 ### Fixed
 
+- **A list no longer takes the application down when its collection shrinks mid-frame.** `ListBox`
+  worked out which rows to draw from `Items.Count` and then read them one by one, so anything that
+  removed items in between — a background thread that forgot the dispatcher, or a `Render` or
+  `ItemStyle` delegate that touches the collection — reached `Items[index]` after the item was gone
+  and threw `ArgumentOutOfRangeException` out of `Draw`. The row is skipped now and the frame ends
+  early rather than the application ending. `Table` draws through the same list, so it is covered too;
+  `Tree` already flattened its nodes into a snapshot first.
+- It is not swallowed either: a frame cut short that way is logged once, with the route it happened on
+  and a reminder that a widget's collection is changed from the drawing thread — `UiDispatcher.Post`
+  when the change comes from anywhere else. A race that used to be a crash is now a warning in the log
+  overlay, which is where it belongs.
+
 - The generator's `Microsoft.CodeAnalysis.CSharp` reference went back to the oldest version it
   supports, and Dependabot is told to leave it alone. A bump to `5.6.0` was merged, which sounds
   harmless and is not: a generator runs inside the compiler of the application referencing it, so a
