@@ -702,3 +702,13 @@ Arlecchino.Hosting.Ticker.NextDue.get -> System.DateTimeOffset?
 Arlecchino.Hosting.Ticker.Every(System.TimeSpan interval, System.Action! action) -> System.IDisposable!
 Arlecchino.Hosting.Ticker.After(System.TimeSpan delay, System.Action! action) -> System.IDisposable!
 Arlecchino.Hosting.Ticker.Run(System.Action<System.Exception!>! onError) -> void
+Arlecchino.Modals.MessageModal
+Arlecchino.Modals.MessageModal.MessageModal() -> void
+Arlecchino.Hosting.ArlecchinoStrings.ModalMessageHints.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.ModalMessageHints.get -> System.Func<string!>!
+Arlecchino.State.ArlecchinoState.RequestMessage(string! title, string! text, System.Action? onClosed = null) -> void
+Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onConfirmed) -> void
+Arlecchino.Modals.MessageModal.Text.get -> string!
+Arlecchino.Modals.MessageModal.Text.init -> void
+Arlecchino.Modals.MessageModal.OnClosed.get -> System.Action?
+Arlecchino.Modals.MessageModal.OnClosed.init -> void

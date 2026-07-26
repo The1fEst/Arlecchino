@@ -268,6 +268,42 @@ public class ArlecchinoState
         };
     }
 
+    /// <summary>Shows a message with nothing to fill in; any of the closing keys dismisses it.</summary>
+    /// <param name="title">Title of the dialog.</param>
+    /// <param name="text">What to say. Long text wraps inside the box.</param>
+    /// <param name="onClosed">Called once it is dismissed.</param>
+    public void RequestMessage(string title, string text, Action? onClosed = null)
+    {
+        Modal = new MessageModal
+        {
+            Title = title,
+            Text = text,
+            OnClosed = onClosed,
+        };
+    }
+
+    /// <summary>
+    /// Asks a question that has to be confirmed before something happens. The negative answer starts
+    /// selected, so a stray <c>Enter</c> cancels rather than deletes.
+    /// </summary>
+    /// <param name="title">The question.</param>
+    /// <param name="onConfirmed">Called only when the answer was yes.</param>
+    public void RequestConfirmation(string title, Action onConfirmed)
+    {
+        Modal = new ToggleModal
+        {
+            Title = title,
+            Value = false,
+            OnSubmit = answer =>
+            {
+                if (answer)
+                {
+                    onConfirmed();
+                }
+            },
+        };
+    }
+
     /// <summary>Asks for one option out of a list that can be filtered by typing.</summary>
     /// <param name="title">Title of the dialog.</param>
     /// <param name="options">What to choose from.</param>

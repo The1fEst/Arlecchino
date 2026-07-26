@@ -466,6 +466,9 @@ public class InputRouter
             case ToggleModal toggle:
                 ProcessToggleModal(toggle, key);
                 return;
+            case MessageModal message:
+                ProcessMessageModal(message, key);
+                return;
             case SegmentedModal segmented:
                 ProcessSegmentedModal(segmented, key);
                 return;
@@ -846,6 +849,17 @@ public class InputRouter
         {
             modal.Value = !modal.Value;
         }
+    }
+
+    private void ProcessMessageModal(MessageModal modal, ConsoleKeyInfo key)
+    {
+        if (!_keymap.Cancel.Matches(key) && !_keymap.Confirm.Matches(key))
+        {
+            return;
+        }
+
+        _state.CloseModal();
+        modal.OnClosed?.Invoke();
     }
 
     private void ProcessSegmentedModal(SegmentedModal modal, ConsoleKeyInfo key)

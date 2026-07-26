@@ -35,6 +35,9 @@ public sealed class ArlecchinoStrings
     /// <summary>Footer of a yes/no dialog.</summary>
     public Func<string> ModalToggleHints { get; set; } = static () => "←→ — switch   Enter — confirm   Esc — cancel";
 
+    /// <summary>The key line under a dialog that only has something to say.</summary>
+    public Func<string> ModalMessageHints { get; set; } = static () => "Enter — close   Esc — close";
+
     /// <summary>The affirmative chip of a yes/no dialog.</summary>
     public Func<string> Yes { get; set; } = static () => "Yes";
 
