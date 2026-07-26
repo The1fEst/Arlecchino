@@ -11,6 +11,8 @@ updates:
         patterns: ['Microsoft.Extensions.*']
       testing:
         patterns: ['xunit*', 'Microsoft.NET.Test.Sdk', 'coverlet.*']
+    ignore:
+      - dependency-name: Microsoft.CodeAnalysis.CSharp
 
   - package-ecosystem: github-actions
     directory: /

@@ -8,6 +8,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+### Fixed
+
+- The generator's `Microsoft.CodeAnalysis.CSharp` reference went back to the oldest version it
+  supports, and Dependabot is told to leave it alone. A bump to `5.6.0` was merged, which sounds
+  harmless and is not: a generator runs inside the compiler of the application referencing it, so a
+  newer Roslyn reference means it stops loading on an older SDK — `AddGeneratedViews` is missing and
+  the user sees `cannot resolve symbol` with nothing to explain it. Released `1.0.0` is unaffected;
+  the bump landed after the tag. The bump also turned on `RS2008` and broke the build, which is how it
+  was noticed at all.
+
+### Continuous integration
+
+- The consumer application is built twice, on the .NET 10 SDK and on the .NET 8 one. A generator that
+  refuses to load in an older compiler is invisible to every other check in the matrix — the
+  repository builds, the tests pass, the package is produced — and the only place it shows is an
+  application built the way somebody on the long-term support release builds theirs.
+
 ## 1.0.0
 
 The first stable release: the public surface is what it is going to be, and from here a breaking

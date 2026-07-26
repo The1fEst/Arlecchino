@@ -116,17 +116,26 @@ jobs:
       - name: Build an application against the packages
         run: |
           version=$(grep -oE '<Version>[^<]+' Directory.Build.props | head -1 | cut -d'>' -f2)
-          work="${RUNNER_TEMP}/consumer"
 
-          rm -rf "$work"
-          dotnet new console -o "$work" -n Consumer
-          cp .github/consumer/Program.cs "$work/"
+          consume() {
+            sdk="$1"
+            work="${RUNNER_TEMP}/consumer-$sdk"
 
-          cd "$work"
-          dotnet new nugetconfig
-          dotnet nuget add source "$GITHUB_WORKSPACE/artifacts/packages" --name arlecchino-local --configfile nuget.config
-          dotnet add package Arlecchino --version "$version"
-          dotnet build
+            rm -rf "$work"
+            mkdir -p "$work"
+            cd "$work"
+
+            printf '{ "sdk": { "version": "%s", "rollForward": "latestFeature" } }\n' "$sdk" > global.json
+            dotnet new console -n Consumer -o .
+            cp "$GITHUB_WORKSPACE/.github/consumer/Program.cs" .
+            dotnet new nugetconfig
+            dotnet nuget add source "$GITHUB_WORKSPACE/artifacts/packages" --name arlecchino-local --configfile nuget.config
+            dotnet add package Arlecchino --version "$version"
+            dotnet build
+          }
+
+          consume 10.0.100
+          consume 8.0.100
         shell: bash
 
       - name: Upload packages
