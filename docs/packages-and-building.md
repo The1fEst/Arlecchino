@@ -173,11 +173,11 @@ On a 120×40 frame with every row written (Ryzen 7 9800X3D, .NET 10, short job):
 | A key through the router | 17 ns | 0 B |
 | A click through the router | 11 ns | 0 B |
 | A pasted block arriving as an escape sequence | 395 ns | 304 B |
-| Write an atom nothing listens to | 3.9 ns | 64 B |
-| Write an atom 20 things listen to | 18 ns | 184 B |
-| Write an atom that records history | 26 ns | 144 B |
-| Read a computed value that did not change | 3.0 ns | 64 B |
-| Read a computed value after a dependency changed | 48 ns | 480 B |
+| Write an atom nothing listens to | 1.5 ns | 0 B |
+| Write an atom 20 things listen to | 8.3 ns | 0 B |
+| Write an atom that records history | 17 ns | 144 B |
+| Read a computed value that did not change | 0.5 ns | 0 B |
+| Read a computed value after a dependency changed | 47 ns | 304 B |
 | `TextWidth.Of` on a latin line | 0.9 µs | 0 B |
 | `TextWidth.Wrap` on two paragraphs | 12.9 µs | 2.9 KB |
 
@@ -188,10 +188,10 @@ the budget, and frames are only built when something asks for one, so an idle ap
 of this. Input is far below anything a person can notice: the router costs tens of nanoseconds, so
 what a key costs is whatever the view does with it.
 
-The atom rows carry the one number that is worth watching: reading an atom allocates 64 bytes,
-because the read hands `AtomTracking` a delegate so that an enclosing `Computed` can discover the
-dependency — and it does so whether or not anything is collecting. Frames read atoms constantly, so
-this is the allocation a busy application makes most of.
+Reading and writing atoms allocates nothing, which is the point: frames read atoms constantly, and a
+read that allocated would put the garbage collector on the critical path of drawing. What is left is
+paid for on purpose — 144 bytes when an edit enters the undo history, because the step has to be kept
+somewhere, and 304 when a `Computed` re-runs and subscribes to whatever it read this time.
 
 ### Running them on CI
 

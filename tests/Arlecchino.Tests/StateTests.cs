@@ -49,6 +49,44 @@ public sealed class StateTests
     }
 
     [Fact]
+    public void ASubscriberMayUnsubscribeWhileBeingNotified()
+    {
+        var count = new LocalAtom<int>(0);
+        var notified = 0;
+        var subscriptions = new List<IDisposable>();
+
+        subscriptions.Add(count.Subscribe(() =>
+        {
+            notified++;
+            subscriptions[0].Dispose();
+        }));
+
+        using var second = count.Subscribe(() => notified++);
+
+        count.Value = 1;
+        count.Value = 2;
+
+        Assert.Equal(3, notified);
+    }
+
+    [Fact]
+    public void ASubscriberAddedWhileNotifyingHearsTheNextWriteOnly()
+    {
+        var count = new LocalAtom<int>(0);
+        var late = 0;
+        IDisposable? added = null;
+
+        using var first = count.Subscribe(() => added ??= count.Subscribe(() => late++));
+
+        count.Value = 1;
+        count.Value = 2;
+
+        added?.Dispose();
+
+        Assert.Equal(1, late);
+    }
+
+    [Fact]
     public void ComputedTracksWhatItReads()
     {
         var first = new TrackedAtom<string>("a");

@@ -12,9 +12,10 @@ namespace Arlecchino.Atoms;
 public sealed class Computed<T> : IReadableAtom<T>
 {
     private readonly Func<T> _compute;
-    private readonly List<Action> _listeners = [];
     private readonly List<IDisposable> _dependencies = [];
+    private readonly Action<Func<Action, IDisposable>> _track;
 
+    private Action[] _listeners = [];
     private T _value = default!;
     private bool _isStale = true;
 
@@ -26,6 +27,9 @@ public sealed class Computed<T> : IReadableAtom<T>
     public Computed(Func<T> compute)
     {
         _compute = compute;
+
+        var markStale = MarkStale;
+        _track = subscribe => _dependencies.Add(subscribe(markStale));
     }
 
     /// <summary>The derived value, recomputed on the first read after any dependency changed.</summary>
@@ -38,7 +42,11 @@ public sealed class Computed<T> : IReadableAtom<T>
                 Recompute();
             }
 
-            AtomTracking.NoteRead(Subscribe);
+            if (AtomTracking.IsCapturing)
+            {
+                AtomTracking.NoteRead(Subscribe);
+            }
+
             return _value;
         }
     }
@@ -53,8 +61,8 @@ public sealed class Computed<T> : IReadableAtom<T>
             Recompute();
         }
 
-        _listeners.Add(listener);
-        return new Subscription(_listeners, listener);
+        _listeners = [.. _listeners, listener];
+        return new Subscription(this, listener);
     }
 
     private void Recompute()
@@ -67,7 +75,7 @@ public sealed class Computed<T> : IReadableAtom<T>
         _dependencies.Clear();
         _isStale = false;
 
-        using var tracking = AtomTracking.Capture(subscribe => _dependencies.Add(subscribe(MarkStale)));
+        using var tracking = AtomTracking.Capture(_track);
         _value = _compute();
     }
 
@@ -80,20 +88,34 @@ public sealed class Computed<T> : IReadableAtom<T>
 
         _isStale = true;
 
-        foreach (var listener in _listeners.ToArray())
+        foreach (var listener in _listeners)
         {
             listener();
         }
     }
 
+    private void Unsubscribe(Action listener)
+    {
+        var index = Array.IndexOf(_listeners, listener);
+        if (index < 0)
+        {
+            return;
+        }
+
+        var remaining = new Action[_listeners.Length - 1];
+        Array.Copy(_listeners, remaining, index);
+        Array.Copy(_listeners, index + 1, remaining, index, remaining.Length - index);
+        _listeners = remaining;
+    }
+
     private sealed class Subscription : IDisposable
     {
-        private readonly List<Action> _listeners;
+        private readonly Computed<T> _computed;
         private Action? _listener;
 
-        public Subscription(List<Action> listeners, Action listener)
+        public Subscription(Computed<T> computed, Action listener)
         {
-            _listeners = listeners;
+            _computed = computed;
             _listener = listener;
         }
 
@@ -104,7 +126,7 @@ public sealed class Computed<T> : IReadableAtom<T>
                 return;
             }
 
-            _listeners.Remove(_listener);
+            _computed.Unsubscribe(_listener);
             _listener = null;
         }
     }

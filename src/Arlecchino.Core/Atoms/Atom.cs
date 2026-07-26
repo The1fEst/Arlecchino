@@ -15,9 +15,9 @@ namespace Arlecchino.Atoms;
 /// <typeparam name="T">Type of the value held.</typeparam>
 public abstract class Atom<T> : IReadableAtom<T>
 {
-    private readonly List<Action> _listeners = [];
     private readonly IEqualityComparer<T> _comparer;
 
+    private Action[] _listeners = [];
     private T _value;
 
     /// <summary>Creates an atom holding a starting value.</summary>
@@ -43,7 +43,11 @@ public abstract class Atom<T> : IReadableAtom<T>
     {
         get
         {
-            AtomTracking.NoteRead(Subscribe);
+            if (AtomTracking.IsCapturing)
+            {
+                AtomTracking.NoteRead(Subscribe);
+            }
+
             return _value;
         }
         set => Write(value, recordHistory: true);
@@ -54,8 +58,8 @@ public abstract class Atom<T> : IReadableAtom<T>
     /// <returns>Dispose it to stop listening.</returns>
     public IDisposable Subscribe(Action listener)
     {
-        _listeners.Add(listener);
-        return new Subscription(_listeners, listener);
+        _listeners = [.. _listeners, listener];
+        return new Subscription(this, listener);
     }
 
     private void Write(T value, bool recordHistory)
@@ -73,12 +77,26 @@ public abstract class Atom<T> : IReadableAtom<T>
             AtomChanges.NotifyRecorded(new Edit(this, previous, value));
         }
 
-        foreach (var listener in _listeners.ToArray())
+        foreach (var listener in _listeners)
         {
             listener();
         }
 
         AtomChanges.NotifyWritten();
+    }
+
+    private void Unsubscribe(Action listener)
+    {
+        var index = Array.IndexOf(_listeners, listener);
+        if (index < 0)
+        {
+            return;
+        }
+
+        var remaining = new Action[_listeners.Length - 1];
+        Array.Copy(_listeners, remaining, index);
+        Array.Copy(_listeners, index + 1, remaining, index, remaining.Length - index);
+        _listeners = remaining;
     }
 
     private sealed class Edit : IAtomEdit
@@ -103,12 +121,12 @@ public abstract class Atom<T> : IReadableAtom<T>
 
     private sealed class Subscription : IDisposable
     {
-        private readonly List<Action> _listeners;
+        private readonly Atom<T> _atom;
         private Action? _listener;
 
-        public Subscription(List<Action> listeners, Action listener)
+        public Subscription(Atom<T> atom, Action listener)
         {
-            _listeners = listeners;
+            _atom = atom;
             _listener = listener;
         }
 
@@ -119,7 +137,7 @@ public abstract class Atom<T> : IReadableAtom<T>
                 return;
             }
 
-            _listeners.Remove(_listener);
+            _atom.Unsubscribe(_listener);
             _listener = null;
         }
     }

@@ -12,6 +12,12 @@ internal static class AtomTracking
     [ThreadStatic]
     private static Action<Func<Action, IDisposable>>? _track;
 
+    /// <summary>
+    /// Whether anything on this thread is collecting reads. Atoms check this before handing over a
+    /// way to subscribe, because building one allocates and a read outside a computation needs none.
+    /// </summary>
+    public static bool IsCapturing => _track is not null;
+
     /// <summary>Called by an atom when it is read, so an enclosing computation can depend on it.</summary>
     /// <param name="subscribe">How to subscribe to that atom.</param>
     public static void NoteRead(Func<Action, IDisposable> subscribe) => _track?.Invoke(subscribe);
@@ -19,14 +25,14 @@ internal static class AtomTracking
     /// <summary>Collects reads made on this thread until the returned scope is disposed.</summary>
     /// <param name="track">What to do with each read.</param>
     /// <returns>The scope; disposing it restores the previous collector.</returns>
-    public static IDisposable Capture(Action<Func<Action, IDisposable>> track)
+    public static Scope Capture(Action<Func<Action, IDisposable>> track)
     {
         var previous = _track;
         _track = track;
-        return new Scope(previous);
+        return new(previous);
     }
 
-    private sealed class Scope : IDisposable
+    internal readonly struct Scope : IDisposable
     {
         private readonly Action<Func<Action, IDisposable>>? _previous;
 

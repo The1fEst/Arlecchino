@@ -86,6 +86,18 @@ Everything in this section is breaking, and it is the last release that intends 
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
 
+### Performance
+
+- **Reading and writing an atom no longer allocates.** A read used to hand `AtomTracking` a delegate
+  so that an enclosing `Computed` could discover the dependency, and built one whether or not anything
+  was collecting — 64 bytes on every read, on a path frames take constantly. The read now asks first.
+  Subscribers are held in an array replaced on subscribe instead of a list copied on every write, so a
+  write no longer allocates either; a listener that unsubscribes while being notified still runs to
+  completion, and one that subscribes there hears the next write rather than the current one. Reading
+  a cached `Computed` went from 3.0 ns and 64 B to 0.5 ns and nothing, writing an atom twenty things
+  listen to from 18 ns and 184 B to 8.3 ns and nothing, and re-running a `Computed` allocates 304 B
+  rather than 480. The benchmarks that found this are in the repository.
+
 ### Tests
 
 - `SystemTerminal` is covered. Until now every test went through `FakeTerminal`, so the escape
