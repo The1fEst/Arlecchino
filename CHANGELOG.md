@@ -8,7 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
-## Unreleased
+## 1.0.1
 
 ### Fixed
 
@@ -23,7 +23,6 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
   and a reminder that a widget's collection is changed from the drawing thread — `UiDispatcher.Post`
   when the change comes from anywhere else. A race that used to be a crash is now a warning in the log
   overlay, which is where it belongs.
-
 - The generator's `Microsoft.CodeAnalysis.CSharp` reference went back to the oldest version it
   supports, and Dependabot is told to leave it alone. A bump to `5.6.0` was merged, which sounds
   harmless and is not: a generator runs inside the compiler of the application referencing it, so a
@@ -87,7 +86,6 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `Copy` answers to both `Ctrl+Insert` and `Ctrl+Shift+C` — the two habits for the same action. Pasting
   needs nothing here: the terminal turns `Ctrl+Shift+V` into a bracketed paste, which already arrives
   as one block.
-
 - **`ArlecchinoReport`**, for when a user says it looks wrong on their machine. `Describe()` returns
   the version, the runtime and platform, what the terminal said it can do (`TERM`, `COLORTERM`,
   `NO_COLOR`, size, colour level, whether output is redirected), the route being shown with the modals

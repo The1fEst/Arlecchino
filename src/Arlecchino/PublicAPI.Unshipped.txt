@@ -1,4 +1,1 @@
 #nullable enable
-Arlecchino.Diagnostics.ArlecchinoReport
-Arlecchino.Diagnostics.ArlecchinoReport.ArlecchinoReport(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.Navigation.Navigator! navigator, Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Rendering.Surface! surface, Arlecchino.Atoms.AtomHistory! history) -> void
-Arlecchino.Diagnostics.ArlecchinoReport.Describe() -> string!
