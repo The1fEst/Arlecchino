@@ -59,13 +59,13 @@ internal class HelpView : IArlecchinoView
 
     public ViewRoute Handle(ConsoleKeyInfo key)
     {
-        if (_keymap.Cancel.Matches(key) || _keymap.Help.Matches(key))
+        if (!_keymap.Cancel.Matches(key) && !_keymap.Help.Matches(key))
         {
-            _navigator.Back();
-            return ViewRoute.None;
+            return _rows.Handle(key).Route;
         }
 
-        return _rows.Handle(key).Route;
+        _navigator.Back();
+        return ViewRoute.None;
     }
 
     public ViewRoute HandleMouse(MouseEvent mouse) => _rows.HandleMouse(mouse).Route;

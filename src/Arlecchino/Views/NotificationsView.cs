@@ -96,6 +96,6 @@ internal class NotificationsView : IArlecchinoView
         return ViewRoute.None;
     }
 
-    private string Describe(Notification entry) =>
+    private static string Describe(Notification entry) =>
         $" {entry.Time.ToLocalTime():HH:mm:ss}  {entry.Text}";
 }

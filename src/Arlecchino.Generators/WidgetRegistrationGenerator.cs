@@ -43,7 +43,7 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(widgetDeclarations.Collect().Combine(settings), static (ctx, pair) =>
         {
             var (widgets, settings) = pair;
-            if (!settings.Generate)
+            if (!settings.IsEnabled)
             {
                 return;
             }
@@ -181,11 +181,11 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
     {
         public Settings(bool generate, string widgetNamespace)
         {
-            Generate = generate;
+            IsEnabled = generate;
             WidgetNamespace = widgetNamespace;
         }
 
-        public bool Generate { get; }
+        public bool IsEnabled { get; }
         public string WidgetNamespace { get; }
     }
 

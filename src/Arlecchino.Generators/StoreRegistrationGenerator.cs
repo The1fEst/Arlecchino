@@ -43,7 +43,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(storeDeclarations.Collect().Combine(settings), static (ctx, pair) =>
         {
             var (stores, settings) = pair;
-            if (!settings.Generate)
+            if (!settings.IsEnabled)
             {
                 return;
             }
@@ -153,11 +153,11 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
     {
         public Settings(bool generate, string storeNamespace)
         {
-            Generate = generate;
+            IsEnabled = generate;
             StoreNamespace = storeNamespace;
         }
 
-        public bool Generate { get; }
+        public bool IsEnabled { get; }
         public string StoreNamespace { get; }
     }
 

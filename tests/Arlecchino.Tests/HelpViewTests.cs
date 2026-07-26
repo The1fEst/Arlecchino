@@ -1,6 +1,4 @@
 using System;
-using Arlecchino.Hosting;
-using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Xunit;
 
@@ -70,7 +68,7 @@ public sealed class HelpViewTests
     public void TheKeyCanBeRebound()
     {
         using var app = new TestApplication(configure: static builder =>
-            builder.UseKeymap(new ArlecchinoKeymap { Help = new KeyBinding(ConsoleKey.F2) }));
+            builder.UseKeymap(new() { Help = new(ConsoleKey.F2) }));
 
         app.Press(ConsoleKey.F1);
         Assert.NotEqual(Routes.Help, app.Navigator.CurrentRoute);

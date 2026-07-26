@@ -201,9 +201,9 @@ public sealed class ArlecchinoBuilder
     {
         _options.ShowOutputLine = true;
 
-        var binding = key is { } chosen
-            ? new KeyBinding(chosen.Key, chosen.Modifiers)
-            : new KeyBinding(ConsoleKey.N, ConsoleModifiers.Control);
+        KeyBinding binding = key is { } chosen
+            ? new(chosen.Key, chosen.Modifiers)
+            : new(ConsoleKey.N, ConsoleModifiers.Control);
 
         _options.Keymap = _options.Keymap with { Notifications = binding };
 

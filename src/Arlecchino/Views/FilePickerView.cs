@@ -38,9 +38,6 @@ internal class FilePickerView : IArlecchinoView
     private readonly FilePickerRequest _request;
     private readonly List<SidebarRow> _sidebar;
 
-    private readonly Stack<string> _back = new();
-    private readonly Stack<string> _forward = new();
-
     private readonly FocusRing _panes;
     private readonly FocusablePane _sidebarPane;
     private readonly FocusablePane _list;
@@ -322,11 +319,8 @@ internal class FilePickerView : IArlecchinoView
 
     private void DrawToolbar(SurfaceRegion toolbar)
     {
-        toolbar.Write(0, 0, "◀", _back.Count > 0 ? Theme.Accent : Theme.Muted);
-        toolbar.Write(0, 2, "▶", _forward.Count > 0 ? Theme.Accent : Theme.Muted);
-
         var folder = _path.Length == 0 ? _strings.Drives() : (Path.GetFileName(_path) is { Length: > 0 } name ? name : _path);
-        toolbar.Write(0, 5, folder, Theme.Header);
+        toolbar.Write(0, 0, folder, Theme.Header);
 
         var mode = _request.PickFolder ? _strings.FolderMode() : _strings.FileMode();
         var title = $"{_request.Title} ({mode})";
@@ -562,12 +556,7 @@ internal class FilePickerView : IArlecchinoView
         }
     }
 
-    private void NavigateTo(string path)
-    {
-        _back.Push(_path);
-        _forward.Clear();
-        SetPath(path);
-    }
+    private void NavigateTo(string path) => SetPath(path);
 
     private void GoUp()
     {

@@ -43,7 +43,7 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(commandDeclarations.Collect().Combine(settings), static (ctx, pair) =>
         {
             var (commands, settings) = pair;
-            if (!settings.Generate)
+            if (!settings.IsEnabled)
             {
                 return;
             }
@@ -153,11 +153,11 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
     {
         public Settings(bool generate, string commandNamespace)
         {
-            Generate = generate;
+            IsEnabled = generate;
             CommandNamespace = commandNamespace;
         }
 
-        public bool Generate { get; }
+        public bool IsEnabled { get; }
         public string CommandNamespace { get; }
     }
 

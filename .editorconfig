@@ -55,5 +55,10 @@ resharper_loop_can_be_converted_to_query_highlighting = none
 resharper_foreach_can_be_converted_to_query_using_another_get_enumerator_highlighting = none
 resharper_empty_general_catch_clause_highlighting = none
 
+resharper_unused_auto_property_accessor_global_highlighting = none
+
 [benchmarks/**.cs]
 dotnet_diagnostic.CA1822.severity = none
+
+[tests/**.cs]
+resharper_access_to_disposed_closure_highlighting = none

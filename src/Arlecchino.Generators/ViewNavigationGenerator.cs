@@ -45,7 +45,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(viewDeclarations.Collect().Combine(settings), static (ctx, pair) =>
         {
             var (views, settings) = pair;
-            if (!settings.Generate)
+            if (!settings.IsEnabled)
             {
                 return;
             }
@@ -236,12 +236,12 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
     {
         public Settings(bool generate, string viewNamespace, bool namespaceWasChosen)
         {
-            Generate = generate;
+            IsEnabled = generate;
             ViewNamespace = viewNamespace;
             NamespaceWasChosen = namespaceWasChosen;
         }
 
-        public bool Generate { get; }
+        public bool IsEnabled { get; }
         public string ViewNamespace { get; }
         public bool NamespaceWasChosen { get; }
     }
