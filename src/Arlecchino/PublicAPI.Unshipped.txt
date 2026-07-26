@@ -1,12 +1,1 @@
 #nullable enable
-Arlecchino.Forms.Form.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.IArlecchinoWidget.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ListBox<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ProgressBar.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ScrollPane.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Spinner.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.StatusBar.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Table<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Tabs.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.TextView.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Tree<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
