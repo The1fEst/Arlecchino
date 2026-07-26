@@ -730,6 +730,9 @@ Arlecchino.Views.FilePickerView.FilePickerView(Arlecchino.State.TuiState! state,
 Arlecchino.Views.FilePickerView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Views.FilePickerView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Views.FilePickerView.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Widgets.IArlecchinoInteractiveWidget
+Arlecchino.Widgets.IArlecchinoWidget
+Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.ListBox<T>
 Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
@@ -751,13 +754,15 @@ Arlecchino.Widgets.ListBox<T>.Style.set -> void
 Arlecchino.Widgets.ProgressBar
 Arlecchino.Widgets.ProgressBar.Caption.get -> System.Func<decimal, string!>?
 Arlecchino.Widgets.ProgressBar.Caption.init -> void
-Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.ProgressBar.Fraction.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.init -> void
 Arlecchino.Widgets.ProgressBar.Minimum.get -> decimal
 Arlecchino.Widgets.ProgressBar.Minimum.init -> void
 Arlecchino.Widgets.ProgressBar.ProgressBar() -> void
+Arlecchino.Widgets.ProgressBar.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.ProgressBar.Style.init -> void
 Arlecchino.Widgets.ProgressBar.Value.get -> decimal
 Arlecchino.Widgets.ProgressBar.Value.set -> void
 Arlecchino.Widgets.ScrollBar
@@ -775,17 +780,21 @@ Arlecchino.Widgets.ScrollWindow.ScrollWindow(int First, int Count) -> void
 Arlecchino.Widgets.Spinner
 Arlecchino.Widgets.Spinner.Advance() -> void
 Arlecchino.Widgets.Spinner.Current.get -> string!
-Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.Spinner.Frames.get -> string![]!
 Arlecchino.Widgets.Spinner.Frames.init -> void
 Arlecchino.Widgets.Spinner.Spinner() -> void
+Arlecchino.Widgets.Spinner.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.Spinner.Style.init -> void
 Arlecchino.Widgets.StatusBar
-Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.StatusBar.Left.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.StatusBar.Left.init -> void
 Arlecchino.Widgets.StatusBar.Right.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.StatusBar.Right.init -> void
 Arlecchino.Widgets.StatusBar.StatusBar() -> void
+Arlecchino.Widgets.StatusBar.Style.get -> Arlecchino.Rendering.ITermColor?
+Arlecchino.Widgets.StatusBar.Style.init -> void
 Arlecchino.Widgets.Table<T>
 Arlecchino.Widgets.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TableColumn<T>!>!
 Arlecchino.Widgets.Table<T>.Columns.init -> void
