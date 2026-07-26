@@ -95,6 +95,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `assets/`: the harlequin mask as an icon on its plate, transparent, and as a single-colour glyph
   that inherits `currentColor`, plus the banner and the social card — SVG throughout, with the raster
   sizes rendered beside them.
+- [Rendering](docs/rendering.md) ends with the terminals the framework has actually run in and what
+  each one showed — plain `xterm-256color`, `COLORTERM=truecolor`, `NO_COLOR`, `TERM=dumb`, tmux,
+  macOS on Arm — and, just as usefully, the ones it has not: conhost without virtual terminal support,
+  Terminal.app, PuTTY, kitty and friends.
 - `Theme.Palette` and `TerminalCapabilities.Color` are documented as process-wide, which is what they
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
