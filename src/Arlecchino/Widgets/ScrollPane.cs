@@ -42,7 +42,7 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
     public required Func<int> ContentHeight { get; init; }
 
     /// <summary>Whether a scroll bar is drawn down the last column when the content does not fit.</summary>
-    public bool ShowScrollBar { get; init; } = true;
+    public bool ShowScrollBar { get; set; } = true;
 
     /// <summary>First content row shown, clamped to what there is on every frame.</summary>
     public int Offset

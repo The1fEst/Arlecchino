@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -264,6 +265,43 @@ public static class TextWidth
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// Breaks text into lines that fit a column width, at spaces where there is one and mid-word only
+    /// when a single word is wider than the space. Line breaks already in the text are kept, so a
+    /// paragraph stays a paragraph.
+    /// </summary>
+    /// <param name="text">The text to break up.</param>
+    /// <param name="width">Columns available; anything below one is treated as one.</param>
+    /// <returns>The lines, in order.</returns>
+    public static List<string> Wrap(string text, int width)
+    {
+        var columns = Math.Max(1, width);
+        var lines = new List<string>();
+
+        foreach (var paragraph in text.Replace("\r", "").Split('\n'))
+        {
+            var rest = paragraph;
+
+            while (Of(rest) > columns)
+            {
+                var head = Truncate(rest, columns);
+                var breakAt = head.LastIndexOf(' ');
+
+                if (breakAt <= 0)
+                {
+                    breakAt = head.Length;
+                }
+
+                lines.Add(rest[..breakAt].TrimEnd());
+                rest = rest[breakAt..].TrimStart();
+            }
+
+            lines.Add(rest);
+        }
+
+        return lines;
     }
 
     /// <summary>Pads the text with spaces on the right until it fills the given column width.</summary>

@@ -745,7 +745,7 @@ Arlecchino.Widgets.ScrollPane.Content.init -> void
 Arlecchino.Widgets.ScrollPane.ContentHeight.get -> System.Func<int>!
 Arlecchino.Widgets.ScrollPane.ContentHeight.init -> void
 Arlecchino.Widgets.ScrollPane.ShowScrollBar.get -> bool
-Arlecchino.Widgets.ScrollPane.ShowScrollBar.init -> void
+Arlecchino.Widgets.ScrollPane.ShowScrollBar.set -> void
 Arlecchino.Widgets.ScrollPane.Offset.get -> int
 Arlecchino.Widgets.ScrollPane.Offset.set -> void
 Arlecchino.Widgets.ScrollPane.IsFocused.get -> bool
@@ -753,3 +753,19 @@ Arlecchino.Widgets.ScrollPane.IsFocused.set -> void
 Arlecchino.Widgets.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.TextView
+Arlecchino.Widgets.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.TextView.Text.get -> string!
+Arlecchino.Widgets.TextView.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
+Arlecchino.Widgets.TextView.Text.set -> void
+Arlecchino.Widgets.TextView.Style.set -> void
+Arlecchino.Widgets.TextView.ShowScrollBar.get -> bool
+Arlecchino.Widgets.TextView.ShowScrollBar.init -> void
+Arlecchino.Widgets.TextView.Offset.get -> int
+Arlecchino.Widgets.TextView.LineCount.get -> int
+Arlecchino.Widgets.TextView.IsFocused.get -> bool
+Arlecchino.Widgets.TextView.Offset.set -> void
+Arlecchino.Widgets.TextView.IsFocused.set -> void
+Arlecchino.Widgets.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void

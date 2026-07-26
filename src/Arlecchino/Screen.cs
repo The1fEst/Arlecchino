@@ -412,47 +412,13 @@ public class Screen
         var width = Math.Max(SmallestFieldColumns, _surface.FrameWidth / 2);
         var body = new List<Span[]>();
 
-        foreach (var line in WrapText(modal.Text, width))
+        foreach (var line in TextWidth.Wrap(modal.Text, width))
         {
             body.Add([new(line, Theme.Default)]);
         }
 
         var (box, _) = DrawBox(modal.Title, body, _strings.ModalMessageHints());
         modal.Box = box;
-    }
-
-    private static List<string> WrapText(string text, int width)
-    {
-        var lines = new List<string>();
-
-        foreach (var paragraph in text.Split('\n'))
-        {
-            var rest = paragraph.Replace("\r", "");
-
-            if (rest.Length == 0)
-            {
-                lines.Add("");
-                continue;
-            }
-
-            while (TextWidth.Of(rest) > width)
-            {
-                var head = TextWidth.Truncate(rest, width);
-                var breakAt = head.LastIndexOf(' ');
-
-                if (breakAt <= 0)
-                {
-                    breakAt = head.Length;
-                }
-
-                lines.Add(rest[..breakAt].TrimEnd());
-                rest = rest[breakAt..].TrimStart();
-            }
-
-            lines.Add(rest);
-        }
-
-        return lines;
     }
 
     private void DrawSegmentedModal(SegmentedModal modal, string hints)

@@ -139,3 +139,4 @@ Arlecchino.IArlecchinoTerminal.DisableMouse() -> void
 Arlecchino.IArlecchinoTerminal.Width.get -> int
 Arlecchino.Rendering.Surface.Surface(Arlecchino.IArlecchinoTerminal! terminal) -> void
 Arlecchino.Rendering.Surface.Clip(Arlecchino.Rendering.SurfaceRegion region) -> System.IDisposable!
+static Arlecchino.Rendering.TextWidth.Wrap(string! text, int width) -> System.Collections.Generic.List<string!>!
