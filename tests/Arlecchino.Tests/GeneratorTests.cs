@@ -337,6 +337,51 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void AViewTheGeneratedCodeCannotReachIsLeftOut()
+    {
+        const string source = """
+            using System;
+            using Arlecchino.Navigation;
+
+            namespace Sample;
+
+            public static class Screens
+            {
+                private sealed class HiddenView : IArlecchinoView
+                {
+                    public void Draw() { }
+                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                }
+            }
+            """;
+
+        var (generated, _) = Run(source);
+
+        Assert.DoesNotContain("HiddenView", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AStoreTheGeneratedCodeCannotReachIsLeftOut()
+    {
+        const string source = """
+            using Arlecchino.Atoms;
+
+            namespace Sample;
+
+            public static class Owner
+            {
+                private sealed class HiddenStore : IArlecchinoStore
+                {
+                }
+            }
+            """;
+
+        var (generated, _) = RunStores(source);
+
+        Assert.DoesNotContain("HiddenStore", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void AStoreNestedInAnotherTypeIsNamedThroughIt()
     {
         const string source = """

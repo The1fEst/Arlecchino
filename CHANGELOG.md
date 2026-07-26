@@ -83,6 +83,16 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Fixed
 
+- **A screen that cannot be built no longer moves the application.** The navigator changed the current
+  route and disposed the screen it was leaving *before* the new one was constructed, so a view whose
+  constructor threw — a store that was never registered is the usual cause — left the route pointing
+  at a screen that does not exist while the old one carried on drawing. `Back()` and the diagnostics
+  disagreed with the screen from then on. The new screen is now built first: if it throws, the route,
+  the history and the screen are exactly as they were, and the error reaches the log and the output
+  row as before.
+- A view, store, command or widget the generated code cannot name is left out of it. A view nested
+  privately inside another type was picked up and registered, and the build then failed with `CS0122`
+  in a generated file. Reachability is checked through every containing type now.
 - A view, store, command or widget declared inside another type is now named through it. The generator
   emitted `new ModsView(...)` for a class nested in `Screens`, which does not compile — the code it
   wrote could not see the type it had just found. All four generators name types the same way now.

@@ -77,7 +77,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !Implements(symbol, "IArlecchinoStore"))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !Implements(symbol, "IArlecchinoStore"))
         {
             return null;
         }

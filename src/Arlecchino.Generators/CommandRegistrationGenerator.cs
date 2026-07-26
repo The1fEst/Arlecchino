@@ -77,7 +77,7 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !Implements(symbol))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !Implements(symbol))
         {
             return null;
         }

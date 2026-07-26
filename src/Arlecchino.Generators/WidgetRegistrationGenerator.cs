@@ -74,7 +74,7 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !ImplementsWidget(symbol))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !ImplementsWidget(symbol))
         {
             return null;
         }
