@@ -62,8 +62,10 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
                 }
             }
 
+            var registrable = commandModels.Where(static command => command.HasPublicConstructor).ToArray();
+
             ctx.AddSource("ArlecchinoCommandRegistration.g.cs",
-                SourceText.From(Generate(commandModels, settings.CommandNamespace), Encoding.UTF8));
+                SourceText.From(Generate(registrable, settings.CommandNamespace), Encoding.UTF8));
         });
     }
 

@@ -92,6 +92,51 @@ public sealed class GeneratorTests
         return RunGenerator(new WidgetRegistrationGenerator(), source, options);
     }
 
+    private const string TwoCommands = """
+        using Arlecchino.Commands;
+        using Arlecchino.Input;
+        using Arlecchino.Navigation;
+        using Arlecchino.Rendering;
+        using System;
+
+        namespace Sample.Actions;
+
+        public sealed class QuitCommand : IArlecchinoCommand
+        {
+            public KeyBinding Binding => new KeyBinding(ConsoleKey.Q);
+            public string Icon => "×";
+            public string Label => "Quit";
+            public ViewRoute Execute() => ViewRoute.None;
+        }
+
+        public sealed class ClearCommand : IArlecchinoCommand
+        {
+            public ClearCommand(Surface surface) { }
+            public KeyBinding Binding => new KeyBinding(ConsoleKey.C);
+            public string Icon => "";
+            public string Label => "Clear";
+            public ViewRoute Execute() => ViewRoute.None;
+        }
+        """;
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunCommands(
+        string source,
+        string? generate = null)
+    {
+        var options = new Dictionary<string, string>
+        {
+            ["build_property.RootNamespace"] = "Sample",
+            ["build_property.ArlecchinoViewNamespace"] = "Sample.Views",
+        };
+
+        if (generate is not null)
+        {
+            options["build_property.ArlecchinoGenerateCommands"] = generate;
+        }
+
+        return RunGenerator(new CommandRegistrationGenerator(), source, options);
+    }
+
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunGenerator(
         IIncrementalGenerator generator,
         string source,
@@ -260,10 +305,31 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (_, diagnostics) = Run(source);
+        var (generated, diagnostics) = Run(source);
         var reported = Assert.Single(diagnostics, item => item.Id == "ARL002");
 
         Assert.Contains("HiddenView", reported.GetMessage(), StringComparison.Ordinal);
+        Assert.DoesNotContain("new HiddenView(", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void StoreWithoutAPublicConstructorIsReportedAndLeftOut()
+    {
+        const string source = """
+            using Arlecchino.Atoms;
+
+            namespace Sample.Stores;
+
+            public sealed class HiddenStore : IArlecchinoStore
+            {
+                private HiddenStore() { }
+            }
+            """;
+
+        var (generated, diagnostics) = RunStores(source);
+
+        Assert.Single(diagnostics, item => item.Id == "ARL005");
+        Assert.DoesNotContain("HiddenStore", generated, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -441,6 +507,81 @@ public sealed class GeneratorTests
         var (generated, _) = RunWidgets(ThreeWidgets, generate: "false");
 
         Assert.Equal("", generated);
+    }
+
+    [Fact]
+    public void CommandsOfTheProjectAreRegisteredWithTheirDependencies()
+    {
+        var (generated, diagnostics) = RunCommands(TwoCommands);
+
+        Assert.Contains("namespace Sample.Views;", generated, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Actions;", generated, StringComparison.Ordinal);
+        Assert.Contains(
+            "builder.Services.AddSingleton<IArlecchinoCommand>(static services => new QuitCommand());",
+            generated,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "builder.Services.AddSingleton<IArlecchinoCommand>(static services => new ClearCommand(services.GetRequiredService<Surface>()));",
+            generated,
+            StringComparison.Ordinal);
+        Assert.Empty(diagnostics);
+    }
+
+    [Fact]
+    public void CommandRegistrationIsGeneratedEvenWhenNoCommandExistsYet()
+    {
+        var (generated, _) = RunCommands(TwoViews);
+
+        Assert.Contains(
+            "public static ArlecchinoBuilder AddGeneratedCommands(this ArlecchinoBuilder builder)",
+            generated,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void NoCommandsAreGeneratedWhenTheProjectTurnsThemOff()
+    {
+        var (generated, _) = RunCommands(TwoCommands, generate: "false");
+
+        Assert.Equal("", generated);
+    }
+
+    [Fact]
+    public void CommandWithoutAPublicConstructorIsReported()
+    {
+        const string source = """
+            using Arlecchino.Commands;
+            using Arlecchino.Input;
+            using Arlecchino.Navigation;
+            using System;
+
+            namespace Sample.Actions;
+
+            public sealed class HiddenCommand : IArlecchinoCommand
+            {
+                private HiddenCommand() { }
+                public KeyBinding Binding => new KeyBinding(ConsoleKey.H);
+                public string Icon => "";
+                public string Label => "Hidden";
+                public ViewRoute Execute() => ViewRoute.None;
+            }
+            """;
+
+        var (generated, diagnostics) = RunCommands(source);
+
+        Assert.Single(diagnostics, item => item.Id == "ARL006");
+        Assert.DoesNotContain("HiddenCommand", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CommandsAreRegisteredInAStableOrder()
+    {
+        var (generated, _) = RunCommands(TwoCommands);
+
+        Assert.True(
+            generated.IndexOf("ClearCommand", StringComparison.Ordinal) <
+            generated.IndexOf("QuitCommand", StringComparison.Ordinal));
     }
 
     [Fact]

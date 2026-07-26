@@ -52,14 +52,14 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
             var declared = views.OfType<ViewModel>().ToArray();
 
-            var viewModels = declared
+            var named = declared
                 .GroupBy(static view => view.RouteName)
                 .Select(group => ReportDuplicates(ctx, group))
                 .OrderBy(static view => view.RouteName == "Default" ? 0 : 1)
                 .ThenBy(static view => view.RouteName, StringComparer.Ordinal)
                 .ToArray();
 
-            foreach (var view in viewModels)
+            foreach (var view in named)
             {
                 if (!view.HasPublicConstructor)
                 {
@@ -67,6 +67,8 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                         ViewDiagnostics.NoPublicConstructor, view.Location, view.TypeName));
                 }
             }
+
+            var viewModels = named.Where(static view => view.HasPublicConstructor).ToArray();
 
             if (!settings.NamespaceWasChosen)
             {

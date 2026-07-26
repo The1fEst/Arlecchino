@@ -75,6 +75,13 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   widget, instead of a `ViewRoute` from the public method and a `FocusResult` from an explicit
   implementation. A view hosting a form returns `_form.Handle(key).Route`.
 
+### Fixed
+
+- A view, store or command without a public constructor is now left out of the generated code instead
+  of being registered anyway. The generator reported it (`ARL002`, `ARL005`, `ARL006`) and then emitted
+  a `new` of it regardless, so the diagnostic arrived alongside a compiler error in generated code
+  rather than in place of one. Widgets already behaved this way; the other three now match.
+
 ### Removed
 
 - Implementation details are no longer public: `ArlecchinoHostedService`, `RegisteredViewFactory`,

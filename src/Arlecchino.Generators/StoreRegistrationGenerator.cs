@@ -62,8 +62,10 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
                 }
             }
 
+            var registrable = storeModels.Where(static store => store.HasPublicConstructor).ToArray();
+
             ctx.AddSource("ArlecchinoStoreRegistration.g.cs",
-                SourceText.From(Generate(storeModels, settings.StoreNamespace), Encoding.UTF8));
+                SourceText.From(Generate(registrable, settings.StoreNamespace), Encoding.UTF8));
         });
     }
 

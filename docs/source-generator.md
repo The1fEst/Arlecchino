@@ -255,11 +255,11 @@ The generator says something instead of quietly doing the wrong thing:
 | Id | Severity | Means |
 |---|---|---|
 | `ARL001` | Warning | Two views produce the same route — `Sample.ModsView` and `Sample.Extra.ModsView` both become `Mods`. The first one wins and the other is unreachable; rename one of them or register it explicitly |
-| `ARL002` | Warning | A view implements `IArlecchinoView` but has no public constructor, so the generated factory cannot create it |
+| `ARL002` | Warning | A view implements `IArlecchinoView` but has no public constructor, so the generated factory cannot create it and leaves it out |
 | `ARL003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
 | `ARL004` | Info | No class implements `IArlecchinoView`, so `ViewKind` holds no routes and the application has nowhere to start |
-| `ARL005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so the container cannot build it |
-| `ARL006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so the container cannot build it |
+| `ARL005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so it is left out of `AddGeneratedStores()` |
+| `ARL006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so it is left out of `AddGeneratedCommands()` |
 | `ARL007` | Info | A widget cannot be registered — generic, no public constructor, or `required` members — and is left out of `AddGeneratedWidgets()` |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
