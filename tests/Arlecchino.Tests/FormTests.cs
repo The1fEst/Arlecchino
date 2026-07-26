@@ -203,6 +203,65 @@ public sealed class FormTests
     }
 
     [Fact]
+    public void FieldsWithoutHelpAreDrawnOneAfterTheOther()
+    {
+        using var app = new TestApplication();
+        var form = new Form(app.State, app.Options)
+        {
+            Fields =
+            [
+                Field.Text(static () => "First", new TrackedAtom<string>("one")),
+                Field.Text(static () => "Second", new TrackedAtom<string>("two")),
+            ],
+        };
+
+        var lines = Show(app, form).Split("\r\n");
+        var first = IndexOfLineContaining(lines, "First");
+
+        Assert.Equal("Second", lines[first + 1].Trim().Split(' ')[0]);
+    }
+
+    [Fact]
+    public void TheHelpRowIsOnlyThereWhenTheSelectedFieldHasHelp()
+    {
+        using var app = new TestApplication();
+        var form = new Form(app.State, app.Options)
+        {
+            Fields =
+            [
+                Field.Text(static () => "First", new TrackedAtom<string>(""), help: static () => "help for first"),
+                Field.Text(static () => "Second", new TrackedAtom<string>("")),
+            ],
+        };
+
+        var withHelp = Show(app, form).Split("\r\n");
+        var firstRow = IndexOfLineContaining(withHelp, "First");
+
+        Assert.Contains("help for first", withHelp[firstRow + 1], StringComparison.Ordinal);
+
+        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+
+        var withoutHelp = app.Frame().Split("\r\n");
+        var secondRow = IndexOfLineContaining(withoutHelp, "Second");
+
+        Assert.Equal("", withoutHelp[secondRow + 1].Trim());
+        Assert.Equal(secondRow - 1, IndexOfLineContaining(withoutHelp, "First"));
+    }
+
+    private static int IndexOfLineContaining(string[] lines, string text)
+    {
+        for (var index = 0; index < lines.Length; index++)
+        {
+            if (lines[index].Contains(text, StringComparison.Ordinal))
+            {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    [Fact]
     public void PathFieldOpensTheFilePicker()
     {
         using var app = new TestApplication();

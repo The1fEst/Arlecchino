@@ -48,12 +48,6 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// <summary>Whether the form has focus, which decides how strongly the selection is drawn.</summary>
     public bool IsFocused { get; set; } = true;
 
-    /// <summary>
-    /// Whether a row is kept free for the help line even when the selected field has no help. Keeping it
-    /// stops the fields from jumping about as the selection moves.
-    /// </summary>
-    public bool ReserveHelpRow { get; init; } = true;
-
     /// <summary>The selected field, or <c>null</c> when the form has none.</summary>
     public Field? Current => Fields.Count == 0 ? null : Fields[Math.Clamp(Selected, 0, Fields.Count - 1)];
 
@@ -80,7 +74,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
             }
         }
 
-        var helpRows = ReserveHelpRow || (Current?.Help().Length ?? 0) > 0 ? 1 : 0;
+        var helpRows = (Current?.Help().Length ?? 0) > 0 ? 1 : 0;
         var fieldRows = Math.Max(1, region.Height - helpRows);
         var first = Math.Clamp(Selected - fieldRows / 2, 0, Math.Max(0, Fields.Count - fieldRows));
 

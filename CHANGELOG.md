@@ -7,6 +7,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+### Fixed
+
+- A form left a blank row under the selected field even when that field had no help, so moving
+  through fields dragged a hole along with the selection. The help line is drawn only when there is
+  help to show.
+
+### Changed
+
+- **Breaking.** `Form.ReserveHelpRow` is gone with it: keeping a row free for help that does not
+  exist was the hole itself, and there is nothing left to configure.
+
 ## 0.8.0
 
 ### Added

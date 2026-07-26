@@ -176,7 +176,8 @@ public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse);
 ```
 
 Rendered as `label = value`, labels padded to the longest, the help of the selected field on the line
-under it, actions as `> Label`:
+under it, actions as `> Label`. The help line exists only when the selected field actually has help,
+so a form of fields without any is a solid column of rows:
 
 ```
   Profile    = empty
