@@ -21,7 +21,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | [State and forms](state-and-forms.md) | `TrackedAtom` and `LocalAtom` atoms, computed values, undo, async loading, and forms built from them |
 | [Widgets](widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
-| [Packages and building](packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed |
+| [Packages and building](packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning, testing an application, CI and benchmarks |
 
 ## Where things live
 

@@ -111,14 +111,25 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- Benchmarks cover what the earlier ones left out: a key through the router, a click, a pasted block,
+  writing atoms watched and unwatched, a computed value read cached and invalidated, undo and redo,
+  and `TextWidth.Wrap`. They are what found the allocation above.
+
+### Continuous integration
+
+- The build fails on a ReSharper inspection as well as on a compiler warning: `jb inspectcode` runs
+  against `.editorconfig` and annotates what it finds. That covers the rules the compiler has no say
+  in — a redundant type in an argument, an `if` worth inverting, a member that should be static.
+- CI builds a console application against the freshly packed `.nupkg` files, with views, a store, a
+  widget and a command in it, registered both by the generator and by hand. Three bugs this cycle only
+  showed up that way, and none of them were visible from a build of the repository itself. The project
+  is generated outside the checkout, so it is shaped by the packages rather than by our build props.
 - Coverage is measured on every run and the build fails when it drops: 80% of lines, 65% of branches.
   The figures per assembly land in the run summary, so a change that adds code without tests is
   visible before it is merged rather than after.
-- Benchmarks cover what the earlier ones left out: a key through the router, a click, a pasted block,
-  a frame drawn in answer to a key, writing atoms watched and unwatched, a computed value read cached
-  and invalidated, undo and redo, and `TextWidth.Wrap`. Every benchmark is executed on each CI run as
-  a dry job — measurements mean nothing there, but a benchmark that no longer compiles or throws is
-  caught the day it breaks.
+- Every benchmark is executed on each run as a dry job. Measurements from a shared runner mean
+  nothing, but a benchmark that no longer compiles or has started throwing is caught the day it
+  breaks; `benchmarks.yml` runs them properly on demand and writes the tables into the run summary.
 
 ## 0.9.0
 
@@ -222,12 +233,6 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 - `build.yml` ignores `**.md`, `docs/**` and `LICENSE`, and the documentation says how to keep a
   work-in-progress commit off CI entirely (`[skip ci]`, which Actions reads by itself).
-- The build now fails on a ReSharper inspection as well as on a compiler warning: `jb inspectcode`
-  runs against `.editorconfig` and annotates what it finds. That covers the rules the compiler has no
-  say in — a redundant type in an argument, an `if` worth inverting, a member that should be static.
-- CI builds a console application against the freshly packed `.nupkg` files, with views, a store, a
-  widget and a command in it. Three bugs this cycle only showed up that way, and none of them were
-  visible from a build of the repository itself.
 
 ## 0.4.0
 

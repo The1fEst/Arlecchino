@@ -74,7 +74,7 @@ Full documentation lives in [docs](docs/README.md).
 | [State and forms](docs/state-and-forms.md) | `TrackedAtom` and `LocalAtom` atoms, computed values, undo, async loading, and forms built from them |
 | [Widgets](docs/widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](docs/localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
-| [Packages and building](docs/packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning |
+| [Packages and building](docs/packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning, testing an application, CI and benchmarks |
 
 What changed between versions is in the [changelog](CHANGELOG.md).
 
