@@ -7,6 +7,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## 0.6.0
+
+### Added
+
+- Commands register themselves. A third generator finds every `IArlecchinoCommand` in the project and
+  `.AddGeneratedCommands()` puts each one in the container as a singleton, built by a factory calling
+  its public constructor with the most parameters. `TSR006` reports a command the container cannot
+  build, and `ArlecchinoGenerateCommands` turns the generator off. `AddCommand<T>()` stays for
+  commands that come from another assembly — the two are alternatives, and using both for the same
+  type lists it twice in the palette.
+
+### Changed
+
+- **Breaking.** The markers an application implements carry the package name now: `IView` is
+  `IArlecchinoView`, `IStore` is `IArlecchinoStore`, and `IScopedStore` is
+  `IArlecchinoScopedStore`. All three sit in namespaces an application imports, where a bare `IView`
+  or `IStore` is the same name half the ecosystem uses. `IViewFactory` and the rest of the
+  navigation types are unchanged — nothing outside the package implements them.
+- **Breaking.** `Rendering.FontStyle` is now `TextStyle` and `Rendering.Region` is now
+  `SurfaceRegion`. Those two were the whole measured overlap of the public surface with anything
+  outside it: both collide with `System.Drawing` at the same arity, so a project that also
+  references `System.Drawing.Common` could not import `Arlecchino.Rendering` without qualifying
+  them. Nothing else among the 112 public types clashes with the .NET reference assemblies.
+- **Breaking.** The atoms are called atoms in the API, not only in the prose: `State<T>` is
+  `Atom<T>`, `TrackedState<T>` is `TrackedAtom<T>`, and `LocalState<T>` is `LocalAtom<T>`. The base
+  type also stops carrying the name of the namespace it lives in. `AsyncState<T>`, `Computed<T>`,
+  `StateHistory` and `StateChanges` keep their names — they are not atoms.
+
 ## 0.5.0
 
 ### Added

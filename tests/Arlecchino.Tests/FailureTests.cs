@@ -96,7 +96,7 @@ public sealed class FailureTests
     }
 }
 
-public sealed class BreakingView : IView
+public sealed class BreakingView : IArlecchinoView
 {
     public const string DrawFailure = "draw failed";
     public const string HandleFailure = "handle failed";

@@ -9,7 +9,7 @@ using Arlecchino.State;
 
 namespace Arlecchino.Sample;
 
-public class DefaultView : IView
+public class DefaultView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly TuiState _state;

@@ -11,7 +11,7 @@ using Arlecchino.Widgets;
 
 namespace Arlecchino.Processes;
 
-public sealed class ProcessesView : IView
+public sealed class ProcessesView : IArlecchinoView
 {
     private const int OutputLineRows = 2;
 

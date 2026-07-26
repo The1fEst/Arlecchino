@@ -7,36 +7,36 @@ frame stale by themselves. Subscriptions are deliberately coarse — there is no
 ones to keep rendering cheap, because a frame already redraws everything and only changed cells reach
 the terminal.
 
-An atom is one of two types — `TrackedState<T>` for state the undo stack should carry, `LocalState<T>`
-for state it should not. `State<T>` is the base both share and the type everything else is written
+An atom is one of two types — `TrackedAtom<T>` for state the undo stack should carry, `LocalAtom<T>`
+for state it should not. `Atom<T>` is the base both share and the type everything else is written
 against; it is abstract, so the choice is made once, where the atom is declared.
 
 ## Atoms
 
 ```csharp
-public sealed class SettingsStore : IStore
+public sealed class SettingsStore : IArlecchinoStore
 {
-    public State<string> Profile { get; } = new TrackedState<string>("");
-    public State<decimal> Volume { get; } = new TrackedState<decimal>(60);
-    public State<bool> Fullscreen { get; } = new TrackedState<bool>(true);
-    public State<int> Cursor { get; } = new LocalState<int>(0);
+    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+    public Atom<decimal> Volume { get; } = new TrackedAtom<decimal>(60);
+    public Atom<bool> Fullscreen { get; } = new TrackedAtom<bool>(true);
+    public Atom<int> Cursor { get; } = new LocalAtom<int>(0);
 }
 ```
 
-A class of atoms like this one is a **store**. Marking it `IStore` is all the wiring there is: the
+A class of atoms like this one is a **store**. Marking it `IArlecchinoStore` is all the wiring there is: the
 generator finds it and `.AddGeneratedStores()` puts it in the container as a singleton, so views and
 commands take it as a constructor parameter like any other service — nothing to register by hand and
-nothing to forget when a store is added. `IScopedStore` does the same for state that belongs to one
+nothing to forget when a store is added. `IArlecchinoScopedStore` does the same for state that belongs to one
 screen. See [Source generator](source-generator.md#stores).
 
-`State<T>` itself is abstract: an atom is created as the kind it is, and the declaration says whether
+`Atom<T>` itself is abstract: an atom is created as the kind it is, and the declaration says whether
 its edits can be taken back. Everything that consumes an atom — `Field.*`, `Computed<T>`, a view's
-constructor — takes `State<T>`, so the two are interchangeable at the call site.
+constructor — takes `Atom<T>`, so the two are interchangeable at the call site.
 
 | Type | Undo | For |
 |---|---|---|
-| `TrackedState<T>` | Yes | What the user authored: the draft being edited, a setting, the selected item |
-| `LocalState<T>` | No | What the user did not: a filter, a cursor, a load in progress |
+| `TrackedAtom<T>` | Yes | What the user authored: the draft being edited, a setting, the selected item |
+| `LocalAtom<T>` | No | What the user did not: a filter, a cursor, a load in progress |
 
 | Member | Meaning |
 |---|---|
@@ -60,21 +60,21 @@ subscription.
 
 ## What belongs in an atom
 
-- **`TrackedState<T>`** — state that outlives a view or is read by more than one screen, and that the
+- **`TrackedAtom<T>`** — state that outlives a view or is read by more than one screen, and that the
   user would expect `Undo` to take back: a draft being edited, settings, the selected mod.
-- **`LocalState<T>`** — the same reach, but nothing the user authored: what a background load
+- **`LocalAtom<T>`** — the same reach, but nothing the user authored: what a background load
   produced, which row is selected, the filter a screen keeps between visits.
 - **Plain field of the view** — the cursor in a list, the scroll offset, anything that dies with the
   view. Making these atoms buys nothing.
 
 ## Undo and redo
 
-`StateHistory` is registered by `AddArlecchino` and records every `TrackedState<T>` there is — there is
+`StateHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
 no list of atoms to keep in sync, and nothing to register. Take it where you need `Undo()` / `Redo()`:
 
 ```csharp
-public State<string> Profile { get; } = new TrackedState<string>("");   // on the undo stack
-public State<int> Cursor { get; } = new LocalState<int>(0);             // never on it
+public Atom<string> Profile { get; } = new TrackedAtom<string>("");   // on the undo stack
+public Atom<int> Cursor { get; } = new LocalAtom<int>(0);             // never on it
 ```
 
 ```csharp
@@ -126,7 +126,7 @@ Work outlives the screen that started it unless something stops it. `ViewLifetim
 it is scoped, so [each screen gets its own](views-and-navigation.md), and navigating away cancels it.
 
 ```csharp
-public sealed class ModsView : IView
+public sealed class ModsView : IArlecchinoView
 {
     private readonly AsyncState<IReadOnlyList<Mod>> _mods;
 
@@ -212,7 +212,7 @@ A view that subscribes to an atom has to unsubscribe. Implement `IDisposable` on
 disposes a view when it leaves the route:
 
 ```csharp
-public sealed class SettingsView : IView, IDisposable
+public sealed class SettingsView : IArlecchinoView, IDisposable
 {
     private readonly IDisposable _watch;
 

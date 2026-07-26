@@ -46,7 +46,7 @@ public sealed class Tree<T> : IFocusable
     private readonly ArlecchinoKeymap _keymap;
     private readonly List<(TreeNode<T> Node, int Depth)> _visible = [];
 
-    private Region _drawn;
+    private SurfaceRegion _drawn;
     private ScrollWindow _window;
 
     /// <summary>Creates the tree.</summary>
@@ -107,7 +107,7 @@ public sealed class Tree<T> : IFocusable
     /// what lets a click tell a marker from a label.
     /// </summary>
     /// <param name="region">Where to draw.</param>
-    public void Draw(Region region)
+    public void Draw(SurfaceRegion region)
     {
         _drawn = region;
 

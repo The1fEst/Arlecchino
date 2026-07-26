@@ -2,7 +2,7 @@ namespace Arlecchino.Rendering;
 
 /// <summary>
 /// Blank space around something, measured in cells. Used both by the flow calls on
-/// <see cref="Surface"/> and by <see cref="Region.Inset(Margin)"/>.
+/// <see cref="Surface"/> and by <see cref="SurfaceRegion.Inset(Margin)"/>.
 /// </summary>
 /// <param name="Left">Cells kept free on the left.</param>
 /// <param name="Top">Rows kept free above.</param>

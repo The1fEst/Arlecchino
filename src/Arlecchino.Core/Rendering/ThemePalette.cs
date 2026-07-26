@@ -11,11 +11,11 @@ public sealed class ThemePalette
 
     /// <summary>Screen titles. Bold bright magenta by default.</summary>
     public TermColor Header { get; init; } = new()
-        { Foreground = TerminalColor.BrightMagenta, Style = FontStyle.Bold };
+        { Foreground = TerminalColor.BrightMagenta, Style = TextStyle.Bold };
 
     /// <summary>Column headers. Bold bright blue by default.</summary>
     public TermColor TableHeader { get; init; } = new()
-        { Foreground = TerminalColor.BrightBlue, Style = FontStyle.Bold };
+        { Foreground = TerminalColor.BrightBlue, Style = TextStyle.Bold };
 
     /// <summary>Text that stands out without being alarming. Bright white by default.</summary>
     public TermColor Accent { get; init; } = new() { Foreground = TerminalColor.BrightWhite };

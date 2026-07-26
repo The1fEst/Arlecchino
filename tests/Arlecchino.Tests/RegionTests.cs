@@ -27,7 +27,7 @@ public sealed class RegionTests
     public void WritingIsClippedToTheRegion()
     {
         var (surface, terminal) = CreateSurface();
-        var region = new Region(surface, 4, 1, 6, 2);
+        var region = new SurfaceRegion(surface, 4, 1, 6, 2);
 
         region.Write(0, 0, "abcdefghij", Theme.Default);
         region.Write(5, 0, "below", Theme.Default);
@@ -42,7 +42,7 @@ public sealed class RegionTests
     public void CoordinatesAreLocalToTheRegion()
     {
         var (surface, terminal) = CreateSurface();
-        var region = new Region(surface, 3, 2, 10, 3);
+        var region = new SurfaceRegion(surface, 3, 2, 10, 3);
 
         region.Write(1, 2, "here", Theme.Default);
 
@@ -54,7 +54,7 @@ public sealed class RegionTests
     public void InsetShrinksOnEverySide()
     {
         var (surface, _) = CreateSurface();
-        var region = new Region(surface, 0, 0, 10, 6).Inset(new Margin(1, 2, 3, 4));
+        var region = new SurfaceRegion(surface, 0, 0, 10, 6).Inset(new Margin(1, 2, 3, 4));
 
         Assert.Equal(1, region.Left);
         Assert.Equal(2, region.Top);
@@ -66,13 +66,13 @@ public sealed class RegionTests
     public void SplittingKeepsTheTotalSize()
     {
         var (surface, _) = CreateSurface();
-        var (left, right) = new Region(surface, 0, 0, 20, 5).SplitLeft(7);
+        var (left, right) = new SurfaceRegion(surface, 0, 0, 20, 5).SplitLeft(7);
 
         Assert.Equal(7, left.Width);
         Assert.Equal(13, right.Width);
         Assert.Equal(7, right.Left);
 
-        var (top, bottom) = new Region(surface, 0, 0, 20, 5).SplitTop(2);
+        var (top, bottom) = new SurfaceRegion(surface, 0, 0, 20, 5).SplitTop(2);
         Assert.Equal(2, top.Height);
         Assert.Equal(3, bottom.Height);
         Assert.Equal(2, bottom.Top);
@@ -82,7 +82,7 @@ public sealed class RegionTests
     public void SplittingClampsToTheRegion()
     {
         var (surface, _) = CreateSurface();
-        var (left, right) = new Region(surface, 0, 0, 10, 5).SplitLeft(50);
+        var (left, right) = new SurfaceRegion(surface, 0, 0, 10, 5).SplitLeft(50);
 
         Assert.Equal(10, left.Width);
         Assert.True(right.IsEmpty);
@@ -92,7 +92,7 @@ public sealed class RegionTests
     public void BorderDrawsAFrameAndReturnsTheInside()
     {
         var (surface, terminal) = CreateSurface();
-        var inside = new Region(surface, 0, 0, 12, 4).Border(Theme.Info, "Hi");
+        var inside = new SurfaceRegion(surface, 0, 0, 12, 4).Border(Theme.Info, "Hi");
 
         inside.Write(0, 0, "body", Theme.Default);
 
@@ -110,7 +110,7 @@ public sealed class RegionTests
     public void ContainsAndToLocalAnswerHitTests()
     {
         var (surface, _) = CreateSurface();
-        var region = new Region(surface, 5, 2, 4, 3);
+        var region = new SurfaceRegion(surface, 5, 2, 4, 3);
 
         Assert.True(region.Contains(2, 5));
         Assert.True(region.Contains(4, 8));
@@ -123,7 +123,7 @@ public sealed class RegionTests
     public void AlignmentIsMeasuredInsideTheRegion()
     {
         var (surface, terminal) = CreateSurface();
-        var region = new Region(surface, 4, 0, 10, 1);
+        var region = new SurfaceRegion(surface, 4, 0, 10, 1);
 
         region.WriteLine(0, "ab", Theme.Default, Align.Center);
 

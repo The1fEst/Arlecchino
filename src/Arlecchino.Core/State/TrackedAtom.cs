@@ -8,7 +8,7 @@ namespace Arlecchino.State;
 /// register.
 /// </summary>
 /// <typeparam name="T">Type of the value held.</typeparam>
-public sealed class TrackedState<T> : State<T>
+public sealed class TrackedAtom<T> : Atom<T>
 {
     /// <summary>Creates an undoable atom holding a starting value.</summary>
     /// <param name="initial">The value to start with.</param>
@@ -16,7 +16,7 @@ public sealed class TrackedState<T> : State<T>
     /// How to decide that a write changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
-    public TrackedState(T initial, IEqualityComparer<T>? comparer = null)
+    public TrackedAtom(T initial, IEqualityComparer<T>? comparer = null)
         : base(initial, comparer)
     {
     }

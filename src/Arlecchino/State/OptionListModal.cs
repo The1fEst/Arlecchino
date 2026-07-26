@@ -19,7 +19,7 @@ public abstract class OptionListModal : Modal
     public int Index { get; set; }
 
     /// <summary>Where the rows were drawn last frame, used to turn a click into a row.</summary>
-    public Region Rows { get; set; }
+    public SurfaceRegion Rows { get; set; }
 
     /// <summary>Index of the first option drawn, since a long list only shows a window of it.</summary>
     public int FirstVisible { get; set; }

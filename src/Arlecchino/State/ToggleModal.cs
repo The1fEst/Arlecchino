@@ -13,8 +13,8 @@ public sealed class ToggleModal : Modal
     public required Action<bool> OnSubmit { get; init; }
 
     /// <summary>Where the affirmative chip was drawn last frame, used to turn a click into an answer.</summary>
-    public Region YesChip { get; set; }
+    public SurfaceRegion YesChip { get; set; }
 
     /// <summary>Where the negative chip was drawn last frame.</summary>
-    public Region NoChip { get; set; }
+    public SurfaceRegion NoChip { get; set; }
 }

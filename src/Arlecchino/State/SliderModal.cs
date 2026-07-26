@@ -22,7 +22,7 @@ public sealed class SliderModal : NumericModal, IBoundedModal
     public required Action<decimal> OnSubmit { get; init; }
 
     /// <summary>Where the track was drawn last frame, used to turn a click into a value.</summary>
-    public Region Track { get; set; }
+    public SurfaceRegion Track { get; set; }
 
     /// <summary>Places the handle at a position along the track.</summary>
     /// <param name="fraction">Position from <c>0</c> at the left end to <c>1</c> at the right; anything outside is pulled in.</param>

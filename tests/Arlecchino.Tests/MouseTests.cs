@@ -155,7 +155,7 @@ public sealed class MouseTests
     }
 }
 
-public sealed class MouseView : IView
+public sealed class MouseView : IArlecchinoView
 {
     public static MouseEvent LastEvent { get; private set; }
 

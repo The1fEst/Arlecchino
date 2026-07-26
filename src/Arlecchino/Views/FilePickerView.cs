@@ -17,7 +17,7 @@ namespace Arlecchino.Views;
 /// it has to say where to return to. It is registered automatically, so an application only has to
 /// fill in <see cref="TuiState.FilePicker"/> and navigate here.
 /// </summary>
-public class FilePickerView : IView
+public class FilePickerView : IArlecchinoView
 {
     /// <summary>The route it answers to.</summary>
     public const string Route = "FilePicker";
@@ -44,8 +44,8 @@ public class FilePickerView : IView
     private readonly FocusRing _panes;
     private readonly FocusablePane _sidebarPane;
     private readonly FocusablePane _list;
-    private Region _sidebarRows;
-    private Region _listRows;
+    private SurfaceRegion _sidebarRows;
+    private SurfaceRegion _listRows;
     private int _sidebarFirstVisible;
     private int _listFirstVisible;
     private string _path;
@@ -184,7 +184,7 @@ public class FilePickerView : IView
         }
     }
 
-    private static void DrawSplitBorder(Region browser)
+    private static void DrawSplitBorder(SurfaceRegion browser)
     {
         var column = SidebarWidth + 1;
 
@@ -320,7 +320,7 @@ public class FilePickerView : IView
         return FocusResult.Handled;
     }
 
-    private void DrawToolbar(Region toolbar)
+    private void DrawToolbar(SurfaceRegion toolbar)
     {
         toolbar.Write(0, 0, "◀", _back.Count > 0 ? Theme.Accent : Theme.Muted);
         toolbar.Write(0, 2, "▶", _forward.Count > 0 ? Theme.Accent : Theme.Muted);
@@ -341,7 +341,7 @@ public class FilePickerView : IView
         toolbar.Write(0, searchColumn, search, _filter.Length > 0 ? Theme.Info : Theme.Muted);
     }
 
-    private void DrawSidebar(Region sidebar)
+    private void DrawSidebar(SurfaceRegion sidebar)
     {
         var start = Math.Clamp(_sidebarSelected - sidebar.Height / 2, 0, Math.Max(0, _sidebar.Count - sidebar.Height));
         _sidebarFirstVisible = start;
@@ -364,7 +364,7 @@ public class FilePickerView : IView
         }
     }
 
-    private void DrawList(Region list)
+    private void DrawList(SurfaceRegion list)
     {
         if (list.IsEmpty)
         {
@@ -409,7 +409,7 @@ public class FilePickerView : IView
         }
     }
 
-    private void DrawStatus(Region status)
+    private void DrawStatus(SurfaceRegion status)
     {
         var entries = GetMatchingEntries();
         var count = _strings.ItemCount(entries.Count);

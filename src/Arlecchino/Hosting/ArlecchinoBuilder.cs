@@ -39,7 +39,7 @@ public sealed class ArlecchinoBuilder
     /// <param name="route">The route it answers to.</param>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder AddView<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string route)
-        where T : class, IView
+        where T : class, IArlecchinoView
     {
         _registrations.Add(route, static provider => ActivatorUtilities.CreateInstance<T>(provider));
         return this;
@@ -52,7 +52,7 @@ public sealed class ArlecchinoBuilder
     /// <param name="route">The route it answers to.</param>
     /// <param name="factory">Builds the view.</param>
     /// <returns>The builder.</returns>
-    public ArlecchinoBuilder AddView(string route, Func<IServiceProvider, IView> factory)
+    public ArlecchinoBuilder AddView(string route, Func<IServiceProvider, IArlecchinoView> factory)
     {
         _registrations.Add(route, factory);
         return this;

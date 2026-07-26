@@ -5,7 +5,7 @@ using Arlecchino.State;
 
 namespace Arlecchino.Sample;
 
-public sealed class SettingsStore : IStore
+public sealed class SettingsStore : IArlecchinoStore
 {
     public SettingsStore()
     {
@@ -13,21 +13,21 @@ public sealed class SettingsStore : IStore
         IsComplete = new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
     }
 
-    public State<string> Profile { get; } = new TrackedState<string>("");
+    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
 
-    public State<string> Passphrase { get; } = new TrackedState<string>("");
+    public Atom<string> Passphrase { get; } = new TrackedAtom<string>("");
 
-    public State<string> Theme { get; } = new TrackedState<string>("dark");
+    public Atom<string> Theme { get; } = new TrackedAtom<string>("dark");
 
-    public State<decimal> Volume { get; } = new TrackedState<decimal>(60);
+    public Atom<decimal> Volume { get; } = new TrackedAtom<decimal>(60);
 
-    public State<bool> Fullscreen { get; } = new TrackedState<bool>(true);
+    public Atom<bool> Fullscreen { get; } = new TrackedAtom<bool>(true);
 
-    public State<IReadOnlyList<string>> Columns { get; } = new TrackedState<IReadOnlyList<string>>(["Name", "Size"]);
+    public Atom<IReadOnlyList<string>> Columns { get; } = new TrackedAtom<IReadOnlyList<string>>(["Name", "Size"]);
 
-    public State<DateOnly> Release { get; } = new TrackedState<DateOnly>(new(2026, 7, 25));
+    public Atom<DateOnly> Release { get; } = new TrackedAtom<DateOnly>(new(2026, 7, 25));
 
-    public State<Rgb> Accent { get; } = new TrackedState<Rgb>(new(63, 169, 245));
+    public Atom<Rgb> Accent { get; } = new TrackedAtom<Rgb>(new(63, 169, 245));
 
     public Computed<string> Summary { get; }
 

@@ -30,9 +30,9 @@ public enum LoadStatus : byte
 public sealed class AsyncState<T> : IReadableState<T?>
 {
     private readonly UiDispatcher _dispatcher;
-    private readonly LocalState<T?> _value;
-    private readonly LocalState<LoadStatus> _status = new(LoadStatus.Idle);
-    private readonly LocalState<Exception?> _error = new(null);
+    private readonly LocalAtom<T?> _value;
+    private readonly LocalAtom<LoadStatus> _status = new(LoadStatus.Idle);
+    private readonly LocalAtom<Exception?> _error = new(null);
 
     private CancellationTokenSource? _running;
 

@@ -18,7 +18,7 @@ public sealed class TermColor : ITermColor
     public TerminalColor Background { get; init; } = TerminalColor.Default;
 
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
-    public FontStyle Style { get; init; } = FontStyle.None;
+    public TextStyle Style { get; init; } = TextStyle.None;
 
     /// <summary>
     /// The escape sequence for this style, built once and rebuilt only if
@@ -45,22 +45,22 @@ public sealed class TermColor : ITermColor
     {
         var builder = new StringBuilder("\e[0");
 
-        if (Style.HasFlag(FontStyle.Bold))
+        if (Style.HasFlag(TextStyle.Bold))
         {
             builder.Append(";1");
         }
 
-        if (Style.HasFlag(FontStyle.Dim))
+        if (Style.HasFlag(TextStyle.Dim))
         {
             builder.Append(";2");
         }
 
-        if (Style.HasFlag(FontStyle.Italic))
+        if (Style.HasFlag(TextStyle.Italic))
         {
             builder.Append(";3");
         }
 
-        if (Style.HasFlag(FontStyle.Underline))
+        if (Style.HasFlag(TextStyle.Underline))
         {
             builder.Append(";4");
         }

@@ -2,10 +2,10 @@
 
 # Views and navigation
 
-## IView
+## IArlecchinoView
 
 ```csharp
-public interface IView
+public interface IArlecchinoView
 {
     void Draw();
     ViewRoute Handle(ConsoleKeyInfo key);
@@ -43,7 +43,7 @@ your application's types, and the generated route table lives in your assembly, 
 
 ## Getting a route
 
-- **Generated.** The analyzer inside the package finds every non-abstract `IView` in your project,
+- **Generated.** The analyzer inside the package finds every non-abstract `IArlecchinoView` in your project,
   strips the `View` suffix and emits a `ViewKind` class of `ViewRoute` fields. Turn it on with
   `.AddGeneratedViews()`. See [Source generator](source-generator.md).
 - **Explicit.** `.AddView<ModsView>("Mods")` resolves the type through the container, or
@@ -71,7 +71,7 @@ route and both ways to register it.
 | `Draw()` / `Handle(key)` | Called by the frame loop and the input router |
 
 `Alt+←` and `Alt+→` are handled by the navigator itself and never reach the view. Every other key goes
-to `IView.Handle`, and the route it returns is passed to `Apply`.
+to `IArlecchinoView.Handle`, and the route it returns is passed to `Apply`.
 
 The start route comes from `ArlecchinoOptions.StartRoute` (`.StartAt(...)`), applied in the navigator's
 constructor. For a start route that depends on runtime state, implement `IArlecchinoStartup` instead —
@@ -111,7 +111,7 @@ focusable too, so a screen can put a form beside a list and cycle between them.
 ```csharp
 public interface IViewFactory
 {
-    bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view);
+    bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view);
 }
 ```
 
@@ -128,7 +128,7 @@ service — a database context, a unit of work, a connection — belongs to the 
 ```csharp
 builder.Services.AddScoped<CatalogContext>();
 
-public sealed class ModsView : IView
+public sealed class ModsView : IArlecchinoView
 {
     public ModsView(CatalogContext catalog) { … }
 }

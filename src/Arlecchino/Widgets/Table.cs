@@ -128,7 +128,7 @@ public sealed class Table<T> : IFocusable
     /// the rows below it.
     /// </summary>
     /// <param name="region">Where to draw, heading included.</param>
-    public void Draw(Region region)
+    public void Draw(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {

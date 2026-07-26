@@ -74,7 +74,7 @@ public sealed class Watched : IDisposable
     public void Dispose() => IsDisposed = true;
 }
 
-public sealed class LoadingView : IView
+public sealed class LoadingView : IArlecchinoView
 {
     public static LoadingView? Last { get; private set; }
 

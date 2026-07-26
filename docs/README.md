@@ -10,7 +10,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | Page | What it covers |
 |---|---|
 | [Getting started](getting-started.md) | Installing the package, the smallest app that runs, the first view |
-| [Views and navigation](views-and-navigation.md) | `IView`, `ViewRoute`, the navigator, history, view registration |
+| [Views and navigation](views-and-navigation.md) | `IArlecchinoView`, `ViewRoute`, the navigator, history, view registration |
 | [Source generator](source-generator.md) | How `ViewKind`, the view factory and the store registration are emitted, MSBuild switches |
 | [Rendering](rendering.md) | `Surface`: the frame lifecycle, flow layout, absolute layout |
 | [Theming](theming.md) | `Theme`, `ThemePalette`, `TermColor`, ANSI colours and font styles |
@@ -18,7 +18,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | [Modals and state](modals-and-state.md) | `TuiState`, text and choice modals, the output line |
 | [File picker](file-picker.md) | Requesting a path, places sidebar, filters, keys |
 | [Hosting and options](hosting-and-options.md) | `AddArlecchino`, every option, the builder API, running without the hosted service |
-| [State and forms](state-and-forms.md) | `TrackedState` and `LocalState` atoms, computed values, undo, async loading, and forms built from them |
+| [State and forms](state-and-forms.md) | `TrackedAtom` and `LocalAtom` atoms, computed values, undo, async loading, and forms built from them |
 | [Widgets](widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
 | [Packages and building](packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed |

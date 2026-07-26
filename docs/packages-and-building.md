@@ -38,7 +38,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `0.5.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `0.6.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -99,7 +99,7 @@ they produce are used by the navigation tests.
 
 ## What ends up in the package
 
-`Arlecchino.0.5.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
+`Arlecchino.0.6.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
 `build/Arlecchino.props` and the README shown on the package page. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.
@@ -253,5 +253,5 @@ that is the point of it.
 - No comments in the source; names carry the meaning, and documentation lives here in `docs`.
 - No user-visible string at a call site — every one of them is a delegate on
   [`ArlecchinoStrings`](localization.md).
-- No application domain types in the framework; extension points are interfaces (`IView`,
+- No application domain types in the framework; extension points are interfaces (`IArlecchinoView`,
   `IViewFactory`, `IArlecchinoCommand`, `IArlecchinoStartup`, `ITerminal`).

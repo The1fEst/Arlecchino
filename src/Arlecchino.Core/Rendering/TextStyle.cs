@@ -7,7 +7,7 @@ namespace Arlecchino.Rendering;
 /// that does not support one simply ignores it.
 /// </summary>
 [Flags]
-public enum FontStyle : byte
+public enum TextStyle : byte
 {
     /// <summary>No attributes.</summary>
     None = 0,

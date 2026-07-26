@@ -49,10 +49,10 @@ public partial class Surface
     public int FrameHeight => _height;
 
     /// <summary>The whole frame as a region.</summary>
-    public Region Frame => new(this, 0, 0, _width, _height);
+    public SurfaceRegion Frame => new(this, 0, 0, _width, _height);
 
     /// <summary>The frame minus the configured padding — where a view normally draws.</summary>
-    public Region Content => Frame.Inset(new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
+    public SurfaceRegion Content => Frame.Inset(new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
 
     private int FreeLines => Math.Max(0, _height - _lines);
 

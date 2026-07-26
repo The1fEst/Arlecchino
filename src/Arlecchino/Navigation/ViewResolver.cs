@@ -53,6 +53,6 @@ public sealed class ViewResolver
         scope.Dispose();
 
         throw new InvalidOperationException(
-            $"No view is registered for route '{route}'. Register it with AddView<T>(\"{route}\") or let the Arlecchino generator discover an IView named '{route}View'.");
+            $"No view is registered for route '{route}'. Register it with AddView<T>(\"{route}\") or let the Arlecchino generator discover an IArlecchinoView named '{route}View'.");
     }
 }

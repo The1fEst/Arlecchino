@@ -9,15 +9,15 @@ using Microsoft.CodeAnalysis.Text;
 namespace Arlecchino.Generators;
 
 [Generator]
-public sealed class StoreRegistrationGenerator : IIncrementalGenerator
+public sealed class CommandRegistrationGenerator : IIncrementalGenerator
 {
-    private const string StoreInterfaceNamespace = "Arlecchino.State";
+    private const string CommandInterfaceNamespace = "Arlecchino.Commands";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var settings = context.AnalyzerConfigOptionsProvider.Select(static (provider, _) =>
         {
-            provider.GlobalOptions.TryGetValue("build_property.ArlecchinoGenerateStores", out var enabled);
+            provider.GlobalOptions.TryGetValue("build_property.ArlecchinoGenerateCommands", out var enabled);
             provider.GlobalOptions.TryGetValue("build_property.ArlecchinoViewNamespace", out var viewNamespace);
             provider.GlobalOptions.TryGetValue("build_property.RootNamespace", out var rootNamespace);
 
@@ -34,40 +34,40 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             return new Settings(generate, viewNamespace!);
         });
 
-        var storeDeclarations = context.SyntaxProvider
+        var commandDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is ClassDeclarationSyntax { BaseList: not null },
-                static (ctx, _) => GetStore(ctx))
-            .Where(static store => store != null);
+                static (ctx, _) => GetCommand(ctx))
+            .Where(static command => command != null);
 
-        context.RegisterSourceOutput(storeDeclarations.Collect().Combine(settings), static (ctx, pair) =>
+        context.RegisterSourceOutput(commandDeclarations.Collect().Combine(settings), static (ctx, pair) =>
         {
-            var (stores, settings) = pair;
+            var (commands, settings) = pair;
             if (!settings.Generate)
             {
                 return;
             }
 
-            var storeModels = stores
-                .OfType<StoreModel>()
-                .OrderBy(static store => store.TypeName, StringComparer.Ordinal)
+            var commandModels = commands
+                .OfType<CommandModel>()
+                .OrderBy(static command => command.TypeName, StringComparer.Ordinal)
                 .ToArray();
 
-            foreach (var store in storeModels)
+            foreach (var command in commandModels)
             {
-                if (!store.HasPublicConstructor)
+                if (!command.HasPublicConstructor)
                 {
                     ctx.ReportDiagnostic(Diagnostic.Create(
-                        StoreDiagnostics.NoPublicConstructor, store.Location, store.TypeName));
+                        CommandDiagnostics.NoPublicConstructor, command.Location, command.TypeName));
                 }
             }
 
-            ctx.AddSource("ArlecchinoStoreRegistration.g.cs",
-                SourceText.From(Generate(storeModels, settings.StoreNamespace), Encoding.UTF8));
+            ctx.AddSource("ArlecchinoCommandRegistration.g.cs",
+                SourceText.From(Generate(commandModels, settings.CommandNamespace), Encoding.UTF8));
         });
     }
 
-    private static StoreModel? GetStore(GeneratorSyntaxContext context)
+    private static CommandModel? GetCommand(GeneratorSyntaxContext context)
     {
         var declaration = (ClassDeclarationSyntax)context.Node;
         if (context.SemanticModel.GetDeclaredSymbol(declaration) is not INamedTypeSymbol symbol)
@@ -75,7 +75,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !Implements(symbol, "IArlecchinoStore"))
+        if (symbol.IsAbstract || !Implements(symbol))
         {
             return null;
         }
@@ -90,36 +90,37 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
         return new(
             typeName,
             containingNamespace,
-            Implements(symbol, "IArlecchinoScopedStore"),
             ConstructorBinding.Of(symbol),
             hasPublicConstructor,
             declaration.Identifier.GetLocation());
     }
 
-    private static bool Implements(INamedTypeSymbol symbol, string interfaceName)
+    private static bool Implements(INamedTypeSymbol symbol)
     {
-        return symbol.AllInterfaces.Any(item =>
-            item.Name == interfaceName &&
-            item.ContainingNamespace.ToDisplayString() == StoreInterfaceNamespace);
+        return symbol.AllInterfaces.Any(static item =>
+            item.Name == "IArlecchinoCommand" &&
+            item.ContainingNamespace.ToDisplayString() == CommandInterfaceNamespace);
     }
 
-    private static string Generate(IReadOnlyList<StoreModel> stores, string storeNamespace)
+    private static string Generate(IReadOnlyList<CommandModel> commands, string commandNamespace)
     {
         var builder = new StringBuilder();
 
         builder.AppendLine("// <auto-generated/>");
         builder.AppendLine("#nullable enable");
         builder.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+        builder.AppendLine("using Arlecchino.Commands;");
         builder.AppendLine("using Arlecchino.Hosting;");
 
-        foreach (var namespaceName in stores
-                     .SelectMany(static store => store.ConstructorParameters
+        foreach (var namespaceName in commands
+                     .SelectMany(static command => command.ConstructorParameters
                          .Select(static parameter => parameter.Namespace)
-                         .Concat([store.Namespace]))
+                         .Concat([command.Namespace]))
                      .Where(namespaceName => namespaceName.Length > 0 &&
                                              namespaceName != "Microsoft.Extensions.DependencyInjection" &&
+                                             namespaceName != "Arlecchino.Commands" &&
                                              namespaceName != "Arlecchino.Hosting" &&
-                                             namespaceName != storeNamespace)
+                                             namespaceName != commandNamespace)
                      .Distinct(StringComparer.Ordinal)
                      .OrderBy(static namespaceName => namespaceName, StringComparer.Ordinal))
         {
@@ -127,18 +128,17 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
         }
 
         builder.AppendLine();
-        builder.Append("namespace ").Append(storeNamespace).AppendLine(";");
+        builder.Append("namespace ").Append(commandNamespace).AppendLine(";");
         builder.AppendLine();
-        builder.AppendLine("public static class GeneratedStoreRegistration");
+        builder.AppendLine("public static class GeneratedCommandRegistration");
         builder.AppendLine("{");
-        builder.AppendLine("    public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)");
+        builder.AppendLine("    public static ArlecchinoBuilder AddGeneratedCommands(this ArlecchinoBuilder builder)");
         builder.AppendLine("    {");
 
-        foreach (var store in stores)
+        foreach (var command in commands)
         {
-            builder.Append("        builder.Services.Add").Append(store.IsScoped ? "Scoped" : "Singleton")
-                .Append("(static services => ")
-                .Append(ConstructorBinding.CreateExpression(store.TypeName, store.ConstructorParameters))
+            builder.Append("        builder.Services.AddSingleton<IArlecchinoCommand>(static services => ")
+                .Append(ConstructorBinding.CreateExpression(command.TypeName, command.ConstructorParameters))
                 .AppendLine(");");
         }
 
@@ -151,29 +151,27 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
 
     private sealed class Settings
     {
-        public Settings(bool generate, string storeNamespace)
+        public Settings(bool generate, string commandNamespace)
         {
             Generate = generate;
-            StoreNamespace = storeNamespace;
+            CommandNamespace = commandNamespace;
         }
 
         public bool Generate { get; }
-        public string StoreNamespace { get; }
+        public string CommandNamespace { get; }
     }
 
-    private sealed class StoreModel
+    private sealed class CommandModel
     {
-        public StoreModel(
+        public CommandModel(
             string typeName,
             string @namespace,
-            bool isScoped,
             IReadOnlyList<ParameterModel> constructorParameters,
             bool hasPublicConstructor,
             Location location)
         {
             TypeName = typeName;
             Namespace = @namespace;
-            IsScoped = isScoped;
             ConstructorParameters = constructorParameters;
             HasPublicConstructor = hasPublicConstructor;
             Location = location;
@@ -181,7 +179,6 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
 
         public string TypeName { get; }
         public string Namespace { get; }
-        public bool IsScoped { get; }
         public IReadOnlyList<ParameterModel> ConstructorParameters { get; }
         public bool HasPublicConstructor { get; }
         public Location Location { get; }

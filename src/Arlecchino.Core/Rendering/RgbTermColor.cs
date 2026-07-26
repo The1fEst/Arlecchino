@@ -19,7 +19,7 @@ public sealed class RgbTermColor : ITermColor
     public Rgb? Background { get; init; }
 
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
-    public FontStyle Style { get; init; } = FontStyle.None;
+    public TextStyle Style { get; init; } = TextStyle.None;
 
     /// <summary>
     /// The escape sequence for this style: 24-bit where the terminal supports it, the nearest
@@ -51,22 +51,22 @@ public sealed class RgbTermColor : ITermColor
 
         var builder = new StringBuilder("\e[0");
 
-        if (Style.HasFlag(FontStyle.Bold))
+        if (Style.HasFlag(TextStyle.Bold))
         {
             builder.Append(";1");
         }
 
-        if (Style.HasFlag(FontStyle.Dim))
+        if (Style.HasFlag(TextStyle.Dim))
         {
             builder.Append(";2");
         }
 
-        if (Style.HasFlag(FontStyle.Italic))
+        if (Style.HasFlag(TextStyle.Italic))
         {
             builder.Append(";3");
         }
 
-        if (Style.HasFlag(FontStyle.Underline))
+        if (Style.HasFlag(TextStyle.Underline))
         {
             builder.Append(";4");
         }

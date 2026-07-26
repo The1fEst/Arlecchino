@@ -12,8 +12,8 @@ public sealed class FormTests
 {
     private static Form CreateForm(
         TestApplication app,
-        State<string> name,
-        State<bool> flag,
+        Atom<string> name,
+        Atom<bool> flag,
         Func<ViewRoute>? action = null,
         Func<bool>? enabled = null) => new(app.State, app.Options)
     {
@@ -36,7 +36,7 @@ public sealed class FormTests
     public void FieldsAreDrawnAsLabelAndValue()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(true)));
+        var frame = Show(app, CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(true)));
 
         Assert.Contains("Name = ", frame, StringComparison.Ordinal);
         Assert.Contains("Flag = Yes", frame, StringComparison.Ordinal);
@@ -47,7 +47,7 @@ public sealed class FormTests
     public void EmptyValuesFallBackToTheEmptyString()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false)));
+        var frame = Show(app, CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false)));
 
         Assert.Contains($"Name = {app.Options.Strings.Empty()}", frame, StringComparison.Ordinal);
     }
@@ -56,7 +56,7 @@ public sealed class FormTests
     public void ArrowsMoveTheSelection()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false));
+        var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false));
 
         Assert.Equal(0, form.Selected);
 
@@ -71,8 +71,8 @@ public sealed class FormTests
     public void ConfirmOpensTheModalOfTheField()
     {
         using var app = new TestApplication();
-        var name = new TrackedState<string>("");
-        var form = CreateForm(app, name, new TrackedState<bool>(false));
+        var name = new TrackedAtom<string>("");
+        var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
 
@@ -88,8 +88,8 @@ public sealed class FormTests
     public void ToggleFieldWritesBackThroughItsModal()
     {
         using var app = new TestApplication();
-        var flag = new TrackedState<bool>(true);
-        var form = CreateForm(app, new TrackedState<string>(""), flag);
+        var flag = new TrackedAtom<bool>(true);
+        var form = CreateForm(app, new TrackedAtom<string>(""), flag);
 
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
@@ -106,8 +106,8 @@ public sealed class FormTests
     public void EraseResetsTheField()
     {
         using var app = new TestApplication();
-        var name = new TrackedState<string>("filled");
-        var form = CreateForm(app, name, new TrackedState<bool>(false));
+        var name = new TrackedAtom<string>("filled");
+        var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Backspace, false, false, false));
 
@@ -118,7 +118,7 @@ public sealed class FormTests
     public void ActionRunsAndCanNavigate()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false), () => ViewKind.Other);
+        var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false), () => ViewKind.Other);
 
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
@@ -131,7 +131,7 @@ public sealed class FormTests
     {
         using var app = new TestApplication();
         var ran = false;
-        var form = CreateForm(app, new TrackedState<string>(""), new TrackedState<bool>(false),
+        var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false),
             () =>
             {
                 ran = true;
@@ -150,8 +150,8 @@ public sealed class FormTests
     public void ClickSelectsAndTheSecondClickActivates()
     {
         using var app = new TestApplication();
-        var name = new TrackedState<string>("");
-        var form = CreateForm(app, name, new TrackedState<bool>(false));
+        var name = new TrackedAtom<string>("");
+        var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
         var lines = Show(app, form).Split("\r\n");
         var flagRow = Array.FindIndex(lines, line => line.Contains("Flag", StringComparison.Ordinal));
@@ -169,9 +169,9 @@ public sealed class FormTests
     public void EditingThroughAFieldCanBeUndone()
     {
         using var app = new TestApplication();
-        var name = new TrackedState<string>("before");
+        var name = new TrackedAtom<string>("before");
 
-        var form = CreateForm(app, name, new TrackedState<bool>(false));
+        var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
         form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
         app.Type("after");
@@ -191,8 +191,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new TrackedState<string>(""), help: static () => "help for first"),
-                Field.Text(static () => "Second", new TrackedState<string>(""), help: static () => "help for second"),
+                Field.Text(static () => "First", new TrackedAtom<string>(""), help: static () => "help for first"),
+                Field.Text(static () => "Second", new TrackedAtom<string>(""), help: static () => "help for second"),
             ],
         };
 
@@ -206,7 +206,7 @@ public sealed class FormTests
     public void PathFieldOpensTheFilePicker()
     {
         using var app = new TestApplication();
-        var folder = new TrackedState<string>("");
+        var folder = new TrackedAtom<string>("");
         var form = new Form(app.State, app.Options)
         {
             Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],

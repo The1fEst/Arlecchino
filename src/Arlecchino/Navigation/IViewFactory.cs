@@ -17,5 +17,5 @@ public interface IViewFactory
     /// <param name="route">The route being shown.</param>
     /// <param name="view">The view, when this factory owns the route.</param>
     /// <returns><c>false</c> for routes you do not own, so the next factory gets a turn.</returns>
-    bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view);
+    bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view);
 }

@@ -114,7 +114,7 @@ public sealed class FocusTests
         using var app = new TestApplication();
         var form = new Form(app.State, app.Options)
         {
-            Fields = [Field.Text(static () => "Name", new TrackedState<string>(""))],
+            Fields = [Field.Text(static () => "Name", new TrackedAtom<string>(""))],
         };
 
         FormHostView.Hosted = form;

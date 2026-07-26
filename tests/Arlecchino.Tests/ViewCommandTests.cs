@@ -129,7 +129,7 @@ public sealed class ViewCommandTests
     }
 }
 
-public sealed class CommandingView : IView
+public sealed class CommandingView : IArlecchinoView
 {
     public static List<string> Ran { get; } = [];
 

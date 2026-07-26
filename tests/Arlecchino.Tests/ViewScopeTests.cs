@@ -87,7 +87,7 @@ public sealed class ScopedProbe : IDisposable
     }
 }
 
-public sealed class ScopedView : IView, IDisposable
+public sealed class ScopedView : IArlecchinoView, IDisposable
 {
     public static ScopedView? Last { get; private set; }
 

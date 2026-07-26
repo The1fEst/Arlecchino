@@ -18,13 +18,13 @@ public sealed class GeneratorTests
 
         namespace Sample;
 
-        public class ModsView : IView
+        public class ModsView : IArlecchinoView
         {
             public void Draw() { }
             public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
         }
 
-        public class AboutView : IView
+        public class AboutView : IArlecchinoView
         {
             public void Draw() { }
             public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
@@ -37,12 +37,12 @@ public sealed class GeneratorTests
 
         namespace Sample.Stores;
 
-        public sealed class SettingsStore : IStore
+        public sealed class SettingsStore : IArlecchinoStore
         {
-            public State<string> Profile { get; } = new TrackedState<string>("");
+            public Atom<string> Profile { get; } = new TrackedAtom<string>("");
         }
 
-        public sealed class DraftStore : IScopedStore
+        public sealed class DraftStore : IArlecchinoScopedStore
         {
             public DraftStore(Surface surface) { }
         }
@@ -151,7 +151,7 @@ public sealed class GeneratorTests
 
             namespace Sample
             {
-                public class ModsView : IView
+                public class ModsView : IArlecchinoView
                 {
                     public void Draw() { }
                     public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
@@ -162,7 +162,7 @@ public sealed class GeneratorTests
             {
                 using Arlecchino.Navigation;
 
-                public class ModsView : IView
+                public class ModsView : IArlecchinoView
                 {
                     public void Draw() { }
                     public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
@@ -187,7 +187,7 @@ public sealed class GeneratorTests
 
             namespace Sample;
 
-            public class HiddenView : IView
+            public class HiddenView : IArlecchinoView
             {
                 private HiddenView() { }
                 public void Draw() { }
@@ -222,7 +222,7 @@ public sealed class GeneratorTests
 
             namespace Sample;
 
-            public class ModsView : IView
+            public class ModsView : IArlecchinoView
             {
                 public ModsView(Surface surface) { }
                 public void Draw() { }
@@ -245,7 +245,7 @@ public sealed class GeneratorTests
 
             namespace Sample.Screens;
 
-            public class ModsView : IView
+            public class ModsView : IArlecchinoView
             {
                 public void Draw() { }
                 public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
@@ -326,7 +326,7 @@ public sealed class GeneratorTests
 
             namespace Sample;
 
-            public sealed class HiddenStore : IStore
+            public sealed class HiddenStore : IArlecchinoStore
             {
                 private HiddenStore() { }
             }
@@ -347,7 +347,7 @@ public sealed class GeneratorTests
 
             namespace Sample;
 
-            public abstract class BaseView : IView
+            public abstract class BaseView : IArlecchinoView
             {
                 public abstract void Draw();
                 public abstract ViewRoute Handle(ConsoleKeyInfo key);

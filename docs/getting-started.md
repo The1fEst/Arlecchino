@@ -23,7 +23,7 @@ builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)
     .AddGeneratedViews()
     .AddGeneratedStores()
-    .AddCommand<QuitCommand>()
+    .AddGeneratedCommands()
     .StartAt(ViewKind.Default);
 
 await builder.Build().RunAsync();
@@ -31,7 +31,8 @@ await builder.Build().RunAsync();
 
 `AddArlecchino` registers the renderer, the navigator, the input router and a hosted service that owns
 the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator,
-`AddGeneratedStores` registers every `IStore` it found alongside it, and `StartAt`
+`AddGeneratedStores` registers every `IArlecchinoStore` it found alongside it,
+`AddGeneratedCommands` does the same for every `IArlecchinoCommand`, and `StartAt`
 picks the route shown on the first frame. Everything after `AddArlecchino` is a call on
 `ArlecchinoBuilder` — see [Hosting and options](hosting-and-options.md).
 
@@ -43,10 +44,10 @@ says so as `TSR004`. See [Source generator](source-generator.md) to put them som
 
 ## The first view
 
-A view is a class implementing `IView`. Constructor parameters are resolved from the container:
+A view is a class implementing `IArlecchinoView`. Constructor parameters are resolved from the container:
 
 ```csharp
-public class DefaultView : IView
+public class DefaultView : IArlecchinoView
 {
     private readonly Surface _surface;
 

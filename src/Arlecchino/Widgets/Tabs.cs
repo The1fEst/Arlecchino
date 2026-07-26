@@ -17,7 +17,7 @@ public sealed class Tabs : IFocusable
 
     private readonly ArlecchinoKeymap _keymap;
 
-    private Region _drawn;
+    private SurfaceRegion _drawn;
     private int[] _starts = [];
 
     /// <summary>Creates the strip.</summary>
@@ -58,7 +58,7 @@ public sealed class Tabs : IFocusable
     /// resolved to a tab.
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
-    public void Draw(Region region)
+    public void Draw(SurfaceRegion region)
     {
         _drawn = region;
 

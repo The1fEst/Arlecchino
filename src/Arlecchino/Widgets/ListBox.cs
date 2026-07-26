@@ -19,7 +19,7 @@ public sealed class ListBox<T> : IFocusable
 
     private readonly ArlecchinoKeymap _keymap;
 
-    private Region _drawn;
+    private SurfaceRegion _drawn;
     private ScrollWindow _window;
 
     /// <summary>Creates the list.</summary>
@@ -58,7 +58,7 @@ public sealed class ListBox<T> : IFocusable
     /// and wheel events be resolved afterwards.
     /// </summary>
     /// <param name="region">Where to draw.</param>
-    public void Draw(Region region)
+    public void Draw(SurfaceRegion region)
     {
         _drawn = region;
 

@@ -35,9 +35,7 @@ builder.Services
     })
     .AddGeneratedViews()
     .AddGeneratedStores()
-    .AddCommand<AboutCommand>()
-    .AddCommand<PickFolderCommand>()
-    .AddCommand<QuitCommand>()
+    .AddGeneratedCommands()
     .UseLatinOnlyInput()
     .UseMouse()
     .StartAt(ViewKind.Default);

@@ -5,7 +5,7 @@ using Arlecchino.Tests.Views;
 
 namespace Arlecchino.Tests;
 
-public sealed class ProbeView : IView
+public sealed class ProbeView : IArlecchinoView
 {
     private readonly Surface _surface;
 
@@ -22,7 +22,7 @@ public sealed class ProbeView : IView
     public (string Key, string Description)[] Hints() => [("o", "other")];
 }
 
-public sealed class OtherView : IView
+public sealed class OtherView : IArlecchinoView
 {
     private readonly Surface _surface;
 

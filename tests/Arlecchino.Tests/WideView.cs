@@ -4,7 +4,7 @@ using Arlecchino.Rendering;
 
 namespace Arlecchino.Tests;
 
-public sealed class WideView : IView
+public sealed class WideView : IArlecchinoView
 {
     private readonly Surface _surface;
 

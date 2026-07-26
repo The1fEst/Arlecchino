@@ -15,14 +15,14 @@ public sealed class ActiveView : IDisposable
     /// <summary>Pairs a screen with its scope.</summary>
     /// <param name="view">The screen.</param>
     /// <param name="scope">The scope it was built from.</param>
-    public ActiveView(IView view, IServiceScope scope)
+    public ActiveView(IArlecchinoView view, IServiceScope scope)
     {
         View = view;
         _scope = scope;
     }
 
     /// <summary>The screen being shown.</summary>
-    public IView View { get; }
+    public IArlecchinoView View { get; }
 
     /// <summary>Disposes the screen if it asked to be, then the scope behind it.</summary>
     public void Dispose()

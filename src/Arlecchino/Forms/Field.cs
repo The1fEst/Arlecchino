@@ -13,8 +13,8 @@ namespace Arlecchino.Forms;
 /// follows the language the application is running in. The factories bind a field to an atom and pick
 /// the dialog that suits its type, which is the usual way to build one.
 ///
-/// The atom they take is a <see cref="State{T}"/>, which is either a <see cref="TrackedState{T}"/> —
-/// so that editing the field can be undone — or a <see cref="LocalState{T}"/> when it should not be.
+/// The atom they take is a <see cref="Atom{T}"/>, which is either a <see cref="TrackedAtom{T}"/> —
+/// so that editing the field can be undone — or a <see cref="LocalAtom{T}"/> when it should not be.
 /// </summary>
 public sealed class Field
 {
@@ -61,7 +61,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Text(
         Func<string> label,
-        State<string> value,
+        Atom<string> value,
         Func<string, string?>? validate = null,
         Func<string>? help = null) => new()
     {
@@ -84,7 +84,7 @@ public sealed class Field
     /// <param name="value">The atom to read and write.</param>
     /// <param name="help">A line shown under the field while it is selected.</param>
     /// <returns>The field.</returns>
-    public static Field Secret(Func<string> label, State<string> value, Func<string>? help = null) => new()
+    public static Field Secret(Func<string> label, Atom<string> value, Func<string>? help = null) => new()
     {
         Label = label,
         Value = () => new('•', value.Value.Length),
@@ -106,7 +106,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Number(
         Func<string> label,
-        State<decimal> value,
+        Atom<decimal> value,
         decimal minimum,
         decimal maximum,
         Func<string>? help = null) => new()
@@ -134,7 +134,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Slider(
         Func<string> label,
-        State<decimal> value,
+        Atom<decimal> value,
         decimal minimum,
         decimal maximum,
         Func<string>? help = null) => new()
@@ -158,7 +158,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Toggle(
         Func<string> label,
-        State<bool> value,
+        Atom<bool> value,
         Func<bool, string> render,
         Func<string>? help = null) => new()
     {
@@ -182,7 +182,7 @@ public sealed class Field
     public static Field Choice(
         Func<string> label,
         IReadOnlyList<string> options,
-        State<string> value,
+        Atom<string> value,
         Func<string>? help = null) => new()
     {
         Label = label,
@@ -206,7 +206,7 @@ public sealed class Field
     public static Field MultiChoice(
         Func<string> label,
         IReadOnlyList<string> options,
-        State<IReadOnlyList<string>> value,
+        Atom<IReadOnlyList<string>> value,
         Func<IReadOnlyList<string>, string> render,
         Func<string>? help = null) => new()
     {
@@ -229,7 +229,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Date(
         Func<string> label,
-        State<DateOnly> value,
+        Atom<DateOnly> value,
         Func<DateOnly, string> render,
         Func<string>? help = null) => new()
     {
@@ -251,7 +251,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Time(
         Func<string> label,
-        State<TimeOnly> value,
+        Atom<TimeOnly> value,
         Func<TimeOnly, string> render,
         Func<string>? help = null) => new()
     {
@@ -273,7 +273,7 @@ public sealed class Field
     /// <param name="value">The atom to read and write.</param>
     /// <param name="help">A line shown under the field while it is selected.</param>
     /// <returns>The field.</returns>
-    public static Field Color(Func<string> label, State<Rgb> value, Func<string>? help = null) => new()
+    public static Field Color(Func<string> label, Atom<Rgb> value, Func<string>? help = null) => new()
     {
         Label = label,
         Value = () => value.Value.Hex,
@@ -297,7 +297,7 @@ public sealed class Field
     /// <returns>The field.</returns>
     public static Field Path(
         Func<string> label,
-        State<string> value,
+        Atom<string> value,
         ViewRoute returnView,
         bool pickFolder,
         Func<string>? help = null) => new()

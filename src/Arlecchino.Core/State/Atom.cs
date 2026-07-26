@@ -7,13 +7,13 @@ namespace Arlecchino.State;
 /// An atom: one piece of application state that notifies what reads it and marks the frame stale by
 /// itself, so a screen driven by atoms never needs a manual repaint request.
 ///
-/// Whether an edit can be undone is decided by the type that is created — <see cref="TrackedState{T}"/>
-/// or <see cref="LocalState{T}"/> — rather than by a flag set afterwards, so the declaration says
+/// Whether an edit can be undone is decided by the type that is created — <see cref="TrackedAtom{T}"/>
+/// or <see cref="LocalAtom{T}"/> — rather than by a flag set afterwards, so the declaration says
 /// which kind of state it is. Everything that takes an atom takes this base type, so the two are
 /// interchangeable at the call site.
 /// </summary>
 /// <typeparam name="T">Type of the value held.</typeparam>
-public abstract class State<T> : IReadableState<T>
+public abstract class Atom<T> : IReadableState<T>
 {
     private readonly List<Action> _listeners = [];
     private readonly IEqualityComparer<T> _comparer;
@@ -26,7 +26,7 @@ public abstract class State<T> : IReadableState<T>
     /// How to decide that a write changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
-    protected State(T initial, IEqualityComparer<T>? comparer = null)
+    protected Atom(T initial, IEqualityComparer<T>? comparer = null)
     {
         _value = initial;
         _comparer = comparer ?? EqualityComparer<T>.Default;
@@ -83,11 +83,11 @@ public abstract class State<T> : IReadableState<T>
 
     private sealed class Edit : IStateEdit
     {
-        private readonly State<T> _state;
+        private readonly Atom<T> _state;
         private readonly T _before;
         private readonly T _after;
 
-        public Edit(State<T> state, T before, T after)
+        public Edit(Atom<T> state, T before, T after)
         {
             _state = state;
             _before = before;

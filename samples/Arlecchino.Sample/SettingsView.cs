@@ -9,7 +9,7 @@ using Arlecchino.State;
 
 namespace Arlecchino.Sample;
 
-public sealed class SettingsView : IView, IDisposable
+public sealed class SettingsView : IArlecchinoView, IDisposable
 {
     private readonly Surface _surface;
     private readonly SettingsStore _settings;

@@ -32,7 +32,7 @@ builder.Services
     .AddArlecchino()
     .UseTheme(new ThemePalette
     {
-        Header = new TermColor { Foreground = TerminalColor.BrightCyan, Style = FontStyle.Bold },
+        Header = new TermColor { Foreground = TerminalColor.BrightCyan, Style = TextStyle.Bold },
         Selected = new TermColor { Background = TerminalColor.Blue },
     });
 ```
@@ -49,12 +49,12 @@ public sealed class TermColor : ITermColor
 {
     public TerminalColor Foreground { get; init; } = TerminalColor.Default;
     public TerminalColor Background { get; init; } = TerminalColor.Default;
-    public FontStyle Style { get; init; } = FontStyle.None;
+    public TextStyle Style { get; init; } = TextStyle.None;
 }
 ```
 
 `TerminalColor` is the sixteen-colour ANSI set — `Default`, the eight base colours, and their
-`Bright` counterparts. `FontStyle` is a `[Flags]` enum of `Bold`, `Italic`, `Underline` and `Dim`.
+`Bright` counterparts. `TextStyle` is a `[Flags]` enum of `Bold`, `Italic`, `Underline` and `Dim`.
 
 ## 24-bit colour
 

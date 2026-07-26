@@ -7,7 +7,7 @@ using Arlecchino.Rendering;
 
 namespace Arlecchino.Processes;
 
-public sealed class DetailsView : IView
+public sealed class DetailsView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly ProcessTable _processes;

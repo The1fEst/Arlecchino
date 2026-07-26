@@ -24,7 +24,7 @@ public sealed class StatusBar
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
     /// <param name="style">Colour to draw in. Defaults to the muted theme colour.</param>
-    public void Draw(Region region, ITermColor? style = null)
+    public void Draw(SurfaceRegion region, ITermColor? style = null)
     {
         if (region.IsEmpty)
         {

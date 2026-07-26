@@ -9,10 +9,10 @@ namespace Arlecchino.Processes;
 
 public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, TimeSpan Cpu, DateTime? Started);
 
-public sealed class ProcessTable : IStore
+public sealed class ProcessTable : IArlecchinoStore
 {
     private readonly AsyncState<IReadOnlyList<ProcessRow>> _rows;
-    private readonly LocalState<string> _filter = new("");
+    private readonly LocalAtom<string> _filter = new("");
 
     public ProcessTable(UiDispatcher dispatcher)
     {
@@ -21,9 +21,9 @@ public sealed class ProcessTable : IStore
 
     public AsyncState<IReadOnlyList<ProcessRow>> Rows => _rows;
 
-    public State<string> Filter => _filter;
+    public Atom<string> Filter => _filter;
 
-    public State<ProcessRow?> Selected { get; } = new LocalState<ProcessRow?>(null);
+    public Atom<ProcessRow?> Selected { get; } = new LocalAtom<ProcessRow?>(null);
 
     public DateTimeOffset LoadedAt { get; private set; }
 

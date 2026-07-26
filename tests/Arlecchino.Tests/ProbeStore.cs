@@ -2,12 +2,12 @@ using Arlecchino.State;
 
 namespace Arlecchino.Tests;
 
-public sealed class ProbeStore : IStore
+public sealed class ProbeStore : IArlecchinoStore
 {
-    public State<string> Name { get; } = new LocalState<string>("probe");
+    public Atom<string> Name { get; } = new LocalAtom<string>("probe");
 }
 
-public sealed class ScopedProbeStore : IScopedStore
+public sealed class ScopedProbeStore : IArlecchinoScopedStore
 {
     public ScopedProbeStore(TuiState state)
     {

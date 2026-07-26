@@ -13,7 +13,7 @@ namespace Arlecchino.Forms;
 /// A column of fields with their values lined up, and a help line under the selected one. The form
 /// holds no values of its own: the fields read and write atoms, so it draws whatever the state says
 /// without any copying back and forth. Whether an edit made here can be undone is decided by the atom
-/// behind the field — <see cref="TrackedState{T}"/> or <see cref="LocalState{T}"/> — not by the form.
+/// behind the field — <see cref="TrackedAtom{T}"/> or <see cref="LocalAtom{T}"/> — not by the form.
 /// </summary>
 public sealed class Form : IFocusable
 {
@@ -26,7 +26,7 @@ public sealed class Form : IFocusable
 
     private readonly Dictionary<int, int> _fieldOfRow = [];
 
-    private Region _lastRows;
+    private SurfaceRegion _lastRows;
 
     /// <summary>Creates the form.</summary>
     /// <param name="state">Where fields open their dialogs.</param>
@@ -61,7 +61,7 @@ public sealed class Form : IFocusable
     /// left out of the alignment, since they have no value to line up against.
     /// </summary>
     /// <param name="region">Where to draw, help line included.</param>
-    public void Draw(Region region)
+    public void Draw(SurfaceRegion region)
     {
         if (Fields.Count == 0 || region.IsEmpty)
         {

@@ -4,7 +4,7 @@ namespace Arlecchino.State;
 
 /// <summary>
 /// Something that holds a value and tells interested parties when it changes. Implemented by
-/// <see cref="State{T}"/> and <see cref="Computed{T}"/>.
+/// <see cref="Atom{T}"/> and <see cref="Computed{T}"/>.
 /// </summary>
 /// <typeparam name="T">Type of the value held.</typeparam>
 public interface IReadableState<out T>

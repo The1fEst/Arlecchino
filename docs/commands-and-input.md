@@ -11,7 +11,7 @@ The hosted service polls `ITerminal` every `InputPollInterval` (8 ms by default)
 2. the key resolves to `CommandPaletteKey` (`:` by default) and at least one command is registered →
    the palette opens;
 3. otherwise `Navigator` gets it: `Alt+←` / `Alt+→` walk the history, everything else reaches
-   `IView.Handle`.
+   `IArlecchinoView.Handle`.
 
 So a view never has to check for the palette key or guard against typing into a modal.
 
@@ -36,8 +36,10 @@ public sealed class QuitCommand : IArlecchinoCommand
 }
 ```
 
-Register with `.AddCommand<QuitCommand>()`. Commands are singletons resolved from the container, so
-they can take any service — application state, the navigator, `TuiState`.
+Nothing registers it by hand: `.AddGeneratedCommands()` picks up every `IArlecchinoCommand` in the
+project — see [Source generator](source-generator.md#commands). `.AddCommand<QuitCommand>()` is there
+for a command that comes from another assembly. Either way commands are singletons resolved from the
+container, so they can take any service — application state, the navigator, `TuiState`.
 
 `Execute` returns a route: navigate by returning one, stay put with `ViewRoute.None`. `Icon` and
 `Label` are yours to render; the palette shows the binding and the label.
@@ -81,7 +83,7 @@ Keys are resolved in this order:
 3. history keys (`Back` / `Forward`);
 4. **commands of the current view**;
 5. application commands with a modifier;
-6. `IView.Handle` — everything else: typing, arrows, list filters.
+6. `IArlecchinoView.Handle` — everything else: typing, arrows, list filters.
 
 So a view command shadows an application command on the same key, and that is reported: when the
 route is first shown, `CommandConflicts` logs a warning naming both the view command and the
@@ -230,7 +232,7 @@ of key presses — so a pasted token cannot trip a shortcut or fire validation h
 
 Where it lands follows what typing would do: a text or number field takes it at the caret, dropping
 characters the field would refuse anyway; a choice modal extends its filter; with no modal open it
-goes to the view through `IView.HandlePaste`, which does nothing unless the view overrides it. Only
+goes to the view through `IArlecchinoView.HandlePaste`, which does nothing unless the view overrides it. Only
 the first line reaches a single-line field.
 
 ```csharp

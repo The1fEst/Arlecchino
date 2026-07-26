@@ -51,10 +51,10 @@ public sealed class ColorModal : Modal
     public Rgb Value => Rgb.FromHsl(Hue, Saturation, Lightness);
 
     /// <summary>Where each slider's row was drawn last frame, used to turn a click into a channel.</summary>
-    public Region[] ChannelRows { get; set; } = [];
+    public SurfaceRegion[] ChannelRows { get; set; } = [];
 
     /// <summary>Where each slider's track was drawn last frame, used to turn a click into a value.</summary>
-    public Region[] ChannelTracks { get; set; } = [];
+    public SurfaceRegion[] ChannelTracks { get; set; } = [];
 
     /// <summary>Places a slider's handle at a position along its track.</summary>
     /// <param name="channel">The slider to move.</param>

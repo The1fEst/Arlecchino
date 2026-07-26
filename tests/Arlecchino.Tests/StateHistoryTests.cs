@@ -10,8 +10,8 @@ public sealed class StateHistoryTests
     public void StatesOptOutOfTheHistoryOneAtATime()
     {
         using var history = new StateHistory();
-        var tracked = new TrackedState<string>("");
-        var untracked = new LocalState<string>("");
+        var tracked = new TrackedAtom<string>("");
+        var untracked = new LocalAtom<string>("");
 
 
         untracked.Value = "ignored";
@@ -25,7 +25,7 @@ public sealed class StateHistoryTests
     public void UndoAndRedoWalkTheEdits()
     {
         using var history = new StateHistory();
-        var name = new TrackedState<string>("start");
+        var name = new TrackedAtom<string>("start");
 
         name.Value = "first";
         name.Value = "second";
@@ -51,7 +51,7 @@ public sealed class StateHistoryTests
     public void UndoingDoesNotRecordItselfAsAnEdit()
     {
         using var history = new StateHistory();
-        var count = new TrackedState<int>(0);
+        var count = new TrackedAtom<int>(0);
 
         count.Value = 1;
         history.Undo();
@@ -64,7 +64,7 @@ public sealed class StateHistoryTests
     public void WritingAfterUndoDropsTheRedoBranch()
     {
         using var history = new StateHistory();
-        var count = new TrackedState<int>(0);
+        var count = new TrackedAtom<int>(0);
 
         count.Value = 1;
         history.Undo();
@@ -78,8 +78,8 @@ public sealed class StateHistoryTests
     public void GroupedEditsUndoTogether()
     {
         using var history = new StateHistory();
-        var first = new TrackedState<string>("");
-        var second = new TrackedState<string>("");
+        var first = new TrackedAtom<string>("");
+        var second = new TrackedAtom<string>("");
 
         using (history.Group())
         {
@@ -99,7 +99,7 @@ public sealed class StateHistoryTests
     public void TheOldestStepsFallOffOnceTheHistoryIsFull()
     {
         using var history = new StateHistory { Capacity = 3 };
-        var text = new TrackedState<string>("");
+        var text = new TrackedAtom<string>("");
 
         for (var edit = 1; edit <= 10; edit++)
         {
@@ -119,7 +119,7 @@ public sealed class StateHistoryTests
     public void LoweringTheCapacityDropsWhatNoLongerFits()
     {
         using var history = new StateHistory();
-        var text = new TrackedState<string>("");
+        var text = new TrackedAtom<string>("");
 
         for (var edit = 1; edit <= 5; edit++)
         {
@@ -135,7 +135,7 @@ public sealed class StateHistoryTests
     public void AGroupCountsAsOneStepAgainstTheCapacity()
     {
         using var history = new StateHistory { Capacity = 2 };
-        var text = new TrackedState<string>("");
+        var text = new TrackedAtom<string>("");
 
         for (var step = 1; step <= 3; step++)
         {
@@ -154,7 +154,7 @@ public sealed class StateHistoryTests
     {
         using var history = new StateHistory();
         var owners = new List<object?>();
-        var count = new TrackedState<int>(0);
+        var count = new TrackedAtom<int>(0);
 
         StateChanges.Recorded += Collect;
         count.Value = 3;

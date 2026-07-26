@@ -53,7 +53,7 @@ public sealed class RenderingTests
     public void PaletteStyleIsBuiltOnceAndReused()
     {
         using var scope = new ColorSupportScope(ColorSupport.Palette);
-        var style = new TermColor { Foreground = TerminalColor.BrightMagenta, Style = FontStyle.Bold };
+        var style = new TermColor { Foreground = TerminalColor.BrightMagenta, Style = TextStyle.Bold };
 
         Assert.Same(style.Ansi, style.Ansi);
         Assert.Contains(";1", style.Ansi, StringComparison.Ordinal);

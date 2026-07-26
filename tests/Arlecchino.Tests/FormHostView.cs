@@ -6,7 +6,7 @@ using Arlecchino.Rendering;
 
 namespace Arlecchino.Tests;
 
-public sealed class FormHostView : IView
+public sealed class FormHostView : IArlecchinoView
 {
     private readonly Surface _surface;
 
@@ -17,7 +17,7 @@ public sealed class FormHostView : IView
 
     public static Form? Hosted { get; set; }
 
-    public static Region Rows { get; private set; }
+    public static SurfaceRegion Rows { get; private set; }
 
     public void Draw()
     {

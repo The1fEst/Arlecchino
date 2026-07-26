@@ -115,7 +115,7 @@ Arlecchino.Forms.Field.Value.get -> System.Func<string!>!
 Arlecchino.Forms.Field.Value.init -> void
 Arlecchino.Forms.Form
 Arlecchino.Forms.Form.Current.get -> Arlecchino.Forms.Field?
-Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.Region region) -> void
+Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Forms.Form.Fields.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Forms.Field!>!
 Arlecchino.Forms.Form.Fields.init -> void
 Arlecchino.Forms.Form.Form(Arlecchino.State.TuiState! state, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
@@ -130,7 +130,7 @@ Arlecchino.Forms.Form.Selected.get -> int
 Arlecchino.Hosting.ArlecchinoBuilder
 Arlecchino.Hosting.ArlecchinoBuilder.AddCommand<TCommand>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddStartup<TStartup>() -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.AddView(string! route, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IView!>! factory) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.AddView(string! route, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>! factory) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddView<T>(string! route) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddViewFactory<TFactory>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.Options.get -> Arlecchino.Hosting.ArlecchinoOptions!
@@ -377,18 +377,18 @@ Arlecchino.InputRouter.ProcessKey(System.ConsoleKeyInfo key) -> void
 Arlecchino.InputRouter.ProcessMouse(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.InputRouter.ProcessPaste(string! text) -> void
 Arlecchino.Navigation.ActiveView
-Arlecchino.Navigation.ActiveView.ActiveView(Arlecchino.Navigation.IView! view, Microsoft.Extensions.DependencyInjection.IServiceScope! scope) -> void
+Arlecchino.Navigation.ActiveView.ActiveView(Arlecchino.Navigation.IArlecchinoView! view, Microsoft.Extensions.DependencyInjection.IServiceScope! scope) -> void
 Arlecchino.Navigation.ActiveView.Dispose() -> void
-Arlecchino.Navigation.ActiveView.View.get -> Arlecchino.Navigation.IView!
-Arlecchino.Navigation.IView
-Arlecchino.Navigation.IView.Commands() -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.ViewCommand!>!
-Arlecchino.Navigation.IView.Draw() -> void
-Arlecchino.Navigation.IView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Navigation.IView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Navigation.IView.HandlePaste(string! text) -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Navigation.IView.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Navigation.ActiveView.View.get -> Arlecchino.Navigation.IArlecchinoView!
+Arlecchino.Navigation.IArlecchinoView
+Arlecchino.Navigation.IArlecchinoView.Commands() -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.ViewCommand!>!
+Arlecchino.Navigation.IArlecchinoView.Draw() -> void
+Arlecchino.Navigation.IArlecchinoView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Navigation.IArlecchinoView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Navigation.IArlecchinoView.HandlePaste(string! text) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Navigation.IArlecchinoView.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Navigation.IViewFactory
-Arlecchino.Navigation.IViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IView? view) -> bool
+Arlecchino.Navigation.IViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
 Arlecchino.Navigation.Navigator
 Arlecchino.Navigation.Navigator.Apply(Arlecchino.Navigation.ViewRoute route) -> void
 Arlecchino.Navigation.Navigator.Back() -> bool
@@ -406,7 +406,7 @@ Arlecchino.Navigation.Navigator.Navigator(Arlecchino.Navigation.ViewResolver! re
 Arlecchino.Navigation.Navigator.Reload() -> void
 Arlecchino.Navigation.RegisteredViewFactory
 Arlecchino.Navigation.RegisteredViewFactory.RegisteredViewFactory(Arlecchino.Navigation.ViewRegistrations! registrations) -> void
-Arlecchino.Navigation.RegisteredViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IView? view) -> bool
+Arlecchino.Navigation.RegisteredViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
 Arlecchino.Navigation.Routes
 Arlecchino.Navigation.ViewLifetime
 Arlecchino.Navigation.ViewLifetime.Closing.get -> System.Threading.CancellationToken
@@ -416,9 +416,9 @@ Arlecchino.Navigation.ViewLifetime.OnClose(System.Action! action) -> void
 Arlecchino.Navigation.ViewLifetime.Track<T>(T resource) -> T
 Arlecchino.Navigation.ViewLifetime.ViewLifetime(Arlecchino.UiDispatcher! dispatcher) -> void
 Arlecchino.Navigation.ViewRegistrations
-Arlecchino.Navigation.ViewRegistrations.Add(string! name, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IView!>! factory) -> void
+Arlecchino.Navigation.ViewRegistrations.Add(string! name, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>! factory) -> void
 Arlecchino.Navigation.ViewRegistrations.Routes.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-Arlecchino.Navigation.ViewRegistrations.TryGet(string! name, out System.Func<System.IServiceProvider!, Arlecchino.Navigation.IView!>? factory) -> bool
+Arlecchino.Navigation.ViewRegistrations.TryGet(string! name, out System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>? factory) -> bool
 Arlecchino.Navigation.ViewRegistrations.ViewRegistrations() -> void
 Arlecchino.Navigation.ViewResolver
 Arlecchino.Navigation.ViewResolver.Create(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Navigation.ActiveView!
@@ -465,9 +465,9 @@ Arlecchino.State.ColorModal.Add(int delta) -> void
 Arlecchino.State.ColorModal.Channel.get -> Arlecchino.State.ColorChannel
 Arlecchino.State.ColorModal.Channel.set -> void
 Arlecchino.State.ColorModal.ChannelMaximum.get -> int
-Arlecchino.State.ColorModal.ChannelRows.get -> Arlecchino.Rendering.Region[]!
+Arlecchino.State.ColorModal.ChannelRows.get -> Arlecchino.Rendering.SurfaceRegion[]!
 Arlecchino.State.ColorModal.ChannelRows.set -> void
-Arlecchino.State.ColorModal.ChannelTracks.get -> Arlecchino.Rendering.Region[]!
+Arlecchino.State.ColorModal.ChannelTracks.get -> Arlecchino.Rendering.SurfaceRegion[]!
 Arlecchino.State.ColorModal.ChannelTracks.set -> void
 Arlecchino.State.ColorModal.ChannelValue.get -> int
 Arlecchino.State.ColorModal.ColorModal() -> void
@@ -494,7 +494,7 @@ Arlecchino.State.CommandModal
 Arlecchino.State.CommandModal.CommandModal() -> void
 Arlecchino.State.CommandModal.Commands.get -> System.Collections.Generic.IReadOnlyList<(string! Key, string! Label)>!
 Arlecchino.State.CommandModal.Commands.init -> void
-Arlecchino.State.CommandModal.Rows.get -> Arlecchino.Rendering.Region
+Arlecchino.State.CommandModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.CommandModal.Rows.set -> void
 Arlecchino.State.DateModal
 Arlecchino.State.DateModal.DateModal() -> void
@@ -560,7 +560,7 @@ Arlecchino.State.LoadStatus.Idle = 0 -> Arlecchino.State.LoadStatus
 Arlecchino.State.LoadStatus.Loaded = 2 -> Arlecchino.State.LoadStatus
 Arlecchino.State.LoadStatus.Loading = 1 -> Arlecchino.State.LoadStatus
 Arlecchino.State.Modal
-Arlecchino.State.Modal.Box.get -> Arlecchino.Rendering.Region
+Arlecchino.State.Modal.Box.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.Modal.Box.set -> void
 Arlecchino.State.Modal.Modal() -> void
 Arlecchino.State.Modal.Title.get -> string!
@@ -619,7 +619,7 @@ Arlecchino.State.OptionListModal.MatchingOptions() -> System.Collections.Generic
 Arlecchino.State.OptionListModal.OptionListModal() -> void
 Arlecchino.State.OptionListModal.Options.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Arlecchino.State.OptionListModal.Options.init -> void
-Arlecchino.State.OptionListModal.Rows.get -> Arlecchino.Rendering.Region
+Arlecchino.State.OptionListModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.OptionListModal.Rows.set -> void
 Arlecchino.State.SegmentedModal
 Arlecchino.State.SegmentedModal.ClearTypedDigits() -> void
@@ -642,7 +642,7 @@ Arlecchino.State.SliderModal.OnSubmit.get -> System.Action<decimal>!
 Arlecchino.State.SliderModal.OnSubmit.init -> void
 Arlecchino.State.SliderModal.SetFromFraction(decimal fraction) -> void
 Arlecchino.State.SliderModal.SliderModal() -> void
-Arlecchino.State.SliderModal.Track.get -> Arlecchino.Rendering.Region
+Arlecchino.State.SliderModal.Track.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.SliderModal.Track.set -> void
 Arlecchino.State.SliderModal.Value.get -> decimal
 Arlecchino.State.SliderModal.Value.set -> void
@@ -679,14 +679,14 @@ Arlecchino.State.TimeModal.TimeModal() -> void
 Arlecchino.State.TimeModal.Value.get -> System.TimeOnly
 Arlecchino.State.TimeModal.Value.set -> void
 Arlecchino.State.ToggleModal
-Arlecchino.State.ToggleModal.NoChip.get -> Arlecchino.Rendering.Region
+Arlecchino.State.ToggleModal.NoChip.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.ToggleModal.NoChip.set -> void
 Arlecchino.State.ToggleModal.OnSubmit.get -> System.Action<bool>!
 Arlecchino.State.ToggleModal.OnSubmit.init -> void
 Arlecchino.State.ToggleModal.ToggleModal() -> void
 Arlecchino.State.ToggleModal.Value.get -> bool
 Arlecchino.State.ToggleModal.Value.set -> void
-Arlecchino.State.ToggleModal.YesChip.get -> Arlecchino.Rendering.Region
+Arlecchino.State.ToggleModal.YesChip.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.State.ToggleModal.YesChip.set -> void
 Arlecchino.State.TuiState
 Arlecchino.State.TuiState.CloseAllModals() -> void
@@ -731,7 +731,7 @@ Arlecchino.Views.FilePickerView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.
 Arlecchino.Views.FilePickerView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Views.FilePickerView.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Widgets.ListBox<T>
-Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.Region region) -> void
+Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ListBox<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ListBox<T>.IsFocused.get -> bool
@@ -751,7 +751,7 @@ Arlecchino.Widgets.ListBox<T>.Style.set -> void
 Arlecchino.Widgets.ProgressBar
 Arlecchino.Widgets.ProgressBar.Caption.get -> System.Func<decimal, string!>?
 Arlecchino.Widgets.ProgressBar.Caption.init -> void
-Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.Region region, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
 Arlecchino.Widgets.ProgressBar.Fraction.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.init -> void
@@ -775,12 +775,12 @@ Arlecchino.Widgets.ScrollWindow.ScrollWindow(int First, int Count) -> void
 Arlecchino.Widgets.Spinner
 Arlecchino.Widgets.Spinner.Advance() -> void
 Arlecchino.Widgets.Spinner.Current.get -> string!
-Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.Region region, int row, int column, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, Arlecchino.Rendering.ITermColor? style = null) -> void
 Arlecchino.Widgets.Spinner.Frames.get -> string![]!
 Arlecchino.Widgets.Spinner.Frames.init -> void
 Arlecchino.Widgets.Spinner.Spinner() -> void
 Arlecchino.Widgets.StatusBar
-Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.Region region, Arlecchino.Rendering.ITermColor? style = null) -> void
+Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.ITermColor? style = null) -> void
 Arlecchino.Widgets.StatusBar.Left.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.StatusBar.Left.init -> void
 Arlecchino.Widgets.StatusBar.Right.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
@@ -789,7 +789,7 @@ Arlecchino.Widgets.StatusBar.StatusBar() -> void
 Arlecchino.Widgets.Table<T>
 Arlecchino.Widgets.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TableColumn<T>!>!
 Arlecchino.Widgets.Table<T>.Columns.init -> void
-Arlecchino.Widgets.Table<T>.Draw(Arlecchino.Rendering.Region region) -> void
+Arlecchino.Widgets.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.Table<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Table<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Table<T>.IsFocused.get -> bool
@@ -820,7 +820,7 @@ Arlecchino.Widgets.TableColumn<T>.TableColumn() -> void
 Arlecchino.Widgets.TableColumn<T>.Width.get -> int
 Arlecchino.Widgets.TableColumn<T>.Width.init -> void
 Arlecchino.Widgets.Tabs
-Arlecchino.Widgets.Tabs.Draw(Arlecchino.Rendering.Region region) -> void
+Arlecchino.Widgets.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.Tabs.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tabs.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tabs.IsFocused.get -> bool
@@ -834,7 +834,7 @@ Arlecchino.Widgets.Tabs.Titles.get -> System.Collections.Generic.IReadOnlyList<S
 Arlecchino.Widgets.Tabs.Titles.init -> void
 Arlecchino.Widgets.Tree<T>
 Arlecchino.Widgets.Tree<T>.CollapseAll() -> void
-Arlecchino.Widgets.Tree<T>.Draw(Arlecchino.Rendering.Region region) -> void
+Arlecchino.Widgets.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Widgets.Tree<T>.ExpandAll() -> void
 Arlecchino.Widgets.Tree<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tree<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
@@ -897,17 +897,17 @@ static Arlecchino.Focus.FocusResult.Navigate(Arlecchino.Navigation.ViewRoute rou
 static Arlecchino.Focus.FocusResult.operator !=(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
 static Arlecchino.Focus.FocusResult.operator ==(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
 static Arlecchino.Forms.Field.Action(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run, System.Func<bool>? enabled = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.State.State<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.State.State<Arlecchino.Rendering.Rgb>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Date(System.Func<string!>! label, Arlecchino.State.State<System.DateOnly>! value, System.Func<System.DateOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.State.State<System.Collections.Generic.IReadOnlyList<string!>!>! value, System.Func<System.Collections.Generic.IReadOnlyList<string!>!, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Number(System.Func<string!>! label, Arlecchino.State.State<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.State.State<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Secret(System.Func<string!>! label, Arlecchino.State.State<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Slider(System.Func<string!>! label, Arlecchino.State.State<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Text(System.Func<string!>! label, Arlecchino.State.State<string!>! value, System.Func<string!, string?>? validate = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Time(System.Func<string!>! label, Arlecchino.State.State<System.TimeOnly>! value, System.Func<System.TimeOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Toggle(System.Func<string!>! label, Arlecchino.State.State<bool>! value, System.Func<bool, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.State.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.State.Atom<Arlecchino.Rendering.Rgb>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Date(System.Func<string!>! label, Arlecchino.State.Atom<System.DateOnly>! value, System.Func<System.DateOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.State.Atom<System.Collections.Generic.IReadOnlyList<string!>!>! value, System.Func<System.Collections.Generic.IReadOnlyList<string!>!, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Number(System.Func<string!>! label, Arlecchino.State.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.State.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Secret(System.Func<string!>! label, Arlecchino.State.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Slider(System.Func<string!>! label, Arlecchino.State.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Text(System.Func<string!>! label, Arlecchino.State.Atom<string!>! value, System.Func<string!, string?>? validate = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Time(System.Func<string!>! label, Arlecchino.State.Atom<System.TimeOnly>! value, System.Func<System.TimeOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Toggle(System.Func<string!>! label, Arlecchino.State.Atom<bool>! value, System.Func<bool, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Hosting.ArlecchinoServiceCollectionExtensions.AddArlecchino(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Arlecchino.Hosting.ArlecchinoOptions!>? configure = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 static Arlecchino.Navigation.ViewRoute.None.get -> Arlecchino.Navigation.ViewRoute
 static Arlecchino.Navigation.ViewRoute.operator !=(Arlecchino.Navigation.ViewRoute left, Arlecchino.Navigation.ViewRoute right) -> bool
@@ -926,7 +926,7 @@ static Arlecchino.State.TextEditing.MoveCaret(Arlecchino.State.ITextEntryModal! 
 static Arlecchino.State.TextEditing.MoveToEnd(Arlecchino.State.ITextEntryModal! modal) -> void
 static Arlecchino.State.TextEditing.MoveToStart(Arlecchino.State.ITextEntryModal! modal) -> void
 static Arlecchino.State.TextEditing.MoveWord(Arlecchino.State.ITextEntryModal! modal, int direction) -> void
-static Arlecchino.Widgets.ScrollBar.Draw(Arlecchino.Rendering.Region region, int first, int total, Arlecchino.Rendering.ITermColor? style = null) -> void
+static Arlecchino.Widgets.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.ITermColor? style = null) -> void
 static Arlecchino.Widgets.ScrollBar.IsNeeded(int total, int rows) -> bool
 static Arlecchino.Widgets.ScrollWindow.Around(int selected, int itemCount, int rows) -> Arlecchino.Widgets.ScrollWindow
 static Arlecchino.Widgets.ScrollWindow.operator !=(Arlecchino.Widgets.ScrollWindow left, Arlecchino.Widgets.ScrollWindow right) -> bool

@@ -20,7 +20,7 @@ public sealed class RegisteredViewFactory : IViewFactory
     /// <param name="route">The route being shown.</param>
     /// <param name="view">The view, when the route is registered.</param>
     /// <returns><c>true</c> when the route was registered.</returns>
-    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view)
+    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view)
     {
         if (route.IsNone || !_registrations.TryGet(route.Name, out var factory))
         {

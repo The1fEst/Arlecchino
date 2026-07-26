@@ -450,8 +450,8 @@ public class Screen
         var trackStart = labelWidth + 3;
 
         modal.Box = box;
-        modal.ChannelRows = new Region[3];
-        modal.ChannelTracks = new Region[3];
+        modal.ChannelRows = new SurfaceRegion[3];
+        modal.ChannelTracks = new SurfaceRegion[3];
 
         for (var channel = 0; channel < 3; channel++)
         {
@@ -549,7 +549,7 @@ public class Screen
         inside.WriteLine(footerRow + 1, hints, Theme.Muted);
     }
 
-    private void DrawListPosition(Region inside, int position, int count)
+    private void DrawListPosition(SurfaceRegion inside, int position, int count)
     {
         var text = _strings.ListPosition(position, count);
         var column = inside.Width - TextWidth.Of(text);
@@ -560,10 +560,10 @@ public class Screen
         }
     }
 
-    private static void DrawDivider(Region box, int insideRow) =>
+    private static void DrawDivider(SurfaceRegion box, int insideRow) =>
         box.Write(insideRow + 1, 0, $"├{new string('─', Math.Max(0, box.Width - 2))}┤", Theme.Info);
 
-    private Region Centered(int contentWidth, int contentHeight)
+    private SurfaceRegion Centered(int contentWidth, int contentHeight)
     {
         var width = Math.Min(contentWidth + 4, _surface.FrameWidth - 4);
         var height = Math.Min(contentHeight + 2, _surface.FrameHeight - 2);
@@ -579,7 +579,7 @@ public class Screen
             height);
     }
 
-    private (Region Box, Region Content) DrawBox(string title, IReadOnlyList<Span[]> body, string footer)
+    private (SurfaceRegion Box, SurfaceRegion Content) DrawBox(string title, IReadOnlyList<Span[]> body, string footer)
     {
         var inner = Math.Max(TextWidth.Of(title) + 4, 34);
         foreach (var line in body)

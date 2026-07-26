@@ -45,7 +45,7 @@ them is thread-safe. Work that finishes on another thread hands its result back 
 `UiDispatcher`, which runs queued actions on the frame loop just before the next frame is composed:
 
 ```csharp
-public sealed class ModsView : IView
+public sealed class ModsView : IArlecchinoView
 {
     private readonly UiDispatcher _dispatcher;
     private readonly ModsService _mods;
@@ -123,7 +123,7 @@ split by the right edge is dropped rather than half-drawn.
 
 ## Regions
 
-Absolute coordinates get unwieldy the moment a view has panes. A `Region` is a rectangle on the
+Absolute coordinates get unwieldy the moment a view has panes. A `SurfaceRegion` is a rectangle on the
 surface with its own coordinate system and its own clipping — writing outside it is dropped, not
 spilled onto a neighbour:
 

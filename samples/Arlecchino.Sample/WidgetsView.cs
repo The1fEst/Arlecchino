@@ -10,7 +10,7 @@ using Arlecchino.Widgets;
 
 namespace Arlecchino.Sample;
 
-public sealed class WidgetsView : IView
+public sealed class WidgetsView : IArlecchinoView
 {
     private sealed record Mod(string Name, string Author, int Files, bool Enabled);
 

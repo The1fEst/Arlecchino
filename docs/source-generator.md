@@ -2,19 +2,23 @@
 
 # Source generator
 
-`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds two
+`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds three
 incremental generators. They write one file each into the project that references the package:
-`ArlecchinoViewNavigation.g.cs` for the routes and the view factory, and
-`ArlecchinoStoreRegistration.g.cs` for the stores. Both land in the same namespace.
+`ArlecchinoViewNavigation.g.cs` for the routes and the view factory,
+`ArlecchinoStoreRegistration.g.cs` for the stores, and `ArlecchinoCommandRegistration.g.cs` for the
+application commands. All three land in the same namespace.
 
 ## What it looks for
 
 **Views** — every class declaration with a base list, whose symbol is non-abstract and implements
-`Arlecchino.Navigation.IView`. The route name is the type name with a trailing `View` stripped:
+`Arlecchino.Navigation.IArlecchinoView`. The route name is the type name with a trailing `View` stripped:
 `ModsView` becomes `Mods`, `Settings` stays `Settings`.
 
-**Stores** — the same, for `Arlecchino.State.IStore`. The name means nothing here; the marker is the
+**Stores** — the same, for `Arlecchino.State.IArlecchinoStore`. The name means nothing here; the marker is the
 whole declaration. See [Stores](#stores) below.
+
+**Commands** — the same again, for `Arlecchino.Commands.IArlecchinoCommand`. See [Commands](#commands)
+below.
 
 Duplicate route names collapse to the first declaration seen. Routes are emitted with `Default` first,
 then the rest ordered ordinally.
@@ -31,7 +35,7 @@ public static class ViewKind
 
 public sealed class GeneratedViewFactory : IViewFactory
 {
-    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view) { ... }
+    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view) { ... }
 }
 
 public static class GeneratedViewRegistration
@@ -67,13 +71,13 @@ resolve — see [Views and navigation](views-and-navigation.md).
 
 ## Stores
 
-A store is a class of atoms that outlives the screens reading it. Marking it with `IStore` is the
+A store is a class of atoms that outlives the screens reading it. Marking it with `IArlecchinoStore` is the
 whole registration:
 
 ```csharp
-public sealed class SettingsStore : IStore
+public sealed class SettingsStore : IArlecchinoStore
 {
-    public State<string> Profile { get; } = new TrackedState<string>("");
+    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
 }
 ```
 
@@ -104,18 +108,73 @@ public static class GeneratedStoreRegistration
 Each registration is a factory calling the public constructor with the most parameters, so nothing is
 built by reflection and trimming keeps working — the same deal the view factory gets.
 
-`IScopedStore` is the second marker: a store that belongs to one screen rather than to the
+`IArlecchinoScopedStore` is the second marker: a store that belongs to one screen rather than to the
 application. It is registered `AddScoped`, so it is built inside the scope
 [the resolver opens per screen](views-and-navigation.md), disposed with it, and built afresh when the
-screen is opened again. `IScopedStore` extends `IStore`, so it is found the same way.
+screen is opened again. `IArlecchinoScopedStore` extends `IArlecchinoStore`, so it is found the same way.
 
 | Marker | Lifetime | Holds |
 |---|---|---|
-| `IStore` | Singleton | State the whole application shares: settings, the catalogue, the session |
-| `IScopedStore` | Scoped to the screen | State one screen owns but keeps out of the view: an editor's draft, a wizard's answers |
+| `IArlecchinoStore` | Singleton | State the whole application shares: settings, the catalogue, the session |
+| `IArlecchinoScopedStore` | Scoped to the screen | State one screen owns but keeps out of the view: an editor's draft, a wizard's answers |
 
 Nothing forces a store to be one or the other; a class with neither marker is simply invisible to the
 generator and can still be registered by hand.
+
+## Commands
+
+An application command is a class implementing `IArlecchinoCommand`, and it registers the way a store
+does:
+
+```csharp
+public sealed class QuitCommand : IArlecchinoCommand
+{
+    private readonly IHostApplicationLifetime _lifetime;
+
+    public QuitCommand(IHostApplicationLifetime lifetime) => _lifetime = lifetime;
+
+    public KeyBinding Binding => new(ConsoleKey.Q, control: true);
+    public string Icon => "×";
+    public string Label => "Quit";
+
+    public ViewRoute Execute()
+    {
+        _lifetime.StopApplication();
+        return ViewRoute.None;
+    }
+}
+```
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .AddGeneratedViews()
+    .AddGeneratedStores()
+    .AddGeneratedCommands()
+    .StartAt(ViewKind.Default);
+```
+
+```csharp
+public static class GeneratedCommandRegistration
+{
+    public static ArlecchinoBuilder AddGeneratedCommands(this ArlecchinoBuilder builder)
+    {
+        builder.Services.AddSingleton<IArlecchinoCommand>(static services =>
+            new QuitCommand(services.GetRequiredService<IHostApplicationLifetime>()));
+        return builder;
+    }
+}
+```
+
+Every command becomes a singleton `IArlecchinoCommand` built from its public constructor with the most
+parameters, so `CommandRegistry` and the palette pick it up with no list to keep in sync.
+
+`AddGeneratedCommands()` and `AddCommand<T>()` are alternatives, not layers: calling both for the same
+type registers it twice and it appears twice in the palette. Use the generator, and keep
+`AddCommand<T>()` for a command that comes from another assembly or is chosen at runtime.
+
+Screen commands are a different thing — a view returns those from `Commands()` as data and nothing
+registers them. See [Commands and input](commands-and-input.md).
 
 ## MSBuild switches
 
@@ -123,10 +182,11 @@ The package's `build/Arlecchino.props` marks these properties compiler-visible; 
 
 | Property | Effect |
 |---|---|
-| `ArlecchinoViewNamespace` | Namespace `ViewKind`, `GeneratedViewFactory`, `AddGeneratedViews` and `AddGeneratedStores` land in |
+| `ArlecchinoViewNamespace` | Namespace `ViewKind`, `GeneratedViewFactory`, `AddGeneratedViews`, `AddGeneratedStores` and `AddGeneratedCommands` land in |
 | `RootNamespace` | Fallback when `ArlecchinoViewNamespace` is unset: `$(RootNamespace).Navigation`, or `Views` if that is empty too |
 | `ArlecchinoGenerateViews` | Set to `false` to emit no routes and no view factory |
 | `ArlecchinoGenerateStores` | Set to `false` to emit no store registration |
+| `ArlecchinoGenerateCommands` | Set to `false` to emit no command registration |
 
 ```xml
 <PropertyGroup>
@@ -145,10 +205,11 @@ The generator says something instead of quietly doing the wrong thing:
 | Id | Severity | Means |
 |---|---|---|
 | `TSR001` | Warning | Two views produce the same route — `Sample.ModsView` and `Sample.Extra.ModsView` both become `Mods`. The first one wins and the other is unreachable; rename one of them or register it explicitly |
-| `TSR002` | Warning | A view implements `IView` but has no public constructor, so the generated factory cannot create it |
+| `TSR002` | Warning | A view implements `IArlecchinoView` but has no public constructor, so the generated factory cannot create it |
 | `TSR003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
-| `TSR004` | Info | No class implements `IView`, so `ViewKind` holds no routes and the application has nowhere to start |
-| `TSR005` | Warning | A store implements `IStore` but has no public constructor, so the container cannot build it |
+| `TSR004` | Info | No class implements `IArlecchinoView`, so `ViewKind` holds no routes and the application has nowhere to start |
+| `TSR005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so the container cannot build it |
+| `TSR006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so the container cannot build it |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.

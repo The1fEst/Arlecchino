@@ -32,7 +32,7 @@ public sealed class ProgressBar
     /// <summary>Draws the bar across the region, leaving room for the caption when there is one.</summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
     /// <param name="style">Colour of the filled part. Defaults to the theme's active colour.</param>
-    public void Draw(Region region, ITermColor? style = null)
+    public void Draw(SurfaceRegion region, ITermColor? style = null)
     {
         if (region.IsEmpty)
         {
@@ -77,6 +77,6 @@ public sealed class Spinner
     /// <param name="row">Row within the region.</param>
     /// <param name="column">Column within the region.</param>
     /// <param name="style">Colour to draw in. Defaults to the theme's informational colour.</param>
-    public void Draw(Region region, int row, int column, ITermColor? style = null) =>
+    public void Draw(SurfaceRegion region, int row, int column, ITermColor? style = null) =>
         region.Write(row, column, Current, style ?? Theme.Info);
 }

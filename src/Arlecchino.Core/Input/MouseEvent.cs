@@ -39,7 +39,7 @@ public enum MouseButton : byte
 
 /// <summary>
 /// A mouse report from the terminal. Coordinates are frame cells — the same ones
-/// <see cref="Rendering.Surface.WriteAt"/> and <see cref="Rendering.Region.Contains"/> use, so
+/// <see cref="Rendering.Surface.WriteAt"/> and <see cref="Rendering.SurfaceRegion.Contains"/> use, so
 /// hit-testing is comparing numbers.
 /// </summary>
 /// <param name="Action">What the mouse did.</param>

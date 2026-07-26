@@ -10,7 +10,7 @@ namespace Arlecchino.Navigation;
 /// route is shown — navigating away and back builds a new one, so per-screen state can live in
 /// fields. Implement <see cref="IDisposable"/> to be told when the screen goes away.
 /// </summary>
-public interface IView
+public interface IArlecchinoView
 {
     /// <summary>Draws the screen. Called once per frame against the shared surface.</summary>
     void Draw();

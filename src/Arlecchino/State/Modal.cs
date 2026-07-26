@@ -15,5 +15,5 @@ public abstract class Modal
     /// Where the box was drawn last frame. Filled in by the renderer and used to tell a click on the
     /// dialog from a click outside it.
     /// </summary>
-    public Region Box { get; set; }
+    public SurfaceRegion Box { get; set; }
 }

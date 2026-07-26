@@ -299,7 +299,7 @@ public class InputRouter
         }
     }
 
-    private static void DragTrack(Region track, MouseEvent mouse, Action<decimal> apply)
+    private static void DragTrack(SurfaceRegion track, MouseEvent mouse, Action<decimal> apply)
     {
         if (track.IsEmpty || mouse.Action is not (MouseAction.Pressed or MouseAction.Moved) ||
             !track.Contains(mouse.Row, mouse.Column))

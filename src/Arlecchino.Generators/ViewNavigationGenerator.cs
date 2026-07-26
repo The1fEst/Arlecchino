@@ -133,7 +133,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
     private static bool ImplementsView(INamedTypeSymbol symbol)
     {
         return symbol.AllInterfaces.Any(static item =>
-            item.Name == "IView" &&
+            item.Name == "IArlecchinoView" &&
             item.ContainingNamespace.ToDisplayString() == ViewInterfaceNamespace);
     }
 
@@ -190,7 +190,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         builder.AppendLine();
         builder.AppendLine("public sealed class GeneratedViewFactory : IViewFactory");
         builder.AppendLine("{");
-        builder.AppendLine("    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IView? view)");
+        builder.AppendLine("    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view)");
         builder.AppendLine("    {");
 
         if (views.Count == 0)

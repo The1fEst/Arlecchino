@@ -12,7 +12,7 @@ namespace Arlecchino.Rendering;
 /// <param name="Top">Frame row of the top edge.</param>
 /// <param name="Width">Width in cells.</param>
 /// <param name="Height">Height in rows.</param>
-public readonly record struct Region(Surface Surface, int Left, int Top, int Width, int Height)
+public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, int Width, int Height)
 {
     /// <summary>Frame column just past the right edge.</summary>
     public int Right => Left + Width;
@@ -40,7 +40,7 @@ public readonly record struct Region(Surface Surface, int Left, int Top, int Wid
     /// <summary>A smaller region inside this one.</summary>
     /// <param name="margin">Space to keep free on each side.</param>
     /// <returns>The region that is left.</returns>
-    public Region Inset(Margin margin) => new(
+    public SurfaceRegion Inset(Margin margin) => new(
         Surface,
         Left + margin.Left,
         Top + margin.Top,
@@ -50,12 +50,12 @@ public readonly record struct Region(Surface Surface, int Left, int Top, int Wid
     /// <summary>A smaller region with the same space kept free on every side.</summary>
     /// <param name="all">Cells to keep free.</param>
     /// <returns>The region that is left.</returns>
-    public Region Inset(int all) => Inset(new Margin(all));
+    public SurfaceRegion Inset(int all) => Inset(new Margin(all));
 
     /// <summary>Cuts a column off the left. The split is clamped to what the region actually has.</summary>
     /// <param name="width">Cells to give to the left part.</param>
     /// <returns>The left part and the rest.</returns>
-    public (Region Left, Region Right) SplitLeft(int width)
+    public (SurfaceRegion Left, SurfaceRegion Right) SplitLeft(int width)
     {
         var taken = Math.Clamp(width, 0, Width);
         return (this with { Width = taken },
@@ -65,7 +65,7 @@ public readonly record struct Region(Surface Surface, int Left, int Top, int Wid
     /// <summary>Cuts a band off the top. The split is clamped to what the region actually has.</summary>
     /// <param name="height">Rows to give to the top part.</param>
     /// <returns>The top part and the rest.</returns>
-    public (Region Top, Region Bottom) SplitTop(int height)
+    public (SurfaceRegion Top, SurfaceRegion Bottom) SplitTop(int height)
     {
         var taken = Math.Clamp(height, 0, Height);
         return (this with { Height = taken },
@@ -76,7 +76,7 @@ public readonly record struct Region(Surface Surface, int Left, int Top, int Wid
     /// <param name="row">First row, local to this region.</param>
     /// <param name="count">How many rows to take.</param>
     /// <returns>The band.</returns>
-    public Region Rows(int row, int count) => new(
+    public SurfaceRegion Rows(int row, int count) => new(
         Surface,
         Left,
         Top + Math.Clamp(row, 0, Height),
@@ -141,7 +141,7 @@ public readonly record struct Region(Surface Surface, int Left, int Top, int Wid
     /// <param name="style">Style for the frame.</param>
     /// <param name="title">Optional title written into the top edge.</param>
     /// <returns>The region inside the frame, or this region when it is too small for one.</returns>
-    public Region Border(ITermColor style, string title = "")
+    public SurfaceRegion Border(ITermColor style, string title = "")
     {
         if (Width < 2 || Height < 2)
         {

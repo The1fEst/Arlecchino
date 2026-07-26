@@ -17,7 +17,7 @@ public static class ViewDiagnostics
     public static readonly DiagnosticDescriptor NoPublicConstructor = new(
         "TSR002",
         "View has no public constructor",
-        "'{0}' implements IView but has no public constructor, so the generated factory cannot create it",
+        "'{0}' implements IArlecchinoView but has no public constructor, so the generated factory cannot create it",
         Category,
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true);
@@ -33,7 +33,7 @@ public static class ViewDiagnostics
     public static readonly DiagnosticDescriptor NoViews = new(
         "TSR004",
         "No views were found",
-        "No class implements IView, so ViewKind holds no routes and the application has nowhere to start",
+        "No class implements IArlecchinoView, so ViewKind holds no routes and the application has nowhere to start",
         Category,
         DiagnosticSeverity.Info,
         isEnabledByDefault: true);

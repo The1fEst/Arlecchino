@@ -5,7 +5,7 @@ using Arlecchino.Sample.Views;
 
 namespace Arlecchino.Sample;
 
-public class AboutView : IView
+public class AboutView : IArlecchinoView
 {
     private readonly Surface _surface;
 
@@ -18,7 +18,7 @@ public class AboutView : IView
     {
         _surface.AppendLine("  ABOUT", Theme.TableHeader);
         _surface.FillLine();
-        _surface.AppendLine("  Views are plain classes implementing IView.", Theme.Default);
+        _surface.AppendLine("  Views are plain classes implementing IArlecchinoView.", Theme.Default);
         _surface.AppendLine("  The generator turns every *View class into a ViewKind route.", Theme.Default);
         _surface.AppendLine("  Navigation keeps a back/forward history on Alt+←/→.", Theme.Default);
     }

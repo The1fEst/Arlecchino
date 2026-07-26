@@ -60,8 +60,9 @@ it puts in the container are singletons:
 | `AddView<T>(route)` | Registers a view resolved through the container |
 | `AddView(route, factory)` | Registers a view built by your own factory delegate |
 | `AddViewFactory<T>()` | Adds an `IViewFactory` — this is what `AddGeneratedViews()` does |
-| `AddGeneratedStores()` | Generated: registers every `IStore` in the project, singleton or scoped — see [Source generator](source-generator.md#stores) |
-| `AddCommand<T>()` | Registers an `IArlecchinoCommand` |
+| `AddGeneratedStores()` | Generated: registers every `IArlecchinoStore` in the project, singleton or scoped — see [Source generator](source-generator.md#stores) |
+| `AddGeneratedCommands()` | Generated: registers every `IArlecchinoCommand` in the project as a singleton — see [Source generator](source-generator.md#commands) |
+| `AddCommand<T>()` | Registers one `IArlecchinoCommand` by hand; an alternative to `AddGeneratedCommands()`, not a layer on top |
 | `AddStartup<T>()` | Registers an `IArlecchinoStartup` |
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |
 | `UseTextInput(mode)`, `UseLatinOnlyInput()`, `UseNativeInput()` | Keyboard layout handling |

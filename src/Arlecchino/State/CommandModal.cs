@@ -13,5 +13,5 @@ public sealed class CommandModal : Modal
     public IReadOnlyList<(string Key, string Label)> Commands { get; init; } = [];
 
     /// <summary>Where the rows were drawn last frame, used to turn a click into a command.</summary>
-    public Region Rows { get; set; }
+    public SurfaceRegion Rows { get; set; }
 }
