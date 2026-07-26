@@ -105,6 +105,15 @@ level.
 In this repository `ProbeView` / `OtherView` also keep the source generator under test: the routes
 they produce are used by the navigation tests.
 
+The real terminal is tested too, and it has to be tested differently. A test of `SystemTerminal`
+replaces `Console.Out` and asserts on the bytes that come out of it — the alternate screen, bracketed
+paste, mouse reporting, `OSC 52` copying — because those sequences are the whole behaviour, and a fake
+terminal never emits them. The parts that only exist on one platform are asserted per platform: away
+from Windows the mouse is asked for with escape sequences, on Windows nothing reaches the output at
+all, since the console is read record by record instead. Turning such a record into a key or a mouse
+event is a type of its own for the same reason — it is the interesting half, and it can be driven from
+either platform without a console anywhere.
+
 ## What ends up in the package
 
 `Arlecchino.0.10.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
