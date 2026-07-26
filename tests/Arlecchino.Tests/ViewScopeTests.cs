@@ -46,7 +46,7 @@ public sealed class ViewScopeTests
         var first = ScopedView.Last!.Probe;
 
         app.Navigator.Reload();
-        var second = ScopedView.Last!.Probe;
+        var second = ScopedView.Last.Probe;
 
         Assert.NotSame(first, second);
     }

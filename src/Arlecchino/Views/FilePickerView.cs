@@ -125,13 +125,13 @@ internal class FilePickerView : IArlecchinoView
             return ClickSidebar(mouse);
         }
 
-        if (_listRows.Contains(mouse.Row, mouse.Column))
+        if (!_listRows.Contains(mouse.Row, mouse.Column))
         {
-            _panes.Focus(_list);
-            return ClickList(mouse);
+            return ViewRoute.None;
         }
 
-        return ViewRoute.None;
+        _panes.Focus(_list);
+        return ClickList(mouse);
     }
 
     private ViewRoute ClickSidebar(MouseEvent mouse)
@@ -468,16 +468,18 @@ internal class FilePickerView : IArlecchinoView
             line += PadLeft(entry.IsDirectory ? "--" : _strings.Size(entry.Length), sizeWidth);
         }
 
-        if (kindWidth > 0)
+        if (kindWidth <= 0)
         {
-            var kind = entry.IsVolume
-                ? _strings.KindVolume()
-                : entry.IsDirectory
-                    ? _strings.KindFolder()
-                    : _strings.KindOf(Path.GetExtension(entry.Name));
-
-            line += "  " + Pad(kind, kindWidth);
+            return line;
         }
+
+        var kind = entry.IsVolume
+            ? _strings.KindVolume()
+            : entry.IsDirectory
+                ? _strings.KindFolder()
+                : _strings.KindOf(Path.GetExtension(entry.Name));
+
+        line += "  " + Pad(kind, kindWidth);
 
         return line;
     }
@@ -591,11 +593,13 @@ internal class FilePickerView : IArlecchinoView
     {
         for (var i = 0; i < _sidebar.Count; i++)
         {
-            if (_sidebar[i].Path is { } path && string.Equals(path, _path, StringComparison.OrdinalIgnoreCase))
+            if (_sidebar[i].Path is not { } path || !string.Equals(path, _path, StringComparison.OrdinalIgnoreCase))
             {
-                _sidebarSelected = i;
-                return;
+                continue;
             }
+
+            _sidebarSelected = i;
+            return;
         }
     }
 

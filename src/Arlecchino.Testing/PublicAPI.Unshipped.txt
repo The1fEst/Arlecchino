@@ -1,11 +1,7 @@
 #nullable enable
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.UiDispatcher!
 *REMOVED*Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.State.StateHistory!
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Repaint!
 *REMOVED*Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.TuiState!
-Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.Hosting.UiDispatcher!
 Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.AtomHistory!
-Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Rendering.Repaint!
 Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
 Arlecchino.Testing.TestClock
 Arlecchino.Testing.TestClock.TestClock() -> void

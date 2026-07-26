@@ -2,9 +2,10 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using Arlecchino.Input;
 using Arlecchino.Rendering;
 
-namespace Arlecchino.Input;
+namespace Arlecchino;
 
 /// <summary>
 /// The real console. Registered by default and replaceable through <c>UseTerminal&lt;T&gt;()</c>.

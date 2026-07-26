@@ -1,12 +1,13 @@
 using System;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Arlecchino;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Arlecchino.Processes;
 using Arlecchino.Processes.Views;
 using Arlecchino.Rendering;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 const int ReadTimeout = 1500;
 
@@ -78,13 +79,16 @@ static void Frame(string view, string size)
     Console.WriteLine();
 }
 
-internal sealed class NullLifetime : IHostApplicationLifetime
+namespace Arlecchino.Processes
 {
-    public CancellationToken ApplicationStarted => CancellationToken.None;
-    public CancellationToken ApplicationStopping => CancellationToken.None;
-    public CancellationToken ApplicationStopped => CancellationToken.None;
-
-    public void StopApplication()
+    internal sealed class NullLifetime : IHostApplicationLifetime
     {
+        public CancellationToken ApplicationStarted => CancellationToken.None;
+        public CancellationToken ApplicationStopping => CancellationToken.None;
+        public CancellationToken ApplicationStopped => CancellationToken.None;
+
+        public void StopApplication()
+        {
+        }
     }
 }

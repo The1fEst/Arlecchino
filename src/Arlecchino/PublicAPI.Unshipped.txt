@@ -12,7 +12,6 @@
 *REMOVED*Arlecchino.Diagnostics.ArlecchinoLoggerProvider.ArlecchinoLoggerProvider(Arlecchino.Diagnostics.LogBuffer! buffer) -> void
 *REMOVED*Arlecchino.Diagnostics.ArlecchinoLoggerProvider.CreateLogger(string! categoryName) -> Microsoft.Extensions.Logging.ILogger!
 *REMOVED*Arlecchino.Diagnostics.ArlecchinoLoggerProvider.Dispose() -> void
-*REMOVED*Arlecchino.Diagnostics.LogBuffer.LogBuffer(Arlecchino.Repaint! repaint) -> void
 *REMOVED*Arlecchino.Diagnostics.LogOverlay
 *REMOVED*Arlecchino.Diagnostics.LogOverlay.Buffer.get -> Arlecchino.Diagnostics.LogBuffer!
 *REMOVED*Arlecchino.Diagnostics.LogOverlay.IsVisible.get -> bool
@@ -36,11 +35,7 @@
 *REMOVED*Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 *REMOVED*Arlecchino.Hosting.ArlecchinoHostedService
 *REMOVED*Arlecchino.Hosting.ArlecchinoHostedService.ArlecchinoHostedService(Arlecchino.ITerminal! terminal, Arlecchino.Screen! screen, Arlecchino.TerminalInputReader! input, Arlecchino.Navigation.Navigator! navigator, Arlecchino.Hosting.ArlecchinoOptions! options, Microsoft.Extensions.Hosting.IHostApplicationLifetime! lifetime, Arlecchino.State.StateHistory! history, Microsoft.Extensions.Logging.ILogger<Arlecchino.Hosting.ArlecchinoHostedService!>! logger, System.Collections.Generic.IEnumerable<Arlecchino.Hosting.IArlecchinoStartup!>! startups) -> void
-*REMOVED*Arlecchino.InputRouter
 *REMOVED*Arlecchino.InputRouter.InputRouter(Arlecchino.State.TuiState! state, Arlecchino.Navigation.Navigator! navigator, Arlecchino.ITerminal! terminal, Arlecchino.Diagnostics.LogOverlay! log, Arlecchino.Commands.CommandRegistry! commands, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Input.KeyText! keyText, Arlecchino.Repaint! repaint, Microsoft.Extensions.Logging.ILogger<Arlecchino.InputRouter!>! logger) -> void
-*REMOVED*Arlecchino.InputRouter.ProcessKey(System.ConsoleKeyInfo key) -> void
-*REMOVED*Arlecchino.InputRouter.ProcessMouse(Arlecchino.Input.MouseEvent mouse) -> void
-*REMOVED*Arlecchino.InputRouter.ProcessPaste(string! text) -> void
 *REMOVED*Arlecchino.Navigation.IViewFactory
 *REMOVED*Arlecchino.Navigation.IViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
 *REMOVED*Arlecchino.Navigation.Navigator.Navigator(Arlecchino.Navigation.ViewResolver! resolver, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Repaint! repaint, Arlecchino.Commands.CommandConflicts! conflicts) -> void
@@ -48,23 +43,12 @@
 *REMOVED*Arlecchino.Navigation.RegisteredViewFactory.RegisteredViewFactory(Arlecchino.Navigation.ViewRegistrations! registrations) -> void
 *REMOVED*Arlecchino.Navigation.RegisteredViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
 *REMOVED*Arlecchino.Navigation.ViewLifetime.Loading<T>(T? initial = default(T?)) -> Arlecchino.State.AsyncState<T>!
-*REMOVED*Arlecchino.Navigation.ViewLifetime.ViewLifetime(Arlecchino.UiDispatcher! dispatcher) -> void
 *REMOVED*Arlecchino.Navigation.ViewRegistrations
 *REMOVED*Arlecchino.Navigation.ViewRegistrations.Add(string! name, System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>! factory) -> void
 *REMOVED*Arlecchino.Navigation.ViewRegistrations.Routes.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 *REMOVED*Arlecchino.Navigation.ViewRegistrations.TryGet(string! name, out System.Func<System.IServiceProvider!, Arlecchino.Navigation.IArlecchinoView!>? factory) -> bool
 *REMOVED*Arlecchino.Navigation.ViewRegistrations.ViewRegistrations() -> void
 *REMOVED*Arlecchino.Navigation.ViewResolver.ViewResolver(System.Collections.Generic.IEnumerable<Arlecchino.Navigation.IViewFactory!>! factories, Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes) -> void
-*REMOVED*Arlecchino.Repaint
-*REMOVED*Arlecchino.Repaint.Dispose() -> void
-*REMOVED*Arlecchino.Repaint.IsRequested.get -> bool
-*REMOVED*Arlecchino.Repaint.Repaint() -> void
-*REMOVED*Arlecchino.Repaint.Request() -> void
-*REMOVED*Arlecchino.Repaint.TakeRequested() -> bool
-*REMOVED*Arlecchino.Screen
-*REMOVED*Arlecchino.Screen.DrawOnce() -> void
-*REMOVED*Arlecchino.Screen.RedrawEverything() -> void
-*REMOVED*Arlecchino.Screen.Run(System.Threading.CancellationToken stoppingToken) -> System.Threading.Tasks.Task!
 *REMOVED*Arlecchino.Screen.Screen(Arlecchino.State.TuiState! state, Arlecchino.Rendering.Surface! surface, Arlecchino.Navigation.Navigator! navigator, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.ITerminal! terminal, Arlecchino.Repaint! repaint, Arlecchino.UiDispatcher! dispatcher, Arlecchino.Diagnostics.LogOverlay! log, Microsoft.Extensions.Logging.ILogger<Arlecchino.Screen!>! logger) -> void
 *REMOVED*Arlecchino.State.AsyncState<T>
 *REMOVED*Arlecchino.State.AsyncState<T>.AsyncState(Arlecchino.UiDispatcher! dispatcher, T? initial = default(T?)) -> void
@@ -313,11 +297,6 @@
 *REMOVED*Arlecchino.TerminalInputReader.Read(System.ConsoleKeyInfo key) -> void
 *REMOVED*Arlecchino.TerminalInputReader.ReadPending() -> void
 *REMOVED*Arlecchino.TerminalInputReader.TerminalInputReader(Arlecchino.ITerminal! terminal, Arlecchino.InputRouter! router, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
-*REMOVED*Arlecchino.UiDispatcher
-*REMOVED*Arlecchino.UiDispatcher.HasPending.get -> bool
-*REMOVED*Arlecchino.UiDispatcher.Post(System.Action! action) -> void
-*REMOVED*Arlecchino.UiDispatcher.RunPending(System.Action<System.Exception!>! onError) -> void
-*REMOVED*Arlecchino.UiDispatcher.UiDispatcher(Arlecchino.Repaint! repaint) -> void
 *REMOVED*Arlecchino.Views.FilePickerView
 *REMOVED*Arlecchino.Views.FilePickerView.Draw() -> void
 *REMOVED*Arlecchino.Views.FilePickerView.FilePickerView(Arlecchino.State.TuiState! state, Arlecchino.Rendering.Surface! surface, Arlecchino.Input.KeyText! keyText, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
@@ -372,7 +351,6 @@ abstract Arlecchino.Modals.SegmentedModal.SegmentLength(int segment) -> int
 abstract Arlecchino.Modals.SegmentedModal.SegmentTexts() -> string![]!
 abstract Arlecchino.Modals.SegmentedModal.Separator.get -> string!
 Arlecchino.Atoms.AsyncAtom<T>
-Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(Arlecchino.Hosting.UiDispatcher! dispatcher, T? initial = default(T?)) -> void
 Arlecchino.Atoms.AsyncAtom<T>.Cancel() -> void
 Arlecchino.Atoms.AsyncAtom<T>.Error.get -> Arlecchino.Atoms.IReadableAtom<System.Exception?>!
 Arlecchino.Atoms.AsyncAtom<T>.IsLoading.get -> bool
@@ -386,7 +364,6 @@ Arlecchino.Atoms.LoadStatus.Failed = 3 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Idle = 0 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Loaded = 2 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Loading = 1 -> Arlecchino.Atoms.LoadStatus
-Arlecchino.Diagnostics.LogBuffer.LogBuffer(Arlecchino.Rendering.Repaint! repaint) -> void
 Arlecchino.Focus.FocusRing.Add(Arlecchino.Focus.IArlecchinoFocusable! item) -> void
 Arlecchino.Focus.FocusRing.Current.get -> Arlecchino.Focus.IArlecchinoFocusable?
 Arlecchino.Focus.FocusRing.Focus(Arlecchino.Focus.IArlecchinoFocusable! item) -> void
@@ -401,19 +378,9 @@ Arlecchino.Forms.Form.Form(Arlecchino.State.ArlecchinoState! state, Arlecchino.H
 Arlecchino.Forms.Form.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Hosting.ArlecchinoBuilder.AddStore<TStore>() -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.UiDispatcher
-Arlecchino.Hosting.UiDispatcher.HasPending.get -> bool
-Arlecchino.Hosting.UiDispatcher.Post(System.Action! action) -> void
-Arlecchino.Hosting.UiDispatcher.RunPending(System.Action<System.Exception!>! onError) -> void
-Arlecchino.Hosting.UiDispatcher.UiDispatcher(Arlecchino.Rendering.Repaint! repaint) -> void
-Arlecchino.Input.InputRouter
-Arlecchino.Input.InputRouter.ProcessKey(System.ConsoleKeyInfo key) -> void
-Arlecchino.Input.InputRouter.ProcessMouse(Arlecchino.Input.MouseEvent mouse) -> void
-Arlecchino.Input.InputRouter.ProcessPaste(string! text) -> void
 Arlecchino.Input.TerminalInputReader
 Arlecchino.Input.TerminalInputReader.Read(System.ConsoleKeyInfo key) -> void
 Arlecchino.Input.TerminalInputReader.ReadPending() -> void
-Arlecchino.Input.TerminalInputReader.TerminalInputReader(Arlecchino.Input.IArlecchinoTerminal! terminal, Arlecchino.Input.InputRouter! router, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
 Arlecchino.Modals.ChoiceModal
 Arlecchino.Modals.ChoiceModal.ChoiceModal() -> void
 Arlecchino.Modals.ChoiceModal.OnPicked.get -> System.Action<string!>!
@@ -618,18 +585,7 @@ Arlecchino.Modals.ToggleModal.YesChip.set -> void
 Arlecchino.Navigation.IArlecchinoViewFactory
 Arlecchino.Navigation.IArlecchinoViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
 Arlecchino.Navigation.ViewLifetime.Loading<T>(T? initial = default(T?)) -> Arlecchino.Atoms.AsyncAtom<T>!
-Arlecchino.Navigation.ViewLifetime.ViewLifetime(Arlecchino.Hosting.UiDispatcher! dispatcher) -> void
 Arlecchino.Navigation.ViewResolver.ViewResolver(System.Collections.Generic.IEnumerable<Arlecchino.Navigation.IArlecchinoViewFactory!>! factories, Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes) -> void
-Arlecchino.Rendering.Repaint
-Arlecchino.Rendering.Repaint.Dispose() -> void
-Arlecchino.Rendering.Repaint.IsRequested.get -> bool
-Arlecchino.Rendering.Repaint.Repaint() -> void
-Arlecchino.Rendering.Repaint.Request() -> void
-Arlecchino.Rendering.Repaint.TakeRequested() -> bool
-Arlecchino.Rendering.Screen
-Arlecchino.Rendering.Screen.DrawOnce() -> void
-Arlecchino.Rendering.Screen.RedrawEverything() -> void
-Arlecchino.Rendering.Screen.Run(System.Threading.CancellationToken stoppingToken) -> System.Threading.Tasks.Task!
 Arlecchino.State.ArlecchinoState
 Arlecchino.State.ArlecchinoState.CloseAllModals() -> void
 Arlecchino.State.ArlecchinoState.CloseModal() -> void
@@ -696,7 +652,6 @@ static Arlecchino.Modals.TextEditing.MoveToStart(Arlecchino.Modals.ITextEntryMod
 static Arlecchino.Modals.TextEditing.MoveWord(Arlecchino.Modals.ITextEntryModal! modal, int direction) -> void
 static Arlecchino.Widgets.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
 Arlecchino.Hosting.Ticker
-Arlecchino.Hosting.Ticker.Ticker(System.TimeProvider! time, Arlecchino.Rendering.Repaint! repaint) -> void
 Arlecchino.Hosting.Ticker.NextDue.get -> System.DateTimeOffset?
 Arlecchino.Hosting.Ticker.Every(System.TimeSpan interval, System.Action! action) -> System.IDisposable!
 Arlecchino.Hosting.Ticker.After(System.TimeSpan delay, System.Action! action) -> System.IDisposable!
@@ -732,14 +687,12 @@ Arlecchino.Diagnostics.Notification.Equals(Arlecchino.Diagnostics.Notification? 
 Arlecchino.Diagnostics.Notification.<Clone>$() -> Arlecchino.Diagnostics.Notification!
 Arlecchino.Diagnostics.Notification.Deconstruct(out System.DateTimeOffset Time, out Arlecchino.Diagnostics.NotificationLevel Level, out string! Text) -> void
 static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker, Arlecchino.Rendering.Repaint! repaint) -> void
 Arlecchino.Diagnostics.Notifications.Entries.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
 Arlecchino.Diagnostics.Notifications.Current.get -> Arlecchino.Diagnostics.Notification?
 Arlecchino.Diagnostics.Notifications.Notify(string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
 Arlecchino.Diagnostics.Notifications.Clear() -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Notifications.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset Time, Arlecchino.Diagnostics.NotificationLevel Level, string! Text) -> void
-Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.WithoutNotifications() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.set -> void
@@ -756,5 +709,17 @@ Arlecchino.Hosting.ArlecchinoStrings.NotificationsClear.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.NotificationsClose.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.NotificationsClose.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.NotificationsCount.get -> System.Func<int, string!>!
-Arlecchino.State.ArlecchinoState.ArlecchinoState(Arlecchino.Rendering.Repaint! repaint, Arlecchino.Diagnostics.Notifications! notifications) -> void
 Arlecchino.State.ArlecchinoState.Notifications.get -> Arlecchino.Diagnostics.Notifications!
+override Arlecchino.Hosting.ArlecchinoKeymap.ToString() -> string!
+static Arlecchino.Hosting.ArlecchinoKeymap.operator !=(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
+static Arlecchino.Hosting.ArlecchinoKeymap.operator ==(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
+override Arlecchino.Hosting.ArlecchinoKeymap.GetHashCode() -> int
+override Arlecchino.Hosting.ArlecchinoKeymap.Equals(object? obj) -> bool
+Arlecchino.Hosting.ArlecchinoKeymap.Equals(Arlecchino.Hosting.ArlecchinoKeymap? other) -> bool
+Arlecchino.Hosting.ArlecchinoKeymap.<Clone>$() -> Arlecchino.Hosting.ArlecchinoKeymap!
+Arlecchino.Input.TerminalInputReader.TerminalInputReader(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.InputRouter! router, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
+Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(Arlecchino.UiDispatcher! dispatcher, T? initial = default(T?)) -> void
+Arlecchino.Hosting.Ticker.Ticker(System.TimeProvider! time, Arlecchino.Repaint! repaint) -> void
+Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker, Arlecchino.Repaint! repaint) -> void
+Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.ConsoleKeyInfo? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.State.ArlecchinoState.ArlecchinoState(Arlecchino.Repaint! repaint, Arlecchino.Diagnostics.Notifications! notifications) -> void

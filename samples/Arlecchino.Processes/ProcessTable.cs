@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Arlecchino.Hosting;
 using Arlecchino.Atoms;
 
 namespace Arlecchino.Processes;

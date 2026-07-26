@@ -66,22 +66,6 @@
 *REMOVED*Arlecchino.State.StateTracking
 *REMOVED*Arlecchino.State.TrackedAtom<T>
 *REMOVED*Arlecchino.State.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
-*REMOVED*Arlecchino.SystemTerminal
-*REMOVED*Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
-*REMOVED*Arlecchino.SystemTerminal.DisableMouse() -> void
-*REMOVED*Arlecchino.SystemTerminal.DisablePaste() -> void
-*REMOVED*Arlecchino.SystemTerminal.EnableMouse() -> void
-*REMOVED*Arlecchino.SystemTerminal.EnablePaste() -> void
-*REMOVED*Arlecchino.SystemTerminal.EnterFullScreen() -> void
-*REMOVED*Arlecchino.SystemTerminal.Height.get -> int
-*REMOVED*Arlecchino.SystemTerminal.KeyAvailable.get -> bool
-*REMOVED*Arlecchino.SystemTerminal.LeaveFullScreen() -> void
-*REMOVED*Arlecchino.SystemTerminal.MouseAvailable.get -> bool
-*REMOVED*Arlecchino.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
-*REMOVED*Arlecchino.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
-*REMOVED*Arlecchino.SystemTerminal.SystemTerminal() -> void
-*REMOVED*Arlecchino.SystemTerminal.Width.get -> int
-*REMOVED*Arlecchino.SystemTerminal.Write(string! text) -> void
 *REMOVED*static Arlecchino.Input.EscapeSequenceParser.TryParseKey(string! sequence, out System.ConsoleKeyInfo key) -> bool
 *REMOVED*static Arlecchino.Input.EscapeSequenceParser.TryParseMouse(string! sequence, out Arlecchino.Input.MouseEvent mouse) -> bool
 *REMOVED*static Arlecchino.State.StateChanges.IsRecording.get -> bool
@@ -126,42 +110,10 @@ Arlecchino.Atoms.LocalAtom<T>
 Arlecchino.Atoms.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.TrackedAtom<T>
 Arlecchino.Atoms.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
-Arlecchino.Input.IArlecchinoTerminal
-Arlecchino.Input.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
-Arlecchino.Input.IArlecchinoTerminal.DisableMouse() -> void
-Arlecchino.Input.IArlecchinoTerminal.DisablePaste() -> void
-Arlecchino.Input.IArlecchinoTerminal.EnableMouse() -> void
-Arlecchino.Input.IArlecchinoTerminal.EnablePaste() -> void
-Arlecchino.Input.IArlecchinoTerminal.EnterFullScreen() -> void
-Arlecchino.Input.IArlecchinoTerminal.Height.get -> int
-Arlecchino.Input.IArlecchinoTerminal.KeyAvailable.get -> bool
-Arlecchino.Input.IArlecchinoTerminal.LeaveFullScreen() -> void
-Arlecchino.Input.IArlecchinoTerminal.MouseAvailable.get -> bool
-Arlecchino.Input.IArlecchinoTerminal.ReadKey() -> System.ConsoleKeyInfo
-Arlecchino.Input.IArlecchinoTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
-Arlecchino.Input.IArlecchinoTerminal.Width.get -> int
-Arlecchino.Input.IArlecchinoTerminal.Write(string! text) -> void
-Arlecchino.Input.SystemTerminal
-Arlecchino.Input.SystemTerminal.CopyToClipboard(string! text) -> void
-Arlecchino.Input.SystemTerminal.DisableMouse() -> void
-Arlecchino.Input.SystemTerminal.DisablePaste() -> void
-Arlecchino.Input.SystemTerminal.EnableMouse() -> void
-Arlecchino.Input.SystemTerminal.EnablePaste() -> void
-Arlecchino.Input.SystemTerminal.EnterFullScreen() -> void
-Arlecchino.Input.SystemTerminal.Height.get -> int
-Arlecchino.Input.SystemTerminal.KeyAvailable.get -> bool
-Arlecchino.Input.SystemTerminal.LeaveFullScreen() -> void
-Arlecchino.Input.SystemTerminal.MouseAvailable.get -> bool
-Arlecchino.Input.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
-Arlecchino.Input.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
-Arlecchino.Input.SystemTerminal.SystemTerminal() -> void
-Arlecchino.Input.SystemTerminal.Width.get -> int
-Arlecchino.Input.SystemTerminal.Write(string! text) -> void
 Arlecchino.Rendering.IArlecchinoColor
 Arlecchino.Rendering.IArlecchinoColor.Ansi.get -> string!
 Arlecchino.Rendering.Surface.AppendLine(string! line, Arlecchino.Rendering.IArlecchinoColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
 Arlecchino.Rendering.Surface.FillLineAt(int row, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
-Arlecchino.Rendering.Surface.Surface(Arlecchino.Input.IArlecchinoTerminal! terminal) -> void
 Arlecchino.Rendering.Surface.WriteAt(int row, int column, string! text, Arlecchino.Rendering.IArlecchinoColor! style) -> void
 Arlecchino.Rendering.Surface.WriteBlock(System.Collections.Generic.IReadOnlyList<string!>! lines, Arlecchino.Rendering.IArlecchinoColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left | Arlecchino.Rendering.Align.Top, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
 Arlecchino.Rendering.Surface.WriteLineAt(int row, string! line, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
@@ -170,3 +122,19 @@ Arlecchino.Rendering.SurfaceRegion.Border(Arlecchino.Rendering.IArlecchinoColor!
 Arlecchino.Rendering.SurfaceRegion.Fill(Arlecchino.Rendering.IArlecchinoColor! style, char character = ' ') -> void
 Arlecchino.Rendering.SurfaceRegion.Write(int row, int column, string! text, Arlecchino.Rendering.IArlecchinoColor! style) -> void
 Arlecchino.Rendering.SurfaceRegion.WriteLine(int row, string! text, Arlecchino.Rendering.IArlecchinoColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void
+Arlecchino.IArlecchinoTerminal
+Arlecchino.IArlecchinoTerminal.Height.get -> int
+Arlecchino.IArlecchinoTerminal.KeyAvailable.get -> bool
+Arlecchino.IArlecchinoTerminal.Write(string! text) -> void
+Arlecchino.IArlecchinoTerminal.MouseAvailable.get -> bool
+Arlecchino.IArlecchinoTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.IArlecchinoTerminal.EnterFullScreen() -> void
+Arlecchino.IArlecchinoTerminal.LeaveFullScreen() -> void
+Arlecchino.IArlecchinoTerminal.EnableMouse() -> void
+Arlecchino.IArlecchinoTerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.IArlecchinoTerminal.EnablePaste() -> void
+Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.IArlecchinoTerminal.DisablePaste() -> void
+Arlecchino.IArlecchinoTerminal.DisableMouse() -> void
+Arlecchino.IArlecchinoTerminal.Width.get -> int
+Arlecchino.Rendering.Surface.Surface(Arlecchino.IArlecchinoTerminal! terminal) -> void

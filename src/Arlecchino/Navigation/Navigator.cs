@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Arlecchino.Commands;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
-using Arlecchino.Rendering;
 
 namespace Arlecchino.Navigation;
 

@@ -1,5 +1,4 @@
 using System;
-using Arlecchino.Rendering;
 
 namespace Arlecchino.Diagnostics;
 

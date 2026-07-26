@@ -71,13 +71,13 @@ public sealed class FocusRing
             return ViewRoute.None;
         }
 
-        if (_keymap.NextField.Matches(key))
+        if (!_keymap.NextField.Matches(key))
         {
-            FocusNext();
-            return ViewRoute.None;
+            return Current?.Handle(key).Route ?? ViewRoute.None;
         }
 
-        return Current?.Handle(key).Route ?? ViewRoute.None;
+        FocusNext();
+        return ViewRoute.None;
     }
 
     /// <summary>

@@ -1,15 +1,16 @@
 using System;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Arlecchino;
 using Arlecchino.Hosting;
+using Arlecchino.Modals;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Sample;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
-using Arlecchino.Modals;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 if (args is ["--frame", ..])
 {
@@ -186,13 +187,16 @@ static void Frame(string view, string size)
     Console.WriteLine();
 }
 
-internal sealed class NullLifetime : IHostApplicationLifetime
+namespace Arlecchino.Sample
 {
-    public CancellationToken ApplicationStarted => CancellationToken.None;
-    public CancellationToken ApplicationStopping => CancellationToken.None;
-    public CancellationToken ApplicationStopped => CancellationToken.None;
-
-    public void StopApplication()
+    internal sealed class NullLifetime : IHostApplicationLifetime
     {
+        public CancellationToken ApplicationStarted => CancellationToken.None;
+        public CancellationToken ApplicationStopping => CancellationToken.None;
+        public CancellationToken ApplicationStopped => CancellationToken.None;
+
+        public void StopApplication()
+        {
+        }
     }
 }

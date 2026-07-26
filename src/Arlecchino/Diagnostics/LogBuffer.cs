@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Arlecchino.Rendering;
 
 namespace Arlecchino.Diagnostics;
 

@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
+using Arlecchino.Modals;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
-using Arlecchino.Modals;
+using Microsoft.Extensions.Logging;
 
-namespace Arlecchino.Input;
+namespace Arlecchino;
 
 /// <summary>
 /// Decides who gets a key or a mouse event. The order is what keeps the application predictable: an
@@ -417,14 +418,14 @@ public class InputRouter
             return true;
         }
 
-        if (_keymap.Erase.Matches(key))
+        if (!_keymap.Erase.Matches(key))
         {
-            _log.Buffer.Clear();
-            _log.Scroll = 0;
-            return true;
+            return false;
         }
 
-        return false;
+        _log.Buffer.Clear();
+        _log.Scroll = 0;
+        return true;
     }
 
     private bool IsCommandPaletteKey(ConsoleKeyInfo key)
@@ -689,13 +690,13 @@ public class InputRouter
             return true;
         }
 
-        if (_keymap.JumpDown.Matches(key))
+        if (!_keymap.JumpDown.Matches(key))
         {
-            modal.Add(-modal.LargeStep);
-            return true;
+            return false;
         }
 
-        return false;
+        modal.Add(-modal.LargeStep);
+        return true;
     }
 
     private void EditText(ITextEntryModal modal, ConsoleKeyInfo key)
@@ -751,13 +752,13 @@ public class InputRouter
             return true;
         }
 
-        if (_keymap.Last.Matches(key))
+        if (!_keymap.Last.Matches(key))
         {
-            TextEditing.MoveToEnd(modal);
-            return true;
+            return false;
         }
 
-        return false;
+        TextEditing.MoveToEnd(modal);
+        return true;
     }
 
     private bool EraseText(ITextEntryModal modal, ConsoleKeyInfo key)
@@ -780,13 +781,13 @@ public class InputRouter
             return true;
         }
 
-        if (_keymap.DeleteForward.Matches(key))
+        if (!_keymap.DeleteForward.Matches(key))
         {
-            TextEditing.Delete(modal);
-            return true;
+            return false;
         }
 
-        return false;
+        TextEditing.Delete(modal);
+        return true;
     }
 
     private void SubmitNumber(NumberModal modal)

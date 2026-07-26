@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Arlecchino.Input;
 
 namespace Arlecchino.Rendering;
 

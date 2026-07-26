@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Arlecchino.Atoms;
 
-namespace Arlecchino.Rendering;
+namespace Arlecchino;
 
 /// <summary>
 /// The "this frame is stale" signal the render loop waits on. Input, navigation, state changes and

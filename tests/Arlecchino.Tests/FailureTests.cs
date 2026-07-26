@@ -10,7 +10,6 @@ using Arlecchino.Rendering;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
 using Xunit;
-using Arlecchino.Input;
 
 namespace Arlecchino.Tests;
 

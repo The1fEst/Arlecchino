@@ -5,9 +5,10 @@ namespace Arlecchino.Hosting;
 
 /// <summary>
 /// Every key the framework itself reacts to, in one place. Replace the whole map through
-/// <c>UseKeymap</c>; each binding also relabels itself in the hints box and the palette.
+/// <c>UseKeymap</c>, or one binding at a time with <c>with</c>; each binding also relabels itself in
+/// the hints box and the palette.
 /// </summary>
-public sealed class ArlecchinoKeymap
+public sealed record ArlecchinoKeymap
 {
     /// <summary>Goes back in the history. <c>Alt+←</c> by default.</summary>
     public KeyBinding Back { get; init; } = new(ConsoleKey.LeftArrow, ConsoleModifiers.Alt);

@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using Arlecchino.Input;
 
-namespace Arlecchino.Input;
+namespace Arlecchino;
 
 internal sealed partial class WindowsConsoleInput
 {

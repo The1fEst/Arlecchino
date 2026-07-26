@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Rendering;
 
 namespace Arlecchino.Hosting;
 

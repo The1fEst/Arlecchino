@@ -94,6 +94,24 @@ public sealed class NotificationTests
     }
 
     [Fact]
+    public void TheKeyThatOpensTheScreenCanBeChosen()
+    {
+        using var app = new TestApplication(configure: static builder => builder.UseNotifications(
+            new('\0', ConsoleKey.F1, shift: false, alt: true, control: false),
+            TimeSpan.FromSeconds(2)));
+
+        app.State.Notifications.Notify("something");
+
+        app.Press(ConsoleKey.F1);
+        Assert.NotEqual(Routes.Notifications, app.Navigator.CurrentRoute);
+
+        app.Press(ConsoleKey.F1, alt: true);
+
+        Assert.Equal(Routes.Notifications, app.Navigator.CurrentRoute);
+        Assert.Equal(TimeSpan.FromSeconds(2), app.Options.NotificationTimeout);
+    }
+
+    [Fact]
     public void AnEmptyOutputClearsTheRowAtOnce()
     {
         using var app = new TestApplication();

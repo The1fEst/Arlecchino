@@ -98,7 +98,8 @@ public sealed class StateHistoryTests
     [Fact]
     public void TheOldestStepsFallOffOnceTheHistoryIsFull()
     {
-        using var history = new AtomHistory { Capacity = 3 };
+        using var history = new AtomHistory();
+        history.Capacity = 3;
         var text = new TrackedAtom<string>("");
 
         for (var edit = 1; edit <= 10; edit++)
@@ -134,7 +135,8 @@ public sealed class StateHistoryTests
     [Fact]
     public void AGroupCountsAsOneStepAgainstTheCapacity()
     {
-        using var history = new AtomHistory { Capacity = 2 };
+        using var history = new AtomHistory();
+        history.Capacity = 2;
         var text = new TrackedAtom<string>("");
 
         for (var step = 1; step <= 3; step++)

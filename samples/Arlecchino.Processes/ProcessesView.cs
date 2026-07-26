@@ -94,11 +94,13 @@ public sealed class ProcessesView : IArlecchinoView
         _table.Draw(rows);
         _status.Draw(status);
 
-        if (_processes.Rows.IsLoading)
+        if (!_processes.Rows.IsLoading)
         {
-            _spinner.Advance();
-            _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
+            return;
         }
+
+        _spinner.Advance();
+        _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _table.Handle(key).Route;

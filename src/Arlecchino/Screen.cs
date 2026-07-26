@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
+using Arlecchino.Modals;
 using Arlecchino.Navigation;
+using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Widgets;
-using Arlecchino.Modals;
-using Arlecchino.Input;
+using Microsoft.Extensions.Logging;
 
-namespace Arlecchino.Rendering;
+namespace Arlecchino;
 
 /// <summary>
 /// Draws the frames: the current view first, then the output line, the hints and any dialog on top.

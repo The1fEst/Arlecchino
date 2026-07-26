@@ -234,13 +234,13 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
         var (node, depth) = _visible[index];
         var onMarker = column >= depth * IndentWidth && column < depth * IndentWidth + IndentWidth;
 
-        if (node.HasChildren && onMarker)
+        if (!node.HasChildren || !onMarker)
         {
-            Toggle(node);
-            return FocusResult.Handled;
+            return wasSelected ? Activate() : FocusResult.Handled;
         }
 
-        return wasSelected ? Activate() : FocusResult.Handled;
+        Toggle(node);
+        return FocusResult.Handled;
     }
 
     private FocusResult Activate()
@@ -250,13 +250,13 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
             return FocusResult.Handled;
         }
 
-        if (node.HasChildren)
+        if (!node.HasChildren)
         {
-            Toggle(node);
-            return FocusResult.Handled;
+            return OnActivate is null ? FocusResult.Handled : FocusResult.Navigate(OnActivate(node));
         }
 
-        return OnActivate is null ? FocusResult.Handled : FocusResult.Navigate(OnActivate(node));
+        Toggle(node);
+        return FocusResult.Handled;
     }
 
     private void Expand()

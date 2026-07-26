@@ -188,12 +188,24 @@ public sealed class ArlecchinoBuilder
     /// notifications screen — the <c>Notifications</c> key, or a click on the row — until
     /// <paramref name="lifetime"/> is up.
     /// </summary>
+    /// <param name="key">
+    /// Key that opens the notifications screen, modifiers and all. Omit it for <c>Ctrl+N</c>.
+    /// </param>
     /// <param name="timeout">How long a message holds the output row; omit to keep the default.</param>
     /// <param name="lifetime">How long it stays in the list; omit to keep the default.</param>
     /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseNotifications(TimeSpan? timeout = null, TimeSpan? lifetime = null)
+    public ArlecchinoBuilder UseNotifications(
+        ConsoleKeyInfo? key = null,
+        TimeSpan? timeout = null,
+        TimeSpan? lifetime = null)
     {
         _options.ShowOutputLine = true;
+
+        var binding = key is { } chosen
+            ? new KeyBinding(chosen.Key, chosen.Modifiers)
+            : new KeyBinding(ConsoleKey.N, ConsoleModifiers.Control);
+
+        _options.Keymap = _options.Keymap with { Notifications = binding };
 
         if (timeout is { } showFor)
         {

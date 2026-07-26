@@ -72,13 +72,13 @@ internal class NotificationsView : IArlecchinoView
             return Back();
         }
 
-        if (_keymap.Erase.Matches(key))
+        if (!_keymap.Erase.Matches(key))
         {
-            _state.Notifications.Clear();
-            return ViewRoute.None;
+            return _list.Handle(key).Route;
         }
 
-        return _list.Handle(key).Route;
+        _state.Notifications.Clear();
+        return ViewRoute.None;
     }
 
     public ViewRoute HandleMouse(MouseEvent mouse) => _list.HandleMouse(mouse).Route;

@@ -95,13 +95,13 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
             return FocusResult.Handled;
         }
 
-        if (_keymap.MoveRight.Matches(key))
+        if (!_keymap.MoveRight.Matches(key))
         {
-            Select(Selected + 1);
-            return FocusResult.Handled;
+            return FocusResult.Ignored;
         }
 
-        return FocusResult.Ignored;
+        Select(Selected + 1);
+        return FocusResult.Handled;
     }
 
     /// <summary>

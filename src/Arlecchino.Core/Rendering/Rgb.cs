@@ -68,9 +68,9 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
         }
 
         var chroma = level > 0.5d ? span / (2d - max - min) : span / (max + min);
-        var turns = max == red
+        var turns = Math.Abs(max - red) < 0.1
             ? (green - blue) / span + (green < blue ? 6d : 0d)
-            : max == green
+            : Math.Abs(max - green) < 0.1
                 ? (blue - red) / span + 2d
                 : (red - green) / span + 4d;
 

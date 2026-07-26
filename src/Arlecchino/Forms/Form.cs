@@ -137,13 +137,13 @@ public sealed class Form : IArlecchinoInteractiveWidget
             return FocusResult.Navigate(Activate());
         }
 
-        if (_keymap.Erase.Matches(key))
+        if (!_keymap.Erase.Matches(key))
         {
-            Current?.Reset?.Invoke();
-            return FocusResult.Handled;
+            return FocusResult.Ignored;
         }
 
-        return FocusResult.Ignored;
+        Current?.Reset?.Invoke();
+        return FocusResult.Handled;
     }
 
     /// <summary>

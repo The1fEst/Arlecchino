@@ -29,11 +29,13 @@ public sealed class RgbTermColor : IArlecchinoColor
     {
         get
         {
-            if (_ansi is null || _ansiSupport != TerminalCapabilities.Color)
+            if (_ansi is not null && _ansiSupport == TerminalCapabilities.Color)
             {
-                _ansiSupport = TerminalCapabilities.Color;
-                _ansi = BuildAnsi(_ansiSupport);
+                return _ansi;
             }
+
+            _ansiSupport = TerminalCapabilities.Color;
+            _ansi = BuildAnsi(_ansiSupport);
 
             return _ansi;
         }

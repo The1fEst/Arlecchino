@@ -1,6 +1,7 @@
 using System;
+using Arlecchino.Input;
 
-namespace Arlecchino.Input;
+namespace Arlecchino;
 
 /// <summary>
 /// Everything the framework needs from a console. Replace it with <c>UseTerminal&lt;T&gt;()</c> to
