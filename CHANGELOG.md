@@ -128,6 +128,11 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   widget and a command in it, registered both by the generator and by hand. Three bugs this cycle only
   showed up that way, and none of them were visible from a build of the repository itself. The project
   is generated outside the checkout, so it is shaped by the packages rather than by our build props.
+- The AOT claim is tested rather than asserted. `IsAotCompatible` only turns on an analyzer, so CI now
+  publishes the sample with `PublishAot`, runs the native binary and fails unless it draws a frame —
+  the failure mode being an application that compiles clean, publishes clean and then shows an empty
+  screen because the trimmer took a registration with it. The probe is `-p:AotProbe=true` on the
+  sample; the binary is about 5 MB and needs no runtime installed.
 - Coverage is measured on every run and the build fails when it drops: 80% of lines, 65% of branches.
   The figures per assembly land in the run summary, so a change that adds code without tests is
   visible before it is merged rather than after.

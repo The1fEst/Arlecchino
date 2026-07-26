@@ -24,6 +24,19 @@ Both libraries are marked `IsAotCompatible`, and the whole repository builds wit
 `AddSingleton<TService, TImpl>` carry `[DynamicallyAccessedMembers]` so trimming keeps their
 constructors.
 
+That mark only turns on the analyzer, so CI publishes the sample natively and runs it — an
+application whose registrations the trimmer removed compiles and warns about nothing, and then draws
+nothing. Locally the same probe is one switch:
+
+```bash
+dotnet publish samples/Arlecchino.Sample -c Release -p:AotProbe=true -o native
+./native/Arlecchino.Sample --frame default 100x20
+```
+
+The switch is on the sample rather than passed as a plain `-p:PublishAot=true`, which would reach the
+generator too — and a `netstandard2.0` analyzer cannot be compiled ahead of time. The binary comes out
+around 5 MB with no runtime to install.
+
 ## Building
 
 ```
@@ -256,6 +269,7 @@ them. The Windows leg uploads the packages as a build artifact.
 | The test suite, on both target frameworks | Behaviour |
 | Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 80% of lines or 65% of branches, and the figures per assembly are written to the run summary |
 | Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
+| The sample published with `PublishAot` and run (Linux leg) | What `IsAotCompatible` only warns about. The native binary has to draw a frame, so a registration the trimmer removed or a type built by reflection fails the run rather than the user's `publish` |
 | `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |
 | An application built against the packages | Whatever only breaks on the way through NuGet: a generator that emits nothing, a missing `build/*.props`, a namespace that does not exist for a consumer |
 
