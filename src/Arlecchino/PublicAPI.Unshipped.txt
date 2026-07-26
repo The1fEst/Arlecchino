@@ -738,3 +738,18 @@ Arlecchino.Hosting.ArlecchinoStrings.HelpClose.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.HelpClose.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.HelpKeys.get -> System.Func<Arlecchino.Hosting.ArlecchinoKeymap!, System.Collections.Generic.IReadOnlyList<(Arlecchino.Input.KeyBinding Key, string! Action)>!>!
 Arlecchino.Hosting.ArlecchinoStrings.HelpKeys.set -> void
+Arlecchino.Widgets.ScrollPane
+Arlecchino.Widgets.ScrollPane.ScrollPane(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.ScrollPane.Content.get -> System.Action<Arlecchino.Rendering.SurfaceRegion>!
+Arlecchino.Widgets.ScrollPane.Content.init -> void
+Arlecchino.Widgets.ScrollPane.ContentHeight.get -> System.Func<int>!
+Arlecchino.Widgets.ScrollPane.ContentHeight.init -> void
+Arlecchino.Widgets.ScrollPane.ShowScrollBar.get -> bool
+Arlecchino.Widgets.ScrollPane.ShowScrollBar.init -> void
+Arlecchino.Widgets.ScrollPane.Offset.get -> int
+Arlecchino.Widgets.ScrollPane.Offset.set -> void
+Arlecchino.Widgets.ScrollPane.IsFocused.get -> bool
+Arlecchino.Widgets.ScrollPane.IsFocused.set -> void
+Arlecchino.Widgets.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult

@@ -28,6 +28,7 @@ public partial class Surface
     private int _lines;
     private int _fixedWidth;
     private int _fixedHeight;
+    private SurfaceRegion? _clip;
 
     /// <summary>Creates a surface that draws to a terminal.</summary>
     /// <param name="terminal">Where composed frames are written.</param>
@@ -64,6 +65,27 @@ public partial class Surface
     public int ListWindow()
     {
         return Math.Max(4, FreeLines - 4);
+    }
+
+    /// <summary>
+    /// Confines every write to a rectangle until the returned scope is disposed, whatever coordinates
+    /// the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an
+    /// offset that reaches outside the pane, and the parts that fall outside are dropped instead of
+    /// landing on a neighbour.
+    ///
+    /// Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
+    /// </summary>
+    /// <param name="region">The only part of the frame writes may reach.</param>
+    /// <returns>Dispose it to go back to the clip that was in force before.</returns>
+    public IDisposable Clip(SurfaceRegion region)
+    {
+        var previous = _clip;
+
+        _clip = previous is { } outer
+            ? Intersect(outer, region)
+            : region;
+
+        return new ClipScope(this, previous);
     }
 
     /// <summary>
@@ -285,8 +307,29 @@ public partial class Surface
         }
     }
 
+    private static SurfaceRegion Intersect(SurfaceRegion outer, SurfaceRegion inner)
+    {
+        var left = Math.Max(outer.Left, inner.Left);
+        var top = Math.Max(outer.Top, inner.Top);
+
+        return new(
+            inner.Surface,
+            left,
+            top,
+            Math.Max(0, Math.Min(outer.Right, inner.Right) - left),
+            Math.Max(0, Math.Min(outer.Bottom, inner.Bottom) - top));
+    }
+
+    private bool IsInsideClip(int row, int column) =>
+        _clip is not { } clip || clip.Contains(row, column);
+
     private void SetCell(int row, int column, string cell, int cellWidth, IArlecchinoColor style)
     {
+        if (!IsInsideClip(row, column))
+        {
+            return;
+        }
+
         var cells = _cells[row];
 
         if (column > 0 && cells[column].Length == 0)
@@ -338,5 +381,19 @@ public partial class Surface
         }
 
         return cells;
+    }
+
+    private sealed class ClipScope : IDisposable
+    {
+        private readonly Surface _surface;
+        private readonly SurfaceRegion? _previous;
+
+        public ClipScope(Surface surface, SurfaceRegion? previous)
+        {
+            _surface = surface;
+            _previous = previous;
+        }
+
+        public void Dispose() => _surface._clip = _previous;
     }
 }
