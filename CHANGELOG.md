@@ -16,6 +16,8 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
   in the crimson, bone and ink of the harlequin mask. The background is left to the terminal
   everywhere except the two cursor rows — a selection has to paint behind its text to be one — so it
   reads on a light terminal as readily as on a dark one: it colours the writing, not the screen.
+  Crimson is kept for trouble: `Error` is the only filled row wearing it, the cursor row is ash and a
+  warning is amber, so a selected row and a failing one are never the same colour.
 - **`TermColor` carries exact colours as well as palette ones.** `ExactForeground` and
   `ExactBackground` are drawn where the terminal can do 24-bit, and the `Foreground` and `Background`
   beside them are what everywhere else gets — so a palette can state a brand colour and still degrade

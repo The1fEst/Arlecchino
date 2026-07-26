@@ -11,6 +11,7 @@ public sealed class ThemePalette
     private static readonly Rgb Ink = new(0x14, 0x13, 0x17);
     private static readonly Rgb Hairline = new(0x2E, 0x2B, 0x33);
     private static readonly Rgb Ash = new(0x8A, 0x81, 0x89);
+    private static readonly Rgb Amber = new(0xD0, 0x8A, 0x2C);
 
     /// <summary>
     /// The framework's own colours — the crimson, bone and ink of the harlequin mask. The background
@@ -45,21 +46,27 @@ public sealed class ThemePalette
             Background = TerminalColor.White,
             ExactBackground = Bone,
         },
-        Selected = new() { Background = TerminalColor.BrightBlack, ExactBackground = Hairline },
+        Selected = new()
+        {
+            Foreground = TerminalColor.White,
+            ExactForeground = Bone,
+            Background = TerminalColor.BrightBlack,
+            ExactBackground = Hairline,
+        },
         Active = new() { Foreground = TerminalColor.BrightRed, ExactForeground = Crimson },
         ActiveSelected = new()
         {
             Foreground = TerminalColor.Black,
             ExactForeground = Ink,
-            Background = TerminalColor.BrightRed,
-            ExactBackground = Crimson,
+            Background = TerminalColor.White,
+            ExactBackground = Ash,
         },
         Warning = new()
         {
             Foreground = TerminalColor.Black,
             ExactForeground = Ink,
-            Background = TerminalColor.White,
-            ExactBackground = Bone,
+            Background = TerminalColor.Yellow,
+            ExactBackground = Amber,
         },
         Error = new()
         {

@@ -67,6 +67,16 @@ Every entry names an exact colour *and* a palette colour, so a terminal without 
 fallback its author picked rather than whatever the nearest-colour arithmetic lands on. Crimson falls
 back to `BrightRed`, bone to `BrightWhite`, the hairline to `BrightBlack`.
 
+Crimson is spent on one thing at a time: titles, `Active`, and `Error`. The cursor row is deliberately
+**not** crimson — a selection that looks like a failure is a screen you have to read twice:
+
+| Role | Colour | Reads as |
+|---|---|---|
+| `ActiveSelected` | ink on ash `#8A8189` | Where the cursor is |
+| `Selected` | bone on hairline `#2E2B33` | Where it was, in the pane without focus |
+| `Warning` | ink on amber `#D08A2C` | Worth noticing — deprecated, drifted |
+| `Error` | bone on crimson `#C9382B` | Something is wrong |
+
 ## TermColor
 
 ```csharp
