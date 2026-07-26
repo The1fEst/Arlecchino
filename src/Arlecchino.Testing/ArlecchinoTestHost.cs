@@ -35,7 +35,9 @@ public sealed class ArlecchinoTestHost : IDisposable
         var services = new ServiceCollection();
 
         Terminal = new(width, height);
+        Clock = new();
         services.AddSingleton<IArlecchinoTerminal>(Terminal);
+        services.AddSingleton<TimeProvider>(Clock);
 
         var builder = services
             .AddArlecchino(options =>
@@ -50,6 +52,9 @@ public sealed class ArlecchinoTestHost : IDisposable
         _provider = services.BuildServiceProvider();
         _ = History;
     }
+
+    /// <summary>The clock scheduled work runs on, moved by <see cref="Advance"/>.</summary>
+    public TestClock Clock { get; }
 
     /// <summary>The terminal being drawn to, for asserting on raw output or resizing mid-test.</summary>
     public FakeTerminal Terminal { get; }
@@ -125,6 +130,17 @@ public sealed class ArlecchinoTestHost : IDisposable
     {
         Terminal.EnqueueText(sequence);
         _provider.GetRequiredService<TerminalInputReader>().ReadPending();
+    }
+
+    /// <summary>
+    /// Moves the clock forward and runs whatever fell due, exactly as the frame loop would. The frame is
+    /// not drawn by this — ask for one afterwards.
+    /// </summary>
+    /// <param name="amount">How far to move the clock.</param>
+    public void Advance(TimeSpan amount)
+    {
+        Clock.Advance(amount);
+        _provider.GetRequiredService<Ticker>().Run(static _ => { });
     }
 
     /// <summary>Draws a frame and returns it as plain text, with the styling stripped.</summary>

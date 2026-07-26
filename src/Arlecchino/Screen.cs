@@ -37,6 +37,7 @@ public class Screen
     private readonly IArlecchinoTerminal _terminal;
     private readonly Repaint _repaint;
     private readonly UiDispatcher _dispatcher;
+    private readonly Ticker _ticker;
     private readonly LogOverlay _log;
 
     private int _lastWidth;
@@ -52,6 +53,7 @@ public class Screen
     /// <param name="terminal">Watched for a change of size.</param>
     /// <param name="repaint">Says when a frame is actually needed.</param>
     /// <param name="dispatcher">Runs work posted from background threads, just before drawing.</param>
+    /// <param name="ticker">Runs scheduled work between frames.</param>
     /// <param name="log">Drawn over the view while it is open.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
     internal Screen(
@@ -62,6 +64,7 @@ public class Screen
         IArlecchinoTerminal terminal,
         Repaint repaint,
         UiDispatcher dispatcher,
+        Ticker ticker,
         LogOverlay log,
         ILogger<Screen> logger)
     {
@@ -74,6 +77,7 @@ public class Screen
         _terminal = terminal;
         _repaint = repaint;
         _dispatcher = dispatcher;
+        _ticker = ticker;
         _logger = logger;
     }
 
@@ -112,6 +116,8 @@ public class Screen
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            _ticker.Run(TickFailed);
+
             if (_repaint.TakeRequested() || TerminalWasResized())
             {
                 DrawFrame();
@@ -122,6 +128,12 @@ public class Screen
                 break;
             }
         }
+    }
+
+    private void TickFailed(Exception exception)
+    {
+        _logger.LogError(exception, "Scheduled work failed.");
+        _state.Output = _strings.ViewFailed(exception.Message);
     }
 
     private void RunFailed(Exception exception)

@@ -696,3 +696,9 @@ static Arlecchino.Modals.TextEditing.MoveToEnd(Arlecchino.Modals.ITextEntryModal
 static Arlecchino.Modals.TextEditing.MoveToStart(Arlecchino.Modals.ITextEntryModal! modal) -> void
 static Arlecchino.Modals.TextEditing.MoveWord(Arlecchino.Modals.ITextEntryModal! modal, int direction) -> void
 static Arlecchino.Widgets.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Hosting.Ticker
+Arlecchino.Hosting.Ticker.Ticker(System.TimeProvider! time, Arlecchino.Rendering.Repaint! repaint) -> void
+Arlecchino.Hosting.Ticker.NextDue.get -> System.DateTimeOffset?
+Arlecchino.Hosting.Ticker.Every(System.TimeSpan interval, System.Action! action) -> System.IDisposable!
+Arlecchino.Hosting.Ticker.After(System.TimeSpan delay, System.Action! action) -> System.IDisposable!
+Arlecchino.Hosting.Ticker.Run(System.Action<System.Exception!>! onError) -> void

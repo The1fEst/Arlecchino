@@ -7,3 +7,9 @@ Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.Hosting.UiDis
 Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.AtomHistory!
 Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Rendering.Repaint!
 Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
+Arlecchino.Testing.TestClock
+Arlecchino.Testing.TestClock.TestClock() -> void
+override Arlecchino.Testing.TestClock.GetUtcNow() -> System.DateTimeOffset
+Arlecchino.Testing.TestClock.Advance(System.TimeSpan amount) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Clock.get -> Arlecchino.Testing.TestClock!
+Arlecchino.Testing.ArlecchinoTestHost.Advance(System.TimeSpan amount) -> void

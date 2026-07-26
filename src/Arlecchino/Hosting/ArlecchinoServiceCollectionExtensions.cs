@@ -63,6 +63,8 @@ public static class ArlecchinoServiceCollectionExtensions
         services.AddSingleton<LogOverlay>();
         services.AddSingleton<ILoggerProvider, ArlecchinoLoggerProvider>();
         services.AddSingleton<UiDispatcher>();
+        services.TryAddSingleton(TimeProvider.System);
+        services.AddSingleton<Ticker>();
         services.AddSingleton<AtomHistory>();
         services.AddSingleton<ArlecchinoState>();
         services.AddScoped<ViewLifetime>();
@@ -83,6 +85,7 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<IArlecchinoTerminal>(),
             provider.GetRequiredService<Repaint>(),
             provider.GetRequiredService<UiDispatcher>(),
+            provider.GetRequiredService<Ticker>(),
             provider.GetRequiredService<LogOverlay>(),
             provider.GetRequiredService<ILogger<Screen>>()));
         services.AddSingleton(static provider => new InputRouter(
