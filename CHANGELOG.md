@@ -83,6 +83,15 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Fixed
 
+- **Undo groups nest.** `AtomHistory.Group()` kept no count of how many were open, so a group opened
+  inside another closed the whole thing when it was disposed and the edits that followed became a
+  second undo step. Wrapping code that groups edits of its own — a form field that batches its writes,
+  say — quietly lost the atomicity the outer group asked for. Groups are counted now: one step, undone
+  in one go.
+- **Undo groups nest.** `AtomHistory.Group()` counted nothing, so a group opened inside another closed
+  the whole thing when it was disposed, and every edit after it became a second undo step. Wrapping
+  code that groups edits of its own quietly lost the atomicity the outer group asked for. Groups are
+  counted now: one step, undone in one go.
 - **A screen that cannot be built no longer moves the application.** The navigator changed the current
   route and disposed the screen it was leaving *before* the new one was constructed, so a view whose
   constructor threw — a store that was never registered is the usual cause — left the route pointing
@@ -152,6 +161,13 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 - **The documentation is checked against the code.** Every translatable string, every key binding and
   every generator diagnostic has to appear on its page, so the tables stop drifting behind the type
   they describe; the test names what is missing.
+- Three sets of tests for what an application does at the edges rather than in the middle: empty and
+  zero-sized input (a list with nothing in it, a pane whose content is empty, wrapping to no width, a
+  ticker asked to run every no time), robustness (a click outside the frame, a 200 000-character
+  paste, an async atom loaded twice and cancelled mid-flight, a validator that refuses everything),
+  and boundaries (closing a modal when none is open, writing outside the surface, a form with no
+  fields, two commands claiming one key, undo with nothing to undo). Thirty-one cases, one real bug —
+  the nested undo groups above.
 - Nothing piles up as screens come and go. A hundred visits to a screen that subscribes to an atom
   through `ViewLifetime.Track` leave exactly one subscriber behind, a scoped store is created and
   disposed once per visit, and work scheduled on the ticker stops when the screen does — the three
