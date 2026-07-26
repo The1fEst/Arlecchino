@@ -187,6 +187,78 @@ output line and the whole story here. `LogBuffer.Capacity` sets how much is kept
 or Seq provider the usual way, and drop any provider that writes to standard output
 (`builder.Logging.ClearProviders()` removes this one too, overlay included).
 
+## Something to attach to a bug report
+
+The overlay says what happened; `ArlecchinoReport` says where it happened. Resolve it and call
+`Describe()`:
+
+```csharp
+public sealed class ReportCommand : IArlecchinoCommand
+{
+    private readonly ArlecchinoReport _report;
+    private readonly IArlecchinoTerminal _terminal;
+
+    public ReportCommand(ArlecchinoReport report, IArlecchinoTerminal terminal)
+    {
+        _report = report;
+        _terminal = terminal;
+    }
+
+    public KeyBinding Binding => new(ConsoleKey.F12);
+
+    public string Icon => "";
+
+    public string Label => "Copy diagnostics";
+
+    public ViewRoute Execute()
+    {
+        _terminal.CopyToClipboard(_report.Describe());
+        return ViewRoute.None;
+    }
+}
+```
+
+What comes out is a page of `key: value` lines under four headings:
+
+```
+[Arlecchino]
+version: 1.0.0
+runtime: .NET 10.0.10
+platform: Microsoft Windows 10.0.26200 (X64)
+
+[Terminal]
+implementation: SystemTerminal
+size: 120×34
+frame: 116×32
+colour: TrueColor
+TERM: xterm-256color
+COLORTERM: unset
+NO_COLOR: unset
+WT_SESSION: unset
+redirected: in False, out False
+
+[Screen]
+route: Mods
+can go back: True
+can go forward: False
+commands: 4
+modals: TextModal over MessageModal
+undo depth: 3
+
+[Options]
+minimum size: 100×30
+frames per second: 60
+alternate screen: True
+mouse: True
+bracketed paste: True
+text input: LatinOnly
+```
+
+That is versions, sizes, route names and modal type names — no field values and nothing the user
+typed, so it can be pasted into a public issue without reading it line by line first. Those are
+exactly the questions an issue about a rendering problem starts with, and the ones a user cannot
+answer from memory.
+
 ## Running without the hosted service
 
 `WithoutHostedService()` leaves every service in place but removes the loop, which is how a single

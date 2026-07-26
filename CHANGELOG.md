@@ -53,6 +53,12 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   needs nothing here: the terminal turns `Ctrl+Shift+V` into a bracketed paste, which already arrives
   as one block.
 
+- **`ArlecchinoReport`**, for when a user says it looks wrong on their machine. `Describe()` returns
+  the version, the runtime and platform, what the terminal said it can do (`TERM`, `COLORTERM`,
+  `NO_COLOR`, size, colour level, whether output is redirected), the route being shown with the modals
+  above it, and the options the application was built with. It carries no field values and nothing the
+  user typed, so it can go straight into a public issue — which is what the issue template now asks
+  for. A command that copies it to the clipboard is three lines.
 - `AddStore<T>()`, so a store can be registered by hand as views, commands and widgets already could —
   scoped when the type implements `IArlecchinoScopedStore`, singleton otherwise.
 
