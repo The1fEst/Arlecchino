@@ -7,3 +7,4 @@ coverage/
 .idea/
 *.user
 TestResults/
+inspect.json
