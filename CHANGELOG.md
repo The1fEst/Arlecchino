@@ -97,6 +97,14 @@ Everything in this section is breaking, and it is the last release that intends 
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- Coverage is measured on every run and the build fails when it drops: 80% of lines, 65% of branches.
+  The figures per assembly land in the run summary, so a change that adds code without tests is
+  visible before it is merged rather than after.
+- Benchmarks cover what the earlier ones left out: a key through the router, a click, a pasted block,
+  a frame drawn in answer to a key, writing atoms watched and unwatched, a computed value read cached
+  and invalidated, undo and redo, and `TextWidth.Wrap`. Every benchmark is executed on each CI run as
+  a dry job — measurements mean nothing there, but a benchmark that no longer compiles or throws is
+  caught the day it breaks.
 
 ## 0.9.0
 

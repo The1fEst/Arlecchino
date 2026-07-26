@@ -7,6 +7,10 @@ on:
   pull_request:
     paths-ignore: ['**.md', 'docs/**', 'LICENSE']
 
+env:
+  COVERAGE_LINES: 80
+  COVERAGE_BRANCHES: 65
+
 jobs:
   build:
     strategy:
@@ -33,6 +37,45 @@ jobs:
 
       - name: Test
         run: dotnet test tests/Arlecchino.Tests/Arlecchino.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=tests.trx"
+
+      - name: Coverage
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          dotnet test tests/Arlecchino.Tests/Arlecchino.Tests.csproj --configuration Release --framework net10.0 --no-build --collect:"XPlat Code Coverage" --results-directory coverage
+
+          $report = Get-ChildItem coverage -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
+          if (-not $report) {
+            Write-Host "::error::The test run produced no coverage report"
+            exit 1
+          }
+
+          $invariant = [Globalization.CultureInfo]::InvariantCulture
+          function Percent($rate) { [math]::Round([double]::Parse($rate, $invariant) * 100, 1) }
+
+          $coverage = ([xml](Get-Content $report.FullName -Raw)).coverage
+          $lines = Percent $coverage.'line-rate'
+          $branches = Percent $coverage.'branch-rate'
+
+          $summary = @("## Coverage", "", "| Assembly | Lines | Branches |", "|---|---:|---:|")
+          foreach ($package in $coverage.packages.package) {
+            $summary += "| $($package.name) | $(Percent $package.'line-rate')% | $(Percent $package.'branch-rate')% |"
+          }
+          $summary += "| **Total** | **$lines%** | **$branches%** |"
+          $summary | Add-Content $env:GITHUB_STEP_SUMMARY
+
+          if ($lines -lt $env:COVERAGE_LINES) {
+            Write-Host "::error::Line coverage fell to $lines%, below the $($env:COVERAGE_LINES)% the suite is held to"
+            exit 1
+          }
+          if ($branches -lt $env:COVERAGE_BRANCHES) {
+            Write-Host "::error::Branch coverage fell to $branches%, below the $($env:COVERAGE_BRANCHES)% the suite is held to"
+            exit 1
+          }
+        shell: pwsh
+
+      - name: Benchmarks
+        if: matrix.os == 'ubuntu-latest'
+        run: dotnet run --project benchmarks/Arlecchino.Benchmarks/Arlecchino.Benchmarks.csproj --configuration Release --no-build -- --filter "*" --job dry
 
       - name: Inspect
         if: matrix.os == 'windows-latest'

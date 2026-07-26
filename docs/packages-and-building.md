@@ -155,29 +155,51 @@ Nothing here formats code. It only refuses what is redundant.
 
 ## Benchmarks
 
-`benchmarks/Arlecchino.Benchmarks` measures the two things a terminal UI can plausibly be slow at:
-composing a frame and measuring text.
+`benchmarks/Arlecchino.Benchmarks` measures what a terminal UI can plausibly be slow at: composing a
+frame, measuring text, answering a key, and writing state.
 
 ```bash
 dotnet run --project benchmarks/Arlecchino.Benchmarks -c Release -- --filter "*" --job short
 ```
 
-On a 120×40 frame with every row written (Ryzen laptop, .NET 10, short job):
+On a 120×40 frame with every row written (Ryzen 7 9800X3D, .NET 10, short job):
 
 | What | Mean | Allocated |
 |---|---|---|
-| Full frame, every cell changed | 111 µs | 89 KB |
-| Repeat frame, nothing changed | 111 µs | 0 B |
-| Frame with one cell changed | 109 µs | 96 B |
-| List of 2000 rows scrolled by one | 325 µs | 20 KB |
+| Full frame, every cell changed | 124 µs | 89 KB |
+| Repeat frame, nothing changed | 122 µs | 0 B |
+| Frame with one cell changed | 121 µs | 96 B |
+| List of 2000 rows scrolled by one | 381 µs | 20 KB |
+| A key through the router | 17 ns | 0 B |
+| A click through the router | 11 ns | 0 B |
+| A pasted block arriving as an escape sequence | 395 ns | 304 B |
+| Write an atom nothing listens to | 3.9 ns | 64 B |
+| Write an atom 20 things listen to | 18 ns | 184 B |
+| Write an atom that records history | 26 ns | 144 B |
+| Read a computed value that did not change | 3.0 ns | 64 B |
+| Read a computed value after a dependency changed | 48 ns | 480 B |
 | `TextWidth.Of` on a latin line | 0.9 µs | 0 B |
-| `TextWidth.Of` on wide and combining text | 0.7 µs | 0 B |
+| `TextWidth.Wrap` on two paragraphs | 12.9 µs | 2.9 KB |
 
 The useful reading is the second row: a frame where nothing changed costs the same as a full one and
 allocates nothing, because the cost is in filling the grid, not in talking to the terminal — the diff
 means an unchanged frame writes nothing at all. At 60 frames a second that is under one percent of
 the budget, and frames are only built when something asks for one, so an idle application does none
-of this.
+of this. Input is far below anything a person can notice: the router costs tens of nanoseconds, so
+what a key costs is whatever the view does with it.
+
+The atom rows carry the one number that is worth watching: reading an atom allocates 64 bytes,
+because the read hands `AtomTracking` a delegate so that an enclosing `Computed` can discover the
+dependency — and it does so whether or not anything is collecting. Frames read atoms constantly, so
+this is the allocation a busy application makes most of.
+
+### Running them on CI
+
+Numbers from a shared runner say nothing, so nothing is recorded there. Every push executes each
+benchmark once as a dry job, which fails on a benchmark that stopped compiling or started throwing;
+`.github/workflows/benchmarks.yml` runs them properly on demand — start it from the Actions tab, with
+a filter if only some are wanted, and it writes the tables into the run summary and keeps them as an
+artifact.
 
 ## Versioning
 
@@ -225,6 +247,8 @@ them. The Windows leg uploads the packages as a build artifact.
 |---|---|
 | Build in `Release` with warnings as errors | Everything the compiler and the Roslyn style rules see |
 | The test suite, on both target frameworks | Behaviour |
+| Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 80% of lines or 65% of branches, and the figures per assembly are written to the run summary |
+| Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
 | `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |
 | An application built against the packages | Whatever only breaks on the way through NuGet: a generator that emits nothing, a missing `build/*.props`, a namespace that does not exist for a consumer |
 
@@ -276,7 +300,7 @@ that is the point of it.
 | `src/Arlecchino.Testing` | Headless test host published as a package |
 | `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
-| `benchmarks/Arlecchino.Benchmarks` | Frame composition and text measurement |
+| `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, colour conversion |
 | `docs` | This documentation |
 | `artifacts/packages` | Local package feed produced by `pack.cmd` |
