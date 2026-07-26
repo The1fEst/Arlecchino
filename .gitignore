@@ -6,3 +6,4 @@ coverage/
 .vs/
 .idea/
 *.user
+TestResults/
