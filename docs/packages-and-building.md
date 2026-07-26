@@ -118,6 +118,12 @@ level.
 In this repository `ProbeView` / `OtherView` also keep the source generator under test: the routes
 they produce are used by the navigation tests.
 
+One corner is deliberately left uncovered: the P/Invoke half of `WindowsConsoleInput`, which asks the
+Windows console for its mode and reads input records out of its queue. Nothing but a real console on a
+real Windows session executes it, and a mock of `kernel32` would only assert that the mock was called.
+What it hands over — turning a console record into a key or a mouse event — is a type of its own that
+the suite drives on either platform, so the untested part is the syscalls themselves.
+
 The real terminal is tested too, and it has to be tested differently. A test of `SystemTerminal`
 replaces `Console.Out` and asserts on the bytes that come out of it — the alternate screen, bracketed
 paste, mouse reporting, `OSC 52` copying — because those sequences are the whole behaviour, and a fake
@@ -267,7 +273,7 @@ them. The Windows leg uploads the packages as a build artifact.
 |---|---|
 | Build in `Release` with warnings as errors | Everything the compiler and the Roslyn style rules see |
 | The test suite, on both target frameworks | Behaviour |
-| Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 80% of lines or 65% of branches, and the figures per assembly are written to the run summary |
+| Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 85% of lines or 70% of branches, and the figures per assembly are written to the run summary |
 | Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
 | The sample published with `PublishAot` and run (Linux leg) | What `IsAotCompatible` only warns about. The native binary has to draw a frame, so a registration the trimmer removed or a type built by reflection fails the run rather than the user's `publish` |
 | `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |

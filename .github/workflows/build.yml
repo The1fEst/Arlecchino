@@ -8,8 +8,8 @@ on:
     paths-ignore: ['**.md', 'docs/**', 'LICENSE']
 
 env:
-  COVERAGE_LINES: 80
-  COVERAGE_BRANCHES: 65
+  COVERAGE_LINES: 85
+  COVERAGE_BRANCHES: 70
 
 jobs:
   build:

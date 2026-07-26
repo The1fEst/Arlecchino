@@ -122,6 +122,9 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- The file picker's `Places` are tested. Shortcuts an application puts in the sidebar had no test at
+  all: that they are listed, that they come before the folders the framework offers, that one without
+  an icon gets the default, and that clicking one browses to it.
 - Benchmarks cover what the earlier ones left out: a key through the router, a click, a pasted block,
   writing atoms watched and unwatched, a computed value read cached and invalidated, undo and redo,
   and `TextWidth.Wrap`. They are what found the allocation above.
@@ -140,7 +143,7 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   the failure mode being an application that compiles clean, publishes clean and then shows an empty
   screen because the trimmer took a registration with it. The probe is `-p:AotProbe=true` on the
   sample; the binary is about 5 MB and needs no runtime installed.
-- Coverage is measured on every run and the build fails when it drops: 80% of lines, 65% of branches.
+- Coverage is measured on every run and the build fails when it drops: 85% of lines, 70% of branches.
   The figures per assembly land in the run summary, so a change that adds code without tests is
   visible before it is merged rather than after.
 - Every benchmark is executed on each run as a dry job. Measurements from a shared runner mean
