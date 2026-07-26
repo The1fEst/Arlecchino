@@ -73,6 +73,11 @@ route and both ways to register it.
 `Alt+←` and `Alt+→` are handled by the navigator itself and never reach the view. Every other key goes
 to `IArlecchinoView.Handle`, and the route it returns is passed to `Apply`.
 
+Navigation is all-or-nothing. The new screen is built before anything is given up, so a view whose
+constructor throws — a store that was never registered is the usual reason — leaves the route, the
+history and the screen on display exactly as they were. The exception itself is caught by the input
+router: it goes to the log and the output row, the way a view that throws while drawing does.
+
 The start route comes from `ArlecchinoOptions.StartRoute` (`.StartAt(...)`), applied in the navigator's
 constructor. For a start route that depends on runtime state, implement `IArlecchinoStartup` instead —
 see [Hosting and options](hosting-and-options.md).

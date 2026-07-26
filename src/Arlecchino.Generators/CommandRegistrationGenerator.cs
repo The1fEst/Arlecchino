@@ -77,12 +77,12 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (symbol.IsAbstract || !Implements(symbol))
+        if (symbol.IsAbstract || !TypeNames.IsReachable(symbol) || !Implements(symbol))
         {
             return null;
         }
 
-        var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        var typeName = TypeNames.Of(symbol);
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();

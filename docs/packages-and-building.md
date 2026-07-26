@@ -263,6 +263,21 @@ under `*REMOVED*` when it was already shipped. At release time the contents of `
 `Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first release on NuGet, did
 with the whole surface, and what `1.0.0` did with the review that preceded it.
 
+### And checked against the last release
+
+The API files say what the source declares. `EnablePackageValidation` checks the package that comes
+out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net8.0` and `net10.0`
+cannot drift apart, and over the previous release once there is one to compare with.
+
+```xml
+<PackageValidationBaselineVersion Condition="'$(Version)' != '1.0.0'">1.0.0</PackageValidationBaselineVersion>
+```
+
+The condition is doing the bookkeeping: `1.0.0` has nothing to be compared with, and every version
+after it is compared with `1.0.0` automatically. Packing a `1.0.1` whose baseline is missing fails
+with `NU1102` rather than passing quietly, which is the behaviour worth having — a validation that
+silently does nothing is worse than none.
+
 ## Continuous integration
 
 `.github/workflows/build.yml` runs on every push to `master`/`main` and on pull requests that change

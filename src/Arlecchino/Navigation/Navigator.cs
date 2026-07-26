@@ -131,13 +131,16 @@ public class Navigator
             return;
         }
 
-        if (!_currentRoute.IsNone)
+        var leaving = _currentRoute;
+
+        Show(route);
+
+        if (!leaving.IsNone)
         {
-            _back.Push(_currentRoute);
+            _back.Push(leaving);
         }
 
         _forward.Clear();
-        Show(route);
     }
 
     /// <summary>Builds the current screen again from scratch, losing its per-screen state.</summary>
@@ -152,8 +155,12 @@ public class Navigator
             return false;
         }
 
-        _forward.Push(_currentRoute);
-        Show(_back.Pop());
+        var leaving = _currentRoute;
+
+        Show(_back.Peek());
+
+        _back.Pop();
+        _forward.Push(leaving);
         return true;
     }
 
@@ -166,13 +173,19 @@ public class Navigator
             return false;
         }
 
-        _back.Push(_currentRoute);
-        Show(_forward.Pop());
+        var leaving = _currentRoute;
+
+        Show(_forward.Peek());
+
+        _forward.Pop();
+        _back.Push(leaving);
         return true;
     }
 
     private void Show(ViewRoute route)
     {
+        var next = _resolver.Create(route);
+
         if (_active is { } leaving)
         {
             PreviousCommands = leaving.View.Commands();
@@ -181,7 +194,7 @@ public class Navigator
         _active?.Dispose();
 
         _currentRoute = route;
-        _active = _resolver.Create(route);
+        _active = next;
         _conflicts.Report(route, _active.View.Commands());
         _repaint.Request();
     }

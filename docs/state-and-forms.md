@@ -87,6 +87,10 @@ using (history.Group())
 history.Undo();   // both fields go back together
 ```
 
+Groups nest, and the count is what matters rather than the innermost scope: a helper that groups its
+own edits, called from inside a group of yours, joins it instead of closing it early. The step is
+committed when the outermost scope is disposed.
+
 Undoing does not record itself, and writing something new after an undo drops the redo branch.
 
 The stack is bounded by `Capacity` (200 steps): the oldest fall off the far end, because a session

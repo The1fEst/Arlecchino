@@ -53,6 +53,12 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   needs nothing here: the terminal turns `Ctrl+Shift+V` into a bracketed paste, which already arrives
   as one block.
 
+- **`ArlecchinoReport`**, for when a user says it looks wrong on their machine. `Describe()` returns
+  the version, the runtime and platform, what the terminal said it can do (`TERM`, `COLORTERM`,
+  `NO_COLOR`, size, colour level, whether output is redirected), the route being shown with the modals
+  above it, and the options the application was built with. It carries no field values and nothing the
+  user typed, so it can go straight into a public issue — which is what the issue template now asks
+  for. A command that copies it to the clipboard is three lines.
 - `AddStore<T>()`, so a store can be registered by hand as views, commands and widgets already could —
   scoped when the type implements `IArlecchinoScopedStore`, singleton otherwise.
 
@@ -77,6 +83,23 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Fixed
 
+- **Undo groups nest.** `AtomHistory.Group()` counted nothing, so a group opened inside another closed
+  the whole thing when it was disposed, and every edit after it became a second undo step. Wrapping
+  code that groups edits of its own quietly lost the atomicity the outer group asked for. Groups are
+  counted now: one step, undone in one go.
+- **A screen that cannot be built no longer moves the application.** The navigator changed the current
+  route and disposed the screen it was leaving *before* the new one was constructed, so a view whose
+  constructor threw — a store that was never registered is the usual cause — left the route pointing
+  at a screen that does not exist while the old one carried on drawing. `Back()` and the diagnostics
+  disagreed with the screen from then on. The new screen is now built first: if it throws, the route,
+  the history and the screen are exactly as they were, and the error reaches the log and the output
+  row as before.
+- A view, store, command or widget the generated code cannot name is left out of it. A view nested
+  privately inside another type was picked up and registered, and the build then failed with `CS0122`
+  in a generated file. Reachability is checked through every containing type now.
+- A view, store, command or widget declared inside another type is now named through it. The generator
+  emitted `new ModsView(...)` for a class nested in `Screens`, which does not compile — the code it
+  wrote could not see the type it had just found. All four generators name types the same way now.
 - A view, store or command without a public constructor is now left out of the generated code instead
   of being registered anyway. The generator reported it (`ARL002`, `ARL005`, `ARL006`) and then emitted
   a `new` of it regardless, so the diagnostic arrived alongside a compiler error in generated code
@@ -95,6 +118,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `assets/`: the harlequin mask as an icon on its plate, transparent, and as a single-colour glyph
   that inherits `currentColor`, plus the banner and the social card — SVG throughout, with the raster
   sizes rendered beside them.
+- [Rendering](docs/rendering.md) ends with the terminals the framework has actually run in and what
+  each one showed — plain `xterm-256color`, `COLORTERM=truecolor`, `NO_COLOR`, `TERM=dumb`, tmux,
+  macOS on Arm — and, just as usefully, the ones it has not: conhost without virtual terminal support,
+  Terminal.app, PuTTY, kitty and friends.
 - `Theme.Palette` and `TerminalCapabilities.Color` are documented as process-wide, which is what they
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
@@ -122,12 +149,42 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- **Localization is enforced, not trusted.** One test replaces every delegate on `ArlecchinoStrings`
+  by reflection and fails if a word of the framework's English survives on the main screen, the keys
+  screen, the notification list or a modal — a hardcoded literal is now a failing test rather than a
+  bug report from somebody translating the chrome.
+- **The documentation is checked against the code.** Every translatable string, every key binding and
+  every generator diagnostic has to appear on its page, so the tables stop drifting behind the type
+  they describe; the test names what is missing.
+- Three sets of tests for what an application does at the edges rather than in the middle: empty and
+  zero-sized input (a list with nothing in it, a pane whose content is empty, wrapping to no width, a
+  ticker asked to run every no time), robustness (a click outside the frame, a 200 000-character
+  paste, an async atom loaded twice and cancelled mid-flight, a validator that refuses everything),
+  and boundaries (closing a modal when none is open, writing outside the surface, a form with no
+  fields, two commands claiming one key, undo with nothing to undo). Thirty-one cases, one real bug —
+  the nested undo groups above.
+- Nothing piles up as screens come and go. A hundred visits to a screen that subscribes to an atom
+  through `ViewLifetime.Track` leave exactly one subscriber behind, a scoped store is created and
+  disposed once per visit, and work scheduled on the ticker stops when the screen does — the three
+  ways a long-running terminal application usually starts leaking.
+- Resizing is tested through the widgets rather than only through the diff: a list keeps its selection
+  on screen when the window shrinks, a scrolled pane comes back into range, text reflows when the
+  window narrows, nothing is drawn wider than the window, and the too-small notice appears and goes
+  away as the size crosses the minimum.
 - The file picker's `Places` are tested. Shortcuts an application puts in the sidebar had no test at
   all: that they are listed, that they come before the folders the framework offers, that one without
   an icon gets the default, and that clicking one browses to it.
 - Benchmarks cover what the earlier ones left out: a key through the router, a click, a pasted block,
   writing atoms watched and unwatched, a computed value read cached and invalidated, undo and redo,
   and `TextWidth.Wrap`. They are what found the allocation above.
+
+### Packaging
+
+- **The package is checked against the last release.** `EnablePackageValidation` runs APICompat during
+  `dotnet pack`: the `net8.0` and `net10.0` surfaces have to match each other, and from `1.0.1` on they
+  are compared with `1.0.0` as well. The baseline is conditional on the version, so it starts applying
+  by itself after this release, and a missing baseline fails the pack rather than passing quietly.
+- Each package carries release notes pointing at its own section of the changelog.
 
 ### Continuous integration
 
