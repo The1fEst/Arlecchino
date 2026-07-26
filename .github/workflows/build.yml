@@ -34,11 +34,36 @@ jobs:
       - name: Test
         run: dotnet test tests/Arlecchino.Tests/Arlecchino.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=tests.trx"
 
+      - name: Inspect
+        if: matrix.os == 'windows-latest'
+        run: |
+          dotnet tool install --global JetBrains.ReSharper.GlobalTools
+          jb inspectcode Arlecchino.slnx --output=inspect.json --severity=WARNING --no-build
+          $issues = (Get-Content inspect.json -Raw | ConvertFrom-Json).runs[0].results
+          if ($issues.Count -gt 0) {
+            $issues | ForEach-Object {
+              $place = $_.locations[0].physicalLocation
+              Write-Host "::error file=$($place.artifactLocation.uri),line=$($place.region.startLine)::$($_.ruleId): $($_.message.text)"
+            }
+            exit 1
+          }
+        shell: pwsh
+
       - name: Pack
         run: |
           dotnet pack src/Arlecchino.Core/Arlecchino.Core.csproj --configuration Release --no-build
           dotnet pack src/Arlecchino/Arlecchino.csproj --configuration Release --no-build
           dotnet pack src/Arlecchino.Testing/Arlecchino.Testing.csproj --configuration Release --no-build
+
+      - name: Build an application against the packages
+        run: |
+          version=$(grep -oE '<Version>[^<]+' Directory.Build.props | head -1 | cut -d'>' -f2)
+          dotnet new console -o consumer -n Consumer
+          cp .github/consumer/Program.cs .github/consumer/nuget.config consumer/
+          cd consumer
+          dotnet add package Arlecchino --version "$version"
+          dotnet build
+        shell: bash
 
       - name: Upload packages
         if: matrix.os == 'windows-latest'

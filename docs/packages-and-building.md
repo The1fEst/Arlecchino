@@ -209,9 +209,20 @@ with the whole surface.
 ## Continuous integration
 
 `.github/workflows/build.yml` runs on every push to `master`/`main` and on pull requests that change
-something other than documentation: restore, build in `Release` with warnings as errors, the test
-suite, and a pack — on Windows and Linux, because console behaviour differs between them. The Windows
-leg uploads the packages as a build artifact.
+something other than documentation — on Windows and Linux, because console behaviour differs between
+them. The Windows leg uploads the packages as a build artifact.
+
+| Step | Catches |
+|---|---|
+| Build in `Release` with warnings as errors | Everything the compiler and the Roslyn style rules see |
+| The test suite, on both target frameworks | Behaviour |
+| `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |
+| An application built against the packages | Whatever only breaks on the way through NuGet: a generator that emits nothing, a missing `build/*.props`, a namespace that does not exist for a consumer |
+
+That last step is the one worth keeping. It creates a console application from scratch, points it at
+the freshly packed `.nupkg` files, writes views, a store, a widget and a command in it, and builds —
+which is exactly how the source generator is exercised from the outside. Its source lives in
+`.github/consumer`.
 
 ### Committing without running it
 

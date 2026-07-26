@@ -188,6 +188,12 @@ Everything in this section is breaking, and it is the last release that intends 
 
 - `build.yml` ignores `**.md`, `docs/**` and `LICENSE`, and the documentation says how to keep a
   work-in-progress commit off CI entirely (`[skip ci]`, which Actions reads by itself).
+- The build now fails on a ReSharper inspection as well as on a compiler warning: `jb inspectcode`
+  runs against `.editorconfig` and annotates what it finds. That covers the rules the compiler has no
+  say in — a redundant type in an argument, an `if` worth inverting, a member that should be static.
+- CI builds a console application against the freshly packed `.nupkg` files, with views, a store, a
+  widget and a command in it. Three bugs this cycle only showed up that way, and none of them were
+  visible from a build of the repository itself.
 
 ## 0.4.0
 
