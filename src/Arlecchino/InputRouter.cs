@@ -124,6 +124,9 @@ public class InputRouter
 
         switch (_state.Modal)
         {
+            case TextAreaModal area:
+                area.InsertText(text);
+                return;
             case ITextEntryModal entry:
                 PasteIntoField(entry, text);
                 Recheck(entry);
@@ -490,6 +493,9 @@ public class InputRouter
                 return;
             case MessageModal message:
                 ProcessMessageModal(message, key);
+                return;
+            case TextAreaModal area:
+                ProcessTextAreaModal(area, key);
                 return;
             case SegmentedModal segmented:
                 ProcessSegmentedModal(segmented, key);
@@ -871,6 +877,121 @@ public class InputRouter
         {
             modal.Value = !modal.Value;
         }
+    }
+
+    private void ProcessTextAreaModal(TextAreaModal modal, ConsoleKeyInfo key)
+    {
+        if (_keymap.Cancel.Matches(key))
+        {
+            _state.CloseModal();
+            return;
+        }
+
+        if (_keymap.Submit.Matches(key))
+        {
+            SubmitTextArea(modal);
+            return;
+        }
+
+        if (MovedTextAreaCaret(modal, key) || EditedTextArea(modal, key))
+        {
+            return;
+        }
+
+        if (_keyText.Resolve(key) is { } typed)
+        {
+            modal.Insert(typed);
+        }
+    }
+
+    private void SubmitTextArea(TextAreaModal modal)
+    {
+        var text = modal.Text;
+
+        if (modal.Validate?.Invoke(text) is { } failure)
+        {
+            modal.Message = failure;
+            return;
+        }
+
+        _state.CloseModal();
+        modal.OnSubmit(text);
+    }
+
+    private bool MovedTextAreaCaret(TextAreaModal modal, ConsoleKeyInfo key)
+    {
+        if (_keymap.MoveLeft.Matches(key))
+        {
+            modal.MoveLeft();
+            return true;
+        }
+
+        if (_keymap.MoveRight.Matches(key))
+        {
+            modal.MoveRight();
+            return true;
+        }
+
+        if (_keymap.MoveUp.Matches(key))
+        {
+            modal.MoveRows(-1);
+            return true;
+        }
+
+        if (_keymap.MoveDown.Matches(key))
+        {
+            modal.MoveRows(1);
+            return true;
+        }
+
+        if (_keymap.JumpUp.Matches(key))
+        {
+            modal.MoveRows(-modal.VisibleRows);
+            return true;
+        }
+
+        if (_keymap.JumpDown.Matches(key))
+        {
+            modal.MoveRows(modal.VisibleRows);
+            return true;
+        }
+
+        if (_keymap.First.Matches(key))
+        {
+            modal.MoveToLineStart();
+            return true;
+        }
+
+        if (!_keymap.Last.Matches(key))
+        {
+            return false;
+        }
+
+        modal.MoveToLineEnd();
+        return true;
+    }
+
+    private bool EditedTextArea(TextAreaModal modal, ConsoleKeyInfo key)
+    {
+        if (_keymap.Confirm.Matches(key))
+        {
+            modal.Break();
+            return true;
+        }
+
+        if (_keymap.Erase.Matches(key))
+        {
+            modal.Erase();
+            return true;
+        }
+
+        if (!_keymap.DeleteForward.Matches(key))
+        {
+            return false;
+        }
+
+        modal.DeleteForward();
+        return true;
     }
 
     private void ProcessMessageModal(MessageModal modal, ConsoleKeyInfo key)

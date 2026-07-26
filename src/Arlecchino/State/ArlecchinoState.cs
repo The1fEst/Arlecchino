@@ -271,6 +271,34 @@ public class ArlecchinoState
         };
     }
 
+    /// <summary>
+    /// Asks for several lines of text. <c>Enter</c> starts a new line, so the text is confirmed with
+    /// the <c>Submit</c> key — <c>Ctrl+Enter</c> unless the keymap says otherwise.
+    /// </summary>
+    /// <param name="title">Title of the dialog.</param>
+    /// <param name="initial">Text the editor starts with.</param>
+    /// <param name="onSubmit">Called with the accepted text.</param>
+    /// <param name="validate">
+    /// Checked on submit; return a message to keep the dialog open, or <c>null</c> to accept.
+    /// </param>
+    /// <param name="visibleRows">How many rows to show before the text starts scrolling.</param>
+    public void RequestTextArea(
+        string title,
+        string initial,
+        Action<string> onSubmit,
+        Func<string, string?>? validate = null,
+        int visibleRows = 8)
+    {
+        Modal = new TextAreaModal
+        {
+            Title = title,
+            Text = initial,
+            OnSubmit = onSubmit,
+            Validate = validate,
+            VisibleRows = visibleRows,
+        };
+    }
+
     /// <summary>Shows a message with nothing to fill in; any of the closing keys dismisses it.</summary>
     /// <param name="title">Title of the dialog.</param>
     /// <param name="text">What to say. Long text wraps inside the box.</param>

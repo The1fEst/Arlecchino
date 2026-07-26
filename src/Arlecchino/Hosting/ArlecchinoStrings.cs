@@ -100,6 +100,10 @@ public sealed class ArlecchinoStrings
     /// <summary>Hint for leaving the screen.</summary>
     public Func<string> NotificationsClose { get; set; } = static () => "back";
 
+    /// <summary>The key line under the multi-line text dialog.</summary>
+    public Func<string> ModalTextAreaHints { get; set; } =
+        static () => "Enter — new line   Ctrl+Enter — confirm   Esc — cancel";
+
     /// <summary>The key line under a dialog that only has something to say.</summary>
     public Func<string> ModalMessageHints { get; set; } = static () => "Enter — close   Esc — close";
 

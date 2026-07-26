@@ -298,6 +298,9 @@ public class Screen
             case MessageModal modal:
                 DrawMessageModal(modal);
                 return;
+            case TextAreaModal modal:
+                DrawTextAreaModal(modal);
+                return;
             case DateModal modal:
                 DrawSegmentedModal(modal, _strings.ModalDateHints());
                 return;
@@ -405,6 +408,77 @@ public class Screen
         modal.Box = box;
         modal.YesChip = inside.Rows(0, 1).Inset(new Margin(0, 0, inside.Width - yesWidth, 0));
         modal.NoChip = inside.Rows(0, 1).Inset(new Margin(yesWidth + 3, 0, Math.Max(0, inside.Width - yesWidth - 3 - TextWidth.Of(no)), 0));
+    }
+
+    private void DrawTextAreaModal(TextAreaModal modal)
+    {
+        var width = Math.Max(SmallestFieldColumns, _surface.FrameWidth / 2);
+        var rows = Math.Clamp(modal.VisibleRows, 1, Math.Max(1, _surface.FrameHeight - 6));
+        var window = ScrollWindow.Around(modal.Row, modal.Lines.Count, rows);
+
+        modal.FirstVisible = window.First;
+
+        var body = new List<Span[]>();
+
+        for (var offset = 0; offset < window.Count; offset++)
+        {
+            var index = window.First + offset;
+            var line = modal.Lines[index];
+
+            body.Add(index == modal.Row
+                ? [new(CaretLine(line, modal.Column, width), Theme.Input)]
+                : [new(TextWidth.PadRight(TextWidth.Truncate(line, width), width), Theme.Default)]);
+        }
+
+        if (modal.Message.Length > 0)
+        {
+            body.Add([new(modal.Message, Theme.Error)]);
+        }
+
+        var (box, inside) = DrawBox(modal.Title, body, _strings.ModalTextAreaHints());
+
+        modal.Box = box;
+        modal.Rows = inside.Rows(0, window.Count);
+    }
+
+    private static string CaretLine(string line, int column, int width)
+    {
+        var caret = TextWidth.Of(line[..Math.Clamp(column, 0, line.Length)]);
+        var shift = Math.Max(0, caret - width + 2);
+        var visible = TextWidth.Truncate(SkipColumnsOf(line, shift), width - 1);
+        var before = Math.Max(0, caret - shift);
+
+        return TextWidth.PadRight($"{visible[..IndexAtWidth(visible, before)]}▏{visible[IndexAtWidth(visible, before)..]}", width);
+    }
+
+    private static string SkipColumnsOf(string text, int columns)
+    {
+        var skipped = 0;
+        var index = 0;
+
+        while (index < text.Length && skipped < columns)
+        {
+            var length = TextWidth.NextClusterLength(text, index);
+            skipped += TextWidth.OfCluster(text.AsSpan(index, length));
+            index += length;
+        }
+
+        return text[index..];
+    }
+
+    private static int IndexAtWidth(string text, int columns)
+    {
+        var walked = 0;
+        var index = 0;
+
+        while (index < text.Length && walked < columns)
+        {
+            var length = TextWidth.NextClusterLength(text, index);
+            walked += TextWidth.OfCluster(text.AsSpan(index, length));
+            index += length;
+        }
+
+        return index;
     }
 
     private void DrawMessageModal(MessageModal modal)

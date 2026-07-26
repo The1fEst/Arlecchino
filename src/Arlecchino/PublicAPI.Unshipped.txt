@@ -769,3 +769,39 @@ Arlecchino.Widgets.TextView.IsFocused.set -> void
 Arlecchino.Widgets.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Modals.TextAreaModal
+Arlecchino.Modals.TextAreaModal.TextAreaModal() -> void
+Arlecchino.Modals.TextAreaModal.Text.get -> string!
+Arlecchino.Modals.TextAreaModal.Text.init -> void
+Arlecchino.Modals.TextAreaModal.Lines.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Arlecchino.Modals.TextAreaModal.Row.get -> int
+Arlecchino.Modals.TextAreaModal.Column.get -> int
+Arlecchino.Modals.TextAreaModal.VisibleRows.get -> int
+Arlecchino.Modals.TextAreaModal.VisibleRows.init -> void
+Arlecchino.Modals.TextAreaModal.Validate.get -> System.Func<string!, string?>?
+Arlecchino.Modals.TextAreaModal.Validate.init -> void
+Arlecchino.Modals.TextAreaModal.OnSubmit.get -> System.Action<string!>!
+Arlecchino.Modals.TextAreaModal.OnSubmit.init -> void
+Arlecchino.Modals.TextAreaModal.Message.get -> string!
+Arlecchino.Modals.TextAreaModal.Message.set -> void
+Arlecchino.Modals.TextAreaModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.TextAreaModal.Rows.set -> void
+Arlecchino.Modals.TextAreaModal.FirstVisible.set -> void
+Arlecchino.Modals.TextAreaModal.FirstVisible.get -> int
+Arlecchino.Modals.TextAreaModal.SetText(string! text) -> void
+Arlecchino.Modals.TextAreaModal.MoveCaret(int row, int column) -> void
+Arlecchino.Modals.TextAreaModal.Insert(char character) -> void
+Arlecchino.Modals.TextAreaModal.InsertText(string! text) -> void
+Arlecchino.Modals.TextAreaModal.Break() -> void
+Arlecchino.Modals.TextAreaModal.Erase() -> void
+Arlecchino.Modals.TextAreaModal.DeleteForward() -> void
+Arlecchino.Modals.TextAreaModal.MoveLeft() -> void
+Arlecchino.Modals.TextAreaModal.MoveRows(int rows) -> void
+Arlecchino.Modals.TextAreaModal.MoveRight() -> void
+Arlecchino.Modals.TextAreaModal.MoveToLineStart() -> void
+Arlecchino.Modals.TextAreaModal.MoveToLineEnd() -> void
+Arlecchino.Hosting.ArlecchinoStrings.ModalTextAreaHints.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.ModalTextAreaHints.set -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Submit.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.Submit.init -> void
+Arlecchino.State.ArlecchinoState.RequestTextArea(string! title, string! initial, System.Action<string!>! onSubmit, System.Func<string!, string?>? validate = null, int visibleRows = 8) -> void

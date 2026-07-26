@@ -85,6 +85,12 @@ public sealed record ArlecchinoKeymap
     /// <summary>Opens the screen listing every key. <c>F1</c> by default.</summary>
     public KeyBinding Help { get; init; } = new(ConsoleKey.F1);
 
+    /// <summary>
+    /// Accepts a dialog where <c>Enter</c> means something else — the multi-line text area, where it
+    /// starts a new line. <c>Ctrl+Enter</c> by default.
+    /// </summary>
+    public KeyBinding Submit { get; init; } = new(ConsoleKey.Enter, ConsoleModifiers.Control);
+
     /// <summary>Marks a row or flips a toggle. <c>Space</c> by default.</summary>
     public KeyBinding Mark { get; init; } = new(ConsoleKey.Spacebar);
 
