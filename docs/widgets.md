@@ -134,3 +134,56 @@ status bar in one `FocusRing`:
 ```
 dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
 ```
+
+## Writing your own
+
+A widget is any class that draws into a region and answers as an `IFocusable`. There is nothing to
+register and nothing to inherit — the ones above are written against the same public API an
+application has:
+
+```csharp
+public sealed class Badge : IFocusable
+{
+    private readonly ArlecchinoKeymap _keymap;
+    private SurfaceRegion _drawn;
+
+    public Badge(ArlecchinoKeymap keymap) => _keymap = keymap;
+
+    public required Func<string> Label { get; init; }
+    public Func<ViewRoute>? OnActivate { get; init; }
+    public bool IsFocused { get; set; }
+
+    public void Draw(SurfaceRegion region)
+    {
+        _drawn = region;
+        var inner = region.Border(IsFocused ? Theme.Active : Theme.Muted);
+        inner.WriteLine(0, Label(), IsFocused ? Theme.ActiveSelected : Theme.Default, Align.Center);
+    }
+
+    public FocusResult Handle(ConsoleKeyInfo key) =>
+        _keymap.Confirm.Matches(key) && OnActivate is not null
+            ? FocusResult.Navigate(OnActivate())
+            : FocusResult.Ignored;
+
+    public FocusResult HandleMouse(MouseEvent mouse) =>
+        mouse.IsLeftClick && _drawn.Contains(mouse.Row, mouse.Column)
+            ? FocusResult.Handled
+            : FocusResult.Ignored;
+}
+```
+
+`_focus.Add(_badge)` is the whole integration: cycling, focus on click and key routing come from the
+ring. Five conventions keep a widget behaving like the built-in ones:
+
+| Convention | Why |
+|---|---|
+| Remember the region you were given in `Draw` | It is what resolves a click afterwards — `Contains` and `ToLocal` work in frame coordinates |
+| Take keys from `ArlecchinoKeymap`, never `ConsoleKey` directly | A rebound key relabels and reroutes itself everywhere |
+| Measure with `TextWidth`, not `string.Length` | A cell holds a grapheme cluster; CJK and emoji are two columns wide |
+| Colour with roles from `Theme` | Swapping the palette restyles the widget with everything else |
+| Take user-visible text as `Func<string>` | The application may translate it and switch language at runtime — see [Localization](localization.md) |
+
+[`ScrollWindow.Around`](rendering.md) and `ScrollBar` are public for the same reason: a list of your
+own scrolls exactly as `ListBox` does. What a widget cannot do yet is contain another focusable
+widget — a `FocusRing` does not nest, so a composite lays its parts out itself and routes to them by
+hand.
