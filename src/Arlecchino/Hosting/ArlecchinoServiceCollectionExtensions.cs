@@ -105,6 +105,7 @@ public static class ArlecchinoServiceCollectionExtensions
         var builder = new ArlecchinoBuilder(services, registrations, options);
         builder.AddView<FilePickerView>(FilePickerView.Route);
         builder.AddView<NotificationsView>(NotificationsView.Route);
+        builder.AddView<HelpView>(HelpView.Route);
         return builder;
     }
 }

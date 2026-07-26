@@ -341,6 +341,12 @@ public class InputRouter
             return;
         }
 
+        if (_keymap.Help.Matches(key) && _navigator.CurrentRoute != Routes.Help)
+        {
+            _navigator.Apply(Routes.Help);
+            return;
+        }
+
         if (_log.IsVisible && ScrollLog(key))
         {
             return;

@@ -82,6 +82,9 @@ public sealed record ArlecchinoKeymap
     /// <summary>Opens the screen listing what the application has said lately.</summary>
     public KeyBinding Notifications { get; init; } = new(ConsoleKey.N, ConsoleModifiers.Control);
 
+    /// <summary>Opens the screen listing every key. <c>F1</c> by default.</summary>
+    public KeyBinding Help { get; init; } = new(ConsoleKey.F1);
+
     /// <summary>Marks a row or flips a toggle. <c>Space</c> by default.</summary>
     public KeyBinding Mark { get; init; } = new(ConsoleKey.Spacebar);
 

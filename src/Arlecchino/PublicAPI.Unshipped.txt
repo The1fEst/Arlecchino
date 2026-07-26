@@ -723,3 +723,18 @@ Arlecchino.Hosting.Ticker.Ticker(System.TimeProvider! time, Arlecchino.Repaint! 
 Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker, Arlecchino.Repaint! repaint) -> void
 Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.ConsoleKeyInfo? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.State.ArlecchinoState.ArlecchinoState(Arlecchino.Repaint! repaint, Arlecchino.Diagnostics.Notifications! notifications) -> void
+static readonly Arlecchino.Navigation.Routes.Help -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Hosting.ArlecchinoKeymap.Help.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.Help.init -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpTitle.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpFrameworkSection.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpTitle.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpFrameworkSection.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpCommandsSection.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpCommandsSection.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpNoCommands.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpNoCommands.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpClose.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.HelpClose.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpKeys.get -> System.Func<Arlecchino.Hosting.ArlecchinoKeymap!, System.Collections.Generic.IReadOnlyList<(Arlecchino.Input.KeyBinding Key, string! Action)>!>!
+Arlecchino.Hosting.ArlecchinoStrings.HelpKeys.set -> void

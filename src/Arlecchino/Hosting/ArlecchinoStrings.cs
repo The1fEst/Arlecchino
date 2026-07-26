@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using Arlecchino.Input;
 
 namespace Arlecchino.Hosting;
 
@@ -34,6 +36,53 @@ public sealed class ArlecchinoStrings
 
     /// <summary>Footer of a yes/no dialog.</summary>
     public Func<string> ModalToggleHints { get; set; } = static () => "←→ — switch   Enter — confirm   Esc — cancel";
+
+    /// <summary>Title of the screen listing every key.</summary>
+    public Func<string> HelpTitle { get; set; } = static () => "Keys";
+
+    /// <summary>Heading over the keys the framework itself answers to.</summary>
+    public Func<string> HelpFrameworkSection { get; set; } = static () => "Everywhere";
+
+    /// <summary>Heading over the application's own commands.</summary>
+    public Func<string> HelpCommandsSection { get; set; } = static () => "Commands";
+
+    /// <summary>Shown in place of the command list when the application registered none.</summary>
+    public Func<string> HelpNoCommands { get; set; } = static () => "no commands registered";
+
+    /// <summary>Line under the title, saying how to leave.</summary>
+    public Func<string> HelpClose { get; set; } = static () => "back";
+
+    /// <summary>What each key the framework answers to does, in the order the screen lists them.</summary>
+    public Func<ArlecchinoKeymap, IReadOnlyList<(KeyBinding Key, string Action)>> HelpKeys { get; set; } =
+        static keymap =>
+        [
+            (keymap.Back, "go back"),
+            (keymap.Forward, "go forward"),
+            (keymap.Confirm, "confirm, open, activate"),
+            (keymap.Cancel, "cancel, close, leave"),
+            (keymap.NextField, "next pane or field"),
+            (keymap.PreviousField, "previous pane or field"),
+            (keymap.MoveUp, "move up"),
+            (keymap.MoveDown, "move down"),
+            (keymap.MoveLeft, "move left, collapse"),
+            (keymap.MoveRight, "move right, expand"),
+            (keymap.JumpUp, "jump up a page"),
+            (keymap.JumpDown, "jump down a page"),
+            (keymap.First, "go to the start"),
+            (keymap.Last, "go to the end"),
+            (keymap.Mark, "mark a row, flip a toggle"),
+            (keymap.Erase, "delete backwards, clear"),
+            (keymap.DeleteForward, "delete forwards"),
+            (keymap.EraseWord, "delete the word before the caret"),
+            (keymap.EraseToStart, "delete to the start of the line"),
+            (keymap.WordLeft, "caret a word left"),
+            (keymap.WordRight, "caret a word right"),
+            (keymap.Copy, "copy the field being edited"),
+            (keymap.PickCurrentFolder, "pick the folder that is open"),
+            (keymap.ToggleLog, "show or hide the log"),
+            (keymap.Notifications, "open the notifications"),
+            (keymap.Help, "open this screen"),
+        ];
 
     /// <summary>Title of the notifications screen.</summary>
     public Func<string> NotificationsTitle { get; set; } = static () => "Notifications";

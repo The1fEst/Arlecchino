@@ -10,4 +10,7 @@ public static class Routes
 
     /// <summary>The notifications screen, listing what the application has said lately.</summary>
     public static readonly ViewRoute Notifications = new(NotificationsView.Route);
+
+    /// <summary>The screen listing every key and command.</summary>
+    public static readonly ViewRoute Help = new(HelpView.Route);
 }
