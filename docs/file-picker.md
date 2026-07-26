@@ -21,7 +21,7 @@ _state.FilePicker = new FilePickerRequest(
 return Routes.FilePicker;
 ```
 
-Fill `TuiState.FilePicker`, then navigate to `Routes.FilePicker` — the view reads the request in its
+Fill `ArlecchinoState.FilePicker`, then navigate to `Routes.FilePicker` — the view reads the request in its
 constructor. Navigating there without a request opens a folder picker rooted at the drive list that
 returns to `ViewRoute.None`.
 
@@ -43,7 +43,7 @@ _state.FilePicker = new FilePickerRequest("Pick a save", PickFolder: false, star
 };
 ```
 
-The request is cleared on pick and on cancel, and `TuiState.PickerLastFolder` is set to the folder the
+The request is cleared on pick and on cancel, and `ArlecchinoState.PickerLastFolder` is set to the folder the
 picker ended in — pass it as the next `InitialPath` to resume where the user left off.
 
 ## Sidebar

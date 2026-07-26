@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
-using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Widgets;
+using Arlecchino.Modals;
+using Arlecchino.Input;
 
-namespace Arlecchino;
+namespace Arlecchino.Rendering;
 
 /// <summary>
 /// Draws the frames: the current view first, then the output line, the hints and any dialog on top.
@@ -27,13 +28,13 @@ public class Screen
     private const int SmallestFieldColumns = 12;
     private const string ScrollMarker = "…";
 
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly Surface _surface;
     private readonly Navigator _navigator;
     private readonly ArlecchinoOptions _options;
     private readonly ArlecchinoStrings _strings;
     private readonly ILogger<Screen> _logger;
-    private readonly ITerminal _terminal;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly Repaint _repaint;
     private readonly UiDispatcher _dispatcher;
     private readonly LogOverlay _log;
@@ -53,12 +54,12 @@ public class Screen
     /// <param name="dispatcher">Runs work posted from background threads, just before drawing.</param>
     /// <param name="log">Drawn over the view while it is open.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
-    public Screen(
-        TuiState state,
+    internal Screen(
+        ArlecchinoState state,
         Surface surface,
         Navigator navigator,
         ArlecchinoOptions options,
-        ITerminal terminal,
+        IArlecchinoTerminal terminal,
         Repaint repaint,
         UiDispatcher dispatcher,
         LogOverlay log,
@@ -76,7 +77,7 @@ public class Screen
         _logger = logger;
     }
 
-    private readonly record struct Span(string Text, ITermColor Style);
+    private readonly record struct Span(string Text, IArlecchinoColor Style);
 
     /// <summary>
     /// Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes
@@ -241,7 +242,7 @@ public class Screen
         _ => "none",
     };
 
-    private static ITermColor LevelStyle(LogLevel level) => level switch
+    private static IArlecchinoColor LevelStyle(LogLevel level) => level switch
     {
         LogLevel.Warning => Theme.Warning,
         LogLevel.Error or LogLevel.Critical => Theme.Error,

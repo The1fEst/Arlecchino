@@ -3,13 +3,13 @@ using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Arlecchino;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Sample;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
+using Arlecchino.Modals;
 
 if (args is ["--frame", ..])
 {
@@ -95,7 +95,7 @@ static void Frame(string view, string size)
 
     provider.GetRequiredService<Surface>().SetFixedSize(width, height);
 
-    var state = provider.GetRequiredService<TuiState>();
+    var state = provider.GetRequiredService<ArlecchinoState>();
     var navigator = provider.GetRequiredService<Navigator>();
 
     if (view.Equals("number", StringComparison.OrdinalIgnoreCase))

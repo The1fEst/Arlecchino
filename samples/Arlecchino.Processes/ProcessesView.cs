@@ -17,7 +17,7 @@ public sealed class ProcessesView : IArlecchinoView
 
     private readonly Surface _surface;
     private readonly ProcessTable _processes;
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly Table<ProcessRow> _table;
     private readonly StatusBar _status;
     private readonly Spinner _spinner = new();
@@ -25,7 +25,7 @@ public sealed class ProcessesView : IArlecchinoView
     public ProcessesView(
         Surface surface,
         ProcessTable processes,
-        TuiState state,
+        ArlecchinoState state,
         ArlecchinoOptions options,
         ViewLifetime lifetime)
     {
@@ -68,7 +68,7 @@ public sealed class ProcessesView : IArlecchinoView
                     Sort = static (first, second) => first.Threads.CompareTo(second.Threads),
                 },
             ],
-            Style = static row => row.Memory == 0 ? Theme.Muted : Theme.Default,
+            ItemStyle = static row => row.Memory == 0 ? Theme.Muted : Theme.Default,
             OnActivate = Open,
         };
 

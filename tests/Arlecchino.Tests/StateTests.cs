@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.State;
 using Xunit;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 

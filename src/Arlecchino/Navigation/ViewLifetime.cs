@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Arlecchino.State;
+using Arlecchino.Hosting;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Navigation;
 
@@ -39,9 +40,9 @@ public sealed class ViewLifetime : IDisposable
     /// <typeparam name="T">What is being loaded.</typeparam>
     /// <param name="initial">What to hold until the first load finishes.</param>
     /// <returns>The state, already tied to this screen.</returns>
-    public AsyncState<T> Loading<T>(T? initial = default)
+    public AsyncAtom<T> Loading<T>(T? initial = default)
     {
-        var loading = new AsyncState<T>(_dispatcher, initial);
+        var loading = new AsyncAtom<T>(_dispatcher, initial);
 
         OnClose(loading.Cancel);
         return loading;

@@ -7,7 +7,7 @@ namespace Arlecchino.Rendering;
 /// chart, syntax highlighting — and keep chrome on <see cref="Theme"/>, which follows the terminal
 /// theme. Falls back to the nearest palette colour when the terminal cannot do 24-bit.
 /// </summary>
-public sealed class RgbTermColor : ITermColor
+public sealed class RgbTermColor : IArlecchinoColor
 {
     private string? _ansi;
     private ColorSupport _ansiSupport;

@@ -9,6 +9,7 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Views;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Hosting;
 
@@ -40,11 +41,11 @@ public static class ArlecchinoServiceCollectionExtensions
         });
 
         services.AddSingleton(registrations);
-        services.TryAddSingleton<ITerminal, SystemTerminal>();
+        services.TryAddSingleton<IArlecchinoTerminal, SystemTerminal>();
         services.AddSingleton(static provider =>
         {
             var configured = provider.GetRequiredService<ArlecchinoOptions>();
-            return new Surface(provider.GetRequiredService<ITerminal>())
+            return new Surface(provider.GetRequiredService<IArlecchinoTerminal>())
             {
                 HorizontalPadding = configured.HorizontalPadding,
                 VerticalPadding = configured.VerticalPadding,
@@ -62,16 +63,38 @@ public static class ArlecchinoServiceCollectionExtensions
         services.AddSingleton<LogOverlay>();
         services.AddSingleton<ILoggerProvider, ArlecchinoLoggerProvider>();
         services.AddSingleton<UiDispatcher>();
-        services.AddSingleton<StateHistory>();
-        services.AddSingleton<TuiState>();
+        services.AddSingleton<AtomHistory>();
+        services.AddSingleton<ArlecchinoState>();
         services.AddScoped<ViewLifetime>();
-        services.AddSingleton<IViewFactory, RegisteredViewFactory>();
+        services.AddSingleton<IArlecchinoViewFactory, RegisteredViewFactory>();
         services.AddSingleton<ViewResolver>();
-        services.AddSingleton<Navigator>();
+        services.AddSingleton(static provider => new Navigator(
+            provider.GetRequiredService<ViewResolver>(),
+            provider.GetRequiredService<ArlecchinoOptions>(),
+            provider.GetRequiredService<Repaint>(),
+            provider.GetRequiredService<CommandConflicts>()));
         services.AddSingleton<CommandRegistry>();
         services.AddSingleton<CommandConflicts>();
-        services.AddSingleton<Screen>();
-        services.AddSingleton<InputRouter>();
+        services.AddSingleton(static provider => new Screen(
+            provider.GetRequiredService<ArlecchinoState>(),
+            provider.GetRequiredService<Surface>(),
+            provider.GetRequiredService<Navigator>(),
+            provider.GetRequiredService<ArlecchinoOptions>(),
+            provider.GetRequiredService<IArlecchinoTerminal>(),
+            provider.GetRequiredService<Repaint>(),
+            provider.GetRequiredService<UiDispatcher>(),
+            provider.GetRequiredService<LogOverlay>(),
+            provider.GetRequiredService<ILogger<Screen>>()));
+        services.AddSingleton(static provider => new InputRouter(
+            provider.GetRequiredService<ArlecchinoState>(),
+            provider.GetRequiredService<Navigator>(),
+            provider.GetRequiredService<IArlecchinoTerminal>(),
+            provider.GetRequiredService<LogOverlay>(),
+            provider.GetRequiredService<CommandRegistry>(),
+            provider.GetRequiredService<ArlecchinoOptions>(),
+            provider.GetRequiredService<KeyText>(),
+            provider.GetRequiredService<Repaint>(),
+            provider.GetRequiredService<ILogger<InputRouter>>()));
         services.AddSingleton<TerminalInputReader>();
         services.AddHostedService<ArlecchinoHostedService>();
 

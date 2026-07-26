@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Arlecchino.Commands;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
+using Arlecchino.Rendering;
 
 namespace Arlecchino.Navigation;
 
@@ -26,7 +27,7 @@ public class Navigator
     /// <param name="options">Configured options, read for the start route.</param>
     /// <param name="repaint">Signal raised whenever the screen changes.</param>
     /// <param name="conflicts">Checks the commands of each screen as it is shown.</param>
-    public Navigator(ViewResolver resolver, ArlecchinoOptions options, Repaint repaint, CommandConflicts conflicts)
+    internal Navigator(ViewResolver resolver, ArlecchinoOptions options, Repaint repaint, CommandConflicts conflicts)
     {
         _resolver = resolver;
         _repaint = repaint;

@@ -49,7 +49,7 @@ public sealed class WidgetsView : IArlecchinoView
                 new() { Header = static () => "Author", Cell = static mod => mod.Author, Width = 12 },
                 new() { Header = static () => "Files", Cell = static mod => mod.Files.ToString(), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
             ],
-            Style = static mod => mod.Enabled ? Theme.Default : Theme.Muted,
+            ItemStyle = static mod => mod.Enabled ? Theme.Default : Theme.Muted,
             Rows = Catalog,
         };
 

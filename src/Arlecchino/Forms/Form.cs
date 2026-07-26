@@ -7,6 +7,7 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Widgets;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Forms;
 
@@ -21,7 +22,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
     private const string ValueSeparator = " = ";
     private const string ActionMarker = "> ";
 
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly ArlecchinoKeymap _keymap;
     private readonly ArlecchinoStrings _strings;
 
@@ -32,7 +33,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// <summary>Creates the form.</summary>
     /// <param name="state">Where fields open their dialogs.</param>
     /// <param name="options">Supplies the keymap and the wording.</param>
-    public Form(TuiState state, ArlecchinoOptions options)
+    public Form(ArlecchinoState state, ArlecchinoOptions options)
     {
         _state = state;
         _keymap = options.Keymap;
@@ -109,20 +110,8 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// that mix a form with other panes hand it to the focus ring instead.
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
-    /// <returns>Where to go, or <see cref="ViewRoute.None"/> to stay put.</returns>
-    public ViewRoute Handle(ConsoleKeyInfo key) => Press(key).Route;
-
-    FocusResult IFocusable.Handle(ConsoleKeyInfo key) => Press(key);
-
-    FocusResult IFocusable.HandleMouse(MouseEvent mouse)
-    {
-        if (!_lastRows.IsEmpty && !_lastRows.Contains(mouse.Row, mouse.Column))
-        {
-            return FocusResult.Ignored;
-        }
-
-        return FocusResult.Navigate(HandleMouse(mouse));
-    }
+    /// <returns>What was done with it, and where to go.</returns>
+    public FocusResult Handle(ConsoleKeyInfo key) => Press(key);
 
     private FocusResult Press(ConsoleKeyInfo key)
     {
@@ -162,21 +151,26 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// so a double click reads as select-then-edit.
     /// </summary>
     /// <param name="mouse">The event that arrived.</param>
-    /// <returns>Where to go, or <see cref="ViewRoute.None"/> to stay put.</returns>
-    public ViewRoute HandleMouse(MouseEvent mouse)
+    /// <returns>What was done with it, and where to go.</returns>
+    public FocusResult HandleMouse(MouseEvent mouse)
     {
+        if (!_lastRows.IsEmpty && !_lastRows.Contains(mouse.Row, mouse.Column))
+        {
+            return FocusResult.Ignored;
+        }
+
         switch (mouse.Action)
         {
             case MouseAction.ScrolledUp:
                 Selected = Math.Max(0, Selected - 1);
-                return ViewRoute.None;
+                return FocusResult.Handled;
             case MouseAction.ScrolledDown:
                 Selected = Math.Min(Fields.Count - 1, Selected + 1);
-                return ViewRoute.None;
+                return FocusResult.Handled;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left:
-                return ClickAt(mouse);
+                return FocusResult.Navigate(ClickAt(mouse));
             default:
-                return ViewRoute.None;
+                return FocusResult.Ignored;
         }
     }
 
@@ -228,7 +222,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
         return value.Length == 0 ? _strings.Empty() : value;
     }
 
-    private ITermColor StyleOf(Field field, int index)
+    private IArlecchinoColor StyleOf(Field field, int index)
     {
         if (index == Selected)
         {

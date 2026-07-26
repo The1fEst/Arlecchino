@@ -12,7 +12,7 @@ namespace Arlecchino.Focus;
 /// </summary>
 public sealed class FocusRing
 {
-    private readonly List<IFocusable> _items = [];
+    private readonly List<IArlecchinoFocusable> _items = [];
     private readonly ArlecchinoKeymap _keymap;
 
     private int _index;
@@ -25,17 +25,17 @@ public sealed class FocusRing
     }
 
     /// <summary>The elements, in the order they were added.</summary>
-    public IReadOnlyList<IFocusable> Items => _items;
+    public IReadOnlyList<IArlecchinoFocusable> Items => _items;
 
     /// <summary>Position of the focused element.</summary>
     public int Index => _index;
 
     /// <summary>The focused element, or <c>null</c> when the ring is empty.</summary>
-    public IFocusable? Current => _items.Count == 0 ? null : _items[Math.Clamp(_index, 0, _items.Count - 1)];
+    public IArlecchinoFocusable? Current => _items.Count == 0 ? null : _items[Math.Clamp(_index, 0, _items.Count - 1)];
 
     /// <summary>Adds an element. The first one added starts focused.</summary>
     /// <param name="item">The element to add.</param>
-    public void Add(IFocusable item)
+    public void Add(IArlecchinoFocusable item)
     {
         _items.Add(item);
         item.IsFocused = _items.Count == 1;
@@ -43,7 +43,7 @@ public sealed class FocusRing
 
     /// <summary>Moves the focus to a particular element, if it belongs to this ring.</summary>
     /// <param name="item">The element to focus.</param>
-    public void Focus(IFocusable item)
+    public void Focus(IArlecchinoFocusable item)
     {
         var index = _items.IndexOf(item);
         if (index >= 0)

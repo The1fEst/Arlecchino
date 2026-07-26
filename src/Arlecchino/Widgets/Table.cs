@@ -66,10 +66,10 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     public Func<T, ViewRoute>? OnActivate { get; init; }
 
     /// <summary>Colours a whole row. Ignored for the selected one.</summary>
-    public Func<T, ITermColor>? Style
+    public Func<T, IArlecchinoColor>? ItemStyle
     {
-        get => _rows.Style;
-        init => _rows.Style = value;
+        get => _rows.ItemStyle;
+        init => _rows.ItemStyle = value;
     }
 
     /// <summary>What to show. Assigning re-applies the current sort.</summary>

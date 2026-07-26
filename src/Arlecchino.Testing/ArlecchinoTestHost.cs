@@ -6,6 +6,7 @@ using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Testing;
 
@@ -34,7 +35,7 @@ public sealed class ArlecchinoTestHost : IDisposable
         var services = new ServiceCollection();
 
         Terminal = new(width, height);
-        services.AddSingleton<ITerminal>(Terminal);
+        services.AddSingleton<IArlecchinoTerminal>(Terminal);
 
         var builder = services
             .AddArlecchino(options =>
@@ -57,7 +58,7 @@ public sealed class ArlecchinoTestHost : IDisposable
     public IServiceProvider Services => _provider;
 
     /// <summary>The shared state, for opening dialogs or reading the output line.</summary>
-    public TuiState State => _provider.GetRequiredService<TuiState>();
+    public ArlecchinoState State => _provider.GetRequiredService<ArlecchinoState>();
 
     /// <summary>Navigation, for checking or forcing which view is current.</summary>
     public Navigator Navigator => _provider.GetRequiredService<Navigator>();
@@ -75,7 +76,7 @@ public sealed class ArlecchinoTestHost : IDisposable
     public UiDispatcher Dispatcher => _provider.GetRequiredService<UiDispatcher>();
 
     /// <summary>Undo history. It is resolved as the host is built, so edits are recorded from the start.</summary>
-    public StateHistory History => _provider.GetRequiredService<StateHistory>();
+    public AtomHistory History => _provider.GetRequiredService<AtomHistory>();
 
     /// <summary>Presses a key, routed exactly as a real one would be.</summary>
     /// <param name="key">The key.</param>

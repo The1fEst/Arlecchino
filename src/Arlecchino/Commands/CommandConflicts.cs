@@ -9,7 +9,7 @@ namespace Arlecchino.Commands;
 /// Reports keys that two commands both claim. Checked once per route as it is first shown, because
 /// a screen command silently shadowing an application command is a bug that is otherwise invisible.
 /// </summary>
-public sealed class CommandConflicts
+internal sealed class CommandConflicts
 {
     private readonly CommandRegistry _global;
     private readonly ILogger<CommandConflicts> _logger;

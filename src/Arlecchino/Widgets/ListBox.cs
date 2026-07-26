@@ -33,7 +33,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     public required Func<T, string> Render { get; init; }
 
     /// <summary>Colours an item. Ignored for the selected row, which has to stand out.</summary>
-    public Func<T, ITermColor>? Style { get; set; }
+    public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
     /// What confirming an item does. Returning a route navigates; without this the list simply reports
@@ -175,11 +175,11 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     private void Move(int delta) =>
         Selected = Math.Clamp(Selected + delta, 0, Math.Max(0, Items.Count - 1));
 
-    private ITermColor StyleOf(T item, int index)
+    private IArlecchinoColor StyleOf(T item, int index)
     {
         if (index != Selected)
         {
-            return Style?.Invoke(item) ?? Theme.Default;
+            return ItemStyle?.Invoke(item) ?? Theme.Default;
         }
 
         return IsFocused ? Theme.ActiveSelected : Theme.Selected;

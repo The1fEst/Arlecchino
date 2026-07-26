@@ -11,7 +11,7 @@ namespace Arlecchino.Generators;
 [Generator]
 public sealed class StoreRegistrationGenerator : IIncrementalGenerator
 {
-    private const string StoreInterfaceNamespace = "Arlecchino.State";
+    private const string StoreInterfaceNamespace = "Arlecchino.Atoms";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

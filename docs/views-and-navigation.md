@@ -27,7 +27,7 @@ survived the input router — modal keys and the command palette key never reach
 
 A view instance lives as long as it is the current view. Navigating away and back constructs a new
 one, so per-view state (selection, filter, scroll offset) can live in fields; anything that must
-survive navigation belongs in a service or in [`TuiState`](modals-and-state.md).
+survive navigation belongs in a service or in [`ArlecchinoState`](modals-and-state.md).
 
 ## ViewRoute
 
@@ -49,7 +49,7 @@ your application's types, and the generated route table lives in your assembly, 
 - **Explicit.** `.AddView<ModsView>("Mods")` resolves the type through the container, or
   `.AddView("Mods", provider => new ModsView(...))` builds it yourself.
 
-Both may be mixed. `ViewResolver` walks the registered `IViewFactory` instances in registration order
+Both may be mixed. `ViewResolver` walks the registered `IArlecchinoViewFactory` instances in registration order
 and the explicit registry is added first by `AddArlecchino`, so an explicit registration wins over the
 generated factory for the same route name.
 
@@ -79,7 +79,7 @@ see [Hosting and options](hosting-and-options.md).
 
 ## Focus inside a view
 
-A view with more than one pane needs to know which one keys go to. `IFocusable` is that contract —
+A view with more than one pane needs to know which one keys go to. `IArlecchinoFocusable` is that contract —
 the input half of [`IArlecchinoInteractiveWidget`](widgets.md), and what the ring actually cycles —
 and `FocusRing` is the `Tab` / `Shift+Tab` cycle over them:
 
@@ -111,7 +111,7 @@ is how the file picker holds its list and its places sidebar.
 ## Custom view factories
 
 ```csharp
-public interface IViewFactory
+public interface IArlecchinoViewFactory
 {
     bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view);
 }
@@ -138,5 +138,5 @@ public sealed class ModsView : IArlecchinoView
 
 Navigating away disposes the view first (if it implements `IDisposable`) and then the scope, so the
 view can still use what it took during its own `Dispose`. Navigating back builds a fresh view *and* a
-fresh scope — going back is not a cache. Singletons behave as they always did: `TuiState`, `Surface`
+fresh scope — going back is not a cache. Singletons behave as they always did: `ArlecchinoState`, `Surface`
 and the rest are the same instances everywhere.

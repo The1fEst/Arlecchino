@@ -5,7 +5,7 @@ namespace Arlecchino.Generators;
 public static class WidgetDiagnostics
 {
     public static readonly DiagnosticDescriptor CannotBeBuilt = new(
-        "TSR007",
+        "ARL007",
         "Widget cannot be registered",
         "'{0}' is a widget the container cannot build ({1}), so it is left out of AddGeneratedWidgets; " +
         "construct it in the view instead",

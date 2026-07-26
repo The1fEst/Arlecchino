@@ -25,7 +25,7 @@ public sealed class FormHostView : IArlecchinoView
         Hosted?.Draw(Rows);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => Hosted?.Handle(key) ?? ViewRoute.None;
+    public ViewRoute Handle(ConsoleKeyInfo key) => Hosted?.Handle(key).Route ?? ViewRoute.None;
 
-    public ViewRoute HandleMouse(MouseEvent mouse) => Hosted?.HandleMouse(mouse) ?? ViewRoute.None;
+    public ViewRoute HandleMouse(MouseEvent mouse) => Hosted?.HandleMouse(mouse).Route ?? ViewRoute.None;
 }

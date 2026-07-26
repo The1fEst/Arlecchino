@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Arlecchino.State;
 using Xunit;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 
@@ -11,7 +11,7 @@ public sealed class AsyncStateTests
     public async Task LoadedValueArrivesOnTheFrameLoop()
     {
         using var app = new TestApplication();
-        var rows = new AsyncState<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>(app.Dispatcher);
         var release = new TaskCompletionSource();
 
         rows.Load(async _ =>
@@ -36,7 +36,7 @@ public sealed class AsyncStateTests
     public async Task FailureIsKeptInsteadOfThrowing()
     {
         using var app = new TestApplication();
-        var rows = new AsyncState<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>(app.Dispatcher);
 
         rows.Load(_ => Task.FromException<string>(new InvalidOperationException("no network")));
         await WaitForPending(app);
@@ -51,7 +51,7 @@ public sealed class AsyncStateTests
     public async Task ReloadingCancelsTheLoadInFlight()
     {
         using var app = new TestApplication();
-        var rows = new AsyncState<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>(app.Dispatcher);
         var first = new TaskCompletionSource();
 
         rows.Load(async _ =>
@@ -75,7 +75,7 @@ public sealed class AsyncStateTests
     public async Task LoadedValueRequestsARepaint()
     {
         using var app = new TestApplication();
-        var rows = new AsyncState<int>(app.Dispatcher);
+        var rows = new AsyncAtom<int>(app.Dispatcher);
 
         rows.Load(_ => Task.FromResult(7));
         await WaitForPending(app);

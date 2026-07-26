@@ -2,9 +2,9 @@
 
 # Modals and state
 
-## TuiState
+## ArlecchinoState
 
-`TuiState` is a singleton holding what outlives a view instance:
+`ArlecchinoState` is a singleton holding what outlives a view instance:
 
 | Member | Meaning |
 |---|---|
@@ -19,7 +19,7 @@ not sealed — which is the usual place to hang application state that every vie
 ## The modal types
 
 `Modal` is an abstract class carrying only a `Title`; each kind of input is its own type. The
-`Request*` helpers on `TuiState` cover the simple cases, and assigning `TuiState.Modal` directly gives
+`Request*` helpers on `ArlecchinoState` cover the simple cases, and assigning `ArlecchinoState.Modal` directly gives
 access to every property.
 
 | Type | Input | Result |

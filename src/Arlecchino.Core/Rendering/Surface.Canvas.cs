@@ -10,7 +10,7 @@ public partial class Surface
     /// <param name="row">Row in frame coordinates.</param>
     /// <param name="line">Text to write.</param>
     /// <param name="style">Style for the row; the default role when omitted.</param>
-    public void WriteLineAt(int row, string line, ITermColor? style = null)
+    public void WriteLineAt(int row, string line, IArlecchinoColor? style = null)
     {
         if (row < 0 || row >= _height)
         {
@@ -34,7 +34,7 @@ public partial class Surface
     /// <summary>Draws a rule across the content width on a given row.</summary>
     /// <param name="row">Row in frame coordinates.</param>
     /// <param name="style">Style for the rule; the default role when omitted.</param>
-    public void FillLineAt(int row, ITermColor? style = null)
+    public void FillLineAt(int row, IArlecchinoColor? style = null)
     {
         WriteLineAt(row, new('-', Math.Max(0, _width - HorizontalPadding * 2)), style);
     }
@@ -47,7 +47,7 @@ public partial class Surface
     /// <param name="column">Column in frame coordinates.</param>
     /// <param name="text">Text to write.</param>
     /// <param name="style">Style for the text.</param>
-    public void WriteAt(int row, int column, string text, ITermColor style)
+    public void WriteAt(int row, int column, string text, IArlecchinoColor style)
     {
         if (row < 0 || row >= _height)
         {

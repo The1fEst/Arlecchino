@@ -7,7 +7,7 @@ namespace Arlecchino.Focus;
 /// Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in
 /// objects — that is how the file picker holds its list and its places sidebar.
 /// </summary>
-public sealed class FocusablePane : IFocusable
+public sealed class FocusablePane : IArlecchinoFocusable
 {
     private readonly Func<ConsoleKeyInfo, FocusResult> _handle;
     private readonly Func<MouseEvent, FocusResult>? _handleMouse;

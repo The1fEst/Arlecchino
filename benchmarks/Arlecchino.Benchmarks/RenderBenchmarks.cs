@@ -82,7 +82,7 @@ public class RenderBenchmarks
         }
     }
 
-    private sealed class SinkTerminal : ITerminal
+    private sealed class SinkTerminal : IArlecchinoTerminal
     {
         public SinkTerminal(int width, int height)
         {

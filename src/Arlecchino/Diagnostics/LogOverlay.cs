@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Rendering;
 
 namespace Arlecchino.Diagnostics;
 
@@ -6,7 +7,7 @@ namespace Arlecchino.Diagnostics;
 /// Whether the log is being shown and where it is scrolled to. Kept apart from the buffer so that
 /// collecting lines costs nothing while the overlay is closed, which is nearly always.
 /// </summary>
-public sealed class LogOverlay
+internal sealed class LogOverlay
 {
     private readonly Repaint _repaint;
 

@@ -33,7 +33,7 @@ public sealed class GeneratorTests
 
     private const string TwoStores = """
         using Arlecchino.Rendering;
-        using Arlecchino.State;
+        using Arlecchino.Atoms;
 
         namespace Sample.Stores;
 
@@ -236,7 +236,7 @@ public sealed class GeneratorTests
             """;
 
         var (generated, diagnostics) = Run(source);
-        var duplicate = Assert.Single(diagnostics, item => item.Id == "TSR001");
+        var duplicate = Assert.Single(diagnostics, item => item.Id == "ARL001");
 
         Assert.Equal(DiagnosticSeverity.Warning, duplicate.Severity);
         Assert.Contains("Mods", duplicate.GetMessage(), StringComparison.Ordinal);
@@ -261,7 +261,7 @@ public sealed class GeneratorTests
             """;
 
         var (_, diagnostics) = Run(source);
-        var reported = Assert.Single(diagnostics, item => item.Id == "TSR002");
+        var reported = Assert.Single(diagnostics, item => item.Id == "ARL002");
 
         Assert.Contains("HiddenView", reported.GetMessage(), StringComparison.Ordinal);
     }
@@ -270,7 +270,7 @@ public sealed class GeneratorTests
     public void MissingViewNamespaceIsReportedAsInformation()
     {
         var (source, diagnostics) = Run(TwoViews, viewNamespace: null);
-        var reported = Assert.Single(diagnostics, item => item.Id == "TSR003");
+        var reported = Assert.Single(diagnostics, item => item.Id == "ARL003");
 
         Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
         Assert.Contains("Sample.Navigation", reported.GetMessage(), StringComparison.Ordinal);
@@ -341,7 +341,7 @@ public sealed class GeneratorTests
         Assert.Contains("public static ViewRoute None => ViewRoute.None;", generated, StringComparison.Ordinal);
         Assert.DoesNotContain("switch (route.Name)", generated, StringComparison.Ordinal);
 
-        var reported = Assert.Single(diagnostics, item => item.Id == "TSR004");
+        var reported = Assert.Single(diagnostics, item => item.Id == "ARL004");
         Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
     }
 
@@ -387,7 +387,7 @@ public sealed class GeneratorTests
     public void StoreWithoutAPublicConstructorIsReported()
     {
         const string source = """
-            using Arlecchino.State;
+            using Arlecchino.Atoms;
 
             namespace Sample;
 
@@ -398,7 +398,7 @@ public sealed class GeneratorTests
             """;
 
         var (_, diagnostics) = RunStores(source);
-        var reported = Assert.Single(diagnostics, item => item.Id == "TSR005");
+        var reported = Assert.Single(diagnostics, item => item.Id == "ARL005");
 
         Assert.Contains("HiddenStore", reported.GetMessage(), StringComparison.Ordinal);
     }
@@ -416,7 +416,7 @@ public sealed class GeneratorTests
         Assert.DoesNotContain("LabelWidget", generated, StringComparison.Ordinal);
         Assert.DoesNotContain("GaugeWidget", generated, StringComparison.Ordinal);
 
-        var skipped = MessagesOf(diagnostics, "TSR007");
+        var skipped = MessagesOf(diagnostics, "ARL007");
 
         Assert.Equal(2, skipped.Count);
         Assert.Contains(skipped, message => message.Contains("required members", StringComparison.Ordinal));

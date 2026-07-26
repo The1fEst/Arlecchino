@@ -10,6 +10,7 @@ using Arlecchino.Rendering;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
 using Xunit;
+using Arlecchino.Input;
 
 namespace Arlecchino.Tests;
 
@@ -56,7 +57,7 @@ public sealed class FailureTests
         var terminal = new FakeTerminal(80, 24);
         var services = new ServiceCollection();
 
-        services.AddSingleton<ITerminal>(terminal);
+        services.AddSingleton<IArlecchinoTerminal>(terminal);
         services.AddSingleton<IHostApplicationLifetime, TestLifetime>();
         services.AddArlecchino().AddGeneratedViews().StartAt(ViewKind.Probe);
 

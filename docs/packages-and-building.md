@@ -6,7 +6,7 @@
 
 | Package | Target | Contents |
 |---|---|---|
-| `Arlecchino.Core` | `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `ITerminal` — the renderer, no DI, no hosting |
+| `Arlecchino.Core` | `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
 | `Arlecchino` | `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
 | `Arlecchino.Testing` | `net10.0` | Headless host for testing an application built on Arlecchino |
 
@@ -39,7 +39,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `0.9.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `0.10.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -76,7 +76,7 @@ Assert.Contains("Widebody kit", app.Frame());
 ```
 
 `ArlecchinoTestHost` builds the container exactly as `AddArlecchino` would, minus the hosted service, and
-draws into a `FakeTerminal` — a fake `ITerminal` with a fixed size, a queue of keys and a buffer of
+draws into a `FakeTerminal` — a fake `IArlecchinoTerminal` with a fixed size, a queue of keys and a buffer of
 everything written. Nothing touches a real console, so the tests run anywhere. Colour is pinned to
 `ColorSupport.TrueColor` as the host is built, so a build agent that sets `NO_COLOR` does not quietly
 strip the styling a test asserts on; set `TerminalCapabilities.Color` after building to test another
@@ -100,7 +100,7 @@ they produce are used by the navigation tests.
 
 ## What ends up in the package
 
-`Arlecchino.0.9.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
+`Arlecchino.0.10.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
 `build/Arlecchino.props` and the README shown on the package page. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.
@@ -255,4 +255,4 @@ that is the point of it.
 - No user-visible string at a call site — every one of them is a delegate on
   [`ArlecchinoStrings`](localization.md).
 - No application domain types in the framework; extension points are interfaces (`IArlecchinoView`,
-  `IViewFactory`, `IArlecchinoCommand`, `IArlecchinoStartup`, `ITerminal`).
+  `IArlecchinoViewFactory`, `IArlecchinoCommand`, `IArlecchinoStartup`, `IArlecchinoTerminal`).

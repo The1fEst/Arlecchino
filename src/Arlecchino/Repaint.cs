@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
-using Arlecchino.State;
+using Arlecchino.Atoms;
 
-namespace Arlecchino;
+namespace Arlecchino.Rendering;
 
 /// <summary>
 /// The "this frame is stale" signal the render loop waits on. Input, navigation, state changes and
@@ -15,7 +15,7 @@ public sealed class Repaint : IDisposable
     /// <summary>Starts listening for atom writes, so any of them marks the frame stale.</summary>
     public Repaint()
     {
-        StateChanges.Written += Request;
+        AtomChanges.Written += Request;
     }
 
     /// <summary>Whether a frame is owed. Reading it does not consume the request.</summary>
@@ -29,5 +29,5 @@ public sealed class Repaint : IDisposable
     public bool TakeRequested() => Interlocked.Exchange(ref _requested, 0) == 1;
 
     /// <summary>Stops listening for atom writes.</summary>
-    public void Dispose() => StateChanges.Written -= Request;
+    public void Dispose() => AtomChanges.Written -= Request;
 }

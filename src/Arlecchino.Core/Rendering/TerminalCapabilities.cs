@@ -31,6 +31,9 @@ public static class TerminalCapabilities
     /// <summary>
     /// How much colour styles may emit. Detected on first use; a terminal that refuses virtual
     /// terminal mode lowers it to <see cref="ColorSupport.None"/> at startup.
+    ///
+    /// Process-wide, like <see cref="Theme.Palette"/>: one terminal per process is the assumption the
+    /// framework makes, and tests that change this share it with everything else running.
     /// </summary>
     public static ColorSupport Color { get; set; } = DetectColor();
 

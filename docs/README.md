@@ -15,7 +15,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | [Rendering](rendering.md) | `Surface`: the frame lifecycle, flow layout, absolute layout |
 | [Theming](theming.md) | `Theme`, `ThemePalette`, `TermColor`, ANSI colours and font styles |
 | [Commands and input](commands-and-input.md) | `IArlecchinoCommand`, the command palette, key routing, keyboard layouts |
-| [Modals and state](modals-and-state.md) | `TuiState`, text and choice modals, the output line |
+| [Modals and state](modals-and-state.md) | `ArlecchinoState`, text and choice modals, the output line |
 | [File picker](file-picker.md) | Requesting a path, places sidebar, filters, keys |
 | [Hosting and options](hosting-and-options.md) | `AddArlecchino`, every option, the builder API, running without the hosted service |
 | [State and forms](state-and-forms.md) | `TrackedAtom` and `LocalAtom` atoms, computed values, undo, async loading, and forms built from them |
@@ -27,7 +27,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 
 | Assembly | Namespaces | Contents |
 |---|---|---|
-| `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input` | `Surface`, `Theme`, `TermColor`, `KeyText`, `ITerminal` — the renderer, no DI |
-| `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
+| `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI |
+| `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.Atoms`, `Arlecchino.Modals`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Input`, `Arlecchino.Rendering`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
 | `Arlecchino.Testing` | `Arlecchino.Testing` | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` — the headless host for tests |
 | `Arlecchino.Generators` | — | the incremental generator, shipped inside the `Arlecchino` package |

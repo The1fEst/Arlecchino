@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Arlecchino.State;
+using Arlecchino.Hosting;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Processes;
 
@@ -11,7 +12,7 @@ public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, T
 
 public sealed class ProcessTable : IArlecchinoStore
 {
-    private readonly AsyncState<IReadOnlyList<ProcessRow>> _rows;
+    private readonly AsyncAtom<IReadOnlyList<ProcessRow>> _rows;
     private readonly LocalAtom<string> _filter = new("");
 
     public ProcessTable(UiDispatcher dispatcher)
@@ -19,7 +20,7 @@ public sealed class ProcessTable : IArlecchinoStore
         _rows = new(dispatcher, []);
     }
 
-    public AsyncState<IReadOnlyList<ProcessRow>> Rows => _rows;
+    public AsyncAtom<IReadOnlyList<ProcessRow>> Rows => _rows;
 
     public Atom<string> Filter => _filter;
 

@@ -118,9 +118,9 @@ public sealed class KeymapTests
 
 public sealed class SaveCommand : IArlecchinoCommand
 {
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
 
-    public SaveCommand(TuiState state)
+    public SaveCommand(ArlecchinoState state)
     {
         _state = state;
     }

@@ -3,9 +3,8 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Arlecchino.Hosting;
-using Arlecchino.Input;
 
-namespace Arlecchino;
+namespace Arlecchino.Input;
 
 /// <summary>
 /// Turns what the terminal reports into keys and mouse events. Terminals send arrows, function keys
@@ -24,7 +23,7 @@ public sealed class TerminalInputReader
     private const string PasteEnd = "\e[201~";
     private const int PollInterval = 1;
 
-    private readonly ITerminal _terminal;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly InputRouter _router;
     private readonly ArlecchinoOptions _options;
     private readonly StringBuilder _sequence = new();
@@ -33,7 +32,7 @@ public sealed class TerminalInputReader
     /// <param name="terminal">Where key presses come from.</param>
     /// <param name="router">Where the result is sent.</param>
     /// <param name="options">Supplies how long to wait for the rest of a sequence.</param>
-    public TerminalInputReader(ITerminal terminal, InputRouter router, ArlecchinoOptions options)
+    public TerminalInputReader(IArlecchinoTerminal terminal, InputRouter router, ArlecchinoOptions options)
     {
         _terminal = terminal;
         _router = router;

@@ -91,7 +91,7 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <param name="column">Column inside the region.</param>
     /// <param name="text">Text to draw.</param>
     /// <param name="style">Style for the text.</param>
-    public void Write(int row, int column, string text, ITermColor style)
+    public void Write(int row, int column, string text, IArlecchinoColor style)
     {
         if (row < 0 || row >= Height || column >= Width)
         {
@@ -110,7 +110,7 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <param name="text">Text to draw.</param>
     /// <param name="style">Style for the text.</param>
     /// <param name="align">Horizontal alignment inside the region.</param>
-    public void WriteLine(int row, string text, ITermColor style, Align align = Align.Left)
+    public void WriteLine(int row, string text, IArlecchinoColor style, Align align = Align.Left)
     {
         var clipped = TextWidth.Truncate(text, Width);
         var column = align.HasFlag(Align.Center)
@@ -125,7 +125,7 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <summary>Paints every cell of the region.</summary>
     /// <param name="style">Style to paint with.</param>
     /// <param name="character">Character to fill with; a space by default.</param>
-    public void Fill(ITermColor style, char character = ' ')
+    public void Fill(IArlecchinoColor style, char character = ' ')
     {
         var line = new string(character, Width);
         for (var row = 0; row < Height; row++)
@@ -141,7 +141,7 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <param name="style">Style for the frame.</param>
     /// <param name="title">Optional title written into the top edge.</param>
     /// <returns>The region inside the frame, or this region when it is too small for one.</returns>
-    public SurfaceRegion Border(ITermColor style, string title = "")
+    public SurfaceRegion Border(IArlecchinoColor style, string title = "")
     {
         if (Width < 2 || Height < 2)
         {

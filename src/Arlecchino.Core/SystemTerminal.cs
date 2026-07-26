@@ -2,17 +2,16 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Arlecchino.Input;
 using Arlecchino.Rendering;
 
-namespace Arlecchino;
+namespace Arlecchino.Input;
 
 /// <summary>
 /// The real console. Registered by default and replaceable through <c>UseTerminal&lt;T&gt;()</c>.
 /// On Windows it turns on virtual terminal output at startup and turns off virtual terminal input,
 /// because that flag stops <c>Console.ReadKey</c> from delivering keys at all.
 /// </summary>
-public sealed partial class SystemTerminal : ITerminal
+public sealed partial class SystemTerminal : IArlecchinoTerminal
 {
     private const int StandardOutputHandle = -11;
     private const int StandardInputHandle = -10;

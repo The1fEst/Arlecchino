@@ -6,6 +6,7 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Sample;
 
@@ -13,12 +14,12 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
 {
     private readonly Surface _surface;
     private readonly SettingsStore _settings;
-    private readonly StateHistory _history;
-    private readonly TuiState _state;
+    private readonly AtomHistory _history;
+    private readonly ArlecchinoState _state;
     private readonly Form _form;
     private readonly IDisposable _watch;
 
-    public SettingsView(Surface surface, SettingsStore settings, StateHistory history, TuiState state, ArlecchinoOptions options)
+    public SettingsView(Surface surface, SettingsStore settings, AtomHistory history, ArlecchinoState state, ArlecchinoOptions options)
     {
         _surface = surface;
         _settings = settings;
@@ -77,11 +78,11 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
             case ConsoleKey.Escape:
                 return ViewKind.Default;
             default:
-                return _form.Handle(key);
+                return _form.Handle(key).Route;
         }
     }
 
-    public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse);
+    public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse).Route;
 
     public (string Key, string Description)[] Hints() =>
     [

@@ -8,7 +8,7 @@ namespace Arlecchino.Navigation;
 /// Views registered by name through <c>AddView</c>. Consulted before the generated factory, so an
 /// explicit registration wins over a generated route of the same name.
 /// </summary>
-public sealed class ViewRegistrations
+internal sealed class ViewRegistrations
 {
     private readonly Dictionary<string, Func<IServiceProvider, IArlecchinoView>> _factories = new(StringComparer.Ordinal);
 

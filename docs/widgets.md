@@ -11,12 +11,12 @@ public interface IArlecchinoWidget
     void Draw(SurfaceRegion region);
 }
 
-public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IFocusable;
+public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFocusable;
 ```
 
 A widget holds no coordinates of its own — it paints the region it is handed, so the same one works
 in a pane, in a column or across the whole frame. An interactive one adds what
-[`IFocusable`](views-and-navigation.md) asks for (`IsFocused`, `Handle`, `HandleMouse`), which is what
+[`IArlecchinoFocusable`](views-and-navigation.md) asks for (`IsFocused`, `Handle`, `HandleMouse`), which is what
 lets it drop straight into a `FocusRing` and answer keys and clicks with the view routing nothing by
 hand.
 
@@ -26,7 +26,7 @@ hand.
 | `ProgressBar`, `StatusBar`, `Spinner` | `IArlecchinoWidget` |
 
 None of them holds user-visible text of their own: labels are `Func<string>` supplied by the
-application, which is what keeps [localization](localization.md) working. Colour is a `Style`
+application, which is what keeps [localization](localization.md) working. Colour is a `Style` or `ItemStyle`
 property rather than an argument to `Draw`, so the call is the same for every widget.
 
 A widget of your own can also come from the container: `.AddGeneratedWidgets()` registers every one
@@ -41,7 +41,7 @@ constructed in the view, since a `Render` or a `Columns` belongs to the screen u
 _authors = new ListBox<string>(options.Keymap)
 {
     Render = author => $" {author}",
-    Style = author => author == _mine ? Theme.Active : Theme.Default,
+    ItemStyle = author => author == _mine ? Theme.Active : Theme.Default,
     OnActivate = author => ViewKind.Author,
     Items = authors,
 };
@@ -79,7 +79,7 @@ _mods = new Table<Mod>(options.Keymap)
         new() { Header = () => Loc(LocString.Files), Cell = mod => mod.Files.ToString(),
                 Width = 6, AlignRight = true, Sort = (first, second) => first.Files.CompareTo(second.Files) },
     ],
-    Style = mod => mod.Enabled ? Theme.Default : Theme.Muted,
+    ItemStyle = mod => mod.Enabled ? Theme.Default : Theme.Muted,
     Rows = catalog,
 };
 ```

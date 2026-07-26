@@ -8,8 +8,8 @@ namespace Arlecchino.Widgets;
 /// focus with <c>Tab</c>, hands keys to whichever widget holds it, and moves the focus to the widget
 /// that claims a click.
 ///
-/// The members come from <see cref="IFocusable"/>: <c>IsFocused</c> for drawing the difference, and
+/// The members come from <see cref="IArlecchinoFocusable"/>: <c>IsFocused</c> for drawing the difference, and
 /// <c>Handle</c> / <c>HandleMouse</c> returning a <see cref="FocusResult"/> that says whether the
 /// event was claimed and whether it navigates.
 /// </summary>
-public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IFocusable;
+public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFocusable;

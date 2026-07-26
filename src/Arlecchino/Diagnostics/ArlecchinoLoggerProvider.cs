@@ -7,7 +7,7 @@ namespace Arlecchino.Diagnostics;
 /// Sends logging into the overlay's buffer instead of the console. Registered by default, because a
 /// provider that writes to standard output would draw straight over the frame.
 /// </summary>
-public sealed class ArlecchinoLoggerProvider : ILoggerProvider
+internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
 {
     private readonly LogBuffer _buffer;
 

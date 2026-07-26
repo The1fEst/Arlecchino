@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Arlecchino.Atoms;
 using Arlecchino.Commands;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
@@ -66,9 +67,9 @@ public sealed class ArlecchinoBuilder
     /// <typeparam name="TFactory">The factory type.</typeparam>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder AddViewFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TFactory>()
-        where TFactory : class, IViewFactory
+        where TFactory : class, IArlecchinoViewFactory
     {
-        Services.AddSingleton<IViewFactory, TFactory>();
+        Services.AddSingleton<IArlecchinoViewFactory, TFactory>();
         return this;
     }
 
@@ -82,6 +83,27 @@ public sealed class ArlecchinoBuilder
         where TCommand : class, IArlecchinoCommand
     {
         Services.AddSingleton<IArlecchinoCommand, TCommand>();
+        return this;
+    }
+
+    /// <summary>
+    /// Registers one store, resolved by its own type: a singleton, or scoped to the screen when it
+    /// implements <see cref="IArlecchinoScopedStore"/>. An alternative to <c>AddGeneratedStores()</c>
+    /// for a store the generator cannot see — one from another assembly — rather than a layer on top
+    /// of it.
+    /// </summary>
+    /// <typeparam name="TStore">The store type.</typeparam>
+    /// <returns>The builder.</returns>
+    public ArlecchinoBuilder AddStore<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TStore>()
+        where TStore : class, IArlecchinoStore
+    {
+        if (typeof(IArlecchinoScopedStore).IsAssignableFrom(typeof(TStore)))
+        {
+            Services.AddScoped<TStore>();
+            return this;
+        }
+
+        Services.AddSingleton<TStore>();
         return this;
     }
 
@@ -200,10 +222,10 @@ public sealed class ArlecchinoBuilder
     /// <typeparam name="TTerminal">The terminal type.</typeparam>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseTerminal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TTerminal>()
-        where TTerminal : class, ITerminal
+        where TTerminal : class, IArlecchinoTerminal
     {
-        Services.RemoveAll<ITerminal>();
-        Services.AddSingleton<ITerminal, TTerminal>();
+        Services.RemoveAll<IArlecchinoTerminal>();
+        Services.AddSingleton<IArlecchinoTerminal, TTerminal>();
         return this;
     }
 

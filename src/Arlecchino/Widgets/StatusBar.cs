@@ -19,7 +19,7 @@ public sealed class StatusBar : IArlecchinoWidget
     public IReadOnlyList<Func<string>> Right { get; init; } = [];
 
     /// <summary>Colour to draw in. The muted theme colour when left alone.</summary>
-    public ITermColor? Style { get; init; }
+    public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
     /// Draws both groups. The left side is truncated to fit, and the right side is dropped entirely

@@ -4,6 +4,7 @@ using System.Globalization;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Forms;
 
@@ -37,7 +38,7 @@ public sealed class Field
     /// What confirming the field does, usually opening a dialog. Returning a route navigates; return
     /// <see cref="ViewRoute.None"/> to stay put. Without this the field is read-only.
     /// </summary>
-    public Func<TuiState, ViewRoute>? Activate { get; init; }
+    public Func<ArlecchinoState, ViewRoute>? Activate { get; init; }
 
     /// <summary>
     /// Puts the field back to its empty or lowest value. Fields whose type has no sensible empty value,

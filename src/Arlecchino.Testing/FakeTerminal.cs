@@ -11,7 +11,7 @@ namespace Arlecchino.Testing;
 /// and assert on what would have been drawn. The input queues are concurrent, so a test can deliver
 /// keys late — the way a real terminal splits an escape sequence across two reads.
 /// </summary>
-public sealed class FakeTerminal : ITerminal
+public sealed class FakeTerminal : IArlecchinoTerminal
 {
     private readonly ConcurrentQueue<ConsoleKeyInfo> _keys = new();
     private readonly ConcurrentQueue<MouseEvent> _mouse = new();

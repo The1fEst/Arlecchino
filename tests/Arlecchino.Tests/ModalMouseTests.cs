@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using Arlecchino.Navigation;
-using Arlecchino.State;
 using Xunit;
+using Arlecchino.Modals;
 
 namespace Arlecchino.Tests;
 

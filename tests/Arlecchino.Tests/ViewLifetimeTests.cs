@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
-using Arlecchino.State;
 using Arlecchino.Tests.Views;
 using Xunit;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 
@@ -91,7 +91,7 @@ public sealed class LoadingView : IArlecchinoView
 
     public ViewLifetime Lifetime { get; }
 
-    public AsyncState<string> Rows { get; }
+    public AsyncAtom<string> Rows { get; }
 
     public Watched Watched { get; }
 

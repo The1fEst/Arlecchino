@@ -30,7 +30,7 @@ public sealed class ProgressBar : IArlecchinoWidget
         : 0m;
 
     /// <summary>Colour of the filled part. The theme's active colour when left alone.</summary>
-    public ITermColor? Style { get; init; }
+    public IArlecchinoColor? Style { get; init; }
 
     /// <summary>Draws the bar across the region, leaving room for the caption when there is one.</summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
@@ -75,7 +75,7 @@ public sealed class Spinner : IArlecchinoWidget
     public void Advance() => _frame = (_frame + 1) % Frames.Length;
 
     /// <summary>Colour to draw in. The theme's informational colour when left alone.</summary>
-    public ITermColor? Style { get; init; }
+    public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
     /// Draws the current frame in the first cell of the region. One cell is all a spinner needs, so

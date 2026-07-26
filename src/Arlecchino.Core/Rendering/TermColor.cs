@@ -6,7 +6,7 @@ namespace Arlecchino.Rendering;
 /// A style built from the sixteen-colour palette. This is what the roles on <see cref="Theme"/> are
 /// made of and what chrome should use, because those colours follow the terminal's own theme.
 /// </summary>
-public sealed class TermColor : ITermColor
+public sealed class TermColor : IArlecchinoColor
 {
     private string? _ansi;
     private ColorSupport _ansiSupport;

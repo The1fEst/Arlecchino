@@ -4,7 +4,7 @@
 
 ## How a key travels
 
-The hosted service polls `ITerminal` every `InputPollInterval` (8 ms by default) and hands each key to
+The hosted service polls `IArlecchinoTerminal` every `InputPollInterval` (8 ms by default) and hands each key to
 `InputRouter`, which decides in this order:
 
 1. a modal is open → the key goes to the modal, and nothing else sees it;
@@ -39,7 +39,7 @@ public sealed class QuitCommand : IArlecchinoCommand
 Nothing registers it by hand: `.AddGeneratedCommands()` picks up every `IArlecchinoCommand` in the
 project — see [Source generator](source-generator.md#commands). `.AddCommand<QuitCommand>()` is there
 for a command that comes from another assembly. Either way commands are singletons resolved from the
-container, so they can take any service — application state, the navigator, `TuiState`.
+container, so they can take any service — application state, the navigator, `ArlecchinoState`.
 
 `Execute` returns a route: navigate by returning one, stay put with `ViewRoute.None`. `Icon` and
 `Label` are yours to render; the palette shows the binding and the label.
@@ -182,7 +182,7 @@ stream, translated into the same `MouseEvent`. Quick-edit mode is switched off w
 otherwise the console swallows clicks as text selection, and the previous mode is put back when the
 mouse is turned off.
 
-That is the one place `ITerminal.MouseAvailable` and `ReadMouse()` matter: they exist for terminals
+That is the one place `IArlecchinoTerminal.MouseAvailable` and `ReadMouse()` matter: they exist for terminals
 that deliver the mouse outside the key stream. `TerminalInputReader.ReadPending()` drains both.
 
 Events arrive as `MouseEvent`:
@@ -214,7 +214,7 @@ where its rows are — hit-testing is comparing numbers. While a list or choice 
 scrolls it; other events are swallowed rather than reaching the view behind the modal.
 
 `TerminalInputReader` is what turns the raw stream into events: it collects escape sequences, hands
-mouse reports to `EscapeSequenceParser.TryParseMouse`, decodes cursor and function keys itself, and
+mouse reports to the escape-sequence parser inside the package, decodes cursor and function keys itself, and
 replays anything it does not recognise as plain keys. A lone `Esc` with nothing behind it stays a
 plain `Escape`, so cancelling a modal still works.
 
@@ -243,14 +243,14 @@ public ViewRoute HandlePaste(string text)
 }
 ```
 
-`Ctrl+Insert` (the `Copy` binding) copies the field being edited. It goes through `ITerminal`, which
+`Ctrl+Insert` (the `Copy` binding) copies the field being edited. It goes through `IArlecchinoTerminal`, which
 encodes it as an OSC 52 sequence — that reaches the clipboard of the machine the user is sitting at
 even over SSH. `Ctrl+C` is deliberately left alone: it is how the application is stopped. Terminals
 never acknowledge a copy, and many have the feature switched off, so there is nothing to report back.
 
 ## Replacing the terminal
 
-`ITerminal` is the whole surface between Arlecchino and the console — size, key availability, `ReadKey`,
+`IArlecchinoTerminal` is the whole surface between Arlecchino and the console — size, key availability, `ReadKey`,
 `Write`, entering or leaving the alternate screen, the mouse, bracketed paste and the clipboard.
 `SystemTerminal` is the default; swap it with `.UseTerminal<T>()` to drive a test harness or a remote
 session. See [Hosting and options](hosting-and-options.md).

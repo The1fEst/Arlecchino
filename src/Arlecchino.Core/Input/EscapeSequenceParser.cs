@@ -8,7 +8,7 @@ namespace Arlecchino.Input;
 /// Reads the escape sequences a terminal sends for mouse reports and for keys that have no
 /// character — arrows, function keys, and their modified forms.
 /// </summary>
-public sealed class EscapeSequenceParser
+internal sealed class EscapeSequenceParser
 {
     private const int WheelFlag = 64;
     private const int MotionFlag = 32;

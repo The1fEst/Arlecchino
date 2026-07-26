@@ -34,7 +34,7 @@ public sealed class ArlecchinoOptions
     /// <summary>Whether to draw the hints box in the bottom-right corner.</summary>
     public bool ShowHints { get; set; } = true;
 
-    /// <summary>Whether to keep the last row for <c>TuiState.Output</c>.</summary>
+    /// <summary>Whether to keep the last row for <c>ArlecchinoState.Output</c>.</summary>
     public bool ShowOutputLine { get; set; } = true;
 
     /// <summary>

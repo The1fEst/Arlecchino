@@ -1,7 +1,7 @@
 using System;
 using Arlecchino.Rendering;
-using Arlecchino.State;
 using Xunit;
+using Arlecchino.Modals;
 
 namespace Arlecchino.Tests;
 

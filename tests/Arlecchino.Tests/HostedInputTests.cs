@@ -11,6 +11,8 @@ using Arlecchino.State;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
 using Xunit;
+using Arlecchino.Rendering;
+using Arlecchino.Input;
 
 namespace Arlecchino.Tests;
 
@@ -25,7 +27,7 @@ public sealed class HostedInputTests
 
         Logged.Clear();
         services.AddLogging(builder => builder.AddProvider(new CapturingProvider()));
-        services.AddSingleton<ITerminal>(terminal);
+        services.AddSingleton<IArlecchinoTerminal>(terminal);
         services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
 
         var builder = services.AddArlecchino(options =>
@@ -136,7 +138,7 @@ public sealed class HostedInputTests
         await using var _ = provider;
 
         var service = provider.GetServices<IHostedService>().OfType<ArlecchinoHostedService>().Single();
-        var state = provider.GetRequiredService<TuiState>();
+        var state = provider.GetRequiredService<ArlecchinoState>();
 
         using var stopping = new CancellationTokenSource();
         await service.StartAsync(stopping.Token);

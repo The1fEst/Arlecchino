@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
-using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
+using Arlecchino.Modals;
 
-namespace Arlecchino;
+namespace Arlecchino.Input;
 
 /// <summary>
 /// Decides who gets a key or a mouse event. The order is what keeps the application predictable: an
@@ -19,9 +19,9 @@ namespace Arlecchino;
 /// </summary>
 public class InputRouter
 {
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly Navigator _navigator;
-    private readonly ITerminal _terminal;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly LogOverlay _log;
     private readonly CommandRegistry _commands;
     private readonly ArlecchinoOptions _options;
@@ -40,10 +40,10 @@ public class InputRouter
     /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
     /// <param name="logger">Where handler failures are reported.</param>
-    public InputRouter(
-        TuiState state,
+    internal InputRouter(
+        ArlecchinoState state,
         Navigator navigator,
-        ITerminal terminal,
+        IArlecchinoTerminal terminal,
         LogOverlay log,
         CommandRegistry commands,
         ArlecchinoOptions options,

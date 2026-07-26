@@ -8,9 +8,9 @@ namespace Arlecchino.Tests;
 
 public sealed class ProbeCommand : IArlecchinoCommand
 {
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
 
-    public ProbeCommand(TuiState state)
+    public ProbeCommand(ArlecchinoState state)
     {
         _state = state;
     }

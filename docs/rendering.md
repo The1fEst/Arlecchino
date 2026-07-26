@@ -3,7 +3,7 @@
 # Rendering
 
 `Surface` is the drawing target: a cell grid of one `char` plane and one style plane, serialized into
-a single write per frame. It lives in `Arlecchino.Core` and needs nothing but an `ITerminal`, so it can
+a single write per frame. It lives in `Arlecchino.Core` and needs nothing but an `IArlecchinoTerminal`, so it can
 be used on its own, outside the hosted app.
 
 ## The frame lifecycle
@@ -14,7 +14,7 @@ be used on its own, outside the hosted app.
    to a space styled `Theme.Default`, and skips `VerticalPadding` lines.
 2. the current view's `Draw()`, then the output line, the hints box and any modal.
 3. `Build()` — walks the grid, emits an ANSI sequence only where the style changes, and hands the
-   whole frame to `ITerminal.Write` as one string.
+   whole frame to `IArlecchinoTerminal.Write` as one string.
 
 Nothing is written to the terminal until `Build`, so a half-drawn frame is never visible.
 
@@ -26,7 +26,7 @@ size (headless rendering) and `ForgetPreviousFrame()` all fall back to sending t
 
 The loop does not repaint on every tick; it repaints when something asks it to. `Repaint.Request()`
 is called for you by the input router after every key, by the navigator on every route change, and by
-`TuiState` when `Output`, `Modal` or `FilePicker` is assigned. A resize is noticed by the loop itself.
+`ArlecchinoState` when `Output`, `Modal` or `FilePicker` is assigned. A resize is noticed by the loop itself.
 
 Anything else that changes what a view draws — data loaded in the background, a timer, a view field
 mutated from outside `Handle` — has to say so:
@@ -40,7 +40,7 @@ tick.
 
 ## Coming back from a background task
 
-Views, `TuiState` and the surface are touched by the render loop and the input loop; nothing about
+Views, `ArlecchinoState` and the surface are touched by the render loop and the input loop; nothing about
 them is thread-safe. Work that finishes on another thread hands its result back through
 `UiDispatcher`, which runs queued actions on the frame loop just before the next frame is composed:
 

@@ -15,9 +15,9 @@ namespace Arlecchino.Views;
 /// Browses the file system: shortcuts on the left, the current folder on the right. It is a view
 /// rather than a dialog because it needs the whole screen, which is also why the request that opened
 /// it has to say where to return to. It is registered automatically, so an application only has to
-/// fill in <see cref="TuiState.FilePicker"/> and navigate here.
+/// fill in <see cref="ArlecchinoState.FilePicker"/> and navigate here.
 /// </summary>
-public class FilePickerView : IArlecchinoView
+internal class FilePickerView : IArlecchinoView
 {
     /// <summary>The route it answers to.</summary>
     public const string Route = "FilePicker";
@@ -31,7 +31,7 @@ public class FilePickerView : IArlecchinoView
     private sealed record SidebarRow(string Label, string? Path, string Icon);
 
     private readonly ArlecchinoKeymap _keymap;
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly Surface _surface;
     private readonly KeyText _keyText;
     private readonly ArlecchinoStrings.FilePickerStrings _strings;
@@ -64,7 +64,7 @@ public class FilePickerView : IArlecchinoView
     /// <param name="surface">The cell grid to draw into.</param>
     /// <param name="keyText">Turns a key press into the character it stands for, for the filter.</param>
     /// <param name="options">Supplies the keymap and the wording.</param>
-    public FilePickerView(TuiState state, Surface surface, KeyText keyText, ArlecchinoOptions options)
+    public FilePickerView(ArlecchinoState state, Surface surface, KeyText keyText, ArlecchinoOptions options)
     {
         _state = state;
         _surface = surface;

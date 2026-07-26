@@ -6,19 +6,20 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
+using Arlecchino.Modals;
 
 namespace Arlecchino.Sample;
 
 public class DefaultView : IArlecchinoView
 {
     private readonly Surface _surface;
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
     private readonly CommandRegistry _commands;
     private readonly ViewCommand[] _own;
 
     private int _selected;
 
-    public DefaultView(Surface surface, TuiState state, CommandRegistry commands)
+    public DefaultView(Surface surface, ArlecchinoState state, CommandRegistry commands)
     {
         _surface = surface;
         _state = state;

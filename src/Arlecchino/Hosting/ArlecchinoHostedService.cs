@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Arlecchino.Navigation;
-using Arlecchino.State;
+using Arlecchino.Rendering;
+using Arlecchino.Input;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Hosting;
 
@@ -17,15 +19,15 @@ namespace Arlecchino.Hosting;
 /// Ctrl+C, an unhandled error, even process exit — because a terminal left in full-screen mode with
 /// the mouse captured is unusable once the process is gone.
 /// </summary>
-public class ArlecchinoHostedService : BackgroundService
+internal class ArlecchinoHostedService : BackgroundService
 {
-    private readonly ITerminal _terminal;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly Screen _screen;
     private readonly TerminalInputReader _input;
     private readonly Navigator _navigator;
     private readonly ArlecchinoOptions _options;
     private readonly IHostApplicationLifetime _lifetime;
-    private readonly StateHistory _history;
+    private readonly AtomHistory _history;
     private readonly ILogger<ArlecchinoHostedService> _logger;
     private readonly IArlecchinoStartup[] _startups;
 
@@ -45,13 +47,13 @@ public class ArlecchinoHostedService : BackgroundService
     /// <param name="logger">Where failures are reported, since the screen is not usable for that.</param>
     /// <param name="startups">Work to run before the first frame.</param>
     public ArlecchinoHostedService(
-        ITerminal terminal,
+        IArlecchinoTerminal terminal,
         Screen screen,
         TerminalInputReader input,
         Navigator navigator,
         ArlecchinoOptions options,
         IHostApplicationLifetime lifetime,
-        StateHistory history,
+        AtomHistory history,
         ILogger<ArlecchinoHostedService> logger,
         IEnumerable<IArlecchinoStartup> startups)
     {

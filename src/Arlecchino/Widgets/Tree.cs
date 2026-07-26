@@ -4,6 +4,7 @@ using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
+using Arlecchino.Atoms;
 using Arlecchino.Rendering;
 
 namespace Arlecchino.Widgets;
@@ -60,7 +61,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     public required Func<T, string> Render { get; init; }
 
     /// <summary>Colours a node. Ignored for the selected one.</summary>
-    public Func<T, ITermColor>? Style { get; set; }
+    public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
     /// What confirming a leaf does. Branches toggle instead, so this is never called for a node that
@@ -70,7 +71,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
 
     /// <summary>
     /// Called just before a branch opens, which is where its children can be filled in. It runs on the
-    /// UI thread, so anything slow belongs in an <see cref="State.AsyncState{T}"/> instead.
+    /// UI thread, so anything slow belongs in an <see cref="AsyncAtom{TLoaded}"/> instead.
     /// </summary>
     public Action<TreeNode<T>>? OnExpanding { get; init; }
 
@@ -347,11 +348,11 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
         }
     }
 
-    private ITermColor StyleOf(TreeNode<T> node, int index)
+    private IArlecchinoColor StyleOf(TreeNode<T> node, int index)
     {
         if (index != Selected)
         {
-            return Style?.Invoke(node.Value) ?? Theme.Default;
+            return ItemStyle?.Invoke(node.Value) ?? Theme.Default;
         }
 
         return IsFocused ? Theme.ActiveSelected : Theme.Selected;

@@ -9,6 +9,9 @@ public static class Theme
     /// <summary>
     /// The colours behind the roles. Assigned from <c>ArlecchinoOptions</c> when the container resolves
     /// them; set it directly when drawing without a host.
+    ///
+    /// This is process-wide on purpose — it is what lets a view write <c>Theme.Header</c> with no
+    /// plumbing — so two hosts in one process share one palette, and the last one built wins.
     /// </summary>
     public static ThemePalette Palette { get; set; } = new();
 

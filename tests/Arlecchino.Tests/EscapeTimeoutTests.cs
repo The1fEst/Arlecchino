@@ -2,8 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Arlecchino.State;
 using Xunit;
+using Arlecchino.Modals;
+using Arlecchino.Input;
 
 namespace Arlecchino.Tests;
 

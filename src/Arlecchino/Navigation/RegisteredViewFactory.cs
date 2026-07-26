@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Arlecchino.Navigation;
 
 /// <summary>Serves the views registered by name through <c>AddView</c>.</summary>
-public sealed class RegisteredViewFactory : IViewFactory
+internal sealed class RegisteredViewFactory : IArlecchinoViewFactory
 {
     private readonly ViewRegistrations _registrations;
 

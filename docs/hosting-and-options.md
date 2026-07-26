@@ -18,19 +18,19 @@ it puts in the container are singletons:
 | Service | Role |
 |---|---|
 | `ArlecchinoOptions` | The configured options; resolving it also installs the theme palette |
-| `ITerminal` | `SystemTerminal` unless replaced |
+| `IArlecchinoTerminal` | `SystemTerminal` unless replaced |
 | `Surface` | The renderer, with padding taken from the options |
 | `KeyText` | Character resolution for the configured input mode |
-| `TuiState` | Output line, modal, file picker request |
+| `ArlecchinoState` | Output line, modal, file picker request |
 | `Repaint` | The "this frame is stale" signal the render loop waits on |
 | `UiDispatcher` | Queue for handing results back from background work; runs them between frames |
-| `Navigator`, `ViewResolver`, `ViewRegistrations`, `IViewFactory` | Routing and view construction |
+| `Navigator`, `ViewResolver`, `IArlecchinoViewFactory` | Routing and view construction |
 | `CommandRegistry` | Registered commands |
 | `Screen` | Frame composition |
 | `InputRouter` | Key dispatch |
-| `ArlecchinoHostedService` | The hosted service owning the render and input loops |
+| `ArlecchinoKeymap`, `ArlecchinoStrings` | The keymap and the wording, for widgets and stores built by the container |
 
-`ITerminal` is registered with `TryAdd`, so registering your own before `AddArlecchino` also wins.
+`IArlecchinoTerminal` is registered with `TryAdd`, so registering your own before `AddArlecchino` also wins.
 
 ## Options
 
@@ -41,7 +41,7 @@ it puts in the container are singletons:
 | `HorizontalPadding` / `VerticalPadding` | `2` / `1` | Gutters applied by the surface |
 | `UseAlternateScreen` | `true` | Enter the alternate screen buffer and hide the cursor while running |
 | `ShowHints` | `true` | Draw the `Keys` box from the current view's `Hints()` |
-| `ShowOutputLine` | `true` | Draw `TuiState.Output` on the last row |
+| `ShowOutputLine` | `true` | Draw `ArlecchinoState.Output` on the last row |
 | `CommandPaletteKey` | `':'` | Key that opens the palette |
 | `TextInput` | `LatinOnly` | How typed characters are resolved |
 | `MouseInput` | `false` | Report clicks, drags and the wheel to views |
@@ -59,7 +59,8 @@ it puts in the container are singletons:
 |---|---|
 | `AddView<T>(route)` | Registers a view resolved through the container |
 | `AddView(route, factory)` | Registers a view built by your own factory delegate |
-| `AddViewFactory<T>()` | Adds an `IViewFactory` — this is what `AddGeneratedViews()` does |
+| `AddViewFactory<T>()` | Adds an `IArlecchinoViewFactory` — this is what `AddGeneratedViews()` does |
+| `AddStore<T>()` | Registers one store by hand — singleton, or scoped when it implements `IArlecchinoScopedStore` |
 | `AddGeneratedStores()` | Generated: registers every `IArlecchinoStore` in the project, singleton or scoped — see [Source generator](source-generator.md#stores) |
 | `AddGeneratedCommands()` | Generated: registers every `IArlecchinoCommand` in the project as a singleton — see [Source generator](source-generator.md#commands) |
 | `AddGeneratedWidgets()` | Generated: registers every `IArlecchinoWidget` of the project as a singleton — see [Source generator](source-generator.md#widgets) |
@@ -72,7 +73,7 @@ it puts in the container are singletons:
 | `UseMouse()` | Turns on mouse reporting |
 | `UseTheme(palette)` | Replaces the colour palette |
 | `UseStrings(strings)` | Replaces user-visible text |
-| `UseTerminal<T>()` | Replaces `ITerminal` |
+| `UseTerminal<T>()` | Replaces `IArlecchinoTerminal` |
 | `WithoutHostedService()` | Drops the render loop, leaving the services |
 | `Services`, `Options` | The underlying collection and options, for anything not covered above |
 
@@ -122,7 +123,7 @@ rather than a difference against a picture that is no longer there.
 ## The log overlay
 
 A console logger cannot work here: its lines land in the middle of the frame. `AddArlecchino` therefore
-registers `ArlecchinoLoggerProvider`, which keeps the last 200 lines in a `LogBuffer` in memory, and
+registers a logger provider of its own, which keeps the last 200 lines in a `LogBuffer` in memory, and
 `Ctrl+L` (the `ToggleLog` binding) shows them over the bottom half of the screen:
 
 ```

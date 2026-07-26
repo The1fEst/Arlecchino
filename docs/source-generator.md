@@ -2,7 +2,7 @@
 
 # Source generator
 
-`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds three
+`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds four
 incremental generators. They write one file each into the project that references the package:
 `ArlecchinoViewNavigation.g.cs` for the routes and the view factory,
 `ArlecchinoStoreRegistration.g.cs` for the stores, and `ArlecchinoCommandRegistration.g.cs` for the
@@ -14,7 +14,7 @@ application commands. All three land in the same namespace.
 `Arlecchino.Navigation.IArlecchinoView`. The route name is the type name with a trailing `View` stripped:
 `ModsView` becomes `Mods`, `Settings` stays `Settings`.
 
-**Stores** — the same, for `Arlecchino.State.IArlecchinoStore`. The name means nothing here; the marker is the
+**Stores** — the same, for `Arlecchino.Atoms.IArlecchinoStore`. The name means nothing here; the marker is the
 whole declaration. See [Stores](#stores) below.
 
 **Commands** — the same again, for `Arlecchino.Commands.IArlecchinoCommand`. See [Commands](#commands)
@@ -33,7 +33,7 @@ public static class ViewKind
     public static readonly ViewRoute About = new ViewRoute("About");
 }
 
-public sealed class GeneratedViewFactory : IViewFactory
+public sealed class GeneratedViewFactory : IArlecchinoViewFactory
 {
     public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view) { ... }
 }
@@ -52,7 +52,7 @@ sit anywhere in the project.
 
 The three types are emitted whether or not the project holds a view yet. A project with none gets an
 empty `ViewKind`, a factory that creates nothing and a working `AddGeneratedViews()`, along with
-`TSR004` — so the first thing a new application sees is a missing route rather than a missing method.
+`ARL004` — so the first thing a new application sees is a missing route rather than a missing method.
 
 ## Turning it on
 
@@ -99,7 +99,7 @@ public static class GeneratedStoreRegistration
     public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)
     {
         builder.Services.AddSingleton(static services => new SettingsStore());
-        builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<TuiState>()));
+        builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<ArlecchinoState>()));
         return builder;
     }
 }
@@ -143,7 +143,7 @@ selection, the scroll offset, whether it has the focus. Two screens resolving th
 all of it. That is the point when the widget is a shared panel, and a bug when it is not — build the
 second kind in the view instead, as before.
 
-Some widgets cannot be registered at all, and the generator says so with `TSR007` rather than
+Some widgets cannot be registered at all, and the generator says so with `ARL007` rather than
 emitting code that would not compile:
 
 | Left out when | Because |
@@ -254,13 +254,13 @@ The generator says something instead of quietly doing the wrong thing:
 
 | Id | Severity | Means |
 |---|---|---|
-| `TSR001` | Warning | Two views produce the same route — `Sample.ModsView` and `Sample.Extra.ModsView` both become `Mods`. The first one wins and the other is unreachable; rename one of them or register it explicitly |
-| `TSR002` | Warning | A view implements `IArlecchinoView` but has no public constructor, so the generated factory cannot create it |
-| `TSR003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
-| `TSR004` | Info | No class implements `IArlecchinoView`, so `ViewKind` holds no routes and the application has nowhere to start |
-| `TSR005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so the container cannot build it |
-| `TSR006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so the container cannot build it |
-| `TSR007` | Info | A widget cannot be registered — generic, no public constructor, or `required` members — and is left out of `AddGeneratedWidgets()` |
+| `ARL001` | Warning | Two views produce the same route — `Sample.ModsView` and `Sample.Extra.ModsView` both become `Mods`. The first one wins and the other is unreachable; rename one of them or register it explicitly |
+| `ARL002` | Warning | A view implements `IArlecchinoView` but has no public constructor, so the generated factory cannot create it |
+| `ARL003` | Info | `ArlecchinoViewNamespace` is not set, so `ViewKind` lands in `$(RootNamespace).Navigation` — the message names the namespace it chose |
+| `ARL004` | Info | No class implements `IArlecchinoView`, so `ViewKind` holds no routes and the application has nowhere to start |
+| `ARL005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so the container cannot build it |
+| `ARL006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so the container cannot build it |
+| `ARL007` | Info | A widget cannot be registered — generic, no public constructor, or `required` members — and is left out of `AddGeneratedWidgets()` |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.

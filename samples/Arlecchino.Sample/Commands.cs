@@ -18,9 +18,9 @@ public sealed class AboutCommand : IArlecchinoCommand
 
 public sealed class PickFolderCommand : IArlecchinoCommand
 {
-    private readonly TuiState _state;
+    private readonly ArlecchinoState _state;
 
-    public PickFolderCommand(TuiState state)
+    public PickFolderCommand(ArlecchinoState state)
     {
         _state = state;
     }

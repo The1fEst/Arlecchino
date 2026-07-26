@@ -2,9 +2,10 @@ using System;
 using Arlecchino.Forms;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
-using Arlecchino.State;
 using Arlecchino.Tests.Views;
 using Xunit;
+using Arlecchino.Modals;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 
@@ -123,7 +124,7 @@ public sealed class FormTests
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
         form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
 
-        Assert.Equal(ViewKind.Other, form.Handle(new('\0', ConsoleKey.Enter, false, false, false)));
+        Assert.Equal(ViewKind.Other, form.Handle(new('\0', ConsoleKey.Enter, false, false, false)).Route);
     }
 
     [Fact]
@@ -271,9 +272,9 @@ public sealed class FormTests
             Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],
         };
 
-        var route = form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        var result = form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
 
-        Assert.Equal(Routes.FilePicker, route);
+        Assert.Equal(Routes.FilePicker, result.Route);
         Assert.NotNull(app.State.FilePicker);
     }
 }

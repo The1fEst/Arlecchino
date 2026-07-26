@@ -30,7 +30,7 @@ public static class ScrollBar
     /// <param name="first">Index of the first item on screen.</param>
     /// <param name="total">How many items there are.</param>
     /// <param name="style">Colour of the thumb. Defaults to the theme's active colour.</param>
-    public static void Draw(SurfaceRegion region, int first, int total, ITermColor? style = null)
+    public static void Draw(SurfaceRegion region, int first, int total, IArlecchinoColor? style = null)
     {
         var rows = region.Height;
         if (region.IsEmpty || !IsNeeded(total, rows))

@@ -12,13 +12,13 @@ namespace Arlecchino.Navigation;
 /// </summary>
 public sealed class ViewResolver
 {
-    private readonly IViewFactory[] _factories;
+    private readonly IArlecchinoViewFactory[] _factories;
     private readonly IServiceScopeFactory _scopes;
 
     /// <summary>Creates the resolver.</summary>
     /// <param name="factories">Factories to ask, in the order they were registered.</param>
     /// <param name="scopes">Where the per-screen scopes come from.</param>
-    public ViewResolver(IEnumerable<IViewFactory> factories, IServiceScopeFactory scopes)
+    public ViewResolver(IEnumerable<IArlecchinoViewFactory> factories, IServiceScopeFactory scopes)
     {
         _factories = factories.ToArray();
         _scopes = scopes;

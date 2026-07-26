@@ -1,1 +1,172 @@
 #nullable enable
+*REMOVED*abstract Arlecchino.State.Atom<T>.RecordsHistory.get -> bool
+*REMOVED*Arlecchino.Input.EscapeSequenceParser
+*REMOVED*Arlecchino.Input.EscapeSequenceParser.EscapeSequenceParser() -> void
+*REMOVED*Arlecchino.ITerminal
+*REMOVED*Arlecchino.ITerminal.CopyToClipboard(string! text) -> void
+*REMOVED*Arlecchino.ITerminal.DisableMouse() -> void
+*REMOVED*Arlecchino.ITerminal.DisablePaste() -> void
+*REMOVED*Arlecchino.ITerminal.EnableMouse() -> void
+*REMOVED*Arlecchino.ITerminal.EnablePaste() -> void
+*REMOVED*Arlecchino.ITerminal.EnterFullScreen() -> void
+*REMOVED*Arlecchino.ITerminal.Height.get -> int
+*REMOVED*Arlecchino.ITerminal.KeyAvailable.get -> bool
+*REMOVED*Arlecchino.ITerminal.LeaveFullScreen() -> void
+*REMOVED*Arlecchino.ITerminal.MouseAvailable.get -> bool
+*REMOVED*Arlecchino.ITerminal.ReadKey() -> System.ConsoleKeyInfo
+*REMOVED*Arlecchino.ITerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+*REMOVED*Arlecchino.ITerminal.Width.get -> int
+*REMOVED*Arlecchino.ITerminal.Write(string! text) -> void
+*REMOVED*Arlecchino.Rendering.ITermColor
+*REMOVED*Arlecchino.Rendering.ITermColor.Ansi.get -> string!
+*REMOVED*Arlecchino.Rendering.Surface.AppendLine(string! line, Arlecchino.Rendering.ITermColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+*REMOVED*Arlecchino.Rendering.Surface.FillLineAt(int row, Arlecchino.Rendering.ITermColor? style = null) -> void
+*REMOVED*Arlecchino.Rendering.Surface.Surface(Arlecchino.ITerminal! terminal) -> void
+*REMOVED*Arlecchino.Rendering.Surface.WriteAt(int row, int column, string! text, Arlecchino.Rendering.ITermColor! style) -> void
+*REMOVED*Arlecchino.Rendering.Surface.WriteBlock(System.Collections.Generic.IReadOnlyList<string!>! lines, Arlecchino.Rendering.ITermColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left | Arlecchino.Rendering.Align.Top, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+*REMOVED*Arlecchino.Rendering.Surface.WriteLineAt(int row, string! line, Arlecchino.Rendering.ITermColor? style = null) -> void
+*REMOVED*Arlecchino.Rendering.Surface.WriteTableRow(string![]! strings, int[]! widths, Arlecchino.Rendering.ITermColor! style, string! prefix = "") -> void
+*REMOVED*Arlecchino.Rendering.SurfaceRegion.Border(Arlecchino.Rendering.ITermColor! style, string! title = "") -> Arlecchino.Rendering.SurfaceRegion
+*REMOVED*Arlecchino.Rendering.SurfaceRegion.Fill(Arlecchino.Rendering.ITermColor! style, char character = ' ') -> void
+*REMOVED*Arlecchino.Rendering.SurfaceRegion.Write(int row, int column, string! text, Arlecchino.Rendering.ITermColor! style) -> void
+*REMOVED*Arlecchino.Rendering.SurfaceRegion.WriteLine(int row, string! text, Arlecchino.Rendering.ITermColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void
+*REMOVED*Arlecchino.State.Atom<T>
+*REMOVED*Arlecchino.State.Atom<T>.Atom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+*REMOVED*Arlecchino.State.Atom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+*REMOVED*Arlecchino.State.Atom<T>.Value.get -> T
+*REMOVED*Arlecchino.State.Atom<T>.Value.set -> void
+*REMOVED*Arlecchino.State.Computed<T>
+*REMOVED*Arlecchino.State.Computed<T>.Computed(System.Func<T>! compute) -> void
+*REMOVED*Arlecchino.State.Computed<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+*REMOVED*Arlecchino.State.Computed<T>.Value.get -> T
+*REMOVED*Arlecchino.State.IArlecchinoScopedStore
+*REMOVED*Arlecchino.State.IArlecchinoStore
+*REMOVED*Arlecchino.State.IReadableState<T>
+*REMOVED*Arlecchino.State.IReadableState<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+*REMOVED*Arlecchino.State.IReadableState<T>.Value.get -> T
+*REMOVED*Arlecchino.State.IStateEdit
+*REMOVED*Arlecchino.State.IStateEdit.Owner.get -> object?
+*REMOVED*Arlecchino.State.IStateEdit.Redo() -> void
+*REMOVED*Arlecchino.State.IStateEdit.Undo() -> void
+*REMOVED*Arlecchino.State.LocalAtom<T>
+*REMOVED*Arlecchino.State.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+*REMOVED*Arlecchino.State.StateChanges
+*REMOVED*Arlecchino.State.StateHistory
+*REMOVED*Arlecchino.State.StateHistory.CanRedo.get -> bool
+*REMOVED*Arlecchino.State.StateHistory.CanUndo.get -> bool
+*REMOVED*Arlecchino.State.StateHistory.Capacity.get -> int
+*REMOVED*Arlecchino.State.StateHistory.Capacity.set -> void
+*REMOVED*Arlecchino.State.StateHistory.Clear() -> void
+*REMOVED*Arlecchino.State.StateHistory.Depth.get -> int
+*REMOVED*Arlecchino.State.StateHistory.Dispose() -> void
+*REMOVED*Arlecchino.State.StateHistory.Group() -> System.IDisposable!
+*REMOVED*Arlecchino.State.StateHistory.Redo() -> bool
+*REMOVED*Arlecchino.State.StateHistory.StateHistory() -> void
+*REMOVED*Arlecchino.State.StateHistory.Undo() -> bool
+*REMOVED*Arlecchino.State.StateTracking
+*REMOVED*Arlecchino.State.TrackedAtom<T>
+*REMOVED*Arlecchino.State.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+*REMOVED*Arlecchino.SystemTerminal
+*REMOVED*Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
+*REMOVED*Arlecchino.SystemTerminal.DisableMouse() -> void
+*REMOVED*Arlecchino.SystemTerminal.DisablePaste() -> void
+*REMOVED*Arlecchino.SystemTerminal.EnableMouse() -> void
+*REMOVED*Arlecchino.SystemTerminal.EnablePaste() -> void
+*REMOVED*Arlecchino.SystemTerminal.EnterFullScreen() -> void
+*REMOVED*Arlecchino.SystemTerminal.Height.get -> int
+*REMOVED*Arlecchino.SystemTerminal.KeyAvailable.get -> bool
+*REMOVED*Arlecchino.SystemTerminal.LeaveFullScreen() -> void
+*REMOVED*Arlecchino.SystemTerminal.MouseAvailable.get -> bool
+*REMOVED*Arlecchino.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
+*REMOVED*Arlecchino.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+*REMOVED*Arlecchino.SystemTerminal.SystemTerminal() -> void
+*REMOVED*Arlecchino.SystemTerminal.Width.get -> int
+*REMOVED*Arlecchino.SystemTerminal.Write(string! text) -> void
+*REMOVED*static Arlecchino.Input.EscapeSequenceParser.TryParseKey(string! sequence, out System.ConsoleKeyInfo key) -> bool
+*REMOVED*static Arlecchino.Input.EscapeSequenceParser.TryParseMouse(string! sequence, out Arlecchino.Input.MouseEvent mouse) -> bool
+*REMOVED*static Arlecchino.State.StateChanges.IsRecording.get -> bool
+*REMOVED*static Arlecchino.State.StateChanges.NotifyRecorded(Arlecchino.State.IStateEdit! edit) -> void
+*REMOVED*static Arlecchino.State.StateChanges.NotifyWritten() -> void
+*REMOVED*static Arlecchino.State.StateChanges.Recorded -> System.Action<Arlecchino.State.IStateEdit!>?
+*REMOVED*static Arlecchino.State.StateChanges.Written -> System.Action?
+*REMOVED*static Arlecchino.State.StateTracking.Capture(System.Action<System.Func<System.Action!, System.IDisposable!>!>! track) -> System.IDisposable!
+*REMOVED*static Arlecchino.State.StateTracking.NoteRead(System.Func<System.Action!, System.IDisposable!>! subscribe) -> void
+abstract Arlecchino.Atoms.Atom<T>.RecordsHistory.get -> bool
+Arlecchino.Atoms.Atom<T>
+Arlecchino.Atoms.Atom<T>.Atom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.Atom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.Atom<T>.Value.get -> T
+Arlecchino.Atoms.Atom<T>.Value.set -> void
+Arlecchino.Atoms.AtomHistory
+Arlecchino.Atoms.AtomHistory.AtomHistory() -> void
+Arlecchino.Atoms.AtomHistory.CanRedo.get -> bool
+Arlecchino.Atoms.AtomHistory.CanUndo.get -> bool
+Arlecchino.Atoms.AtomHistory.Capacity.get -> int
+Arlecchino.Atoms.AtomHistory.Capacity.set -> void
+Arlecchino.Atoms.AtomHistory.Clear() -> void
+Arlecchino.Atoms.AtomHistory.Depth.get -> int
+Arlecchino.Atoms.AtomHistory.Dispose() -> void
+Arlecchino.Atoms.AtomHistory.Group() -> System.IDisposable!
+Arlecchino.Atoms.AtomHistory.Redo() -> bool
+Arlecchino.Atoms.AtomHistory.Undo() -> bool
+Arlecchino.Atoms.Computed<T>
+Arlecchino.Atoms.Computed<T>.Computed(System.Func<T>! compute) -> void
+Arlecchino.Atoms.Computed<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.Computed<T>.Value.get -> T
+Arlecchino.Atoms.IArlecchinoScopedStore
+Arlecchino.Atoms.IArlecchinoStore
+Arlecchino.Atoms.IAtomEdit
+Arlecchino.Atoms.IAtomEdit.Owner.get -> object?
+Arlecchino.Atoms.IAtomEdit.Redo() -> void
+Arlecchino.Atoms.IAtomEdit.Undo() -> void
+Arlecchino.Atoms.IReadableAtom<T>
+Arlecchino.Atoms.IReadableAtom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.IReadableAtom<T>.Value.get -> T
+Arlecchino.Atoms.LocalAtom<T>
+Arlecchino.Atoms.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.TrackedAtom<T>
+Arlecchino.Atoms.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Input.IArlecchinoTerminal
+Arlecchino.Input.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.Input.IArlecchinoTerminal.DisableMouse() -> void
+Arlecchino.Input.IArlecchinoTerminal.DisablePaste() -> void
+Arlecchino.Input.IArlecchinoTerminal.EnableMouse() -> void
+Arlecchino.Input.IArlecchinoTerminal.EnablePaste() -> void
+Arlecchino.Input.IArlecchinoTerminal.EnterFullScreen() -> void
+Arlecchino.Input.IArlecchinoTerminal.Height.get -> int
+Arlecchino.Input.IArlecchinoTerminal.KeyAvailable.get -> bool
+Arlecchino.Input.IArlecchinoTerminal.LeaveFullScreen() -> void
+Arlecchino.Input.IArlecchinoTerminal.MouseAvailable.get -> bool
+Arlecchino.Input.IArlecchinoTerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.Input.IArlecchinoTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.Input.IArlecchinoTerminal.Width.get -> int
+Arlecchino.Input.IArlecchinoTerminal.Write(string! text) -> void
+Arlecchino.Input.SystemTerminal
+Arlecchino.Input.SystemTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.Input.SystemTerminal.DisableMouse() -> void
+Arlecchino.Input.SystemTerminal.DisablePaste() -> void
+Arlecchino.Input.SystemTerminal.EnableMouse() -> void
+Arlecchino.Input.SystemTerminal.EnablePaste() -> void
+Arlecchino.Input.SystemTerminal.EnterFullScreen() -> void
+Arlecchino.Input.SystemTerminal.Height.get -> int
+Arlecchino.Input.SystemTerminal.KeyAvailable.get -> bool
+Arlecchino.Input.SystemTerminal.LeaveFullScreen() -> void
+Arlecchino.Input.SystemTerminal.MouseAvailable.get -> bool
+Arlecchino.Input.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.Input.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.Input.SystemTerminal.SystemTerminal() -> void
+Arlecchino.Input.SystemTerminal.Width.get -> int
+Arlecchino.Input.SystemTerminal.Write(string! text) -> void
+Arlecchino.Rendering.IArlecchinoColor
+Arlecchino.Rendering.IArlecchinoColor.Ansi.get -> string!
+Arlecchino.Rendering.Surface.AppendLine(string! line, Arlecchino.Rendering.IArlecchinoColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+Arlecchino.Rendering.Surface.FillLineAt(int row, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Surface.Surface(Arlecchino.Input.IArlecchinoTerminal! terminal) -> void
+Arlecchino.Rendering.Surface.WriteAt(int row, int column, string! text, Arlecchino.Rendering.IArlecchinoColor! style) -> void
+Arlecchino.Rendering.Surface.WriteBlock(System.Collections.Generic.IReadOnlyList<string!>! lines, Arlecchino.Rendering.IArlecchinoColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left | Arlecchino.Rendering.Align.Top, Arlecchino.Rendering.Margin margin = default(Arlecchino.Rendering.Margin)) -> void
+Arlecchino.Rendering.Surface.WriteLineAt(int row, string! line, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Surface.WriteTableRow(string![]! strings, int[]! widths, Arlecchino.Rendering.IArlecchinoColor! style, string! prefix = "") -> void
+Arlecchino.Rendering.SurfaceRegion.Border(Arlecchino.Rendering.IArlecchinoColor! style, string! title = "") -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.SurfaceRegion.Fill(Arlecchino.Rendering.IArlecchinoColor! style, char character = ' ') -> void
+Arlecchino.Rendering.SurfaceRegion.Write(int row, int column, string! text, Arlecchino.Rendering.IArlecchinoColor! style) -> void
+Arlecchino.Rendering.SurfaceRegion.WriteLine(int row, string! text, Arlecchino.Rendering.IArlecchinoColor! style, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering;
-using Arlecchino.State;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Sample;
 

@@ -1,11 +1,12 @@
 using System;
 using System.Text;
+using Arlecchino.Input;
 
 namespace Arlecchino.Rendering;
 
 /// <summary>
 /// The drawing target: a grid of cells, each holding one symbol and one style, serialized into a
-/// single write per frame. Needs nothing but an <see cref="ITerminal"/>, so it works outside a
+/// single write per frame. Needs nothing but an <see cref="IArlecchinoTerminal"/>, so it works outside a
 /// hosted application too.
 /// </summary>
 public partial class Surface
@@ -16,13 +17,13 @@ public partial class Surface
 
     private static readonly string[] AsciiCells = BuildAsciiCells();
 
-    private readonly ITerminal _terminal;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly StringBuilder _stringBuilder = new();
 
     private string[][] _cells = [];
-    private ITermColor[][] _styles = [];
+    private IArlecchinoColor[][] _styles = [];
     private string[][] _previousCells = [];
-    private ITermColor[][] _previousStyles = [];
+    private IArlecchinoColor[][] _previousStyles = [];
     private int _width;
     private int _height;
     private int _lines;
@@ -31,7 +32,7 @@ public partial class Surface
 
     /// <summary>Creates a surface that draws to a terminal.</summary>
     /// <param name="terminal">Where composed frames are written.</param>
-    public Surface(ITerminal terminal)
+    public Surface(IArlecchinoTerminal terminal)
     {
         _terminal = terminal;
     }
@@ -101,11 +102,11 @@ public partial class Surface
         if (_cells.Length != _height || (_cells.Length > 0 && _cells[0].Length != _width))
         {
             _cells = new string[_height][];
-            _styles = new ITermColor[_height][];
+            _styles = new IArlecchinoColor[_height][];
             for (var row = 0; row < _height; row++)
             {
                 _cells[row] = new string[_width];
-                _styles[row] = new ITermColor[_width];
+                _styles[row] = new IArlecchinoColor[_width];
             }
         }
 
@@ -163,7 +164,7 @@ public partial class Surface
         {
             var cells = _cells[row];
             var styles = _styles[row];
-            ITermColor? current = null;
+            IArlecchinoColor? current = null;
 
             for (var col = 0; col < _width; col++)
             {
@@ -234,7 +235,7 @@ public partial class Surface
 
         var cells = _cells[row];
         var styles = _styles[row];
-        ITermColor? current = null;
+        IArlecchinoColor? current = null;
 
         for (var col = start; col <= end; col++)
         {
@@ -270,11 +271,11 @@ public partial class Surface
         if (_previousCells.Length != _height || (_height > 0 && _previousCells[0].Length != _width))
         {
             _previousCells = new string[_height][];
-            _previousStyles = new ITermColor[_height][];
+            _previousStyles = new IArlecchinoColor[_height][];
             for (var row = 0; row < _height; row++)
             {
                 _previousCells[row] = new string[_width];
-                _previousStyles[row] = new ITermColor[_width];
+                _previousStyles[row] = new IArlecchinoColor[_width];
             }
         }
 
@@ -285,7 +286,7 @@ public partial class Surface
         }
     }
 
-    private void SetCell(int row, int column, string cell, int cellWidth, ITermColor style)
+    private void SetCell(int row, int column, string cell, int cellWidth, IArlecchinoColor style)
     {
         var cells = _cells[row];
 

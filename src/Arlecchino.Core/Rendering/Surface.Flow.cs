@@ -14,7 +14,7 @@ public partial class Surface
     /// <param name="style">Style for the line; the default role when omitted.</param>
     /// <param name="align">Horizontal alignment inside the content width.</param>
     /// <param name="margin">Extra space around the line.</param>
-    public void AppendLine(string line, ITermColor? style = null, Align align = Align.Left, Margin margin = default)
+    public void AppendLine(string line, IArlecchinoColor? style = null, Align align = Align.Left, Margin margin = default)
     {
         style ??= Theme.Default;
 
@@ -59,7 +59,7 @@ public partial class Surface
     /// </param>
     /// <param name="style">Style for the row.</param>
     /// <param name="prefix">Text placed before the first column, such as a marker.</param>
-    public void WriteTableRow(string[] strings, int[] widths, ITermColor style, string prefix = "")
+    public void WriteTableRow(string[] strings, int[] widths, IArlecchinoColor style, string prefix = "")
     {
         var line = new StringBuilder(prefix);
         for (var i = 0; i < strings.Length; i++)
@@ -93,7 +93,7 @@ public partial class Surface
     /// <param name="align">Horizontal and vertical alignment against the frame.</param>
     /// <param name="margin">Space kept free from the edges it is aligned to.</param>
     public void WriteBlock(IReadOnlyList<string> lines,
-        ITermColor style,
+        IArlecchinoColor style,
         Align align = Align.Left | Align.Top,
         Margin margin = default)
     {

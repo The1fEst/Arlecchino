@@ -2,7 +2,7 @@
 
 # Theming
 
-Every drawing call takes an `ITermColor`. `Theme` is the static accessor views read from, and
+Every drawing call takes an `IArlecchinoColor`. `Theme` is the static accessor views read from, and
 `ThemePalette` is the object behind it.
 
 ## Roles
@@ -37,6 +37,12 @@ builder.Services
     });
 ```
 
+`Theme.Palette` and `TerminalCapabilities.Color` are **process-wide** on purpose: that is what lets a
+view write `Theme.Header` with nothing plumbed through to it. The price is that one process hosts one
+look — two hosts side by side share the palette and the colour level, and the last one built wins. A
+test that changes either of them shares the change with whatever else is running, which is why the
+[test host](packages-and-building.md) pins the colour level as it builds.
+
 `ThemePalette` properties are `init`-only and each has a default, so a partial palette is a valid one.
 `Theme.Palette` is assigned when `ArlecchinoOptions` is resolved from the container, which is why
 `Theme.Header` works from a view without any plumbing. Assigning `Theme.Palette` directly also works
@@ -45,7 +51,7 @@ when there is no container at all.
 ## TermColor
 
 ```csharp
-public sealed class TermColor : ITermColor
+public sealed class TermColor : IArlecchinoColor
 {
     public TerminalColor Foreground { get; init; } = TerminalColor.Default;
     public TerminalColor Background { get; init; } = TerminalColor.Default;
@@ -58,7 +64,7 @@ public sealed class TermColor : ITermColor
 
 ## 24-bit colour
 
-`ITermColor` is a single member — `string Ansi { get; }` — so a style is anything that can produce an
+`IArlecchinoColor` is a single member — `string Ansi { get; }` — so a style is anything that can produce an
 escape sequence. `RgbTermColor` is the second implementation that ships:
 
 ```csharp

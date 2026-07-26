@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Concurrent;
+using Arlecchino.Rendering;
 
-namespace Arlecchino;
+namespace Arlecchino.Hosting;
 
 /// <summary>
 /// The way back onto the frame loop from another thread. Views, state and the surface are not

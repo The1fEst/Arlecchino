@@ -7,6 +7,51 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+The API review before a stable release: names, namespaces and surface, all in one go. Everything here
+is breaking, and it is the last release that intends to be.
+
+### Changed
+
+- **Namespaces are laid out by subject.** The seven types that sat in the root `Arlecchino` moved out:
+  `IArlecchinoTerminal`, `SystemTerminal`, `TerminalInputReader` and `InputRouter` to
+  `Arlecchino.Input`, `Screen` and `Repaint` to `Arlecchino.Rendering`, `UiDispatcher` to
+  `Arlecchino.Hosting`. `Arlecchino.State` split three ways: atoms and stores to `Arlecchino.Atoms`,
+  every modal to `Arlecchino.Modals`, and `ArlecchinoState` with the file-picker request left where
+  they were.
+- **`TuiState` is `ArlecchinoState`** — the last name carrying the old prefix.
+- **The atom vocabulary is finished.** `IReadableState<T>` is `IReadableAtom<T>`, `StateHistory` is
+  `AtomHistory`, `AsyncState<T>` is `AsyncAtom<T>`, and `IStateEdit` is `IAtomEdit`.
+- **Every contract an application implements carries the package name**: `IViewFactory`,
+  `ITerminal`, `IFocusable` and `ITermColor` are now `IArlecchinoViewFactory`,
+  `IArlecchinoTerminal`, `IArlecchinoFocusable` and `IArlecchinoColor`. Interfaces only the framework
+  implements — `IReadableAtom<T>`, `IAffixedModal` and the rest — deliberately keep the short name.
+- **Diagnostics are `ARL001`–`ARL007`**, not `TSR*`.
+- **`Style` means one thing.** The per-item delegate on `ListBox<T>`, `Table<T>` and `Tree<T>` is
+  `ItemStyle`; `Style` stays the single colour on `ProgressBar`, `StatusBar` and `Spinner`.
+- **`Form` has one input surface.** `Handle` and `HandleMouse` return a `FocusResult` like every other
+  widget, instead of a `ViewRoute` from the public method and a `FocusResult` from an explicit
+  implementation. A view hosting a form returns `_form.Handle(key).Route`.
+
+### Added
+
+- `AddStore<T>()`, so a store can be registered by hand as views, commands and widgets already could —
+  scoped when the type implements `IArlecchinoScopedStore`, singleton otherwise.
+
+### Removed
+
+- Implementation details are no longer public: `ArlecchinoHostedService`, `RegisteredViewFactory`,
+  `ViewRegistrations`, `CommandConflicts`, `LogOverlay`, `ArlecchinoLoggerProvider`, `FilePickerView`,
+  `EscapeSequenceParser`, `AtomChanges` and `AtomTracking`. The constructors of `Navigator`, `Screen`
+  and `InputRouter` went with them — the container builds those, an application resolves them.
+
+### Documentation
+
+- `Theme.Palette` and `TerminalCapabilities.Color` are documented as process-wide, which is what they
+  have always been: one look per process, last host built wins, and a test that changes either shares
+  the change with everything else running.
+
 ## 0.9.0
 
 ### Fixed

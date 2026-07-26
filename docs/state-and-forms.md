@@ -69,7 +69,7 @@ subscription.
 
 ## Undo and redo
 
-`StateHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
+`AtomHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
 no list of atoms to keep in sync, and nothing to register. Take it where you need `Undo()` / `Redo()`:
 
 ```csharp
@@ -96,15 +96,15 @@ as long as it runs. A group counts as one step. Lowering `Capacity` trims immedi
 The history records from the moment it exists — the hosted service resolves it at startup and clears
 it once the application is up, so edits made while wiring things together do not end up as the first
 undo step. Rendering a frame headlessly (tests, `--frame`) has no hosted service, so resolve
-`StateHistory` yourself before making edits you intend to undo.
+`AtomHistory` yourself before making edits you intend to undo.
 
 ## Loading in the background
 
-`AsyncState<T>` wraps a load in progress and lands its result on the frame loop through
+`AsyncAtom<T>` wraps a load in progress and lands its result on the frame loop through
 [`UiDispatcher`](rendering.md):
 
 ```csharp
-private readonly AsyncState<IReadOnlyList<Mod>> _mods;
+private readonly AsyncAtom<IReadOnlyList<Mod>> _mods;
 
 _mods.Load(async token => await _service.LoadAsync(token));
 ```
@@ -128,7 +128,7 @@ it is scoped, so [each screen gets its own](views-and-navigation.md), and naviga
 ```csharp
 public sealed class ModsView : IArlecchinoView
 {
-    private readonly AsyncState<IReadOnlyList<Mod>> _mods;
+    private readonly AsyncAtom<IReadOnlyList<Mod>> _mods;
 
     public ModsView(ViewLifetime lifetime, ModService service)
     {
@@ -142,7 +142,7 @@ public sealed class ModsView : IArlecchinoView
 
 | Member | Does |
 |---|---|
-| `Loading<T>(initial)` | An `AsyncState<T>` that is cancelled when the screen goes away |
+| `Loading<T>(initial)` | An `AsyncAtom<T>` that is cancelled when the screen goes away |
 | `Track(resource)` | Disposes a subscription, timer or handle with the screen; returns it back |
 | `OnClose(action)` | Runs something as the screen goes |
 | `Closing` | The token to pass into work you start yourself; readable after the screen has gone |
@@ -171,8 +171,8 @@ _form = new Form(state, options)
 };
 
 public void Draw() => _form.Draw(_surface.Content);
-public ViewRoute Handle(ConsoleKeyInfo key) => _form.Handle(key);
-public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse);
+public ViewRoute Handle(ConsoleKeyInfo key) => _form.Handle(key).Route;
+public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse).Route;
 ```
 
 Rendered as `label = value`, labels padded to the longest, the help of the selected field on the line
@@ -217,7 +217,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
 {
     private readonly IDisposable _watch;
 
-    public SettingsView(SettingsStore settings, TuiState state) =>
+    public SettingsView(SettingsStore settings, ArlecchinoState state) =>
         _watch = settings.Summary.Subscribe(() => state.Output = settings.Summary.Value);
 
     public void Dispose() => _watch.Dispose();
@@ -229,4 +229,4 @@ Views that only read atoms in `Draw` need none of this: reading happens fresh ev
 ## Threads
 
 Atoms are not thread-safe. Anything that finishes on another thread writes through
-`UiDispatcher.Post` — which is what `AsyncState` does internally.
+`UiDispatcher.Post` — which is what `AsyncAtom` does internally.

@@ -1,4 +1,5 @@
 using Arlecchino.State;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 
@@ -9,10 +10,10 @@ public sealed class ProbeStore : IArlecchinoStore
 
 public sealed class ScopedProbeStore : IArlecchinoScopedStore
 {
-    public ScopedProbeStore(TuiState state)
+    public ScopedProbeStore(ArlecchinoState state)
     {
         State = state;
     }
 
-    public TuiState State { get; }
+    public ArlecchinoState State { get; }
 }

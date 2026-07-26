@@ -2,9 +2,9 @@ using System;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
-using Arlecchino.State;
 using Arlecchino.Tests.Views;
 using Xunit;
+using Arlecchino.Modals;
 
 namespace Arlecchino.Tests;
 

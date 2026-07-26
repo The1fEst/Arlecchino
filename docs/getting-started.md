@@ -40,7 +40,7 @@ That first `using` is the one thing not visible from the code: `ViewKind` and `A
 written by the generator into `$(RootNamespace).Navigation`, not into a namespace of the package, so
 the file wiring the application up has to import it. Both exist from the moment the package is
 referenced — before the first view is written `ViewKind` simply holds no routes and the generator
-says so as `TSR004`. See [Source generator](source-generator.md) to put them somewhere else.
+says so as `ARL004`. See [Source generator](source-generator.md) to put them somewhere else.
 
 ## The first view
 
@@ -96,7 +96,7 @@ modal over the default view, and the size is `<width>x<height>`. `Surface.SetFix
 
 `Arlecchino.Processes` is the other kind of sample: a small application that does real work rather than
 showing off widgets. It lists the processes on the machine in a sortable [table](widgets.md), reads
-them on a background thread through `AsyncState` with a spinner while it loads, filters them from a
+them on a background thread through `AsyncAtom` with a spinner while it loads, filters them from a
 text modal, and opens a details screen for the selected row:
 
 ```

@@ -6,6 +6,7 @@ using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
+using Arlecchino.Atoms;
 
 namespace Arlecchino.Tests;
 
@@ -26,7 +27,7 @@ public sealed class TestApplication : IDisposable
 
     public IServiceProvider Services => _host.Services;
 
-    public TuiState State => _host.State;
+    public ArlecchinoState State => _host.State;
 
     public Navigator Navigator => _host.Navigator;
 
@@ -38,7 +39,7 @@ public sealed class TestApplication : IDisposable
 
     public UiDispatcher Dispatcher => _host.Dispatcher;
 
-    public StateHistory History => _host.History;
+    public AtomHistory History => _host.History;
 
     public void Press(ConsoleKey key, bool shift = false, bool alt = false, bool control = false) =>
         _host.Press(key, shift, alt, control);

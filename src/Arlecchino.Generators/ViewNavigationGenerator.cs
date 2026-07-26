@@ -188,7 +188,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
         builder.AppendLine("}");
         builder.AppendLine();
-        builder.AppendLine("public sealed class GeneratedViewFactory : IViewFactory");
+        builder.AppendLine("public sealed class GeneratedViewFactory : IArlecchinoViewFactory");
         builder.AppendLine("{");
         builder.AppendLine("    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view)");
         builder.AppendLine("    {");
