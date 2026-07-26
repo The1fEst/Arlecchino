@@ -1,0 +1,49 @@
+name: Bug report
+description: Something the framework does that it should not
+labels: [bug]
+
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it
+      description: >
+        The smallest view, form or key sequence that shows it. A test against `ArlecchinoTestHost` is
+        the most useful form of all, but a description of the keys pressed is enough.
+      render: csharp
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: terminal
+    attributes:
+      label: Terminal and platform
+      description: Which terminal, which OS, and whether it runs over SSH or in a multiplexer.
+      placeholder: Windows Terminal on Windows 11 / kitty on Arch / Terminal.app over ssh
+    validations:
+      required: true
+
+  - type: textarea
+    id: frame
+    attributes:
+      label: The frame
+      description: >
+        What was on screen, if it is a rendering problem. `app.Frame()` from a test, or a paste of the
+        terminal, both work.
+      render: text

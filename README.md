@@ -88,6 +88,11 @@ What changed between versions is in the [changelog](CHANGELOG.md).
 | `Arlecchino` | views, navigation, modals, commands, hosting, DI, and the generator |
 | `Arlecchino.Testing` | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
+## Contributing
+
+What the build expects of a change is in [CONTRIBUTING.md](CONTRIBUTING.md); how to report something
+that looks like a security problem is in [SECURITY.md](SECURITY.md).
+
 ## License
 
 MIT.
