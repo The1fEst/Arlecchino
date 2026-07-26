@@ -12,6 +12,9 @@ namespace Arlecchino.Forms;
 /// is read through delegates rather than stored, so a field always shows what the state holds now and
 /// follows the language the application is running in. The factories bind a field to an atom and pick
 /// the dialog that suits its type, which is the usual way to build one.
+///
+/// The atom they take is a <see cref="State{T}"/>, which is either a <see cref="TrackedState{T}"/> —
+/// so that editing the field can be undone — or a <see cref="LocalState{T}"/> when it should not be.
 /// </summary>
 public sealed class Field
 {

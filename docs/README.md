@@ -18,7 +18,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | [Modals and state](modals-and-state.md) | `TuiState`, text and choice modals, the output line |
 | [File picker](file-picker.md) | Requesting a path, places sidebar, filters, keys |
 | [Hosting and options](hosting-and-options.md) | `AddArlecchino`, every option, the builder API, running without the hosted service |
-| [State and forms](state-and-forms.md) | Atoms, computed values, undo, async loading, and forms built from them |
+| [State and forms](state-and-forms.md) | `TrackedState` and `LocalState` atoms, computed values, undo, async loading, and forms built from them |
 | [Widgets](widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
 | [Packages and building](packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed |

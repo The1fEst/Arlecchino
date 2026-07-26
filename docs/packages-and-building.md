@@ -196,11 +196,29 @@ with the whole surface.
 
 ## Continuous integration
 
-`.github/workflows/build.yml` runs on every push to `master`/`main` and on pull requests: restore,
-build in `Release` with warnings as errors, the test suite, and a pack — on Windows and Linux, because
-console behaviour differs between them. The Windows leg uploads the packages as a build artifact.
+`.github/workflows/build.yml` runs on every push to `master`/`main` and on pull requests that change
+something other than documentation: restore, build in `Release` with warnings as errors, the test
+suite, and a pack — on Windows and Linux, because console behaviour differs between them. The Windows
+leg uploads the packages as a build artifact.
 
-`.github/workflows/release.yml` publishes: push a `v0.2.0` tag and it builds, tests and pushes all
+### Committing without running it
+
+A half-finished commit does not need the matrix, and neither does a typo in a page of this
+documentation. Two ways out, neither of them invented here:
+
+| Way | What happens |
+|---|---|
+| `[skip ci]`, `[ci skip]`, `[no ci]`, `[skip actions]` in the commit message | GitHub does not start a run at all — Actions reads the message itself |
+| Touching only `**.md`, `docs/**` or `LICENSE` | Nothing starts: those paths are ignored by the workflow |
+
+```bash
+git commit -m "halfway through the layout [skip ci]"
+```
+
+None of this touches `release.yml`: publishing is triggered by a tag, so it happens when a tag is
+pushed and never by accident.
+
+`.github/workflows/release.yml` publishes: push a `v0.4.0` tag and it builds, tests and pushes all
 three packages to NuGet with the version taken from the tag.
 
 There is no API key anywhere. The workflow asks GitHub for an OIDC token — which is what

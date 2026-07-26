@@ -7,6 +7,10 @@ frame stale by themselves. Subscriptions are deliberately coarse — there is no
 ones to keep rendering cheap, because a frame already redraws everything and only changed cells reach
 the terminal.
 
+An atom is one of two types — `TrackedState<T>` for state the undo stack should carry, `LocalState<T>`
+for state it should not. `State<T>` is the base both share and the type everything else is written
+against; it is abstract, so the choice is made once, where the atom is declared.
+
 ## Atoms
 
 ```csharp
@@ -53,10 +57,12 @@ subscription.
 
 ## What belongs in an atom
 
-- **Atom** — state that outlives a view or is read by more than one screen: a draft being edited,
-  settings, the selected mod.
-- **Plain field of the view** — the cursor in a list, the current filter, the scroll offset. These die
-  with the view; making them atoms buys nothing.
+- **`TrackedState<T>`** — state that outlives a view or is read by more than one screen, and that the
+  user would expect `Undo` to take back: a draft being edited, settings, the selected mod.
+- **`LocalState<T>`** — the same reach, but nothing the user authored: what a background load
+  produced, which row is selected, the filter a screen keeps between visits.
+- **Plain field of the view** — the cursor in a list, the scroll offset, anything that dies with the
+  view. Making these atoms buys nothing.
 
 ## Undo and redo
 

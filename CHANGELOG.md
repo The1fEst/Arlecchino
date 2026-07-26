@@ -7,6 +7,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
 change only bumps the minor. See [Versioning](docs/packages-and-building.md).
 
+## Unreleased
+
+### Documentation
+
+- The two atom types are named where an atom is described rather than only in the state chapter: the
+  XML documentation of `Field` and `Form`, the page tables, and the opening of
+  [State and forms](docs/state-and-forms.md).
+
+### Continuous integration
+
+- `build.yml` ignores `**.md`, `docs/**` and `LICENSE`, and the documentation says how to keep a
+  work-in-progress commit off CI entirely (`[skip ci]`, which Actions reads by itself).
+
 ## 0.4.0
 
 ### Changed
