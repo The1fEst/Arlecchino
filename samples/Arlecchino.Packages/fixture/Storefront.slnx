@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Storefront.Api/Storefront.Api.csproj" />
+  <Project Path="Storefront.Workers/Storefront.Workers.csproj" />
+  <Project Path="Storefront.Shared/Storefront.Shared.csproj" />
+</Solution>
