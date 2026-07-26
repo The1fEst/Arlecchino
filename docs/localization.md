@@ -89,3 +89,10 @@ Adding anything the user can read means adding a field to `ArlecchinoStrings` an
 at the call site is a bug, because an application has no way to reach it. The same rule keeps
 application domain types out of the framework: a modal validator is a `Func<string, string?>`, not
 somebody's value object.
+
+The rule is enforced rather than trusted. A test replaces every delegate on `ArlecchinoStrings` —
+found by reflection, so nothing can be forgotten — with a marker, draws the main screen, the keys
+screen, the notification list and two modals, and fails if a single word of the framework's English
+survives anywhere in those frames. A hardcoded literal shows up as a failing test the day it is
+written, and a string added to `ArlecchinoStrings` but never documented fails a second test that
+compares this page with the type itself.

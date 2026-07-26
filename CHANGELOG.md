@@ -135,6 +135,13 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- **Localization is enforced, not trusted.** One test replaces every delegate on `ArlecchinoStrings`
+  by reflection and fails if a word of the framework's English survives on the main screen, the keys
+  screen, the notification list or a modal — a hardcoded literal is now a failing test rather than a
+  bug report from somebody translating the chrome.
+- **The documentation is checked against the code.** Every translatable string, every key binding and
+  every generator diagnostic has to appear on its page, so the tables stop drifting behind the type
+  they describe; the test names what is missing.
 - Nothing piles up as screens come and go. A hundred visits to a screen that subscribes to an atom
   through `ViewLifetime.Track` leave exactly one subscriber behind, a scoped store is created and
   disposed once per visit, and work scheduled on the ticker stops when the screen does — the three
