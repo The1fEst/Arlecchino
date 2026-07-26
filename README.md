@@ -1,4 +1,6 @@
-# Arlecchino
+<p align="center">
+  <img src="assets/arlecchino-banner.svg" alt="Arlecchino" width="820">
+</p>
 
 A terminal UI framework for .NET. Views are plain classes, navigation keeps a history, and everything
 is wired through `Microsoft.Extensions.DependencyInjection`.

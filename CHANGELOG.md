@@ -84,6 +84,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Documentation
 
+- The packages carry an icon, and the README opens with the banner. The brand assets live in
+  `assets/`: the harlequin mask as an icon on its plate, transparent, and as a single-colour glyph
+  that inherits `currentColor`, plus the banner and the social card — SVG throughout, with the raster
+  sizes rendered beside them.
 - `Theme.Palette` and `TerminalCapabilities.Color` are documented as process-wide, which is what they
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
