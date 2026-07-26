@@ -77,6 +77,9 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 ### Fixed
 
+- A view, store, command or widget declared inside another type is now named through it. The generator
+  emitted `new ModsView(...)` for a class nested in `Screens`, which does not compile — the code it
+  wrote could not see the type it had just found. All four generators name types the same way now.
 - A view, store or command without a public constructor is now left out of the generated code instead
   of being registered anyway. The generator reported it (`ARL002`, `ARL005`, `ARL006`) and then emitted
   a `new` of it regardless, so the diagnostic arrived alongside a compiler error in generated code
@@ -126,6 +129,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   into a type of its own, which the suite drives directly on either platform: presses, releases,
   drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
   event carries.
+- Nothing piles up as screens come and go. A hundred visits to a screen that subscribes to an atom
+  through `ViewLifetime.Track` leave exactly one subscriber behind, a scoped store is created and
+  disposed once per visit, and work scheduled on the ticker stops when the screen does — the three
+  ways a long-running terminal application usually starts leaking.
 - Resizing is tested through the widgets rather than only through the diff: a list keeps its selection
   on screen when the window shrinks, a scrolled pane comes back into range, text reflows when the
   window narrows, nothing is drawn wider than the window, and the too-small notice appears and goes

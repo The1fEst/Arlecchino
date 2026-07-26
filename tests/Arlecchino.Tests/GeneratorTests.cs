@@ -313,6 +313,52 @@ public sealed class GeneratorTests
     }
 
     [Fact]
+    public void AViewNestedInAnotherTypeIsNamedThroughIt()
+    {
+        const string source = """
+            using System;
+            using Arlecchino.Navigation;
+
+            namespace Sample;
+
+            public static class Screens
+            {
+                public class ModsView : IArlecchinoView
+                {
+                    public void Draw() { }
+                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                }
+            }
+            """;
+
+        var (generated, _) = Run(source);
+
+        Assert.Contains("new Screens.ModsView(", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AStoreNestedInAnotherTypeIsNamedThroughIt()
+    {
+        const string source = """
+            using Arlecchino.Atoms;
+
+            namespace Sample;
+
+            public static class Owner
+            {
+                public sealed class SettingsStore : IArlecchinoStore
+                {
+                    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+                }
+            }
+            """;
+
+        var (generated, _) = RunStores(source);
+
+        Assert.Contains("new Owner.SettingsStore()", generated, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void StoreWithoutAPublicConstructorIsReportedAndLeftOut()
     {
         const string source = """

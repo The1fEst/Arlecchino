@@ -101,7 +101,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
             return null;
         }
 
-        var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        var typeName = TypeNames.Of(symbol);
         var routeName = TrimViewSuffix(symbol.Name);
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty

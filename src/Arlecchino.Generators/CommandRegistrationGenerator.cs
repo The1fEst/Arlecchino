@@ -82,7 +82,7 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
             return null;
         }
 
-        var typeName = symbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        var typeName = TypeNames.Of(symbol);
         var containingNamespace = symbol.ContainingNamespace.IsGlobalNamespace
             ? string.Empty
             : symbol.ContainingNamespace.ToDisplayString();

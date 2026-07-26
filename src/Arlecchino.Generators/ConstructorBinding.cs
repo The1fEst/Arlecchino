@@ -21,7 +21,7 @@ internal static class ConstructorBinding
 
         return constructor.Parameters
             .Select(static parameter => new ParameterModel(
-                parameter.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
+                TypeNames.Of(parameter.Type),
                 parameter.Type.ContainingNamespace.IsGlobalNamespace
                     ? string.Empty
                     : parameter.Type.ContainingNamespace.ToDisplayString()))
