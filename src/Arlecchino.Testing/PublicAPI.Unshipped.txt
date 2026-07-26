@@ -1,11 +1,1 @@
 #nullable enable
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.State.StateHistory!
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.TuiState!
-Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.AtomHistory!
-Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
-Arlecchino.Testing.TestClock
-Arlecchino.Testing.TestClock.TestClock() -> void
-override Arlecchino.Testing.TestClock.GetUtcNow() -> System.DateTimeOffset
-Arlecchino.Testing.TestClock.Advance(System.TimeSpan amount) -> void
-Arlecchino.Testing.ArlecchinoTestHost.Clock.get -> Arlecchino.Testing.TestClock!
-Arlecchino.Testing.ArlecchinoTestHost.Advance(System.TimeSpan amount) -> void

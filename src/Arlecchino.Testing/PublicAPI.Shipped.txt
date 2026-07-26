@@ -1,14 +1,16 @@
 #nullable enable
 Arlecchino.Testing.ArlecchinoTestHost
+Arlecchino.Testing.ArlecchinoTestHost.Advance(System.TimeSpan amount) -> void
 Arlecchino.Testing.ArlecchinoTestHost.ArlecchinoTestHost(int width = 80, int height = 24, System.Action<Arlecchino.Hosting.ArlecchinoBuilder!>? configure = null) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Clock.get -> Arlecchino.Testing.TestClock!
 Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.UiDispatcher!
 Arlecchino.Testing.ArlecchinoTestHost.Dispose() -> void
 Arlecchino.Testing.ArlecchinoTestHost.Frame() -> string!
 Arlecchino.Testing.ArlecchinoTestHost.FrameContains(string! text) -> bool
 Arlecchino.Testing.ArlecchinoTestHost.FrameLineContaining(string! text) -> string!
 Arlecchino.Testing.ArlecchinoTestHost.FrameLines() -> string![]!
-Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.State.StateHistory!
+Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.AtomHistory!
 Arlecchino.Testing.ArlecchinoTestHost.Navigator.get -> Arlecchino.Navigation.Navigator!
 Arlecchino.Testing.ArlecchinoTestHost.Options.get -> Arlecchino.Hosting.ArlecchinoOptions!
 Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> void
@@ -16,7 +18,7 @@ Arlecchino.Testing.ArlecchinoTestHost.ReadFromTerminal(string! sequence) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Repaint!
 Arlecchino.Testing.ArlecchinoTestHost.Scroll(int row, int column, bool down) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Services.get -> System.IServiceProvider!
-Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.TuiState!
+Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
 Arlecchino.Testing.ArlecchinoTestHost.Styles() -> System.Collections.Generic.IReadOnlyList<string!>!
 Arlecchino.Testing.ArlecchinoTestHost.Surface.get -> Arlecchino.Rendering.Surface!
 Arlecchino.Testing.ArlecchinoTestHost.Terminal.get -> Arlecchino.Testing.FakeTerminal!
@@ -49,6 +51,10 @@ Arlecchino.Testing.FakeTerminal.Width.set -> void
 Arlecchino.Testing.FakeTerminal.Write(string! text) -> void
 Arlecchino.Testing.FakeTerminal.Written.get -> string!
 Arlecchino.Testing.FrameText
+Arlecchino.Testing.TestClock
+Arlecchino.Testing.TestClock.Advance(System.TimeSpan amount) -> void
+Arlecchino.Testing.TestClock.TestClock() -> void
+override Arlecchino.Testing.TestClock.GetUtcNow() -> System.DateTimeOffset
 static Arlecchino.Testing.FrameText.AnsiSequence() -> System.Text.RegularExpressions.Regex!
 static Arlecchino.Testing.FrameText.BoxWidth(string! line) -> int
 static Arlecchino.Testing.FrameText.CursorJump() -> System.Text.RegularExpressions.Regex!

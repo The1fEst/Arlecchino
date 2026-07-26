@@ -4,12 +4,15 @@ Notable changes to the `Arlecchino`, `Arlecchino.Core` and `Arlecchino.Testing` 
 together and always carry the same version.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows
-[Semantic Versioning](https://semver.org/spec/v2.0.0.html) — with the caveat that on `0.x` a breaking
-change only bumps the minor. See [Versioning](docs/packages-and-building.md).
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html). Up to `1.0.0` a breaking change only
+bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
+the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
-## Unreleased
+## 1.0.0
 
-The API review before a stable release, and the features it was waiting for.
+The first stable release: the public surface is what it is going to be, and from here a breaking
+change means a `2.0`. This release is the API review that made that possible, and the features it was
+waiting for — everything under **Changed** is breaking, and it is the last release that intends to be.
 
 ### Added
 
@@ -47,9 +50,10 @@ The API review before a stable release, and the features it was waiting for.
   needs nothing here: the terminal turns `Ctrl+Shift+V` into a bracketed paste, which already arrives
   as one block.
 
-### Changed
+- `AddStore<T>()`, so a store can be registered by hand as views, commands and widgets already could —
+  scoped when the type implements `IArlecchinoScopedStore`, singleton otherwise.
 
-Everything in this section is breaking, and it is the last release that intends to be.
+### Changed
 
 - **`Arlecchino.State` is laid out by subject.** It split three ways: atoms and stores to
   `Arlecchino.Atoms`, every modal to `Arlecchino.Modals`, and `ArlecchinoState` with the file-picker
@@ -67,11 +71,6 @@ Everything in this section is breaking, and it is the last release that intends 
 - **`Form` has one input surface.** `Handle` and `HandleMouse` return a `FocusResult` like every other
   widget, instead of a `ViewRoute` from the public method and a `FocusResult` from an explicit
   implementation. A view hosting a form returns `_form.Handle(key).Route`.
-
-### Added
-
-- `AddStore<T>()`, so a store can be registered by hand as views, commands and widgets already could —
-  scoped when the type implements `IArlecchinoScopedStore`, singleton otherwise.
 
 ### Removed
 

@@ -39,7 +39,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `0.10.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `1.0.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -116,7 +116,7 @@ either platform without a console anywhere.
 
 ## What ends up in the package
 
-`Arlecchino.0.10.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+`Arlecchino.1.0.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
 page. The two libraries are the same source: `net8.0` is there because that is the long-term support
 release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks
@@ -206,10 +206,14 @@ artifact.
 The three packages ship together and always carry the same version — mixing versions between them is
 not supported, and there is nothing to gain from it since they are built from one commit.
 
-Versions follow SemVer with the usual `0.x` caveat: while the major is zero, a breaking change bumps
-the **minor**, and the patch is reserved for fixes that keep the API as it is. Breaking changes are
-expected at this stage and are not softened with obsolete shims or duplicate overloads — the
-[changelog](../CHANGELOG.md) says what moved, and the old shape is removed in the same release.
+Versions follow SemVer, and since `1.0.0` they mean what SemVer says: breaking the public API takes a
+new **major**, a feature takes the minor, a fix takes the patch. Before `1.0.0` a break only bumped
+the minor, which is why the `0.x` line moved as fast as it did. That is over — the surface recorded in
+`PublicAPI.Shipped.txt` is the contract now.
+
+What has not changed is how a break is delivered when one is due: no obsolete shims, no duplicate
+overloads left behind. The [changelog](../CHANGELOG.md) says what moved and the old shape goes in the
+same release.
 
 `Directory.Build.props` holds the version for local builds. A release takes it from the tag instead
 (`v0.2.0` → `0.2.0`), so publishing is a matter of tagging: nothing has to be edited in the
@@ -235,7 +239,7 @@ dotnet format analyzers src/Arlecchino/Arlecchino.csproj --diagnostics RS0016 --
 That writes the new entries. Deliberate removals are recorded by hand — delete the line, or move it
 under `*REMOVED*` when it was already shipped. At release time the contents of `Unshipped` move into
 `Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first release on NuGet, did
-with the whole surface.
+with the whole surface, and what `1.0.0` did with the review that preceded it.
 
 ## Continuous integration
 
