@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 
 namespace Arlecchino.Diagnostics;
@@ -26,7 +25,7 @@ public sealed record LogEntry(DateTimeOffset Time, LogLevel Level, string Catego
 public sealed class LogBuffer
 {
     private readonly ConcurrentQueue<LogEntry> _entries = new();
-    private readonly Lock _trimming = new();
+    private readonly object _trimming = new();
     private readonly Repaint _repaint;
 
     /// <summary>Creates the buffer.</summary>

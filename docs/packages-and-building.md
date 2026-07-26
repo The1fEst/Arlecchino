@@ -6,9 +6,9 @@
 
 | Package | Target | Contents |
 |---|---|---|
-| `Arlecchino.Core` | `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
-| `Arlecchino` | `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
-| `Arlecchino.Testing` | `net10.0` | Headless host for testing an application built on Arlecchino |
+| `Arlecchino.Core` | `net8.0`, `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
+| `Arlecchino` | `net8.0`, `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
+| `Arlecchino.Testing` | `net8.0`, `net10.0` | Headless host for testing an application built on Arlecchino |
 
 `Arlecchino` also carries the generators as `analyzers/dotnet/cs` and a `build/Arlecchino.props` that
 makes `RootNamespace`, `ArlecchinoViewNamespace`, `ArlecchinoGenerateViews`,
@@ -56,7 +56,12 @@ dotnet test tests/Arlecchino.Tests
 ```
 
 The suite runs on `Arlecchino.Testing` — the same package applications use, so it is exercised by every
-run.
+run — and it runs twice, once per target framework:
+
+```
+dotnet test tests/Arlecchino.Tests -f net8.0
+dotnet test tests/Arlecchino.Tests -f net10.0
+```
 
 ## Testing an application
 
@@ -102,8 +107,11 @@ they produce are used by the navigation tests.
 
 ## What ends up in the package
 
-`Arlecchino.0.10.0.nupkg` carries `lib/net10.0/Arlecchino.dll`, the generator under `analyzers/dotnet/cs`,
-`build/Arlecchino.props` and the README shown on the package page. Symbols ship separately as `.snupkg`,
+`Arlecchino.0.10.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
+page. The two libraries are the same source: `net8.0` is there because that is the long-term support
+release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks
+on a plain object rather than `System.Threading.Lock`. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.
 

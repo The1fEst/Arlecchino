@@ -13,6 +13,9 @@ The API review before a stable release, and the features it was waiting for.
 
 ### Added
 
+- **The packages target `net8.0` as well as `net10.0`.** An application on the long-term support
+  release can use them now; the two libraries are built from the same source, which is why `LogBuffer`
+  locks on a plain object instead of `System.Threading.Lock`. The suite runs on both frameworks.
 - **Work on a clock.** `Ticker` schedules an action `Every(interval)` or `After(delay)`, runs it
   between frames on the drawing thread and asks for a repaint afterwards; the handle it returns
   cancels the work, so `ViewLifetime.Track` ties it to a screen. No thread of its own — the frame loop
