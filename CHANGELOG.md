@@ -86,6 +86,18 @@ Everything in this section is breaking, and it is the last release that intends 
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
 
+### Tests
+
+- `SystemTerminal` is covered. Until now every test went through `FakeTerminal`, so the escape
+  sequences an application actually sends — the alternate screen, bracketed paste, SGR mouse
+  reporting, `OSC 52` copying — were never executed by anything. The suite now asserts the bytes, and
+  the platform split with them: away from Windows the mouse is asked for with sequences, on Windows
+  nothing reaches the output because the console is read record by record instead.
+- Translating a Windows console record into a key or a mouse event moved out of the P/Invoke wrapper
+  into a type of its own, which the suite drives directly on either platform: presses, releases,
+  drags, a wheel in both directions, held buttons that must not report twice, and the modifiers each
+  event carries.
+
 ## 0.9.0
 
 ### Fixed

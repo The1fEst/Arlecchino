@@ -22,25 +22,11 @@ internal sealed partial class WindowsConsoleInput
     private const ushort KeyEventType = 0x0001;
     private const ushort MouseEventType = 0x0002;
 
-    private const uint MouseMoved = 0x0001;
-    private const uint MouseWheeled = 0x0004;
-
-    private const uint LeftButton = 0x0001;
-    private const uint RightButton = 0x0002;
-    private const uint MiddleButton = 0x0004;
-
-    private const uint RightAltPressed = 0x0001;
-    private const uint LeftAltPressed = 0x0002;
-    private const uint RightControlPressed = 0x0004;
-    private const uint LeftControlPressed = 0x0008;
-    private const uint ShiftPressed = 0x0010;
-
     private readonly Queue<ConsoleKeyInfo> _keys = new();
     private readonly Queue<MouseEvent> _mouse = new();
+    private readonly WindowsInputTranslator _translator = new();
     private readonly IntPtr _input;
     private readonly uint _restoreMode;
-
-    private uint _heldButtons;
 
     private WindowsConsoleInput(IntPtr input, uint restoreMode)
     {
@@ -130,7 +116,8 @@ internal sealed partial class WindowsConsoleInput
         switch (record.EventType)
         {
             case KeyEventType when record.Key.KeyDown != 0:
-                _keys.Enqueue(ToKeyInfo(record.Key));
+                _keys.Enqueue(WindowsInputTranslator.ToKeyInfo(record.Key.VirtualKeyCode, record.Key.UnicodeChar,
+                    record.Key.ControlKeyState));
                 return true;
             case MouseEventType:
                 Translate(record.Mouse);
@@ -140,53 +127,14 @@ internal sealed partial class WindowsConsoleInput
         }
     }
 
-    private static ConsoleKeyInfo ToKeyInfo(KeyEventRecord key) =>
-        new(
-            (char)key.UnicodeChar,
-            (ConsoleKey)key.VirtualKeyCode,
-            (key.ControlKeyState & ShiftPressed) != 0,
-            (key.ControlKeyState & (LeftAltPressed | RightAltPressed)) != 0,
-            (key.ControlKeyState & (LeftControlPressed | RightControlPressed)) != 0);
-
     private void Translate(MouseEventRecord mouse)
     {
         var (row, column) = ToFrameCell(mouse.PositionY, mouse.PositionX);
-        var modifiers = ToModifiers(mouse.ControlKeyState);
 
-        if ((mouse.EventFlags & MouseWheeled) != 0)
+        if (_translator.TryTranslateMouse(row, column, mouse.ButtonState, mouse.ControlKeyState, mouse.EventFlags,
+                out var translated))
         {
-            var up = (int)mouse.ButtonState >> 16 > 0;
-            _mouse.Enqueue(new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown, MouseButton.None,
-                row, column, modifiers));
-            return;
-        }
-
-        var held = mouse.ButtonState & (LeftButton | RightButton | MiddleButton);
-
-        if ((mouse.EventFlags & MouseMoved) != 0)
-        {
-            if (held != 0)
-            {
-                _mouse.Enqueue(new(MouseAction.Moved, ToButton(held), row, column, modifiers));
-            }
-
-            _heldButtons = held;
-            return;
-        }
-
-        var pressed = held & ~_heldButtons;
-        var released = _heldButtons & ~held;
-        _heldButtons = held;
-
-        if (pressed != 0)
-        {
-            _mouse.Enqueue(new(MouseAction.Pressed, ToButton(pressed), row, column, modifiers));
-            return;
-        }
-
-        if (released != 0)
-        {
-            _mouse.Enqueue(new(MouseAction.Released, ToButton(released), row, column, modifiers));
+            _mouse.Enqueue(translated);
         }
     }
 
@@ -197,36 +145,6 @@ internal sealed partial class WindowsConsoleInput
         return GetConsoleScreenBufferInfo(output, out var info)
             ? (Math.Max(0, bufferRow - info.WindowTop), Math.Max(0, bufferColumn - info.WindowLeft))
             : (bufferRow, bufferColumn);
-    }
-
-    private static MouseButton ToButton(uint buttons) => buttons switch
-    {
-        _ when (buttons & LeftButton) != 0 => MouseButton.Left,
-        _ when (buttons & RightButton) != 0 => MouseButton.Right,
-        _ when (buttons & MiddleButton) != 0 => MouseButton.Middle,
-        _ => MouseButton.None,
-    };
-
-    private static ConsoleModifiers ToModifiers(uint state)
-    {
-        var modifiers = default(ConsoleModifiers);
-
-        if ((state & ShiftPressed) != 0)
-        {
-            modifiers |= ConsoleModifiers.Shift;
-        }
-
-        if ((state & (LeftAltPressed | RightAltPressed)) != 0)
-        {
-            modifiers |= ConsoleModifiers.Alt;
-        }
-
-        if ((state & (LeftControlPressed | RightControlPressed)) != 0)
-        {
-            modifiers |= ConsoleModifiers.Control;
-        }
-
-        return modifiers;
     }
 
     [StructLayout(LayoutKind.Sequential)]

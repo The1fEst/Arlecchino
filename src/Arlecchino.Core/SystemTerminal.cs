@@ -54,6 +54,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
         }
     }
 
+    internal bool EscapeSequencesWork => _escapeSequencesWork;
+
     /// <summary>Window width, or a fixed width when output is redirected.</summary>
     public int Width => Console.IsOutputRedirected ? RedirectedWidth : Math.Max(1, Console.WindowWidth);
 
