@@ -25,6 +25,7 @@ public sealed class EscapeTimeoutTests
         });
 
         app.Services.GetRequiredService<TerminalInputReader>().ReadPending();
+        app.DrainInput();
         await rest;
 
         Assert.Equal(1, ((ChoiceModal)app.State.Modal!).Index);
@@ -58,6 +59,7 @@ public sealed class EscapeTimeoutTests
 
         rest.Start();
         app.Services.GetRequiredService<TerminalInputReader>().ReadPending();
+        app.DrainInput();
         rest.Join();
 
         Assert.Equal(1, ((ChoiceModal)app.State.Modal!).Index);

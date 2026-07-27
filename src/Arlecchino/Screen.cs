@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Modals;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
@@ -39,6 +40,8 @@ public class Screen
     private readonly UiDispatcher _dispatcher;
     private readonly Ticker _ticker;
     private readonly LogOverlay _log;
+    private readonly PendingInput _pending;
+    private readonly InputRouter _router;
 
     private int _lastWidth;
     private int _lastHeight;
@@ -55,6 +58,8 @@ public class Screen
     /// <param name="dispatcher">Runs work posted from background threads, just before drawing.</param>
     /// <param name="ticker">Runs scheduled work between frames.</param>
     /// <param name="log">Drawn over the view while it is open.</param>
+    /// <param name="pending">Input read since the last frame, routed on this thread before drawing.</param>
+    /// <param name="router">Where that input goes.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
     internal Screen(
         ArlecchinoState state,
@@ -66,9 +71,13 @@ public class Screen
         UiDispatcher dispatcher,
         Ticker ticker,
         LogOverlay log,
+        PendingInput pending,
+        InputRouter router,
         ILogger<Screen> logger)
     {
         _log = log;
+        _pending = pending;
+        _router = router;
         _state = state;
         _surface = surface;
         _navigator = navigator;
@@ -116,6 +125,7 @@ public class Screen
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            _pending.Drain(_router);
             _ticker.Run(TickFailed);
 
             if (_repaint.TakeRequested() || TerminalWasResized())

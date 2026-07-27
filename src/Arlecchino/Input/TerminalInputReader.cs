@@ -26,17 +26,65 @@ public sealed class TerminalInputReader
     private readonly IArlecchinoTerminal _terminal;
     private readonly InputRouter _router;
     private readonly ArlecchinoOptions _options;
+    private readonly PendingInput? _pending;
     private readonly StringBuilder _sequence = new();
 
-    /// <summary>Creates the reader.</summary>
+    /// <summary>
+    /// Creates the reader. Everything it reads is routed as it is read, which is what a caller driving
+    /// the reader itself wants — inside the framework it is built with a queue instead, so that the
+    /// thread reading the terminal never touches what the frame loop is drawing.
+    /// </summary>
     /// <param name="terminal">Where key presses come from.</param>
     /// <param name="router">Where the result is sent.</param>
     /// <param name="options">Supplies how long to wait for the rest of a sequence.</param>
     public TerminalInputReader(IArlecchinoTerminal terminal, InputRouter router, ArlecchinoOptions options)
+        : this(terminal, router, options, null)
+    {
+    }
+
+    internal TerminalInputReader(
+        IArlecchinoTerminal terminal,
+        InputRouter router,
+        ArlecchinoOptions options,
+        PendingInput? pending)
     {
         _terminal = terminal;
         _router = router;
         _options = options;
+        _pending = pending;
+    }
+
+    private void Send(ConsoleKeyInfo key)
+    {
+        if (_pending is { } queue)
+        {
+            queue.Add(key);
+            return;
+        }
+
+        _router.ProcessKey(key);
+    }
+
+    private void Send(MouseEvent mouse)
+    {
+        if (_pending is { } queue)
+        {
+            queue.Add(mouse);
+            return;
+        }
+
+        _router.ProcessMouse(mouse);
+    }
+
+    private void SendPaste(string text)
+    {
+        if (_pending is { } queue)
+        {
+            queue.AddPaste(text);
+            return;
+        }
+
+        _router.ProcessPaste(text);
     }
 
     /// <summary>
@@ -49,7 +97,7 @@ public sealed class TerminalInputReader
         {
             while (_terminal.MouseAvailable)
             {
-                _router.ProcessMouse(_terminal.ReadMouse());
+                Send(_terminal.ReadMouse());
             }
 
             if (_terminal.KeyAvailable)
@@ -67,15 +115,15 @@ public sealed class TerminalInputReader
     {
         if (key.Key != ConsoleKey.Escape || !WaitForKey())
         {
-            _router.ProcessKey(key);
+            Send(key);
             return;
         }
 
         var introducer = _terminal.ReadKey();
         if (introducer.KeyChar is not ('[' or 'O'))
         {
-            _router.ProcessKey(key);
-            _router.ProcessKey(introducer);
+            Send(key);
+            Send(introducer);
             return;
         }
 
@@ -119,13 +167,13 @@ public sealed class TerminalInputReader
 
         if (EscapeSequenceParser.TryParseMouse(sequence, out var mouse))
         {
-            _router.ProcessMouse(mouse);
+            Send(mouse);
             return;
         }
 
         if (EscapeSequenceParser.TryParseKey(sequence, out var key))
         {
-            _router.ProcessKey(key);
+            Send(key);
             return;
         }
 
@@ -134,12 +182,12 @@ public sealed class TerminalInputReader
 
     private void Replay(ConsoleKeyInfo escape, ConsoleKeyInfo introducer)
     {
-        _router.ProcessKey(escape);
-        _router.ProcessKey(introducer);
+        Send(escape);
+        Send(introducer);
 
         foreach (var character in _sequence.ToString())
         {
-            _router.ProcessKey(new(character, default, false, false, false));
+            Send(new ConsoleKeyInfo(character, default, false, false, false));
         }
 
         _sequence.Clear();
@@ -185,11 +233,11 @@ public sealed class TerminalInputReader
             }
 
             pasted.Length -= PasteEnd.Length;
-            _router.ProcessPaste(pasted.ToString());
+            SendPaste(pasted.ToString());
             return;
         }
 
-        _router.ProcessPaste(pasted.ToString());
+        SendPaste(pasted.ToString());
     }
 
     private static bool EndsPaste(StringBuilder pasted)

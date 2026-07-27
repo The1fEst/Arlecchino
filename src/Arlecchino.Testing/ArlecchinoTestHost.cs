@@ -130,7 +130,16 @@ public sealed class ArlecchinoTestHost : IDisposable
     {
         Terminal.EnqueueText(sequence);
         _provider.GetRequiredService<TerminalInputReader>().ReadPending();
+        DrainInput();
     }
+
+    /// <summary>
+    /// Routes whatever the reader has queued, which is what the frame loop does before it draws.
+    /// <see cref="ReadFromTerminal"/> and <see cref="Frame"/> do it for you; call it yourself after
+    /// driving <c>TerminalInputReader</c> directly, since the reader queues rather than routes.
+    /// </summary>
+    public void DrainInput() =>
+        _provider.GetRequiredService<PendingInput>().Drain(_provider.GetRequiredService<InputRouter>());
 
     /// <summary>
     /// Moves the clock forward and runs whatever fell due, exactly as the frame loop would. The frame is
@@ -147,6 +156,7 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <returns>The frame.</returns>
     public string Frame()
     {
+        DrainInput();
         Terminal.Clear();
         _provider.GetRequiredService<Screen>().DrawOnce();
         return FrameText.WithoutStyles(Terminal.Written);

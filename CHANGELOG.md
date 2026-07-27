@@ -8,6 +8,34 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
+## 1.3.0
+
+### Fixed
+
+- **Input no longer runs on a different thread from drawing.** The hosted service runs two loops —
+  one reading the terminal, one drawing — and the reader routed what it read there and then. So a key
+  press changed the selection, the modal stack, the route and any atom it touched *while* the other
+  loop was reading the same things and writing to the `Surface`: no locks, no barriers, and nothing in
+  the framework saying so. Instrumenting both loops showed drawing on threads 4, 6, 9 and 10 and input
+  on 6 and 9 in a single run — neither loop is pinned, since every `await` resumes wherever the pool
+  puts it.
+
+  The reader now queues what it reads and the frame loop drains the queue at the top of each turn,
+  before the ticker and before drawing. Everything an application writes is back to being touched by
+  one thread, which is what the documentation already claimed. A key press costs at most one frame of
+  latency — 16 ms at the default rate.
+
+  This also settles the things that hung off it: `Ticker`'s list, the notification list and every
+  widget collection were reachable from both loops and are now reachable from one.
+- Giving the terminal back is idempotent. A signal handler and the shutdown path could both restore
+  it, writing two sets of escape sequences over each other; the second one now does nothing. Coming
+  back from `SIGTSTP` re-arms it, so the modes are still restored when the application finally exits.
+
+### Added
+
+- `ArlecchinoTestHost.DrainInput()` routes what the reader has queued, for a test that drives
+  `TerminalInputReader` itself. `ReadFromTerminal` and `Frame` already do it.
+
 ## 1.2.0
 
 ### Added

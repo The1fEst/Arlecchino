@@ -234,3 +234,9 @@ Views that only read atoms in `Draw` need none of this: reading happens fresh ev
 
 Atoms are not thread-safe. Anything that finishes on another thread writes through
 `UiDispatcher.Post` — which is what `AsyncAtom` does internally.
+
+That rule works because there is exactly one thread to be on. The frame loop and the loop reading the
+terminal are separate, but the reader does not route what it reads: it queues it, and the frame loop
+routes the queue just before drawing. So every view, widget, atom and modal — and the `Surface` they
+draw into — is touched by the drawing thread alone, and none of them needs a lock. What you post from
+elsewhere runs there too, immediately before the frame that shows it.

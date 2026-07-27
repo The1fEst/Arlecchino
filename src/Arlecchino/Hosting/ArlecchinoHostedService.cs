@@ -32,6 +32,8 @@ internal class ArlecchinoHostedService : BackgroundService
 
     private readonly List<PosixSignalRegistration> _signals = [];
 
+    private int _terminalLeft;
+
     private ConsoleCancelEventHandler? _cancelKeyHandler;
     private EventHandler? _processExitHandler;
 
@@ -105,6 +107,8 @@ internal class ArlecchinoHostedService : BackgroundService
 
     private void EnterTerminalModes()
     {
+        Interlocked.Exchange(ref _terminalLeft, 0);
+
         if (_options.UseAlternateScreen)
         {
             _terminal.EnterFullScreen();
@@ -123,6 +127,11 @@ internal class ArlecchinoHostedService : BackgroundService
 
     private void LeaveTerminalModes()
     {
+        if (Interlocked.Exchange(ref _terminalLeft, 1) == 1)
+        {
+            return;
+        }
+
         if (_options.MouseInput)
         {
             _terminal.DisableMouse();

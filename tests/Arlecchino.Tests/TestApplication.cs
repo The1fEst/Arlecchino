@@ -48,6 +48,8 @@ public sealed class TestApplication : IDisposable
 
     public void ReadFromTerminal(string sequence) => _host.ReadFromTerminal(sequence);
 
+    public void DrainInput() => _host.DrainInput();
+
     public void Advance(TimeSpan amount) => _host.Advance(amount);
 
     public string Frame() => _host.Frame();

@@ -135,10 +135,27 @@ Missed time is not made up for. An action runs at most once per pass, so a loop 
 up — a window that came back from being minimised, a long operation, a debugger — resumes with a
 single run rather than firing everything it slept through, and the next run is counted from now.
 
-Nothing here uses a thread of its own: the frame loop calls the ticker on every turn, and a headless
-host moves its own clock instead. That is what makes it testable — `ArlecchinoTestHost.Advance(...)`
+Nothing here uses a thread of its own: the frame loop calls the ticker on every turn — right after it
+has routed the input waiting in the queue, so scheduled work and key handling really are on one
+thread — and a headless host moves its own clock instead. That is what makes it testable — `ArlecchinoTestHost.Advance(...)`
 moves the clock and runs whatever fell due, so a test that would wait five seconds waits none. See
 [Packages and building](packages-and-building.md).
+
+## The two loops
+
+The hosted service runs two of them at once. One reads the terminal — a blocking, timing-sensitive
+job, because the rest of an escape sequence arrives a few milliseconds after its `Esc`. The other
+draws at the configured rate, and only when a frame is owed.
+
+They do not share state. The reader turns what the terminal says into keys, mouse events and pasted
+blocks, and queues them; the frame loop drains that queue at the top of every turn, before the ticker
+and before drawing. Everything an application writes — views, widgets, atoms, modals, the `Surface` —
+is therefore touched by the drawing thread alone, which is why none of it is thread-safe and none of
+it needs to be. The cost is that a key press waits for the next turn of the loop: at the default 60
+frames a second, at most 16 ms.
+
+`ArlecchinoTestHost` behaves the same way, which is why `Frame()` routes what is queued before it
+draws. A test that drives `TerminalInputReader` directly calls `DrainInput()` for the same reason.
 
 ## Failures and shutdown
 
