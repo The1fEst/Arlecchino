@@ -10,17 +10,17 @@ Every drawing call takes an `IArlecchinoColor`. `Theme` is the static accessor v
 | Role | Default |
 |---|---|
 | `Default` | terminal default foreground and background |
-| `Header` | bright magenta, bold |
-| `TableHeader` | bright blue, bold |
-| `Accent` | bright white |
-| `Info` | cyan — used for box borders |
-| `Muted` | bright black — used for footers and hints |
-| `Input` | black on blue — the text-modal input line |
-| `Selected` | bright black background |
-| `Active` | green |
-| `ActiveSelected` | black on green |
-| `Warning` | black on yellow — the output line when it carries text |
-| `Error` | black on red — modal validation messages |
+| `Header` | crimson, bold |
+| `TableHeader` | bone, bold |
+| `Accent` | bone |
+| `Info` | ash — used for box borders |
+| `Muted` | ash — used for footers and hints |
+| `Input` | ink on bone — the text-modal input line |
+| `Selected` | bone on the hairline grey |
+| `Active` | crimson |
+| `ActiveSelected` | ink on ash |
+| `Warning` | ink on amber — the output line when it carries text |
+| `Error` | bone on crimson — modal validation messages |
 
 Views should pick a role, not a colour: swapping the palette then restyles the whole app, chrome
 included.
@@ -50,8 +50,9 @@ when there is no container at all.
 
 ### The framework's own palette
 
-`ThemePalette.Arlecchino` is the harlequin mask in colours — crimson `#C9382B`, bone `#EDE6D9`, ink
-`#141317` and the hairline `#2E2B33` of the [brand assets](../assets/README.md):
+The defaults above are the harlequin mask in colours — crimson `#C9382B`, bone `#EDE6D9`, ink
+`#141317` and the hairline `#2E2B33` of the [brand assets](../assets/README.md). An application gets
+them without asking; `ThemePalette.Arlecchino` is the same thing under a name, for saying so out loud:
 
 ```csharp
 builder.Services
@@ -63,10 +64,8 @@ The background is left to the terminal everywhere except the two cursor rows, wh
 behind their text to be a selection at all. That is what makes it sit on a light terminal as readily
 as on a dark one — it colours the writing, not the screen.
 
-It is opt-in for the whole of `1.x` and becomes the default in 2.0, where the palette an application
-gets without asking is this one. Nothing else about it changes then: a call to
-`UseTheme(ThemePalette.Arlecchino)` written today keeps meaning exactly what it means now, and an
-application that wants the plain terminal colours after that keeps `UseTheme(new ThemePalette())`.
+The sixteen plain colours that were the default before 2.0 are still there as `ThemePalette.Basic` —
+`UseTheme(ThemePalette.Basic)` is the whole of the way back to magenta titles and a green cursor row.
 
 Every entry names an exact colour *and* a palette colour, so a terminal without 24-bit shows the
 fallback its author picked rather than whatever the nearest-colour arithmetic lands on. Crimson falls

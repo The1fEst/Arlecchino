@@ -81,4 +81,25 @@ public sealed class BrandPaletteTests
 
         Assert.Contains(app.Styles(), style => style.Contains($"38;2;{Crimson}", StringComparison.Ordinal));
     }
+
+    [Fact]
+    public void AnApplicationThatAsksForNoThemeIsAlreadyDrawnInIt()
+    {
+        using var colours = new ColorSupportScope(ColorSupport.TrueColor);
+        using var app = new TestApplication();
+
+        app.Navigator.Apply(Navigation.Routes.Help);
+
+        Assert.Contains(app.Styles(), style => style.Contains($"38;2;{Crimson}", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void TheSixteenColoursOfTheOldDefaultAreStillThereUnderTheirOwnName()
+    {
+        using var colours = new ColorSupportScope(ColorSupport.TrueColor);
+
+        Assert.DoesNotContain("38;2;", ThemePalette.Basic.Header.Ansi, StringComparison.Ordinal);
+        Assert.Equal(TerminalColor.BrightMagenta, ThemePalette.Basic.Header.Foreground);
+        Assert.Equal(TerminalColor.Green, ThemePalette.Basic.Active.Foreground);
+    }
 }

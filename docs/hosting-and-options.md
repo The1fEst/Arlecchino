@@ -50,7 +50,7 @@ it puts in the container are singletons:
 | `BracketedPaste` | `true` | Pasted text arrives as one block instead of a burst of keys |
 | `EscapeTimeout` | `25 ms` | How long the reader waits for the rest of an escape sequence |
 | `Keymap` | `new ArlecchinoKeymap()` | Keys the framework itself reacts to |
-| `Theme` | `new ThemePalette()` | Colour roles |
+| `Theme` | `ThemePalette.Arlecchino` | Colour roles |
 | `Strings` | `new ArlecchinoStrings()` | User-visible text |
 | `StartRoute` | `ViewRoute.None` | Route shown on the first frame |
 | `InputPollInterval` | `8 ms` | Sleep between key polls when the input queue is empty |

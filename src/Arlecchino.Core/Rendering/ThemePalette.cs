@@ -2,7 +2,8 @@ namespace Arlecchino.Rendering;
 
 /// <summary>
 /// The colours behind the roles in <see cref="Theme"/>. Every role has a default, so a palette that
-/// overrides two of them is a valid palette.
+/// overrides two of them is a valid palette — and what it does not override is the framework's own
+/// colours, described on <see cref="Arlecchino"/>.
 /// </summary>
 public sealed class ThemePalette
 {
@@ -20,102 +21,109 @@ public sealed class ThemePalette
     ///
     /// Each entry carries an exact colour and a palette colour behind it, so a terminal without 24-bit
     /// draws the nearest thing the author picked rather than the nearest thing arithmetic found.
-    /// Apply it with <c>UseTheme(ThemePalette.Arlecchino)</c>.
+    ///
+    /// This is what a palette starts from, so <c>new ThemePalette()</c> is already it; the property is
+    /// here to name it, and <see cref="Basic"/> is the way back to the sixteen plain colours.
     /// </summary>
-    public static ThemePalette Arlecchino { get; } = new()
+    public static ThemePalette Arlecchino { get; } = new();
+
+    /// <summary>
+    /// The terminal's own sixteen colours, with nothing exact behind them: magenta titles, blue column
+    /// headers, cyan borders, a green cursor row. This was the default before 2.0, and
+    /// <c>UseTheme(ThemePalette.Basic)</c> is how an application that liked it keeps it.
+    /// </summary>
+    public static ThemePalette Basic { get; } = new()
     {
-        Header = new()
-        {
-            Foreground = TerminalColor.BrightRed,
-            ExactForeground = Crimson,
-            Style = TextStyle.Bold,
-        },
-        TableHeader = new()
-        {
-            Foreground = TerminalColor.White,
-            ExactForeground = Bone,
-            Style = TextStyle.Bold,
-        },
-        Accent = new() { Foreground = TerminalColor.BrightWhite, ExactForeground = Bone },
-        Info = new() { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash },
-        Muted = new() { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash },
-        Input = new()
-        {
-            Foreground = TerminalColor.Black,
-            ExactForeground = Ink,
-            Background = TerminalColor.White,
-            ExactBackground = Bone,
-        },
-        Selected = new()
-        {
-            Foreground = TerminalColor.White,
-            ExactForeground = Bone,
-            Background = TerminalColor.BrightBlack,
-            ExactBackground = Hairline,
-        },
-        Active = new() { Foreground = TerminalColor.BrightRed, ExactForeground = Crimson },
-        ActiveSelected = new()
-        {
-            Foreground = TerminalColor.Black,
-            ExactForeground = Ink,
-            Background = TerminalColor.White,
-            ExactBackground = Ash,
-        },
-        Warning = new()
-        {
-            Foreground = TerminalColor.Black,
-            ExactForeground = Ink,
-            Background = TerminalColor.Yellow,
-            ExactBackground = Amber,
-        },
-        Error = new()
-        {
-            Foreground = TerminalColor.BrightWhite,
-            ExactForeground = Bone,
-            Background = TerminalColor.Red,
-            ExactBackground = Crimson,
-        },
+        Header = new() { Foreground = TerminalColor.BrightMagenta, Style = TextStyle.Bold },
+        TableHeader = new() { Foreground = TerminalColor.BrightBlue, Style = TextStyle.Bold },
+        Accent = new() { Foreground = TerminalColor.BrightWhite },
+        Info = new() { Foreground = TerminalColor.Cyan },
+        Muted = new() { Foreground = TerminalColor.BrightBlack },
+        Input = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Blue },
+        Selected = new() { Background = TerminalColor.BrightBlack },
+        Active = new() { Foreground = TerminalColor.Green },
+        ActiveSelected = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Green },
+        Warning = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Yellow },
+        Error = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Red },
     };
 
-    /// <summary>Ordinary text. Defaults to the terminal's own foreground and background.</summary>
+    /// <summary>Ordinary text. The terminal's own foreground and background.</summary>
     public TermColor Default { get; init; } = new();
 
-    /// <summary>Screen titles. Bold bright magenta by default.</summary>
+    /// <summary>Screen titles. Bold crimson.</summary>
     public TermColor Header { get; init; } = new()
-        { Foreground = TerminalColor.BrightMagenta, Style = TextStyle.Bold };
+    {
+        Foreground = TerminalColor.BrightRed,
+        ExactForeground = Crimson,
+        Style = TextStyle.Bold,
+    };
 
-    /// <summary>Column headers. Bold bright blue by default.</summary>
+    /// <summary>Column headers. Bold bone.</summary>
     public TermColor TableHeader { get; init; } = new()
-        { Foreground = TerminalColor.BrightBlue, Style = TextStyle.Bold };
+    {
+        Foreground = TerminalColor.White,
+        ExactForeground = Bone,
+        Style = TextStyle.Bold,
+    };
 
-    /// <summary>Text that stands out without being alarming. Bright white by default.</summary>
-    public TermColor Accent { get; init; } = new() { Foreground = TerminalColor.BrightWhite };
+    /// <summary>Text that stands out without being alarming. Bone.</summary>
+    public TermColor Accent { get; init; } = new()
+        { Foreground = TerminalColor.BrightWhite, ExactForeground = Bone };
 
-    /// <summary>Borders and structural lines. Cyan by default.</summary>
-    public TermColor Info { get; init; } = new() { Foreground = TerminalColor.Cyan };
+    /// <summary>Borders and structural lines. Ash.</summary>
+    public TermColor Info { get; init; } = new()
+        { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash };
 
-    /// <summary>Secondary text such as hints and footers. Grey by default.</summary>
-    public TermColor Muted { get; init; } = new() { Foreground = TerminalColor.BrightBlack };
+    /// <summary>Secondary text such as hints and footers. Ash.</summary>
+    public TermColor Muted { get; init; } = new()
+        { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash };
 
-    /// <summary>The editable part of a text field. Black on blue by default.</summary>
+    /// <summary>The editable part of a text field. Ink on bone.</summary>
     public TermColor Input { get; init; } = new()
-        { Foreground = TerminalColor.Black, Background = TerminalColor.Blue };
+    {
+        Foreground = TerminalColor.Black,
+        ExactForeground = Ink,
+        Background = TerminalColor.White,
+        ExactBackground = Bone,
+    };
 
-    /// <summary>The cursor row of an unfocused pane. A grey background by default.</summary>
-    public TermColor Selected { get; init; } = new() { Background = TerminalColor.BrightBlack };
+    /// <summary>The cursor row of an unfocused pane. Bone on the hairline grey.</summary>
+    public TermColor Selected { get; init; } = new()
+    {
+        Foreground = TerminalColor.White,
+        ExactForeground = Bone,
+        Background = TerminalColor.BrightBlack,
+        ExactBackground = Hairline,
+    };
 
-    /// <summary>Something switched on or available. Green by default.</summary>
-    public TermColor Active { get; init; } = new() { Foreground = TerminalColor.Green };
+    /// <summary>Something switched on or available. Crimson.</summary>
+    public TermColor Active { get; init; } = new()
+        { Foreground = TerminalColor.BrightRed, ExactForeground = Crimson };
 
-    /// <summary>The cursor row of the focused pane. Black on green by default.</summary>
+    /// <summary>The cursor row of the focused pane. Ink on ash, so it is never read as a failure.</summary>
     public TermColor ActiveSelected { get; init; } = new()
-        { Foreground = TerminalColor.Black, Background = TerminalColor.Green };
+    {
+        Foreground = TerminalColor.Black,
+        ExactForeground = Ink,
+        Background = TerminalColor.White,
+        ExactBackground = Ash,
+    };
 
-    /// <summary>Something worth noticing. Black on yellow by default.</summary>
+    /// <summary>Something worth noticing. Ink on amber.</summary>
     public TermColor Warning { get; init; } = new()
-        { Foreground = TerminalColor.Black, Background = TerminalColor.Yellow };
+    {
+        Foreground = TerminalColor.Black,
+        ExactForeground = Ink,
+        Background = TerminalColor.Yellow,
+        ExactBackground = Amber,
+    };
 
-    /// <summary>Failures and validation messages. Black on red by default.</summary>
+    /// <summary>Failures and validation messages. Bone on crimson.</summary>
     public TermColor Error { get; init; } = new()
-        { Foreground = TerminalColor.Black, Background = TerminalColor.Red };
+    {
+        Foreground = TerminalColor.BrightWhite,
+        ExactForeground = Bone,
+        Background = TerminalColor.Red,
+        ExactBackground = Crimson,
+    };
 }
