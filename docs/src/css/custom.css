@@ -1,0 +1,144 @@
+/**
+ * The palette is the framework's own: the crimson, bone and ink of the harlequin mask.
+ * Crimson is darkened for light mode and lifted for dark mode so links keep their contrast.
+ */
+
+:root {
+  --arl-crimson: #c9382b;
+  --arl-bone: #ede6d9;
+  --arl-ink: #141317;
+  --arl-hairline: #2e2b33;
+  --arl-ash: #8a8189;
+  --arl-amber: #d08a2c;
+
+  --ifm-color-primary: #b02f24;
+  --ifm-color-primary-dark: #9e2a20;
+  --ifm-color-primary-darker: #95281e;
+  --ifm-color-primary-darkest: #7b2119;
+  --ifm-color-primary-light: #c23428;
+  --ifm-color-primary-lighter: #cb372a;
+  --ifm-color-primary-lightest: #d9564a;
+
+  --ifm-font-family-monospace: ui-monospace, SFMono-Regular, 'SF Mono', Menlo,
+    Consolas, 'DejaVu Sans Mono', monospace;
+  --ifm-code-font-size: 90%;
+  --ifm-heading-font-weight: 600;
+
+  --docusaurus-highlighted-code-line-bg: rgba(201, 56, 43, 0.12);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #e0584a;
+  --ifm-color-primary-dark: #db4235;
+  --ifm-color-primary-darker: #d63a2c;
+  --ifm-color-primary-darkest: #b13025;
+  --ifm-color-primary-light: #e56e62;
+  --ifm-color-primary-lighter: #e87b70;
+  --ifm-color-primary-lightest: #f0a49d;
+
+  --ifm-background-color: #141317;
+  --ifm-background-surface-color: #1b1a20;
+  --ifm-navbar-background-color: #141317;
+  --ifm-footer-background-color: #101015;
+  --ifm-font-color-base: #ede6d9;
+  --ifm-heading-color: #ede6d9;
+  --ifm-toc-border-color: #2e2b33;
+  --ifm-color-emphasis-300: #2e2b33;
+
+  --docusaurus-highlighted-code-line-bg: rgba(224, 88, 74, 0.16);
+}
+
+/* Titles read as a wordmark rather than prose, the way the banner sets them. */
+.markdown h1:first-child {
+  font-family: var(--ifm-font-family-monospace);
+  letter-spacing: 0.02em;
+}
+
+.navbar__title {
+  font-family: var(--ifm-font-family-monospace);
+  letter-spacing: 0.06em;
+}
+
+.navbar {
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+
+[data-theme='dark'] .navbar {
+  border-bottom-color: var(--arl-hairline);
+}
+
+.navbar__logo img {
+  height: 1.6rem;
+}
+
+/* A crimson rule under every page title, the one under ARLECCHINO on the banner. */
+.markdown > h1:first-child::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  margin-top: 0.75rem;
+  background: var(--arl-crimson);
+}
+
+.markdown table {
+  display: table;
+  width: 100%;
+}
+
+.markdown table th {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+[data-theme='dark'] .markdown table thead tr {
+  background-color: #1b1a20;
+  border-bottom-color: var(--arl-hairline);
+}
+
+[data-theme='dark'] .markdown table tr:nth-child(2n) {
+  background-color: #17161b;
+}
+
+[data-theme='dark'] code {
+  border-color: var(--arl-hairline);
+}
+
+/* Terminal transcripts are the one place the docs want the ink background in both themes. */
+.markdown pre code {
+  font-variant-ligatures: none;
+}
+
+.theme-doc-sidebar-menu .menu__link--sr-only,
+.menu__list-item-collapsible .menu__link {
+  font-size: 0.94rem;
+}
+
+.menu__link--active:not(.menu__link--sr-only) {
+  font-weight: 600;
+}
+
+.theme-doc-sidebar-item-category > .menu__list-item-collapsible > .menu__link {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--arl-ash);
+}
+
+.pagination-nav__link {
+  border-color: var(--ifm-toc-border-color);
+}
+
+.footer {
+  border-top: 1px solid var(--arl-hairline);
+}
+
+.footer__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
