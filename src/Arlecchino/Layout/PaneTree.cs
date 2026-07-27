@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Arlecchino.Focus;
 using Arlecchino.Rendering;
 using Arlecchino.Widgets;
 
@@ -11,15 +13,19 @@ namespace Arlecchino.Layout;
 /// <c>Draw</c>, a tree states it in one place — and the view then draws itself in a line.
 ///
 /// Two members build it, so a tree reads as a tree: <see cref="Branch(PaneTree, PaneTree)"/> and
-/// <see cref="Leaf(IArlecchinoWidget)"/>. Only the two halves of a branch are ever required — say
-/// which way it cuts, or how much the first half takes, only where it matters:
+/// <see cref="Leaf(IArlecchinoWidget)"/>. Only the two halves of a
+/// branch are ever required — say which way it cuts, or how much the first half takes, only where it
+/// matters:
 ///
 /// <code>
 /// _layout = Branch(Rows, 3,
 ///     Leaf(_toolbar),
 ///     Branch(Columns, 0.25,
-///         Leaf(_tree),
-///         Branch(Leaf(_editor), Leaf(_log)))).Gaps(inner: 1);
+///         Leaf(_tree, () => "files"),
+///         Branch(Leaf(_editor, () => "editor"), Leaf(_log, () => "log")))).Gaps(inner: 1);
+///
+/// _focus = new FocusRing(options.Keymap);
+/// _focus.AddAll(_layout.Focusables);
 ///
 /// public void Draw() => _layout.Draw(_surface.Content);
 /// </code>
@@ -35,15 +41,20 @@ public sealed class PaneTree
 {
     private const int CellAspect = 2;
 
+    private static readonly IArlecchinoWidget[] NoWidgets = [];
+
     private readonly PaneTree? _first;
     private readonly PaneTree? _second;
     private readonly Action<SurfaceRegion>? _draw;
+    private readonly IArlecchinoWidget[] _widgets;
     private readonly PaneSize _size;
     private readonly PaneSplit? _split;
 
-    private PaneTree(Action<SurfaceRegion> draw)
+    private PaneTree(Action<SurfaceRegion> draw, IArlecchinoWidget? widget)
     {
         _draw = draw;
+        _widgets = widget is null ? NoWidgets : [widget];
+
         Count = 1;
     }
 
@@ -53,6 +64,7 @@ public sealed class PaneTree
         _size = size;
         _first = first;
         _second = second;
+        _widgets = [.. first._widgets, .. second._widgets];
 
         Count = first.Count + second.Count;
     }
@@ -66,6 +78,34 @@ public sealed class PaneTree
     /// <summary>Cells left empty around the whole layout. Set by <see cref="Gaps"/>.</summary>
     public int OuterGap { get; private set; }
 
+    /// <summary>
+    /// The widgets of the tree that take the focus, in the order the branches lay them out: left
+    /// before right, top before bottom. Handing this to a <see cref="FocusRing"/> is what makes
+    /// <c>Tab</c> walk the screen the way it looks, without a second list to keep in step with the
+    /// first:
+    ///
+    /// <code>
+    /// _focus.AddAll(_layout.Focusables);
+    /// </code>
+    /// </summary>
+    public IReadOnlyList<IArlecchinoFocusable> Focusables
+    {
+        get
+        {
+            var focusables = new List<IArlecchinoFocusable>(_widgets.Length);
+
+            foreach (var widget in _widgets)
+            {
+                if (widget is IArlecchinoFocusable focusable)
+                {
+                    focusables.Add(focusable);
+                }
+            }
+
+            return focusables;
+        }
+    }
+
     /// <summary>A pane holding a widget, drawn into whatever region the tree gives it.</summary>
     /// <param name="widget">What goes in the pane.</param>
     /// <returns>The leaf.</returns>
@@ -73,7 +113,27 @@ public sealed class PaneTree
     {
         ArgumentNullException.ThrowIfNull(widget);
 
-        return new(region => widget.Draw(region));
+        return new(region => widget.Draw(region), widget);
+    }
+
+    /// <summary>
+    /// A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the
+    /// box, and the box is drawn <c>Theme.Active</c> while the widget holds the focus and
+    /// <c>Theme.Info</c> while it does not — so a screen of panes shows where the cursor is without
+    /// the view saying anything about it.
+    /// </summary>
+    /// <param name="widget">What goes in the pane.</param>
+    /// <param name="title">
+    /// What to write in the top border. A delegate rather than a string, like every other piece of
+    /// user-visible text in the framework, so a translated application translates it too.
+    /// </param>
+    /// <returns>The leaf.</returns>
+    public static PaneTree Leaf(IArlecchinoWidget widget, Func<string> title)
+    {
+        ArgumentNullException.ThrowIfNull(widget);
+        ArgumentNullException.ThrowIfNull(title);
+
+        return new(region => widget.Draw(region.Border(BorderOf(widget), title())), widget);
     }
 
     /// <summary>
@@ -86,12 +146,24 @@ public sealed class PaneTree
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        return new(draw);
+        return new(draw, null);
+    }
+
+    /// <summary>A pane the view draws itself, in a box with a title.</summary>
+    /// <param name="draw">What to draw, given the room left inside the box.</param>
+    /// <param name="title">What to write in the top border.</param>
+    /// <returns>The leaf.</returns>
+    public static PaneTree Leaf(Action<SurfaceRegion> draw, Func<string> title)
+    {
+        ArgumentNullException.ThrowIfNull(draw);
+        ArgumentNullException.ThrowIfNull(title);
+
+        return new(region => draw(region.Border(Theme.Info, title())), null);
     }
 
     /// <summary>A pane that draws nothing, for space deliberately left blank.</summary>
     /// <returns>The leaf.</returns>
-    public static PaneTree Leaf() => new(static _ => { });
+    public static PaneTree Leaf() => new(static _ => { }, null);
 
     /// <summary>
     /// A branch that decides everything itself: it cuts along the longer side of whatever region it is
@@ -170,10 +242,28 @@ public sealed class PaneTree
     public void Draw(SurfaceRegion region) =>
         Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap);
 
+    private static IArlecchinoColor BorderOf(IArlecchinoWidget widget) =>
+        widget is IArlecchinoFocusable { IsFocused: true } ? Theme.Active : Theme.Info;
+
     private static PaneTree Build(PaneSplit? split, PaneSize size, PaneTree first, PaneTree second)
     {
         ArgumentNullException.ThrowIfNull(first);
         ArgumentNullException.ThrowIfNull(second);
+
+        foreach (var widget in first._widgets)
+        {
+            foreach (var taken in second._widgets)
+            {
+                if (ReferenceEquals(widget, taken))
+                {
+                    throw new ArgumentException(
+                        $"{widget.GetType().Name} is already a pane of this layout. A widget draws into " +
+                        "one region and remembers it, so the same instance in two panes would draw twice " +
+                        "and answer clicks for one of them only.",
+                        nameof(second));
+                }
+            }
+        }
 
         return new(split, size, first, second);
     }

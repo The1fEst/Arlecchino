@@ -1,5 +1,7 @@
 using System;
+using Arlecchino.Focus;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Layout;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
@@ -14,6 +16,7 @@ public sealed class PanesView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly PaneTree _layout;
+    private readonly FocusRing _focus;
 
     public PanesView(Surface surface, ArlecchinoOptions options)
     {
@@ -23,52 +26,61 @@ public sealed class PanesView : IArlecchinoView
         {
             Render = static file => $" {file}",
             Items = ["Program.cs", "PanesView.cs", "WidgetsView.cs", "SettingsView.cs"],
-            IsFocused = true,
+        };
+
+        var authors = new ListBox<string>(options.Keymap)
+        {
+            Render = static author => $" {author}",
+            Items = ["fEst", "anon", "carfan"],
         };
 
         var status = new StatusBar
         {
-            Left = [static () => "a row measured from the bottom, above the output line"],
+            Left = [static () => "Tab walks the panes in the order the tree lays them out"],
             Right = [static () => "Esc back"],
         };
 
         _layout = Branch(
             Rows,
             3,
-            Leaf(static region => Box(region, "toolbar", "three rows, whatever the terminal is")),
+            Leaf(
+                static region => region.WriteLine(0, "three rows, whatever the terminal is", Theme.Muted),
+                static () => "toolbar"),
             Branch(
                 Rows,
                 PaneSize.CellsFromEnd(2),
                 Branch(
                     Columns,
                     0.25,
-                    Leaf(files),
-                    Branch(
-                        0.7,
-                        Leaf(static region => Box(region, "editor", "70%, along whichever side is longer")),
-                        Leaf(static region => Box(region, "log", "the rest of it")))),
+                    Leaf(files, static () => "files"),
+                    Branch(0.7, Leaf(authors, static () => "authors"), Leaf(Log, static () => "log"))),
                 Leaf(status))).Gaps(inner: 1, outer: 1);
+
+        _focus = new(options.Keymap);
+        _focus.AddAll(_layout.Focusables);
     }
 
     public void Draw() => _layout.Draw(_surface.Content);
 
     public ViewRoute Handle(ConsoleKeyInfo key) =>
-        key.Key == ConsoleKey.Escape ? ViewKind.Default : ViewRoute.None;
+        key.Key == ConsoleKey.Escape ? ViewKind.Default : _focus.Handle(key);
 
-    public (string Key, string Description)[] Hints() => [("Esc", "back")];
+    public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
 
-    private static void Box(SurfaceRegion region, string title, string what)
+    public (string Key, string Description)[] Hints() =>
+    [
+        ("Tab", "next pane"),
+        ("↑↓", "move"),
+        ("Esc", "back"),
+    ];
+
+    private static void Log(SurfaceRegion region)
     {
-        var inside = region.Border(Theme.Info, title);
+        region.WriteLine(0, "the rest of it", Theme.Muted);
 
-        if (inside.Height > 0)
+        if (region.Height > 2)
         {
-            inside.WriteLine(0, what, Theme.Muted);
-        }
-
-        if (inside.Height > 2)
-        {
-            inside.WriteLine(2, $"{inside.Width}×{inside.Height}", Theme.Accent);
+            region.WriteLine(2, $"{region.Width}×{region.Height}", Theme.Accent);
         }
     }
 }

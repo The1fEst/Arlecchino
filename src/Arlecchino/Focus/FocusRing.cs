@@ -41,6 +41,23 @@ public sealed class FocusRing
         item.IsFocused = _items.Count == 1;
     }
 
+    /// <summary>
+    /// Adds every element of a sequence, in its order. This is how a screen laid out by a
+    /// <c>PaneTree</c> gets its focus ring — <c>ring.AddAll(layout.Focusables)</c> walks the panes in
+    /// the order they are drawn, so <c>Tab</c> moves the way the screen looks and there is no second
+    /// list to keep in step with the first.
+    /// </summary>
+    /// <param name="items">The elements to add.</param>
+    public void AddAll(IEnumerable<IArlecchinoFocusable> items)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        foreach (var item in items)
+        {
+            Add(item);
+        }
+    }
+
     /// <summary>Moves the focus to a particular element, if it belongs to this ring.</summary>
     /// <param name="item">The element to focus.</param>
     public void Focus(IArlecchinoFocusable item)

@@ -1,4 +1,5 @@
 #nullable enable
+Arlecchino.Focus.FocusRing.AddAll(System.Collections.Generic.IEnumerable<Arlecchino.Focus.IArlecchinoFocusable!>! items) -> void
 Arlecchino.Layout.PaneSize
 Arlecchino.Layout.PaneSize.Equals(Arlecchino.Layout.PaneSize other) -> bool
 Arlecchino.Layout.PaneSize.PaneSize() -> void
@@ -8,6 +9,7 @@ Arlecchino.Layout.PaneSplit.Rows = 0 -> Arlecchino.Layout.PaneSplit
 Arlecchino.Layout.PaneTree
 Arlecchino.Layout.PaneTree.Count.get -> int
 Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Layout.PaneTree.Focusables.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Focus.IArlecchinoFocusable!>!
 Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
 Arlecchino.Layout.PaneTree.InnerGap.get -> int
 Arlecchino.Layout.PaneTree.OuterGap.get -> int
@@ -25,6 +27,8 @@ static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSplit split, Arle
 static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf() -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
 ~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
 ~override Arlecchino.Layout.PaneSize.ToString() -> string

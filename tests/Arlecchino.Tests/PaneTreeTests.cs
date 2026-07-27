@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Focus;
+using Arlecchino.Input;
 using Arlecchino.Layout;
 using Arlecchino.Rendering;
 using Arlecchino.Testing;
@@ -335,6 +337,95 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
+    public void ATitleDrawsABoxAndLeavesTheRoomInsideToThePane()
+    {
+        var terminal = new FakeTerminal(20, 5);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+        var body = new Probe { Text = "inside" };
+
+        surface.StartFrame();
+
+        Leaf(body.Draw, static () => "log").Draw(surface.Frame);
+
+        surface.Build();
+
+        var lines = FrameText.Lines(terminal.Written);
+
+        Assert.Contains("log", lines[0], StringComparison.Ordinal);
+        Assert.Contains("inside", lines[1], StringComparison.Ordinal);
+
+        Assert.Equal(1, body.Region.Top);
+        Assert.Equal(1, body.Region.Left);
+        Assert.Equal(18, body.Region.Width);
+    }
+
+    [Fact]
+    public void TheBoxOfTheFocusedPaneIsDrawnDifferently()
+    {
+        using var colours = new ColorSupportScope(ColorSupport.TrueColor);
+
+        var focused = Styles(new() { IsFocused = true });
+        var unfocused = Styles(new() { IsFocused = false });
+
+        Assert.Contains(Theme.Active.Ansi, focused, StringComparison.Ordinal);
+        Assert.DoesNotContain(Theme.Active.Ansi, unfocused, StringComparison.Ordinal);
+        Assert.Contains(Theme.Info.Ansi, unfocused, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheWidgetsThatTakeFocusComeBackInLayoutOrder()
+    {
+        var first = new Badge();
+        var second = new Badge();
+        var third = new Badge();
+
+        var layout = Branch(
+            Rows,
+            3,
+            Leaf(first),
+            Branch(Columns, 0.5, Leaf(second), Branch(Leaf(new StatusBar()), Leaf(third))));
+
+        Assert.Equal([first, second, third], layout.Focusables);
+    }
+
+    [Fact]
+    public void APaneThatCannotTakeFocusIsNotInTheRing()
+    {
+        var layout = Branch(Leaf(new StatusBar()), Leaf(static _ => { }));
+
+        Assert.Empty(layout.Focusables);
+    }
+
+    [Fact]
+    public void AFocusRingTakesTheWholeTreeAtOnce()
+    {
+        using var app = new TestApplication();
+
+        var first = new Badge();
+        var second = new Badge();
+        var ring = new FocusRing(app.Options.Keymap);
+
+        ring.AddAll(Branch(Leaf(first), Leaf(second)).Focusables);
+
+        Assert.Equal([first, second], ring.Items);
+        Assert.True(first.IsFocused);
+        Assert.False(second.IsFocused);
+    }
+
+    [Fact]
+    public void TheSameWidgetCannotBeTwoPanes()
+    {
+        var badge = new Badge();
+
+        var failure = Assert.Throws<ArgumentException>(() => Branch(Leaf(badge), Leaf(badge)));
+
+        Assert.Contains("Badge", failure.Message, StringComparison.Ordinal);
+
+        Assert.Throws<ArgumentException>(() =>
+            Branch(Rows, 3, Leaf(badge), Branch(Columns, 0.5, Leaf(new Badge()), Leaf(badge))));
+    }
+
+    [Fact]
     public void APaneNeedsSomethingToDraw()
     {
         Assert.Throws<ArgumentNullException>(static () => Leaf((IArlecchinoWidget)null!));
@@ -354,6 +445,31 @@ public sealed class PaneTreeTests
         surface.StartFrame();
 
         return surface.Frame;
+    }
+
+    private static string Styles(Badge badge)
+    {
+        var terminal = new FakeTerminal(20, 5);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+
+        surface.StartFrame();
+
+        Leaf(badge, static () => "pane").Draw(surface.Frame);
+
+        surface.Build();
+
+        return terminal.Written;
+    }
+
+    private sealed class Badge : IArlecchinoInteractiveWidget
+    {
+        public bool IsFocused { get; set; }
+
+        public SurfaceRegion Draw(SurfaceRegion region) => region;
+
+        public FocusResult Handle(ConsoleKeyInfo key) => FocusResult.Ignored;
+
+        public FocusResult HandleMouse(MouseEvent mouse) => FocusResult.Ignored;
     }
 
     private sealed class Probe

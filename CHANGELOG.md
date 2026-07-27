@@ -47,6 +47,22 @@ the public API means a new major. See
   Spacing belongs to the tree rather than to a call: `Gaps(inner, outer)` names it the way a tiling
   window manager does — between the halves of every branch, and around everything.
 
+  A leaf takes a title — `Leaf(_files, () => "files")` — and is then drawn in a box, with the pane
+  handed the room inside it. The border is `Theme.Active` while that widget holds the focus and
+  `Theme.Info` while it does not, so a screen of panes shows where the cursor is without the view
+  saying anything about it. Titles are `Func<string>` like every other piece of user-visible text.
+
+  `Focusables` hands over the widgets of the tree that take the focus, in the order the branches lay
+  them out, so `Tab` follows the screen instead of a second list kept in step by hand:
+
+  ```csharp
+  _focus.AddAll(_layout.Focusables);
+  ```
+
+  Putting one widget instance in two panes throws as the tree is built: a widget remembers the region
+  it was drawn into, so the same one twice would draw twice and answer clicks for one of them only.
+- `FocusRing.AddAll(items)` adds a whole sequence in its order, which is what the layout hands it.
+
   Nothing about a frame is kept in the tree — sizes are worked out per `Draw`, so one tree fits every
   terminal and a resize needs no bookkeeping. A region too small for what it holds leaves the panes
   that did not fit empty rather than overlapping them, and drawing into an empty region writes
