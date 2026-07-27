@@ -26,6 +26,8 @@ internal sealed class ApiDocs
     private static readonly string[] Projects = ["Arlecchino.Core", "Arlecchino", "Arlecchino.Testing"];
     private static readonly string[] Modifiers = ["static", "abstract", "virtual", "override", "sealed", "readonly"];
 
+    private const int Margin = 100;
+
     private const BindingFlags Declared =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
@@ -417,7 +419,7 @@ internal sealed class ApiDocs
         }
 
         page.AppendLine("```csharp");
-        page.AppendLine(Declaration(type));
+        page.AppendLine(Wrapped(Declaration(type)));
         page.AppendLine("```");
         page.AppendLine();
 
@@ -490,7 +492,7 @@ internal sealed class ApiDocs
         page.AppendLine("## Signature");
         page.AppendLine();
         page.AppendLine("```csharp");
-        page.AppendLine($"{Short(Qualified(invoke.ReturnType))} Invoke({string.Join(", ", parameters)})");
+        page.AppendLine(Wrapped($"{Short(Qualified(invoke.ReturnType))} Invoke({string.Join(", ", parameters)})"));
         page.AppendLine("```");
         page.AppendLine();
     }
@@ -596,7 +598,7 @@ internal sealed class ApiDocs
             }
 
             page.AppendLine("```csharp");
-            page.AppendLine(Declaration(member));
+            page.AppendLine(Wrapped(Declaration(member)));
             page.AppendLine("```");
             page.AppendLine();
 
@@ -699,6 +701,105 @@ internal sealed class ApiDocs
     }
 
     // ------------------------------------------------------------------ signatures
+
+    /// <summary>
+    /// Breaks a declaration that runs past the margin, one item to a line. A signature that fits is
+    /// left alone: the point is a page that reads without a horizontal scrollbar, not every member
+    /// four lines tall.
+    /// </summary>
+    private static string Wrapped(string declaration)
+    {
+        if (declaration.Length <= Margin || declaration.Contains('\n'))
+        {
+            return declaration;
+        }
+
+        return Chopped(declaration, parameters: true) ?? Chopped(declaration, parameters: false) ?? declaration;
+    }
+
+    /// <summary>
+    /// Splits a parameter list, or the bases after a colon, on the commas that belong to it — those
+    /// inside a generic argument, an array rank or a nested call stay where they are.
+    /// </summary>
+    private static string? Chopped(string declaration, bool parameters)
+    {
+        var start = IndexAtDepth(declaration, parameters ? '(' : ':');
+
+        if (start < 0)
+        {
+            return null;
+        }
+
+        var head = declaration[..start].TrimEnd();
+        var body = parameters ? declaration[(start + 1)..^1] : declaration[(start + 1)..];
+        var tail = parameters ? declaration[^1..] : "";
+
+        var items = Split(body).Select(item => item.Trim()).Where(item => item.Length > 0).ToList();
+
+        if (items.Count < 2)
+        {
+            return null;
+        }
+
+        return $"{head}{(parameters ? "(" : " :")}\n    {string.Join(",\n    ", items)}{tail}";
+    }
+
+    private static int IndexAtDepth(string declaration, char sought)
+    {
+        var depth = 0;
+
+        for (var index = 0; index < declaration.Length; index++)
+        {
+            var character = declaration[index];
+
+            if (character is '<' or '[')
+            {
+                depth++;
+            }
+            else if (character is '>' or ']')
+            {
+                depth--;
+            }
+            else if (depth == 0 && character == sought)
+            {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    private static IEnumerable<string> Split(string body)
+    {
+        var depth = 0;
+        var quoted = false;
+        var start = 0;
+
+        for (var index = 0; index < body.Length; index++)
+        {
+            var character = body[index];
+
+            if (character == '"' && (index == 0 || body[index - 1] != '\\'))
+            {
+                quoted = !quoted;
+            }
+            else if (!quoted && character is '<' or '[' or '(')
+            {
+                depth++;
+            }
+            else if (!quoted && character is '>' or ']' or ')')
+            {
+                depth--;
+            }
+            else if (!quoted && depth == 0 && character == ',')
+            {
+                yield return body[start..index];
+                start = index + 1;
+            }
+        }
+
+        yield return body[start..];
+    }
 
     private string Declaration(Type type)
     {
