@@ -139,25 +139,7 @@ email and links, numbers, sliders, toggles, single and multiple choice, dates, t
 with the framework, along with a command palette, a hints box and a file picker — and
 every string any of them draws is a delegate the application can point at its own translations.
 
-## Documentation
-
-Everything lives at **[the1fest.github.io/Arlecchino.Docs](https://the1fest.github.io/Arlecchino.Docs/)** —
-written pages and an API reference generated from the assemblies. The site is built from
-[The1fEst/Arlecchino.Docs](https://github.com/The1fEst/Arlecchino.Docs).
-
-| | |
-|---|---|
-| [Getting started](https://the1fest.github.io/Arlecchino.Docs/docs/getting-started) | Installing the package, the smallest app that runs, the first view |
-| [Views and navigation](https://the1fest.github.io/Arlecchino.Docs/docs/views-and-navigation) | `IArlecchinoView`, `ViewRoute`, the navigator, history, view registration |
-| [The frame loop](https://the1fest.github.io/Arlecchino.Docs/docs/frame-loop) | When a frame is drawn, which thread draws it, and how work gets back onto it |
-| [Rendering](https://the1fest.github.io/Arlecchino.Docs/docs/rendering) and [Layout](https://the1fest.github.io/Arlecchino.Docs/docs/layout) | `Surface`, the flow cursor, absolute calls, regions and clipping |
-| [Theming](https://the1fest.github.io/Arlecchino.Docs/docs/theming) and [Colours](https://the1fest.github.io/Arlecchino.Docs/docs/colours) | Roles, palettes, `TermColor`, and what the terminal can actually show |
-| [Keyboard](https://the1fest.github.io/Arlecchino.Docs/docs/keyboard), [Commands](https://the1fest.github.io/Arlecchino.Docs/docs/commands), [Mouse](https://the1fest.github.io/Arlecchino.Docs/docs/mouse) | How a key travels, the keymap, the palette, hit-testing |
-| [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms) and [Forms](https://the1fest.github.io/Arlecchino.Docs/docs/forms) | Observable state, undo, and forms built from it |
-| [Widgets](https://the1fest.github.io/Arlecchino.Docs/docs/widgets) | Lists, trees, sortable tables, tabs, scrolling, status bar |
-| [Testing](https://the1fest.github.io/Arlecchino.Docs/docs/testing) | `ArlecchinoTestHost`, `FakeTerminal`, asserting on a frame |
-| [Migrating to 2.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-2.0) | The edits an application written against `1.x` needs |
-| [API reference](https://the1fest.github.io/Arlecchino.Docs/docs/api) | Every public type, generated from the XML documentation |
+## [Documentation](https://the1fest.github.io/Arlecchino.Docs/)
 
 What changed between versions is in the [changelog](CHANGELOG.md).
 
