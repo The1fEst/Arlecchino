@@ -204,6 +204,10 @@ Arlecchino.Rendering.TermColor
 Arlecchino.Rendering.TermColor.Ansi.get -> string!
 Arlecchino.Rendering.TermColor.Background.get -> Arlecchino.Rendering.TerminalColor
 Arlecchino.Rendering.TermColor.Background.init -> void
+Arlecchino.Rendering.TermColor.ExactBackground.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.TermColor.ExactBackground.init -> void
+Arlecchino.Rendering.TermColor.ExactForeground.get -> Arlecchino.Rendering.Rgb?
+Arlecchino.Rendering.TermColor.ExactForeground.init -> void
 Arlecchino.Rendering.TermColor.Foreground.get -> Arlecchino.Rendering.TerminalColor
 Arlecchino.Rendering.TermColor.Foreground.init -> void
 Arlecchino.Rendering.TermColor.Style.get -> Arlecchino.Rendering.TextStyle
@@ -335,6 +339,7 @@ static Arlecchino.Rendering.Theme.Palette.set -> void
 static Arlecchino.Rendering.Theme.Selected.get -> Arlecchino.Rendering.TermColor!
 static Arlecchino.Rendering.Theme.TableHeader.get -> Arlecchino.Rendering.TermColor!
 static Arlecchino.Rendering.Theme.Warning.get -> Arlecchino.Rendering.TermColor!
+static Arlecchino.Rendering.ThemePalette.Arlecchino.get -> Arlecchino.Rendering.ThemePalette!
 ~override Arlecchino.Input.KeyBinding.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.ToString() -> string

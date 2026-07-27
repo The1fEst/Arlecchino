@@ -41,13 +41,7 @@ public sealed class ReentrancyTests
 
     public sealed class ClosingView : IArlecchinoView
     {
-        private readonly ViewLifetime _lifetime;
-
-        public ClosingView(ViewLifetime lifetime)
-        {
-            _lifetime = lifetime;
-            _lifetime.Track(new Nested(_lifetime));
-        }
+        public ClosingView(ViewLifetime lifetime) => lifetime.Track(new Nested(lifetime));
 
         public void Draw()
         {

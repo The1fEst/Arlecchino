@@ -6,6 +6,7 @@ Arlecchino.Testing.ArlecchinoTestHost.Click(int row, int column, Arlecchino.Inpu
 Arlecchino.Testing.ArlecchinoTestHost.Clock.get -> Arlecchino.Testing.TestClock!
 Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.UiDispatcher!
 Arlecchino.Testing.ArlecchinoTestHost.Dispose() -> void
+Arlecchino.Testing.ArlecchinoTestHost.DrainInput() -> void
 Arlecchino.Testing.ArlecchinoTestHost.Frame() -> string!
 Arlecchino.Testing.ArlecchinoTestHost.FrameContains(string! text) -> bool
 Arlecchino.Testing.ArlecchinoTestHost.FrameLineContaining(string! text) -> string!
