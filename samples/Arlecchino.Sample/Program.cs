@@ -168,6 +168,10 @@ static void Frame(string view, string size)
     {
         navigator.Apply(ViewKind.Settings);
     }
+    else if (view.Equals("panes", StringComparison.OrdinalIgnoreCase))
+    {
+        navigator.Apply(ViewKind.Panes);
+    }
     else if (view.Equals("picker", StringComparison.OrdinalIgnoreCase))
     {
         state.FilePicker = new(

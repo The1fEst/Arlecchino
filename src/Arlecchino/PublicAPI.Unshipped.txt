@@ -1,1 +1,22 @@
 #nullable enable
+Arlecchino.Layout.PaneSize
+Arlecchino.Layout.PaneSize.Equals(Arlecchino.Layout.PaneSize other) -> bool
+Arlecchino.Layout.PaneSize.PaneSize() -> void
+Arlecchino.Layout.PaneTree
+Arlecchino.Layout.PaneTree.Count.get -> int
+Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region, int gap = 0) -> void
+override Arlecchino.Layout.PaneSize.GetHashCode() -> int
+static Arlecchino.Layout.PaneSize.Cells(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.CellsFromEnd(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.Fraction(double value) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(double value) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.operator !=(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
+static Arlecchino.Layout.PaneSize.operator ==(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
+static Arlecchino.Layout.PaneTree.Columns(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Empty() -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Pane(Arlecchino.Widgets.IArlecchinoWidget! widget) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Pane(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Rows(Arlecchino.Layout.PaneSize top, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
+~override Arlecchino.Layout.PaneSize.ToString() -> string

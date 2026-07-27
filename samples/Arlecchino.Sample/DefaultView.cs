@@ -40,6 +40,7 @@ public class DefaultView : IArlecchinoView
             ViewCommand.For(ConsoleKey.K, static () => "color", AskAccent),
             ViewCommand.Navigating(ConsoleKey.S, static () => "settings", static () => ViewKind.Settings),
             ViewCommand.Navigating(ConsoleKey.W, static () => "widgets", static () => ViewKind.Widgets),
+            ViewCommand.Navigating(ConsoleKey.L, static () => "panes", static () => ViewKind.Panes),
         ];
     }
 
