@@ -67,6 +67,8 @@ said stays in `Notifications` for much longer, so opening the screen still shows
 the user was looking elsewhere.
 
 ```csharp
+private readonly ArlecchinoState _state;
+
 _state.Notifications.Notify("could not reach the server", NotificationLevel.Failure);
 ```
 

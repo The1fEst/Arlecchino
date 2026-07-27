@@ -15,6 +15,8 @@ It is registered by `AddArlecchino` under the route `Routes.FilePicker`, so noth
 ## Asking for a path
 
 ```csharp
+private readonly ArlecchinoState _state;
+
 _state.FilePicker = new FilePickerRequest(
     Title: "Pick a folder",
     PickFolder: true,

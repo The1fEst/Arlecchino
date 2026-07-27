@@ -93,6 +93,10 @@ the input half of [`IArlecchinoInteractiveWidget`](widgets.md), and what the rin
 and `FocusRing` is the `Tab` / `Shift+Tab` cycle over them:
 
 ```csharp
+private readonly FocusRing _panes;
+private readonly ListBox<Mod> _list;
+private readonly ListBox<string> _sidebar;
+
 _panes = new FocusRing(options.Keymap);
 _panes.Add(_list);        // first one added starts focused
 _panes.Add(_sidebar);

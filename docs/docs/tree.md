@@ -7,6 +7,9 @@ description: Tree and TreeNode — a hierarchy that indents itself, expands on d
 # Tree
 
 ```csharp
+private readonly Tree<VltNode> _nodes;
+private readonly VltFile _vlt;
+
 _nodes = new Tree<VltNode>(options.Keymap)
 {
     Render = node => node.Name,

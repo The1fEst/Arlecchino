@@ -137,6 +137,8 @@ Where it lands follows what typing would do:
 | Nothing | `IArlecchinoView.HandlePaste`, which does nothing unless the view overrides it |
 
 ```csharp
+private readonly Atom<string> _query;
+
 public ViewRoute HandlePaste(string text)
 {
     _query.Value += text;

@@ -13,6 +13,7 @@ a view can draw a spinner without knowing anything about tasks.
 
 ```csharp
 private readonly AsyncAtom<IReadOnlyList<Mod>> _mods = new();
+private readonly ModsService _service;
 
 _mods.Load(async token => await _service.LoadAsync(token));
 ```
@@ -34,6 +35,10 @@ last value but drops the status back to `Idle`, so a spinner bound to it stops.
 ## Drawing one
 
 ```csharp
+private readonly Surface _surface;
+private readonly Spinner _spinner = new();
+private readonly Table<Mod> _table;
+
 public void Draw()
 {
     if (_mods.IsLoading)
@@ -48,7 +53,8 @@ public void Draw()
         return;
     }
 
-    _table.Draw(_surface.Content, _mods.Value ?? []);
+    _table.Rows = _mods.Value ?? [];
+    _table.Draw(_surface.Content);
 }
 ```
 
@@ -104,6 +110,8 @@ ViewCommand.For(ConsoleKey.R, () => "reload", () => _mods.Load(token => _service
 result:
 
 ```csharp
+private IReadOnlyList<Mod> _rows = [];
+
 Task.Run(async () =>
 {
     var loaded = await _service.LoadAsync(lifetime.Closing);

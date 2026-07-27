@@ -12,6 +12,8 @@ Three widgets that only draw. None of them takes the focus, and all three implem
 ## StatusBar
 
 ```csharp
+private readonly Spinner _spinner = new();
+
 new StatusBar
 {
     Left = [() => Loc(LocString.ItemCount, count), () => _spinner.Current],
@@ -26,6 +28,8 @@ than producing a mess.
 Empty entries are skipped, so a part that is only sometimes relevant can return `""`:
 
 ```csharp
+private string _filter = "";
+
 Left = [() => _filter.Length > 0 ? $"filter: {_filter}" : ""],
 ```
 
@@ -72,6 +76,8 @@ is the frame as a string, for putting it in a [status bar](#statusbar) instead.
 Nothing advances it for you. Two places usually do:
 
 ```csharp
+private readonly Ticker _ticker;
+
 _ticker.Every(TimeSpan.FromMilliseconds(80), () => _spinner.Advance());
 ```
 

@@ -16,11 +16,14 @@ else goes to whichever pane has the cursor. `FocusRing` is that decision, writte
 public sealed class PackagesView : IArlecchinoView
 {
     private readonly FocusRing _focus;
-    private readonly Tree<Project> _tree = new();
-    private readonly Table<Package> _table = new();
+    private readonly Tree<Project> _tree;
+    private readonly Table<Package> _table;
 
     public PackagesView(ArlecchinoKeymap keymap)
     {
+        _tree = new Tree<Project>(keymap);
+        _table = new Table<Package>(keymap);
+
         _focus = new FocusRing(keymap);
         _focus.Add(_tree);
         _focus.Add(_table);
@@ -84,6 +87,7 @@ a list has the cursor.
 A view that keeps its logic in methods rather than in widgets wraps them:
 
 ```csharp
+private readonly FocusRing _focus;
 private readonly FocusablePane _places;
 
 _places = new FocusablePane(HandlePlacesKey, HandlePlacesClick);

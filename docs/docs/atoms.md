@@ -135,6 +135,8 @@ Atoms are not thread-safe, and say so: writing one from off the drawing thread t
 finishes elsewhere hands the value over instead, and the atom does the handing:
 
 ```csharp
+private readonly Atom<ScanStep> _step;
+
 public void Report(ScanStep value) => _step.Post(value);
 ```
 
@@ -150,6 +152,8 @@ Atoms that have to change together belong in one `FrameThread.Post` with a block
 each, so that no frame falls between them:
 
 ```csharp
+private readonly List<string> _log = [];
+
 FrameThread.Post(() =>
 {
     _log.Add(line);

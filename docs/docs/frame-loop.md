@@ -69,6 +69,8 @@ for you:
 Anything else that changes what a view draws has to say so:
 
 ```csharp
+private readonly ArlecchinoState _state;
+
 _state.Invalidate();   // or Repaint.Request() from the service itself
 ```
 
@@ -96,6 +98,8 @@ that was suspended and resumed, a child process that printed something. Two call
 The loop claims the thread as it starts:
 
 ```csharp
+private readonly Repaint _repaint;
+
 using var drawing = FrameThread.Claim(_repaint.Request);
 ```
 
@@ -147,6 +151,8 @@ ends — which is the shape "carry on next frame" naturally takes.
 When the work is one atom taking one value, the atom posts itself and there is no lambda to write:
 
 ```csharp
+private readonly Atom<ScanStep> _step;
+
 public void Report(ScanStep value) => _step.Post(value);
 ```
 
@@ -173,6 +179,8 @@ public sealed class ClockView : IArlecchinoView
 {
     private readonly Ticker _ticker;
     private readonly ViewLifetime _lifetime;
+
+    private DateTime _now;
 
     public ClockView(Ticker ticker, ViewLifetime lifetime)
     {

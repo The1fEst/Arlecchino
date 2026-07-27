@@ -52,6 +52,8 @@ whether it is free text or a number.
 ## Text
 
 ```csharp
+private readonly ArlecchinoState _state;
+
 _state.RequestText(
     title: "Rename",
     initial: current,

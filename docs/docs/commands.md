@@ -50,6 +50,8 @@ palette and through whatever the view does with it.
 ## Commands of a view
 
 ```csharp
+private Mod? _selected;
+
 public IReadOnlyList<ViewCommand> Commands() =>
 [
     ViewCommand.For(ConsoleKey.N, () => Loc(LocString.Rename), Rename),

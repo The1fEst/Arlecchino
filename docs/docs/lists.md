@@ -7,6 +7,9 @@ description: ListBox — a scrolling, selectable, clickable list of anything, an
 # ListBox
 
 ```csharp
+private readonly ListBox<string> _authors;
+private readonly string _mine = "fEst";
+
 _authors = new ListBox<string>(options.Keymap)
 {
     Render = author => $" {author}",

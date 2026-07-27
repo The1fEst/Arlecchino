@@ -7,6 +7,8 @@ description: Table and TableColumn — columns that size themselves, sorting tha
 # Table
 
 ```csharp
+private readonly Table<Mod> _mods;
+
 _mods = new Table<Mod>(options.Keymap)
 {
     Columns =

@@ -31,6 +31,9 @@ releases, drags and the wheel.
 A view opts in by implementing one method, and navigates by returning a route just as `Handle` does:
 
 ```csharp
+private int _offset;
+private int _runRow;
+
 public ViewRoute HandleMouse(MouseEvent mouse)
 {
     if (mouse.IsScroll)
@@ -52,6 +55,10 @@ A view built from [regions](layout.md#regions) does not compare numbers at all. 
 positioned a pane answers whether a click landed in it:
 
 ```csharp
+private SurfaceRegion _list;
+private int _first;
+private int _index;
+
 public ViewRoute HandleMouse(MouseEvent mouse)
 {
     if (!_list.Contains(mouse.Row, mouse.Column))

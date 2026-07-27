@@ -25,6 +25,8 @@ is really *data*, a [store](stores.md) of atoms is the better home.
 ## The output line
 
 ```csharp
+private readonly ArlecchinoState _state;
+
 _state.Output = $"picked: {path}";
 ```
 

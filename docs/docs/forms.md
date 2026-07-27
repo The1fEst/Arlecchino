@@ -10,6 +10,9 @@ A view is the form; `Form` is the part that turns [atoms](atoms.md) into editabl
 the [modal](modals.md) that matches its type.
 
 ```csharp
+private readonly Surface _surface;
+private readonly Form _form;
+
 _form = new Form(state, options)
 {
     Fields =

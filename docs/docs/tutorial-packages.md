@@ -335,7 +335,7 @@ suffix. `Program.cs` compiles now.
 ### The table
 
 ```csharp
-_table = new(options.Keymap)
+_table = new Table<PackageRow>(options.Keymap)
 {
     Columns =
     [
@@ -393,7 +393,7 @@ Roles, not colours — so [swapping the palette](theming.md) restyles the whole 
 ### The tabs
 
 ```csharp
-_tabs = new(options.Keymap)
+_tabs = new Tabs(options.Keymap)
 {
     Titles =
     [
@@ -418,7 +418,7 @@ lands on the same tab.
 ### The focus ring
 
 ```csharp
-_focus = new(options.Keymap);
+_focus = new FocusRing(options.Keymap);
 _focus.Add(_tabs);
 _focus.Add(_table);
 _focus.Focus(_table);
@@ -542,7 +542,11 @@ itself.
 `ProjectsView` puts a [tree](tree.md) beside a [table](table.md), both in one ring:
 
 ```csharp
-_tree = new(options.Keymap)
+private readonly Tree<Branch> _tree;
+private readonly Table<ProjectRow> _projects;
+private readonly FocusRing _focus;
+
+_tree = new Tree<Branch>(options.Keymap)
 {
     Render = static branch => branch.Label,
     ItemStyle = Paint,
@@ -550,7 +554,7 @@ _tree = new(options.Keymap)
     Roots = Build(inventory.Scan.Value ?? Catalog.Empty),
 };
 
-_focus = new(options.Keymap);
+_focus = new FocusRing(options.Keymap);
 _focus.Add(_tree);
 _focus.Add(_projects);
 ```
@@ -597,7 +601,9 @@ public sealed class UpgradePlan : IArlecchinoStore
 The [form](forms.md) is four fields over those atoms:
 
 ```csharp
-_form = new(state, options)
+private readonly Form _form;
+
+_form = new Form(state, options)
 {
     Fields =
     [
@@ -619,6 +625,11 @@ something to do.
 `Apply` asks before it writes:
 
 ```csharp
+private readonly Inventory _inventory;
+private readonly UpgradePlan _plan;
+private readonly ViewLifetime _lifetime;
+private readonly ArlecchinoState _state;
+
 private ViewRoute Apply()
 {
     if (_inventory.Selected.Value is not { } package || _inventory.Scan.Value is not { } catalog)
@@ -678,7 +689,9 @@ The output goes in a [`ScrollPane`](scrolling.md), which shows the planned comma
 real output to show instead:
 
 ```csharp
-_log = new(options.Keymap)
+private readonly ScrollPane _log;
+
+_log = new ScrollPane(options.Keymap)
 {
     ContentHeight = () => Lines().Count,
     Content = region =>

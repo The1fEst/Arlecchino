@@ -18,6 +18,8 @@ from. When a frame happens and which thread composes it is [The frame loop](fram
 ## What a frame costs
 
 ```csharp
+private readonly Surface _surface;
+
 _surface.StartFrame();
 // … drawing …
 _surface.Build();

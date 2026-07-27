@@ -29,6 +29,10 @@ public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFo
 thing after another without counting rows by hand:
 
 ```csharp
+private readonly StatusBar _header;
+private readonly Tabs _tabs;
+private readonly ListBox<Mod> _list;
+
 var rest = _header.Draw(surface.Content);
 var below = _tabs.Draw(rest);
 

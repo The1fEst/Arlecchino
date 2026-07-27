@@ -49,6 +49,10 @@ a list, a pane, a tree — returns `region.Rows(region.Height, 0)`, an empty reg
 known number of rows returns the rest, which is what lets a view stack things without counting:
 
 ```csharp
+private readonly StatusBar _header;
+private readonly Tabs _tabs;
+private readonly ListBox<Mod> _list;
+
 var rest = _header.Draw(surface.Content);
 var below = _tabs.Draw(rest);
 
@@ -70,6 +74,8 @@ knew which thread draws, so handing a result back is a static call and nothing h
 public sealed class ModsView : IArlecchinoView
 {
     private readonly UiDispatcher _dispatcher;
+    private readonly ModsService _mods;
+    private IReadOnlyList<Mod> _rows = [];
 
     public ModsView(UiDispatcher dispatcher) => _dispatcher = dispatcher;
 
@@ -83,6 +89,9 @@ public sealed class ModsView : IArlecchinoView
 // 2.0
 public sealed class ModsView : IArlecchinoView
 {
+    private readonly ModsService _mods;
+    private IReadOnlyList<Mod> _rows = [];
+
     public void Reload() => Task.Run(async () =>
     {
         var loaded = await _mods.LoadAsync();

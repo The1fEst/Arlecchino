@@ -59,6 +59,9 @@ To split a pane between the text and something else, decide the split from the r
 the wrap:
 
 ```csharp
+private readonly TextView _readme;
+private readonly ListBox<string> _files;
+
 var (text, rest) = region.SplitTop(region.Height / 2);
 
 _readme.Draw(text);

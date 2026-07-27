@@ -57,6 +57,8 @@ Where an exact colour is the point — a swatch, a chart, a syntax highlighter �
 implementation:
 
 ```csharp
+private readonly Surface _surface;
+
 _surface.WriteAt(row, column, "████", new RgbTermColor { Foreground = new Rgb(63, 169, 245) });
 ```
 

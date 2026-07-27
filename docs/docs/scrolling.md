@@ -14,6 +14,9 @@ arithmetic for "which slice is on screen" is the same everywhere, so it lives in
 A window onto content taller than the space it has:
 
 ```csharp
+private readonly ScrollPane _notes;
+private readonly IReadOnlyList<string> _lines = [];
+
 _notes = new ScrollPane(options.Keymap)
 {
     ContentHeight = () => _lines.Count,

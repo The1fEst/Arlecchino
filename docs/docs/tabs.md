@@ -7,6 +7,9 @@ description: Tabs — a strip of titles across the top of a pane, switched with 
 # Tabs
 
 ```csharp
+private readonly Tabs _tabs;
+private int _view;
+
 _tabs = new Tabs(options.Keymap)
 {
     Titles = [() => Loc(LocString.Installed), () => Loc(LocString.Available)],
@@ -29,6 +32,10 @@ _tabs = new Tabs(options.Keymap)
 [`Draw` returning a region](widgets.md#draw-returns-what-is-left):
 
 ```csharp
+private readonly Surface _surface;
+private readonly ListBox<Mod> _installed;
+private readonly ListBox<Mod> _available;
+
 public void Draw()
 {
     var rest = _tabs.Draw(_surface.Content);
@@ -52,6 +59,8 @@ Put the strip and the pane behind it in one [ring](focus.md) and `Tab` moves bet
 `←→` stay with whichever has the cursor:
 
 ```csharp
+private readonly FocusRing _focus;
+
 _focus.Add(_tabs);
 _focus.Add(_installed);
 ```

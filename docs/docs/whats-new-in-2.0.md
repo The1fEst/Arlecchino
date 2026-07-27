@@ -22,6 +22,10 @@ It paints the widget and answers what is left of the region underneath, so a vie
 without counting rows:
 
 ```csharp
+private readonly StatusBar _header;
+private readonly Tabs _tabs;
+private readonly ListBox<Mod> _list;
+
 var rest = _header.Draw(surface.Content);
 var below = _tabs.Draw(rest);
 
@@ -47,6 +51,8 @@ which thread draws, so handing a result back from background work is one static 
 injected:
 
 ```csharp
+private IReadOnlyList<Mod> _rows = [];
+
 FrameThread.Post(() => _rows = loaded);
 ```
 
