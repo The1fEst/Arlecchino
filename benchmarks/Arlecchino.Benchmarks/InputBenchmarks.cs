@@ -59,7 +59,7 @@ public class InputBenchmarks
             _list = new(keymap) { Render = static item => item, Items = items, IsFocused = true };
         }
 
-        public void Draw() => _list.Place(_surface.Frame);
+        public void Draw() => _list.Draw(_surface.Frame);
 
         public ViewRoute Handle(ConsoleKeyInfo key) => _list.Handle(key).Route;
 

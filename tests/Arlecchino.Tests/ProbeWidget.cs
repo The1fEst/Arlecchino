@@ -22,10 +22,12 @@ public sealed class ProbeWidget : IArlecchinoInteractiveWidget
 
     public bool IsFocused { get; set; }
 
-    public void Draw(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         _drawn = region;
         region.WriteLine(0, Text, IsFocused ? Theme.Active : Theme.Muted);
+
+        return region.Rows(1, region.Height - 1);
     }
 
     public FocusResult Handle(ConsoleKeyInfo key) =>
@@ -46,5 +48,10 @@ public sealed class ProbeReadoutWidget : IArlecchinoWidget
         _store = store;
     }
 
-    public void Draw(SurfaceRegion region) => region.WriteLine(0, _store.Name.Value, Theme.Muted);
+    public SurfaceRegion Draw(SurfaceRegion region)
+    {
+        region.WriteLine(0, _store.Name.Value, Theme.Muted);
+
+        return region.Rows(1, region.Height - 1);
+    }
 }

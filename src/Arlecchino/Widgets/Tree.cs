@@ -103,13 +103,6 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// <summary>Closes every branch, leaving only the roots showing.</summary>
     public void CollapseAll() => SetExpanded(Roots, false);
 
-    /// <inheritdoc />
-    [Obsolete(
-        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
-        "Draw is removed in 2.0, where Place takes its name.",
-        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
-    public void Draw(SurfaceRegion region) => Place(region);
-
     /// <summary>
     /// Draws the rows that are showing around the selection and remembers where they landed, which is
     /// what lets a click tell a marker from a label. The tree fills whatever it is given, so nothing is
@@ -117,7 +110,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// </summary>
     /// <param name="region">Where to draw.</param>
     /// <returns>An empty region: the tree uses every row it is handed.</returns>
-    public SurfaceRegion Place(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         _drawn = region;
 

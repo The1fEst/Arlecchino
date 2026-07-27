@@ -178,7 +178,7 @@ _form = new Form(state, options)
     ],
 };
 
-public void Draw() => _form.Place(_surface.Content);
+public void Draw() => _form.Draw(_surface.Content);
 public ViewRoute Handle(ConsoleKeyInfo key) => _form.Handle(key).Route;
 public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse).Route;
 ```

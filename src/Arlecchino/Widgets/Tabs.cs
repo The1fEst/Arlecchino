@@ -53,13 +53,6 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
         OnSelected?.Invoke(Selected);
     }
 
-    /// <inheritdoc />
-    [Obsolete(
-        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
-        "Draw is removed in 2.0, where Place takes its name.",
-        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
-    public void Draw(SurfaceRegion region) => Place(region);
-
     /// <summary>
     /// Draws the labels side by side and remembers where each starts, which is what lets a click be
     /// resolved to a tab. Returns the rows below the strip, which is where the current tab's content
@@ -67,7 +60,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
     /// <returns>The region below the strip.</returns>
-    public SurfaceRegion Place(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         _drawn = region;
 

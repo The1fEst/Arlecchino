@@ -142,10 +142,10 @@ public sealed class InventoryView : IArlecchinoView
         if (_inventory.Scan.IsLoading)
         {
             _spinner.Advance();
-            _spinner.Place(header.SplitLeft(header.Width - 1).Right);
+            _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
         }
 
-        var body = _tabs.Place(rest);
+        var body = _tabs.Draw(rest);
         var (room, status) = body.SplitTop(body.Height - 1);
 
         _table.Rows = _inventory.Visible();
@@ -154,16 +154,16 @@ public sealed class InventoryView : IArlecchinoView
         {
             var (rows, bar) = room.SplitTop(room.Height - 2);
 
-            _table.Place(rows);
+            _table.Draw(rows);
             _progress.Value = _inventory.Step.Value.Done;
-            _progress.Place(bar.Rows(1, 1));
+            _progress.Draw(bar.Rows(1, 1));
         }
         else
         {
-            _table.Place(room);
+            _table.Draw(room);
         }
 
-        _status.Place(status);
+        _status.Draw(status);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);

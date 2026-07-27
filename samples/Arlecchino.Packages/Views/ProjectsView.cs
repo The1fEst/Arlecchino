@@ -91,9 +91,9 @@ public sealed class ProjectsView : IArlecchinoView
         var (panes, status) = rest.SplitTop(rest.Height - 1);
         var (tree, side) = panes.SplitLeft(panes.Width - SidebarWidth);
 
-        _tree.Place(tree.Border(Theme.Info, "Dependency tree"));
-        _projects.Place(side.Border(Theme.Info, "Per project"));
-        _status.Place(status);
+        _tree.Draw(tree.Border(Theme.Info, "Dependency tree"));
+        _projects.Draw(side.Border(Theme.Info, "Per project"));
+        _status.Draw(status);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);

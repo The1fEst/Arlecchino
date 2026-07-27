@@ -73,17 +73,17 @@ public sealed class WidgetsView : IArlecchinoView
 
     public void Draw()
     {
-        var under = _tabs.Place(_surface.Content);
+        var under = _tabs.Draw(_surface.Content);
         var (_, rest) = under.SplitTop(1);
 
         var (body, footer) = rest.SplitTop(rest.Height - 3);
         var (table, authors) = body.SplitLeft(body.Width - 20);
 
-        _table.Place(table.Inset(new Margin(0, 0, 2, 0)));
-        _authors.Place(authors);
+        _table.Draw(table.Inset(new Margin(0, 0, 2, 0)));
+        _authors.Draw(authors);
 
-        _progress.Place(footer.Rows(0, 1));
-        _status.Place(footer.Rows(2, 1));
+        _progress.Draw(footer.Rows(0, 1));
+        _status.Draw(footer.Rows(2, 1));
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key)

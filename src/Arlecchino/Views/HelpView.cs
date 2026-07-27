@@ -54,7 +54,7 @@ internal class HelpView : IArlecchinoView
         header.WriteLine(1, $"{_keymap.Cancel} {_strings.HelpClose()}", Theme.Muted);
 
         _rows.Items = Build();
-        _rows.Place(rest);
+        _rows.Draw(rest);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key)

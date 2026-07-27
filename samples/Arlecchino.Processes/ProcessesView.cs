@@ -91,8 +91,8 @@ public sealed class ProcessesView : IArlecchinoView
         header.WriteLine(1, Headline(), Theme.Muted);
 
         _table.Rows = _processes.Visible();
-        _table.Place(rows);
-        _status.Place(status);
+        _table.Draw(rows);
+        _status.Draw(status);
 
         if (!_processes.Rows.IsLoading)
         {
@@ -100,7 +100,7 @@ public sealed class ProcessesView : IArlecchinoView
         }
 
         _spinner.Advance();
-        _spinner.Place(header.SplitLeft(header.Width - 1).Right);
+        _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _table.Handle(key).Route;

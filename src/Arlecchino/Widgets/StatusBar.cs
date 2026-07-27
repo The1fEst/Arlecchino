@@ -21,13 +21,6 @@ public sealed class StatusBar : IArlecchinoWidget
     /// <summary>Colour to draw in. The muted theme colour when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
-    /// <inheritdoc />
-    [Obsolete(
-        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
-        "Draw is removed in 2.0, where Place takes its name.",
-        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
-    public void Draw(SurfaceRegion region) => Place(region);
-
     /// <summary>
     /// Draws both groups on the first row and returns the rows below. The left side is truncated to
     /// fit, and the right side is dropped entirely when the two would collide, so the bar never
@@ -35,7 +28,7 @@ public sealed class StatusBar : IArlecchinoWidget
     /// </summary>
     /// <param name="region">Where to draw; only its first row is used.</param>
     /// <returns>The region below the bar.</returns>
-    public SurfaceRegion Place(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {

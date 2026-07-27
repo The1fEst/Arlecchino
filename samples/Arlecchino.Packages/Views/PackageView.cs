@@ -88,15 +88,15 @@ public sealed class PackageView : IArlecchinoView
         if (package.Advisories.Count > 0)
         {
             var (advisories, below) = rest.SplitTop(Math.Min(AdvisoryRows, package.Advisories.Count + 2));
-            _advisories.Place(advisories.Border(Theme.Info, "Advisories"));
+            _advisories.Draw(advisories.Border(Theme.Info, "Advisories"));
             body = below;
         }
 
         var (uses, status) = body.SplitTop(body.Height - 1);
 
         _uses.Rows = package.Uses;
-        _uses.Place(uses.Border(Theme.Info, "Used by"));
-        _status.Place(status);
+        _uses.Draw(uses.Border(Theme.Info, "Used by"));
+        _status.Draw(status);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);

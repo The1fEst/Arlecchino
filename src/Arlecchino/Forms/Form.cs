@@ -52,13 +52,6 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// <summary>The selected field, or <c>null</c> when the form has none.</summary>
     public Field? Current => Fields.Count == 0 ? null : Fields[Math.Clamp(Selected, 0, Fields.Count - 1)];
 
-    /// <inheritdoc />
-    [Obsolete(
-        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
-        "Draw is removed in 2.0, where Place takes its name.",
-        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
-    public void Draw(SurfaceRegion region) => Place(region);
-
     /// <summary>
     /// Draws the fields with their labels aligned, scrolled so the selection stays in view, and returns
     /// the rows below the last one written. Buttons are left out of the alignment, since they have no
@@ -66,7 +59,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// </summary>
     /// <param name="region">Where to draw, help line included.</param>
     /// <returns>The region below the fields, which is empty when they filled it.</returns>
-    public SurfaceRegion Place(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         if (Fields.Count == 0 || region.IsEmpty)
         {

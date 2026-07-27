@@ -44,7 +44,7 @@ public sealed class TreeTests
         var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
 
         surface.StartFrame();
-        tree.Place(surface.Frame);
+        tree.Draw(surface.Frame);
         surface.Build();
 
         return FrameText.Lines(terminal.Written);

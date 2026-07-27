@@ -62,7 +62,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         content.WriteLine(0, "Settings", Theme.Header);
         content.WriteLine(1, _settings.Summary.Value, Theme.Muted);
 
-        _form.Place(content.Rows(3, content.Height - 3));
+        _form.Draw(content.Rows(3, content.Height - 3));
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key)

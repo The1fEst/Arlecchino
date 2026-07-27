@@ -103,7 +103,7 @@ public sealed class BoundaryTests
         var terminal = new FakeTerminal(40, 10);
         var surface = new Surface(terminal);
         surface.StartFrame();
-        form.Place(surface.Frame);
+        form.Draw(surface.Frame);
         surface.Build();
 
         Assert.NotNull(FrameText.Lines(terminal.Written));

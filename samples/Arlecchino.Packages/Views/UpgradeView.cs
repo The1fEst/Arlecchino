@@ -101,15 +101,15 @@ public sealed class UpgradeView : IArlecchinoView
         if (_plan.Running.Value)
         {
             _spinner.Advance();
-            _spinner.Place(header.SplitLeft(header.Width - 1).Right);
+            _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
         }
 
         var (form, below) = rest.SplitTop(FormRows);
         var (log, status) = below.SplitTop(below.Height - 1);
 
-        _form.Place(form);
-        _log.Place(log.Border(Theme.Info, _plan.Log.Count == 0 ? "Planned commands" : "Output"));
-        _status.Place(status);
+        _form.Draw(form);
+        _log.Draw(log.Border(Theme.Info, _plan.Log.Count == 0 ? "Planned commands" : "Output"));
+        _status.Draw(status);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);

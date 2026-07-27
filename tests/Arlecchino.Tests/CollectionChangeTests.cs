@@ -163,7 +163,7 @@ public sealed class CollectionChangeTests
             };
         }
 
-        public void Draw() => _list.Place(_surface.Content);
+        public void Draw() => _list.Draw(_surface.Content);
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
     }
@@ -171,7 +171,7 @@ public sealed class CollectionChangeTests
     private static void Draw(Surface surface, IArlecchinoWidget widget)
     {
         surface.StartFrame();
-        widget.Place(surface.Frame);
+        widget.Draw(surface.Frame);
         surface.Build();
     }
 }

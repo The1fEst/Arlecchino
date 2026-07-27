@@ -45,7 +45,7 @@ public sealed class WidgetTests
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c", "d", "e"] };
 
         list.Selected = 4;
-        list.Place(surface.Frame);
+        list.Draw(surface.Frame);
 
         var lines = Render(surface, terminal);
         Assert.StartsWith("c", lines[0].Trim(), StringComparison.Ordinal);
@@ -58,7 +58,7 @@ public sealed class WidgetTests
         var (surface, terminal) = CreateSurface(12, 3);
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c"] };
 
-        list.Place(surface.Frame);
+        list.Draw(surface.Frame);
 
         Assert.DoesNotContain('│', string.Join("", Render(surface, terminal)));
     }
@@ -85,7 +85,7 @@ public sealed class WidgetTests
             Selected = selected,
         };
 
-        list.Place(surface.Frame);
+        list.Draw(surface.Frame);
         return Render(surface, terminal);
     }
 
@@ -99,7 +99,7 @@ public sealed class WidgetTests
             Items = ["aaaaaa", "bbbbbb", "cccccc"],
         };
 
-        list.Place(surface.Frame);
+        list.Draw(surface.Frame);
 
         Assert.Equal("aaaaa█", Render(surface, terminal)[0]);
     }
@@ -150,7 +150,7 @@ public sealed class WidgetTests
         var region = surface.Frame;
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c", "d"] };
 
-        list.Place(region);
+        list.Draw(region);
 
         list.HandleMouse(new(MouseAction.ScrolledDown, MouseButton.None, 0, 0, default));
         Assert.Equal(1, list.Selected);
@@ -176,7 +176,7 @@ public sealed class WidgetTests
             Rows = [("first", 10), ("second", 200)],
         };
 
-        table.Place(surface.Frame);
+        table.Draw(surface.Frame);
 
         var lines = Render(surface, terminal);
         Assert.StartsWith("Name", lines[0]);
@@ -233,7 +233,7 @@ public sealed class WidgetTests
         var (surface, terminal) = CreateSurface(10, 1);
         var progress = new ProgressBar { Value = 50 };
 
-        progress.Place(surface.Frame);
+        progress.Draw(surface.Frame);
 
         var line = Render(surface, terminal)[0];
         Assert.Equal(5, CountOf(line, '█'));
@@ -246,7 +246,7 @@ public sealed class WidgetTests
         var (surface, terminal) = CreateSurface(20, 1);
         var progress = new ProgressBar { Value = 25, Caption = static value => $"{value:0}%" };
 
-        progress.Place(surface.Frame);
+        progress.Draw(surface.Frame);
 
         Assert.Contains("25%", Render(surface, terminal)[0], StringComparison.Ordinal);
     }
@@ -290,7 +290,7 @@ public sealed class WidgetTests
             Titles = [static () => "One", static () => "Two", static () => "Three"],
         };
 
-        tabs.Place(surface.Frame);
+        tabs.Draw(surface.Frame);
         tabs.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 0, 8, default));
 
         Assert.Equal(1, tabs.Selected);
@@ -306,7 +306,7 @@ public sealed class WidgetTests
             Right = [static () => "Esc back"],
         };
 
-        status.Place(surface.Frame);
+        status.Draw(surface.Frame);
 
         var line = Render(surface, terminal)[0];
         Assert.StartsWith("12 items", line);
@@ -323,7 +323,7 @@ public sealed class WidgetTests
             Right = [static () => "right"],
         };
 
-        status.Place(surface.Frame);
+        status.Draw(surface.Frame);
 
         Assert.DoesNotContain("right", Render(surface, terminal)[0], StringComparison.Ordinal);
     }

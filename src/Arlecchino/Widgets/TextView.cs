@@ -64,20 +64,13 @@ public sealed class TextView : IArlecchinoInteractiveWidget
         set => _pane.IsFocused = value;
     }
 
-    /// <inheritdoc />
-    [Obsolete(
-        "Draw is replaced by Place, which draws the same thing and returns the region left over. " +
-        "Draw is removed in 2.0, where Place takes its name.",
-        DiagnosticId = ArlecchinoDiagnostics.ObsoleteDraw)]
-    public void Draw(SurfaceRegion region) => Place(region);
-
     /// <summary>
     /// Wraps the text to the region and draws the part that fits. The view fills whatever it is given,
     /// so nothing is left underneath it.
     /// </summary>
     /// <param name="region">Where to draw.</param>
     /// <returns>An empty region: the view uses every row it is handed.</returns>
-    public SurfaceRegion Place(SurfaceRegion region)
+    public SurfaceRegion Draw(SurfaceRegion region)
     {
         if (region.IsEmpty)
         {
@@ -87,7 +80,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
         var width = _pane.ShowScrollBar ? Math.Max(1, region.Width - 1) : region.Width;
         Rewrap(width);
 
-        return _pane.Place(region);
+        return _pane.Draw(region);
     }
 
     /// <summary>Scrolls the text.</summary>
