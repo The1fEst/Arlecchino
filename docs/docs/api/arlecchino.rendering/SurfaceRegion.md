@@ -42,6 +42,7 @@ public readonly struct SurfaceRegion : IEquatable<SurfaceRegion>
 | [`Contains(int, int)`](#contains-int-int) | Whether a frame cell falls inside this region — the hit test for mouse events. |
 | [`Deconstruct(out Surface, out int, out int, out int, out int)`](#deconstruct-out-surface-out-int-out-int-out-int-out-int) |  |
 | [`Fill(IArlecchinoColor, char)`](#fill-iarlecchinocolor-char) | Paints every cell of the region. |
+| [`Flow()`](#flow) | A cursor that writes the next line of this region and remembers where the one after it goes, for a pane filled from a loop. [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface)'s own flow calls belong to the whole frame, so inside a pane they write at the top of the screen and paint over its border; this one stays where it was given. |
 | [`Inset(Margin)`](#inset-margin) | A smaller region inside this one. |
 | [`Inset(int)`](#inset-int) | A smaller region with the same space kept free on every side. |
 | [`Rows(int, int)`](#rows-int-int) | A horizontal band of this region, clamped to its bounds. |
@@ -224,6 +225,16 @@ Paints every cell of the region.
 |---|---|---|
 | `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style to paint with. |
 | `character` | `char` | Character to fill with; a space by default. |
+
+### `Flow()` {#flow}
+
+```csharp
+public PaneFlow Flow();
+```
+
+A cursor that writes the next line of this region and remembers where the one after it goes, for a pane filled from a loop. [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface)'s own flow calls belong to the whole frame, so inside a pane they write at the top of the screen and paint over its border; this one stays where it was given.
+
+**Returns** [`PaneFlow`](../arlecchino.rendering/PaneFlow.md) — A flow starting at the first row of the region.
 
 ### `Inset(Margin)` {#inset-margin}
 
