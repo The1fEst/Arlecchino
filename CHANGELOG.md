@@ -9,6 +9,41 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.2.0
+
+### Added
+
+- **`PaneTree`** describes a screen made of panes as one expression instead of a chain of `SplitTop`
+  and `SplitLeft` calls spread through `Draw`. Every split hands its region to two halves in a size,
+  every leaf is a widget or a delegate the view draws with, and `Draw(region, gap)` puts each one
+  where the splits say:
+
+  ```csharp
+  _layout = PaneTree.Rows(
+      3,
+      PaneTree.Pane(DrawToolbar),
+      PaneTree.Rows(
+          PaneSize.CellsFromEnd(2),
+          PaneTree.Columns(0.25, PaneTree.Pane(_files), PaneTree.Pane(_editor)),
+          PaneTree.Pane(_status)));
+
+  public void Draw() => _layout.Draw(_surface.Content, gap: 1);
+  ```
+
+  Sizes come in the three kinds a terminal screen actually needs: a share of the space (`0.25`), a
+  fixed count of cells (`3`), and everything-but-a-count for chrome anchored to the far edge
+  (`PaneSize.CellsFromEnd(1)` is a status bar on the last row). `double` and `int` convert on their
+  own, so they read as themselves at the call site.
+
+  Nothing about a frame is kept in the tree — sizes are worked out per `Draw`, so one tree fits every
+  terminal and a resize needs no bookkeeping. A region too small for what it holds leaves the panes
+  that did not fit empty rather than overlapping them, and drawing into an empty region writes
+  nothing. See [Layout](https://the1fest.github.io/Arlecchino.Docs/docs/layout).
+
+  It is a layout description and not a component system: the tree decides where things go and nothing
+  else — no lifetimes, no state, no re-render pass — and a view that splits regions by hand keeps
+  working as it did.
+
 ## 2.1.0
 
 ### Added
