@@ -14,26 +14,38 @@ the public API means a new major. See
 ### Added
 
 - **`PaneTree`** describes a screen made of panes as one expression instead of a chain of `SplitTop`
-  and `SplitLeft` calls spread through `Draw`. Every split hands its region to two halves in a size,
-  every leaf is a widget or a delegate the view draws with, and `Draw(region, gap)` puts each one
-  where the splits say:
+  and `SplitLeft` calls spread through `Draw`. Two members build it — `Branch` and `Leaf` — and
+  `Draw` puts every pane where the branches say:
 
   ```csharp
-  _layout = PaneTree.Rows(
-      3,
-      PaneTree.Pane(DrawToolbar),
-      PaneTree.Rows(
-          PaneSize.CellsFromEnd(2),
-          PaneTree.Columns(0.25, PaneTree.Pane(_files), PaneTree.Pane(_editor)),
-          PaneTree.Pane(_status)));
+  using static Arlecchino.Layout.PaneSplit;
+  using static Arlecchino.Layout.PaneTree;
 
-  public void Draw() => _layout.Draw(_surface.Content, gap: 1);
+  _layout = Branch(
+      Rows,
+      3,
+      Leaf(DrawToolbar),
+      Branch(
+          Rows,
+          PaneSize.CellsFromEnd(2),
+          Branch(Columns, 0.25, Leaf(_files), Branch(Leaf(_editor), Leaf(_log))),
+          Leaf(_status))).Gaps(inner: 1, outer: 1);
+
+  public void Draw() => _layout.Draw(_surface.Content);
   ```
+
+  Only the two halves of a branch are required. Left to itself, a branch halves the space and cuts
+  along the longer side — measured in what the eye sees rather than in cells, since a terminal cell is
+  about twice as tall as it is wide, and worked out per frame, so it can turn from columns into rows
+  when the window is resized. Give it a `PaneSplit` where that matters, which is the chrome.
 
   Sizes come in the three kinds a terminal screen actually needs: a share of the space (`0.25`), a
   fixed count of cells (`3`), and everything-but-a-count for chrome anchored to the far edge
   (`PaneSize.CellsFromEnd(1)` is a status bar on the last row). `double` and `int` convert on their
   own, so they read as themselves at the call site.
+
+  Spacing belongs to the tree rather than to a call: `Gaps(inner, outer)` names it the way a tiling
+  window manager does — between the halves of every branch, and around everything.
 
   Nothing about a frame is kept in the tree — sizes are worked out per `Draw`, so one tree fits every
   terminal and a resize needs no bookkeeping. A region too small for what it holds leaves the panes

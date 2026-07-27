@@ -5,6 +5,8 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Sample.Views;
 using Arlecchino.Widgets;
+using static Arlecchino.Layout.PaneSplit;
+using static Arlecchino.Layout.PaneTree;
 
 namespace Arlecchino.Sample;
 
@@ -30,22 +32,25 @@ public sealed class PanesView : IArlecchinoView
             Right = [static () => "Esc back"],
         };
 
-        _layout = PaneTree.Rows(
+        _layout = Branch(
+            Rows,
             3,
-            PaneTree.Pane(static region => Box(region, "toolbar", "three rows, whatever the terminal is")),
-            PaneTree.Rows(
+            Leaf(static region => Box(region, "toolbar", "three rows, whatever the terminal is")),
+            Branch(
+                Rows,
                 PaneSize.CellsFromEnd(2),
-                PaneTree.Columns(
+                Branch(
+                    Columns,
                     0.25,
-                    PaneTree.Pane(files),
-                    PaneTree.Rows(
+                    Leaf(files),
+                    Branch(
                         0.7,
-                        PaneTree.Pane(static region => Box(region, "editor", "70% of what is left")),
-                        PaneTree.Pane(static region => Box(region, "log", "the rest")))),
-                PaneTree.Pane(status)));
+                        Leaf(static region => Box(region, "editor", "70%, along whichever side is longer")),
+                        Leaf(static region => Box(region, "log", "the rest of it")))),
+                Leaf(status))).Gaps(inner: 1, outer: 1);
     }
 
-    public void Draw() => _layout.Draw(_surface.Content, gap: 1);
+    public void Draw() => _layout.Draw(_surface.Content);
 
     public ViewRoute Handle(ConsoleKeyInfo key) =>
         key.Key == ConsoleKey.Escape ? ViewKind.Default : ViewRoute.None;

@@ -5,6 +5,8 @@ using Arlecchino.Rendering;
 using Arlecchino.Testing;
 using Arlecchino.Widgets;
 using Xunit;
+using static Arlecchino.Layout.PaneSplit;
+using static Arlecchino.Layout.PaneTree;
 
 namespace Arlecchino.Tests;
 
@@ -15,7 +17,7 @@ public sealed class PaneTreeTests
     {
         var only = new Probe();
 
-        PaneTree.Pane(only.Draw).Draw(Frame(80, 24));
+        Leaf(only.Draw).Draw(Frame(80, 24));
 
         Assert.Equal(80, only.Region.Width);
         Assert.Equal(24, only.Region.Height);
@@ -27,7 +29,7 @@ public sealed class PaneTreeTests
         var tree = new Probe();
         var editor = new Probe();
 
-        PaneTree.Columns(0.25, PaneTree.Pane(tree.Draw), PaneTree.Pane(editor.Draw)).Draw(Frame(80, 24));
+        Branch(Columns, 0.25, Leaf(tree.Draw), Leaf(editor.Draw)).Draw(Frame(80, 24));
 
         Assert.Equal(0, tree.Region.Left);
         Assert.Equal(20, tree.Region.Width);
@@ -42,7 +44,7 @@ public sealed class PaneTreeTests
         var editor = new Probe();
         var log = new Probe();
 
-        PaneTree.Rows(0.5, PaneTree.Pane(editor.Draw), PaneTree.Pane(log.Draw)).Draw(Frame(80, 24));
+        Branch(Rows, 0.5, Leaf(editor.Draw), Leaf(log.Draw)).Draw(Frame(80, 24));
 
         Assert.Equal(12, editor.Region.Height);
         Assert.Equal(12, log.Region.Top);
@@ -50,11 +52,82 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
+    public void ABranchOfTwoLeavesHalvesTheSpaceItIsGiven()
+    {
+        var left = new Probe();
+        var right = new Probe();
+
+        Branch(Leaf(left.Draw), Leaf(right.Draw)).Draw(Frame(80, 24));
+
+        Assert.Equal(40, left.Region.Width);
+        Assert.Equal(40, right.Region.Width);
+    }
+
+    [Fact]
+    public void ABranchThatWasNotToldWhichWayCutsAlongTheLongerSide()
+    {
+        var first = new Probe();
+        var second = new Probe();
+        var layout = Branch(Leaf(first.Draw), Leaf(second.Draw));
+
+        layout.Draw(Frame(80, 24));
+
+        Assert.Equal(40, first.Region.Width);
+        Assert.Equal(24, first.Region.Height);
+
+        layout.Draw(Frame(40, 24));
+
+        Assert.Equal(40, first.Region.Width);
+        Assert.Equal(12, first.Region.Height);
+    }
+
+    [Fact]
+    public void TheLongerSideIsWhatTheEyeSeesRatherThanTheCellCount()
+    {
+        var first = new Probe();
+
+        Branch(Leaf(first.Draw), Leaf()).Draw(Frame(48, 24));
+
+        Assert.Equal(24, first.Region.Width);
+        Assert.Equal(24, first.Region.Height);
+
+        Branch(Leaf(first.Draw), Leaf()).Draw(Frame(47, 24));
+
+        Assert.Equal(47, first.Region.Width);
+        Assert.Equal(12, first.Region.Height);
+    }
+
+    [Fact]
+    public void ASizeWithoutADirectionStillCutsAlongTheLongerSide()
+    {
+        var first = new Probe();
+        var second = new Probe();
+
+        Branch(0.25, Leaf(first.Draw), Leaf(second.Draw)).Draw(Frame(80, 24));
+
+        Assert.Equal(20, first.Region.Width);
+        Assert.Equal(24, first.Region.Height);
+        Assert.Equal(60, second.Region.Width);
+    }
+
+    [Fact]
+    public void ADirectionWithoutASizeHalvesTheSpace()
+    {
+        var top = new Probe();
+        var bottom = new Probe();
+
+        Branch(Rows, Leaf(top.Draw), Leaf(bottom.Draw)).Draw(Frame(80, 24));
+
+        Assert.Equal(12, top.Region.Height);
+        Assert.Equal(12, bottom.Region.Top);
+    }
+
+    [Fact]
     public void ACountOfCellsIsTheSameAtEverySize()
     {
         var toolbar = new Probe();
         var body = new Probe();
-        var layout = PaneTree.Rows(3, PaneTree.Pane(toolbar.Draw), PaneTree.Pane(body.Draw));
+        var layout = Branch(Rows, 3, Leaf(toolbar.Draw), Leaf(body.Draw));
 
         foreach (var height in new[] { 10, 24, 60 })
         {
@@ -71,9 +144,7 @@ public sealed class PaneTreeTests
         var body = new Probe();
         var status = new Probe();
 
-        PaneTree
-            .Rows(PaneSize.CellsFromEnd(1), PaneTree.Pane(body.Draw), PaneTree.Pane(status.Draw))
-            .Draw(Frame(80, 24));
+        Branch(Rows, PaneSize.CellsFromEnd(1), Leaf(body.Draw), Leaf(status.Draw)).Draw(Frame(80, 24));
 
         Assert.Equal(23, body.Region.Height);
         Assert.Equal(23, status.Region.Top);
@@ -81,20 +152,22 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
-    public void NestedSplitsBuildAWholeScreen()
+    public void NestedBranchesBuildAWholeScreen()
     {
         var toolbar = new Probe();
         var tree = new Probe();
         var editor = new Probe();
         var log = new Probe();
 
-        PaneTree.Rows(
+        Branch(
+                Rows,
                 3,
-                PaneTree.Pane(toolbar.Draw),
-                PaneTree.Columns(
+                Leaf(toolbar.Draw),
+                Branch(
+                    Columns,
                     0.25,
-                    PaneTree.Pane(tree.Draw),
-                    PaneTree.Rows(0.75, PaneTree.Pane(editor.Draw), PaneTree.Pane(log.Draw))))
+                    Leaf(tree.Draw),
+                    Branch(Rows, 0.75, Leaf(editor.Draw), Leaf(log.Draw))))
             .Draw(Frame(100, 40));
 
         Assert.Equal(100, toolbar.Region.Width);
@@ -117,13 +190,15 @@ public sealed class PaneTreeTests
     {
         var panes = new[] { new Probe(), new Probe(), new Probe(), new Probe(), new Probe() };
 
-        PaneTree.Columns(
+        Branch(
+                Columns,
                 0.3,
-                PaneTree.Rows(4, PaneTree.Pane(panes[0].Draw), PaneTree.Pane(panes[1].Draw)),
-                PaneTree.Rows(
+                Branch(Rows, 4, Leaf(panes[0].Draw), Leaf(panes[1].Draw)),
+                Branch(
+                    Rows,
                     PaneSize.CellsFromEnd(2),
-                    PaneTree.Columns(0.5, PaneTree.Pane(panes[2].Draw), PaneTree.Pane(panes[3].Draw)),
-                    PaneTree.Pane(panes[4].Draw)))
+                    Branch(Leaf(panes[2].Draw), Leaf(panes[3].Draw)),
+                    Leaf(panes[4].Draw)))
             .Draw(Frame(100, 30));
 
         var covered = new HashSet<(int Row, int Column)>();
@@ -143,12 +218,12 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
-    public void AGapIsTakenOutBetweenTheHalves()
+    public void TheInnerGapIsTakenOutBetweenTheHalvesOfEveryBranch()
     {
         var left = new Probe();
         var right = new Probe();
 
-        PaneTree.Columns(0.5, PaneTree.Pane(left.Draw), PaneTree.Pane(right.Draw)).Draw(Frame(80, 24), gap: 2);
+        Branch(Columns, 0.5, Leaf(left.Draw), Leaf(right.Draw)).Gaps(inner: 2).Draw(Frame(80, 24));
 
         Assert.Equal(0, left.Region.Left);
         Assert.Equal(39, left.Region.Width);
@@ -157,10 +232,43 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
+    public void TheOuterGapIsTakenOutAroundEverything()
+    {
+        var left = new Probe();
+        var right = new Probe();
+
+        Branch(Columns, 0.5, Leaf(left.Draw), Leaf(right.Draw)).Gaps(inner: 0, outer: 2).Draw(Frame(80, 24));
+
+        Assert.Equal(2, left.Region.Left);
+        Assert.Equal(2, left.Region.Top);
+        Assert.Equal(20, left.Region.Height);
+        Assert.Equal(38, left.Region.Width);
+        Assert.Equal(38, right.Region.Width);
+        Assert.Equal(78, right.Region.Right);
+    }
+
+    [Fact]
+    public void GapsBelongToTheTreeRatherThanToACall()
+    {
+        var left = new Probe();
+        var layout = Branch(Columns, 0.5, Leaf(left.Draw), Leaf());
+
+        Assert.Same(layout, layout.Gaps(inner: 1, outer: 3));
+
+        Assert.Equal(1, layout.InnerGap);
+        Assert.Equal(3, layout.OuterGap);
+
+        layout.Draw(Frame(80, 24));
+
+        Assert.Equal(3, left.Region.Left);
+        Assert.Equal(36, left.Region.Width);
+    }
+
+    [Fact]
     public void TheSameTreeFitsAnyTerminal()
     {
         var left = new Probe();
-        var layout = PaneTree.Columns(0.5, PaneTree.Pane(left.Draw), PaneTree.Empty());
+        var layout = Branch(Columns, 0.5, Leaf(left.Draw), Leaf());
 
         layout.Draw(Frame(40, 10));
         Assert.Equal(20, left.Region.Width);
@@ -178,7 +286,7 @@ public sealed class PaneTreeTests
 
         surface.StartFrame();
 
-        PaneTree.Rows(3, PaneTree.Empty(), PaneTree.Pane(body.Draw)).Draw(surface.Frame);
+        Branch(Rows, 3, Leaf(), Leaf(body.Draw)).Draw(surface.Frame);
 
         surface.Build();
 
@@ -192,9 +300,7 @@ public sealed class PaneTreeTests
         var left = new Probe();
         var right = new Probe();
 
-        PaneTree
-            .Columns(PaneSize.Fraction(4), PaneTree.Pane(left.Draw), PaneTree.Pane(right.Draw))
-            .Draw(Frame(80, 24));
+        Branch(Columns, PaneSize.Fraction(4), Leaf(left.Draw), Leaf(right.Draw)).Draw(Frame(80, 24));
 
         Assert.Equal(80, left.Region.Width);
         Assert.True(right.Region.IsEmpty);
@@ -209,22 +315,21 @@ public sealed class PaneTreeTests
 
         surface.StartFrame();
 
-        PaneTree.Rows(PaneSize.CellsFromEnd(1), PaneTree.Empty(), PaneTree.Pane(bar)).Draw(surface.Frame);
+        Branch(Rows, PaneSize.CellsFromEnd(1), Leaf(), Leaf(bar)).Draw(surface.Frame);
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
-
-        Assert.Contains("ready", lines[^1], StringComparison.Ordinal);
+        Assert.Contains("ready", FrameText.Lines(terminal.Written)[^1], StringComparison.Ordinal);
     }
 
     [Fact]
     public void ATreeCountsThePanesItHolds()
     {
-        var layout = PaneTree.Rows(
+        var layout = Branch(
+            Rows,
             3,
-            PaneTree.Empty(),
-            PaneTree.Columns(0.5, PaneTree.Empty(), PaneTree.Rows(0.5, PaneTree.Empty(), PaneTree.Empty())));
+            Leaf(),
+            Branch(Columns, 0.5, Leaf(), Branch(Leaf(), Leaf())));
 
         Assert.Equal(4, layout.Count);
     }
@@ -232,9 +337,10 @@ public sealed class PaneTreeTests
     [Fact]
     public void APaneNeedsSomethingToDraw()
     {
-        Assert.Throws<ArgumentNullException>(static () => PaneTree.Pane((IArlecchinoWidget)null!));
-        Assert.Throws<ArgumentNullException>(static () => PaneTree.Pane((Action<SurfaceRegion>)null!));
-        Assert.Throws<ArgumentNullException>(static () => PaneTree.Rows(0.5, PaneTree.Empty(), null!));
+        Assert.Throws<ArgumentNullException>(static () => Leaf((IArlecchinoWidget)null!));
+        Assert.Throws<ArgumentNullException>(static () => Leaf((Action<SurfaceRegion>)null!));
+        Assert.Throws<ArgumentNullException>(static () => Branch(Leaf(), null!));
+        Assert.Throws<ArgumentNullException>(static () => Branch(Rows, 0.5, null!, Leaf()));
     }
 
     private static SurfaceRegion Frame(int width, int height)
