@@ -260,11 +260,12 @@ private sealed class StepProgress : IProgress<ScanStep>
 
     public StepProgress(Atom<ScanStep> step) => _step = step;
 
-    public void Report(ScanStep value) => FrameThread.Post(() => _step.Value = value);
+    public void Report(ScanStep value) => _step.Post(value);
 }
 ```
 
-Without the `Post` this throws, by design — see [The frame loop](frame-loop.md#which-thread-draws).
+Writing `_step.Value` here instead would throw, by design — the scan runs on another thread. See
+[The frame loop](frame-loop.md#which-thread-draws).
 
 Finally, the filtering the tabs and the filter modal both need, in the store rather than in a view:
 

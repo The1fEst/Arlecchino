@@ -33,6 +33,7 @@ the state is declared, rather than by a flag set somewhere else afterwards.
 | Member | Meaning |
 |---|---|
 | `Value` | Reads and writes; writing an equal value changes nothing and notifies nobody |
+| `Post(value)` | Writes from another thread, applied just before the next frame — see [Threads](#threads) |
 | `Subscribe(listener)` | Returns an `IDisposable`; dispose it to stop listening |
 | `RecordsHistory` | Whether edits of this atom enter the undo history |
 
@@ -131,5 +132,31 @@ Views that only read atoms in `Draw` need none of this: reading happens fresh ev
 ## Threads
 
 Atoms are not thread-safe, and say so: writing one from off the drawing thread throws. Anything that
-finishes elsewhere writes through `FrameThread.Post` — which is what [`AsyncAtom`](async-atoms.md) does
-for you. [The frame loop](frame-loop.md#which-thread-draws) is where that rule comes from.
+finishes elsewhere hands the value over instead, and the atom does the handing:
+
+```csharp
+public void Report(ScanStep value) => _step.Post(value);
+```
+
+`Post` writes the value just before the next frame, in the order it was posted. Everything a plain
+write does happens then — subscribers are notified, a repaint is asked for, and a `TrackedAtom<T>`
+records an undo step, so a posted edit is taken back by `Undo` like any other.
+
+The write has not happened when `Post` returns, which is why the `Value` setter throws rather than
+quietly posting for you: `atom.Value = loaded` followed by reading `atom.Value` back would return the
+old value with nothing to say so. The method is named for what it does.
+
+Atoms that have to change together belong in one `FrameThread.Post` with a block rather than a `Post`
+each, so that no frame falls between them:
+
+```csharp
+FrameThread.Post(() =>
+{
+    _log.Add(line);
+    Written.Value = _log.Count;
+});
+```
+
+That is what [`AsyncAtom`](async-atoms.md) does internally with its value and its status, which is why
+a load never draws as finished while the old value is still on screen.
+[The frame loop](frame-loop.md#which-thread-draws) is where the rule comes from.

@@ -144,6 +144,15 @@ A frame runs what was waiting when it started, and no more. Work posted by that 
 next frame, so an action that posts itself is a once-a-frame loop rather than a frame that never
 ends — which is the shape "carry on next frame" naturally takes.
 
+When the work is one atom taking one value, the atom posts itself and there is no lambda to write:
+
+```csharp
+public void Report(ScanStep value) => _step.Post(value);
+```
+
+Reach back for `FrameThread.Post` with a block when several things change together — two atoms, a
+list and its count — so that no frame falls between them. See [Atoms](atoms.md#threads).
+
 For loading data this way without writing the plumbing, see [Async atoms](async-atoms.md).
 
 :::warning[A collection that shrinks mid-frame]
