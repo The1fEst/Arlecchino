@@ -105,6 +105,15 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
         Surface.WriteAt(Top + row, Left + Math.Max(0, column), visible, style);
     }
 
+    /// <summary>
+    /// A cursor that writes the next line of this region and remembers where the one after it goes,
+    /// for a pane filled from a loop. <see cref="Surface"/>'s own flow calls belong to the whole
+    /// frame, so inside a pane they write at the top of the screen and paint over its border; this
+    /// one stays where it was given.
+    /// </summary>
+    /// <returns>A flow starting at the first row of the region.</returns>
+    public PaneFlow Flow() => new(this);
+
     /// <summary>Writes a whole line, aligned inside the region and clipped to its width.</summary>
     /// <param name="row">Row inside the region.</param>
     /// <param name="text">Text to draw.</param>

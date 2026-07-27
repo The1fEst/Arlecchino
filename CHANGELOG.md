@@ -9,6 +9,35 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.3.0
+
+### Added
+
+- **`region.Flow()`** writes a pane line after line without counting rows:
+
+  ```csharp
+  var flow = region.Flow();
+
+  flow.AppendLine("PLAYERS", Theme.TableHeader);
+  flow.FillLine();
+
+  foreach (var player in players)
+  {
+      flow.AppendLine(player.Name, Theme.Default);
+  }
+  ```
+
+  `Surface`'s flow calls belong to the whole frame, so reaching for `region.Surface.AppendLine(...)`
+  inside a pane wrote at the top of the screen and painted over the pane's border and its neighbours.
+  A `PaneFlow` stays where it was given: everything is written in the region's coordinates, clipped to
+  it, and once the pane is full the calls stop doing anything — a loop over more rows than fit needs no
+  bound of its own.
+
+  `SkipLine()`, `Skip(rows)`, `FillLine(style)` and `Rewind()` move the cursor; `Rest()` hands back the
+  rows it has not reached yet as a region, for giving what is left of a pane to a widget. It is a
+  class, so a helper that writes a few more lines carries the cursor along, and two flows over one
+  region are independent.
+
 ## 2.2.0
 
 ### Added

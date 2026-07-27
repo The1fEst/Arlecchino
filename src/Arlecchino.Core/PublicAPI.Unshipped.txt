@@ -1,2 +1,14 @@
 #nullable enable
 Arlecchino.Atoms.Atom<T>.Post(T value) -> void
+Arlecchino.Rendering.PaneFlow
+Arlecchino.Rendering.PaneFlow.AppendLine(string! line, Arlecchino.Rendering.IArlecchinoColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void
+Arlecchino.Rendering.PaneFlow.FillLine(Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.PaneFlow.FreeLines.get -> int
+Arlecchino.Rendering.PaneFlow.IsFull.get -> bool
+Arlecchino.Rendering.PaneFlow.Region.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.PaneFlow.Rest() -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.PaneFlow.Rewind() -> void
+Arlecchino.Rendering.PaneFlow.Row.get -> int
+Arlecchino.Rendering.PaneFlow.Skip(int rows) -> void
+Arlecchino.Rendering.PaneFlow.SkipLine() -> void
+Arlecchino.Rendering.SurfaceRegion.Flow() -> Arlecchino.Rendering.PaneFlow!
