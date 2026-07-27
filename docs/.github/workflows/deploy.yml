@@ -4,6 +4,16 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: >
+          What to build. Left empty this is the commit that triggered the run, which is what a push
+          wants; a caller that has just committed something passes the branch instead, since its own
+          commit is newer than the event that started it.
+        type: string
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -21,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ inputs.ref }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v7

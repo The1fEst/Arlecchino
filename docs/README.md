@@ -47,8 +47,26 @@ npm run api
 `npm run api` is `dotnet run apidocs/ApiDocs.cs -- --repo ../Arlecchino --out docs/api`; `--repo`
 points it somewhere else. It needs the .NET 10 SDK, and it deletes and rewrites `docs/api` every time.
 
-The `api` workflow does the same thing on a schedule, on demand, and on a `repository_dispatch` of
-type `arlecchino-released`.
+The `api` workflow does the same thing every Monday, on demand, and whenever the framework is
+released — see below. When it finds a difference it commits it and calls the `deploy` workflow, since
+a commit made with `GITHUB_TOKEN` does not start one by itself.
+
+### Regenerating on release
+
+Releasing Arlecchino sends this repository a `repository_dispatch` of type `arlecchino-released`,
+carrying the tag so the reference is generated from the code that was actually published.
+
+That needs one token, because the default `GITHUB_TOKEN` of a workflow cannot reach another
+repository:
+
+1. Create a fine-grained personal access token scoped to **this repository only**, with
+   **Contents: read and write** — that is what the dispatch endpoint asks for, and it is the whole
+   of what the token can do.
+2. Add it to **Arlecchino** (not this repository) as the secret `DOCS_DISPATCH_TOKEN`:
+   Settings → Secrets and variables → Actions.
+
+Without the secret the release step is skipped and nothing fails; the Monday run picks the change up
+instead.
 
 ## Writing a page
 
