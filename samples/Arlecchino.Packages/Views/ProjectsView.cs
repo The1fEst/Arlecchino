@@ -4,11 +4,14 @@ using Arlecchino.Commands;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
+using Arlecchino.Layout;
 using Arlecchino.Navigation;
 using Arlecchino.Packages.Model;
 using Arlecchino.Packages.Stores;
 using Arlecchino.Rendering;
 using Arlecchino.Widgets;
+using static Arlecchino.Layout.PaneSplit;
+using static Arlecchino.Layout.PaneTree;
 
 namespace Arlecchino.Packages.Views;
 
@@ -23,8 +26,7 @@ public sealed class ProjectsView : IArlecchinoView
     private readonly Inventory _inventory;
     private readonly FocusRing _focus;
     private readonly Tree<Branch> _tree;
-    private readonly Table<ProjectSummary> _projects;
-    private readonly StatusBar _status;
+    private readonly PaneTree _layout;
 
     public ProjectsView(Surface surface, Inventory inventory, ArlecchinoOptions options)
     {
@@ -39,7 +41,7 @@ public sealed class ProjectsView : IArlecchinoView
             Roots = Build(inventory.Scan.Value ?? Catalog.Empty),
         };
 
-        _projects = new(options.Keymap)
+        var projects = new Table<ProjectSummary>(options.Keymap)
         {
             Columns =
             [
@@ -69,31 +71,35 @@ public sealed class ProjectsView : IArlecchinoView
             Rows = inventory.Scan.Value?.Projects ?? [],
         };
 
-        _status = new()
+        var status = new StatusBar
         {
             Left = [Counted],
             Right = [static () => "Tab panes", static () => "Esc back"],
         };
 
-        _focus = new(options.Keymap);
-        _focus.Add(_tree);
-        _focus.Add(_projects);
+        _layout = Branch(
+            Rows,
+            HeaderRows,
+            Leaf(DrawHeader),
+            Branch(
+                Rows,
+                PaneSize.CellsFromEnd(1),
+                Branch(
+                    Columns,
+                    PaneSize.CellsFromEnd(SidebarWidth),
+                    Leaf(_tree, static () => "Dependency tree"),
+                    Leaf(projects, static () => "Per project")),
+                Leaf(status)));
+
+        _focus = _layout.AsFocusRing(options.Keymap);
     }
 
-    public void Draw()
-    {
-        var content = _surface.Content;
-        var (header, rest) = content.SplitTop(HeaderRows);
+    public void Draw() => _layout.Draw(_surface.Content);
 
+    private static void DrawHeader(SurfaceRegion header)
+    {
         header.WriteLine(0, "Projects", Theme.Header);
         header.WriteLine(1, "→ opens a project, Enter on a package opens it", Theme.Muted);
-
-        var (panes, status) = rest.SplitTop(rest.Height - 1);
-        var (tree, side) = panes.SplitLeft(panes.Width - SidebarWidth);
-
-        _tree.Draw(tree.Border(Theme.Info, "Dependency tree"));
-        _projects.Draw(side.Border(Theme.Info, "Per project"));
-        _status.Draw(status);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);

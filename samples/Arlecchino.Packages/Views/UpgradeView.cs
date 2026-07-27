@@ -5,12 +5,15 @@ using Arlecchino.Focus;
 using Arlecchino.Forms;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
+using Arlecchino.Layout;
 using Arlecchino.Navigation;
 using Arlecchino.Packages.Scanning;
 using Arlecchino.Packages.Stores;
 using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Widgets;
+using static Arlecchino.Layout.PaneSplit;
+using static Arlecchino.Layout.PaneTree;
 
 namespace Arlecchino.Packages.Views;
 
@@ -25,10 +28,8 @@ public sealed class UpgradeView : IArlecchinoView
     private readonly ArlecchinoState _state;
     private readonly ViewLifetime _lifetime;
     private readonly FocusRing _focus;
-    private readonly Form _form;
-    private readonly ScrollPane _log;
-    private readonly StatusBar _status;
     private readonly Spinner _spinner = new();
+    private readonly PaneTree _layout;
 
     public UpgradeView(
         Surface surface,
@@ -44,7 +45,7 @@ public sealed class UpgradeView : IArlecchinoView
         _state = state;
         _lifetime = lifetime;
 
-        _form = new(state, options)
+        var form = new Form(state, options)
         {
             Fields =
             [
@@ -59,7 +60,7 @@ public sealed class UpgradeView : IArlecchinoView
             ],
         };
 
-        _log = new(options.Keymap)
+        var log = new ScrollPane(options.Keymap)
         {
             ContentHeight = () => Lines().Count,
             Content = region =>
@@ -72,44 +73,57 @@ public sealed class UpgradeView : IArlecchinoView
             },
         };
 
-        _status = new()
+        var status = new StatusBar
         {
             Left = [Progress],
             Right = [static () => "Tab panes", static () => "Esc back"],
         };
 
-        _focus = new(options.Keymap);
-        _focus.Add(_form);
-        _focus.Add(_log);
+        _layout = Branch(
+            Rows,
+            HeaderRows,
+            Leaf(DrawHeader),
+            Branch(
+                Rows,
+                FormRows,
+                Leaf(form),
+                Branch(
+                    Rows,
+                    PaneSize.CellsFromEnd(1),
+                    Leaf(log, () => _plan.Log.Count == 0 ? "Planned commands" : "Output"),
+                    Leaf(status))));
+
+        _focus = _layout.AsFocusRing(options.Keymap);
     }
 
     public void Draw()
     {
-        var content = _surface.Content;
-
-        if (_inventory.Selected.Value is not { } package)
+        if (_inventory.Selected.Value is null)
         {
-            content.WriteLine(0, "Nothing selected", Theme.Header);
+            _surface.Content.WriteLine(0, "Nothing selected", Theme.Header);
             return;
         }
 
-        var (header, rest) = content.SplitTop(HeaderRows);
+        _layout.Draw(_surface.Content);
+    }
+
+    private void DrawHeader(SurfaceRegion header)
+    {
+        if (_inventory.Selected.Value is not { } package)
+        {
+            return;
+        }
 
         header.WriteLine(0, $"Upgrade {package.Id}", Theme.Header);
         header.WriteLine(1, $"{package.Resolved()} → {_plan.Target.Value}", Theme.Muted);
 
-        if (_plan.Running.Value)
+        if (!_plan.Running.Value)
         {
-            _spinner.Advance();
-            _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
+            return;
         }
 
-        var (form, below) = rest.SplitTop(FormRows);
-        var (log, status) = below.SplitTop(below.Height - 1);
-
-        _form.Draw(form);
-        _log.Draw(log.Border(Theme.Info, _plan.Log.Count == 0 ? "Planned commands" : "Output"));
-        _status.Draw(status);
+        _spinner.Advance();
+        _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
