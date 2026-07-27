@@ -24,11 +24,11 @@ the public API means a new major. See
   _layout = Branch(
       Rows,
       3,
-      Leaf(DrawToolbar),
+      Leaf(DrawToolbar, () => "toolbar"),
       Branch(
           Rows,
           PaneSize.CellsFromEnd(2),
-          Branch(Columns, 0.25, Leaf(_files), Branch(Leaf(_editor), Leaf(_log))),
+          Branch(Columns, 0.25, Leaf(_files, () => "files"), Branch(Leaf(_editor), Leaf(_log))),
           Leaf(_status))).Gaps(inner: 1, outer: 1);
 
   public void Draw() => _layout.Draw(_surface.Content);
@@ -52,16 +52,16 @@ the public API means a new major. See
   `Theme.Info` while it does not, so a screen of panes shows where the cursor is without the view
   saying anything about it. Titles are `Func<string>` like every other piece of user-visible text.
 
-  `Focusables` hands over the widgets of the tree that take the focus, in the order the branches lay
-  them out, so `Tab` follows the screen instead of a second list kept in step by hand:
+  `AsFocusRing` builds the focus ring of the screen out of the layout — every pane that takes the
+  focus, in the order the branches lay them out — so `Tab` follows the screen instead of a second list
+  kept in step by hand:
 
   ```csharp
-  _focus.AddAll(_layout.Focusables);
+  _focus = _layout.AsFocusRing(options.Keymap);
   ```
 
   Putting one widget instance in two panes throws as the tree is built: a widget remembers the region
   it was drawn into, so the same one twice would draw twice and answer clicks for one of them only.
-- `FocusRing.AddAll(items)` adds a whole sequence in its order, which is what the layout hands it.
 
   Nothing about a frame is kept in the tree — sizes are worked out per `Draw`, so one tree fits every
   terminal and a resize needs no bookkeeping. A region too small for what it holds leaves the panes

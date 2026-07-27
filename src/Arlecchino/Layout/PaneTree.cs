@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Arlecchino.Focus;
+using Arlecchino.Hosting;
 using Arlecchino.Rendering;
 using Arlecchino.Widgets;
 
@@ -79,31 +79,32 @@ public sealed class PaneTree
     public int OuterGap { get; private set; }
 
     /// <summary>
-    /// The widgets of the tree that take the focus, in the order the branches lay them out: left
-    /// before right, top before bottom. Handing this to a <see cref="FocusRing"/> is what makes
-    /// <c>Tab</c> walk the screen the way it looks, without a second list to keep in step with the
-    /// first:
+    /// Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in
+    /// the order the branches lay them out — left before right, top before bottom. <c>Tab</c> then
+    /// walks the screen the way it looks, and there is no second list to keep in step with the first.
     ///
     /// <code>
-    /// _focus.AddAll(_layout.Focusables);
+    /// _focus = _layout.AsFocusRing(options.Keymap);
     /// </code>
+    ///
+    /// What comes back is an ordinary <see cref="FocusRing"/>, so anything focusable that lives
+    /// outside the tree is added to it afterwards, and lands at the end of the walk.
     /// </summary>
-    public IReadOnlyList<IArlecchinoFocusable> Focusables
+    /// <param name="keymap">Where the keys that move the focus come from.</param>
+    /// <returns>A ring holding the panes that take the focus.</returns>
+    public FocusRing AsFocusRing(ArlecchinoKeymap keymap)
     {
-        get
+        var ring = new FocusRing(keymap);
+
+        foreach (var widget in _widgets)
         {
-            var focusables = new List<IArlecchinoFocusable>(_widgets.Length);
-
-            foreach (var widget in _widgets)
+            if (widget is IArlecchinoFocusable focusable)
             {
-                if (widget is IArlecchinoFocusable focusable)
-                {
-                    focusables.Add(focusable);
-                }
+                ring.Add(focusable);
             }
-
-            return focusables;
         }
+
+        return ring;
     }
 
     /// <summary>A pane holding a widget, drawn into whatever region the tree gives it.</summary>

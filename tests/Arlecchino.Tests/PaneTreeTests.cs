@@ -373,39 +373,43 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
-    public void TheWidgetsThatTakeFocusComeBackInLayoutOrder()
-    {
-        var first = new Badge();
-        var second = new Badge();
-        var third = new Badge();
-
-        var layout = Branch(
-            Rows,
-            3,
-            Leaf(first),
-            Branch(Columns, 0.5, Leaf(second), Branch(Leaf(new StatusBar()), Leaf(third))));
-
-        Assert.Equal([first, second, third], layout.Focusables);
-    }
-
-    [Fact]
-    public void APaneThatCannotTakeFocusIsNotInTheRing()
-    {
-        var layout = Branch(Leaf(new StatusBar()), Leaf(static _ => { }));
-
-        Assert.Empty(layout.Focusables);
-    }
-
-    [Fact]
-    public void AFocusRingTakesTheWholeTreeAtOnce()
+    public void TheRingWalksThePanesInLayoutOrder()
     {
         using var app = new TestApplication();
 
         var first = new Badge();
         var second = new Badge();
-        var ring = new FocusRing(app.Options.Keymap);
+        var third = new Badge();
 
-        ring.AddAll(Branch(Leaf(first), Leaf(second)).Focusables);
+        var ring = Branch(
+                Rows,
+                3,
+                Leaf(first),
+                Branch(Columns, 0.5, Leaf(second), Branch(Leaf(new StatusBar()), Leaf(third))))
+            .AsFocusRing(app.Options.Keymap);
+
+        Assert.Equal([first, second, third], ring.Items);
+    }
+
+    [Fact]
+    public void APaneThatCannotTakeFocusIsNotInTheRing()
+    {
+        using var app = new TestApplication();
+
+        var ring = Branch(Leaf(new StatusBar()), Leaf(static _ => { })).AsFocusRing(app.Options.Keymap);
+
+        Assert.Empty(ring.Items);
+    }
+
+    [Fact]
+    public void ATreeBuildsTheFocusRingOfTheScreen()
+    {
+        using var app = new TestApplication();
+
+        var first = new Badge();
+        var second = new Badge();
+
+        var ring = Branch(Leaf(first), Leaf(second)).AsFocusRing(app.Options.Keymap);
 
         Assert.Equal([first, second], ring.Items);
         Assert.True(first.IsFocused);

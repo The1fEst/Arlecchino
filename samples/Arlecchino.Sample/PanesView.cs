@@ -56,8 +56,7 @@ public sealed class PanesView : IArlecchinoView
                     Branch(0.7, Leaf(authors, static () => "authors"), Leaf(Log, static () => "log"))),
                 Leaf(status))).Gaps(inner: 1, outer: 1);
 
-        _focus = new(options.Keymap);
-        _focus.AddAll(_layout.Focusables);
+        _focus = _layout.AsFocusRing(options.Keymap);
     }
 
     public void Draw() => _layout.Draw(_surface.Content);

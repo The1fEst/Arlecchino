@@ -1,5 +1,4 @@
 #nullable enable
-Arlecchino.Focus.FocusRing.AddAll(System.Collections.Generic.IEnumerable<Arlecchino.Focus.IArlecchinoFocusable!>! items) -> void
 Arlecchino.Layout.PaneSize
 Arlecchino.Layout.PaneSize.Equals(Arlecchino.Layout.PaneSize other) -> bool
 Arlecchino.Layout.PaneSize.PaneSize() -> void
@@ -7,9 +6,9 @@ Arlecchino.Layout.PaneSplit
 Arlecchino.Layout.PaneSplit.Columns = 1 -> Arlecchino.Layout.PaneSplit
 Arlecchino.Layout.PaneSplit.Rows = 0 -> Arlecchino.Layout.PaneSplit
 Arlecchino.Layout.PaneTree
+Arlecchino.Layout.PaneTree.AsFocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> Arlecchino.Focus.FocusRing!
 Arlecchino.Layout.PaneTree.Count.get -> int
 Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
-Arlecchino.Layout.PaneTree.Focusables.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Focus.IArlecchinoFocusable!>!
 Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
 Arlecchino.Layout.PaneTree.InnerGap.get -> int
 Arlecchino.Layout.PaneTree.OuterGap.get -> int
