@@ -1,7 +1,7 @@
 ---
 title: Layout
 sidebar_label: Layout
-description: The three ways to place things on a Surface — the flow cursor, absolute coordinates, and regions that carry their own coordinate system and clipping.
+description: The ways to place things on a Surface — the flow cursor, absolute coordinates, regions with their own coordinate system and clipping, and a tree of panes for screens made of several.
 ---
 
 # Layout
@@ -10,6 +10,11 @@ There is no layout engine and no component tree. A view draws where it says to d
 offers three ways of saying it: a **flow cursor** that walks down the screen, **absolute** calls that
 address a row directly, and **regions** that carve the frame into rectangles with their own
 coordinates. Most views use one; a view with panes uses regions and never counts a row itself.
+
+A screen made of several panes can describe its shape as a [tree](#panes-as-a-tree) instead of
+carving it by hand. That is still not a component tree: it decides where things go and nothing else —
+no lifetimes, no state, no re-render pass. Widgets stay widgets, and a view that would rather split
+regions itself keeps working exactly as before.
 
 ## Flow layout
 
@@ -98,6 +103,143 @@ way to shift one, and two regions compare by value.
 Both the modal boxes and the file picker are drawn this way, so the same code that positions a pane
 also answers "was this click inside it".
 
+## Panes as a tree
+
+Regions solve placement, but a screen with four panes spreads its shape across the whole of `Draw`:
+half a dozen `SplitTop` and `SplitLeft` calls interleaved with the drawing, and changing the
+proportions means finding every one of them. `PaneTree` states the shape once, in one expression, and
+draws it in one call.
+
+```csharp
+public sealed class PanesView : IArlecchinoView
+{
+    private readonly Surface _surface;
+    private readonly PaneTree _layout;
+
+    public PanesView(Surface surface, ArlecchinoOptions options)
+    {
+        _surface = surface;
+
+        var files = new ListBox<string>(options.Keymap) { Render = file => $" {file}", Items = Files() };
+        var status = new StatusBar { Left = [() => "ready"], Right = [() => "Esc back"] };
+
+        _layout = PaneTree.Rows(
+            3,
+            PaneTree.Pane(region => Box(region, "toolbar")),
+            PaneTree.Rows(
+                PaneSize.CellsFromEnd(2),
+                PaneTree.Columns(
+                    0.25,
+                    PaneTree.Pane(files),
+                    PaneTree.Rows(
+                        0.7,
+                        PaneTree.Pane(region => Box(region, "editor")),
+                        PaneTree.Pane(region => Box(region, "log")))),
+                PaneTree.Pane(status)));
+    }
+
+    public void Draw() => _layout.Draw(_surface.Content, gap: 1);
+}
+```
+
+```
+╭─ toolbar ──────────────────────────────────────────────────╮
+│                                                            │
+╰────────────────────────────────────────────────────────────╯
+
+ Program.cs      ╭─ editor ─────────────────────────────────╮
+ PanesView.cs    │                                          │
+ WidgetsView.cs  │                                          │
+ SettingsView.cs ╰──────────────────────────────────────────╯
+                 ╭─ log ────────────────────────────────────╮
+                 │                                          │
+                 ╰──────────────────────────────────────────╯
+ ready                                               Esc back
+```
+
+### How to read one
+
+Every node is either a **split** — `Rows` or `Columns` — or a **pane**. A split has exactly two halves
+and a size that says how much the *first* of them takes; the second takes what is left. Three bands
+stacked is therefore a split inside a split, which is what the nesting above is: the toolbar, then
+everything else, and inside that everything-else the body and the status row.
+
+`Rows` splits top from bottom, `Columns` splits left from right. The first argument always sizes the
+first half, so `Rows(3, header, body)` gives the header three rows and `Columns(0.25, side, main)`
+gives the sidebar a quarter of the width.
+
+Nothing about a frame is kept in the tree. Sizes are worked out on every `Draw`, so one tree fits
+every terminal and a resize needs no bookkeeping.
+
+### Sizes
+
+`PaneSize` is three measures, and a layout survives a resize by picking the right one per split:
+
+| Size | Means | For |
+|---|---|---|
+| `0.25` — any `double` | A share of what there is | Panes that grow with the window: a sidebar, two halves of an editor |
+| `3` — any `int` | Exactly that many cells | Chrome of a fixed height: a toolbar, a title, a one-line prompt |
+| `PaneSize.CellsFromEnd(2)` | Everything except that many cells | Chrome anchored to the far edge: a status bar at the bottom, a gutter on the right |
+
+`double` and `int` convert on their own, so `0.25` and `3` read as themselves at the call site;
+`PaneSize.Fraction(0.25)` and `PaneSize.Cells(3)` are the same thing spelled out. A share is clamped
+to `0..1`, and a count larger than the region gives the first half everything and the second half
+nothing.
+
+`CellsFromEnd` is what a status bar wants. Written as a share, a one-row bar is `0.96` on one terminal
+and wrong on the next; written as `Rows(PaneSize.CellsFromEnd(1), body, status)` it is the last row on
+all of them.
+
+### What goes in a pane
+
+| Leaf | Use |
+|---|---|
+| `PaneTree.Pane(widget)` | Any [widget](widgets.md) — a list, a table, a tree, a status bar |
+| `PaneTree.Pane(region => ...)` | Drawing the view does itself: a title, a box, a row of readouts |
+| `PaneTree.Empty()` | Space deliberately left blank |
+
+A widget pane calls the widget's own `Draw` with the region and ignores the region it hands back,
+since the tree has already decided where everything goes. Both leaf kinds are checked for `null` as
+the tree is built, so a mistake surfaces at construction rather than on the first frame.
+
+Because the tree holds what it draws, it is built where the widgets are — in the view's constructor —
+and lives as long as the view does. It is not a `static readonly` shared between views: two views
+sharing one tree would share its widgets, and therefore their state.
+
+### Gaps, and panes that do not fit
+
+`Draw(region, gap)` leaves `gap` cells empty between the two halves of every split, which is how panes
+get breathing room without each one insetting itself. The default `gap: 0` packs them edge to edge,
+which is what a screen of bordered boxes wants, since the borders already separate them.
+
+A region too small for what it holds does not overflow. Each split is clamped to the space that
+exists, so the first half takes what it can and the panes that did not fit are handed **empty**
+regions; drawing into one of those writes nothing, exactly as writing outside a region does. A view
+needs no `if (Height > 10)` guards — a terminal too small for the screen is the application's business
+through `MinimumWidth`/`MinimumHeight`, not the layout's.
+
+One row is worth remembering: with `ShowOutputLine` on, the framework draws the output line over the
+last row of the frame. A status bar of your own belongs one row above it — `CellsFromEnd(2)` rather
+than `CellsFromEnd(1)` — or it is drawn and then covered.
+
+### Members
+
+| Member | Meaning |
+|---|---|
+| `PaneTree.Rows(size, first, second)` | A split, top from bottom |
+| `PaneTree.Columns(size, first, second)` | A split, left from right |
+| `PaneTree.Pane(widget)` / `PaneTree.Pane(draw)` | A pane holding a widget, or one the view draws |
+| `PaneTree.Empty()` | A pane that draws nothing |
+| `Draw(region, gap)` | Draws every pane where the splits put it |
+| `Count` | How many panes the tree holds |
+
+### When not to reach for it
+
+A tree earns its keep from about three panes up. A view that draws a list under a title is shorter
+with flow calls, and two panes side by side are clearer as one `SplitLeft`. The tree is for screens
+whose shape is worth naming — and where changing `0.25` to `0.3` should be a one-character edit
+rather than a hunt through `Draw`.
+
 ## Clipping a whole stretch of drawing
 
 A region clips writes to its own bounds, which is enough while the coordinates belong to it. Scrolling
@@ -122,6 +264,7 @@ widget that scrolls something of its own.
 |---|---|
 | A list, a form, a page of text | Flow calls |
 | A box anchored to a corner | `WriteBlock` with the alignment flags |
-| Two or more panes, a bordered dialog | Regions |
+| Two panes, a bordered dialog | Regions |
+| Three panes or more, chrome around a body | A `PaneTree` built in the constructor |
 | Content longer than its pane | A region plus [`ScrollPane`](scrolling.md) |
 | Anything that has to answer a click | Regions — `Contains` is the hit test |
