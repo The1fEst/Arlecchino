@@ -27,9 +27,17 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
 
   This also settles the things that hung off it: `Ticker`'s list, the notification list and every
   widget collection were reachable from both loops and are now reachable from one.
-- Giving the terminal back is idempotent. A signal handler and the shutdown path could both restore
-  it, writing two sets of escape sequences over each other; the second one now does nothing. Coming
-  back from `SIGTSTP` re-arms it, so the modes are still restored when the application finally exits.
+- Giving the terminal back is idempotent, and so is unhooking. Three threads can reach the shutdown
+  path — the loop finishing, `ProcessExit`, an unhandled error — and each one used to unsubscribe the
+  handlers, walk the list of signal registrations and write its own set of escape sequences over
+  whatever the others were writing. It runs once now; the rest walk past. Coming back from `SIGTSTP`
+  re-arms it, so the modes are still restored when the application finally exits.
+- **The Windows mouse could be started twice or read after being stopped.** `SystemTerminal` keeps the
+  console reader in a plain field that the input loop reads on every poll, while `EnableMouse` and
+  `DisableMouse` are called from wherever a signal handler happens to run — `SIGTERM` reaches them on
+  Windows too. Two calls to `EnableMouse` could leave a second reader running with the console mode it
+  set never restored. The field is `volatile` and both transitions are a single interlocked step now:
+  a reader that loses the race is stopped rather than orphaned.
 
 ### Added
 

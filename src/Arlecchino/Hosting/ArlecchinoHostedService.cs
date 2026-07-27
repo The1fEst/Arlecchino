@@ -33,6 +33,7 @@ internal class ArlecchinoHostedService : BackgroundService
     private readonly List<PosixSignalRegistration> _signals = [];
 
     private int _terminalLeft;
+    private int _restoring;
 
     private ConsoleCancelEventHandler? _cancelKeyHandler;
     private EventHandler? _processExitHandler;
@@ -209,8 +210,17 @@ internal class ArlecchinoHostedService : BackgroundService
         }
     }
 
+    /// <summary>
+    /// Unhooks everything and gives the terminal back. Three different threads can reach this — the
+    /// loop finishing, process exit, an unhandled error — so it runs once and the rest walk past.
+    /// </summary>
     private void RestoreTerminal()
     {
+        if (Interlocked.Exchange(ref _restoring, 1) == 1)
+        {
+            return;
+        }
+
         if (_cancelKeyHandler is not null)
         {
             Console.CancelKeyPress -= _cancelKeyHandler;

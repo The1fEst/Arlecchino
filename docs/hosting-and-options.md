@@ -157,6 +157,11 @@ frames a second, at most 16 ms.
 `ArlecchinoTestHost` behaves the same way, which is why `Frame()` routes what is queued before it
 draws. A test that drives `TerminalInputReader` directly calls `DrainInput()` for the same reason.
 
+Two things do run on threads of their own, because the operating system chooses when: signal handlers
+and process exit. Both only ever hand the terminal back, and that path is written to be reached from
+anywhere — it runs once however many callers arrive, and the Windows console reader it stops is
+exchanged in a single step rather than checked and then assigned.
+
 ## Failures and shutdown
 
 A terminal application that dies mid-frame leaves the user in the alternate screen with a hidden

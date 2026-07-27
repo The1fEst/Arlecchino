@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
 
@@ -23,7 +24,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
     private readonly bool _escapeSequencesWork;
 
-    private WindowsConsoleInput? _windowsInput;
+    private volatile WindowsConsoleInput? _windowsInput;
 
     /// <summary>
     /// Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform
@@ -124,7 +125,12 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (OperatingSystem.IsWindows())
         {
-            _windowsInput ??= WindowsConsoleInput.TryStart();
+            if (_windowsInput is null && WindowsConsoleInput.TryStart() is { } started &&
+                Interlocked.CompareExchange(ref _windowsInput, started, null) is not null)
+            {
+                started.Stop();
+            }
+
             return;
         }
 
@@ -139,8 +145,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (OperatingSystem.IsWindows())
         {
-            _windowsInput?.Stop();
-            _windowsInput = null;
+            Interlocked.Exchange(ref _windowsInput, null)?.Stop();
             return;
         }
 
