@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Arlecchino.Atoms;
 using Arlecchino.Tests.Views;
 using Xunit;
@@ -33,39 +32,37 @@ public sealed class FrameThreadTests
     }
 
     [Fact]
-    public async Task AnotherThreadWritingAnAtomIsToldWhereToPostIt()
+    public void AnotherThreadWritingAnAtomIsToldWhereToPostIt()
     {
         var value = new LocalAtom<int>(0);
 
         using var drawing = FrameThread.Claim();
 
-        var failure = await Task.Run(() => Assert.Throws<InvalidOperationException>(() => value.Value = 1));
+        var failure = Refused(() => value.Value = 1);
 
         Assert.Contains("FrameThread.Post", failure.Message, StringComparison.Ordinal);
         Assert.Equal(0, value.Value);
     }
 
     [Fact]
-    public async Task AnotherThreadNavigatingIsToldTheSame()
+    public void AnotherThreadNavigatingIsToldTheSame()
     {
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim();
 
-        var failure = await Task.Run(() =>
-            Assert.Throws<InvalidOperationException>(() => app.Navigator.Apply(ViewKind.Other)));
+        var failure = Refused(() => app.Navigator.Apply(ViewKind.Other));
 
         Assert.Contains("Navigator.Apply", failure.Message, StringComparison.Ordinal);
         Assert.Equal(ViewKind.Probe, app.Navigator.CurrentRoute);
     }
 
     [Fact]
-    public async Task AnotherThreadWritingTheOutputRowIsToldTheSame()
+    public void AnotherThreadWritingTheOutputRowIsToldTheSame()
     {
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim();
 
-        var failure = await Task.Run(() =>
-            Assert.Throws<InvalidOperationException>(() => app.State.Output = "from the background"));
+        var failure = Refused(() => app.State.Output = "from the background");
 
         Assert.Contains("ArlecchinoState.Output", failure.Message, StringComparison.Ordinal);
     }
@@ -99,5 +96,27 @@ public sealed class FrameThreadTests
         value.Value = 3;
 
         Assert.Equal(3, value.Value);
+    }
+
+    private static InvalidOperationException Refused(Action write)
+    {
+        Exception? thrown = null;
+
+        var writing = new Thread(() =>
+        {
+            try
+            {
+                write();
+            }
+            catch (Exception exception)
+            {
+                thrown = exception;
+            }
+        });
+
+        writing.Start();
+        writing.Join();
+
+        return Assert.IsType<InvalidOperationException>(thrown);
     }
 }
