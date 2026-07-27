@@ -118,33 +118,37 @@ public sealed class PanesView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly PaneTree _layout;
+    private readonly FocusRing _focus;
 
     public PanesView(Surface surface, ArlecchinoOptions options)
     {
         _surface = surface;
 
         var files = new ListBox<string>(options.Keymap) { Render = file => $" {file}", Items = Files() };
+        var editor = new TextView(options.Keymap) { Text = Readme() };
+        var log = new ListBox<string>(options.Keymap) { Render = line => line, Items = Log() };
         var status = new StatusBar { Left = [() => "ready"], Right = [() => "Esc back"] };
 
         _layout = Branch(
             Rows,
             3,
-            Leaf(region => Box(region, "toolbar")),
+            Leaf(DrawToolbar, () => "toolbar"),
             Branch(
                 Rows,
                 PaneSize.CellsFromEnd(2),
                 Branch(
                     Columns,
                     0.25,
-                    Leaf(files),
-                    Branch(
-                        0.7,
-                        Leaf(region => Box(region, "editor")),
-                        Leaf(region => Box(region, "log")))),
+                    Leaf(files, () => "files"),
+                    Branch(0.7, Leaf(editor, () => "editor"), Leaf(log, () => "log"))),
                 Leaf(status))).Gaps(inner: 1, outer: 1);
+
+        _focus = _layout.AsFocusRing(options.Keymap);
     }
 
     public void Draw() => _layout.Draw(_surface.Content);
+
+    public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
 }
 ```
 
@@ -264,21 +268,23 @@ sharing one tree would share its widgets, and therefore their state.
 ### Tab walks the panes
 
 A screen of panes wants `Tab` to move between them in the order they are drawn, and the tree already
-knows that order. `Focusables` hands over the widgets of the tree that take the focus, left before
-right and top before bottom, so the [focus ring](views-and-navigation.md) is filled from the layout
-rather than from a second list kept in step by hand:
+knows that order. `AsFocusRing` builds the [focus ring](views-and-navigation.md) out of the layout —
+every pane of it that takes the focus, left before right and top before bottom — so there is no second
+list to keep in step by hand:
 
 ```csharp
-_focus = new FocusRing(options.Keymap);
-_focus.AddAll(_layout.Focusables);
+_focus = _layout.AsFocusRing(options.Keymap);
 
 public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
 public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
 ```
 
 Widgets that cannot take the focus — a status bar, a pane the view draws with a delegate — are simply
-not in the list. Rearranging the tree rearranges the tab order with it, which is the point: the two
-cannot drift apart, because there is only one of them.
+left out. Rearranging the tree rearranges the tab order with it, which is the point: the two cannot
+drift apart, because there is only one of them.
+
+What comes back is an ordinary ring, so anything focusable that lives outside the tree is added to it
+afterwards and lands at the end of the walk.
 
 ### Gaps, and panes that do not fit
 
@@ -313,7 +319,7 @@ than `CellsFromEnd(1)` — or it is drawn and then covered.
 | `Leaf(widget, title)` / `Leaf(draw, title)` | The same, in a box with a title |
 | `Gaps(inner, outer)` | Spacing for the whole tree; returns the tree |
 | `Draw(region)` | Draws every pane where the branches put it |
-| `Focusables` | The widgets that take focus, in layout order — for `FocusRing.AddAll` |
+| `AsFocusRing(keymap)` | The focus ring of the screen, panes in layout order |
 | `Count`, `InnerGap`, `OuterGap` | How many panes it holds, and the spacing it was given |
 
 ### When not to reach for it
