@@ -34,19 +34,8 @@ public readonly struct FocusResult : IEquatable<FocusResult>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(Boolean&, ViewRoute&)`](#deconstruct-boolean-viewroute) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(FocusResult)`](#equals-focusresult) |  |
-| [`GetHashCode()`](#gethashcode) |  |
+| [`Deconstruct(out bool, out ViewRoute)`](#deconstruct-out-bool-out-viewroute) |  |
 | [`Navigate(ViewRoute)`](#navigate-viewroute) | The event was mine and the screen should navigate. |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(FocusResult, FocusResult)`](#operator-inequality-focusresult-focusresult) |  |
-| [`operator Equality(FocusResult, FocusResult)`](#operator-equality-focusresult-focusresult) |  |
 
 ## Constructors in detail
 
@@ -109,7 +98,7 @@ Whether the element claimed the event.
 
 ## Methods in detail
 
-### `Deconstruct(Boolean&, ViewRoute&)` {#deconstruct-boolean-viewroute}
+### `Deconstruct(out bool, out ViewRoute)` {#deconstruct-out-bool-out-viewroute}
 
 ```csharp
 public void Deconstruct(out bool WasHandled, out ViewRoute Route);
@@ -121,42 +110,6 @@ public void Deconstruct(out bool WasHandled, out ViewRoute Route);
 |---|---|---|
 | `WasHandled` | `bool` |  |
 | `Route` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(FocusResult)` {#equals-focusresult}
-
-```csharp
-public bool Equals(FocusResult other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`FocusResult`](../arlecchino.focus/FocusResult.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
 
 ### `Navigate(ViewRoute)` {#navigate-viewroute}
 
@@ -173,44 +126,4 @@ The event was mine and the screen should navigate.
 | `route` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | Where to go. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — The result to return.
-
-### `ToString()` {#tostring}
-
-```csharp
-public virtual string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(FocusResult, FocusResult)` {#operator-inequality-focusresult-focusresult}
-
-```csharp
-public static bool op_Inequality(FocusResult left, FocusResult right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FocusResult`](../arlecchino.focus/FocusResult.md) |  |
-| `right` | [`FocusResult`](../arlecchino.focus/FocusResult.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(FocusResult, FocusResult)` {#operator-equality-focusresult-focusresult}
-
-```csharp
-public static bool op_Equality(FocusResult left, FocusResult right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FocusResult`](../arlecchino.focus/FocusResult.md) |  |
-| `right` | [`FocusResult`](../arlecchino.focus/FocusResult.md) |  |
-
-**Returns** `bool`
 

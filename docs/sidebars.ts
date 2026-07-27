@@ -7,7 +7,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Start here',
       collapsed: false,
-      items: ['getting-started', 'showcase', 'lexicon'],
+      items: ['getting-started', 'tutorial-packages', 'showcase', 'lexicon'],
     },
     {
       type: 'category',

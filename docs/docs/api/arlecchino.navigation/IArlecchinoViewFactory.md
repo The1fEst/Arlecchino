@@ -17,11 +17,11 @@ public interface IArlecchinoViewFactory
 
 | Member | Summary |
 |---|---|
-| [`TryCreate(IServiceProvider, ViewRoute, IArlecchinoView&)`](#trycreate-iserviceprovider-viewroute-iarlecchinoview) | Creates the view for a route. |
+| [`TryCreate(IServiceProvider, ViewRoute, out IArlecchinoView)`](#trycreate-iserviceprovider-viewroute-out-iarlecchinoview) | Creates the view for a route. |
 
 ## Methods in detail
 
-### `TryCreate(IServiceProvider, ViewRoute, IArlecchinoView&)` {#trycreate-iserviceprovider-viewroute-iarlecchinoview}
+### `TryCreate(IServiceProvider, ViewRoute, out IArlecchinoView)` {#trycreate-iserviceprovider-viewroute-out-iarlecchinoview}
 
 ```csharp
 public bool TryCreate(IServiceProvider services, ViewRoute route, out IArlecchinoView? view);

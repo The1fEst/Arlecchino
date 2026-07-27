@@ -36,13 +36,12 @@
   padding: 2rem 0 1rem;
 }
 
-.features .row {
-  row-gap: 1.5rem;
-}
-
+/* The grid is Infima's, whose class names this module does not hash — the gap has to live on the
+   card, which is ours. `height` then has to account for it, or the cards in a row stop matching. */
 .feature {
   display: block;
-  height: 100%;
+  height: calc(100% - 1.75rem);
+  margin-bottom: 1.75rem;
   padding: 1.25rem;
   border: 1px solid var(--ifm-toc-border-color);
   border-radius: 10px;

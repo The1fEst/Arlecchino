@@ -1,0 +1,49 @@
+name: api
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [arlecchino-released]
+  schedule:
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check the framework out beside this repository
+        uses: actions/checkout@v7
+        with:
+          repository: The1fEst/Arlecchino
+          path: arlecchino
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the framework
+        run: dotnet build arlecchino/Arlecchino.slnx --configuration Release
+
+      - name: Generate the API reference
+        run: dotnet run apidocs/ApiDocs.cs -- --repo arlecchino --out docs/api
+
+      - name: Commit whatever changed
+        run: |
+          rm -rf arlecchino
+
+          if [ -z "$(git status --porcelain docs/api)" ]; then
+            echo "The API reference is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/api
+          git commit -m "Regenerate the API reference"
+          git push

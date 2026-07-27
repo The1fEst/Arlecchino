@@ -504,8 +504,8 @@ internal sealed class ApiDocs
 
         var constructors = type.GetConstructors(Declared).Where(Shown).OrderBy(c => c.GetParameters().Length).ToList();
         var fields = type.GetFields(Declared).Where(Shown).Where(f => !Generated(f)).OrderBy(f => f.Name, StringComparer.Ordinal).ToList();
-        var properties = type.GetProperties(Declared).Where(Shown).OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
-        var all = type.GetMethods(Declared).Where(Shown).ToList();
+        var properties = type.GetProperties(Declared).Where(Shown).Where(p => !Synthesized(p)).OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
+        var all = type.GetMethods(Declared).Where(Shown).Where(m => !Synthesized(m)).ToList();
         var methods = all.Where(m => !m.IsSpecialName).OrderBy(m => m.Name, StringComparer.Ordinal).ToList();
         var operators = all.Where(m => m.IsSpecialName && m.Name.StartsWith("op_", StringComparison.Ordinal)).ToList();
         var events = type.GetEvents(Declared).Where(e => e.AddMethod is not null && Shown(e.AddMethod)).OrderBy(e => e.Name, StringComparer.Ordinal).ToList();
@@ -535,6 +535,15 @@ internal sealed class ApiDocs
             Detail(page, heading, members);
         }
     }
+
+    /// <summary>
+    /// A record brings its own equality, printing and cloning. None of it is written by hand, none of
+    /// it carries documentation, and a page of it says nothing a reader did not already know from the
+    /// word "record" in the declaration. <c>Deconstruct</c> stays, since that one is used.
+    /// </summary>
+    private static bool Synthesized(MemberInfo member) =>
+        Generated(member) && member.Name is "Equals" or "GetHashCode" or "ToString" or "PrintMembers"
+            or "op_Equality" or "op_Inequality" or "<Clone>$" or "EqualityContract";
 
     private static bool Shown(MethodBase method) => method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly;
 
@@ -1025,6 +1034,11 @@ internal sealed class ApiDocs
 
     private static string Name(Type type)
     {
+        if (type.IsByRef)
+        {
+            return Name(type.GetElementType()!);
+        }
+
         if (type.IsArray)
         {
             return Name(type.GetElementType()!) + "[]";
@@ -1049,11 +1063,14 @@ internal sealed class ApiDocs
     private static string Name(MemberInfo member) => member switch
     {
         ConstructorInfo constructor =>
-            $"{constructor.DeclaringType!.Name.Split('`')[0]}({string.Join(", ", constructor.GetParameters().Select(p => Name(p.ParameterType)))})",
+            $"{constructor.DeclaringType!.Name.Split('`')[0]}({string.Join(", ", constructor.GetParameters().Select(Name))})",
         MethodInfo method =>
-            $"{Operator(method.Name)}{Generics(method)}({string.Join(", ", method.GetParameters().Select(p => Name(p.ParameterType)))})",
+            $"{Operator(method.Name)}{Generics(method)}({string.Join(", ", method.GetParameters().Select(Name))})",
         _ => member.Name,
     };
+
+    private static string Name(ParameterInfo parameter) =>
+        (parameter.IsOut ? "out " : parameter.ParameterType.IsByRef ? "ref " : "") + Name(parameter.ParameterType);
 
     private static string Operator(string name) =>
         name.StartsWith("op_", StringComparison.Ordinal) ? "operator " + name[3..] : name;

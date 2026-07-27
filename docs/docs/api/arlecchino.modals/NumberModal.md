@@ -41,7 +41,7 @@ public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, 
 |---|---|
 | [`AcceptsCharacter(char)`](#acceptscharacter-char) | Whether a character belongs in a number here: digits always, a separator only when decimals are allowed, a minus only when the range goes below zero. |
 | [`Add(decimal)`](#add-decimal) | Steps the value and rewrites the text with it. Text that does not parse is treated as zero, so stepping always leaves a valid number behind. |
-| [`TryGetValue(Decimal&)`](#trygetvalue-decimal) | Reads what has been typed as a number. Both `.` and `,` are accepted. |
+| [`TryGetValue(out decimal)`](#trygetvalue-out-decimal) | Reads what has been typed as a number. Both `.` and `,` are accepted. |
 
 ## Constructors in detail
 
@@ -171,7 +171,7 @@ Steps the value and rewrites the text with it. Text that does not parse is treat
 |---|---|---|
 | `delta` | `decimal` | How far to move; negative goes down. |
 
-### `TryGetValue(Decimal&)` {#trygetvalue-decimal}
+### `TryGetValue(out decimal)` {#trygetvalue-out-decimal}
 
 ```csharp
 public bool TryGetValue(out decimal value);

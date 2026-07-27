@@ -35,18 +35,7 @@ public readonly struct Margin : IEquatable<Margin>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(Int32&, Int32&, Int32&, Int32&)`](#deconstruct-int32-int32-int32-int32) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(Margin)`](#equals-margin) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(Margin, Margin)`](#operator-inequality-margin-margin) |  |
-| [`operator Equality(Margin, Margin)`](#operator-equality-margin-margin) |  |
+| [`Deconstruct(out int, out int, out int, out int)`](#deconstruct-out-int-out-int-out-int-out-int) |  |
 
 ## Constructors in detail
 
@@ -125,7 +114,7 @@ Rows kept free above.
 
 ## Methods in detail
 
-### `Deconstruct(Int32&, Int32&, Int32&, Int32&)` {#deconstruct-int32-int32-int32-int32}
+### `Deconstruct(out int, out int, out int, out int)` {#deconstruct-out-int-out-int-out-int-out-int}
 
 ```csharp
 public void Deconstruct(out int Left, out int Top, out int Right, out int Bottom);
@@ -139,80 +128,4 @@ public void Deconstruct(out int Left, out int Top, out int Right, out int Bottom
 | `Top` | `int` |  |
 | `Right` | `int` |  |
 | `Bottom` | `int` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(Margin)` {#equals-margin}
-
-```csharp
-public bool Equals(Margin other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`Margin`](../arlecchino.rendering/Margin.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public virtual string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(Margin, Margin)` {#operator-inequality-margin-margin}
-
-```csharp
-public static bool op_Inequality(Margin left, Margin right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Margin`](../arlecchino.rendering/Margin.md) |  |
-| `right` | [`Margin`](../arlecchino.rendering/Margin.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(Margin, Margin)` {#operator-equality-margin-margin}
-
-```csharp
-public static bool op_Equality(Margin left, Margin right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Margin`](../arlecchino.rendering/Margin.md) |  |
-| `right` | [`Margin`](../arlecchino.rendering/Margin.md) |  |
-
-**Returns** `bool`
 

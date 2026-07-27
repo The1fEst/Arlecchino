@@ -34,21 +34,11 @@ public readonly struct Rgb : IEquatable<Rgb>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(Byte&, Byte&, Byte&)`](#deconstruct-byte-byte-byte) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(Rgb)`](#equals-rgb) |  |
+| [`Deconstruct(out byte, out byte, out byte)`](#deconstruct-out-byte-out-byte-out-byte) |  |
 | [`FromHsl(int, int, int)`](#fromhsl-int-int-int) | Builds a colour from hue, saturation and lightness — the form the colour modal edits. |
-| [`GetHashCode()`](#gethashcode) |  |
 | [`ToHsl()`](#tohsl) | Splits the colour back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`Rgb.FromHsl`](../arlecchino.rendering/Rgb.md#fromhsl-int-int-int) can shift a colour by a unit or two. |
 | [`ToString()`](#tostring) | Returns [`Rgb.Hex`](../arlecchino.rendering/Rgb.md#hex). |
-| [`TryParseHex(string, Rgb&)`](#tryparsehex-string-rgb) | Reads a colour written as `#RRGGBB` or `RRGGBB`. |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(Rgb, Rgb)`](#operator-inequality-rgb-rgb) |  |
-| [`operator Equality(Rgb, Rgb)`](#operator-equality-rgb-rgb) |  |
+| [`TryParseHex(string, out Rgb)`](#tryparsehex-string-out-rgb) | Reads a colour written as `#RRGGBB` or `RRGGBB`. |
 
 ## Constructors in detail
 
@@ -112,7 +102,7 @@ Red channel.
 
 ## Methods in detail
 
-### `Deconstruct(Byte&, Byte&, Byte&)` {#deconstruct-byte-byte-byte}
+### `Deconstruct(out byte, out byte, out byte)` {#deconstruct-out-byte-out-byte-out-byte}
 
 ```csharp
 public void Deconstruct(out byte Red, out byte Green, out byte Blue);
@@ -125,34 +115,6 @@ public void Deconstruct(out byte Red, out byte Green, out byte Blue);
 | `Red` | `byte` |  |
 | `Green` | `byte` |  |
 | `Blue` | `byte` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(Rgb)` {#equals-rgb}
-
-```csharp
-public bool Equals(Rgb other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`Rgb`](../arlecchino.rendering/Rgb.md) |  |
-
-**Returns** `bool`
 
 ### `FromHsl(int, int, int)` {#fromhsl-int-int-int}
 
@@ -171,14 +133,6 @@ Builds a colour from hue, saturation and lightness — the form the colour modal
 | `lightness` | `int` | Percent, clamped to 0..100. |
 
 **Returns** [`Rgb`](../arlecchino.rendering/Rgb.md) — The matching colour.
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
 
 ### `ToHsl()` {#tohsl}
 
@@ -200,7 +154,7 @@ Returns [`Rgb.Hex`](../arlecchino.rendering/Rgb.md#hex).
 
 **Returns** `string`
 
-### `TryParseHex(string, Rgb&)` {#tryparsehex-string-rgb}
+### `TryParseHex(string, out Rgb)` {#tryparsehex-string-out-rgb}
 
 ```csharp
 public static bool TryParseHex(string text, out Rgb color);
@@ -216,36 +170,4 @@ Reads a colour written as `#RRGGBB` or `RRGGBB`.
 | `color` | [`Rgb`](../arlecchino.rendering/Rgb.md) | The colour, or `default` when the text is not six hex digits. |
 
 **Returns** `bool` — `true` when the text was a colour.
-
-## Operators in detail
-
-### `operator Inequality(Rgb, Rgb)` {#operator-inequality-rgb-rgb}
-
-```csharp
-public static bool op_Inequality(Rgb left, Rgb right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Rgb`](../arlecchino.rendering/Rgb.md) |  |
-| `right` | [`Rgb`](../arlecchino.rendering/Rgb.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(Rgb, Rgb)` {#operator-equality-rgb-rgb}
-
-```csharp
-public static bool op_Equality(Rgb left, Rgb right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Rgb`](../arlecchino.rendering/Rgb.md) |  |
-| `right` | [`Rgb`](../arlecchino.rendering/Rgb.md) |  |
-
-**Returns** `bool`
 

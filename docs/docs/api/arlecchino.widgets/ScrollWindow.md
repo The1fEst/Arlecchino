@@ -35,18 +35,7 @@ public readonly struct ScrollWindow : IEquatable<ScrollWindow>
 |---|---|
 | [`Around(int, int, int)`](#around-int-int-int) | Places the window so the selection sits in the middle, sliding it back at the ends of the list so the rows are always filled rather than trailing off into blanks. |
 | [`Contains(int)`](#contains-int) | Whether an item is on screen, which is what decides if it needs drawing. |
-| [`Deconstruct(Int32&, Int32&)`](#deconstruct-int32-int32) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(ScrollWindow)`](#equals-scrollwindow) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(ScrollWindow, ScrollWindow)`](#operator-inequality-scrollwindow-scrollwindow) |  |
-| [`operator Equality(ScrollWindow, ScrollWindow)`](#operator-equality-scrollwindow-scrollwindow) |  |
+| [`Deconstruct(out int, out int)`](#deconstruct-out-int-out-int) |  |
 
 ## Constructors in detail
 
@@ -133,7 +122,7 @@ Whether an item is on screen, which is what decides if it needs drawing.
 
 **Returns** `bool` — `true` when the item falls inside the window.
 
-### `Deconstruct(Int32&, Int32&)` {#deconstruct-int32-int32}
+### `Deconstruct(out int, out int)` {#deconstruct-out-int-out-int}
 
 ```csharp
 public void Deconstruct(out int First, out int Count);
@@ -145,80 +134,4 @@ public void Deconstruct(out int First, out int Count);
 |---|---|---|
 | `First` | `int` |  |
 | `Count` | `int` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(ScrollWindow)` {#equals-scrollwindow}
-
-```csharp
-public bool Equals(ScrollWindow other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`ScrollWindow`](../arlecchino.widgets/ScrollWindow.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public virtual string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(ScrollWindow, ScrollWindow)` {#operator-inequality-scrollwindow-scrollwindow}
-
-```csharp
-public static bool op_Inequality(ScrollWindow left, ScrollWindow right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ScrollWindow`](../arlecchino.widgets/ScrollWindow.md) |  |
-| `right` | [`ScrollWindow`](../arlecchino.widgets/ScrollWindow.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(ScrollWindow, ScrollWindow)` {#operator-equality-scrollwindow-scrollwindow}
-
-```csharp
-public static bool op_Equality(ScrollWindow left, ScrollWindow right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ScrollWindow`](../arlecchino.widgets/ScrollWindow.md) |  |
-| `right` | [`ScrollWindow`](../arlecchino.widgets/ScrollWindow.md) |  |
-
-**Returns** `bool`
 

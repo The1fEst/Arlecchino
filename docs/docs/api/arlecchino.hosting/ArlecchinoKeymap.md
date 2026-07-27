@@ -53,23 +53,6 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`WordLeft`](#wordleft) | Moves the caret to the previous word. `Ctrl+←` by default. |
 | [`WordRight`](#wordright) | Moves the caret past the next word. `Ctrl+→` by default. |
 
-## Methods
-
-| Member | Summary |
-|---|---|
-| [`<Clone>$()`](#clone) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(ArlecchinoKeymap)`](#equals-arlecchinokeymap) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(ArlecchinoKeymap, ArlecchinoKeymap)`](#operator-inequality-arlecchinokeymap-arlecchinokeymap) |  |
-| [`operator Equality(ArlecchinoKeymap, ArlecchinoKeymap)`](#operator-equality-arlecchinokeymap-arlecchinokeymap) |  |
-
 ## Constructors in detail
 
 ### `ArlecchinoKeymap()` {#arlecchinokeymap}
@@ -349,90 +332,4 @@ public KeyBinding WordRight { get; init; }
 Moves the caret past the next word. `Ctrl+→` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
-
-## Methods in detail
-
-### `<Clone>$()` {#clone}
-
-```csharp
-public ArlecchinoKeymap <Clone>$();
-```
-
-**Returns** [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md)
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public override bool Equals(object? obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(ArlecchinoKeymap)` {#equals-arlecchinokeymap}
-
-```csharp
-public bool Equals(ArlecchinoKeymap? other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public override string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(ArlecchinoKeymap, ArlecchinoKeymap)` {#operator-inequality-arlecchinokeymap-arlecchinokeymap}
-
-```csharp
-public static bool op_Inequality(ArlecchinoKeymap left, ArlecchinoKeymap right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) |  |
-| `right` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(ArlecchinoKeymap, ArlecchinoKeymap)` {#operator-equality-arlecchinokeymap-arlecchinokeymap}
-
-```csharp
-public static bool op_Equality(ArlecchinoKeymap left, ArlecchinoKeymap right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) |  |
-| `right` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) |  |
-
-**Returns** `bool`
 

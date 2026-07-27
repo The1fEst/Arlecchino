@@ -33,19 +33,7 @@ public sealed class FilePickerPlace : IEquatable<FilePickerPlace>
 
 | Member | Summary |
 |---|---|
-| [`<Clone>$()`](#clone) |  |
-| [`Deconstruct(String&, String&, String&)`](#deconstruct-string-string-string) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(FilePickerPlace)`](#equals-filepickerplace) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(FilePickerPlace, FilePickerPlace)`](#operator-inequality-filepickerplace-filepickerplace) |  |
-| [`operator Equality(FilePickerPlace, FilePickerPlace)`](#operator-equality-filepickerplace-filepickerplace) |  |
+| [`Deconstruct(out string, out string, out string)`](#deconstruct-out-string-out-string-out-string) |  |
 
 ## Constructors in detail
 
@@ -99,15 +87,7 @@ Where it leads.
 
 ## Methods in detail
 
-### `<Clone>$()` {#clone}
-
-```csharp
-public FilePickerPlace <Clone>$();
-```
-
-**Returns** [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md)
-
-### `Deconstruct(String&, String&, String&)` {#deconstruct-string-string-string}
+### `Deconstruct(out string, out string, out string)` {#deconstruct-out-string-out-string-out-string}
 
 ```csharp
 public void Deconstruct(out string Name, out string Path, out string Icon);
@@ -120,80 +100,4 @@ public void Deconstruct(out string Name, out string Path, out string Icon);
 | `Name` | `string` |  |
 | `Path` | `string` |  |
 | `Icon` | `string` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public override bool Equals(object? obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(FilePickerPlace)` {#equals-filepickerplace}
-
-```csharp
-public bool Equals(FilePickerPlace? other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public override string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(FilePickerPlace, FilePickerPlace)` {#operator-inequality-filepickerplace-filepickerplace}
-
-```csharp
-public static bool op_Inequality(FilePickerPlace left, FilePickerPlace right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md) |  |
-| `right` | [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(FilePickerPlace, FilePickerPlace)` {#operator-equality-filepickerplace-filepickerplace}
-
-```csharp
-public static bool op_Equality(FilePickerPlace left, FilePickerPlace right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md) |  |
-| `right` | [`FilePickerPlace`](../arlecchino.state/FilePickerPlace.md) |  |
-
-**Returns** `bool`
 

@@ -33,18 +33,10 @@ public readonly struct ViewRoute : IEquatable<ViewRoute>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(String&)`](#deconstruct-string) |  |
+| [`Deconstruct(out string)`](#deconstruct-out-string) |  |
 | [`Equals(ViewRoute)`](#equals-viewroute) | Compares routes by name, case-sensitively. |
-| [`Equals(object)`](#equals-object) |  |
 | [`GetHashCode()`](#gethashcode) | Hash of the route name. |
 | [`ToString()`](#tostring) | The route name, or `None` for the empty route. |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(ViewRoute, ViewRoute)`](#operator-inequality-viewroute-viewroute) |  |
-| [`operator Equality(ViewRoute, ViewRoute)`](#operator-equality-viewroute-viewroute) |  |
 
 ## Constructors in detail
 
@@ -96,7 +88,7 @@ The empty route: returned from a handler to stay where you are.
 
 ## Methods in detail
 
-### `Deconstruct(String&)` {#deconstruct-string}
+### `Deconstruct(out string)` {#deconstruct-out-string}
 
 ```csharp
 public void Deconstruct(out string Name);
@@ -124,20 +116,6 @@ Compares routes by name, case-sensitively.
 
 **Returns** `bool` — `true` when both name the same screen.
 
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
 ### `GetHashCode()` {#gethashcode}
 
 ```csharp
@@ -157,36 +135,4 @@ public override string ToString();
 The route name, or `None` for the empty route.
 
 **Returns** `string` — Readable form of the route.
-
-## Operators in detail
-
-### `operator Inequality(ViewRoute, ViewRoute)` {#operator-inequality-viewroute-viewroute}
-
-```csharp
-public static bool op_Inequality(ViewRoute left, ViewRoute right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
-| `right` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(ViewRoute, ViewRoute)` {#operator-equality-viewroute-viewroute}
-
-```csharp
-public static bool op_Equality(ViewRoute left, ViewRoute right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
-| `right` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
-
-**Returns** `bool`
 

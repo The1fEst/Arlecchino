@@ -30,7 +30,7 @@ public class CommandRegistry
 | Member | Summary |
 |---|---|
 | [`Send(ConsoleKeyInfo)`](#send-consolekeyinfo) | Runs the command a key belongs to, if any. |
-| [`TryFind(ConsoleKeyInfo, IArlecchinoCommand&)`](#tryfind-consolekeyinfo-iarlecchinocommand) | Finds the command a key press belongs to. |
+| [`TryFind(ConsoleKeyInfo, out IArlecchinoCommand)`](#tryfind-consolekeyinfo-out-iarlecchinocommand) | Finds the command a key press belongs to. |
 
 ## Constructors in detail
 
@@ -78,7 +78,7 @@ Runs the command a key belongs to, if any.
 
 **Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the command returned, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
 
-### `TryFind(ConsoleKeyInfo, IArlecchinoCommand&)` {#tryfind-consolekeyinfo-iarlecchinocommand}
+### `TryFind(ConsoleKeyInfo, out IArlecchinoCommand)` {#tryfind-consolekeyinfo-out-iarlecchinocommand}
 
 ```csharp
 public bool TryFind(ConsoleKeyInfo pressed, out IArlecchinoCommand? command);

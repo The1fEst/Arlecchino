@@ -60,7 +60,7 @@ const config: Config = {
       {
         docs: {
           routeBasePath: '/docs',
-          sidebarPath: './sidebars.probe.ts',
+          sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/The1fEst/Arlecchino.Docs/tree/master/',
           showLastUpdateTime: true,
         },
@@ -88,7 +88,8 @@ const config: Config = {
       title: 'Arlecchino',
       logo: {
         alt: 'Arlecchino',
-        src: 'img/arlecchino-glyph.svg',
+        src: 'img/arlecchino-glyph-light.svg',
+        srcDark: 'img/arlecchino-glyph-dark.svg',
       },
       items: [
         {

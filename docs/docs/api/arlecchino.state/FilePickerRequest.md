@@ -37,19 +37,7 @@ public sealed class FilePickerRequest : IEquatable<FilePickerRequest>
 
 | Member | Summary |
 |---|---|
-| [`<Clone>$()`](#clone) |  |
-| [`Deconstruct(String&, Boolean&, String&, ViewRoute&, Action)`](#deconstruct-string-boolean-string-viewroute-action) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(FilePickerRequest)`](#equals-filepickerrequest) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(FilePickerRequest, FilePickerRequest)`](#operator-inequality-filepickerrequest-filepickerrequest) |  |
-| [`operator Equality(FilePickerRequest, FilePickerRequest)`](#operator-equality-filepickerrequest-filepickerrequest) |  |
+| [`Deconstruct(out string, out bool, out string, out ViewRoute, out Action<string>)`](#deconstruct-out-string-out-bool-out-string-out-viewroute-out-action-string) |  |
 
 ## Constructors in detail
 
@@ -145,15 +133,7 @@ Heading shown above the listing.
 
 ## Methods in detail
 
-### `<Clone>$()` {#clone}
-
-```csharp
-public FilePickerRequest <Clone>$();
-```
-
-**Returns** [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md)
-
-### `Deconstruct(String&, Boolean&, String&, ViewRoute&, Action)` {#deconstruct-string-boolean-string-viewroute-action}
+### `Deconstruct(out string, out bool, out string, out ViewRoute, out Action<string>)` {#deconstruct-out-string-out-bool-out-string-out-viewroute-out-action-string}
 
 ```csharp
 public void Deconstruct(out string Title, out bool PickFolder, out string InitialPath, out ViewRoute ReturnView, out Action<string> OnPicked);
@@ -168,80 +148,4 @@ public void Deconstruct(out string Title, out bool PickFolder, out string Initia
 | `InitialPath` | `string` |  |
 | `ReturnView` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) |  |
 | `OnPicked` | `Action<T>`&lt;`string`&gt; |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public override bool Equals(object? obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(FilePickerRequest)` {#equals-filepickerrequest}
-
-```csharp
-public bool Equals(FilePickerRequest? other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public override string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(FilePickerRequest, FilePickerRequest)` {#operator-inequality-filepickerrequest-filepickerrequest}
-
-```csharp
-public static bool op_Inequality(FilePickerRequest left, FilePickerRequest right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md) |  |
-| `right` | [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(FilePickerRequest, FilePickerRequest)` {#operator-equality-filepickerrequest-filepickerrequest}
-
-```csharp
-public static bool op_Equality(FilePickerRequest left, FilePickerRequest right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md) |  |
-| `right` | [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md) |  |
-
-**Returns** `bool`
 

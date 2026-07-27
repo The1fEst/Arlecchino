@@ -40,27 +40,16 @@ public readonly struct SurfaceRegion : IEquatable<SurfaceRegion>
 |---|---|
 | [`Border(IArlecchinoColor, string)`](#border-iarlecchinocolor-string) | Draws a box around the region and hands back the space inside it, so panes and dialogs are one call rather than four loops. |
 | [`Contains(int, int)`](#contains-int-int) | Whether a frame cell falls inside this region — the hit test for mouse events. |
-| [`Deconstruct(Surface&, Int32&, Int32&, Int32&, Int32&)`](#deconstruct-surface-int32-int32-int32-int32) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(SurfaceRegion)`](#equals-surfaceregion) |  |
+| [`Deconstruct(out Surface, out int, out int, out int, out int)`](#deconstruct-out-surface-out-int-out-int-out-int-out-int) |  |
 | [`Fill(IArlecchinoColor, char)`](#fill-iarlecchinocolor-char) | Paints every cell of the region. |
-| [`GetHashCode()`](#gethashcode) |  |
 | [`Inset(Margin)`](#inset-margin) | A smaller region inside this one. |
 | [`Inset(int)`](#inset-int) | A smaller region with the same space kept free on every side. |
 | [`Rows(int, int)`](#rows-int-int) | A horizontal band of this region, clamped to its bounds. |
 | [`SplitLeft(int)`](#splitleft-int) | Cuts a column off the left. The split is clamped to what the region actually has. |
 | [`SplitTop(int)`](#splittop-int) | Cuts a band off the top. The split is clamped to what the region actually has. |
 | [`ToLocal(int, int)`](#tolocal-int-int) | Converts a frame cell into coordinates local to this region. |
-| [`ToString()`](#tostring) |  |
 | [`Write(int, int, string, IArlecchinoColor)`](#write-int-int-string-iarlecchinocolor) | Writes text in region coordinates, clipped to the region. A negative column starts the text off the left edge and shows what fits. |
 | [`WriteLine(int, string, IArlecchinoColor, Align)`](#writeline-int-string-iarlecchinocolor-align) | Writes a whole line, aligned inside the region and clipped to its width. |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(SurfaceRegion, SurfaceRegion)`](#operator-inequality-surfaceregion-surfaceregion) |  |
-| [`operator Equality(SurfaceRegion, SurfaceRegion)`](#operator-equality-surfaceregion-surfaceregion) |  |
 
 ## Constructors in detail
 
@@ -200,7 +189,7 @@ Whether a frame cell falls inside this region — the hit test for mouse events.
 
 **Returns** `bool` — `true` when the cell is inside.
 
-### `Deconstruct(Surface&, Int32&, Int32&, Int32&, Int32&)` {#deconstruct-surface-int32-int32-int32-int32}
+### `Deconstruct(out Surface, out int, out int, out int, out int)` {#deconstruct-out-surface-out-int-out-int-out-int-out-int}
 
 ```csharp
 public void Deconstruct(out Surface Surface, out int Left, out int Top, out int Width, out int Height);
@@ -216,34 +205,6 @@ public void Deconstruct(out Surface Surface, out int Left, out int Top, out int 
 | `Width` | `int` |  |
 | `Height` | `int` |  |
 
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(SurfaceRegion)` {#equals-surfaceregion}
-
-```csharp
-public bool Equals(SurfaceRegion other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) |  |
-
-**Returns** `bool`
-
 ### `Fill(IArlecchinoColor, char)` {#fill-iarlecchinocolor-char}
 
 ```csharp
@@ -258,14 +219,6 @@ Paints every cell of the region.
 |---|---|---|
 | `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style to paint with. |
 | `character` | `char` | Character to fill with; a space by default. |
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
 
 ### `Inset(Margin)` {#inset-margin}
 
@@ -365,14 +318,6 @@ Converts a frame cell into coordinates local to this region.
 
 **Returns** `ValueTuple<T1, T2>`&lt;`int`, `int`&gt; — The same cell as a row and column inside the region.
 
-### `ToString()` {#tostring}
-
-```csharp
-public virtual string ToString();
-```
-
-**Returns** `string`
-
 ### `Write(int, int, string, IArlecchinoColor)` {#write-int-int-string-iarlecchinocolor}
 
 ```csharp
@@ -406,36 +351,4 @@ Writes a whole line, aligned inside the region and clipped to its width.
 | `text` | `string` | Text to draw. |
 | `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the text. |
 | `align` | [`Align`](../arlecchino.rendering/Align.md) | Horizontal alignment inside the region. |
-
-## Operators in detail
-
-### `operator Inequality(SurfaceRegion, SurfaceRegion)` {#operator-inequality-surfaceregion-surfaceregion}
-
-```csharp
-public static bool op_Inequality(SurfaceRegion left, SurfaceRegion right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) |  |
-| `right` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(SurfaceRegion, SurfaceRegion)` {#operator-equality-surfaceregion-surfaceregion}
-
-```csharp
-public static bool op_Equality(SurfaceRegion left, SurfaceRegion right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) |  |
-| `right` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) |  |
-
-**Returns** `bool`
 

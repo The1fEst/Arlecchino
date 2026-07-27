@@ -33,19 +33,7 @@ public sealed class Notification : IEquatable<Notification>
 
 | Member | Summary |
 |---|---|
-| [`<Clone>$()`](#clone) |  |
-| [`Deconstruct(DateTimeOffset&, NotificationLevel&, String&)`](#deconstruct-datetimeoffset-notificationlevel-string) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(Notification)`](#equals-notification) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(Notification, Notification)`](#operator-inequality-notification-notification) |  |
-| [`operator Equality(Notification, Notification)`](#operator-equality-notification-notification) |  |
+| [`Deconstruct(out DateTimeOffset, out NotificationLevel, out string)`](#deconstruct-out-datetimeoffset-out-notificationlevel-out-string) |  |
 
 ## Constructors in detail
 
@@ -99,15 +87,7 @@ When it was raised.
 
 ## Methods in detail
 
-### `<Clone>$()` {#clone}
-
-```csharp
-public Notification <Clone>$();
-```
-
-**Returns** [`Notification`](../arlecchino.diagnostics/Notification.md)
-
-### `Deconstruct(DateTimeOffset&, NotificationLevel&, String&)` {#deconstruct-datetimeoffset-notificationlevel-string}
+### `Deconstruct(out DateTimeOffset, out NotificationLevel, out string)` {#deconstruct-out-datetimeoffset-out-notificationlevel-out-string}
 
 ```csharp
 public void Deconstruct(out DateTimeOffset Time, out NotificationLevel Level, out string Text);
@@ -120,80 +100,4 @@ public void Deconstruct(out DateTimeOffset Time, out NotificationLevel Level, ou
 | `Time` | `DateTimeOffset` |  |
 | `Level` | [`NotificationLevel`](../arlecchino.diagnostics/NotificationLevel.md) |  |
 | `Text` | `string` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public override bool Equals(object? obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(Notification)` {#equals-notification}
-
-```csharp
-public bool Equals(Notification? other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`Notification`](../arlecchino.diagnostics/Notification.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public override string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(Notification, Notification)` {#operator-inequality-notification-notification}
-
-```csharp
-public static bool op_Inequality(Notification left, Notification right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Notification`](../arlecchino.diagnostics/Notification.md) |  |
-| `right` | [`Notification`](../arlecchino.diagnostics/Notification.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(Notification, Notification)` {#operator-equality-notification-notification}
-
-```csharp
-public static bool op_Equality(Notification left, Notification right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`Notification`](../arlecchino.diagnostics/Notification.md) |  |
-| `right` | [`Notification`](../arlecchino.diagnostics/Notification.md) |  |
-
-**Returns** `bool`
 

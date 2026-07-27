@@ -34,19 +34,7 @@ public sealed class LogEntry : IEquatable<LogEntry>
 
 | Member | Summary |
 |---|---|
-| [`<Clone>$()`](#clone) |  |
-| [`Deconstruct(DateTimeOffset&, LogLevel&, String&, String&)`](#deconstruct-datetimeoffset-loglevel-string-string) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(LogEntry)`](#equals-logentry) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(LogEntry, LogEntry)`](#operator-inequality-logentry-logentry) |  |
-| [`operator Equality(LogEntry, LogEntry)`](#operator-equality-logentry-logentry) |  |
+| [`Deconstruct(out DateTimeOffset, out LogLevel, out string, out string)`](#deconstruct-out-datetimeoffset-out-loglevel-out-string-out-string) |  |
 
 ## Constructors in detail
 
@@ -111,15 +99,7 @@ When it was written.
 
 ## Methods in detail
 
-### `<Clone>$()` {#clone}
-
-```csharp
-public LogEntry <Clone>$();
-```
-
-**Returns** [`LogEntry`](../arlecchino.diagnostics/LogEntry.md)
-
-### `Deconstruct(DateTimeOffset&, LogLevel&, String&, String&)` {#deconstruct-datetimeoffset-loglevel-string-string}
+### `Deconstruct(out DateTimeOffset, out LogLevel, out string, out string)` {#deconstruct-out-datetimeoffset-out-loglevel-out-string-out-string}
 
 ```csharp
 public void Deconstruct(out DateTimeOffset Time, out LogLevel Level, out string Category, out string Message);
@@ -133,80 +113,4 @@ public void Deconstruct(out DateTimeOffset Time, out LogLevel Level, out string 
 | `Level` | `LogLevel` |  |
 | `Category` | `string` |  |
 | `Message` | `string` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public override bool Equals(object? obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(LogEntry)` {#equals-logentry}
-
-```csharp
-public bool Equals(LogEntry? other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`LogEntry`](../arlecchino.diagnostics/LogEntry.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public override string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(LogEntry, LogEntry)` {#operator-inequality-logentry-logentry}
-
-```csharp
-public static bool op_Inequality(LogEntry left, LogEntry right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`LogEntry`](../arlecchino.diagnostics/LogEntry.md) |  |
-| `right` | [`LogEntry`](../arlecchino.diagnostics/LogEntry.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(LogEntry, LogEntry)` {#operator-equality-logentry-logentry}
-
-```csharp
-public static bool op_Equality(LogEntry left, LogEntry right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`LogEntry`](../arlecchino.diagnostics/LogEntry.md) |  |
-| `right` | [`LogEntry`](../arlecchino.diagnostics/LogEntry.md) |  |
-
-**Returns** `bool`
 

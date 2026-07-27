@@ -37,18 +37,7 @@ public readonly struct MouseEvent : IEquatable<MouseEvent>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(MouseAction&, MouseButton&, Int32&, Int32&, ConsoleModifiers&)`](#deconstruct-mouseaction-mousebutton-int32-int32-consolemodifiers) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(MouseEvent)`](#equals-mouseevent) |  |
-| [`GetHashCode()`](#gethashcode) |  |
-| [`ToString()`](#tostring) |  |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(MouseEvent, MouseEvent)`](#operator-inequality-mouseevent-mouseevent) |  |
-| [`operator Equality(MouseEvent, MouseEvent)`](#operator-equality-mouseevent-mouseevent) |  |
+| [`Deconstruct(out MouseAction, out MouseButton, out int, out int, out ConsoleModifiers)`](#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-consolemodifiers) |  |
 
 ## Constructors in detail
 
@@ -144,7 +133,7 @@ Zero-based row in the frame.
 
 ## Methods in detail
 
-### `Deconstruct(MouseAction&, MouseButton&, Int32&, Int32&, ConsoleModifiers&)` {#deconstruct-mouseaction-mousebutton-int32-int32-consolemodifiers}
+### `Deconstruct(out MouseAction, out MouseButton, out int, out int, out ConsoleModifiers)` {#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-consolemodifiers}
 
 ```csharp
 public void Deconstruct(out MouseAction Action, out MouseButton Button, out int Row, out int Column, out ConsoleModifiers Modifiers);
@@ -159,80 +148,4 @@ public void Deconstruct(out MouseAction Action, out MouseButton Button, out int 
 | `Row` | `int` |  |
 | `Column` | `int` |  |
 | `Modifiers` | `ConsoleModifiers` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(MouseEvent)` {#equals-mouseevent}
-
-```csharp
-public bool Equals(MouseEvent other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
-
-### `ToString()` {#tostring}
-
-```csharp
-public virtual string ToString();
-```
-
-**Returns** `string`
-
-## Operators in detail
-
-### `operator Inequality(MouseEvent, MouseEvent)` {#operator-inequality-mouseevent-mouseevent}
-
-```csharp
-public static bool op_Inequality(MouseEvent left, MouseEvent right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) |  |
-| `right` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(MouseEvent, MouseEvent)` {#operator-equality-mouseevent-mouseevent}
-
-```csharp
-public static bool op_Equality(MouseEvent left, MouseEvent right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) |  |
-| `right` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) |  |
-
-**Returns** `bool`
 

@@ -35,19 +35,9 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(ConsoleKey&, ConsoleModifiers&, ConsoleKey&, ConsoleModifiers&)`](#deconstruct-consolekey-consolemodifiers-consolekey-consolemodifiers) |  |
-| [`Equals(object)`](#equals-object) |  |
-| [`Equals(KeyBinding)`](#equals-keybinding) |  |
-| [`GetHashCode()`](#gethashcode) |  |
+| [`Deconstruct(out ConsoleKey, out ConsoleModifiers, out ConsoleKey, out ConsoleModifiers)`](#deconstruct-out-consolekey-out-consolemodifiers-out-consolekey-out-consolemodifiers) |  |
 | [`Matches(ConsoleKeyInfo)`](#matches-consolekeyinfo) | Whether a key press is this binding, either of its combinations. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed. |
 | [`ToString()`](#tostring) | How the binding is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. The palette and the hints box display this, so a rebound key relabels itself everywhere. |
-
-## Operators
-
-| Member | Summary |
-|---|---|
-| [`operator Inequality(KeyBinding, KeyBinding)`](#operator-inequality-keybinding-keybinding) |  |
-| [`operator Equality(KeyBinding, KeyBinding)`](#operator-equality-keybinding-keybinding) |  |
 
 ## Constructors in detail
 
@@ -122,7 +112,7 @@ Modifiers that must be held, exactly.
 
 ## Methods in detail
 
-### `Deconstruct(ConsoleKey&, ConsoleModifiers&, ConsoleKey&, ConsoleModifiers&)` {#deconstruct-consolekey-consolemodifiers-consolekey-consolemodifiers}
+### `Deconstruct(out ConsoleKey, out ConsoleModifiers, out ConsoleKey, out ConsoleModifiers)` {#deconstruct-out-consolekey-out-consolemodifiers-out-consolekey-out-consolemodifiers}
 
 ```csharp
 public void Deconstruct(out ConsoleKey Key, out ConsoleModifiers Modifiers, out ConsoleKey AlsoKey, out ConsoleModifiers AlsoModifiers);
@@ -136,42 +126,6 @@ public void Deconstruct(out ConsoleKey Key, out ConsoleModifiers Modifiers, out 
 | `Modifiers` | `ConsoleModifiers` |  |
 | `AlsoKey` | `ConsoleKey` |  |
 | `AlsoModifiers` | `ConsoleModifiers` |  |
-
-### `Equals(object)` {#equals-object}
-
-```csharp
-public virtual bool Equals(object obj);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `obj` | `object` |  |
-
-**Returns** `bool`
-
-### `Equals(KeyBinding)` {#equals-keybinding}
-
-```csharp
-public bool Equals(KeyBinding other);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `other` | [`KeyBinding`](../arlecchino.input/KeyBinding.md) |  |
-
-**Returns** `bool`
-
-### `GetHashCode()` {#gethashcode}
-
-```csharp
-public override int GetHashCode();
-```
-
-**Returns** `int`
 
 ### `Matches(ConsoleKeyInfo)` {#matches-consolekeyinfo}
 
@@ -198,36 +152,4 @@ public override string ToString();
 How the binding is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. The palette and the hints box display this, so a rebound key relabels itself everywhere.
 
 **Returns** `string` — The readable form, or an empty string when the binding is unset.
-
-## Operators in detail
-
-### `operator Inequality(KeyBinding, KeyBinding)` {#operator-inequality-keybinding-keybinding}
-
-```csharp
-public static bool op_Inequality(KeyBinding left, KeyBinding right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`KeyBinding`](../arlecchino.input/KeyBinding.md) |  |
-| `right` | [`KeyBinding`](../arlecchino.input/KeyBinding.md) |  |
-
-**Returns** `bool`
-
-### `operator Equality(KeyBinding, KeyBinding)` {#operator-equality-keybinding-keybinding}
-
-```csharp
-public static bool op_Equality(KeyBinding left, KeyBinding right);
-```
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `left` | [`KeyBinding`](../arlecchino.input/KeyBinding.md) |  |
-| `right` | [`KeyBinding`](../arlecchino.input/KeyBinding.md) |  |
-
-**Returns** `bool`
 
