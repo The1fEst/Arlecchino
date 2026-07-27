@@ -62,6 +62,10 @@ public sealed class ModsView : IArlecchinoView
 `Post` is safe from any thread, queues in order, and requests a repaint by itself. An action that
 throws is logged and reported on the output line — the remaining actions still run.
 
+A frame runs what was waiting when it started, and no more. Work posted by that work belongs to the
+next frame, so an action that posts itself is a once-a-frame loop rather than a frame that never
+ends — which is the shape "carry on next frame" naturally takes.
+
 If the terminal is smaller than `MinimumWidth` × `MinimumHeight`, the view is skipped entirely and a
 size notice is drawn instead.
 

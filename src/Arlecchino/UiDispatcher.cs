@@ -36,11 +36,15 @@ public sealed class UiDispatcher
     /// <summary>
     /// Runs everything queued so far. Called by the frame loop; an action that throws is reported
     /// and the rest still run.
+    ///
+    /// Only what was waiting when this was called is run. Work posted by that work waits for the next
+    /// frame, which is what makes "do this on the next frame" — an action that posts itself — a loop
+    /// the application can actually leave.
     /// </summary>
     /// <param name="onError">What to do with an action that threw.</param>
     public void RunPending(Action<Exception> onError)
     {
-        while (_pending.TryDequeue(out var action))
+        for (var waiting = _pending.Count; waiting > 0 && _pending.TryDequeue(out var action); waiting--)
         {
             try
             {

@@ -154,6 +154,10 @@ public sealed class ModsView : IArlecchinoView
 The view no longer needs `IDisposable` for any of this. What it does still need it for is anything it
 wants to do *before* its scope is released — the view is disposed first, then the scope.
 
+Releasing happens once, over a snapshot of what was registered, so a resource whose own `Dispose`
+reaches back into the lifetime does not break the screen it is closing. Anything handed to `Track`
+after that point is disposed immediately rather than held by a screen that is already gone.
+
 ## Forms
 
 A view is the form; `Form` is the part that turns atoms into editable rows, each opening the modal

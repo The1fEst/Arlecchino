@@ -17,6 +17,8 @@ public sealed class ViewLifetime : IDisposable
     private readonly List<IDisposable> _owned = [];
     private readonly UiDispatcher _dispatcher;
 
+    private bool _closed;
+
     /// <summary>Creates the lifetime. Resolved once per screen.</summary>
     /// <param name="dispatcher">Handed to the background state this creates.</param>
     public ViewLifetime(UiDispatcher dispatcher)
@@ -57,6 +59,12 @@ public sealed class ViewLifetime : IDisposable
     public T Track<T>(T resource)
         where T : IDisposable
     {
+        if (_closed)
+        {
+            resource.Dispose();
+            return resource;
+        }
+
         _owned.Add(resource);
         return resource;
     }
@@ -71,14 +79,22 @@ public sealed class ViewLifetime : IDisposable
     /// </summary>
     public void Dispose()
     {
+        if (_closed)
+        {
+            return;
+        }
+
+        _closed = true;
         _closing.Cancel();
 
-        foreach (var resource in _owned)
+        var owned = _owned.ToArray();
+        _owned.Clear();
+
+        foreach (var resource in owned)
         {
             resource.Dispose();
         }
 
-        _owned.Clear();
         _closing.Dispose();
     }
 }

@@ -32,6 +32,14 @@ the public API means a new major. See [Versioning](docs/packages-and-building.md
   handlers, walk the list of signal registrations and write its own set of escape sequences over
   whatever the others were writing. It runs once now; the rest walk past. Coming back from `SIGTSTP`
   re-arms it, so the modes are still restored when the application finally exits.
+- **Posting work from inside posted work hung the application.** `UiDispatcher.RunPending` drained the
+  queue until it was empty, so an action that posted itself — the ordinary way to say "again on the
+  next frame" — ran forever inside one frame and the loop never came back. It now runs what was
+  waiting when the frame started; anything posted by that work waits for the next one.
+- **A resource that registers something while the screen is closing crashed the close.**
+  `ViewLifetime.Dispose` disposed its list while iterating it, so a `Dispose` that called `Track`
+  threw `Collection was modified` out of navigation. The list is taken as a snapshot now, and
+  `Track` after the screen has closed disposes what it is handed instead of holding it forever.
 - **The Windows mouse could be started twice or read after being stopped.** `SystemTerminal` keeps the
   console reader in a plain field that the input loop reads on every poll, while `EnableMouse` and
   `DisableMouse` are called from wherever a signal handler happens to run — `SIGTERM` reaches them on
