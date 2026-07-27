@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Diagnostics;
@@ -119,12 +120,45 @@ public class Screen
     /// </summary>
     /// <param name="stoppingToken">Cancelled when the application is shutting down.</param>
     /// <returns>A task that completes once drawing has stopped.</returns>
-    public async Task Run(CancellationToken stoppingToken)
+    public Task Run(CancellationToken stoppingToken)
     {
-        using var timer = new PeriodicTimer(TimeSpan.FromSeconds(1d / _options.TargetFramesPerSecond));
+        var finished = new TaskCompletionSource();
+
+        var thread = new Thread(() =>
+        {
+            try
+            {
+                Loop(stoppingToken);
+                finished.SetResult();
+            }
+            catch (OperationCanceledException)
+            {
+                finished.SetResult();
+            }
+            catch (Exception exception)
+            {
+                finished.SetException(exception);
+            }
+        })
+        {
+            Name = "arlecchino-frames",
+            IsBackground = true,
+        };
+
+        thread.Start();
+        return finished.Task;
+    }
+
+    private void Loop(CancellationToken stoppingToken)
+    {
+        using var drawing = FrameThread.Claim();
+
+        var interval = TimeSpan.FromSeconds(1d / _options.TargetFramesPerSecond);
 
         while (!stoppingToken.IsCancellationRequested)
         {
+            var started = Stopwatch.GetTimestamp();
+
             _pending.Drain(_router);
             _ticker.Run(TickFailed);
 
@@ -133,9 +167,11 @@ public class Screen
                 DrawFrame();
             }
 
-            if (!await timer.WaitForNextTickAsync(stoppingToken))
+            var left = interval - Stopwatch.GetElapsedTime(started);
+
+            if (left > TimeSpan.Zero)
             {
-                break;
+                stoppingToken.WaitHandle.WaitOne(left);
             }
         }
     }

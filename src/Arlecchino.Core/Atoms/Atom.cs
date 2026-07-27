@@ -69,6 +69,8 @@ public abstract class Atom<T> : IReadableAtom<T>
             return;
         }
 
+        FrameThread.Verify($"Writing {GetType().Name}");
+
         var previous = _value;
         _value = value;
 

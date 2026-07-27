@@ -126,6 +126,8 @@ public class Navigator
     /// <param name="route">Where to go.</param>
     public void Apply(ViewRoute route)
     {
+        FrameThread.Verify("Navigator.Apply");
+
         if (route.IsNone || route == _currentRoute)
         {
             return;

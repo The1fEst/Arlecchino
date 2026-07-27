@@ -1,1 +1,5 @@
 #nullable enable
+Arlecchino.FrameThread
+static Arlecchino.FrameThread.Claim() -> System.IDisposable!
+static Arlecchino.FrameThread.IsCurrent.get -> bool
+static Arlecchino.FrameThread.Verify(string! member) -> void

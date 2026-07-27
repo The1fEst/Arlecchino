@@ -36,7 +36,11 @@ public class ArlecchinoState
     public string Output
     {
         get => _notifications.Current?.Text ?? string.Empty;
-        set => _notifications.Notify(value);
+        set
+        {
+            FrameThread.Verify("ArlecchinoState.Output");
+            _notifications.Notify(value);
+        }
     }
 
     /// <summary>What the application has said lately, and the screen behind the output row.</summary>

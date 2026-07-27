@@ -144,7 +144,7 @@ public sealed class HostedInputTests
         await WaitFor(() => terminal.Written.Length, written => written > 0);
         terminal.Clear();
 
-        state.Output = "changed";
+        provider.GetRequiredService<UiDispatcher>().Post(() => state.Output = "changed");
 
         var written = await WaitFor(() => terminal.Written, text => text.Contains("changed", StringComparison.Ordinal));
 
