@@ -111,6 +111,9 @@ proportions means finding every one of them. `PaneTree` states the shape once, i
 draws it in one call.
 
 ```csharp
+using static Arlecchino.Layout.PaneSplit;
+using static Arlecchino.Layout.PaneTree;
+
 public sealed class PanesView : IArlecchinoView
 {
     private readonly Surface _surface;
@@ -123,24 +126,30 @@ public sealed class PanesView : IArlecchinoView
         var files = new ListBox<string>(options.Keymap) { Render = file => $" {file}", Items = Files() };
         var status = new StatusBar { Left = [() => "ready"], Right = [() => "Esc back"] };
 
-        _layout = PaneTree.Rows(
+        _layout = Branch(
+            Rows,
             3,
-            PaneTree.Pane(region => Box(region, "toolbar")),
-            PaneTree.Rows(
+            Leaf(region => Box(region, "toolbar")),
+            Branch(
+                Rows,
                 PaneSize.CellsFromEnd(2),
-                PaneTree.Columns(
+                Branch(
+                    Columns,
                     0.25,
-                    PaneTree.Pane(files),
-                    PaneTree.Rows(
+                    Leaf(files),
+                    Branch(
                         0.7,
-                        PaneTree.Pane(region => Box(region, "editor")),
-                        PaneTree.Pane(region => Box(region, "log")))),
-                PaneTree.Pane(status)));
+                        Leaf(region => Box(region, "editor")),
+                        Leaf(region => Box(region, "log")))),
+                Leaf(status))).Gaps(inner: 1, outer: 1);
     }
 
-    public void Draw() => _layout.Draw(_surface.Content, gap: 1);
+    public void Draw() => _layout.Draw(_surface.Content);
 }
 ```
+
+Two members build the whole thing — `Branch` and `Leaf` — and a `using static` of `PaneTree` and
+`PaneSplit` is what lets them read without a prefix on every line.
 
 ```
 ╭─ toolbar ──────────────────────────────────────────────────╮
@@ -159,14 +168,29 @@ public sealed class PanesView : IArlecchinoView
 
 ### How to read one
 
-Every node is either a **split** — `Rows` or `Columns` — or a **pane**. A split has exactly two halves
-and a size that says how much the *first* of them takes; the second takes what is left. Three bands
-stacked is therefore a split inside a split, which is what the nesting above is: the toolbar, then
-everything else, and inside that everything-else the body and the status row.
+Every node is either a **branch** or a **leaf**. A branch has exactly two halves; the size it carries
+says how much the *first* of them takes, and the second takes what is left. Three bands stacked is
+therefore a branch inside a branch, which is what the nesting above is: the toolbar, then everything
+else, and inside that everything-else the body and the status row.
 
-`Rows` splits top from bottom, `Columns` splits left from right. The first argument always sizes the
-first half, so `Rows(3, header, body)` gives the header three rows and `Columns(0.25, side, main)`
+`Rows` cuts top from bottom, `Columns` cuts left from right, and the size always applies to the first
+half — `Branch(Rows, 3, header, body)` gives the header three rows, `Branch(Columns, 0.25, side, main)`
 gives the sidebar a quarter of the width.
+
+Only the two halves are ever required. Say the direction, or the size, or both, or neither:
+
+| Call | Means |
+|---|---|
+| `Branch(Rows, 3, a, b)` | Cut into rows, three of them for `a` |
+| `Branch(Rows, a, b)` | Cut into rows, half each |
+| `Branch(0.25, a, b)` | A quarter for `a`, cut along whichever side is longer |
+| `Branch(a, b)` | Half each, along whichever side is longer |
+
+"The longer side" is measured in what the eye sees rather than in cells: a terminal cell is about
+twice as tall as it is wide, so an 80×24 region is a wide one and gets two columns, while 40×24 gets
+two rows. It is worked out per frame, so a branch left to decide can turn from columns into rows when
+the window is resized — which is what you want for panes of equal standing, and not what you want for
+chrome. Pin a toolbar with `Rows` and a sidebar with `Columns`; leave the rest to the tree.
 
 Nothing about a frame is kept in the tree. Sizes are worked out on every `Draw`, so one tree fits
 every terminal and a resize needs no bookkeeping.
@@ -194,9 +218,9 @@ all of them.
 
 | Leaf | Use |
 |---|---|
-| `PaneTree.Pane(widget)` | Any [widget](widgets.md) — a list, a table, a tree, a status bar |
-| `PaneTree.Pane(region => ...)` | Drawing the view does itself: a title, a box, a row of readouts |
-| `PaneTree.Empty()` | Space deliberately left blank |
+| `Leaf(widget)` | Any [widget](widgets.md) — a list, a table, a tree, a status bar |
+| `Leaf(region => ...)` | Drawing the view does itself: a title, a box, a row of readouts |
+| `Leaf()` | Space deliberately left blank |
 
 A widget pane calls the widget's own `Draw` with the region and ignores the region it hands back,
 since the tree has already decided where everything goes. Both leaf kinds are checked for `null` as
@@ -208,9 +232,17 @@ sharing one tree would share its widgets, and therefore their state.
 
 ### Gaps, and panes that do not fit
 
-`Draw(region, gap)` leaves `gap` cells empty between the two halves of every split, which is how panes
-get breathing room without each one insetting itself. The default `gap: 0` packs them edge to edge,
-which is what a screen of bordered boxes wants, since the borders already separate them.
+Spacing belongs to the tree rather than to a call or to a branch, so a screen is loosened or tightened
+in one place. `Gaps(inner, outer)` is named the way a tiling window manager names it:
+
+```csharp
+_layout = Branch(...).Gaps(inner: 1, outer: 1);
+```
+
+`inner` is left empty between the two halves of every branch; `outer` is left empty around everything,
+inside the region `Draw` is handed. Both default to nothing, which packs panes edge to edge — what a
+screen of bordered boxes wants, since the borders already separate them. `Gaps` returns the tree it
+was called on, so it finishes the expression that built it.
 
 A region too small for what it holds does not overflow. Each split is clamped to the space that
 exists, so the first half takes what it can and the panes that did not fit are handed **empty**
@@ -226,12 +258,11 @@ than `CellsFromEnd(1)` — or it is drawn and then covered.
 
 | Member | Meaning |
 |---|---|
-| `PaneTree.Rows(size, first, second)` | A split, top from bottom |
-| `PaneTree.Columns(size, first, second)` | A split, left from right |
-| `PaneTree.Pane(widget)` / `PaneTree.Pane(draw)` | A pane holding a widget, or one the view draws |
-| `PaneTree.Empty()` | A pane that draws nothing |
-| `Draw(region, gap)` | Draws every pane where the splits put it |
-| `Count` | How many panes the tree holds |
+| `Branch(split, size, first, second)` | A branch; either of `split` and `size` may be left out |
+| `Leaf(widget)` / `Leaf(draw)` / `Leaf()` | A pane holding a widget, one the view draws, or nothing |
+| `Gaps(inner, outer)` | Spacing for the whole tree; returns the tree |
+| `Draw(region)` | Draws every pane where the branches put it |
+| `Count`, `InnerGap`, `OuterGap` | How many panes it holds, and the spacing it was given |
 
 ### When not to reach for it
 
