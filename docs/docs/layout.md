@@ -205,10 +205,26 @@ every terminal and a resize needs no bookkeeping.
 | `3` — any `int` | Exactly that many cells | Chrome of a fixed height: a toolbar, a title, a one-line prompt |
 | `PaneSize.CellsFromEnd(2)` | Everything except that many cells | Chrome anchored to the far edge: a status bar at the bottom, a gutter on the right |
 
-`double` and `int` convert on their own, so `0.25` and `3` read as themselves at the call site;
-`PaneSize.Fraction(0.25)` and `PaneSize.Cells(3)` are the same thing spelled out. A share is clamped
-to `0..1`, and a count larger than the region gives the first half everything and the second half
-nothing.
+**The unit is the literal, not the number.** `double` and `int` both convert on their own, so what a
+size means is decided by whether it has a decimal point:
+
+```csharp
+Branch(Rows, 3, header, body);      // three rows
+Branch(Rows, 0.3, header, body);    // three tenths of the height
+Branch(Columns, 3, side, main);     // three columns — a count follows the direction of the cut
+```
+
+A count is in the units of the cut: rows for `Rows`, columns for `Columns`. `PaneSize.Fraction(0.25)`
+and `PaneSize.Cells(3)` are the same two things spelled out, for where the literal is not obvious
+enough.
+
+Two edges are worth knowing. `1` and `1.0` are different sizes — one row against all of them — so a
+missing point is a real bug rather than a rounding difference. And a bare `0` does not compile: it
+fits a `PaneSplit` and a size equally well, and the compiler says so instead of guessing, so write
+`PaneSize.Fraction(0)` or `PaneSize.Cells(0)` when nothing is what you mean.
+
+A share is clamped to `0..1`, and a count larger than the region gives the first half everything and
+the second half nothing.
 
 `CellsFromEnd` is what a status bar wants. Written as a share, a one-row bar is `0.96` on one terminal
 and wrong on the next; written as `Rows(PaneSize.CellsFromEnd(1), body, status)` it is the last row on
