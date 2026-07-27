@@ -235,8 +235,23 @@ all of them.
 | Leaf | Use |
 |---|---|
 | `Leaf(widget)` | Any [widget](widgets.md) — a list, a table, a tree, a status bar |
+| `Leaf(widget, () => "files")` | The same, in a box with that title |
 | `Leaf(region => ...)` | Drawing the view does itself: a title, a box, a row of readouts |
+| `Leaf(region => ..., () => "log")` | The same, in a box |
 | `Leaf()` | Space deliberately left blank |
+
+A title is a `Func<string>` rather than a string, like every other piece of user-visible text in the
+framework, so a translated application translates the panes too. The box is drawn for you and the
+pane is handed the room left inside it — which is the whole of what a `region.Border(...)` call in
+every pane used to do.
+
+A boxed widget also shows where the focus is: the border is `Theme.Active` while that widget holds it
+and `Theme.Info` while it does not, so the view says nothing about focus and the screen still shows
+it.
+
+The same widget instance cannot be two panes. A widget remembers the region it was drawn into — that
+is how it answers clicks — so one in two places would draw twice and hit-test for one of them only.
+The tree rejects it as it is built rather than letting the screen misbehave.
 
 A widget pane calls the widget's own `Draw` with the region and ignores the region it hands back,
 since the tree has already decided where everything goes. Both leaf kinds are checked for `null` as
@@ -245,6 +260,25 @@ the tree is built, so a mistake surfaces at construction rather than on the firs
 Because the tree holds what it draws, it is built where the widgets are — in the view's constructor —
 and lives as long as the view does. It is not a `static readonly` shared between views: two views
 sharing one tree would share its widgets, and therefore their state.
+
+### Tab walks the panes
+
+A screen of panes wants `Tab` to move between them in the order they are drawn, and the tree already
+knows that order. `Focusables` hands over the widgets of the tree that take the focus, left before
+right and top before bottom, so the [focus ring](views-and-navigation.md) is filled from the layout
+rather than from a second list kept in step by hand:
+
+```csharp
+_focus = new FocusRing(options.Keymap);
+_focus.AddAll(_layout.Focusables);
+
+public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
+public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
+```
+
+Widgets that cannot take the focus — a status bar, a pane the view draws with a delegate — are simply
+not in the list. Rearranging the tree rearranges the tab order with it, which is the point: the two
+cannot drift apart, because there is only one of them.
 
 ### Gaps, and panes that do not fit
 
@@ -276,8 +310,10 @@ than `CellsFromEnd(1)` — or it is drawn and then covered.
 |---|---|
 | `Branch(split, size, first, second)` | A branch; either of `split` and `size` may be left out |
 | `Leaf(widget)` / `Leaf(draw)` / `Leaf()` | A pane holding a widget, one the view draws, or nothing |
+| `Leaf(widget, title)` / `Leaf(draw, title)` | The same, in a box with a title |
 | `Gaps(inner, outer)` | Spacing for the whole tree; returns the tree |
 | `Draw(region)` | Draws every pane where the branches put it |
+| `Focusables` | The widgets that take focus, in layout order — for `FocusRing.AddAll` |
 | `Count`, `InnerGap`, `OuterGap` | How many panes it holds, and the spacing it was given |
 
 ### When not to reach for it
