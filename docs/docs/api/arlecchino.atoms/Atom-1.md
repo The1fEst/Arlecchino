@@ -32,6 +32,7 @@ public abstract class Atom<T> : IReadableAtom<T>
 
 | Member | Summary |
 |---|---|
+| [`Post(T)`](#post-t) | Hands a value to the drawing thread from wherever you are: it is written just before the next frame, in the order it was posted, and everything a plain write does — notifying, asking for a repaint, recording an undo step — happens then. This is what background work calls instead of [`Atom.Value`](../arlecchino.atoms/Atom-1.md#value), which refuses a write from another thread. The write has not happened when this returns, so reading the atom back here still gives the old value. Several atoms that have to change together belong in one `FrameThread.Post` instead, so that no frame falls between them. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the value changes. |
 
 ## Constructors in detail
@@ -74,6 +75,20 @@ The value. Writing an equal value changes nothing and notifies nobody; any other
 **Type** `T`
 
 ## Methods in detail
+
+### `Post(T)` {#post-t}
+
+```csharp
+public void Post(T value);
+```
+
+Hands a value to the drawing thread from wherever you are: it is written just before the next frame, in the order it was posted, and everything a plain write does — notifying, asking for a repaint, recording an undo step — happens then. This is what background work calls instead of [`Atom.Value`](../arlecchino.atoms/Atom-1.md#value), which refuses a write from another thread. The write has not happened when this returns, so reading the atom back here still gives the old value. Several atoms that have to change together belong in one `FrameThread.Post` instead, so that no frame falls between them.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `value` | `T` | The value to write on the drawing thread. |
 
 ### `Subscribe(Action)` {#subscribe-action}
 
