@@ -120,7 +120,11 @@ public sealed class PaneTree
     /// A branch of a given size that still cuts along the longer side, for a split that is uneven but
     /// has no reason to prefer an axis.
     /// </summary>
-    /// <param name="size">How much of it the first half takes; the second half takes the rest.</param>
+    /// <param name="size">
+    /// How much of it the first half takes; the second half takes the rest. A count of cells when
+    /// written as an <c>int</c>, a share of the space when written with a decimal point — <c>3</c> is
+    /// three rows or columns, <c>0.3</c> is three tenths. See <see cref="PaneSize"/>.
+    /// </param>
     /// <param name="first">The upper half, or the left one.</param>
     /// <param name="second">The lower half, or the right one.</param>
     /// <returns>The branch.</returns>
@@ -132,7 +136,11 @@ public sealed class PaneTree
     /// is itself either a branch or a leaf. Three bands is therefore a branch inside a branch.
     /// </summary>
     /// <param name="split">Which way to cut.</param>
-    /// <param name="size">How much of it the first half takes; the second half takes the rest.</param>
+    /// <param name="size">
+    /// How much of it the first half takes; the second half takes the rest. A count of cells when
+    /// written as an <c>int</c>, a share of the space when written with a decimal point — <c>3</c> is
+    /// three rows or columns, <c>0.3</c> is three tenths. See <see cref="PaneSize"/>.
+    /// </param>
     /// <param name="first">The upper half, or the left one.</param>
     /// <param name="second">The lower half, or the right one.</param>
     /// <returns>The branch.</returns>

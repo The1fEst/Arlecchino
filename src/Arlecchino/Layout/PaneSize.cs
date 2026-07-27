@@ -3,12 +3,24 @@ using System;
 namespace Arlecchino.Layout;
 
 /// <summary>
-/// How much of a region a split gives to its first half: a share of what there is, a fixed number of
+/// How much of a region a branch gives to its first half: a share of what there is, a fixed number of
 /// cells, or — for the toolbars and status bars that sit at the far edge — a fixed number of cells
 /// measured from the other end.
 ///
-/// A <c>double</c> and an <c>int</c> both convert on their own, so <c>0.25</c> reads as a quarter and
-/// <c>3</c> reads as three cells at the call site.
+/// <b>The unit is the literal, not the number.</b> A <c>double</c> is a share and an <c>int</c> is a
+/// count of cells, and both convert on their own, so the call site says which it meant by whether it
+/// has a decimal point:
+///
+/// <code>
+/// Branch(Rows, 3, header, body);      // three rows
+/// Branch(Rows, 0.3, header, body);    // three tenths of the height
+/// Branch(Columns, 3, side, main);     // three columns — a count follows the direction of the cut
+/// </code>
+///
+/// The pair worth remembering is <c>1</c> and <c>1.0</c>: the first is one row, the second is all of
+/// them. A bare <c>0</c> is rejected by the compiler rather than guessed at — it fits both a
+/// <see cref="PaneSplit"/> and a size — so write <see cref="Fraction"/> or <see cref="Cells"/> when
+/// nothing is what you mean.
 /// </summary>
 public readonly record struct PaneSize
 {
