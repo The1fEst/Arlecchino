@@ -30,7 +30,7 @@ body:
         The output of `ArlecchinoReport.Describe()` — resolve it from the container and call it, or
         paste the version, the terminal and the OS by hand. It carries versions, sizes and route
         names only; see
-        [Hosting and options](https://github.com/The1fEst/Arlecchino/blob/master/docs/hosting-and-options.md).
+        [Hosting and options](https://the1fest.github.io/Arlecchino.Docs/docs/hosting-and-options).
       render: text
     validations:
       required: true

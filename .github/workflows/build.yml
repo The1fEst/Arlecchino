@@ -3,9 +3,9 @@ name: build
 on:
   push:
     branches: [master, main]
-    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
+    paths-ignore: ['**.md', 'LICENSE']
   pull_request:
-    paths-ignore: ['**.md', 'docs/**', 'LICENSE']
+    paths-ignore: ['**.md', 'LICENSE']
 
 env:
   COVERAGE_LINES: 85

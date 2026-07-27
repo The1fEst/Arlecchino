@@ -6,13 +6,14 @@ together and always carry the same version.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Up to `1.0.0` a breaking change only
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
-the public API means a new major. See [Versioning](docs/packages-and-building.md).
+the public API means a new major. See
+[Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
 ## 2.0.0
 
-The three breaking changes `1.x` announced, delivered together. [Migrating to
-2.0](docs/migrating-to-2.0.md) is the edit list; nothing here needs more than a rename, a delete or a
-decision about colour.
+The three breaking changes `1.x` announced, delivered together.
+[Migrating to 2.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-2.0) is the edit
+list; nothing here needs more than a rename, a delete or a decision about colour.
 
 ### Changed
 
@@ -282,10 +283,10 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `assets/`: the harlequin mask as an icon on its plate, transparent, and as a single-colour glyph
   that inherits `currentColor`, plus the banner and the social card — SVG throughout, with the raster
   sizes rendered beside them.
-- [Rendering](docs/rendering.md) ends with the terminals the framework has actually run in and what
-  each one showed — plain `xterm-256color`, `COLORTERM=truecolor`, `NO_COLOR`, `TERM=dumb`, tmux,
-  macOS on Arm — and, just as usefully, the ones it has not: conhost without virtual terminal support,
-  Terminal.app, PuTTY, kitty and friends.
+- [Rendering](https://the1fest.github.io/Arlecchino.Docs/docs/rendering) ends with the terminals the
+  framework has actually run in and what each one showed — plain `xterm-256color`,
+  `COLORTERM=truecolor`, `NO_COLOR`, `TERM=dumb`, tmux, macOS on Arm — and, just as usefully, the
+  ones it has not: conhost without virtual terminal support, Terminal.app, PuTTY, kitty and friends.
 - `Theme.Palette` and `TerminalCapabilities.Color` are documented as process-wide, which is what they
   have always been: one look per process, last host built wins, and a test that changes either shares
   the change with everything else running.
@@ -469,7 +470,7 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 - The two atom types are named where an atom is described rather than only in the state chapter: the
   XML documentation of `Field` and `Form`, the page tables, and the opening of
-  [State and forms](docs/state-and-forms.md).
+  [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms).
 
 ### Continuous integration
 

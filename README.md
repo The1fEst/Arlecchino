@@ -141,24 +141,23 @@ every string any of them draws is a delegate the application can point at its ow
 
 ## Documentation
 
-Full documentation lives in [docs](docs/README.md).
+Everything lives at **[the1fest.github.io/Arlecchino.Docs](https://the1fest.github.io/Arlecchino.Docs/)** —
+written pages and an API reference generated from the assemblies. The site is built from
+[The1fEst/Arlecchino.Docs](https://github.com/The1fEst/Arlecchino.Docs).
 
-| Page | What it covers |
+| | |
 |---|---|
-| [Getting started](docs/getting-started.md) | Installing the package, the smallest app that runs, the first view |
-| [Views and navigation](docs/views-and-navigation.md) | `IArlecchinoView`, `ViewRoute`, the navigator, history, view registration |
-| [Source generator](docs/source-generator.md) | How `ViewKind`, the view factory and the store registration are emitted, MSBuild switches |
-| [Rendering](docs/rendering.md) | `Surface`: the frame lifecycle, flow layout, absolute layout |
-| [Theming](docs/theming.md) | `Theme`, `ThemePalette`, `TermColor`, ANSI colours and font styles |
-| [Commands and input](docs/commands-and-input.md) | `IArlecchinoCommand`, the command palette, key routing, keyboard layouts |
-| [Modals and state](docs/modals-and-state.md) | `ArlecchinoState`, text and choice modals, the output line |
-| [File picker](docs/file-picker.md) | Requesting a path, places sidebar, filters, keys |
-| [Hosting and options](docs/hosting-and-options.md) | `AddArlecchino`, every option, the builder API, running without the hosted service |
-| [State and forms](docs/state-and-forms.md) | `TrackedAtom` and `LocalAtom` atoms, computed values, undo, async loading, and forms built from them |
-| [Widgets](docs/widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
-| [Localization](docs/localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
-| [Packages and building](docs/packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning, testing an application, CI and benchmarks |
-| [Migrating to 2.0](docs/migrating-to-2.0.md) | What 2.0 changed and the edits an application written against `1.x` needs |
+| [Getting started](https://the1fest.github.io/Arlecchino.Docs/docs/getting-started) | Installing the package, the smallest app that runs, the first view |
+| [Views and navigation](https://the1fest.github.io/Arlecchino.Docs/docs/views-and-navigation) | `IArlecchinoView`, `ViewRoute`, the navigator, history, view registration |
+| [The frame loop](https://the1fest.github.io/Arlecchino.Docs/docs/frame-loop) | When a frame is drawn, which thread draws it, and how work gets back onto it |
+| [Rendering](https://the1fest.github.io/Arlecchino.Docs/docs/rendering) and [Layout](https://the1fest.github.io/Arlecchino.Docs/docs/layout) | `Surface`, the flow cursor, absolute calls, regions and clipping |
+| [Theming](https://the1fest.github.io/Arlecchino.Docs/docs/theming) and [Colours](https://the1fest.github.io/Arlecchino.Docs/docs/colours) | Roles, palettes, `TermColor`, and what the terminal can actually show |
+| [Keyboard](https://the1fest.github.io/Arlecchino.Docs/docs/keyboard), [Commands](https://the1fest.github.io/Arlecchino.Docs/docs/commands), [Mouse](https://the1fest.github.io/Arlecchino.Docs/docs/mouse) | How a key travels, the keymap, the palette, hit-testing |
+| [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms) and [Forms](https://the1fest.github.io/Arlecchino.Docs/docs/forms) | Observable state, undo, and forms built from it |
+| [Widgets](https://the1fest.github.io/Arlecchino.Docs/docs/widgets) | Lists, trees, sortable tables, tabs, scrolling, status bar |
+| [Testing](https://the1fest.github.io/Arlecchino.Docs/docs/testing) | `ArlecchinoTestHost`, `FakeTerminal`, asserting on a frame |
+| [Migrating to 2.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-2.0) | The edits an application written against `1.x` needs |
+| [API reference](https://the1fest.github.io/Arlecchino.Docs/docs/api) | Every public type, generated from the XML documentation |
 
 What changed between versions is in the [changelog](CHANGELOG.md).
 
