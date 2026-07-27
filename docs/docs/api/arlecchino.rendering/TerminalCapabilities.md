@@ -54,7 +54,11 @@ Reads the environment and decides what the terminal can show.
 ### `DetectColor(string, string, string, string)` {#detectcolor-string-string-string-string}
 
 ```csharp
-public static ColorSupport DetectColor(string? noColor, string? term, string? colorTerm, string? windowsTerminalSession);
+public static ColorSupport DetectColor(
+    string? noColor,
+    string? term,
+    string? colorTerm,
+    string? windowsTerminalSession);
 ```
 
 The same decision made from explicit values, which is what makes it testable. `NO_COLOR` or `TERM=dumb` mean no colour at all; `truecolor`, `24bit` or a Windows Terminal session mean 24-bit; everything else falls back to the palette.

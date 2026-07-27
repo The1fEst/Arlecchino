@@ -176,7 +176,11 @@ Opens a dialog over whatever is already open, which is how a callback asks a fol
 ### `RequestChoice(string, IReadOnlyList<string>, Action<string>, string)` {#requestchoice-string-ireadonlylist-string-action-string-string}
 
 ```csharp
-public void RequestChoice(string title, IReadOnlyList<string> options, Action<string> onPicked, string current = "");
+public void RequestChoice(
+    string title,
+    IReadOnlyList<string> options,
+    Action<string> onPicked,
+    string current = "");
 ```
 
 Asks for one option out of a list that can be filtered by typing.
@@ -272,7 +276,11 @@ Shows a message with nothing to fill in; any of the closing keys dismisses it.
 ### `RequestMultiChoice(string, IReadOnlyList<string>, IReadOnlyList<string>, Action<IReadOnlyList<string>>)` {#requestmultichoice-string-ireadonlylist-string-ireadonlylist-string-action-ireadonlylist-string}
 
 ```csharp
-public void RequestMultiChoice(string title, IReadOnlyList<string> options, IReadOnlyList<string> selected, Action<IReadOnlyList<string>> onSubmit);
+public void RequestMultiChoice(
+    string title,
+    IReadOnlyList<string> options,
+    IReadOnlyList<string> selected,
+    Action<IReadOnlyList<string>> onSubmit);
 ```
 
 Asks for any number of options. Marks survive filtering, and the result comes back in the order of `options` rather than the order they were marked.
@@ -289,7 +297,12 @@ Asks for any number of options. Marks survive filtering, and the result comes ba
 ### `RequestNumber(string, decimal, decimal, decimal, Action<decimal>)` {#requestnumber-string-decimal-decimal-decimal-action-decimal}
 
 ```csharp
-public void RequestNumber(string title, decimal initial, decimal minimum, decimal maximum, Action<decimal> onSubmit);
+public void RequestNumber(
+    string title,
+    decimal initial,
+    decimal minimum,
+    decimal maximum,
+    Action<decimal> onSubmit);
 ```
 
 Asks for a number within bounds. Typing is restricted to digits, and stepping keys clamp to the range.
@@ -322,7 +335,12 @@ Asks for a secret. The field shows dots, but the text handed to the callback is 
 ### `RequestSlider(string, decimal, decimal, decimal, Action<decimal>)` {#requestslider-string-decimal-decimal-decimal-action-decimal}
 
 ```csharp
-public void RequestSlider(string title, decimal initial, decimal minimum, decimal maximum, Action<decimal> onSubmit);
+public void RequestSlider(
+    string title,
+    decimal initial,
+    decimal minimum,
+    decimal maximum,
+    Action<decimal> onSubmit);
 ```
 
 Asks for a number on a track, adjusted with the arrows rather than typed.
@@ -340,7 +358,11 @@ Asks for a number on a track, adjusted with the arrows rather than typed.
 ### `RequestText(string, string, Func<string, string>, Action<string>)` {#requesttext-string-string-func-string-string-action-string}
 
 ```csharp
-public void RequestText(string title, string initial, Func<string, string?>? validate, Action<string> onSubmit);
+public void RequestText(
+    string title,
+    string initial,
+    Func<string, string?>? validate,
+    Action<string> onSubmit);
 ```
 
 Asks for a line of text.
@@ -357,7 +379,12 @@ Asks for a line of text.
 ### `RequestTextArea(string, string, Action<string>, Func<string, string>, int)` {#requesttextarea-string-string-action-string-func-string-string-int}
 
 ```csharp
-public void RequestTextArea(string title, string initial, Action<string> onSubmit, Func<string, string?>? validate = null, int visibleRows = 8);
+public void RequestTextArea(
+    string title,
+    string initial,
+    Action<string> onSubmit,
+    Func<string, string?>? validate = null,
+    int visibleRows = 8);
 ```
 
 Asks for several lines of text. `Enter` starts a new line, so the text is confirmed with the `Submit` key — `Ctrl+Enter` unless the keymap says otherwise.

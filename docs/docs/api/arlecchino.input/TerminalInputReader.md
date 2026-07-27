@@ -31,7 +31,10 @@ public sealed class TerminalInputReader
 ### `TerminalInputReader(IArlecchinoTerminal, InputRouter, ArlecchinoOptions)` {#terminalinputreader-iarlecchinoterminal-inputrouter-arlecchinooptions}
 
 ```csharp
-public TerminalInputReader(IArlecchinoTerminal terminal, InputRouter router, ArlecchinoOptions options);
+public TerminalInputReader(
+    IArlecchinoTerminal terminal,
+    InputRouter router,
+    ArlecchinoOptions options);
 ```
 
 Creates the reader. Everything it reads is routed as it is read, which is what a caller driving the reader itself wants — inside the framework it is built with a queue instead, so that the thread reading the terminal never touches what the frame loop is drawing.

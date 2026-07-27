@@ -233,7 +233,10 @@ Accepts whatever the terminal reports, so any language can be typed.
 ### `UseNotifications(Nullable<ConsoleKeyInfo>, Nullable<TimeSpan>, Nullable<TimeSpan>)` {#usenotifications-nullable-consolekeyinfo-nullable-timespan-nullable-timespan}
 
 ```csharp
-public ArlecchinoBuilder UseNotifications(Nullable<ConsoleKeyInfo> key, Nullable<TimeSpan> timeout, Nullable<TimeSpan> lifetime);
+public ArlecchinoBuilder UseNotifications(
+    Nullable<ConsoleKeyInfo> key,
+    Nullable<TimeSpan> timeout,
+    Nullable<TimeSpan> lifetime);
 ```
 
 Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up.

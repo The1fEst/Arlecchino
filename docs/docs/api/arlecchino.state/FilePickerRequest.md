@@ -44,7 +44,12 @@ public sealed class FilePickerRequest : IEquatable<FilePickerRequest>
 ### `FilePickerRequest(string, bool, string, ViewRoute, Action<string>)` {#filepickerrequest-string-bool-string-viewroute-action-string}
 
 ```csharp
-public FilePickerRequest(string Title, bool PickFolder, string InitialPath, ViewRoute ReturnView, Action<string> OnPicked);
+public FilePickerRequest(
+    string Title,
+    bool PickFolder,
+    string InitialPath,
+    ViewRoute ReturnView,
+    Action<string> OnPicked);
 ```
 
 Everything the file picker needs for one round of picking. Unlike the modals, the picker is a view of its own, so the request also carries where to go once it is done.
@@ -136,7 +141,12 @@ Heading shown above the listing.
 ### `Deconstruct(out string, out bool, out string, out ViewRoute, out Action<string>)` {#deconstruct-out-string-out-bool-out-string-out-viewroute-out-action-string}
 
 ```csharp
-public void Deconstruct(out string Title, out bool PickFolder, out string InitialPath, out ViewRoute ReturnView, out Action<string> OnPicked);
+public void Deconstruct(
+    out string Title,
+    out bool PickFolder,
+    out string InitialPath,
+    out ViewRoute ReturnView,
+    out Action<string> OnPicked);
 ```
 
 **Parameters**

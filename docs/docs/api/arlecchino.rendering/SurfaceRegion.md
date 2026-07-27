@@ -192,7 +192,12 @@ Whether a frame cell falls inside this region — the hit test for mouse events.
 ### `Deconstruct(out Surface, out int, out int, out int, out int)` {#deconstruct-out-surface-out-int-out-int-out-int-out-int}
 
 ```csharp
-public void Deconstruct(out Surface Surface, out int Left, out int Top, out int Width, out int Height);
+public void Deconstruct(
+    out Surface Surface,
+    out int Left,
+    out int Top,
+    out int Width,
+    out int Height);
 ```
 
 **Parameters**

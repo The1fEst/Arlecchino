@@ -10,7 +10,10 @@ sidebar_label: ScrollPane
 A window onto content taller than the space it has. Lists scroll themselves, but a block of text, a long form or a pane of anything at all does not — this is the widget for those: it draws the content shifted up by the offset, confines it to its own rectangle, and answers the movement keys and the wheel. The content is drawn by a delegate rather than owned, so whatever can paint a region can live in here, including other widgets.
 
 ```csharp
-public sealed class ScrollPane : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable
+public sealed class ScrollPane :
+    IArlecchinoInteractiveWidget,
+    IArlecchinoWidget,
+    IArlecchinoFocusable
 ```
 
 **Implements** [`IArlecchinoInteractiveWidget`](../arlecchino.widgets/IArlecchinoInteractiveWidget.md), [`IArlecchinoWidget`](../arlecchino.widgets/IArlecchinoWidget.md), [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md)

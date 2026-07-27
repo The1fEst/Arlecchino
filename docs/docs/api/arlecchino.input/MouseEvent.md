@@ -44,7 +44,12 @@ public readonly struct MouseEvent : IEquatable<MouseEvent>
 ### `MouseEvent(MouseAction, MouseButton, int, int, ConsoleModifiers)` {#mouseevent-mouseaction-mousebutton-int-int-consolemodifiers}
 
 ```csharp
-public MouseEvent(MouseAction Action, MouseButton Button, int Row, int Column, ConsoleModifiers Modifiers);
+public MouseEvent(
+    MouseAction Action,
+    MouseButton Button,
+    int Row,
+    int Column,
+    ConsoleModifiers Modifiers);
 ```
 
 A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers.
@@ -136,7 +141,12 @@ Zero-based row in the frame.
 ### `Deconstruct(out MouseAction, out MouseButton, out int, out int, out ConsoleModifiers)` {#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-consolemodifiers}
 
 ```csharp
-public void Deconstruct(out MouseAction Action, out MouseButton Button, out int Row, out int Column, out ConsoleModifiers Modifiers);
+public void Deconstruct(
+    out MouseAction Action,
+    out MouseButton Button,
+    out int Row,
+    out int Column,
+    out ConsoleModifiers Modifiers);
 ```
 
 **Parameters**

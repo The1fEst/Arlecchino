@@ -10,7 +10,10 @@ sidebar_label: ListBox&lt;T&gt;
 A scrolling list of items, one per row. It keeps only the selected index, never a copy of the items, so replacing [`ListBox.Items`](../arlecchino.widgets/ListBox-1.md#items) between frames is a normal thing to do.
 
 ```csharp
-public sealed class ListBox<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable
+public sealed class ListBox<T> :
+    IArlecchinoInteractiveWidget,
+    IArlecchinoWidget,
+    IArlecchinoFocusable
 ```
 
 **Implements** [`IArlecchinoInteractiveWidget`](../arlecchino.widgets/IArlecchinoInteractiveWidget.md), [`IArlecchinoWidget`](../arlecchino.widgets/IArlecchinoWidget.md), [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md)

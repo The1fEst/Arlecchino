@@ -39,7 +39,9 @@ public sealed class FocusablePane : IArlecchinoFocusable
 ### `FocusablePane(Func<ConsoleKeyInfo, FocusResult>, Func<MouseEvent, FocusResult>)` {#focusablepane-func-consolekeyinfo-focusresult-func-mouseevent-focusresult}
 
 ```csharp
-public FocusablePane(Func<ConsoleKeyInfo, FocusResult> handle, Func<MouseEvent, FocusResult>? handleMouse = null);
+public FocusablePane(
+    Func<ConsoleKeyInfo, FocusResult> handle,
+    Func<MouseEvent, FocusResult>? handleMouse = null);
 ```
 
 Creates the element.

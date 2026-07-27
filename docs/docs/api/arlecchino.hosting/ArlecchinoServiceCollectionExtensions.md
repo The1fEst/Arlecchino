@@ -24,7 +24,9 @@ public static class ArlecchinoServiceCollectionExtensions
 ### `AddArlecchino(IServiceCollection, Action<ArlecchinoOptions>)` {#addarlecchino-iservicecollection-action-arlecchinooptions}
 
 ```csharp
-public static ArlecchinoBuilder AddArlecchino(this IServiceCollection services, Action<ArlecchinoOptions>? configure = null);
+public static ArlecchinoBuilder AddArlecchino(
+    this IServiceCollection services,
+    Action<ArlecchinoOptions>? configure = null);
 ```
 
 Registers everything an application needs and returns the builder that describes it. The console terminal is only registered if nothing else claimed the role, so a terminal registered beforehand is left in place.

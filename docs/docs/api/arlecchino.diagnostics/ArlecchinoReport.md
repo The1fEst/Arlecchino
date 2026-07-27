@@ -30,7 +30,13 @@ public sealed class ArlecchinoReport
 ### `ArlecchinoReport(IArlecchinoTerminal, Navigator, ArlecchinoState, ArlecchinoOptions, Surface, AtomHistory)` {#arlecchinoreport-iarlecchinoterminal-navigator-arlecchinostate-arlecchinooptions-surface-atomhistory}
 
 ```csharp
-public ArlecchinoReport(IArlecchinoTerminal terminal, Navigator navigator, ArlecchinoState state, ArlecchinoOptions options, Surface surface, AtomHistory history);
+public ArlecchinoReport(
+    IArlecchinoTerminal terminal,
+    Navigator navigator,
+    ArlecchinoState state,
+    ArlecchinoOptions options,
+    Surface surface,
+    AtomHistory history);
 ```
 
 Creates the report. Resolved from the container like any other service.

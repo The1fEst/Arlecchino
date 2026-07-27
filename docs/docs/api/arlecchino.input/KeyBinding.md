@@ -44,7 +44,11 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 ### `KeyBinding(ConsoleKey, ConsoleModifiers, ConsoleKey, ConsoleModifiers)` {#keybinding-consolekey-consolemodifiers-consolekey-consolemodifiers}
 
 ```csharp
-public KeyBinding(ConsoleKey Key, ConsoleModifiers Modifiers = None, ConsoleKey AlsoKey = None, ConsoleModifiers AlsoModifiers = None);
+public KeyBinding(
+    ConsoleKey Key,
+    ConsoleModifiers Modifiers = None,
+    ConsoleKey AlsoKey = None,
+    ConsoleModifiers AlsoModifiers = None);
 ```
 
 A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable.
@@ -115,7 +119,11 @@ Modifiers that must be held, exactly.
 ### `Deconstruct(out ConsoleKey, out ConsoleModifiers, out ConsoleKey, out ConsoleModifiers)` {#deconstruct-out-consolekey-out-consolemodifiers-out-consolekey-out-consolemodifiers}
 
 ```csharp
-public void Deconstruct(out ConsoleKey Key, out ConsoleModifiers Modifiers, out ConsoleKey AlsoKey, out ConsoleModifiers AlsoModifiers);
+public void Deconstruct(
+    out ConsoleKey Key,
+    out ConsoleModifiers Modifiers,
+    out ConsoleKey AlsoKey,
+    out ConsoleModifiers AlsoModifiers);
 ```
 
 **Parameters**

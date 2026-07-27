@@ -262,7 +262,11 @@ Writes at an exact cell, clipped to the frame. A wide symbol takes two cells; wr
 ### `WriteBlock(IReadOnlyList<string>, IArlecchinoColor, Align, Margin)` {#writeblock-ireadonlylist-string-iarlecchinocolor-align-margin}
 
 ```csharp
-public void WriteBlock(IReadOnlyList<string> lines, IArlecchinoColor style, Align align, Margin margin);
+public void WriteBlock(
+    IReadOnlyList<string> lines,
+    IArlecchinoColor style,
+    Align align,
+    Margin margin);
 ```
 
 Places a block of prepared lines as a unit, ignoring the flow cursor. Vertical alignment flags work here, which is how the hints box is anchored to a corner.
@@ -295,7 +299,11 @@ Restyles a whole row and writes text at the horizontal padding, ignoring the flo
 ### `WriteTableRow(string[], int[], IArlecchinoColor, string)` {#writetablerow-string-int-iarlecchinocolor-string}
 
 ```csharp
-public void WriteTableRow(string[] strings, int[] widths, IArlecchinoColor style, string prefix = "");
+public void WriteTableRow(
+    string[] strings,
+    int[] widths,
+    IArlecchinoColor style,
+    string prefix = "");
 ```
 
 Writes a row of padded columns at the flow cursor.

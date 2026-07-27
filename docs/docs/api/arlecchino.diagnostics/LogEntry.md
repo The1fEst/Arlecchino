@@ -102,7 +102,11 @@ When it was written.
 ### `Deconstruct(out DateTimeOffset, out LogLevel, out string, out string)` {#deconstruct-out-datetimeoffset-out-loglevel-out-string-out-string}
 
 ```csharp
-public void Deconstruct(out DateTimeOffset Time, out LogLevel Level, out string Category, out string Message);
+public void Deconstruct(
+    out DateTimeOffset Time,
+    out LogLevel Level,
+    out string Category,
+    out string Message);
 ```
 
 **Parameters**
