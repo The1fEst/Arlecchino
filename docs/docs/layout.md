@@ -38,6 +38,10 @@ Every flow call stops silently once the frame is full, so a view never has to bo
 The content width is the frame minus `HorizontalPadding` on both sides, so a flow view sits inside the
 gutters the application configured.
 
+These calls belong to the frame. Inside a [pane](#writing-line-after-line-inside-a-pane) they write at
+the top of the screen and paint over its border, so a pane filled line by line asks the region for a
+flow of its own.
+
 ## Absolute layout
 
 Absolute calls address rows directly and ignore the flow cursor — this is what the file picker and the
@@ -95,6 +99,7 @@ list.WriteLine(0, "Name", Theme.TableHeader);
 | `WriteLine(row, text, style, align)` | A whole line, aligned inside the region |
 | `Fill(style, character)` | Paints every cell of the region |
 | `Border(style, title)` | Draws a box and returns the region inside it |
+| `Flow()` | A cursor that writes line after line inside this region — see [below](#writing-line-after-line-inside-a-pane) |
 | `Contains(frameRow, frameColumn)` / `ToLocal(...)` | Hit-testing for [mouse events](mouse.md) |
 
 `SurfaceRegion` is a readonly record struct, so `region with { Top = region.Top - offset }` is a valid
@@ -289,6 +294,46 @@ drift apart, because there is only one of them.
 
 What comes back is an ordinary ring, so anything focusable that lives outside the tree is added to it
 afterwards and lands at the end of the walk.
+
+### Writing line after line inside a pane
+
+Flow calls belong to the **frame**, not to a region. Reaching for `region.Surface.AppendLine(...)`
+inside a pane therefore writes at the top of the screen and paints straight over the pane's border and
+its neighbours — the region is not involved at all:
+
+```
+PLAYERS             ╮╭ right ───────────╮     ← the flow cursor is the frame's
+│                  ││right              │
+```
+
+A region has a flow of its own for exactly this, and it stays where it was given:
+
+```csharp
+var flow = region.Flow();
+
+flow.AppendLine("PLAYERS", Theme.TableHeader);
+flow.FillLine();
+
+foreach (var player in players)
+{
+    flow.AppendLine(player.Name, Theme.Default);
+}
+```
+
+Everything is written in the region's coordinates and clipped to it, and once the pane is full the
+calls stop doing anything — a loop over more rows than fit needs no bound of its own.
+
+| Member | Meaning |
+|---|---|
+| `AppendLine(text, style, align)` | The next line, aligned inside the region |
+| `SkipLine()` / `Skip(rows)` | Leaves rows blank |
+| `FillLine(style)` | A rule across the region |
+| `Rewind()` | Back to the first row |
+| `Rest()` | What the cursor has not reached yet, as a region — for handing the space below to a widget |
+| `Row`, `FreeLines`, `IsFull`, `Region` | Where the cursor is and how much room is left |
+
+`PaneFlow` is a class, so passing it to a helper that writes a few more lines carries the cursor
+along. Two flows over the same region are independent: the second starts at its first row again.
 
 ### Gaps, and panes that do not fit
 
