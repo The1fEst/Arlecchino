@@ -62,7 +62,7 @@ public sealed class RobustnessTests
     public async Task AnAsyncAtomLoadedTwiceKeepsTheSecondAnswer()
     {
         using var app = new TestApplication();
-        var loading = new AsyncAtom<string>(app.Dispatcher, "");
+        var loading = new AsyncAtom<string>("");
         var second = new TaskCompletionSource();
 
         loading.Load(async _ =>
@@ -75,7 +75,7 @@ public sealed class RobustnessTests
         second.SetResult();
 
         await Task.Delay(50);
-        app.Dispatcher.RunPending(static _ => { });
+        FrameThread.RunPending(static _ => { });
 
         Assert.Equal("second", loading.Value);
     }
@@ -84,7 +84,7 @@ public sealed class RobustnessTests
     public async Task AnAsyncAtomCancelledMidFlightKeepsItsOldValue()
     {
         using var app = new TestApplication();
-        var loading = new AsyncAtom<string>(app.Dispatcher, "before");
+        var loading = new AsyncAtom<string>("before");
         var started = new TaskCompletionSource();
 
         loading.Load(async token =>
@@ -97,7 +97,7 @@ public sealed class RobustnessTests
         await started.Task;
         loading.Cancel();
         await Task.Delay(50);
-        app.Dispatcher.RunPending(static _ => { });
+        FrameThread.RunPending(static _ => { });
 
         Assert.Equal("before", loading.Value);
     }

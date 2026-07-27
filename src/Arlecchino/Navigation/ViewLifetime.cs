@@ -15,15 +15,12 @@ public sealed class ViewLifetime : IDisposable
 {
     private readonly CancellationTokenSource _closing = new();
     private readonly List<IDisposable> _owned = [];
-    private readonly UiDispatcher _dispatcher;
 
     private bool _closed;
 
     /// <summary>Creates the lifetime. Resolved once per screen.</summary>
-    /// <param name="dispatcher">Handed to the background state this creates.</param>
-    public ViewLifetime(UiDispatcher dispatcher)
+    public ViewLifetime()
     {
-        _dispatcher = dispatcher;
         Closing = _closing.Token;
     }
 
@@ -43,7 +40,7 @@ public sealed class ViewLifetime : IDisposable
     /// <returns>The state, already tied to this screen.</returns>
     public AsyncAtom<T> Loading<T>(T? initial = default)
     {
-        var loading = new AsyncAtom<T>(_dispatcher, initial);
+        var loading = new AsyncAtom<T>(initial);
 
         OnClose(loading.Cancel);
         return loading;

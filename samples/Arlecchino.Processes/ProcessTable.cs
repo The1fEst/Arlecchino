@@ -14,9 +14,9 @@ public sealed class ProcessTable : IArlecchinoStore
     private readonly AsyncAtom<IReadOnlyList<ProcessRow>> _rows;
     private readonly LocalAtom<string> _filter = new("");
 
-    public ProcessTable(UiDispatcher dispatcher)
+    public ProcessTable()
     {
-        _rows = new(dispatcher, []);
+        _rows = new([]);
     }
 
     public AsyncAtom<IReadOnlyList<ProcessRow>> Rows => _rows;

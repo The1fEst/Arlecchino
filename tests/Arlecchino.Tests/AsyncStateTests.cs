@@ -11,7 +11,7 @@ public sealed class AsyncStateTests
     public async Task LoadedValueArrivesOnTheFrameLoop()
     {
         using var app = new TestApplication();
-        var rows = new AsyncAtom<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>();
         var release = new TaskCompletionSource();
 
         rows.Load(async _ =>
@@ -24,7 +24,7 @@ public sealed class AsyncStateTests
         Assert.True(rows.IsLoading);
 
         release.SetResult();
-        await WaitForPending(app);
+        await WaitForPending();
 
         app.Frame();
 
@@ -36,10 +36,10 @@ public sealed class AsyncStateTests
     public async Task FailureIsKeptInsteadOfThrowing()
     {
         using var app = new TestApplication();
-        var rows = new AsyncAtom<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>();
 
         rows.Load(_ => Task.FromException<string>(new InvalidOperationException("no network")));
-        await WaitForPending(app);
+        await WaitForPending();
 
         app.Frame();
 
@@ -51,7 +51,7 @@ public sealed class AsyncStateTests
     public async Task ReloadingCancelsTheLoadInFlight()
     {
         using var app = new TestApplication();
-        var rows = new AsyncAtom<string>(app.Dispatcher);
+        var rows = new AsyncAtom<string>();
         var first = new TaskCompletionSource();
 
         rows.Load(async _ =>
@@ -61,7 +61,7 @@ public sealed class AsyncStateTests
         });
 
         rows.Load(_ => Task.FromResult("fresh"));
-        await WaitForPending(app);
+        await WaitForPending();
         app.Frame();
 
         first.SetResult();
@@ -75,10 +75,10 @@ public sealed class AsyncStateTests
     public async Task LoadedValueRequestsARepaint()
     {
         using var app = new TestApplication();
-        var rows = new AsyncAtom<int>(app.Dispatcher);
+        var rows = new AsyncAtom<int>();
 
         rows.Load(_ => Task.FromResult(7));
-        await WaitForPending(app);
+        await WaitForPending();
 
         app.Repaint.TakeRequested();
         app.Frame();
@@ -87,9 +87,9 @@ public sealed class AsyncStateTests
         Assert.True(app.Repaint.IsRequested);
     }
 
-    private static async Task WaitForPending(TestApplication app)
+    private static async Task WaitForPending()
     {
-        for (var attempt = 0; attempt < 100 && !app.Dispatcher.HasPending; attempt++)
+        for (var attempt = 0; attempt < 100 && !FrameThread.HasPending; attempt++)
         {
             await Task.Delay(10);
         }

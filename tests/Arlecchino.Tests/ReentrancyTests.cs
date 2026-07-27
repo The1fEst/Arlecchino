@@ -17,12 +17,12 @@ public sealed class ReentrancyTests
         void Again()
         {
             runs++;
-            app.Dispatcher.Post(Again);
+            FrameThread.Post(Again);
         }
 
-        app.Dispatcher.Post(Again);
+        FrameThread.Post(Again);
 
-        await Task.Run(() => app.Dispatcher.RunPending(static _ => { }));
+        await Task.Run(() => FrameThread.RunPending(static _ => { }));
 
         Assert.Equal(1, runs);
     }

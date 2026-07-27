@@ -23,7 +23,6 @@ it puts in the container are singletons:
 | `KeyText` | Character resolution for the configured input mode |
 | `ArlecchinoState` | Output line, modal, file picker request |
 | `Repaint` | The "this frame is stale" signal the render loop waits on |
-| `UiDispatcher` | Queue for handing results back from background work; runs them between frames |
 | `Navigator`, `ViewResolver`, `IArlecchinoViewFactory` | Routing and view construction |
 | `CommandRegistry` | Registered commands |
 | `Screen` | Frame composition |
@@ -127,7 +126,7 @@ public sealed class ProcessesView : IArlecchinoView
 
 Both schedules return the handle that cancels them, so handing it to
 [`ViewLifetime.Track`](state-and-forms.md) stops the work when the screen goes away. The actions run
-between frames on the same thread as drawing and input — no locking, no `UiDispatcher.Post` — and a
+between frames on the same thread as drawing and input — no locking, no `FrameThread.Post` — and a
 repaint is asked for afterwards. One that throws is logged and reported on the output row; the rest
 still run.
 

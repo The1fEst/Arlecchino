@@ -29,7 +29,6 @@ public enum LoadStatus : byte
 /// <typeparam name="T">What is being loaded.</typeparam>
 public sealed class AsyncAtom<T> : IReadableAtom<T?>
 {
-    private readonly UiDispatcher _dispatcher;
     private readonly LocalAtom<T?> _value;
     private readonly LocalAtom<LoadStatus> _status = new(LoadStatus.Idle);
     private readonly LocalAtom<Exception?> _error = new(null);
@@ -37,11 +36,9 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
     private CancellationTokenSource? _running;
 
     /// <summary>Creates the state, without starting anything.</summary>
-    /// <param name="dispatcher">Used to apply results on the UI thread.</param>
     /// <param name="initial">What to hold until the first load finishes.</param>
-    public AsyncAtom(UiDispatcher dispatcher, T? initial = default)
+    public AsyncAtom(T? initial = default)
     {
-        _dispatcher = dispatcher;
         _value = new(initial);
     }
 
@@ -113,7 +110,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
                 return;
             }
 
-            _dispatcher.Post(() =>
+            FrameThread.Post(() =>
             {
                 _value.Value = loaded;
                 _status.Value = LoadStatus.Loaded;
@@ -129,7 +126,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
                 return;
             }
 
-            _dispatcher.Post(() =>
+            FrameThread.Post(() =>
             {
                 _error.Value = exception;
                 _status.Value = LoadStatus.Failed;

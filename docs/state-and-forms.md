@@ -105,7 +105,7 @@ undo step. Rendering a frame headlessly (tests, `--frame`) has no hosted service
 ## Loading in the background
 
 `AsyncAtom<T>` wraps a load in progress and lands its result on the frame loop through
-[`UiDispatcher`](rendering.md):
+[`FrameThread`](rendering.md):
 
 ```csharp
 private readonly AsyncAtom<IReadOnlyList<Mod>> _mods;
@@ -237,7 +237,7 @@ Views that only read atoms in `Draw` need none of this: reading happens fresh ev
 ## Threads
 
 Atoms are not thread-safe. Anything that finishes on another thread writes through
-`UiDispatcher.Post` — which is what `AsyncAtom` does internally.
+`FrameThread.Post` — which is what `AsyncAtom` does internally.
 
 That rule works because there is exactly one thread to be on. The frame loop and the loop reading the
 terminal are separate, but the reader does not route what it reads: it queues it, and the frame loop

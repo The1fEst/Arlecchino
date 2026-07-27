@@ -40,21 +40,21 @@ tick.
 
 ## Coming back from a background task
 
-Views, `ArlecchinoState` and the surface are touched by the render loop and the input loop; nothing about
-them is thread-safe. Work that finishes on another thread hands its result back through
-`UiDispatcher`, which runs queued actions on the frame loop just before the next frame is composed:
+Views, `ArlecchinoState` and the surface belong to the thread that draws; nothing about them is
+thread-safe, and writing one from anywhere else throws. Work that finishes on another thread hands
+its result back through `FrameThread`, which runs posted actions on the frame loop just before the
+next frame is composed:
 
 ```csharp
 public sealed class ModsView : IArlecchinoView
 {
-    private readonly UiDispatcher _dispatcher;
     private readonly ModsService _mods;
     private IReadOnlyList<Mod> _rows = [];
 
     public void Reload() => Task.Run(async () =>
     {
         var loaded = await _mods.LoadAsync();
-        _dispatcher.Post(() => _rows = loaded);
+        FrameThread.Post(() => _rows = loaded);
     });
 }
 ```

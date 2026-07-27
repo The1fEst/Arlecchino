@@ -11,10 +11,9 @@ namespace Arlecchino.Packages.Stores;
 
 public sealed class UpgradePlan : IArlecchinoStore
 {
-    private readonly UiDispatcher _dispatcher;
     private readonly List<string> _log = [];
 
-    public UpgradePlan(UiDispatcher dispatcher) => _dispatcher = dispatcher;
+
 
     public Atom<string> Target { get; } = new TrackedAtom<string>("");
 
@@ -119,11 +118,11 @@ public sealed class UpgradePlan : IArlecchinoStore
                 }
             }
 
-            _dispatcher.Post(() => Running.Value = false);
+            FrameThread.Post(() => Running.Value = false);
         }, token);
     }
 
-    private void Write(string line) => _dispatcher.Post(() =>
+    private void Write(string line) => FrameThread.Post(() =>
     {
         _log.Add(line);
         Written.Value = _log.Count;

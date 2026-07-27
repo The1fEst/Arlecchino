@@ -43,13 +43,13 @@ public static class HeadlessFrame
         var (width, height) = Size(size);
         provider.GetRequiredService<Surface>().SetFixedSize(width, height);
 
-        var dispatcher = provider.GetRequiredService<UiDispatcher>();
+
         var inventory = provider.GetRequiredService<Inventory>();
 
         inventory.Solution.Value = solution;
         inventory.Rescan();
 
-        Settle(inventory, dispatcher, view is "scanning");
+        Settle(inventory, view is "scanning");
 
         if (view is "package" or "upgrade")
         {
@@ -58,14 +58,14 @@ public static class HeadlessFrame
 
         provider.GetRequiredService<Navigator>().Apply(Route(view));
 
-        Play(provider, dispatcher, script);
+        Play(provider, script);
 
         provider.GetRequiredService<Screen>().DrawOnce();
 
         Console.WriteLine();
     }
 
-    private static void Settle(Inventory inventory, UiDispatcher dispatcher, bool midScan)
+    private static void Settle(Inventory inventory, bool midScan)
     {
         var deadline = midScan
             ? DateTime.UtcNow.AddMilliseconds(ScanningFrameDelay)
@@ -74,13 +74,13 @@ public static class HeadlessFrame
         while (inventory.Scan.IsLoading && DateTime.UtcNow < deadline)
         {
             Thread.Sleep(PollInterval);
-            dispatcher.RunPending(static _ => { });
+            FrameThread.RunPending(static _ => { });
         }
 
-        dispatcher.RunPending(static _ => { });
+        FrameThread.RunPending(static _ => { });
     }
 
-    private static void Play(IServiceProvider provider, UiDispatcher dispatcher, string script)
+    private static void Play(IServiceProvider provider, string script)
     {
         if (script.Length == 0)
         {
@@ -92,7 +92,7 @@ public static class HeadlessFrame
         foreach (var key in KeyScript.Parse(script))
         {
             router.ProcessKey(key);
-            dispatcher.RunPending(static _ => { });
+            FrameThread.RunPending(static _ => { });
         }
     }
 

@@ -41,7 +41,7 @@ public sealed class FrameThreadTests
 
         var failure = await Task.Run(() => Assert.Throws<InvalidOperationException>(() => value.Value = 1));
 
-        Assert.Contains("UiDispatcher.Post", failure.Message, StringComparison.Ordinal);
+        Assert.Contains("FrameThread.Post", failure.Message, StringComparison.Ordinal);
         Assert.Equal(0, value.Value);
     }
 
@@ -77,12 +77,12 @@ public sealed class FrameThreadTests
         var value = new LocalAtom<int>(0);
 
         using var drawing = FrameThread.Claim();
-        var posted = new Thread(() => app.Dispatcher.Post(() => value.Value = 7));
+        var posted = new Thread(() => FrameThread.Post(() => value.Value = 7));
 
         posted.Start();
         posted.Join();
 
-        app.Dispatcher.RunPending(static _ => { });
+        FrameThread.RunPending(static _ => { });
 
         Assert.Equal(7, value.Value);
     }

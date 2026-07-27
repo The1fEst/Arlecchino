@@ -37,8 +37,6 @@ public sealed class TestApplication : IDisposable
 
     public Repaint Repaint => _host.Repaint;
 
-    public UiDispatcher Dispatcher => _host.Dispatcher;
-
     public AtomHistory History => _host.History;
 
     public void Press(ConsoleKey key, bool shift = false, bool alt = false, bool control = false) =>

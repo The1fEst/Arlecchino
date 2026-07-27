@@ -1,1 +1,10 @@
 #nullable enable
+*REMOVED*Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(Arlecchino.UiDispatcher! dispatcher, T? initial = default(T?)) -> void
+*REMOVED*Arlecchino.Navigation.ViewLifetime.ViewLifetime(Arlecchino.UiDispatcher! dispatcher) -> void
+*REMOVED*Arlecchino.UiDispatcher
+*REMOVED*Arlecchino.UiDispatcher.HasPending.get -> bool
+*REMOVED*Arlecchino.UiDispatcher.Post(System.Action! action) -> void
+*REMOVED*Arlecchino.UiDispatcher.RunPending(System.Action<System.Exception!>! onError) -> void
+*REMOVED*Arlecchino.UiDispatcher.UiDispatcher(Arlecchino.Repaint! repaint) -> void
+Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(T? initial = default(T?)) -> void
+Arlecchino.Navigation.ViewLifetime.ViewLifetime() -> void

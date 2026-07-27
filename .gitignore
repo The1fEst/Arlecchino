@@ -8,4 +8,5 @@ coverage/
 *.user
 TestResults/
 inspect.json
+inspect.sarif
 tools/

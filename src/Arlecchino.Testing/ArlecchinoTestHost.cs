@@ -77,9 +77,6 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <summary>The repaint flag, for checking that something actually asked for a frame.</summary>
     public Repaint Repaint => _provider.GetRequiredService<Repaint>();
 
-    /// <summary>The dispatcher, for running posted work the way a real frame would.</summary>
-    public UiDispatcher Dispatcher => _provider.GetRequiredService<UiDispatcher>();
-
     /// <summary>Undo history. It is resolved as the host is built, so edits are recorded from the start.</summary>
     public AtomHistory History => _provider.GetRequiredService<AtomHistory>();
 
@@ -196,6 +193,10 @@ public sealed class ArlecchinoTestHost : IDisposable
         return "";
     }
 
-    /// <summary>Disposes the container and everything in it.</summary>
-    public void Dispose() => _provider.Dispose();
+    /// <summary>Disposes the container and everything in it, and drops work still posted to the frame.</summary>
+    public void Dispose()
+    {
+        FrameThread.DiscardPending();
+        _provider.Dispose();
+    }
 }

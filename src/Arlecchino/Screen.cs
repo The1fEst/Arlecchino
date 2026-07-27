@@ -38,7 +38,6 @@ public class Screen
     private readonly ILogger<Screen> _logger;
     private readonly IArlecchinoTerminal _terminal;
     private readonly Repaint _repaint;
-    private readonly UiDispatcher _dispatcher;
     private readonly Ticker _ticker;
     private readonly LogOverlay _log;
     private readonly PendingInput _pending;
@@ -56,7 +55,6 @@ public class Screen
     /// <param name="options">Settings gathered at startup.</param>
     /// <param name="terminal">Watched for a change of size.</param>
     /// <param name="repaint">Says when a frame is actually needed.</param>
-    /// <param name="dispatcher">Runs work posted from background threads, just before drawing.</param>
     /// <param name="ticker">Runs scheduled work between frames.</param>
     /// <param name="log">Drawn over the view while it is open.</param>
     /// <param name="pending">Input read since the last frame, routed on this thread before drawing.</param>
@@ -69,7 +67,6 @@ public class Screen
         ArlecchinoOptions options,
         IArlecchinoTerminal terminal,
         Repaint repaint,
-        UiDispatcher dispatcher,
         Ticker ticker,
         LogOverlay log,
         PendingInput pending,
@@ -86,7 +83,6 @@ public class Screen
         _strings = options.Strings;
         _terminal = terminal;
         _repaint = repaint;
-        _dispatcher = dispatcher;
         _ticker = ticker;
         _logger = logger;
     }
@@ -151,7 +147,7 @@ public class Screen
 
     private void Loop(CancellationToken stoppingToken)
     {
-        using var drawing = FrameThread.Claim();
+        using var drawing = FrameThread.Claim(_repaint.Request);
 
         var interval = TimeSpan.FromSeconds(1d / _options.TargetFramesPerSecond);
 
@@ -205,7 +201,7 @@ public class Screen
 
     private void DrawFrame()
     {
-        _dispatcher.RunPending(RunFailed);
+        FrameThread.RunPending(RunFailed);
 
         if (Interlocked.Exchange(ref _forgetFrame, 0) == 1)
         {
@@ -254,7 +250,7 @@ public class Screen
         {
             _logger.LogWarning(
                 "A collection shrank while it was being drawn at route {Route}; {Skipped} frame(s) were " +
-                "cut short. Change what a widget draws from the drawing thread — through UiDispatcher.Post " +
+                "cut short. Change what a widget draws from the drawing thread — through FrameThread.Post " +
                 "when the change comes from somewhere else.",
                 _navigator.CurrentRoute,
                 skipped);

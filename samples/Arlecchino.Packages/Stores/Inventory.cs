@@ -19,12 +19,10 @@ public enum Lens
 public sealed class Inventory : IArlecchinoStore
 {
     private readonly AsyncAtom<Catalog> _catalog;
-    private readonly UiDispatcher _dispatcher;
 
-    public Inventory(UiDispatcher dispatcher)
+    public Inventory()
     {
-        _dispatcher = dispatcher;
-        _catalog = new(dispatcher, Catalog.Empty);
+        _catalog = new(Catalog.Empty);
     }
 
     public AsyncAtom<Catalog> Scan => _catalog;
@@ -48,7 +46,7 @@ public sealed class Inventory : IArlecchinoStore
             return;
         }
 
-        var progress = new StepProgress(_dispatcher, Step);
+        var progress = new StepProgress(Step);
         _catalog.Load(token => PackageScanner.ScanAsync(Solution.Value, progress, token));
     }
 
@@ -146,15 +144,10 @@ public sealed class Inventory : IArlecchinoStore
 
     private sealed class StepProgress : IProgress<ScanStep>
     {
-        private readonly UiDispatcher _dispatcher;
         private readonly Atom<ScanStep> _step;
 
-        public StepProgress(UiDispatcher dispatcher, Atom<ScanStep> step)
-        {
-            _dispatcher = dispatcher;
-            _step = step;
-        }
+        public StepProgress(Atom<ScanStep> step) => _step = step;
 
-        public void Report(ScanStep value) => _dispatcher.Post(() => _step.Value = value);
+        public void Report(ScanStep value) => FrameThread.Post(() => _step.Value = value);
     }
 }
