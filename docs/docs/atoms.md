@@ -47,7 +47,8 @@ passed to the constructor.
 computed values, and including branches taken only sometimes:
 
 ```csharp
-public Computed<bool> CanImport { get; } = new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
+public Computed<bool> CanImport { get; } =
+    new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
 ```
 
 There is no dependency list to keep in sync: reading `Profile.Value` inside the lambda **is** the

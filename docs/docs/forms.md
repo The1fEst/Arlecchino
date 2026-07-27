@@ -17,12 +17,15 @@ _form = new Form(state, options)
 {
     Fields =
     [
-        Field.Text(() => Loc(LocString.Profile), settings.Profile, help: () => Loc(LocString.ProfileHelp)),
+        Field.Text(() => Loc(LocString.Profile), settings.Profile,
+            help: () => Loc(LocString.ProfileHelp)),
         Field.Secret(() => Loc(LocString.Passphrase), settings.Passphrase),
         Field.Choice(() => Loc(LocString.Theme), ["dark", "light"], settings.Theme),
         Field.Slider(() => Loc(LocString.Volume), settings.Volume, 0, 100),
-        Field.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen, value => value ? Yes : No),
-        Field.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings, pickFolder: true),
+        Field.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen,
+            value => value ? Yes : No),
+        Field.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings,
+            pickFolder: true),
         Field.Action(() => Loc(LocString.Apply), Apply, enabled: () => settings.IsComplete.Value),
     ],
 };

@@ -126,7 +126,10 @@ is how the file picker holds its list and its places sidebar.
 ```csharp
 public interface IArlecchinoViewFactory
 {
-    bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view);
+    bool TryCreate(
+        IServiceProvider services,
+        ViewRoute route,
+        [NotNullWhen(true)] out IArlecchinoView? view);
 }
 ```
 

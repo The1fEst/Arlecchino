@@ -43,7 +43,10 @@ public static class ViewKind
 
 public sealed class GeneratedViewFactory : IArlecchinoViewFactory
 {
-    public bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view) { ... }
+    public bool TryCreate(
+        IServiceProvider services,
+        ViewRoute route,
+        [NotNullWhen(true)] out IArlecchinoView? view) { ... }
 }
 
 public static class GeneratedViewRegistration
@@ -107,7 +110,8 @@ public static class GeneratedStoreRegistration
     public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)
     {
         builder.Services.AddSingleton(static services => new SettingsStore());
-        builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<ArlecchinoState>()));
+        builder.Services.AddScoped(static services =>
+            new DraftStore(services.GetRequiredService<ArlecchinoState>()));
         return builder;
     }
 }

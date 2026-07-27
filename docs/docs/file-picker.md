@@ -42,7 +42,12 @@ returns to `ViewRoute.None`.
 | `FileFilter` | Predicate over the full path; files that fail it are not listed |
 
 ```csharp
-_state.FilePicker = new FilePickerRequest("Pick a save", PickFolder: false, start, ViewKind.Default, Load)
+_state.FilePicker = new FilePickerRequest(
+    "Pick a save",
+    PickFolder: false,
+    start,
+    ViewKind.Default,
+    Load)
 {
     Places = [new FilePickerPlace("Game saves", savesPath, "▪")],
     FileFilter = static path => path.EndsWith(".sav", StringComparison.OrdinalIgnoreCase),

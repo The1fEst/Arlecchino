@@ -17,7 +17,11 @@ private readonly Spinner _spinner = new();
 new StatusBar
 {
     Left = [() => Loc(LocString.ItemCount, count), () => _spinner.Current],
-    Right = [() => $"{keymap.NextField} {Loc(LocString.Panes)}", () => $"{keymap.Cancel} {Loc(LocString.Back)}"],
+    Right =
+    [
+        () => $"{keymap.NextField} {Loc(LocString.Panes)}",
+        () => $"{keymap.Cancel} {Loc(LocString.Back)}",
+    ],
 }.Draw(region.Rows(region.Height - 1, 1));
 ```
 

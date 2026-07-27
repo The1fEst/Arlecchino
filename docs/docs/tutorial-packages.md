@@ -99,7 +99,12 @@ places it is used, what is wrong with it, and what version is available:
 public enum PackageHealth { Ok, Outdated, Drift, Deprecated, Vulnerable }
 
 public sealed record PackageUse(
-    string Id, string Project, string Framework, string Requested, string Resolved, bool Transitive);
+    string Id,
+    string Project,
+    string Framework,
+    string Requested,
+    string Resolved,
+    bool Transitive);
 
 public sealed record Advisory(string Severity, string Url);
 ```
@@ -141,7 +146,12 @@ to grow a second `switch` over the same data.
 public sealed class Catalog
 {
     public static readonly Catalog Empty = new()
-        { Solution = "", Packages = [], Projects = [], Notes = [] };
+    {
+        Solution = "",
+        Packages = [],
+        Projects = [],
+        Notes = [],
+    };
 
     public required string Solution { get; init; }
     public required IReadOnlyList<PackageRow> Packages { get; init; }
@@ -185,7 +195,10 @@ public static async Task<DotnetResult> RunAsync(
 
     await process.WaitForExitAsync(token).ConfigureAwait(false);
 
-    return new(process.ExitCode, await output.ConfigureAwait(false), await error.ConfigureAwait(false));
+    return new(
+        process.ExitCode,
+        await output.ConfigureAwait(false),
+        await error.ConfigureAwait(false));
 }
 ```
 
@@ -201,7 +214,9 @@ The scanner runs four passes and reports which one it is on:
 public sealed record ScanStep(int Done, int Total, string Title);
 
 public static async Task<Catalog> ScanAsync(
-    string solution, IProgress<ScanStep> progress, CancellationToken token)
+    string solution,
+    IProgress<ScanStep> progress,
+    CancellationToken token)
 ```
 
 `IProgress<T>` rather than an event, because the caller is going to have to get the value back onto the
@@ -350,9 +365,13 @@ _table = new Table<PackageRow>(options.Keymap)
             Header = static () => "Resolved",
             Cell = static row => row.Resolved(),
             Width = 24,
-            Sort = static (first, second) => VersionOrder.Compare(first.Highest(), second.Highest()),
+            Sort = static (first, second) =>
+                VersionOrder.Compare(first.Highest(), second.Highest()),
         },
-        new() { Header = static () => "Latest", Cell = static row => row.Latest ?? "—", Width = 10 },
+        new()
+        {
+            Header = static () => "Latest", Cell = static row => row.Latest ?? "—", Width = 10,
+        },
         new()
         {
             Header = static () => "Used by",
@@ -503,7 +522,10 @@ None of this goes in `Handle`:
 ```csharp
 public IReadOnlyList<ViewCommand> Commands() =>
 [
-    ViewCommand.Navigating(ConsoleKey.Enter, static () => "details", () => Open(_table.SelectedRow)),
+    ViewCommand.Navigating(
+        ConsoleKey.Enter,
+        static () => "details",
+        () => Open(_table.SelectedRow)),
     ViewCommand.For(ConsoleKey.R, static () => "rescan", _inventory.Rescan),
     ViewCommand.For(ConsoleKey.F, static () => "filter", Filter),
     ViewCommand.For(ConsoleKey.T, static () => "transitive", Transitives),
@@ -588,7 +610,8 @@ store — and this one **is** tracked, because the user authors it:
 public sealed class UpgradePlan : IArlecchinoStore
 {
     public Atom<string> Target { get; } = new TrackedAtom<string>("");
-    public Atom<IReadOnlyList<string>> Projects { get; } = new TrackedAtom<IReadOnlyList<string>>([]);
+    public Atom<IReadOnlyList<string>> Projects { get; } =
+        new TrackedAtom<IReadOnlyList<string>>([]);
     public Atom<bool> DryRun { get; } = new TrackedAtom<bool>(true);
 
     public Atom<bool> Running { get; } = new LocalAtom<bool>(false);
@@ -614,7 +637,8 @@ _form = new Form(state, options)
             static () => "Space marks a project, Enter confirms"),
         Field.Toggle(static () => "Dry run", plan.DryRun, static value => value ? "yes" : "no",
             static () => "yes prints the commands, no runs dotnet add package"),
-        Field.Action(static () => "Apply", Apply, () => !plan.Running.Value && plan.Projects.Value.Count > 0),
+        Field.Action(static () => "Apply", Apply,
+            () => !plan.Running.Value && plan.Projects.Value.Count > 0),
     ],
 };
 ```

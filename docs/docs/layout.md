@@ -124,7 +124,11 @@ public sealed class PanesView : IArlecchinoView
     {
         _surface = surface;
 
-        var files = new ListBox<string>(options.Keymap) { Render = file => $" {file}", Items = Files() };
+        var files = new ListBox<string>(options.Keymap)
+        {
+            Render = file => $" {file}",
+            Items = Files(),
+        };
         var editor = new TextView(options.Keymap) { Text = Readme() };
         var log = new ListBox<string>(options.Keymap) { Render = line => line, Items = Log() };
         var status = new StatusBar { Left = [() => "ready"], Right = [() => "Esc back"] };
