@@ -75,15 +75,20 @@ jobs:
           gh release create "$GITHUB_REF_NAME" --title "$VERSION" --notes-file notes.md $prerelease \
             artifacts/packages/*.nupkg
 
+      # The packages are already on NuGet by now, so nothing here is worth failing the release over:
+      # the site regenerates on a schedule anyway, and a red run would say the release went wrong.
       - name: Ask the documentation site to regenerate its API reference
         env:
           GH_TOKEN: ${{ secrets.DOCS_DISPATCH_TOKEN }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "DOCS_DISPATCH_TOKEN is not set; the site will pick this release up on its next scheduled run."
+            echo "::warning::DOCS_DISPATCH_TOKEN is not set; the site picks this release up on its next scheduled run."
             exit 0
           fi
 
-          gh api repos/The1fEst/Arlecchino.Docs/dispatches --method POST --input - <<EOF
+          if ! gh api repos/The1fEst/Arlecchino.Docs/dispatches --method POST --input - <<EOF
           {"event_type":"arlecchino-released","client_payload":{"ref":"$GITHUB_REF_NAME"}}
           EOF
+          then
+            echo "::warning::The documentation site could not be reached; it picks this release up on its next scheduled run."
+          fi
