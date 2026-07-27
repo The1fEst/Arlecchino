@@ -118,7 +118,7 @@ public sealed class UpgradePlan : IArlecchinoStore
                 }
             }
 
-            FrameThread.Post(() => Running.Value = false);
+            Running.Post(false);
         }, token);
     }
 

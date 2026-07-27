@@ -53,6 +53,19 @@ public abstract class Atom<T> : IReadableAtom<T>
         set => Write(value, recordHistory: true);
     }
 
+    /// <summary>
+    /// Hands a value to the drawing thread from wherever you are: it is written just before the next
+    /// frame, in the order it was posted, and everything a plain write does — notifying, asking for a
+    /// repaint, recording an undo step — happens then. This is what background work calls instead of
+    /// <see cref="Value"/>, which refuses a write from another thread.
+    ///
+    /// The write has not happened when this returns, so reading the atom back here still gives the old
+    /// value. Several atoms that have to change together belong in one <c>FrameThread.Post</c> instead,
+    /// so that no frame falls between them.
+    /// </summary>
+    /// <param name="value">The value to write on the drawing thread.</param>
+    public void Post(T value) => FrameThread.Post(() => Value = value);
+
     /// <summary>Calls back whenever the value changes.</summary>
     /// <param name="listener">What to run on change.</param>
     /// <returns>Dispose it to stop listening.</returns>

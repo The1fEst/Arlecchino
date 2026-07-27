@@ -9,6 +9,25 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.1.0
+
+### Added
+
+- **`atom.Post(value)`** writes an atom from a background thread without a lambda around it:
+  `_step.Post(value)` where the whole of `FrameThread.Post(() => _step.Value = value)` used to be
+  written out. The value is written just before the next frame, in the order it was posted, and
+  everything a plain write does — notifying, asking for a repaint, recording an undo step — happens
+  then, so a posted edit is undone like any other.
+
+  The `Value` setter still refuses a write from another thread rather than quietly posting it. A write
+  that lands later is not a write you can read back, and an atom that hid that would make
+  `atom.Value = loaded;` followed by reading `atom.Value` return the old value with nothing to say so.
+  `Post` is named for what it does.
+
+  Atoms that have to change together still belong in one `FrameThread.Post` with a block, so that no
+  frame falls between them — which is what `AsyncAtom<T>` does internally with its value and its
+  status, and what the packages sample does with its log and its line count.
+
 ## 2.0.0
 
 The three breaking changes `1.x` announced, delivered together.

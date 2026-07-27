@@ -148,6 +148,6 @@ public sealed class Inventory : IArlecchinoStore
 
         public StepProgress(Atom<ScanStep> step) => _step = step;
 
-        public void Report(ScanStep value) => FrameThread.Post(() => _step.Value = value);
+        public void Report(ScanStep value) => _step.Post(value);
     }
 }

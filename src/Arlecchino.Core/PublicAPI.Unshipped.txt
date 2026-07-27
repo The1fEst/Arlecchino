@@ -1,1 +1,2 @@
 #nullable enable
+Arlecchino.Atoms.Atom<T>.Post(T value) -> void
