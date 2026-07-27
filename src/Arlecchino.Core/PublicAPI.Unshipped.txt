@@ -1,10 +1,1 @@
 #nullable enable
-Arlecchino.FrameThread
-static Arlecchino.FrameThread.Claim(System.Action? wake = null) -> System.IDisposable!
-static Arlecchino.FrameThread.DiscardPending() -> void
-static Arlecchino.FrameThread.HasPending.get -> bool
-static Arlecchino.FrameThread.IsCurrent.get -> bool
-static Arlecchino.FrameThread.Post(System.Action! action) -> void
-static Arlecchino.FrameThread.RunPending(System.Action<System.Exception!>! onError) -> void
-static Arlecchino.FrameThread.Verify(string! member) -> void
-static Arlecchino.Rendering.ThemePalette.Basic.get -> Arlecchino.Rendering.ThemePalette!

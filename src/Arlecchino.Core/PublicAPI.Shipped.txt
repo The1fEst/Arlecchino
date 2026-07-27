@@ -33,6 +33,7 @@ Arlecchino.Atoms.LocalAtom<T>
 Arlecchino.Atoms.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.TrackedAtom<T>
 Arlecchino.Atoms.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal
 Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
 Arlecchino.IArlecchinoTerminal.DisableMouse() -> void
@@ -292,6 +293,13 @@ override Arlecchino.Rendering.Rgb.ToString() -> string!
 override Arlecchino.Rendering.RgbTermColor.ToString() -> string!
 override Arlecchino.Rendering.SurfaceRegion.GetHashCode() -> int
 override Arlecchino.Rendering.TermColor.ToString() -> string!
+static Arlecchino.FrameThread.Claim(System.Action? wake = null) -> System.IDisposable!
+static Arlecchino.FrameThread.DiscardPending() -> void
+static Arlecchino.FrameThread.HasPending.get -> bool
+static Arlecchino.FrameThread.IsCurrent.get -> bool
+static Arlecchino.FrameThread.Post(System.Action! action) -> void
+static Arlecchino.FrameThread.RunPending(System.Action<System.Exception!>! onError) -> void
+static Arlecchino.FrameThread.Verify(string! member) -> void
 static Arlecchino.Input.KeyBinding.operator !=(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyBinding.operator ==(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
@@ -340,6 +348,7 @@ static Arlecchino.Rendering.Theme.Selected.get -> Arlecchino.Rendering.TermColor
 static Arlecchino.Rendering.Theme.TableHeader.get -> Arlecchino.Rendering.TermColor!
 static Arlecchino.Rendering.Theme.Warning.get -> Arlecchino.Rendering.TermColor!
 static Arlecchino.Rendering.ThemePalette.Arlecchino.get -> Arlecchino.Rendering.ThemePalette!
+static Arlecchino.Rendering.ThemePalette.Basic.get -> Arlecchino.Rendering.ThemePalette!
 ~override Arlecchino.Input.KeyBinding.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.ToString() -> string

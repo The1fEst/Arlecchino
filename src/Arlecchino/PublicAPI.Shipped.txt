@@ -1,6 +1,6 @@
 #nullable enable
 Arlecchino.Atoms.AsyncAtom<T>
-Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(Arlecchino.UiDispatcher! dispatcher, T? initial = default(T?)) -> void
+Arlecchino.Atoms.AsyncAtom<T>.AsyncAtom(T? initial = default(T?)) -> void
 Arlecchino.Atoms.AsyncAtom<T>.Cancel() -> void
 Arlecchino.Atoms.AsyncAtom<T>.Error.get -> Arlecchino.Atoms.IReadableAtom<System.Exception?>!
 Arlecchino.Atoms.AsyncAtom<T>.IsLoading.get -> bool
@@ -130,7 +130,7 @@ Arlecchino.Forms.Field.Value.get -> System.Func<string!>!
 Arlecchino.Forms.Field.Value.init -> void
 Arlecchino.Forms.Form
 Arlecchino.Forms.Form.Current.get -> Arlecchino.Forms.Field?
-Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Forms.Form.Fields.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Forms.Field!>!
 Arlecchino.Forms.Form.Fields.init -> void
 Arlecchino.Forms.Form.Form(Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
@@ -139,7 +139,6 @@ Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchi
 Arlecchino.Forms.Form.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Forms.Form.IsFocused.get -> bool
 Arlecchino.Forms.Form.IsFocused.set -> void
-Arlecchino.Forms.Form.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Forms.Form.Selected.get -> int
 Arlecchino.Hosting.ArlecchinoBuilder
 Arlecchino.Hosting.ArlecchinoBuilder.AddCommand<TCommand>() -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -713,7 +712,7 @@ Arlecchino.Navigation.ViewLifetime.Dispose() -> void
 Arlecchino.Navigation.ViewLifetime.Loading<T>(T? initial = default(T?)) -> Arlecchino.Atoms.AsyncAtom<T>!
 Arlecchino.Navigation.ViewLifetime.OnClose(System.Action! action) -> void
 Arlecchino.Navigation.ViewLifetime.Track<T>(T resource) -> T
-Arlecchino.Navigation.ViewLifetime.ViewLifetime(Arlecchino.UiDispatcher! dispatcher) -> void
+Arlecchino.Navigation.ViewLifetime.ViewLifetime() -> void
 Arlecchino.Navigation.ViewResolver
 Arlecchino.Navigation.ViewResolver.Create(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Navigation.ActiveView!
 Arlecchino.Navigation.ViewResolver.ViewResolver(System.Collections.Generic.IEnumerable<Arlecchino.Navigation.IArlecchinoViewFactory!>! factories, Microsoft.Extensions.DependencyInjection.IServiceScopeFactory! scopes) -> void
@@ -796,17 +795,11 @@ Arlecchino.State.FilePickerRequest.ReturnView.get -> Arlecchino.Navigation.ViewR
 Arlecchino.State.FilePickerRequest.ReturnView.init -> void
 Arlecchino.State.FilePickerRequest.Title.get -> string!
 Arlecchino.State.FilePickerRequest.Title.init -> void
-Arlecchino.UiDispatcher
-Arlecchino.UiDispatcher.HasPending.get -> bool
-Arlecchino.UiDispatcher.Post(System.Action! action) -> void
-Arlecchino.UiDispatcher.RunPending(System.Action<System.Exception!>! onError) -> void
-Arlecchino.UiDispatcher.UiDispatcher(Arlecchino.Repaint! repaint) -> void
 Arlecchino.Widgets.IArlecchinoInteractiveWidget
 Arlecchino.Widgets.IArlecchinoWidget
-Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
-Arlecchino.Widgets.IArlecchinoWidget.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ListBox<T>
-Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ListBox<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ListBox<T>.IsFocused.get -> bool
@@ -818,7 +811,6 @@ Arlecchino.Widgets.ListBox<T>.Items.set -> void
 Arlecchino.Widgets.ListBox<T>.ListBox(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.ListBox<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
 Arlecchino.Widgets.ListBox<T>.OnActivate.init -> void
-Arlecchino.Widgets.ListBox<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ListBox<T>.Render.get -> System.Func<T, string!>!
 Arlecchino.Widgets.ListBox<T>.Render.init -> void
 Arlecchino.Widgets.ListBox<T>.Selected.get -> int
@@ -827,13 +819,12 @@ Arlecchino.Widgets.ListBox<T>.SelectedItem.get -> T?
 Arlecchino.Widgets.ProgressBar
 Arlecchino.Widgets.ProgressBar.Caption.get -> System.Func<decimal, string!>?
 Arlecchino.Widgets.ProgressBar.Caption.init -> void
-Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ProgressBar.Fraction.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.get -> decimal
 Arlecchino.Widgets.ProgressBar.Maximum.init -> void
 Arlecchino.Widgets.ProgressBar.Minimum.get -> decimal
 Arlecchino.Widgets.ProgressBar.Minimum.init -> void
-Arlecchino.Widgets.ProgressBar.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ProgressBar.ProgressBar() -> void
 Arlecchino.Widgets.ProgressBar.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
 Arlecchino.Widgets.ProgressBar.Style.init -> void
@@ -845,14 +836,13 @@ Arlecchino.Widgets.ScrollPane.Content.get -> System.Action<Arlecchino.Rendering.
 Arlecchino.Widgets.ScrollPane.Content.init -> void
 Arlecchino.Widgets.ScrollPane.ContentHeight.get -> System.Func<int>!
 Arlecchino.Widgets.ScrollPane.ContentHeight.init -> void
-Arlecchino.Widgets.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.ScrollPane.IsFocused.get -> bool
 Arlecchino.Widgets.ScrollPane.IsFocused.set -> void
 Arlecchino.Widgets.ScrollPane.Offset.get -> int
 Arlecchino.Widgets.ScrollPane.Offset.set -> void
-Arlecchino.Widgets.ScrollPane.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.ScrollPane.ScrollPane(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.ScrollPane.ShowScrollBar.get -> bool
 Arlecchino.Widgets.ScrollPane.ShowScrollBar.set -> void
@@ -870,18 +860,16 @@ Arlecchino.Widgets.ScrollWindow.ScrollWindow(int First, int Count) -> void
 Arlecchino.Widgets.Spinner
 Arlecchino.Widgets.Spinner.Advance() -> void
 Arlecchino.Widgets.Spinner.Current.get -> string!
-Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Spinner.Frames.get -> string![]!
 Arlecchino.Widgets.Spinner.Frames.init -> void
-Arlecchino.Widgets.Spinner.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Spinner.Spinner() -> void
 Arlecchino.Widgets.Spinner.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
 Arlecchino.Widgets.Spinner.Style.init -> void
 Arlecchino.Widgets.StatusBar
-Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.StatusBar.Left.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.StatusBar.Left.init -> void
-Arlecchino.Widgets.StatusBar.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.StatusBar.Right.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.StatusBar.Right.init -> void
 Arlecchino.Widgets.StatusBar.StatusBar() -> void
@@ -890,7 +878,7 @@ Arlecchino.Widgets.StatusBar.Style.init -> void
 Arlecchino.Widgets.Table<T>
 Arlecchino.Widgets.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TableColumn<T>!>!
 Arlecchino.Widgets.Table<T>.Columns.init -> void
-Arlecchino.Widgets.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Table<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Table<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Table<T>.IsFocused.get -> bool
@@ -899,7 +887,6 @@ Arlecchino.Widgets.Table<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering
 Arlecchino.Widgets.Table<T>.ItemStyle.init -> void
 Arlecchino.Widgets.Table<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
 Arlecchino.Widgets.Table<T>.OnActivate.init -> void
-Arlecchino.Widgets.Table<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Table<T>.Rows.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Widgets.Table<T>.Rows.set -> void
 Arlecchino.Widgets.Table<T>.Selected.get -> int
@@ -922,21 +909,20 @@ Arlecchino.Widgets.TableColumn<T>.TableColumn() -> void
 Arlecchino.Widgets.TableColumn<T>.Width.get -> int
 Arlecchino.Widgets.TableColumn<T>.Width.init -> void
 Arlecchino.Widgets.Tabs
-Arlecchino.Widgets.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Tabs.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tabs.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tabs.IsFocused.get -> bool
 Arlecchino.Widgets.Tabs.IsFocused.set -> void
 Arlecchino.Widgets.Tabs.OnSelected.get -> System.Action<int>?
 Arlecchino.Widgets.Tabs.OnSelected.init -> void
-Arlecchino.Widgets.Tabs.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Tabs.Select(int index) -> void
 Arlecchino.Widgets.Tabs.Selected.get -> int
 Arlecchino.Widgets.Tabs.Tabs(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.Tabs.Titles.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.Tabs.Titles.init -> void
 Arlecchino.Widgets.TextView
-Arlecchino.Widgets.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.TextView.IsFocused.get -> bool
@@ -944,7 +930,6 @@ Arlecchino.Widgets.TextView.IsFocused.set -> void
 Arlecchino.Widgets.TextView.LineCount.get -> int
 Arlecchino.Widgets.TextView.Offset.get -> int
 Arlecchino.Widgets.TextView.Offset.set -> void
-Arlecchino.Widgets.TextView.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.TextView.ShowScrollBar.get -> bool
 Arlecchino.Widgets.TextView.ShowScrollBar.init -> void
 Arlecchino.Widgets.TextView.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
@@ -954,7 +939,7 @@ Arlecchino.Widgets.TextView.Text.set -> void
 Arlecchino.Widgets.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.Tree<T>
 Arlecchino.Widgets.Tree<T>.CollapseAll() -> void
-Arlecchino.Widgets.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Widgets.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Tree<T>.ExpandAll() -> void
 Arlecchino.Widgets.Tree<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Tree<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
@@ -966,7 +951,6 @@ Arlecchino.Widgets.Tree<T>.OnActivate.get -> System.Func<Arlecchino.Widgets.Tree
 Arlecchino.Widgets.Tree<T>.OnActivate.init -> void
 Arlecchino.Widgets.Tree<T>.OnExpanding.get -> System.Action<Arlecchino.Widgets.TreeNode<T>!>?
 Arlecchino.Widgets.Tree<T>.OnExpanding.init -> void
-Arlecchino.Widgets.Tree<T>.Place(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Tree<T>.Render.get -> System.Func<T, string!>!
 Arlecchino.Widgets.Tree<T>.Render.init -> void
 Arlecchino.Widgets.Tree<T>.Roots.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TreeNode<T>!>!

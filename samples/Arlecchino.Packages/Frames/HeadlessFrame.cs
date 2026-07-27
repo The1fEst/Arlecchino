@@ -35,7 +35,6 @@ public static class HeadlessFrame
             .AddGeneratedViews()
             .AddGeneratedStores()
             .AddGeneratedCommands()
-            .UseTheme(ThemePalette.Arlecchino)
             .WithoutHostedService();
 
         using var provider = services.BuildServiceProvider();

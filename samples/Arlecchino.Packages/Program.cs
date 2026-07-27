@@ -2,7 +2,6 @@ using Arlecchino.Hosting;
 using Arlecchino.Packages.Frames;
 using Arlecchino.Packages.Stores;
 using Arlecchino.Packages.Views;
-using Arlecchino.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -33,7 +32,6 @@ builder.Services
     .AddGeneratedStores()
     .AddGeneratedCommands()
     .UseMouse()
-    .UseTheme(ThemePalette.Arlecchino)
     .StartAt(ViewKind.Inventory);
 
 var host = builder.Build();

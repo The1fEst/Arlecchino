@@ -1,4 +1,4 @@
-[Getting started](getting-started.md) · [Views and navigation](views-and-navigation.md) · [Source generator](source-generator.md) · [Rendering](rendering.md) · [Theming](theming.md) · [Commands and input](commands-and-input.md) · [Modals and state](modals-and-state.md) · [File picker](file-picker.md) · [Hosting and options](hosting-and-options.md) · [State and forms](state-and-forms.md) · [Widgets](widgets.md) · [Localization](localization.md) · [Packages and building](packages-and-building.md)
+[Getting started](getting-started.md) · [Views and navigation](views-and-navigation.md) · [Source generator](source-generator.md) · [Rendering](rendering.md) · [Theming](theming.md) · [Commands and input](commands-and-input.md) · [Modals and state](modals-and-state.md) · [File picker](file-picker.md) · [Hosting and options](hosting-and-options.md) · [State and forms](state-and-forms.md) · [Widgets](widgets.md) · [Localization](localization.md) · [Packages and building](packages-and-building.md) · [Migrating to 2.0](migrating-to-2.0.md)
 
 # Arlecchino documentation
 
@@ -22,6 +22,7 @@ every part of the machinery is a service in `Microsoft.Extensions.DependencyInje
 | [Widgets](widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
 | [Packages and building](packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning, testing an application, CI and benchmarks |
+| [Migrating to 2.0](migrating-to-2.0.md) | What 2.0 changed and the edits an application written against `1.x` needs |
 
 ## Where things live
 

@@ -158,6 +158,7 @@ Full documentation lives in [docs](docs/README.md).
 | [Widgets](docs/widgets.md) | Lists, trees, sortable tables, tabs, progress, spinner, status bar |
 | [Localization](docs/localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
 | [Packages and building](docs/packages-and-building.md) | What ships in which package, `pack.cmd`, the local feed, versioning, testing an application, CI and benchmarks |
+| [Migrating to 2.0](docs/migrating-to-2.0.md) | What 2.0 changed and the edits an application written against `1.x` needs |
 
 What changed between versions is in the [changelog](CHANGELOG.md).
 

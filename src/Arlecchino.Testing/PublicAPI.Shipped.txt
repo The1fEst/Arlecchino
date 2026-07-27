@@ -4,7 +4,6 @@ Arlecchino.Testing.ArlecchinoTestHost.Advance(System.TimeSpan amount) -> void
 Arlecchino.Testing.ArlecchinoTestHost.ArlecchinoTestHost(int width = 80, int height = 24, System.Action<Arlecchino.Hosting.ArlecchinoBuilder!>? configure = null) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Clock.get -> Arlecchino.Testing.TestClock!
-Arlecchino.Testing.ArlecchinoTestHost.Dispatcher.get -> Arlecchino.UiDispatcher!
 Arlecchino.Testing.ArlecchinoTestHost.Dispose() -> void
 Arlecchino.Testing.ArlecchinoTestHost.DrainInput() -> void
 Arlecchino.Testing.ArlecchinoTestHost.Frame() -> string!

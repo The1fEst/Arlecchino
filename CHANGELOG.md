@@ -8,6 +8,51 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
 the public API means a new major. See [Versioning](docs/packages-and-building.md).
 
+## 2.0.0
+
+The three breaking changes `1.x` announced, delivered together. [Migrating to
+2.0](docs/migrating-to-2.0.md) is the edit list; nothing here needs more than a rename, a delete or a
+decision about colour.
+
+### Changed
+
+- **`IArlecchinoWidget.Place` is now `Draw`.** The interface has one member, `SurfaceRegion
+  Draw(SurfaceRegion region)`: it paints the widget and answers what is left of the region underneath,
+  so a view stacks things without counting rows. Rename `Place` to `Draw` at both ends — the
+  implementation and every call.
+- **The framework's own colours are the default palette.** `new ThemePalette()` is now crimson titles,
+  bone text, ash borders and an ink cursor row rather than the terminal's plain sixteen, so an
+  application that never called `UseTheme` looks like Arlecchino. `ThemePalette.Basic` is exactly the
+  old defaults, and `UseTheme(ThemePalette.Basic)` is the whole of the way back.
+  `ThemePalette.Arlecchino` still exists and still means the same thing; it is only redundant now.
+- `AsyncAtom<T>` and `ViewLifetime` no longer take a dispatcher: `new AsyncAtom<T>(initial)` and
+  `new ViewLifetime()`.
+
+### Removed
+
+- **`UiDispatcher`.** The queue it held moved into `FrameThread`, the type that already knew which
+  thread draws, so handing a result back from background work is `FrameThread.Post(...)` with nothing
+  injected. `RunPending` and `HasPending` are statics there too. Everything else about it is
+  unchanged: posting is safe from any thread, runs in order just before the next frame, asks for that
+  frame by itself, and reports an action that threw without dropping the rest.
+- **The obsolete `void IArlecchinoWidget.Draw`,** along with the `ARL0001` diagnostic id that existed
+  to let its deprecation be silenced on its own. A `#pragma warning disable ARL0001` left behind no
+  longer disables anything.
+
+### Added
+
+- `FrameThread.DiscardPending()` drops work that was posted and can no longer run, which is what
+  giving up the last claim on the drawing thread does by itself and what `ArlecchinoTestHost` does as
+  it is disposed — one test's leftovers never run inside the next.
+- `ThemePalette.Basic`, the sixteen plain colours that were the default before this release.
+
+### Fixed
+
+- Posting work while nothing is drawing no longer runs it inline. `FrameThread.Post` ran the action on
+  the calling thread when no frame loop had claimed one, so an action that posted itself — the
+  ordinary way to say "again next frame" — recursed until the stack ended instead of queueing. It
+  always queues now.
+
 ## 1.3.0
 
 ### Fixed

@@ -1,4 +1,4 @@
-[Home](README.md) · [Getting started](getting-started.md) · [Views and navigation](views-and-navigation.md) · [Source generator](source-generator.md) · [Rendering](rendering.md) · [Theming](theming.md) · [Commands and input](commands-and-input.md) · [Modals and state](modals-and-state.md) · [File picker](file-picker.md) · [Hosting and options](hosting-and-options.md) · [State and forms](state-and-forms.md) · [Widgets](widgets.md) · [Localization](localization.md)
+[Home](README.md) · [Getting started](getting-started.md) · [Views and navigation](views-and-navigation.md) · [Source generator](source-generator.md) · [Rendering](rendering.md) · [Theming](theming.md) · [Commands and input](commands-and-input.md) · [Modals and state](modals-and-state.md) · [File picker](file-picker.md) · [Hosting and options](hosting-and-options.md) · [State and forms](state-and-forms.md) · [Widgets](widgets.md) · [Localization](localization.md) · [Migrating to 2.0](migrating-to-2.0.md)
 
 # Packages and building
 
@@ -59,7 +59,7 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `1.3.0` for the whole repository. Because it does not change between builds, NuGet may
+The version is `2.0.0` for the whole repository. Because it does not change between builds, NuGet may
 serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
 building against stale code.
 
@@ -117,7 +117,7 @@ level.
 | `Styles()` | The ANSI style sequences of the frame, for asserting on colour |
 | `Advance(amount)` | Moves the clock and runs whatever the [ticker](hosting-and-options.md) had due — a five-second wait costs nothing |
 | `Clock` | The `TimeProvider` behind that, for asserting on times |
-| `State`, `Navigator`, `Surface`, `Options`, `History`, `Dispatcher`, `Services` | The wired services |
+| `State`, `Navigator`, `Surface`, `Options`, `History`, `Repaint`, `Services` | The wired services |
 
 `FrameText` is the helper behind those: `WithoutStyles`, `Lines`, `StylesIn`, `CursorJumpsIn` and
 `BoxWidth` for checking that a box is rectangular.
@@ -142,7 +142,7 @@ either platform without a console anywhere.
 
 ## What ends up in the package
 
-`Arlecchino.1.3.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+`Arlecchino.2.0.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
 page. The two libraries are the same source: `net8.0` is there because that is the long-term support
 release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks
@@ -241,18 +241,21 @@ What has not changed is how a break is delivered when one is due: no obsolete sh
 overloads left behind. The [changelog](../CHANGELOG.md) says what moved and the old shape goes in the
 same release.
 
-### What 2.0 is holding
+### What 2.0 broke
 
-Breaking changes are collected rather than trickled out, so the list is short and known in advance:
+Breaking changes are collected rather than trickled out, which is why `2.0.0` carries three of them
+and the `1.x` line carried none:
 
-| Change | Why it waits |
+| Change | Why |
 |---|---|
-| `IArlecchinoWidget.Draw` goes, and `Place` takes its name | Two names for one call is the price of not breaking 1.x — see [Widgets](widgets.md) |
-| [`ThemePalette.Arlecchino`](theming.md) becomes the default palette | A framework that looks like itself out of the box, but changing every existing screen's colours is a break, however visual |
+| `IArlecchinoWidget.Place` took the name `Draw`, and the old `void Draw` went | Two names for one call was the price of not breaking `1.x` — see [Widgets](widgets.md) |
+| `UiDispatcher` went; posting is `FrameThread.Post` | One type already owned the drawing thread; the queue belongs with it — see [Rendering](rendering.md) |
+| [`ThemePalette.Arlecchino`](theming.md) became the default palette | A framework that looks like itself out of the box, with `ThemePalette.Basic` as the way back |
 
-Both are already written and shipped in `1.x`; 2.0 only removes the old shape and moves the default.
-Anything an application does today with `Place` and `UseTheme(ThemePalette.Arlecchino)` survives that
-release untouched.
+Each one was announced in `1.x` and each has an edit an application can make mechanically:
+[Migrating to 2.0](migrating-to-2.0.md) is the list.
+
+The next collection starts empty. Nothing is deprecated in `2.0`.
 
 `Directory.Build.props` holds the version for local builds. A release takes it from the tag instead
 (`v0.2.0` → `0.2.0`), so publishing is a matter of tagging: nothing has to be edited in the
@@ -290,11 +293,12 @@ out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net8
 cannot drift apart, and over the previous release once there is one to compare with.
 
 ```xml
-<PackageValidationBaselineVersion Condition="'$(Version)' != '1.0.0'">1.0.0</PackageValidationBaselineVersion>
+<PackageValidationBaselineVersion Condition="'$(Version)' != '2.0.0'">2.0.0</PackageValidationBaselineVersion>
 ```
 
-The condition is doing the bookkeeping: `1.0.0` has nothing to be compared with, and every version
-after it is compared with `1.0.0` automatically. Packing a `1.0.1` whose baseline is missing fails
+The condition is doing the bookkeeping: the release that opens a major line has nothing it may be
+compared with, since a major is where the surface is allowed to move, and every version after it is
+compared with that release automatically. Packing a `2.0.1` whose baseline is missing fails
 with `NU1102` rather than passing quietly, which is the behaviour worth having — a validation that
 silently does nothing is worse than none.
 

@@ -37,7 +37,6 @@ builder.Services
     .AddGeneratedViews()
     .AddGeneratedStores()
     .AddGeneratedCommands()
-    .UseTheme(ThemePalette.Arlecchino)
     .UseLatinOnlyInput()
     .UseMouse()
     .StartAt(ViewKind.Default);
@@ -85,7 +84,6 @@ static void Frame(string view, string size)
         .AddGeneratedStores()
         .AddCommand<AboutCommand>()
         .AddCommand<QuitCommand>()
-        .UseTheme(ThemePalette.Arlecchino)
         .WithoutHostedService();
 
     services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
