@@ -16,7 +16,8 @@ public TrackedAtom<string> Server { get; } = new("127.0.0.1");
 
 protected override async Task LoadAsync(CancellationToken token)
 {
-var saved = await Settings.ReadAsync(token);
+await using var fs = new FileStream(SettingsPath, FileMode.Open, FileAccess.Read);
+var saved = await JsonSerializer.DeserializeAsync<Saved>(fs, cancellationToken: token);
 
 Server.Post(saved.Server);
 }
@@ -24,7 +25,7 @@ Server.Post(saved.Server);
 
 ```
 
-The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than a screen that says it is loading. A view draws from [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status), which is an atom and so redraws by itself; code that is not a view — a worker, a command that must not run early — awaits [`ArlecchinoAsyncStore.Ready`](../arlecchino.atoms/ArlecchinoAsyncStore.md#ready).
+Reading the file is the application's own code — the framework has nothing to do with disks, formats or paths. The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than a screen that says it is loading. A view draws from [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status), which is an atom and so redraws by itself; code that is not a view — a worker, a command that must not run early — awaits [`ArlecchinoAsyncStore.Ready`](../arlecchino.atoms/ArlecchinoAsyncStore.md#ready).
 
 ```csharp
 public abstract class ArlecchinoAsyncStore : IArlecchinoStore

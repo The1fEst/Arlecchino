@@ -31,8 +31,11 @@ public sealed class Notifications
 
 | Member | Summary |
 |---|---|
-| [`Clear()`](#clear) | Throws everything away, the output row included. |
+| [`Clear()`](#clear) | Throws away everything that has been said, the output row included — except work that is still running, which keeps its line. A copy does not stop because its line was cleared, and a job running with nothing on screen to show for it is worse than a list that would not empty. |
 | [`Notify(string, NotificationLevel)`](#notify-string-notificationlevel) | Says something. The newest line replaces whatever the output row was showing. |
+| [`Raise(Notification)`](#raise-notification) | Says something that carries more than a line — work still running, a report to read in full, something to do about it. The entry is built by the caller, so it can be kept and taken back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification) once whatever it reports is over. |
+| [`Settle(Notification, string, NotificationLevel)`](#settle-notification-string-notificationlevel) | Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot in the list and its identity, so a dialog someone already has open changes under them rather than going stale, and the entry starts ageing like any other message. |
+| [`Withdraw(Notification)`](#withdraw-notification) | Takes one entry back, for work whose line should not be kept at all. |
 
 ## Constructors in detail
 
@@ -93,7 +96,7 @@ Everything still held, newest first.
 public void Clear();
 ```
 
-Throws everything away, the output row included.
+Throws away everything that has been said, the output row included — except work that is still running, which keeps its line. A copy does not stop because its line was cleared, and a job running with nothing on screen to show for it is worse than a list that would not empty.
 
 ### `Notify(string, NotificationLevel)` {#notify-string-notificationlevel}
 
@@ -109,4 +112,50 @@ Says something. The newest line replaces whatever the output row was showing.
 |---|---|---|
 | `text` | `string` | What to say; an empty string clears the row instead. |
 | `level` | [`NotificationLevel`](../arlecchino.diagnostics/NotificationLevel.md) | How loud it is. |
+
+### `Raise(Notification)` {#raise-notification}
+
+```csharp
+public Notification Raise(Notification entry);
+```
+
+Says something that carries more than a line — work still running, a report to read in full, something to do about it. The entry is built by the caller, so it can be kept and taken back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification) once whatever it reports is over.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `entry` | [`Notification`](../arlecchino.diagnostics/Notification.md) | The notification to raise. |
+
+**Returns** [`Notification`](../arlecchino.diagnostics/Notification.md) — The same entry, so a caller can hold on to it in one expression.
+
+### `Settle(Notification, string, NotificationLevel)` {#settle-notification-string-notificationlevel}
+
+```csharp
+public void Settle(Notification entry, string text, NotificationLevel level);
+```
+
+Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot in the list and its identity, so a dialog someone already has open changes under them rather than going stale, and the entry starts ageing like any other message.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `entry` | [`Notification`](../arlecchino.diagnostics/Notification.md) | The entry that was reporting. |
+| `text` | `string` | What came of the work. |
+| `level` | [`NotificationLevel`](../arlecchino.diagnostics/NotificationLevel.md) | How loud that is. |
+
+### `Withdraw(Notification)` {#withdraw-notification}
+
+```csharp
+public void Withdraw(Notification entry);
+```
+
+Takes one entry back, for work whose line should not be kept at all.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `entry` | [`Notification`](../arlecchino.diagnostics/Notification.md) | The entry to remove; one that is no longer held is ignored. |
 

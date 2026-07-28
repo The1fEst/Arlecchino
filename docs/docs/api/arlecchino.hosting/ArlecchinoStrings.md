@@ -53,6 +53,7 @@ public sealed class ArlecchinoStrings
 | [`ModalDateHints`](#modaldatehints) | Footer of a date field. |
 | [`ModalMessageHints`](#modalmessagehints) | The key line under a dialog that only has something to say. |
 | [`ModalMultiChoiceHints`](#modalmultichoicehints) | Footer of a multi-choice list. |
+| [`ModalNotificationHints`](#modalnotificationhints) | The key line under an opened notification that has something to do about it. |
 | [`ModalNumberHints`](#modalnumberhints) | Footer of a number field. |
 | [`ModalSliderHints`](#modalsliderhints) | Footer of a slider. |
 | [`ModalTextAreaHints`](#modaltextareahints) | The key line under the multi-line text dialog. |
@@ -68,6 +69,7 @@ public sealed class ArlecchinoStrings
 | [`NotificationsClose`](#notificationsclose) | Hint for leaving the screen. |
 | [`NotificationsCount`](#notificationscount) | Line under that title, saying how many are held. |
 | [`NotificationsEmpty`](#notificationsempty) | Shown when nothing has been said lately. |
+| [`NotificationsOpen`](#notificationsopen) | Hint for reading one notification in full. |
 | [`NotificationsTitle`](#notificationstitle) | Title of the notifications screen. |
 | [`OutOfRange`](#outofrange) | Shown when a number is outside its bounds. The values arrive already formatted, affixes included. |
 | [`SelectedCount`](#selectedcount) | How many options are marked, shown in the title of a multi-choice list. |
@@ -387,6 +389,16 @@ Footer of a multi-choice list.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 
+### `ModalNotificationHints` {#modalnotificationhints}
+
+```csharp
+public Func<string> ModalNotificationHints { get; set; }
+```
+
+The key line under an opened notification that has something to do about it.
+
+**Type** `Func<TResult>`&lt;`string`&gt;
+
 ### `ModalNumberHints` {#modalnumberhints}
 
 ```csharp
@@ -534,6 +546,16 @@ public Func<string> NotificationsEmpty { get; set; }
 ```
 
 Shown when nothing has been said lately.
+
+**Type** `Func<TResult>`&lt;`string`&gt;
+
+### `NotificationsOpen` {#notificationsopen}
+
+```csharp
+public Func<string> NotificationsOpen { get; set; }
+```
+
+Hint for reading one notification in full.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

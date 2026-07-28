@@ -16,13 +16,13 @@ place to look a member up.
 | [Arlecchino](arlecchino/index.md) | `Arlecchino.Core` | 6 |
 | [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 12 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 3 |
-| [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 6 |
+| [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 7 |
 | [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 4 |
 | [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 2 |
 | [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 7 |
 | [Arlecchino.Layout](arlecchino.layout/index.md) | `Arlecchino` | 3 |
-| [Arlecchino.Modals](arlecchino.modals/index.md) | `Arlecchino` | 22 |
+| [Arlecchino.Modals](arlecchino.modals/index.md) | `Arlecchino` | 23 |
 | [Arlecchino.Navigation](arlecchino.navigation/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Rendering](arlecchino.rendering/index.md) | `Arlecchino.Core` | 16 |
 | [Arlecchino.State](arlecchino.state/index.md) | `Arlecchino` | 3 |

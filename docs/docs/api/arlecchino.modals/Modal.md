@@ -13,7 +13,7 @@ A dialog waiting for an answer. Assign one to `ArlecchinoState.Modal` — while 
 public abstract class Modal
 ```
 
-**Derived types** [`ColorModal`](../arlecchino.modals/ColorModal.md), [`CommandModal`](../arlecchino.modals/CommandModal.md), [`MessageModal`](../arlecchino.modals/MessageModal.md), [`NumericModal`](../arlecchino.modals/NumericModal.md), [`OptionListModal`](../arlecchino.modals/OptionListModal.md), [`SegmentedModal`](../arlecchino.modals/SegmentedModal.md), [`TextAreaModal`](../arlecchino.modals/TextAreaModal.md), [`TextModal`](../arlecchino.modals/TextModal.md), [`ToggleModal`](../arlecchino.modals/ToggleModal.md)
+**Derived types** [`ColorModal`](../arlecchino.modals/ColorModal.md), [`CommandModal`](../arlecchino.modals/CommandModal.md), [`MessageModal`](../arlecchino.modals/MessageModal.md), [`NotificationModal`](../arlecchino.modals/NotificationModal.md), [`NumericModal`](../arlecchino.modals/NumericModal.md), [`OptionListModal`](../arlecchino.modals/OptionListModal.md), [`SegmentedModal`](../arlecchino.modals/SegmentedModal.md), [`TextAreaModal`](../arlecchino.modals/TextAreaModal.md), [`TextModal`](../arlecchino.modals/TextModal.md), [`ToggleModal`](../arlecchino.modals/ToggleModal.md)
 
 ## Constructors
 
