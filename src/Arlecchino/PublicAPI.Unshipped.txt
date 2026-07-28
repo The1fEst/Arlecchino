@@ -1,11 +1,12 @@
 #nullable enable
+Arlecchino.Atoms.ArlecchinoAsyncStore
+Arlecchino.Atoms.ArlecchinoAsyncStore.ArlecchinoAsyncStore() -> void
+Arlecchino.Atoms.ArlecchinoAsyncStore.Error.get -> Arlecchino.Atoms.IReadableAtom<System.Exception?>!
+Arlecchino.Atoms.ArlecchinoAsyncStore.Failed.get -> bool
+Arlecchino.Atoms.ArlecchinoAsyncStore.IsLoaded.get -> bool
+Arlecchino.Atoms.ArlecchinoAsyncStore.IsLoading.get -> bool
+Arlecchino.Atoms.ArlecchinoAsyncStore.Ready.get -> System.Threading.Tasks.Task!
+Arlecchino.Atoms.ArlecchinoAsyncStore.Status.get -> Arlecchino.Atoms.IReadableAtom<Arlecchino.Atoms.LoadStatus>!
 Arlecchino.Hosting.ArlecchinoStrings.HintCommands.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.HintCommands.set -> void
-Arlecchino.Hosting.StoreLoading
-Arlecchino.Hosting.StoreLoading.Error.get -> Arlecchino.Atoms.IReadableAtom<System.Exception?>!
-Arlecchino.Hosting.StoreLoading.Failed.get -> bool
-Arlecchino.Hosting.StoreLoading.IsLoaded.get -> bool
-Arlecchino.Hosting.StoreLoading.IsLoading.get -> bool
-Arlecchino.Hosting.StoreLoading.Start(System.Collections.Generic.IEnumerable<Arlecchino.Atoms.IArlecchinoAsyncStore!>! stores, System.Threading.CancellationToken token, System.Action<System.Exception!>? onError = null) -> void
-Arlecchino.Hosting.StoreLoading.Status.get -> Arlecchino.Atoms.IReadableAtom<Arlecchino.Atoms.LoadStatus>!
-Arlecchino.Hosting.StoreLoading.StoreLoading() -> void
+abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!

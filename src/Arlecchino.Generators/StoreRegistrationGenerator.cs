@@ -93,10 +93,23 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             typeName,
             containingNamespace,
             Implements(symbol, "IArlecchinoScopedStore"),
-            Implements(symbol, "IArlecchinoAsyncStore"),
+            Inherits(symbol, "ArlecchinoAsyncStore"),
             ConstructorBinding.Of(symbol),
             hasPublicConstructor,
             declaration.Identifier.GetLocation());
+    }
+
+    private static bool Inherits(INamedTypeSymbol symbol, string baseName)
+    {
+        for (var current = symbol.BaseType; current is not null; current = current.BaseType)
+        {
+            if (current.Name == baseName && current.ContainingNamespace.ToDisplayString() == StoreInterfaceNamespace)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool Implements(INamedTypeSymbol symbol, string interfaceName)
@@ -146,7 +159,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
 
             if (store.IsAsync && !store.IsScoped)
             {
-                builder.Append("        builder.Services.AddSingleton<global::Arlecchino.Atoms.IArlecchinoAsyncStore>(")
+                builder.Append("        builder.Services.AddSingleton<global::Arlecchino.Atoms.ArlecchinoAsyncStore>(")
                     .Append("static services => services.GetRequiredService<").Append(store.TypeName).AppendLine(">());");
             }
         }

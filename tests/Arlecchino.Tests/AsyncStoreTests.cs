@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Atoms;
-using Arlecchino.Hosting;
 using Xunit;
 
 namespace Arlecchino.Tests;
@@ -10,43 +9,102 @@ namespace Arlecchino.Tests;
 public sealed class AsyncStoreTests
 {
     [Fact]
-    public void NothingToLoadStaysIdle()
+    public void AStoreIsIdleUntilItIsStarted()
     {
-        var loading = new StoreLoading();
+        var store = new Probe();
 
-        loading.Start([], CancellationToken.None);
-
-        Assert.Equal(LoadStatus.Idle, loading.Status.Value);
-        Assert.False(loading.IsLoading);
+        Assert.Equal(LoadStatus.Idle, store.Status.Value);
+        Assert.False(store.IsLoading);
+        Assert.False(store.Ready.IsCompleted);
     }
 
     [Fact]
-    public void AStoreIsLoadingUntilItIsDone()
+    public void ItIsLoadingUntilItIsDone()
     {
         using var app = new TestApplication();
         var store = new Probe();
-        var loading = new StoreLoading();
 
-        loading.Start([store], CancellationToken.None);
+        var running = store.RunAsync(CancellationToken.None, null);
 
-        Assert.True(loading.IsLoading);
+        Settle(store, LoadStatus.Loading);
+
+        Assert.True(store.IsLoading);
         Assert.Equal("", store.Server.Value);
 
         store.Finish();
-        Settle(loading);
+        Settle(store, LoadStatus.Loaded);
 
-        Assert.True(loading.IsLoaded);
+        Assert.True(store.IsLoaded);
+        Assert.True(running.IsCompleted);
+    }
+
+    [Fact]
+    public async Task ReadyCompletesWhenTheStoreIsLoaded()
+    {
+        using var app = new TestApplication();
+        var store = new Probe();
+
+        _ = store.RunAsync(CancellationToken.None, null);
+
+        store.Finish();
+
+        await store.Ready.WaitAsync(TimeSpan.FromSeconds(5));
+
+        FrameThread.RunPending(static _ => { });
+
         Assert.Equal("loaded", store.Server.Value);
     }
 
     [Fact]
-    public void WhatItLoadedIsThereOnTheDrawingThread()
+    public async Task ReadyHandsOverWhatTheLoadThrew()
+    {
+        using var app = new TestApplication();
+        var store = new Probe { Fails = true };
+        Exception? reported = null;
+
+        _ = store.RunAsync(CancellationToken.None, exception => reported = exception);
+
+        store.Finish();
+
+        var thrown = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Settle(store, LoadStatus.Failed);
+
+        Assert.True(store.Failed);
+        Assert.Same(thrown, store.Error.Value);
+        Assert.Same(thrown, reported);
+    }
+
+    [Fact]
+    public async Task AStoreThatWasCancelledIsNotAFailure()
+    {
+        using var app = new TestApplication();
+        using var stopping = new CancellationTokenSource();
+        var store = new Probe { Cancels = true };
+
+        _ = store.RunAsync(stopping.Token, null);
+
+        await stopping.CancelAsync();
+        store.Finish();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            async () => await store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
+
+        Settle(store, LoadStatus.Idle);
+
+        Assert.False(store.Failed);
+        Assert.Null(store.Error.Value);
+    }
+
+    [Fact]
+    public void WhatItLoadedReachesTheAtomsOnTheDrawingThread()
     {
         using var app = new TestApplication();
         var store = new Probe();
-        var loading = new StoreLoading();
 
-        loading.Start([store], CancellationToken.None);
+        _ = store.RunAsync(CancellationToken.None, null);
+
         store.Finish();
         store.Wait();
 
@@ -57,60 +115,7 @@ public sealed class AsyncStoreTests
         Assert.Equal("loaded", store.Server.Value);
     }
 
-    [Fact]
-    public void AStoreThatThrowsFailsTheLoadAndKeepsWhatItThrew()
-    {
-        using var app = new TestApplication();
-        var store = new Probe { Fails = true };
-        var loading = new StoreLoading();
-        Exception? reported = null;
-
-        loading.Start([store], CancellationToken.None, exception => reported = exception);
-
-        store.Finish();
-        Settle(loading);
-
-        Assert.True(loading.Failed);
-        Assert.IsType<InvalidOperationException>(loading.Error.Value);
-        Assert.Same(loading.Error.Value, reported);
-    }
-
-    [Fact]
-    public void OneFailureAmongSeveralIsStillAFailure()
-    {
-        using var app = new TestApplication();
-        var good = new Probe();
-        var bad = new Probe { Fails = true };
-        var loading = new StoreLoading();
-
-        loading.Start([good, bad], CancellationToken.None);
-
-        good.Finish();
-        bad.Finish();
-        Settle(loading);
-
-        Assert.True(loading.Failed);
-    }
-
-    [Fact]
-    public void AStoreThatWasCancelledIsNotAFailure()
-    {
-        using var app = new TestApplication();
-        using var stopping = new CancellationTokenSource();
-        var store = new Probe { Cancels = true };
-        var loading = new StoreLoading();
-
-        loading.Start([store], stopping.Token);
-
-        stopping.Cancel();
-        store.Finish();
-        Settle(loading);
-
-        Assert.Null(loading.Error.Value);
-        Assert.False(loading.Failed);
-    }
-
-    private static void Settle(StoreLoading loading)
+    private static void Settle(Probe store, LoadStatus expected)
     {
         var waited = TimeSpan.Zero;
 
@@ -118,7 +123,7 @@ public sealed class AsyncStoreTests
         {
             FrameThread.RunPending(static _ => { });
 
-            if (!loading.IsLoading)
+            if (store.Status.Value == expected)
             {
                 return;
             }
@@ -127,10 +132,10 @@ public sealed class AsyncStoreTests
             waited += TimeSpan.FromMilliseconds(10);
         }
 
-        Assert.Fail("the stores never finished loading");
+        Assert.Fail($"the store never reached {expected}; it is {store.Status.Value}");
     }
 
-    private sealed class Probe : IArlecchinoAsyncStore
+    private sealed class Probe : ArlecchinoAsyncStore
     {
         private readonly SemaphoreSlim _released = new(0);
         private readonly SemaphoreSlim _done = new(0);
@@ -145,7 +150,7 @@ public sealed class AsyncStoreTests
 
         public void Wait() => Assert.True(_done.Wait(TimeSpan.FromSeconds(5)));
 
-        public async Task LoadAsync(CancellationToken token)
+        protected override async Task LoadAsync(CancellationToken token)
         {
             try
             {

@@ -55,11 +55,11 @@ public sealed class GeneratorTests
 
         namespace Sample.Stores;
 
-        public sealed class CatalogStore : IArlecchinoAsyncStore
+        public sealed class CatalogStore : ArlecchinoAsyncStore
         {
             public Atom<string> Name { get; } = new LocalAtom<string>("");
 
-            public Task LoadAsync(CancellationToken token) => Task.CompletedTask;
+            protected override Task LoadAsync(CancellationToken token) => Task.CompletedTask;
         }
         """;
 
@@ -528,7 +528,7 @@ public sealed class GeneratorTests
             StringComparison.Ordinal);
 
         Assert.Contains(
-            "builder.Services.AddSingleton<global::Arlecchino.Atoms.IArlecchinoAsyncStore>(" +
+            "builder.Services.AddSingleton<global::Arlecchino.Atoms.ArlecchinoAsyncStore>(" +
             "static services => services.GetRequiredService<CatalogStore>());",
             generated,
             StringComparison.Ordinal);

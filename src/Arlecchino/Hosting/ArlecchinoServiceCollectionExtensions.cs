@@ -59,7 +59,6 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<ArlecchinoOptions>().Strings);
 
         services.AddSingleton<Repaint>();
-        services.AddSingleton<StoreLoading>();
         services.AddSingleton<LogBuffer>();
         services.AddSingleton<LogOverlay>();
         services.AddSingleton<ILoggerProvider, ArlecchinoLoggerProvider>();

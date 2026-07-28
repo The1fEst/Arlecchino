@@ -13,17 +13,17 @@ the public API means a new major. See
 
 ### Added
 
-- **`IArlecchinoAsyncStore`** is a store that fetches something before it holds the truth — settings
-  read from disk, a session restored from a server. The framework starts the load as the application
-  starts, with the shutdown token, so the store needs neither a `BackgroundService` of its own nor a
-  `TaskCompletionSource` for whoever waits on it:
+- **`ArlecchinoAsyncStore`** is a store that fetches something before it holds the truth — settings
+  read from disk, a session restored from a server. Derive from it and the framework starts the load
+  as the application starts, with the shutdown token, so the store needs neither a `BackgroundService`
+  of its own nor a `TaskCompletionSource` written by hand:
 
   ```csharp
-  public sealed class SettingsStore : IArlecchinoAsyncStore
+  public sealed class SettingsStore : ArlecchinoAsyncStore
   {
       public TrackedAtom<string> Server { get; } = new("127.0.0.1");
 
-      public async Task LoadAsync(CancellationToken token)
+      protected override async Task LoadAsync(CancellationToken token)
       {
           var saved = await Settings.ReadAsync(token);
 
@@ -33,10 +33,19 @@ the public API means a new major. See
   ```
 
   The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than a
-  screen that says it is loading. `StoreLoading` is where a view reads how it is going — `IsLoading`,
-  `IsLoaded`, `Failed` and `Error`, as atoms, so a view that reads them redraws by itself. A store that
-  throws turns the status to failed, is logged, and leaves the application running on whatever its
-  atoms already hold.
+  screen that says it is loading. Each store answers for itself — `Status`, `Error`, `IsLoading`,
+  `IsLoaded` and `Failed` as atoms, so a view that reads them redraws by itself, and `Ready` as a task
+  for code outside a view:
+
+  ```csharp
+  if (_settings.IsLoading) { ... }        // in a view
+
+  await _settings.Ready;                  // in a worker or a command
+  ```
+
+  `Ready` faults with whatever the load threw and is cancelled when the application stopped first, so
+  awaiting it says what happened rather than hanging. A store that throws turns its status to failed,
+  is logged, and leaves the application running on whatever its atoms already hold.
 
   `AddGeneratedStores()` and `AddStore<T>()` register such a store for the host to start; a scoped
   store is not started, since it belongs to one screen rather than to the application.
