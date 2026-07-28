@@ -80,12 +80,38 @@ the framework starts the load as the application starts.
 ```csharp
 public sealed class SettingsStore : ArlecchinoAsyncStore
 {
+    private const string SettingsPath = "settings.json";
+
+    private sealed record Saved(string Server, decimal Port);
+
     public TrackedAtom<string> Server { get; } = new("127.0.0.1");
     public TrackedAtom<decimal> Port { get; } = new(40000);
 
     protected override async Task LoadAsync(CancellationToken token)
     {
-        var saved = await Settings.ReadAsync(token);
+        if (!File.Exists(SettingsPath))
+        {
+            return;
+        }
+
+        await using var fs = new FileStream(
+            SettingsPath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.None,
+            4096,
+            true);
+
+        if (fs.Length == 0)
+        {
+            return;
+        }
+
+        var saved = await JsonSerializer.DeserializeAsync<Saved>(fs, cancellationToken: token);
+        if (saved == null)
+        {
+            return;
+        }
 
         Server.Post(saved.Server);
         Port.Post(saved.Port);
@@ -93,9 +119,14 @@ public sealed class SettingsStore : ArlecchinoAsyncStore
 }
 ```
 
-That is the whole of it: no `BackgroundService` to write, no `TaskCompletionSource` to hand around,
-and the token is the application's — a load still running when the user quits is cancelled rather than
-left behind.
+Reading the file is the application's own code — the framework has nothing to do with disks, formats
+or paths. What it gives is the rest: no `BackgroundService` to write, no `TaskCompletionSource` to
+hand around, and the token is the application's, so a load still running when the user quits is
+cancelled rather than left behind.
+
+A file that is not there yet is not an error here, and neither is an empty one: both checks return
+early and the atoms stay on the defaults they were declared with — which is what the screen then
+shows.
 
 `LoadAsync` runs **off the drawing thread**, so what it fetches reaches the atoms through
 [`Post`](atoms.md#threads). Writing `Value` there throws and says so.
