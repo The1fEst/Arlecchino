@@ -93,6 +93,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             typeName,
             containingNamespace,
             Implements(symbol, "IArlecchinoScopedStore"),
+            Implements(symbol, "IArlecchinoAsyncStore"),
             ConstructorBinding.Of(symbol),
             hasPublicConstructor,
             declaration.Identifier.GetLocation());
@@ -142,6 +143,12 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
                 .Append("(static services => ")
                 .Append(ConstructorBinding.CreateExpression(store.TypeName, store.ConstructorParameters))
                 .AppendLine(");");
+
+            if (store.IsAsync && !store.IsScoped)
+            {
+                builder.Append("        builder.Services.AddSingleton<global::Arlecchino.Atoms.IArlecchinoAsyncStore>(")
+                    .Append("static services => services.GetRequiredService<").Append(store.TypeName).AppendLine(">());");
+            }
         }
 
         builder.AppendLine("        return builder;");
@@ -169,6 +176,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             string typeName,
             string @namespace,
             bool isScoped,
+            bool isAsync,
             IReadOnlyList<ParameterModel> constructorParameters,
             bool hasPublicConstructor,
             Location location)
@@ -176,6 +184,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             TypeName = typeName;
             Namespace = @namespace;
             IsScoped = isScoped;
+            IsAsync = isAsync;
             ConstructorParameters = constructorParameters;
             HasPublicConstructor = hasPublicConstructor;
             Location = location;
@@ -184,6 +193,7 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
         public string TypeName { get; }
         public string Namespace { get; }
         public bool IsScoped { get; }
+        public bool IsAsync { get; }
         public IReadOnlyList<ParameterModel> ConstructorParameters { get; }
         public bool HasPublicConstructor { get; }
         public Location Location { get; }

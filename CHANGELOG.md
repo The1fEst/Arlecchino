@@ -9,6 +9,46 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.5.0
+
+### Added
+
+- **`IArlecchinoAsyncStore`** is a store that fetches something before it holds the truth — settings
+  read from disk, a session restored from a server. The framework starts the load as the application
+  starts, with the shutdown token, so the store needs neither a `BackgroundService` of its own nor a
+  `TaskCompletionSource` for whoever waits on it:
+
+  ```csharp
+  public sealed class SettingsStore : IArlecchinoAsyncStore
+  {
+      public TrackedAtom<string> Server { get; } = new("127.0.0.1");
+
+      public async Task LoadAsync(CancellationToken token)
+      {
+          var saved = await Settings.ReadAsync(token);
+
+          Server.Post(saved.Server);
+      }
+  }
+  ```
+
+  The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than a
+  screen that says it is loading. `StoreLoading` is where a view reads how it is going — `IsLoading`,
+  `IsLoaded`, `Failed` and `Error`, as atoms, so a view that reads them redraws by itself. A store that
+  throws turns the status to failed, is logged, and leaves the application running on whatever its
+  atoms already hold.
+
+  `AddGeneratedStores()` and `AddStore<T>()` register such a store for the host to start; a scoped
+  store is not started, since it belongs to one screen rather than to the application.
+
+  What is loaded reaches the atoms through `Post`, because `LoadAsync` runs off the drawing thread —
+  writing `Value` from there throws and says so.
+- **The hints box offers the command palette.** A line for the key that opens it — `: → commands` with
+  the default keymap — is added whenever there is at least one command registered, which is the same
+  condition under which the key does anything at all. The wording is `ArlecchinoStrings.HintCommands`.
+
+  A view with no hints of its own now gets a box with that one line, where before it had none.
+
 ## 2.4.1
 
 ### Fixed

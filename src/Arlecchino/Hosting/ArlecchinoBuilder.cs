@@ -104,6 +104,13 @@ public sealed class ArlecchinoBuilder
         }
 
         Services.AddSingleton<TStore>();
+
+        if (typeof(IArlecchinoAsyncStore).IsAssignableFrom(typeof(TStore)))
+        {
+            Services.AddSingleton<IArlecchinoAsyncStore>(static services =>
+                (IArlecchinoAsyncStore)services.GetRequiredService<TStore>());
+        }
+
         return this;
     }
 

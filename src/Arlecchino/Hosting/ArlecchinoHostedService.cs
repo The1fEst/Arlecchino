@@ -29,6 +29,8 @@ internal class ArlecchinoHostedService : BackgroundService
     private readonly AtomHistory _history;
     private readonly ILogger<ArlecchinoHostedService> _logger;
     private readonly IArlecchinoStartup[] _startups;
+    private readonly IArlecchinoAsyncStore[] _stores;
+    private readonly StoreLoading _loading;
 
     private readonly List<PosixSignalRegistration> _signals = [];
 
@@ -48,6 +50,8 @@ internal class ArlecchinoHostedService : BackgroundService
     /// <param name="history">Cleared before the first frame, so startup edits are not undoable.</param>
     /// <param name="logger">Where failures are reported, since the screen is not usable for that.</param>
     /// <param name="startups">Work to run before the first frame.</param>
+    /// <param name="stores">Stores that load themselves; started as the application starts.</param>
+    /// <param name="loading">Where those loads report to.</param>
     public ArlecchinoHostedService(
         IArlecchinoTerminal terminal,
         Screen screen,
@@ -57,8 +61,12 @@ internal class ArlecchinoHostedService : BackgroundService
         IHostApplicationLifetime lifetime,
         AtomHistory history,
         ILogger<ArlecchinoHostedService> logger,
-        IEnumerable<IArlecchinoStartup> startups)
+        IEnumerable<IArlecchinoStartup> startups,
+        IEnumerable<IArlecchinoAsyncStore> stores,
+        StoreLoading loading)
     {
+        _stores = [.. stores];
+        _loading = loading;
         _history = history;
         _terminal = terminal;
         _screen = screen;
@@ -79,6 +87,8 @@ internal class ArlecchinoHostedService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _history.Clear();
+
+        _loading.Start(_stores, stoppingToken, StoreFailed);
 
         foreach (var startup in _startups)
         {
@@ -105,6 +115,9 @@ internal class ArlecchinoHostedService : BackgroundService
             RestoreTerminal();
         }
     }
+
+    private void StoreFailed(Exception exception) =>
+        _logger.LogError(exception, "A store failed to load; the application carries on with what its atoms hold.");
 
     private void EnterTerminalModes()
     {

@@ -48,6 +48,21 @@ public sealed class GeneratorTests
         }
         """;
 
+    private const string AsyncStore = """
+        using System.Threading;
+        using System.Threading.Tasks;
+        using Arlecchino.Atoms;
+
+        namespace Sample.Stores;
+
+        public sealed class CatalogStore : IArlecchinoAsyncStore
+        {
+            public Atom<string> Name { get; } = new LocalAtom<string>("");
+
+            public Task LoadAsync(CancellationToken token) => Task.CompletedTask;
+        }
+        """;
+
     private const string ThreeWidgets = """
         using System;
         using Arlecchino.Hosting;
@@ -500,6 +515,25 @@ public sealed class GeneratorTests
 
         var reported = Assert.Single(diagnostics, item => item.Id == "ARL004");
         Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
+    }
+
+    [Fact]
+    public void AStoreThatLoadsItselfIsAlsoRegisteredForTheHostToStart()
+    {
+        var (generated, diagnostics) = RunStores(AsyncStore);
+
+        Assert.Contains(
+            "builder.Services.AddSingleton(static services => new CatalogStore());",
+            generated,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "builder.Services.AddSingleton<global::Arlecchino.Atoms.IArlecchinoAsyncStore>(" +
+            "static services => services.GetRequiredService<CatalogStore>());",
+            generated,
+            StringComparison.Ordinal);
+
+        Assert.Empty(diagnostics);
     }
 
     [Fact]

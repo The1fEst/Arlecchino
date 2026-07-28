@@ -1,1 +1,3 @@
 #nullable enable
+Arlecchino.Atoms.IArlecchinoAsyncStore
+Arlecchino.Atoms.IArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
