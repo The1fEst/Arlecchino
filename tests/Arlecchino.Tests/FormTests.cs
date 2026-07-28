@@ -277,4 +277,63 @@ public sealed class FormTests
         Assert.Equal(Routes.FilePicker, result.Route);
         Assert.NotNull(app.State.FilePicker);
     }
+
+    [Fact]
+    public void AnEmptyPathFieldOpensThePickerWhereItWasTold()
+    {
+        using var app = new TestApplication();
+        var folder = new TrackedAtom<string>("");
+
+        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: static () => "D:/projects"));
+
+        Assert.Equal("D:/projects", app.State.FilePicker!.InitialPath);
+    }
+
+    [Fact]
+    public void APathFieldThatHasAValueOpensThere()
+    {
+        using var app = new TestApplication();
+        var folder = new TrackedAtom<string>("D:/games/saves");
+
+        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: static () => "D:/projects"));
+
+        Assert.Equal("D:/games/saves", app.State.FilePicker!.InitialPath);
+    }
+
+    [Fact]
+    public void WhereToStartIsAskedForWhenThePickerOpens()
+    {
+        using var app = new TestApplication();
+        var folder = new TrackedAtom<string>("");
+        var last = new[] { "D:/first" };
+
+        var field = Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: () => last[0]);
+
+        Open(app, field);
+        Assert.Equal("D:/first", app.State.FilePicker!.InitialPath);
+
+        last[0] = "D:/second";
+        app.State.FilePicker = null;
+
+        Open(app, field);
+        Assert.Equal("D:/second", app.State.FilePicker!.InitialPath);
+    }
+
+    [Fact]
+    public void APathFieldWithNowhereToStartIsStillOpened()
+    {
+        using var app = new TestApplication();
+        var folder = new TrackedAtom<string>("");
+
+        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true));
+
+        Assert.Equal("", app.State.FilePicker!.InitialPath);
+    }
+
+    private static void Open(TestApplication app, Field field)
+    {
+        var form = new Form(app.State, app.Options) { Fields = [field] };
+
+        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+    }
 }

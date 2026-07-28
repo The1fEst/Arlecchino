@@ -1,6 +1,7 @@
 #nullable enable
 Arlecchino.Atoms.Atom<T>
 Arlecchino.Atoms.Atom<T>.Atom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.Atom<T>.Post(T value) -> void
 Arlecchino.Atoms.Atom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.Atom<T>.Value.get -> T
 Arlecchino.Atoms.Atom<T>.Value.set -> void
@@ -126,6 +127,17 @@ Arlecchino.Rendering.Margin.Right.get -> int
 Arlecchino.Rendering.Margin.Right.init -> void
 Arlecchino.Rendering.Margin.Top.get -> int
 Arlecchino.Rendering.Margin.Top.init -> void
+Arlecchino.Rendering.PaneFlow
+Arlecchino.Rendering.PaneFlow.AppendLine(string! line, Arlecchino.Rendering.IArlecchinoColor? style = null, Arlecchino.Rendering.Align align = Arlecchino.Rendering.Align.Left) -> void
+Arlecchino.Rendering.PaneFlow.FillLine(Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.PaneFlow.FreeLines.get -> int
+Arlecchino.Rendering.PaneFlow.IsFull.get -> bool
+Arlecchino.Rendering.PaneFlow.Region.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.PaneFlow.Rest() -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.PaneFlow.Rewind() -> void
+Arlecchino.Rendering.PaneFlow.Row.get -> int
+Arlecchino.Rendering.PaneFlow.Skip(int rows) -> void
+Arlecchino.Rendering.PaneFlow.SkipLine() -> void
 Arlecchino.Rendering.Rgb
 Arlecchino.Rendering.Rgb.Blue.get -> byte
 Arlecchino.Rendering.Rgb.Blue.init -> void
@@ -179,6 +191,7 @@ Arlecchino.Rendering.SurfaceRegion.Contains(int frameRow, int frameColumn) -> bo
 Arlecchino.Rendering.SurfaceRegion.Deconstruct(out Arlecchino.Rendering.Surface! Surface, out int Left, out int Top, out int Width, out int Height) -> void
 Arlecchino.Rendering.SurfaceRegion.Equals(Arlecchino.Rendering.SurfaceRegion other) -> bool
 Arlecchino.Rendering.SurfaceRegion.Fill(Arlecchino.Rendering.IArlecchinoColor! style, char character = ' ') -> void
+Arlecchino.Rendering.SurfaceRegion.Flow() -> Arlecchino.Rendering.PaneFlow!
 Arlecchino.Rendering.SurfaceRegion.Height.get -> int
 Arlecchino.Rendering.SurfaceRegion.Height.init -> void
 Arlecchino.Rendering.SurfaceRegion.Inset(Arlecchino.Rendering.Margin margin) -> Arlecchino.Rendering.SurfaceRegion

@@ -440,6 +440,19 @@ Arlecchino.InputRouter
 Arlecchino.InputRouter.ProcessKey(System.ConsoleKeyInfo key) -> void
 Arlecchino.InputRouter.ProcessMouse(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.InputRouter.ProcessPaste(string! text) -> void
+Arlecchino.Layout.PaneSize
+Arlecchino.Layout.PaneSize.Equals(Arlecchino.Layout.PaneSize other) -> bool
+Arlecchino.Layout.PaneSize.PaneSize() -> void
+Arlecchino.Layout.PaneSplit
+Arlecchino.Layout.PaneSplit.Columns = 1 -> Arlecchino.Layout.PaneSplit
+Arlecchino.Layout.PaneSplit.Rows = 0 -> Arlecchino.Layout.PaneSplit
+Arlecchino.Layout.PaneTree
+Arlecchino.Layout.PaneTree.AsFocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> Arlecchino.Focus.FocusRing!
+Arlecchino.Layout.PaneTree.Count.get -> int
+Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
+Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
+Arlecchino.Layout.PaneTree.InnerGap.get -> int
+Arlecchino.Layout.PaneTree.OuterGap.get -> int
 Arlecchino.Modals.ChoiceModal
 Arlecchino.Modals.ChoiceModal.ChoiceModal() -> void
 Arlecchino.Modals.ChoiceModal.OnPicked.get -> System.Action<string!>!
@@ -984,6 +997,7 @@ override Arlecchino.Focus.FocusResult.GetHashCode() -> int
 override Arlecchino.Hosting.ArlecchinoKeymap.Equals(object? obj) -> bool
 override Arlecchino.Hosting.ArlecchinoKeymap.GetHashCode() -> int
 override Arlecchino.Hosting.ArlecchinoKeymap.ToString() -> string!
+override Arlecchino.Layout.PaneSize.GetHashCode() -> int
 override Arlecchino.Modals.DateModal.Add(int delta) -> void
 override Arlecchino.Modals.DateModal.SegmentCount.get -> int
 override Arlecchino.Modals.DateModal.SegmentTexts() -> string![]!
@@ -1028,6 +1042,22 @@ static Arlecchino.Forms.Field.Toggle(System.Func<string!>! label, Arlecchino.Ato
 static Arlecchino.Hosting.ArlecchinoKeymap.operator !=(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
 static Arlecchino.Hosting.ArlecchinoKeymap.operator ==(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
 static Arlecchino.Hosting.ArlecchinoServiceCollectionExtensions.AddArlecchino(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Arlecchino.Hosting.ArlecchinoOptions!>? configure = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
+static Arlecchino.Layout.PaneSize.Cells(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.CellsFromEnd(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.Fraction(double value) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(double value) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(int count) -> Arlecchino.Layout.PaneSize
+static Arlecchino.Layout.PaneSize.operator !=(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
+static Arlecchino.Layout.PaneSize.operator ==(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
+static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSize size, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSplit split, Arlecchino.Layout.PaneSize size, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSplit split, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf() -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
+static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Modals.ColorModal.MaximumOf(Arlecchino.Modals.ColorChannel channel) -> int
 static Arlecchino.Modals.TextEditing.Backspace(Arlecchino.Modals.ITextEntryModal! modal) -> void
 static Arlecchino.Modals.TextEditing.Delete(Arlecchino.Modals.ITextEntryModal! modal) -> void
@@ -1055,6 +1085,8 @@ static readonly Arlecchino.Navigation.Routes.Help -> Arlecchino.Navigation.ViewR
 static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigation.ViewRoute
 ~override Arlecchino.Focus.FocusResult.Equals(object obj) -> bool
 ~override Arlecchino.Focus.FocusResult.ToString() -> string
+~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
+~override Arlecchino.Layout.PaneSize.ToString() -> string
 ~override Arlecchino.Navigation.ViewRoute.Equals(object obj) -> bool
 ~override Arlecchino.Widgets.ScrollWindow.Equals(object obj) -> bool
 ~override Arlecchino.Widgets.ScrollWindow.ToString() -> string

@@ -1,33 +1,3 @@
 #nullable enable
-Arlecchino.Layout.PaneSize
-Arlecchino.Layout.PaneSize.Equals(Arlecchino.Layout.PaneSize other) -> bool
-Arlecchino.Layout.PaneSize.PaneSize() -> void
-Arlecchino.Layout.PaneSplit
-Arlecchino.Layout.PaneSplit.Columns = 1 -> Arlecchino.Layout.PaneSplit
-Arlecchino.Layout.PaneSplit.Rows = 0 -> Arlecchino.Layout.PaneSplit
-Arlecchino.Layout.PaneTree
-Arlecchino.Layout.PaneTree.AsFocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> Arlecchino.Focus.FocusRing!
-Arlecchino.Layout.PaneTree.Count.get -> int
-Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
-Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
-Arlecchino.Layout.PaneTree.InnerGap.get -> int
-Arlecchino.Layout.PaneTree.OuterGap.get -> int
-override Arlecchino.Layout.PaneSize.GetHashCode() -> int
-static Arlecchino.Layout.PaneSize.Cells(int count) -> Arlecchino.Layout.PaneSize
-static Arlecchino.Layout.PaneSize.CellsFromEnd(int count) -> Arlecchino.Layout.PaneSize
-static Arlecchino.Layout.PaneSize.Fraction(double value) -> Arlecchino.Layout.PaneSize
-static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(double value) -> Arlecchino.Layout.PaneSize
-static Arlecchino.Layout.PaneSize.implicit operator Arlecchino.Layout.PaneSize(int count) -> Arlecchino.Layout.PaneSize
-static Arlecchino.Layout.PaneSize.operator !=(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
-static Arlecchino.Layout.PaneSize.operator ==(Arlecchino.Layout.PaneSize left, Arlecchino.Layout.PaneSize right) -> bool
-static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSize size, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSplit split, Arlecchino.Layout.PaneSize size, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneSplit split, Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Branch(Arlecchino.Layout.PaneTree! first, Arlecchino.Layout.PaneTree! second) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Leaf() -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
-~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
-~override Arlecchino.Layout.PaneSize.ToString() -> string
+*REMOVED*static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null, System.Func<string!>? start = null) -> Arlecchino.Forms.Field!

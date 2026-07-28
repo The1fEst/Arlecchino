@@ -9,6 +9,25 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.4.0
+
+### Added
+
+- **`Field.Path` takes a `start`**, for where the picker opens while the field is still empty:
+
+  ```csharp
+  Field.Path(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
+      start: () => state.PickerLastFolder);
+  ```
+
+  It opened at the path the field held, so an empty field left it with nowhere to go and landed the
+  user on the drives with no way to say otherwise. A field that already has a value still opens there
+  and ignores `start`. It is a delegate rather than a string so "wherever the user was last time" is
+  answered when the picker opens rather than when the form is built.
+
+  The parameter is last, after `help`, on purpose: putting it in its natural place would have silently
+  rebound a `help` argument passed positionally.
+
 ## 2.3.0
 
 ### Added
