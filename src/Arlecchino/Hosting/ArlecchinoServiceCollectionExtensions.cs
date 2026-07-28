@@ -89,6 +89,7 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<LogOverlay>(),
             provider.GetRequiredService<PendingInput>(),
             provider.GetRequiredService<InputRouter>(),
+            provider.GetRequiredService<CommandRegistry>(),
             provider.GetRequiredService<ILogger<Screen>>()));
         services.AddSingleton(static provider => new InputRouter(
             provider.GetRequiredService<ArlecchinoState>(),

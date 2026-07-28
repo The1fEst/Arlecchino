@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -42,6 +43,7 @@ public class Screen
     private readonly LogOverlay _log;
     private readonly PendingInput _pending;
     private readonly InputRouter _router;
+    private readonly CommandRegistry _commands;
 
     private int _lastWidth;
     private int _lastHeight;
@@ -59,6 +61,7 @@ public class Screen
     /// <param name="log">Drawn over the view while it is open.</param>
     /// <param name="pending">Input read since the last frame, routed on this thread before drawing.</param>
     /// <param name="router">Where that input goes.</param>
+    /// <param name="commands">The registered commands, for offering the palette in the hints box.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
     internal Screen(
         ArlecchinoState state,
@@ -71,8 +74,10 @@ public class Screen
         LogOverlay log,
         PendingInput pending,
         InputRouter router,
+        CommandRegistry commands,
         ILogger<Screen> logger)
     {
+        _commands = commands;
         _log = log;
         _pending = pending;
         _router = router;
@@ -788,8 +793,14 @@ public class Screen
             return;
         }
 
-        var hints = _navigator.CurrentHints;
-        if (hints.Length == 0)
+        var hints = new List<(string Key, string Description)>(_navigator.CurrentHints);
+
+        if (_commands.Commands.Count > 0)
+        {
+            hints.Add((_options.CommandPaletteKey.ToString(), _strings.HintCommands()));
+        }
+
+        if (hints.Count == 0)
         {
             return;
         }
@@ -800,9 +811,9 @@ public class Screen
             keyWidth = Math.Max(keyWidth, TextWidth.Of(key));
         }
 
-        var rows = new string[hints.Length];
+        var rows = new string[hints.Count];
         var inner = 8;
-        for (var i = 0; i < hints.Length; i++)
+        for (var i = 0; i < hints.Count; i++)
         {
             rows[i] = $"{TextWidth.PadLeft(hints[i].Key, keyWidth)} → {hints[i].Description}";
             inner = Math.Max(inner, TextWidth.Of(rows[i]));

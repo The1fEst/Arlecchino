@@ -1,2 +1,3 @@
 #nullable enable
-static Arlecchino.Forms.Field.PathFrom(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>! start, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+Arlecchino.Hosting.ArlecchinoStrings.HintCommands.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.HintCommands.set -> void

@@ -195,6 +195,12 @@ public sealed class ArlecchinoStrings
     /// <summary>Title of the hints box.</summary>
     public Func<string> KeysTitle { get; set; } = static () => "Keys";
 
+    /// <summary>
+    /// What the hints box calls the command palette. The framework adds the line itself, beside the
+    /// key that opens it, whenever there is at least one command to show.
+    /// </summary>
+    public Func<string> HintCommands { get; set; } = static () => "commands";
+
     /// <summary>Title of the command palette.</summary>
     public Func<string> CommandPaletteTitle { get; set; } = static () => "Commands";
 
