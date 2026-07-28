@@ -19,76 +19,9 @@ dotnet add package Arlecchino
 
 ## What it looks like
 
-`samples/Arlecchino.Packages` is a dependency review of a .NET solution, built on the framework and
-shown here reading the fixture solution that ships beside it — a sortable table, tabs, a tree, a form
-on atoms, every modal, the command palette and the file picker:
-
-![Every package in the solution, coloured by what is wrong with it](assets/screenshots/inventory.png)
-
-<details>
-<summary><b>Seventeen more screens</b> — scanning, tabs, the tree, the upgrade form, modals, the palette, the file picker</summary>
-
-### Finding out what is there
-
-Four `dotnet list package` passes, reported while they run:
-
-![Four dotnet list passes, reported while they run](assets/screenshots/scanning.png)
-
-The hints box is off by default and `:h` brings it back:
-
-![The same table with the hints box turned on](assets/screenshots/hints.png)
-
-Tabs narrow the table down to one kind of problem:
-
-![The vulnerable tab](assets/screenshots/vulnerable.png)
-
-Transitive packages fold in, and the list grows a scroll bar:
-
-![Transitive packages folded in, the list scrolling](assets/screenshots/transitive.png)
-
-A text modal filters it:
-
-![The text modal filtering the table](assets/screenshots/filter.png)
-
-### The other screens
-
-One package, its advisories and every project that pulls it in:
-
-![One package: advisories and every project that pulls it in](assets/screenshots/package.png)
-
-The dependency tree beside a per-project table:
-
-![The dependency tree beside a per-project table](assets/screenshots/projects.png)
-
-![The same tree with the transitive branches open](assets/screenshots/projects-expanded.png)
-
-An upgrade form built from atoms, and the commands it would run:
-
-![The upgrade form and the commands it would run](assets/screenshots/upgrade.png)
-
-![The dry run, printing what it would have executed](assets/screenshots/upgrade-run.png)
-
-### Modals and chrome
-
-Choice, multi-choice and confirmation, opened by the form's own fields:
-
-![Picking the target version](assets/screenshots/upgrade-versions.png)
-
-![Picking which projects to rewrite](assets/screenshots/upgrade-projects.png)
-
-![Turning the dry run off asks first](assets/screenshots/upgrade-confirm.png)
-
-The command palette, the keys screen, the file picker and the log overlay all come with the framework:
-
-![The command palette over the inventory](assets/screenshots/palette.png)
-
-![The keys screen](assets/screenshots/help.png)
-
-![The file picker asking for another solution](assets/screenshots/picker.png)
-
-![The log overlay](assets/screenshots/log.png)
-
-</details>
+[Arlecchino.Commander](https://github.com/The1fEst/Arlecchino.Commander) is a Midnight Commander built
+on the framework: two panels over local disks, SFTP and FTP, with the file operations running in the
+background and reporting themselves as notifications.
 
 ## The shortest app
 

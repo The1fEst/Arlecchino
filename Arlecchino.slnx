@@ -3,7 +3,6 @@
   <Project Path="src/Arlecchino/Arlecchino.csproj" />
   <Project Path="src/Arlecchino.Generators/Arlecchino.Generators.csproj" />
   <Folder Name="/Samples/">
-    <Project Path="samples/Arlecchino.Packages/Arlecchino.Packages.csproj" />
     <Project Path="samples/Arlecchino.Processes/Arlecchino.Processes.csproj" />
     <Project Path="samples/Arlecchino.Sample/Arlecchino.Sample.csproj" />
   </Folder>
