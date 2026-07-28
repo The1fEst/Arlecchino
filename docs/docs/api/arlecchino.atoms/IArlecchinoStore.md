@@ -13,5 +13,5 @@ A holder of application state — a class of atoms that outlive the screens read
 public interface IArlecchinoStore
 ```
 
-**Implemented by** [`IArlecchinoScopedStore`](../arlecchino.atoms/IArlecchinoScopedStore.md)
+**Implemented by** [`ArlecchinoAsyncStore`](../arlecchino.atoms/ArlecchinoAsyncStore.md), [`IArlecchinoScopedStore`](../arlecchino.atoms/IArlecchinoScopedStore.md)
 

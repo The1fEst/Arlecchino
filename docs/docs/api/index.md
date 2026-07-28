@@ -14,7 +14,7 @@ place to look a member up.
 | Namespace | Assembly | Types |
 |---|---|---|
 | [Arlecchino](arlecchino/index.md) | `Arlecchino.Core` | 6 |
-| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 11 |
+| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 12 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 6 |
 | [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 4 |

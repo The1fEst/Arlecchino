@@ -41,6 +41,7 @@ public sealed class ArlecchinoStrings
 | [`HelpNoCommands`](#helpnocommands) | Shown in place of the command list when the application registered none. |
 | [`HelpScreenSection`](#helpscreensection) | Heading over the commands of the screen the help was opened from, given its route. |
 | [`HelpTitle`](#helptitle) | Title of the screen listing every key. |
+| [`HintCommands`](#hintcommands) | What the hints box calls the command palette. The framework adds the line itself, beside the key that opens it, whenever there is at least one command to show. |
 | [`KeysTitle`](#keystitle) | Title of the hints box. |
 | [`ListPosition`](#listposition) | Where the cursor is in a list that does not fit on screen. The position is one-based, since it is read by a person rather than an index. |
 | [`LogEmpty`](#logempty) | Shown in the log overlay while nothing has been logged. |
@@ -263,6 +264,16 @@ public Func<string> HelpTitle { get; set; }
 ```
 
 Title of the screen listing every key.
+
+**Type** `Func<TResult>`&lt;`string`&gt;
+
+### `HintCommands` {#hintcommands}
+
+```csharp
+public Func<string> HintCommands { get; set; }
+```
+
+What the hints box calls the command palette. The framework adds the line itself, beside the key that opens it, whenever there is at least one command to show.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 
