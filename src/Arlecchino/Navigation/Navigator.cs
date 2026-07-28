@@ -20,8 +20,14 @@ public class Navigator
 
     private ActiveView? _active;
     private ViewRoute _currentRoute;
+    private ViewRoute _unbuilt;
+    private bool _building;
 
-    /// <summary>Creates the navigator and shows the configured start route, if there is one.</summary>
+    /// <summary>
+    /// Creates the navigator on the configured start route. The screen itself is built the first time
+    /// one is needed rather than here, because a view is free to ask the container for the navigator —
+    /// building one from this constructor would ask the container for a service it is still building.
+    /// </summary>
     /// <param name="resolver">How routes become views.</param>
     /// <param name="options">Configured options, read for the start route.</param>
     /// <param name="repaint">Signal raised whenever the screen changes.</param>
@@ -31,18 +37,23 @@ public class Navigator
         _resolver = resolver;
         _repaint = repaint;
         _conflicts = conflicts;
-
-        if (!options.StartRoute.IsNone)
-        {
-            Show(options.StartRoute);
-        }
+        _currentRoute = options.StartRoute;
+        _unbuilt = options.StartRoute;
     }
 
     /// <summary>The route being shown.</summary>
     public ViewRoute CurrentRoute => _currentRoute;
 
     /// <summary>Commands of the screen being shown, for the router and the palette.</summary>
-    public IReadOnlyList<ViewCommand> CurrentCommands => _active?.View.Commands() ?? [];
+    public IReadOnlyList<ViewCommand> CurrentCommands
+    {
+        get
+        {
+            Build();
+
+            return _active?.View.Commands() ?? [];
+        }
+    }
 
     internal ViewRoute PreviousRoute => _back.Count > 0 ? _back.Peek() : ViewRoute.None;
 
@@ -56,6 +67,8 @@ public class Navigator
     {
         get
         {
+            Build();
+
             if (_active is null)
             {
                 return [];
@@ -85,12 +98,19 @@ public class Navigator
     public bool CanGoForward => _forward.Count > 0;
 
     /// <summary>Draws the current screen. Called once per frame.</summary>
-    public void Draw() => _active?.View.Draw();
+    public void Draw()
+    {
+        Build();
+
+        _active?.View.Draw();
+    }
 
     /// <summary>Passes a key to the current screen and applies the route it returns.</summary>
     /// <param name="key">The key that was pressed.</param>
     public void Handle(ConsoleKeyInfo key)
     {
+        Build();
+
         if (_active is null)
         {
             return;
@@ -103,6 +123,8 @@ public class Navigator
     /// <param name="mouse">The event, in frame coordinates.</param>
     public void HandleMouse(MouseEvent mouse)
     {
+        Build();
+
         if (_active is not null)
         {
             Apply(_active.View.HandleMouse(mouse));
@@ -113,6 +135,8 @@ public class Navigator
     /// <param name="text">What was pasted.</param>
     public void HandlePaste(string text)
     {
+        Build();
+
         if (_active is not null)
         {
             Apply(_active.View.HandlePaste(text));
@@ -130,6 +154,7 @@ public class Navigator
 
         if (route.IsNone || route == _currentRoute)
         {
+            Build();
             return;
         }
 
@@ -184,9 +209,47 @@ public class Navigator
         return true;
     }
 
+    /// <summary>
+    /// Builds the screen of the route that is current but has never been shown — the start route, or
+    /// one gone back to before it was ever built. Everything that reads or drives the current screen
+    /// goes through here first, so the view is built on the drawing thread rather than in a
+    /// constructor.
+    /// </summary>
+    private void Build()
+    {
+        if (!_unbuilt.IsNone)
+        {
+            Show(_unbuilt);
+        }
+    }
+
     private void Show(ViewRoute route)
     {
+        if (_building)
+        {
+            throw new InvalidOperationException(
+                $"The view at route {route} was asked for while a view was still being built. A view " +
+                "navigates from its key handling or a command, never from its constructor, and it takes " +
+                "the navigator from the container rather than calling it while the container builds it.");
+        }
+
+        _building = true;
+
+        try
+        {
+            Replace(route);
+        }
+        finally
+        {
+            _building = false;
+        }
+    }
+
+    private void Replace(ViewRoute route)
+    {
         var next = _resolver.Create(route);
+
+        _unbuilt = ViewRoute.None;
 
         if (_active is { } leaving)
         {
