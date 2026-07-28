@@ -13,27 +13,42 @@ the [modal](modals.md) that matches its type.
 private readonly Surface _surface;
 private readonly Form _form;
 
-_form = new Form(state, options)
+public SettingsView(
+    Surface surface,
+    SettingsStore settings,
+    ArlecchinoState state,
+    ArlecchinoOptions options)
 {
-    Fields =
-    [
-        Field.Text(() => Loc(LocString.Profile), settings.Profile,
-            help: () => Loc(LocString.ProfileHelp)),
-        Field.Secret(() => Loc(LocString.Passphrase), settings.Passphrase),
-        Field.Choice(() => Loc(LocString.Theme), ["dark", "light"], settings.Theme),
-        Field.Slider(() => Loc(LocString.Volume), settings.Volume, 0, 100),
-        Field.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen,
-            value => value ? Yes : No),
-        Field.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings,
-            pickFolder: true),
-        Field.Action(() => Loc(LocString.Apply), Apply, enabled: () => settings.IsComplete.Value),
-    ],
-};
+    _surface = surface;
+
+    _form = new Form(state, options)
+    {
+        Fields =
+        [
+            Field.Text(() => Loc(LocString.Profile), settings.Profile,
+                help: () => Loc(LocString.ProfileHelp)),
+            Field.Secret(() => Loc(LocString.Passphrase), settings.Passphrase),
+            Field.Choice(() => Loc(LocString.Theme), ["dark", "light"], settings.Theme),
+            Field.Slider(() => Loc(LocString.Volume), settings.Volume, 0, 100),
+            Field.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen,
+                value => value ? Yes : No),
+            Field.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings,
+                pickFolder: true),
+            Field.Action(() => Loc(LocString.Apply), Apply,
+                enabled: () => settings.IsComplete.Value),
+        ],
+    };
+}
 
 public void Draw() => _form.Draw(_surface.Content);
 public ViewRoute Handle(ConsoleKeyInfo key) => _form.Handle(key).Route;
 public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse).Route;
 ```
+
+`settings` is the application's own [store](stores.md) of atoms — `Atom<string> Profile`,
+`Atom<decimal> Volume` and so on — not anything the framework defines. `state` and `options` are
+`ArlecchinoState` and `ArlecchinoOptions` from the container: the form needs the first to open modals
+and the second for the keymap and the wording.
 
 ## What it looks like
 

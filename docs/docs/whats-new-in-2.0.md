@@ -25,6 +25,7 @@ without counting rows:
 private readonly StatusBar _header;
 private readonly Tabs _tabs;
 private readonly ListBox<Mod> _list;
+private readonly Surface surface;
 
 var rest = _header.Draw(surface.Content);
 var below = _tabs.Draw(rest);

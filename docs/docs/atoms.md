@@ -72,6 +72,8 @@ adds a subscription nobody reads.
 no list of atoms to keep in sync, and nothing to register. Take it where you need `Undo()` / `Redo()`:
 
 ```csharp
+private readonly AtomHistory history;
+
 using (history.Group())
 {
     settings.Profile.Value = "fEst";

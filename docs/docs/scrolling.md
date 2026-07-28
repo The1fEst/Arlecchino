@@ -30,6 +30,9 @@ _notes = new ScrollPane(options.Keymap)
 };
 ```
 
+Widgets are built in the view's constructor, so `options` is the `ArlecchinoOptions` the container
+hands it, and `region` is the [region](layout.md) the view draws the widget into.
+
 The delegate is handed a region as tall as `ContentHeight()` and **already moved up by the offset**, so
 it always writes the first line at row zero and never has to know where the window is. Anything that
 can paint a region fits inside, other widgets included.

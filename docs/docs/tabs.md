@@ -17,6 +17,9 @@ _tabs = new Tabs(options.Keymap)
 };
 ```
 
+Widgets are built in the view's constructor, so `options` is the `ArlecchinoOptions` the container
+hands it, and `region` is the [region](layout.md) the view draws the widget into.
+
 | Member | Meaning |
 |---|---|
 | `Titles` | One `Func<string>` per tab, so the strip follows the [language](localization.md) |

@@ -15,6 +15,9 @@ _readme = new TextView(options.Keymap) { Text = File.ReadAllText(path) };
 _readme.Draw(region);
 ```
 
+Widgets are built in the view's constructor, so `options` is the `ArlecchinoOptions` the container
+hands it, and `region` is the [region](layout.md) the view draws the widget into.
+
 | Member | Meaning |
 |---|---|
 | `Text` | What to show |

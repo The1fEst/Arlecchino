@@ -25,6 +25,9 @@ _mods = new Table<Mod>(options.Keymap)
 };
 ```
 
+Widgets are built in the view's constructor, so `options` is the `ArlecchinoOptions` the container
+hands it, and `region` is the [region](layout.md) the view draws the widget into.
+
 ## Columns
 
 `TableColumn<T>` is the shape of one column:

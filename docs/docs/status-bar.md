@@ -13,6 +13,7 @@ Three widgets that only draw. None of them takes the focus, and all three implem
 
 ```csharp
 private readonly Spinner _spinner = new();
+private readonly ArlecchinoKeymap keymap;
 
 new StatusBar
 {
@@ -24,6 +25,9 @@ new StatusBar
     ],
 }.Draw(region.Rows(region.Height - 1, 1));
 ```
+
+Widgets are built in the view's constructor, so `options` is the `ArlecchinoOptions` the container
+hands it, and `region` is the [region](layout.md) the view draws the widget into.
 
 Left and right groups joined with three spaces; the right side is **dropped** when it would collide
 with the left instead of overwriting it, so a narrow terminal loses the least important half rather

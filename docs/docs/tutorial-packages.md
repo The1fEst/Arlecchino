@@ -625,6 +625,7 @@ The [form](forms.md) is four fields over those atoms:
 
 ```csharp
 private readonly Form _form;
+private readonly UpgradePlan plan;
 
 _form = new Form(state, options)
 {
