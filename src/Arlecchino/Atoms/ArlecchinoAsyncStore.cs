@@ -17,12 +17,16 @@ namespace Arlecchino.Atoms;
 ///
 ///     protected override async Task LoadAsync(CancellationToken token)
 ///     {
-///         var saved = await Settings.ReadAsync(token);
+///         await using var fs = new FileStream(SettingsPath, FileMode.Open, FileAccess.Read);
+///         var saved = await JsonSerializer.DeserializeAsync&lt;Saved&gt;(fs, cancellationToken: token);
 ///
 ///         Server.Post(saved.Server);
 ///     }
 /// }
 /// </code>
+///
+/// Reading the file is the application's own code — the framework has nothing to do with disks,
+/// formats or paths.
 ///
 /// The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than
 /// a screen that says it is loading. A view draws from <see cref="Status"/>, which is an atom and so
