@@ -35,7 +35,7 @@ returns to `ViewRoute.None`.
 |---|---|
 | `Title` | Shown in the toolbar |
 | `PickFolder` | `true` picks directories, `false` picks files |
-| `InitialPath` | Starting folder; a path that does not exist starts at the drive list |
+| `InitialPath` | Where browsing starts: a folder is opened, a **file** is opened in the folder that holds it and starts under the cursor, and a path that no longer exists starts at the drive list |
 | `ReturnView` | Route navigated to after a pick or a cancel |
 | `OnPicked` | Called with the chosen path before returning |
 | `Places` | Extra sidebar entries, listed above the standard favorites |
