@@ -284,7 +284,7 @@ public sealed class FormTests
         using var app = new TestApplication();
         var folder = new TrackedAtom<string>("");
 
-        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: static () => "D:/projects"));
+        Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
 
         Assert.Equal("D:/projects", app.State.FilePicker!.InitialPath);
     }
@@ -295,7 +295,7 @@ public sealed class FormTests
         using var app = new TestApplication();
         var folder = new TrackedAtom<string>("D:/games/saves");
 
-        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: static () => "D:/projects"));
+        Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
 
         Assert.Equal("D:/games/saves", app.State.FilePicker!.InitialPath);
     }
@@ -307,7 +307,7 @@ public sealed class FormTests
         var folder = new TrackedAtom<string>("");
         var last = new[] { "D:/first" };
 
-        var field = Field.Path(static () => "Folder", folder, ViewKind.Probe, true, start: () => last[0]);
+        var field = Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, () => last[0]);
 
         Open(app, field);
         Assert.Equal("D:/first", app.State.FilePicker!.InitialPath);

@@ -13,20 +13,22 @@ the public API means a new major. See
 
 ### Added
 
-- **`Field.Path` takes a `start`**, for where the picker opens while the field is still empty:
+- **`Field.PathFrom`** says where the picker opens while the field is still empty:
 
   ```csharp
-  Field.Path(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
+  Field.PathFrom(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
       start: () => state.PickerLastFolder);
   ```
 
-  It opened at the path the field held, so an empty field left it with nowhere to go and landed the
-  user on the drives with no way to say otherwise. A field that already has a value still opens there
-  and ignores `start`. It is a delegate rather than a string so "wherever the user was last time" is
-  answered when the picker opens rather than when the form is built.
+  `Field.Path` opens at the path the field holds, so an empty field left the picker with nowhere to go
+  and landed the user on the drives with no way to say otherwise. A field that already has a value
+  still opens there and ignores `start`, and a path that no longer exists lands on the drives as
+  before. `start` is a delegate rather than a string so "wherever the user was last time" is answered
+  when the picker opens rather than when the form is built.
 
-  The parameter is last, after `help`, on purpose: putting it in its natural place would have silently
-  rebound a `help` argument passed positionally.
+  It is a member of its own rather than another argument to `Field.Path`, because adding a parameter —
+  optional or not — changes the signature every application was compiled against. Package validation
+  caught exactly that, which is what it is there for.
 
 ## 2.3.0
 

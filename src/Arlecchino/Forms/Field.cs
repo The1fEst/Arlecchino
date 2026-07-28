@@ -295,23 +295,52 @@ public sealed class Field
     /// <param name="returnView">The view to return to once the picker is done.</param>
     /// <param name="pickFolder">Whether a folder is being chosen rather than a file.</param>
     /// <param name="help">A line shown under the field while it is selected.</param>
-    /// <param name="start">
-    /// Where the picker opens while the field is still empty — a project folder, the last folder the
-    /// user was in, wherever the answer is likely to be. A field that already holds a path opens
-    /// there instead, and a path that no longer exists lands the picker on the drives.
-    ///
-    /// It is a delegate rather than a string so that "where we were last time" is answered when the
-    /// picker opens rather than when the form is built:
-    /// <c>start: () => state.PickerLastFolder</c>.
-    /// </param>
     /// <returns>The field.</returns>
     public static Field Path(
         Func<string> label,
         Atom<string> value,
         ViewRoute returnView,
         bool pickFolder,
-        Func<string>? help = null,
-        Func<string>? start = null) => new()
+        Func<string>? help = null) =>
+        Picker(label, value, returnView, pickFolder, help, start: null);
+
+    /// <summary>
+    /// A path on disk that opens the picker somewhere in particular while the field is still empty —
+    /// a project folder, the last folder the user was in, wherever the answer is likely to be.
+    ///
+    /// It is a separate member rather than another argument to <see cref="Path"/> because adding one
+    /// to a method that already ships would break every application compiled against it.
+    /// </summary>
+    /// <param name="label">What the field is called.</param>
+    /// <param name="value">The atom to read and write.</param>
+    /// <param name="returnView">The view to return to once the picker is done.</param>
+    /// <param name="pickFolder">Whether a folder is being chosen rather than a file.</param>
+    /// <param name="start">
+    /// Where the picker opens while the field is empty. A field that already holds a path opens there
+    /// instead, and a path that no longer exists lands the picker on the drives.
+    ///
+    /// It is a delegate rather than a string so that "where we were last time" is answered when the
+    /// picker opens rather than when the form is built:
+    /// <c>start: () => state.PickerLastFolder</c>.
+    /// </param>
+    /// <param name="help">A line shown under the field while it is selected.</param>
+    /// <returns>The field.</returns>
+    public static Field PathFrom(
+        Func<string> label,
+        Atom<string> value,
+        ViewRoute returnView,
+        bool pickFolder,
+        Func<string> start,
+        Func<string>? help = null) =>
+        Picker(label, value, returnView, pickFolder, help, start);
+
+    private static Field Picker(
+        Func<string> label,
+        Atom<string> value,
+        ViewRoute returnView,
+        bool pickFolder,
+        Func<string>? help,
+        Func<string>? start) => new()
     {
         Label = label,
         Value = () => value.Value,

@@ -1,3 +1,2 @@
 #nullable enable
-*REMOVED*static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null, System.Func<string!>? start = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.PathFrom(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>! start, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
