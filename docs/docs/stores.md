@@ -1,7 +1,7 @@
 ---
 title: Stores
 sidebar_label: Stores
-description: IArlecchinoStore and IArlecchinoScopedStore — a class of atoms that registers itself, and the difference between state that outlives a screen and state that does not.
+description: IArlecchinoStore, IArlecchinoScopedStore and ArlecchinoAsyncStore — a class of atoms that registers itself, what outlives a screen, and a store that loads before it holds the truth.
 ---
 
 # Stores
@@ -70,6 +70,82 @@ public sealed class DraftStore : IArlecchinoStore
 
 A singleton store cannot take a scoped one — that is the standard container rule, and the container
 says so at startup rather than at the first navigation.
+
+## A store that loads itself
+
+Settings read from disk, a session restored from a server, a catalogue that lives in a file: a store
+that has to fetch something before it holds the truth derives from `ArlecchinoAsyncStore` instead, and
+the framework starts the load as the application starts.
+
+```csharp
+public sealed class SettingsStore : ArlecchinoAsyncStore
+{
+    public TrackedAtom<string> Server { get; } = new("127.0.0.1");
+    public TrackedAtom<decimal> Port { get; } = new(40000);
+
+    protected override async Task LoadAsync(CancellationToken token)
+    {
+        var saved = await Settings.ReadAsync(token);
+
+        Server.Post(saved.Server);
+        Port.Post(saved.Port);
+    }
+}
+```
+
+That is the whole of it: no `BackgroundService` to write, no `TaskCompletionSource` to hand around,
+and the token is the application's — a load still running when the user quits is cancelled rather than
+left behind.
+
+`LoadAsync` runs **off the drawing thread**, so what it fetches reaches the atoms through
+[`Post`](atoms.md#threads). Writing `Value` there throws and says so.
+
+### Waiting for it
+
+The first frame is drawn without waiting. A terminal that hangs black on a slow disk is worse than a
+screen that says it is loading, so the store reports where it got to and the application keeps
+running:
+
+| Member | Meaning |
+|---|---|
+| `Status` | `Idle`, `Loading`, `Loaded` or `Failed`, as an atom — a view that reads it redraws by itself |
+| `IsLoading`, `IsLoaded`, `Failed` | The same answer as a `bool`, for an `if` in `Draw` |
+| `Error` | What the load threw, or `null` |
+| `Ready` | A `Task` that completes when the load does |
+
+A view reads the status, because it draws every frame anyway:
+
+```csharp
+public void Draw()
+{
+    if (_settings.IsLoading)
+    {
+        _surface.AppendLine("loading settings…", Theme.Muted, Align.Center);
+        return;
+    }
+
+    _form.Draw(_surface.Content);
+}
+```
+
+Code that is not a view — a worker, a command that must not run early — awaits instead:
+
+```csharp
+await _settings.Ready;
+```
+
+`Ready` faults with whatever `LoadAsync` threw and is cancelled when the application stopped before
+the load finished, so awaiting it tells you what happened rather than hanging. A store that throws
+turns its status to failed, is logged, and leaves the application running on whatever its atoms
+already hold — which is why atoms are declared with sensible defaults.
+
+Often no check is needed at all: `Server` starts at `127.0.0.1` and simply changes when the load
+lands. Check where an empty value would lie — a list that is empty until it is loaded, a screen that
+would otherwise say "0 records".
+
+A store that loads itself is registered like any other, by `AddGeneratedStores()` or `AddStore<T>()`.
+A [scoped](#two-lifetimes) one is not started by the host: it belongs to a screen rather than to the
+application, so it loads when that screen builds it.
 
 ## Persisting a store
 

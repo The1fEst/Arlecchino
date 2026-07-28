@@ -33,6 +33,7 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 | Property | Default |
 |---|---|
 | `KeysTitle` | `Keys` — title of the hints box |
+| `HintCommands` | `commands` — the palette line the hints box adds by itself |
 | `CommandPaletteTitle` | `Commands` |
 | `CommandUnknown(key)` | `unknown command: {key}` |
 | `ModalTextHints` | `Enter — confirm   Esc — cancel` |

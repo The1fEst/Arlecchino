@@ -81,6 +81,11 @@ either way, and a screen does not change behaviour depending on whether a row ha
 `Hints()` is optional for a view with commands: when it returns nothing, the hints box is built from
 the command list, so a rebound key relabels itself there too.
 
+The box also offers the palette itself — `: → commands` with the default keymap — whenever at least
+one command is registered, which is the same condition under which the key does anything at all. The
+key shown is `CommandPaletteKey`, so rebinding it relabels the line, and the wording is
+`ArlecchinoStrings.HintCommands`. A view with no hints of its own gets a box with that one line.
+
 ## Conflicts are reported
 
 A view command shadows an application command on the same key. That is by design, and it is said out

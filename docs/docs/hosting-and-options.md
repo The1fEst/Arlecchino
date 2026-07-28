@@ -106,6 +106,10 @@ public sealed class ChooseStartView : IArlecchinoStartup
 Register with `.AddStartup<ChooseStartView>()`. Every startup runs when the hosted service begins, in
 registration order, each one applied to the navigator.
 
+Every [`ArlecchinoAsyncStore`](stores.md#a-store-that-loads-itself) is started at the same moment,
+with the token cancelled when the host stops — started, not awaited: the first frame is drawn while
+they load, and each store says where it got to.
+
 ## The two loops
 
 The hosted service runs two of them at once. One reads the terminal — a blocking, timing-sensitive
