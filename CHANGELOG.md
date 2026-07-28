@@ -9,6 +9,19 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.4.1
+
+### Fixed
+
+- **The file picker opens where a file is, rather than on the drives.** `InitialPath` was checked with
+  `Directory.Exists` alone, so a request that named a file — which is what a `Field.Path` for a file
+  holds once it has an answer — failed the check and started browsing from nothing. Reopening such a
+  field threw the user back to the list of drives every time.
+
+  A folder is browsed as before; a file is browsed in the folder that holds it, and the cursor starts
+  on that file, so confirming reopens the same answer. A path that no longer exists still lands on the
+  drives.
+
 ## 2.4.0
 
 ### Added

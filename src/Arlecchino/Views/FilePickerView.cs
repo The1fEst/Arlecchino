@@ -78,8 +78,9 @@ internal class FilePickerView : IArlecchinoView
         _panes.Add(_sidebarPane);
 
         _sidebar = BuildSidebar();
-        _path = Directory.Exists(_request.InitialPath) ? _request.InitialPath : "";
+        _path = StartingFolder(_request.InitialPath);
         LoadEntries();
+        SelectRequested(_request.InitialPath);
         SyncSidebarSelection();
     }
 
@@ -652,6 +653,41 @@ internal class FilePickerView : IArlecchinoView
         }
 
         rows.Add(new(name, path, icon));
+    }
+
+    /// <summary>
+    /// Where browsing starts. A folder is browsed; a file is browsed in the folder that holds it, so
+    /// a field that already names a file reopens where that file is rather than on the drives.
+    /// Anything that is not there any more falls back to the drives.
+    /// </summary>
+    /// <param name="requested">What the request asked for.</param>
+    /// <returns>The folder to list, or an empty string for the drives.</returns>
+    private static string StartingFolder(string requested)
+    {
+        if (Directory.Exists(requested))
+        {
+            return requested;
+        }
+
+        return File.Exists(requested) ? Path.GetDirectoryName(requested) ?? "" : "";
+    }
+
+    /// <summary>Puts the cursor on the file the request named, when it is one of the entries.</summary>
+    /// <param name="requested">What the request asked for.</param>
+    private void SelectRequested(string requested)
+    {
+        if (_path.Length == 0 || !File.Exists(requested))
+        {
+            return;
+        }
+
+        var index = _entries.FindIndex(entry =>
+            string.Equals(entry.FullPath, requested, StringComparison.OrdinalIgnoreCase));
+
+        if (index >= 0)
+        {
+            _selected = index;
+        }
     }
 
     private void LoadEntries()
