@@ -94,7 +94,7 @@ The row the next line goes on, counted from the top of the region.
 ### `AppendLine(string, IArlecchinoColor, Align)` {#appendline-string-iarlecchinocolor-align}
 
 ```csharp
-public void AppendLine(string line, IArlecchinoColor style, Align align);
+public void AppendLine(string line, IArlecchinoColor? style = null, Align align = Left);
 ```
 
 Writes one line at the cursor and moves it down. Once the region is full the call does nothing, so a loop over more rows than fit needs no bound of its own.
@@ -110,7 +110,7 @@ Writes one line at the cursor and moves it down. Once the region is full the cal
 ### `FillLine(IArlecchinoColor)` {#fillline-iarlecchinocolor}
 
 ```csharp
-public void FillLine(IArlecchinoColor style);
+public void FillLine(IArlecchinoColor? style = null);
 ```
 
 Draws a rule of `-` across the region and moves the cursor down.

@@ -200,7 +200,7 @@ Draws every pane where the branches put it. This is the whole of a view's `Draw`
 ### `Gaps(int, int)` {#gaps-int-int}
 
 ```csharp
-public PaneTree Gaps(int inner, int outer);
+public PaneTree Gaps(int inner, int outer = 0);
 ```
 
 Sets the spacing of the whole layout, rather than of one branch, so a screen is loosened or tightened in one place. The names are the ones a tiling window manager uses.

@@ -42,6 +42,7 @@ public sealed class Field
 | [`MultiChoice(Func<string>, IReadOnlyList<string>, Atom<IReadOnlyList<string>>, Func<IReadOnlyList<string>, string>, Func<string>)`](#multichoice-func-string-ireadonlylist-string-atom-ireadonlylist-string-func-ireadonlylist-string-string-func-string) | Any number of options out of a list. |
 | [`Number(Func<string>, Atom<decimal>, decimal, decimal, Func<string>)`](#number-func-string-atom-decimal-decimal-decimal-func-string) | A number that can be typed or stepped. Clearing it puts the value back to the lowest allowed. |
 | [`Path(Func<string>, Atom<string>, ViewRoute, bool, Func<string>)`](#path-func-string-atom-string-viewroute-bool-func-string) | A path on disk. Unlike the other fields this leaves the form: the picker is a view of its own, which is why it has to be told where to come back to. |
+| [`PathFrom(Func<string>, Atom<string>, ViewRoute, bool, Func<string>, Func<string>)`](#pathfrom-func-string-atom-string-viewroute-bool-func-string-func-string) | A path on disk that opens the picker somewhere in particular while the field is still empty — a project folder, the last folder the user was in, wherever the answer is likely to be. It is a separate member rather than another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) because adding one to a method that already ships would break every application compiled against it. |
 | [`Secret(Func<string>, Atom<string>, Func<string>)`](#secret-func-string-atom-string-func-string) | A secret, shown as dots both in the form and while it is typed. The atom still holds the text as it is, so treat it as sensitive. |
 | [`Slider(Func<string>, Atom<decimal>, decimal, decimal, Func<string>)`](#slider-func-string-atom-decimal-decimal-decimal-func-string) | A number picked on a slider rather than typed, for values where the range matters more than the exact figure. |
 | [`Text(Func<string>, Atom<string>, Func<string, string>, Func<string>)`](#text-func-string-atom-string-func-string-string-func-string) | A line of text, edited in a dialog. |
@@ -294,6 +295,33 @@ A path on disk. Unlike the other fields this leaves the form: the picker is a vi
 | `value` | [`Atom`](../arlecchino.atoms/Atom-1.md)&lt;`string`&gt; | The atom to read and write. |
 | `returnView` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | The view to return to once the picker is done. |
 | `pickFolder` | `bool` | Whether a folder is being chosen rather than a file. |
+| `help` | `Func<TResult>`&lt;`string`&gt; | A line shown under the field while it is selected. |
+
+**Returns** [`Field`](../arlecchino.forms/Field.md) — The field.
+
+### `PathFrom(Func<string>, Atom<string>, ViewRoute, bool, Func<string>, Func<string>)` {#pathfrom-func-string-atom-string-viewroute-bool-func-string-func-string}
+
+```csharp
+public static Field PathFrom(
+    Func<string> label,
+    Atom<string> value,
+    ViewRoute returnView,
+    bool pickFolder,
+    Func<string> start,
+    Func<string> help);
+```
+
+A path on disk that opens the picker somewhere in particular while the field is still empty — a project folder, the last folder the user was in, wherever the answer is likely to be. It is a separate member rather than another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) because adding one to a method that already ships would break every application compiled against it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `label` | `Func<TResult>`&lt;`string`&gt; | What the field is called. |
+| `value` | [`Atom`](../arlecchino.atoms/Atom-1.md)&lt;`string`&gt; | The atom to read and write. |
+| `returnView` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | The view to return to once the picker is done. |
+| `pickFolder` | `bool` | Whether a folder is being chosen rather than a file. |
+| `start` | `Func<TResult>`&lt;`string`&gt; | Where the picker opens while the field is empty. A field that already holds a path opens there instead, and a path that no longer exists lands the picker on the drives. It is a delegate rather than a string so that "where we were last time" is answered when the picker opens rather than when the form is built: `start: () => state.PickerLastFolder`. |
 | `help` | `Func<TResult>`&lt;`string`&gt; | A line shown under the field while it is selected. |
 
 **Returns** [`Field`](../arlecchino.forms/Field.md) — The field.
