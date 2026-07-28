@@ -9,6 +9,68 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.6.0
+
+### Added
+
+- **A notification can carry more than a line.** Work that takes a while had nowhere to report itself:
+  the output row holds one line for a few seconds, and a dialog blocks the screen it is reporting on.
+  A notification now takes three optional pieces, so the same entry serves while the work runs and
+  after it is over:
+
+  ```csharp
+  var entry = state.Notifications.Raise(new(DateTimeOffset.Now, NotificationLevel.Information, "Copying")
+  {
+      Progress = () => $"{copied} of {total} files",
+      Detail = () => string.Join(Environment.NewLine, errors),
+      Actions = [new(() => "Stop", cancelling.Cancel)],
+  });
+  ```
+
+  `Progress` is read every frame and is what the output row and the notifications screen show, so the
+  counts climb without the application raising a message per file. `Share` answers how far along the
+  work is, and a bar is drawn for it wherever the entry appears — a small one in the row, a full-width
+  one in the opened dialog; work whose size is not known answers `null` and gets the text alone.
+
+  An entry that reports progress stays on the output row past `NotificationTimeout`, is never expired
+  by `NotificationLifetime`, and survives `Clear()` — a copy does not stop because its line was
+  cleared, and a job running with nothing on screen is worse than a list that will not empty.
+
+  `Settle(entry, text, level)` turns that line into what came of the work, in place: the entry keeps
+  its spot and its identity, so a dialog someone already has open changes under them instead of going
+  stale, its actions are dropped, and it starts ageing from the moment it ended rather than from the
+  moment it began. `Withdraw(entry)` still removes one outright.
+- **Notifications open.** `Enter` on the notifications screen opens the entry in a dialog that shows
+  `Detail` in full — the errors a copy collected, the output of a command — and offers its `Actions`
+  as chips, picked with `←→` and run with `Enter`, or clicked. Entries without either simply read as
+  the line they carry. The wording is `ArlecchinoStrings.NotificationsOpen` and
+  `ArlecchinoStrings.ModalNotificationHints`.
+
+### Fixed
+
+- **A view may ask the container for the `Navigator`.** Until now the navigator showed the start route
+  from its own constructor, so a view built for that route could not take a `Navigator` parameter: the
+  container was asked for the service it was still building, and the resolve went round that circle
+  forever. Nothing was drawn, nothing was logged, and `Ctrl+C` did nothing either, because the terminal
+  was taken over further down the same call.
+
+  The start route is now shown the first time the screen is needed — the first frame, key, mouse event
+  or `Apply` — rather than while the navigator is being built, so a view that wants to navigate from a
+  dialog callback simply asks for it:
+
+  ```csharp
+  public sealed class InventoryView : IArlecchinoView
+  {
+      private readonly Navigator _navigator;
+
+      public InventoryView(Navigator navigator) => _navigator = navigator;
+  }
+  ```
+
+  `CurrentRoute` still reads as the start route from the moment the application is built, and a screen
+  that navigates from its own constructor — which was a hang before — now throws and says what to do
+  instead.
+
 ## 2.5.0
 
 ### Added
