@@ -180,9 +180,35 @@ public class InputRouter
             case ToggleModal toggle:
                 ClickToggle(toggle, mouse);
                 return;
+            case NotificationModal opened:
+                ClickNotification(opened, mouse);
+                return;
             case ColorModal color:
                 ClickColor(color, mouse);
                 return;
+        }
+    }
+
+    private void ClickNotification(NotificationModal modal, MouseEvent mouse)
+    {
+        if (mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left)
+        {
+            return;
+        }
+
+        for (var index = 0; index < modal.Chips.Count; index++)
+        {
+            if (!modal.Chips[index].Contains(mouse.Row, mouse.Column))
+            {
+                continue;
+            }
+
+            modal.Index = index;
+
+            _state.CloseModal();
+            modal.Run();
+
+            return;
         }
     }
 
@@ -493,6 +519,9 @@ public class InputRouter
                 return;
             case MessageModal message:
                 ProcessMessageModal(message, key);
+                return;
+            case NotificationModal opened:
+                ProcessNotificationModal(opened, key);
                 return;
             case TextAreaModal area:
                 ProcessTextAreaModal(area, key);
@@ -1009,6 +1038,40 @@ public class InputRouter
 
         _state.CloseModal();
         modal.OnClosed?.Invoke();
+    }
+
+    /// <summary>
+    /// Reads an opened notification: the arrows walk its actions, confirming runs the one selected and
+    /// cancelling only closes. The dialog is closed before the action runs, so an action is free to
+    /// open one of its own.
+    /// </summary>
+    private void ProcessNotificationModal(NotificationModal modal, ConsoleKeyInfo key)
+    {
+        if (_keymap.MoveLeft.Matches(key))
+        {
+            modal.Move(-1);
+            return;
+        }
+
+        if (_keymap.MoveRight.Matches(key))
+        {
+            modal.Move(1);
+            return;
+        }
+
+        if (_keymap.Cancel.Matches(key))
+        {
+            _state.CloseModal();
+            return;
+        }
+
+        if (!_keymap.Confirm.Matches(key))
+        {
+            return;
+        }
+
+        _state.CloseModal();
+        modal.Run();
     }
 
     private void ProcessSegmentedModal(SegmentedModal modal, ConsoleKeyInfo key)

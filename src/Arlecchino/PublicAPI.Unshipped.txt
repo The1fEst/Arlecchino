@@ -1,4 +1,5 @@
 #nullable enable
+abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
 Arlecchino.Atoms.ArlecchinoAsyncStore
 Arlecchino.Atoms.ArlecchinoAsyncStore.ArlecchinoAsyncStore() -> void
 Arlecchino.Atoms.ArlecchinoAsyncStore.Error.get -> Arlecchino.Atoms.IReadableAtom<System.Exception?>!
@@ -7,6 +8,53 @@ Arlecchino.Atoms.ArlecchinoAsyncStore.IsLoaded.get -> bool
 Arlecchino.Atoms.ArlecchinoAsyncStore.IsLoading.get -> bool
 Arlecchino.Atoms.ArlecchinoAsyncStore.Ready.get -> System.Threading.Tasks.Task!
 Arlecchino.Atoms.ArlecchinoAsyncStore.Status.get -> Arlecchino.Atoms.IReadableAtom<Arlecchino.Atoms.LoadStatus>!
+Arlecchino.Diagnostics.Notification.Actions.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.NotificationAction!>!
+Arlecchino.Diagnostics.Notification.Actions.set -> void
+Arlecchino.Diagnostics.Notification.Detail.get -> System.Func<string!>?
+Arlecchino.Diagnostics.Notification.Detail.set -> void
+Arlecchino.Diagnostics.Notification.Ended.get -> string?
+Arlecchino.Diagnostics.Notification.Filled() -> double?
+Arlecchino.Diagnostics.Notification.IsRunning.get -> bool
+Arlecchino.Diagnostics.Notification.Line.get -> string!
+Arlecchino.Diagnostics.Notification.Loudness.get -> Arlecchino.Diagnostics.NotificationLevel
+Arlecchino.Diagnostics.Notification.Progress.get -> System.Func<string!>?
+Arlecchino.Diagnostics.Notification.Progress.init -> void
+Arlecchino.Diagnostics.Notification.Share.get -> System.Func<double?>?
+Arlecchino.Diagnostics.Notification.Share.init -> void
+Arlecchino.Diagnostics.Notification.Since.get -> System.DateTimeOffset
+Arlecchino.Diagnostics.Notification.Whole() -> string!
+Arlecchino.Diagnostics.NotificationAction
+Arlecchino.Diagnostics.NotificationAction.<Clone>$() -> Arlecchino.Diagnostics.NotificationAction!
+Arlecchino.Diagnostics.NotificationAction.Deconstruct(out System.Func<string!>! Label, out System.Action! Run) -> void
+Arlecchino.Diagnostics.NotificationAction.Equals(Arlecchino.Diagnostics.NotificationAction? other) -> bool
+Arlecchino.Diagnostics.NotificationAction.Label.get -> System.Func<string!>!
+Arlecchino.Diagnostics.NotificationAction.Label.init -> void
+Arlecchino.Diagnostics.NotificationAction.NotificationAction(System.Func<string!>! Label, System.Action! Run) -> void
+Arlecchino.Diagnostics.NotificationAction.Run.get -> System.Action!
+Arlecchino.Diagnostics.NotificationAction.Run.init -> void
+Arlecchino.Diagnostics.Notifications.Raise(Arlecchino.Diagnostics.Notification! entry) -> Arlecchino.Diagnostics.Notification!
+Arlecchino.Diagnostics.Notifications.Settle(Arlecchino.Diagnostics.Notification! entry, string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
+Arlecchino.Diagnostics.Notifications.Withdraw(Arlecchino.Diagnostics.Notification! entry) -> void
 Arlecchino.Hosting.ArlecchinoStrings.HintCommands.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.HintCommands.set -> void
-abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
+Arlecchino.Hosting.ArlecchinoStrings.ModalNotificationHints.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.ModalNotificationHints.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsOpen.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotificationsOpen.set -> void
+Arlecchino.Modals.NotificationModal
+Arlecchino.Modals.NotificationModal.Actions.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.NotificationAction!>!
+Arlecchino.Modals.NotificationModal.Chips.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Rendering.SurfaceRegion>!
+Arlecchino.Modals.NotificationModal.Chips.set -> void
+Arlecchino.Modals.NotificationModal.Entry.get -> Arlecchino.Diagnostics.Notification!
+Arlecchino.Modals.NotificationModal.Entry.init -> void
+Arlecchino.Modals.NotificationModal.Index.get -> int
+Arlecchino.Modals.NotificationModal.Index.set -> void
+Arlecchino.Modals.NotificationModal.Move(int delta) -> void
+Arlecchino.Modals.NotificationModal.NotificationModal() -> void
+Arlecchino.Modals.NotificationModal.Run() -> void
+Arlecchino.Modals.NotificationModal.Text.get -> string!
+override Arlecchino.Diagnostics.NotificationAction.Equals(object? obj) -> bool
+override Arlecchino.Diagnostics.NotificationAction.GetHashCode() -> int
+override Arlecchino.Diagnostics.NotificationAction.ToString() -> string!
+static Arlecchino.Diagnostics.NotificationAction.operator !=(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool
+static Arlecchino.Diagnostics.NotificationAction.operator ==(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool

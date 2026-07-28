@@ -141,4 +141,159 @@ public sealed class NotificationTests
         Assert.Equal("", app.State.Output);
         Assert.Empty(app.State.Notifications.Entries);
     }
+
+    [Fact]
+    public void WorkStillRunningKeepsTheRowAndCountsUp()
+    {
+        using var app = new TestApplication();
+        var counter = new Counter();
+
+        app.State.Notifications.Raise(Running(() => $"copied {counter.Files} files"));
+
+        Assert.Contains("copied 0 files", app.Frame(), StringComparison.Ordinal);
+
+        counter.Files = 7;
+        app.Advance(app.Options.NotificationTimeout + TimeSpan.FromSeconds(1));
+
+        Assert.Contains("copied 7 files", app.Frame(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AnOpenedNotificationShowsItsDetailAndRunsItsAction()
+    {
+        using var app = new TestApplication();
+        var stopped = false;
+
+        app.State.Notifications.Raise(new(DateTimeOffset.UtcNow, NotificationLevel.Warning, "3 files failed")
+        {
+            Detail = static () => "one.txt: in use",
+            Actions = [new(static () => "Retry", () => stopped = true)],
+        });
+
+        app.Navigator.Apply(Routes.Notifications);
+        app.Frame();
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Contains("one.txt: in use", app.Frame(), StringComparison.Ordinal);
+        Assert.Contains("Retry", app.Frame(), StringComparison.Ordinal);
+
+        app.Press(ConsoleKey.Enter);
+
+        Assert.True(stopped);
+        Assert.Null(app.State.Modal);
+    }
+
+    [Fact]
+    public void AnOpenedNotificationWithoutActionsJustCloses()
+    {
+        using var app = new TestApplication();
+
+        app.State.Output = "saved";
+        app.Navigator.Apply(Routes.Notifications);
+        app.Frame();
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Contains("saved", app.Frame(), StringComparison.Ordinal);
+
+        app.Press(ConsoleKey.Escape);
+
+        Assert.Null(app.State.Modal);
+    }
+
+    [Fact]
+    public void WorkThatSaysHowFarAlongItIsGetsABar()
+    {
+        using var app = new TestApplication();
+        var entry = app.State.Notifications.Raise(new(DateTimeOffset.UtcNow, NotificationLevel.Information, "copying")
+        {
+            Progress = static () => "copying",
+            Share = static () => 0.5,
+        });
+
+        app.Navigator.Apply(Routes.Notifications);
+        app.Frame();
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Contains("50%", app.Frame(), StringComparison.Ordinal);
+        Assert.Equal(0.5, entry.Filled());
+    }
+
+    [Fact]
+    public void WorkThatEndsChangesTheLineSomeoneIsAlreadyReading()
+    {
+        using var app = new TestApplication();
+        var entry = app.State.Notifications.Raise(Running(static () => "copying 3 of 9"));
+
+        app.Navigator.Apply(Routes.Notifications);
+        app.Frame();
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Contains("copying 3 of 9", app.Frame(), StringComparison.Ordinal);
+
+        app.State.Notifications.Settle(entry, "Copied 9 files", NotificationLevel.Warning);
+
+        Assert.Contains("Copied 9 files", app.Frame(), StringComparison.Ordinal);
+        Assert.False(entry.IsRunning);
+        Assert.Equal(NotificationLevel.Warning, entry.Loudness);
+        Assert.Empty(entry.Actions);
+    }
+
+    [Fact]
+    public void WorkThatEndedAgesFromWhenItEnded()
+    {
+        using var app = new TestApplication();
+        var entry = app.State.Notifications.Raise(Running(static () => "copying"));
+
+        app.Advance(app.Options.NotificationLifetime + TimeSpan.FromMinutes(1));
+
+        Assert.Single(app.State.Notifications.Entries);
+
+        app.State.Notifications.Settle(entry, "Copied");
+
+        Assert.Single(app.State.Notifications.Entries);
+
+        app.Advance(app.Options.NotificationLifetime + TimeSpan.FromMinutes(1));
+
+        Assert.Empty(app.State.Notifications.Entries);
+    }
+
+    [Fact]
+    public void ClearingTheListLeavesWorkThatIsStillRunning()
+    {
+        using var app = new TestApplication();
+
+        app.State.Notifications.Notify("saved");
+
+        var entry = app.State.Notifications.Raise(Running(static () => "copying"));
+
+        app.Press(ConsoleKey.N, control: true);
+        app.Press(ConsoleKey.Backspace);
+
+        Assert.Single(app.State.Notifications.Entries);
+        Assert.Same(entry, app.State.Notifications.Entries[0]);
+
+        app.State.Notifications.Settle(entry, "Copied");
+        app.State.Notifications.Clear();
+
+        Assert.Empty(app.State.Notifications.Entries);
+    }
+
+    [Fact]
+    public void WorkThatEndedIsWithdrawnFromTheList()
+    {
+        using var app = new TestApplication();
+        var entry = app.State.Notifications.Raise(Running(static () => "copying"));
+
+        app.State.Notifications.Withdraw(entry);
+
+        Assert.Empty(app.State.Notifications.Entries);
+    }
+
+    private static Notification Running(Func<string> progress) =>
+        new(DateTimeOffset.UtcNow, NotificationLevel.Information, "working") { Progress = progress };
+
+    private sealed class Counter
+    {
+        public int Files { get; set; }
+    }
 }

@@ -35,7 +35,7 @@ public class ArlecchinoState
     /// </summary>
     public string Output
     {
-        get => _notifications.Current?.Text ?? string.Empty;
+        get => _notifications.Current?.Line ?? string.Empty;
         set
         {
             FrameThread.Verify("ArlecchinoState.Output");

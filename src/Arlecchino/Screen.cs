@@ -30,6 +30,9 @@ public class Screen
     private const int BoxChromeColumns = 8;
     private const int SmallestFieldColumns = 12;
     private const string ScrollMarker = "…";
+    private const string ChipGap = "   ";
+    private const char BarFilled = '█';
+    private const char BarEmpty = '░';
 
     private readonly ArlecchinoState _state;
     private readonly Surface _surface;
@@ -355,6 +358,9 @@ public class Screen
             case MessageModal modal:
                 DrawMessageModal(modal);
                 return;
+            case NotificationModal modal:
+                DrawNotificationModal(modal);
+                return;
             case TextAreaModal modal:
                 DrawTextAreaModal(modal);
                 return;
@@ -550,6 +556,87 @@ public class Screen
 
         var (box, _) = DrawBox(modal.Title, body, _strings.ModalMessageHints());
         modal.Box = box;
+    }
+
+    private void DrawNotificationModal(NotificationModal modal)
+    {
+        var width = Math.Max(SmallestFieldColumns, _surface.FrameWidth / 2);
+        var body = new List<Span[]>();
+
+        foreach (var line in TextWidth.Wrap(modal.Text, width))
+        {
+            body.Add([new(line, Theme.Default)]);
+        }
+
+        if (modal.Entry.Filled() is { } share)
+        {
+            body.Add([new("", Theme.Default)]);
+            body.Add(BarSpans(share, width));
+        }
+
+        if (modal.Actions.Count == 0)
+        {
+            var (plain, _) = DrawBox(modal.Title, body, _strings.ModalMessageHints());
+            modal.Box = plain;
+            modal.Chips = [];
+
+            return;
+        }
+
+        var spans = new List<Span>();
+        var offsets = new List<(int Column, int Width)>();
+        var column = 0;
+
+        for (var index = 0; index < modal.Actions.Count; index++)
+        {
+            if (index > 0)
+            {
+                spans.Add(new(ChipGap, Theme.Default));
+                column += ChipGap.Length;
+            }
+
+            var label = $" {modal.Actions[index].Label()} ";
+
+            spans.Add(new(label, index == modal.Index ? Theme.ActiveSelected : Theme.Muted));
+            offsets.Add((column, TextWidth.Of(label)));
+            column += TextWidth.Of(label);
+        }
+
+        body.Add([new("", Theme.Default)]);
+        body.Add([.. spans]);
+
+        var (box, inside) = DrawBox(modal.Title, body, _strings.ModalNotificationHints());
+        var chips = new List<SurfaceRegion>(offsets.Count);
+        var row = inside.Rows(body.Count - 1, 1);
+
+        foreach (var (left, chipWidth) in offsets)
+        {
+            chips.Add(row.Inset(new Margin(left, 0, Math.Max(0, row.Width - left - chipWidth), 0)));
+        }
+
+        modal.Box = box;
+        modal.Chips = chips;
+    }
+
+    /// <summary>
+    /// The bar of an entry that reports how far along it is, drawn as spans rather than by the widget
+    /// because a dialog is laid out line by line.
+    /// </summary>
+    /// <param name="share">How full it is, from <c>0</c> to <c>1</c>.</param>
+    /// <param name="width">How wide the box is.</param>
+    /// <returns>The spans that make up the row.</returns>
+    private static Span[] BarSpans(double share, int width)
+    {
+        var readout = $" {share * 100:0}%";
+        var track = Math.Max(1, width - TextWidth.Of(readout));
+        var filled = (int)Math.Round(share * track);
+
+        return
+        [
+            new(new(BarFilled, filled), Theme.Active),
+            new(new(BarEmpty, Math.Max(0, track - filled)), Theme.Muted),
+            new(readout, Theme.Accent),
+        ];
     }
 
     private void DrawSegmentedModal(SegmentedModal modal, string hints)

@@ -97,6 +97,9 @@ public sealed class ArlecchinoStrings
     /// <summary>Shown when nothing has been said lately.</summary>
     public Func<string> NotificationsEmpty { get; set; } = static () => "nothing to report";
 
+    /// <summary>Hint for reading one notification in full.</summary>
+    public Func<string> NotificationsOpen { get; set; } = static () => "open";
+
     /// <summary>Hint for throwing the list away.</summary>
     public Func<string> NotificationsClear { get; set; } = static () => "clear";
 
@@ -109,6 +112,10 @@ public sealed class ArlecchinoStrings
 
     /// <summary>The key line under a dialog that only has something to say.</summary>
     public Func<string> ModalMessageHints { get; set; } = static () => "Enter — close   Esc — close";
+
+    /// <summary>The key line under an opened notification that has something to do about it.</summary>
+    public Func<string> ModalNotificationHints { get; set; } =
+        static () => "←→ — pick   Enter — do it   Esc — close";
 
     /// <summary>The affirmative chip of a yes/no dialog.</summary>
     public Func<string> Yes { get; set; } = static () => "Yes";
