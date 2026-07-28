@@ -77,7 +77,7 @@ is a solid column of rows rather than a column with gaps in it.
 | `Field.Toggle` | [Toggle modal](modals.md#toggle) |
 | `Field.Choice`, `Field.MultiChoice` | [Choice and multi-choice modals](modals.md#choice) |
 | `Field.Date`, `Field.Time`, `Field.Color` | [Segment editors and the colour picker](modals.md#dates-times-and-colours) |
-| `Field.Path` | The [file picker](file-picker.md); returns its route so the view navigates |
+| `Field.Path`, `Field.PathFrom` | The [file picker](file-picker.md); returns its route so the view navigates |
 | `Field.Action` | Nothing — runs your delegate and returns a route |
 
 Labels and help are delegates, not strings, so a form follows the current
@@ -86,10 +86,11 @@ Labels and help are delegates, not strings, so a form follows the current
 ### Where a path field starts
 
 `Field.Path` opens the picker at the path the field already holds. While the field is still empty
-there is nothing to open at and the picker lands on the drives, so say where it should start instead:
+there is nothing to open at and the picker lands on the drives, so `Field.PathFrom` says where it
+should start instead:
 
 ```csharp
-Field.Path(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
+Field.PathFrom(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
     start: () => state.PickerLastFolder);
 ```
 
