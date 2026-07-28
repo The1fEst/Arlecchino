@@ -68,6 +68,22 @@ is a solid column of rows rather than a column with gaps in it.
 Labels and help are delegates, not strings, so a form follows the current
 [language](localization.md) without being rebuilt.
 
+### Where a path field starts
+
+`Field.Path` opens the picker at the path the field already holds. While the field is still empty
+there is nothing to open at and the picker lands on the drives, so say where it should start instead:
+
+```csharp
+Field.Path(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
+    start: () => state.PickerLastFolder);
+```
+
+A field that already has a value opens there and ignores `start`; a value that no longer exists on
+disk lands on the drives as before. `start` is a delegate rather than a string so that "wherever the
+user was last time" is answered when the picker opens rather than when the form is built —
+`ArlecchinoState.PickerLastFolder`, which the [picker](file-picker.md) fills in as it closes, is
+exactly that answer.
+
 ## Keys and clicks
 
 Movement, `Confirm` and `Erase` come from the [keymap](keyboard.md#the-keymap); `Erase` resets a field
