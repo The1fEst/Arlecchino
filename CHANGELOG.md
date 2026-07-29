@@ -9,6 +9,53 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 3.0.0
+
+### Added
+
+- **`Joinery`**, lines that know about one another. `region.Border(...)` draws a box that knows
+  nothing of its neighbours, so two panes that touch put two verticals where the eye expects one.
+  Boxes and rules recorded here are painted at the end, and a shared cell becomes the glyph that
+  joins them:
+
+  ```csharp
+  var joinery = new Joinery();
+
+  var files = joinery.Box(left, Theme.Info, "files");
+  var log = joinery.Box(right, Theme.Active, "log");
+
+  joinery.Draw(surface.Content, Theme.Info);
+  ```
+
+  ```text
+  ╭─ one ───────────────┬─ three ──────────────╮
+  ├─ two ───────────────┼─ four ───────────────┤
+  ╰─────────────────────┴──────────────────────╯
+  ```
+
+  `Box` hands back the room inside, as `Border` does, and `Across` and `Down` record rules that join
+  whatever they meet. Coordinates are the surface's own, so regions from anywhere on the frame are
+  recorded together; a cell takes the style of the last thing recorded over it, which is how the pane
+  holding the focus wins the edges it shares.
+
+### Changed
+
+- **A `PaneTree` with no gap draws one line between its panes, not two.** Titled panes went through
+  `SurfaceRegion.Border`, so `Gaps(inner: 0)` put `╮╭` where the eye expects `┬`. The tree now records
+  its boxes in a `Joinery` and paints them together, and panes in a box that touch are pulled onto
+  one another's edge so the line is shared:
+
+  ```text
+  ├─ files ────────────┬─ authors ─────────────┬─ log ────────────┤
+  │ Program.cs         │ fEst                  │ the rest of it   │
+  ╰────────────────────┴───────────────────────┴──────────────────╯
+  ```
+
+  A pane without a box is left where it was, since it would lose a column of what it draws to a
+  neighbour's border, and any tree with a gap is unchanged. The pane holding the focus is recorded
+  last, so the edge it shares takes its colour rather than its neighbour's — `Tab` still moves a
+  highlight around the screen, now along lines that meet.
+
 ## 2.13.0
 
 ### Added

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
@@ -45,14 +46,18 @@ public sealed class PaneTree
 
     private readonly PaneTree? _first;
     private readonly PaneTree? _second;
-    private readonly Action<SurfaceRegion>? _draw;
+    private readonly Action<SurfaceRegion>? _content;
+    private readonly Func<string>? _title;
+    private readonly IArlecchinoWidget? _widget;
     private readonly IArlecchinoWidget[] _widgets;
     private readonly PaneSize _size;
     private readonly PaneSplit? _split;
 
-    private PaneTree(Action<SurfaceRegion> draw, IArlecchinoWidget? widget)
+    private PaneTree(Action<SurfaceRegion> content, IArlecchinoWidget? widget, Func<string>? title = null)
     {
-        _draw = draw;
+        _content = content;
+        _title = title;
+        _widget = widget;
         _widgets = widget is null ? NoWidgets : [widget];
 
         Count = 1;
@@ -134,7 +139,7 @@ public sealed class PaneTree
         ArgumentNullException.ThrowIfNull(widget);
         ArgumentNullException.ThrowIfNull(title);
 
-        return new(region => widget.Draw(region.Border(BorderOf(widget), title())), widget);
+        return new(region => widget.Draw(region), widget, title);
     }
 
     /// <summary>
@@ -159,7 +164,7 @@ public sealed class PaneTree
         ArgumentNullException.ThrowIfNull(draw);
         ArgumentNullException.ThrowIfNull(title);
 
-        return new(region => draw(region.Border(Theme.Info, title())), null);
+        return new(draw, null, title);
     }
 
     /// <summary>A pane that draws nothing, for space deliberately left blank.</summary>
@@ -240,10 +245,91 @@ public sealed class PaneTree
     /// screen is a tree.
     /// </summary>
     /// <param name="region">The space to fill, usually <c>surface.Content</c>.</param>
-    public void Draw(SurfaceRegion region) =>
-        Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap);
+    public void Draw(SurfaceRegion region)
+    {
+        var placed = new List<(PaneTree Pane, SurfaceRegion Region)>(Count);
 
-    private static TermColor BorderOf(IArlecchinoWidget widget) =>
+        Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap, placed);
+
+        if (InnerGap == 0)
+        {
+            Share(placed);
+        }
+
+        var joinery = new Joinery();
+        var inside = new SurfaceRegion[placed.Count];
+
+        for (var pass = 0; pass < 2; pass++)
+        {
+            for (var index = 0; index < placed.Count; index++)
+            {
+                var (pane, area) = placed[index];
+
+                if (pane._title is null)
+                {
+                    inside[index] = area;
+                    continue;
+                }
+
+                if (pane.IsFocused == (pass == 1))
+                {
+                    inside[index] = joinery.Box(area, BorderOf(pane._widget), pane._title());
+                }
+            }
+        }
+
+        for (var index = 0; index < placed.Count; index++)
+        {
+            placed[index].Pane._content!(inside[index]);
+        }
+
+        joinery.Draw(region, Theme.Info);
+    }
+
+    private bool IsFocused => _widget is IArlecchinoFocusable { IsFocused: true };
+
+    /// <summary>
+    /// Pulls every boxed pane onto the edge of the boxed pane before it, so that two of them touching
+    /// share one line rather than drawing two side by side. Only panes in a box take part: one without
+    /// would lose a column of what it draws to a neighbour's border.
+    /// </summary>
+    /// <param name="placed">Where each pane landed, in the order the tree lays them out.</param>
+    private static void Share(List<(PaneTree Pane, SurfaceRegion Region)> placed)
+    {
+        for (var index = 1; index < placed.Count; index++)
+        {
+            var (pane, region) = placed[index];
+
+            if (pane._title is null)
+            {
+                continue;
+            }
+
+            for (var before = 0; before < index; before++)
+            {
+                var (neighbour, taken) = placed[before];
+
+                if (neighbour._title is null)
+                {
+                    continue;
+                }
+
+                if (region.Left == taken.Right && region.Top < taken.Bottom && taken.Top < region.Bottom)
+                {
+                    region = new(region.Surface, region.Left - 1, region.Top, region.Width + 1, region.Height);
+                }
+
+                if (region.Top == taken.Bottom && region.Left < taken.Right && taken.Left < region.Right)
+                {
+                    region = new(region.Surface, region.Left, region.Top - 1, region.Width, region.Height + 1);
+                }
+            }
+
+            placed[index] = (pane, region);
+        }
+    }
+
+    private static TermColor BorderOf(IArlecchinoWidget? widget) =>
         widget is IArlecchinoFocusable { IsFocused: true } ? Theme.Active : Theme.Info;
 
     private static PaneTree Build(PaneSplit? split, PaneSize size, PaneTree first, PaneTree second)
@@ -269,11 +355,11 @@ public sealed class PaneTree
         return new(split, size, first, second);
     }
 
-    private void Place(SurfaceRegion region, int gap)
+    private void Place(SurfaceRegion region, int gap, List<(PaneTree Pane, SurfaceRegion Region)> placed)
     {
-        if (_draw is not null)
+        if (_content is not null)
         {
-            _draw(region);
+            placed.Add((this, region));
             return;
         }
 
@@ -283,8 +369,8 @@ public sealed class PaneTree
             var (left, rest) = region.SplitLeft(_size.Of(usable));
             var (_, right) = rest.SplitLeft(Math.Min(gap, rest.Width));
 
-            _first!.Place(left, gap);
-            _second!.Place(right, gap);
+            _first!.Place(left, gap, placed);
+            _second!.Place(right, gap, placed);
 
             return;
         }
@@ -293,8 +379,8 @@ public sealed class PaneTree
         var (top, below) = region.SplitTop(_size.Of(rows));
         var (_, bottom) = below.SplitTop(Math.Min(gap, below.Height));
 
-        _first!.Place(top, gap);
-        _second!.Place(bottom, gap);
+        _first!.Place(top, gap, placed);
+        _second!.Place(bottom, gap, placed);
     }
 
     private PaneSplit SplitOf(SurfaceRegion region) =>

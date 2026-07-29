@@ -1,1 +1,8 @@
 #nullable enable
+Arlecchino.Rendering.Joinery
+Arlecchino.Rendering.Joinery.Across(Arlecchino.Rendering.SurfaceRegion region, int row, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Joinery.Box(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.IArlecchinoColor? style = null, string! title = "") -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.Joinery.Count.get -> int
+Arlecchino.Rendering.Joinery.Down(Arlecchino.Rendering.SurfaceRegion region, int column, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion into, Arlecchino.Rendering.IArlecchinoColor! style) -> void
+Arlecchino.Rendering.Joinery.Joinery() -> void
