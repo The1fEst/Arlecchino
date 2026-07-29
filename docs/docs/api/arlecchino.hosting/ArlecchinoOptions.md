@@ -26,6 +26,7 @@ public sealed class ArlecchinoOptions
 | [`BracketedPaste`](#bracketedpaste) | Whether pasted text arrives as one block. On by default: without it a paste reads as a burst of key presses, and a long one can trip validation or a shortcut halfway through. |
 | [`CommandPaletteKey`](#commandpalettekey) | Character that opens the command palette. A character rather than a binding, so it survives a layout where the key sits elsewhere. |
 | [`EscapeTimeout`](#escapetimeout) | How long to wait for the rest of an escape sequence before deciding there is none. Arrows and function keys arrive as several characters, and over a slow link they do not always arrive together; this is also the delay a lone `Esc` costs, so keep it short. |
+| [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings. |
 | [`HorizontalPadding`](#horizontalpadding) | Cells kept free on the left and right of the content area. |
 | [`InputPollInterval`](#inputpollinterval) | How long the input loop sleeps when no key is waiting. |
 | [`Keymap`](#keymap) | Keys the framework itself reacts to. |
@@ -83,6 +84,16 @@ public TimeSpan EscapeTimeout { get; set; }
 How long to wait for the rest of an escape sequence before deciding there is none. Arrows and function keys arrive as several characters, and over a slow link they do not always arrive together; this is also the delay a lone `Esc` costs, so keep it short.
 
 **Type** `TimeSpan`
+
+### `GraphSymbols` {#graphsymbols}
+
+```csharp
+public GraphSymbols GraphSymbols { get; set; }
+```
+
+What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings.
+
+**Type** [`GraphSymbols`](../arlecchino.rendering/GraphSymbols.md)
 
 ### `HorizontalPadding` {#horizontalpadding}
 
