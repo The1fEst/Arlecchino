@@ -123,7 +123,7 @@ dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 
 Each panel is a [table](table.md); the menu behind `F9` is a [choice modal](modals.md) per section;
 copy, move and delete ask their questions as modals and then run off the drawing thread, reporting
-themselves as [notifications](notifications.md) with a bar and a key that stops them.
+themselves as [notifications](state.md#notifications) with a bar and a key that stops them.
 
 It runs without the output line, so the bottom row belongs to the screen's own status bar. Every
 screen renders headlessly as `--frame 132x26`, with `--keys` to play keys first and `--connect` to

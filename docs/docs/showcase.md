@@ -41,7 +41,7 @@ the panels:
 | The panels | Two tables in one layout, either of which may hold the focus | [`Table`](table.md), [`PaneTree`](layout.md), [`FocusRing`](focus.md) |
 | The menu | Sections of a menu offered as lists | [choice modal](modals.md), [view commands](commands.md) |
 | Copy, move, delete | Questions asked first, then the work off the drawing thread | [modals](modals.md), [rendering](rendering.md) |
-| Work in flight | A bar, what is being worked on now, and a key that stops it | [status bar](status-bar.md), [notifications](notifications.md) |
+| Work in flight | A bar, what is being worked on now, and a key that stops it | [status bar](status-bar.md), [notifications](state.md#notifications) |
 | Servers | A panel over SFTP or FTP, and a screen that runs commands over SSH | [stores](stores.md), [`Form`](forms.md), [async atoms](async-atoms.md) |
 
 `F9` opens the menu, and what can be done to what is marked is one list under it:
@@ -57,7 +57,7 @@ Copying and deleting ask first, with the negative answer selected, so a stray `E
 ![Deleting asks first, with no selected](/img/screenshots/delete.png)
 
 Work of any size runs in the background with a bar and `Esc` to stop it, and reports itself as a
-[notification](notifications.md) that opens in full and turns into what came of it:
+[notification](state.md#notifications) that opens in full and turns into what came of it:
 
 ![A copy running in the background, with a bar and Esc to stop](/img/screenshots/progress.png)
 
