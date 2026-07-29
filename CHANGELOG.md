@@ -38,6 +38,30 @@ the public API means a new major. See
   recorded together; a cell takes the style of the last thing recorded over it, which is how the pane
   holding the focus wins the edges it shares.
 
+- **`SessionTape`** in `Arlecchino.Testing`, which writes a test as the session it describes rather
+  than as a dozen calls with the assertions lost among them:
+
+  ```csharp
+  var frames = new SessionTape()
+      .Type(":")
+      .Shot()
+      .Type("copy")
+      .Wait(200)
+      .Shot()
+      .Play(host);
+
+  Assert.Contains("Copy files", frames[^1], StringComparison.Ordinal);
+  ```
+
+  A tape is text, one step to a line, so `Read` takes back what `ToString` wrote and a session travels
+  as a file. Waits are part of it, which is what makes timeouts and work on a clock replayable, and
+  every mark hands back a frame. `ArlecchinoTestHost` gained `Send(ConsoleKeyInfo)`, `Send(MouseEvent)`
+  and `SendPaste` for feeding an event exactly as a terminal reports one.
+
+  It records nothing on its own. Capturing a running application was considered and dropped: the
+  framework has a password modal and a paste step, so a tape from a real session would hold whatever
+  was typed into them, and no application should write a file like that on a user's behalf.
+
 ### Changed
 
 - **Notifications are state.** `Notifications` held a plain `List<Notification>` and asked for a
