@@ -37,6 +37,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 | [`Add(T)`](#add-t) | Puts an item at the end. |
 | [`Add(IReadOnlyList<T>)`](#add-ireadonlylist-t) | Puts several items at the end at once. One notification, one frame and one undo step for the lot, which is what a loop of [`AtomsList.Add`](../arlecchino.atoms/AtomsList-1.md#add-t) cannot give — that would undo a page of rows one row at a time. |
 | [`Clear()`](#clear) | Takes everything out. An empty list changes nothing. |
+| [`GetEnumerator()`](#getenumerator) | Walks what the list holds, so `foreach` over the list itself reads the way it does over a list. It is not an `IEnumerable<T>` — the enumerator is all a `foreach` asks for, and stopping there is what keeps the members above the only way to change anything. Reach for [`AtomsList.Value`](../arlecchino.atoms/AtomsList-1.md#value) where a sequence is what is wanted, LINQ included. |
 | [`IndexOf(T)`](#indexof-t) | Where an item is, or `-1` when the list does not hold it. |
 | [`Insert(int, T)`](#insert-int-t) | Puts an item at a position, moving the rest along. |
 | [`Remove(T)`](#remove-t) | Takes out the first item equal to this one, and does nothing when there is none. |
@@ -147,6 +148,16 @@ public void Clear();
 ```
 
 Takes everything out. An empty list changes nothing.
+
+### `GetEnumerator()` {#getenumerator}
+
+```csharp
+public List<T> GetEnumerator();
+```
+
+Walks what the list holds, so `foreach` over the list itself reads the way it does over a list. It is not an `IEnumerable<T>` — the enumerator is all a `foreach` asks for, and stopping there is what keeps the members above the only way to change anything. Reach for [`AtomsList.Value`](../arlecchino.atoms/AtomsList-1.md#value) where a sequence is what is wanted, LINQ included.
+
+**Returns** `Enumerator<T>`&lt;`T`&gt; — The enumerator, which throws when the list changes while it is being walked.
 
 ### `IndexOf(T)` {#indexof-t}
 
