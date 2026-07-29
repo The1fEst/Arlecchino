@@ -101,7 +101,9 @@ than sleeping, and the next frame shows what fell due.
 the frame stale, so nothing asks for a repaint by hand. Which edits can be taken back is decided by
 the type — a `TrackedAtom<T>` records its writes, a `LocalAtom<T>` does not — and `AtomHistory`,
 resolved from the container, walks them with `Undo` and `Redo`. Writes made inside `Group()` come
-back as one step, so a dialog that changes three fields is undone once.
+back as one step, so a dialog that changes three fields is undone once. Many things at once are an
+`AtomsList<T>` or an `AtomsMap<TKey, TValue>`: they change in place — appended to, trimmed, keyed —
+and every call still notifies, still asks for a frame and still records a step of its own.
 
 **Logging does not draw over the frame.** An `ILogger` resolved from the container writes into a
 buffer the framework keeps, and `Ctrl+L` shows that buffer over the running application. The provider
