@@ -172,6 +172,39 @@ Reading one key is enough to depend on the whole map: `TryGetValue` inside a
 [`Computed<T>`](#derived-values) subscribes to it, so a derived value follows an entry that is not
 there yet.
 
+## Sets
+
+`AtomsSet<T>` holds what is in and what is out — the files marked, the rows expanded, the hosts that
+answered:
+
+```csharp
+public TrackedAtomsSet<string> Marked { get; } = new(comparer: StringComparer.OrdinalIgnoreCase);
+
+Marked.Add(path);                       // already there? nothing happens
+Marked.Add(everythingBelow);            // one change for the lot
+
+if (Marked.TryRemove(path))
+{
+    Say($"{path} is no longer marked");
+}
+```
+
+| Member | Meaning |
+|---|---|
+| `Value` | A live, read-only `IReadOnlySet<T>` — `Contains`, `SetEquals`, `IsSubsetOf` and the rest |
+| `Count`, `IsEmpty`, `Contains(item)` | Reading |
+| `Add(item)`, `Add(items)` | Putting in. What is already there is not an error and not a change |
+| `TryAdd(item)`, `TryRemove(item)` | The same, answering whether anything happened |
+| `Remove(item)`, `Clear()`, `Reset(items)` | Taking out, or replacing the contents in one change |
+| `Subscribe(listener)` | Same as an atom's |
+
+It follows `HashSet<T>` rather than the map: adding what is already in is idempotent, not an
+exception, which is why `Add` answers nothing and `TryAdd` is there when the answer matters. Items
+are compared by the comparer given to the constructor.
+
+A set has no order, so a walk hands them back in whatever order the set holds them — sort where the
+order is what the reader sees.
+
 ## Queues and stacks
 
 The same again for the two orders that matter: `AtomsQueue<T>` takes at the back and gives at the
@@ -209,7 +242,8 @@ frame has. A frame reads state many times; what it needs is for nothing to chang
 that is thread affinity rather than a thread-safe container — see [Threads](#threads). Background
 work hands its item over with `FrameThread.Post`, and several changes that belong together go in one
 `Post` so no frame falls between them. `ConcurrentDictionary<TKey, TValue>` maps to
-[`AtomsMap`](#maps) and `ConcurrentBag<T>` to [`AtomsList`](#lists) the same way.
+[`AtomsMap`](#maps) — including where it stands in for a set — `ConcurrentBag<T>` to
+[`AtomsList`](#lists), and a `HashSet<T>` behind a lock to [`AtomsSet`](#sets).
 
 :::
 
