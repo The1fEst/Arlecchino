@@ -9,6 +9,16 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.6.1
+
+### Changed
+
+- **The key screen reads in two columns.** `F1` listed everything in one column, so an application
+  with a screenful of its own keys pushed the commands off the bottom and the screen had to be
+  scrolled to be read at all. The keys that work everywhere and the keys of the screen it was opened
+  from now stand side by side, with the registered commands in a band underneath. A terminal too
+  narrow for two columns stacks them as before.
+
 ## 2.6.0
 
 ### Added

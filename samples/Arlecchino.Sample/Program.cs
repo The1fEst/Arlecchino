@@ -182,6 +182,11 @@ static void Frame(string view, string size)
     {
         navigator.Apply(ViewKind.About);
     }
+    else if (view.Equals("help", StringComparison.OrdinalIgnoreCase))
+    {
+        navigator.Apply(ViewKind.Default);
+        navigator.Apply(Routes.Help);
+    }
     else
     {
         navigator.Apply(ViewKind.Default);

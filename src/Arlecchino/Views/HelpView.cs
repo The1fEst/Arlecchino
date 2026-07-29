@@ -20,13 +20,21 @@ internal class HelpView : IArlecchinoView
     public const string Route = "Help";
 
     private const int KeyColumn = 18;
+    private const int ColumnFloor = 34;
+    private const int Gutter = 2;
 
     private readonly Surface _surface;
     private readonly Navigator _navigator;
     private readonly CommandRegistry _commands;
     private readonly ArlecchinoKeymap _keymap;
     private readonly ArlecchinoStrings _strings;
-    private readonly ListBox<Row> _rows;
+    private readonly ScrollPane _pane;
+    private readonly List<Row> _everywhere = [];
+    private readonly List<Row> _screen = [];
+    private readonly List<Row> _registered = [];
+
+    private int _column;
+    private bool _doubled;
 
     public HelpView(Surface surface, Navigator navigator, CommandRegistry commands, ArlecchinoOptions options)
     {
@@ -36,15 +44,21 @@ internal class HelpView : IArlecchinoView
         _keymap = options.Keymap;
         _strings = options.Strings;
 
-        _rows = new(options.Keymap)
+        _pane = new(options.Keymap)
         {
-            Render = static row => row.Text,
-            ItemStyle = static row => row.IsHeading ? Theme.TableHeader : Theme.Default,
+            IsFocused = true,
+            ContentHeight = Height,
+            Content = Paint,
         };
     }
 
     private sealed record Row(string Text, bool IsHeading);
 
+    /// <summary>
+    /// Draws the screen. The keys that work everywhere and the keys of the screen this was opened
+    /// from stand side by side when there is width for it, with the application's commands in a band
+    /// underneath — two lists that are read against each other, not one list to be scrolled through.
+    /// </summary>
     public void Draw()
     {
         var content = _surface.Content;
@@ -53,22 +67,26 @@ internal class HelpView : IArlecchinoView
         header.WriteLine(0, _strings.HelpTitle(), Theme.Header);
         header.WriteLine(1, $"{_keymap.Cancel} {_strings.HelpClose()}", Theme.Muted);
 
-        _rows.Items = Build();
-        _rows.Draw(rest);
+        Build();
+
+        _doubled = _screen.Count > 0 && rest.Width >= (ColumnFloor * 2) + Gutter;
+        _column = _doubled ? (rest.Width - Gutter) / 2 : rest.Width;
+
+        _pane.Draw(rest);
     }
 
     public ViewRoute Handle(ConsoleKeyInfo key)
     {
         if (!_keymap.Cancel.Matches(key) && !_keymap.Help.Matches(key))
         {
-            return _rows.Handle(key).Route;
+            return _pane.Handle(key).Route;
         }
 
         _navigator.Back();
         return ViewRoute.None;
     }
 
-    public ViewRoute HandleMouse(MouseEvent mouse) => _rows.HandleMouse(mouse).Route;
+    public ViewRoute HandleMouse(MouseEvent mouse) => _pane.HandleMouse(mouse).Route;
 
     public (string Key, string Description)[] Hints() =>
     [
@@ -76,41 +94,78 @@ internal class HelpView : IArlecchinoView
         (_keymap.Cancel.ToString(), _strings.HelpClose()),
     ];
 
-    private List<Row> Build()
+    private int Height() => Above() + 1 + _registered.Count;
+
+    private int Above() => _doubled
+        ? Math.Max(_everywhere.Count, _screen.Count)
+        : _everywhere.Count + (_screen.Count == 0 ? 0 : _screen.Count + 1);
+
+    private void Paint(SurfaceRegion region)
     {
-        var rows = new List<Row> { new(_strings.HelpFrameworkSection(), true) };
+        var above = Above();
+
+        if (_doubled)
+        {
+            Write(region, _everywhere, 0, 0);
+            Write(region, _screen, 0, _column + Gutter);
+        }
+        else
+        {
+            Write(region, _everywhere, 0, 0);
+            Write(region, _screen, _everywhere.Count + 1, 0);
+        }
+
+        region.WriteLine(above, new('─', region.Width), Theme.Muted);
+        Write(region, _registered, above + 1, 0);
+    }
+
+    private void Write(SurfaceRegion region, List<Row> rows, int top, int column)
+    {
+        for (var index = 0; index < rows.Count; index++)
+        {
+            region.Write(
+                top + index,
+                column,
+                TextWidth.Truncate(rows[index].Text, _column),
+                rows[index].IsHeading ? Theme.TableHeader : Theme.Default);
+        }
+    }
+
+    private void Build()
+    {
+        _everywhere.Clear();
+        _screen.Clear();
+        _registered.Clear();
+
+        _everywhere.Add(new(_strings.HelpFrameworkSection(), true));
 
         foreach (var (binding, action) in _strings.HelpKeys(_keymap))
         {
-            rows.Add(new(Line(binding.ToString(), action), false));
+            _everywhere.Add(new(Line(binding.ToString(), action), false));
         }
 
         if (_navigator.PreviousCommands.Count > 0)
         {
-            rows.Add(new("", false));
-            rows.Add(new(_strings.HelpScreenSection(_navigator.PreviousRoute.Name), true));
+            _screen.Add(new(_strings.HelpScreenSection(_navigator.PreviousRoute.Name), true));
 
             foreach (var command in _navigator.PreviousCommands)
             {
-                rows.Add(new(Line(command.Binding.ToString(), command.Label()), false));
+                _screen.Add(new(Line(command.Binding.ToString(), command.Label()), false));
             }
         }
 
-        rows.Add(new("", false));
-        rows.Add(new(_strings.HelpCommandsSection(), true));
+        _registered.Add(new(_strings.HelpCommandsSection(), true));
 
         if (_commands.Commands.Count == 0)
         {
-            rows.Add(new(Line("", _strings.HelpNoCommands()), false));
-            return rows;
+            _registered.Add(new(Line("", _strings.HelpNoCommands()), false));
+            return;
         }
 
         foreach (var command in _commands.Commands)
         {
-            rows.Add(new(Line(command.Binding.ToString(), $"{command.Icon} {command.Label}".TrimStart()), false));
+            _registered.Add(new(Line(command.Binding.ToString(), $"{command.Icon} {command.Label}".TrimStart()), false));
         }
-
-        return rows;
     }
 
     private static string Line(string key, string action) =>

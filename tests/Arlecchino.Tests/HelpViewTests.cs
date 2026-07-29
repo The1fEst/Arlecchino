@@ -80,6 +80,47 @@ public sealed class HelpViewTests
     }
 
     [Fact]
+    public void TheKeysOfTheScreenStandBesideTheOnesThatWorkEverywhere()
+    {
+        using var app = new TestApplication(120, 24, static builder =>
+            builder.AddView<CommandingView>("Commanding"));
+
+        app.Navigator.Apply(new("Commanding"));
+        app.Press(ConsoleKey.F1);
+
+        Assert.True(SideBySide(app));
+    }
+
+    [Fact]
+    public void TooNarrowForTwoColumnsTheyStackInstead()
+    {
+        using var app = new TestApplication(60, 24, static builder =>
+            builder.AddView<CommandingView>("Commanding"));
+
+        app.Navigator.Apply(new("Commanding"));
+        app.Press(ConsoleKey.F1);
+
+        Assert.False(SideBySide(app));
+    }
+
+    private static bool SideBySide(TestApplication app)
+    {
+        var everywhere = app.Options.Strings.HelpFrameworkSection();
+        var screen = app.Options.Strings.HelpScreenSection("Commanding");
+
+        foreach (var line in app.Frame().Split('\n'))
+        {
+            if (line.Contains(everywhere, StringComparison.Ordinal) &&
+                line.Contains(screen, StringComparison.Ordinal))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    [Fact]
     public void CancelGoesBackToWhereItWasOpenedFrom()
     {
         using var app = new TestApplication();
