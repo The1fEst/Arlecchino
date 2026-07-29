@@ -9,8 +9,8 @@ namespace Arlecchino.Input;
 /// </summary>
 public sealed class KeyText
 {
-    /// <summary>Shared resolver for <see cref="TextInputMode.LatinOnly"/>.</summary>
-    public static KeyText LatinOnly { get; } = new(TextInputMode.LatinOnly);
+    /// <summary>Shared resolver for <see cref="TextInputMode.ByPosition"/>.</summary>
+    public static KeyText ByPosition { get; } = new(TextInputMode.ByPosition);
 
     /// <summary>Shared resolver for <see cref="TextInputMode.Native"/>.</summary>
     public static KeyText Native { get; } = new(TextInputMode.Native);
@@ -27,7 +27,7 @@ public sealed class KeyText
     /// <summary>Returns the shared resolver for a mode.</summary>
     /// <param name="mode">The mode wanted.</param>
     /// <returns>The matching resolver.</returns>
-    public static KeyText For(TextInputMode mode) => mode == TextInputMode.Native ? Native : LatinOnly;
+    public static KeyText For(TextInputMode mode) => mode == TextInputMode.Native ? Native : ByPosition;
 
     /// <summary>The mode this resolver works in.</summary>
     public TextInputMode Mode => _mode;
@@ -40,17 +40,12 @@ public sealed class KeyText
     /// <returns>The character to insert, or <c>null</c>.</returns>
     public char? Resolve(ConsoleKeyInfo key)
     {
-        if (key.KeyChar is >= ' ' and < (char)127)
+        if (_mode == TextInputMode.ByPosition)
         {
-            return key.KeyChar;
+            return ResolveByPhysicalKey(key);
         }
 
-        if (_mode == TextInputMode.Native && key.KeyChar != '\0' && !char.IsControl(key.KeyChar))
-        {
-            return key.KeyChar;
-        }
-
-        return ResolveByPhysicalKey(key);
+        return key.KeyChar != '\0' && !char.IsControl(key.KeyChar) ? key.KeyChar : ResolveByPhysicalKey(key);
     }
 
     private static char? ResolveByPhysicalKey(ConsoleKeyInfo key)

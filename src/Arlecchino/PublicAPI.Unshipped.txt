@@ -1,2 +1,4 @@
 #nullable enable
+*REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseLatinOnlyInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 *REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseNativeInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!

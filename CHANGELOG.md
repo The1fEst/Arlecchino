@@ -54,8 +54,18 @@ the public API means a new major. See
   This is the reason the change waited for a major: an application that has been raising
   notifications from a worker has been getting away with it.
 - **Any language can be typed without asking.** `TextInputMode.Native` is the default, so a
-  non-Latin layout works out of the box; `UseLatinOnlyInput()` still trades that for keys that always
-  read the same.
+  non-Latin layout works out of the box.
+- **The other mode is named for what it does, and now does it without exception.** What was
+  `UseLatinOnlyInput()` is `UseKeysByPosition()`: every character comes from where its key sits on
+  the keyboard rather than from what the layout makes of it, so the key left of `S` types `a` whether
+  the layout says `a`, `ф` or `α`. It used to make an exception for characters that were already
+  ASCII, which meant a layout that moves letters around was read inconsistently; the position now
+  decides on its own. The price is unchanged and worth stating plainly: in this mode those languages
+  cannot be typed at all.
+
+  ```csharp
+  builder.UseKeysByPosition();
+  ```
 
 - **A `PaneTree` with no gap draws one line between its panes, not two.** Titled panes went through
   `SurfaceRegion.Border`, so `Gaps(inner: 0)` put `╮╭` where the eye expects `┬`. The tree now records
@@ -77,6 +87,9 @@ the public API means a new major. See
 
 - **`ArlecchinoBuilder.UseNativeInput()`**, which now says what already happens. Delete the call —
   the behaviour it asked for is what an application gets by default.
+- **`UseLatinOnlyInput()`, `TextInputMode.LatinOnly` and `KeyText.LatinOnly`**, renamed to
+  `UseKeysByPosition()`, `TextInputMode.ByPosition` and `KeyText.ByPosition`. The old names described
+  what the mode accepted; the new ones describe how it decides.
 
 ## 2.13.0
 

@@ -173,12 +173,16 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Accepts only Latin letters and digits, in exchange for keys that always read correctly.
-    /// Whatever the terminal reports is taken otherwise, which is what an application gets without
-    /// asking.
+    /// Takes every character from where its key sits on the keyboard rather than from what the layout
+    /// makes of it: the key left of <c>S</c> types <c>a</c> whether the layout says <c>a</c>,
+    /// <c>ф</c> or <c>α</c>. Shortcuts and filters then read the same everywhere, and the price is
+    /// that the application cannot be typed into in those languages at all.
+    ///
+    /// Without this, whatever the terminal reports is taken as typed, which is what an application
+    /// gets by default.
     /// </summary>
     /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseLatinOnlyInput() => UseTextInput(TextInputMode.LatinOnly);
+    public ArlecchinoBuilder UseKeysByPosition() => UseTextInput(TextInputMode.ByPosition);
 
     /// <summary>Replaces the key bindings, which every widget then follows.</summary>
     /// <param name="keymap">The bindings to use.</param>

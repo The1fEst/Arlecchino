@@ -46,7 +46,7 @@ public sealed class ArlecchinoOptions
     /// <summary>
     /// How a key press becomes a character on a non-latin layout. Whatever the terminal reports is
     /// taken by default, so any language can be typed without the application asking for it;
-    /// <see cref="ArlecchinoBuilder.UseLatinOnlyInput"/> trades that for keys that always read the
+    /// <see cref="ArlecchinoBuilder.UseKeysByPosition"/> trades that for keys that always read the
     /// same.
     /// </summary>
     public TextInputMode TextInput { get; set; } = TextInputMode.Native;

@@ -1,4 +1,7 @@
 #nullable enable
+*REMOVED*Arlecchino.Input.TextInputMode.LatinOnly = 0 -> Arlecchino.Input.TextInputMode
+*REMOVED*static Arlecchino.Input.KeyText.LatinOnly.get -> Arlecchino.Input.KeyText!
+Arlecchino.Input.TextInputMode.ByPosition = 0 -> Arlecchino.Input.TextInputMode
 Arlecchino.Rendering.Joinery
 Arlecchino.Rendering.Joinery.Across(Arlecchino.Rendering.SurfaceRegion region, int row, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
 Arlecchino.Rendering.Joinery.Box(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.IArlecchinoColor? style = null, string! title = "") -> Arlecchino.Rendering.SurfaceRegion
@@ -6,3 +9,4 @@ Arlecchino.Rendering.Joinery.Count.get -> int
 Arlecchino.Rendering.Joinery.Down(Arlecchino.Rendering.SurfaceRegion region, int column, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
 Arlecchino.Rendering.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion into, Arlecchino.Rendering.IArlecchinoColor! style) -> void
 Arlecchino.Rendering.Joinery.Joinery() -> void
+static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
