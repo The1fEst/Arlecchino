@@ -9,6 +9,40 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.11.0
+
+### Added
+
+- **`AtomsQueue<T>` and `AtomsStack<T>`**, in a tracked and a local flavour each, which finishes the
+  set: what a `ConcurrentQueue<T>` or a `ConcurrentStack<T>` holds belongs in state that notifies,
+  asks for a frame and records a step, rather than in a container whose thread safety a single
+  drawing thread has no use for.
+
+  ```csharp
+  public LocalAtomsQueue<FileEntry> ToCopy { get; } = new();
+  public LocalAtomsStack<string> Been { get; } = new();
+
+  ToCopy.Enqueue(entries);
+  Been.Push(folder);
+
+  if (ToCopy.TryDequeue(out var next))
+  {
+      Copy(next);
+  }
+  ```
+
+  `Dequeue`, `Pop` and `Peek` throw on an empty one as the collections they are named after do, and
+  `TryDequeue`, `TryPop` and `TryPeek` answer instead. `Value` reads front first for a queue and top
+  first for a stack — the order `Stack<T>` itself enumerates in — so `Value[0]` is what `Peek`
+  answers and a view draws either by walking it.
+- **`AtomsMap<TKey, TValue>.TryAdd` and `TryRemove`.** `Add` throws on a key that is taken and
+  `Remove` says nothing about whether anything was there; these answer instead, and `TryRemove` hands
+  back what it took, which is the lookup and the removal in one step.
+- **`foreach` over a list, a map, a queue or a stack** without reaching for `Value`: each carries a
+  `GetEnumerator()`. They are still not `IEnumerable<T>` — the enumerator is all a `foreach` asks for,
+  and stopping there keeps their own members the only way to change anything. `Value` is still what
+  LINQ takes.
+
 ## 2.10.0
 
 ### Added

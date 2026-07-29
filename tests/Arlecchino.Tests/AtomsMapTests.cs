@@ -69,6 +69,48 @@ public sealed class AtomsMapTests
     }
 
     [Fact]
+    public void ItIsWalkedWithoutCopyingIt()
+    {
+        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+        var total = 0;
+
+        foreach (var entry in sizes)
+        {
+            total += entry.Value;
+        }
+
+        foreach (var entry in sizes.Value)
+        {
+            total += entry.Value;
+        }
+
+        Assert.Equal(6, total);
+    }
+
+    [Fact]
+    public void TakingEntriesOutWhileWalkingIsAllowedButPuttingThemInIsNot()
+    {
+        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+
+        foreach (var entry in sizes)
+        {
+            sizes.Remove(entry.Key);
+        }
+
+        Assert.Empty(sizes.Value);
+
+        sizes["alpha"] = 1;
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            foreach (var entry in sizes)
+            {
+                sizes[$"{entry.Key}-again"] = entry.Value;
+            }
+        });
+    }
+
+    [Fact]
     public void AKeyThatIsAlreadyThereIsRefusedByAddButNotByTheIndexer()
     {
         var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
@@ -78,6 +120,35 @@ public sealed class AtomsMapTests
         sizes["alpha"] = 2;
 
         Assert.Equal(2, sizes["alpha"]);
+    }
+
+    [Fact]
+    public void TheTryingMembersAnswerInsteadOfThrowingOrGuessing()
+    {
+        var sizes = new LocalAtomsMap<string, int>();
+
+        Assert.True(sizes.TryAdd("alpha", 1));
+        Assert.False(sizes.TryAdd("alpha", 2));
+        Assert.Equal(1, sizes["alpha"]);
+
+        Assert.True(sizes.TryRemove("alpha", out var taken));
+        Assert.Equal(1, taken);
+        Assert.False(sizes.TryRemove("alpha", out _));
+        Assert.Empty(sizes.Value);
+    }
+
+    [Fact]
+    public void TryingAndFailingChangesNothing()
+    {
+        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var heard = 0;
+
+        using var subscription = sizes.Subscribe(() => heard++);
+
+        Assert.False(sizes.TryAdd("alpha", 2));
+        Assert.False(sizes.TryRemove("beta", out _));
+
+        Assert.Equal(0, heard);
     }
 
     [Fact]

@@ -259,6 +259,20 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <returns>Dispose it to stop listening.</returns>
     public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
+    /// <summary>
+    /// Walks what the list holds, so <c>foreach</c> over the list itself reads the way it does over a
+    /// list. It is not an <c>IEnumerable&lt;T&gt;</c> — the enumerator is all a <c>foreach</c> asks
+    /// for, and stopping there is what keeps the members above the only way to change anything. Reach
+    /// for <see cref="Value"/> where a sequence is what is wanted, LINQ included.
+    /// </summary>
+    /// <returns>The enumerator, which throws when the list changes while it is being walked.</returns>
+    public List<T>.Enumerator GetEnumerator()
+    {
+        Track();
+
+        return _items.GetEnumerator();
+    }
+
     private bool Holds(IReadOnlyList<T> items)
     {
         if (items.Count != _items.Count)

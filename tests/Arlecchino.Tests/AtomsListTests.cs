@@ -147,6 +147,62 @@ public sealed class AtomsListTests
     }
 
     [Fact]
+    public void ItIsWalkedWithoutCopyingIt()
+    {
+        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var walked = new List<string>();
+
+        foreach (var row in rows)
+        {
+            walked.Add(row);
+        }
+
+        foreach (var row in rows.Value)
+        {
+            walked.Add(row);
+        }
+
+        Assert.Equal(["alpha", "beta", "alpha", "beta"], walked);
+    }
+
+    [Fact]
+    public void ChangingItWhileWalkingItIsCaught()
+    {
+        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            foreach (var row in rows.Value)
+            {
+                rows.Remove(row);
+            }
+        });
+
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            foreach (var row in rows)
+            {
+                rows.Remove(row);
+            }
+        });
+    }
+
+    [Fact]
+    public void ASnapshotIsWhatSurvivesBeingChangedUnderneath()
+    {
+        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+
+        string[] snapshot = [.. rows.Value];
+
+        foreach (var row in snapshot)
+        {
+            rows.Remove(row);
+        }
+
+        Assert.Empty(rows.Value);
+    }
+
+    [Fact]
     public void ARangeGoesOutAsOneChange()
     {
         var rows = new LocalAtomsList<int>([0, 1, 2, 3, 4]);

@@ -141,6 +141,26 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         this[key] = value;
     }
 
+    /// <summary>
+    /// Puts an entry in unless the key is taken, and says which happened — <see cref="Add"/> without
+    /// the exception, for the case where losing the race with an earlier entry is an answer rather
+    /// than a fault.
+    /// </summary>
+    /// <param name="key">What to keep it under.</param>
+    /// <param name="value">What to keep.</param>
+    /// <returns><c>true</c> when the entry went in, <c>false</c> when the key was already there.</returns>
+    public bool TryAdd(TKey key, TValue value)
+    {
+        if (_items.ContainsKey(key))
+        {
+            return false;
+        }
+
+        this[key] = value;
+
+        return true;
+    }
+
     /// <summary>Takes an entry out, and does nothing when the key is not there.</summary>
     /// <param name="key">Which entry.</param>
     public void Remove(TKey key)
@@ -160,6 +180,25 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         }
 
         Notify();
+    }
+
+    /// <summary>
+    /// Takes an entry out and hands back what was kept under it, which is the reading and the removal
+    /// in one step rather than a lookup followed by a hope.
+    /// </summary>
+    /// <param name="key">Which entry.</param>
+    /// <param name="value">What was kept under it, when it was there.</param>
+    /// <returns><c>true</c> when something was taken out.</returns>
+    public bool TryRemove(TKey key, [MaybeNullWhen(false)] out TValue value)
+    {
+        if (!_items.TryGetValue(key, out value))
+        {
+            return false;
+        }
+
+        Remove(key);
+
+        return true;
     }
 
     /// <summary>Takes everything out. An empty map changes nothing.</summary>
@@ -223,6 +262,20 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// <param name="listener">What to run on change.</param>
     /// <returns>Dispose it to stop listening.</returns>
     public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
+
+    /// <summary>
+    /// Walks the entries, so <c>foreach</c> over the map itself reads the way it does over a
+    /// dictionary. It is not an <c>IEnumerable</c> — the enumerator is all a <c>foreach</c> asks for,
+    /// and stopping there is what keeps the members above the only way to change anything. Reach for
+    /// <see cref="Value"/> where a sequence is what is wanted, LINQ included.
+    /// </summary>
+    /// <returns>The enumerator, which throws when the map changes while it is being walked.</returns>
+    public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
+    {
+        Track();
+
+        return _items.GetEnumerator();
+    }
 
     private static Dictionary<TKey, TValue> Empty => [];
 
