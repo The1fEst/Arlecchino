@@ -9,6 +9,24 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.9.0
+
+### Added
+
+- **`AtomsList<T>.RemoveRange(index, count)`.** A list kept to a length — the last thousand lines of
+  output, the newest hundred results — had no way to be trimmed as one change: taking items out one
+  at a time notified once per item and came back the same way, and `Reset` copied the whole list on
+  every trim, which is the cost the type exists to avoid.
+
+  ```csharp
+  if (Lines.Count > Kept)
+  {
+      Lines.RemoveRange(0, Lines.Count - Kept);
+  }
+  ```
+
+  `RemoveAt` is now the one-item case of it, so both are a single undo step.
+
 ## 2.8.0
 
 ### Added

@@ -169,15 +169,33 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
     /// <summary>Takes out the item at a position.</summary>
     /// <param name="index">Which one.</param>
-    public void RemoveAt(int index)
+    public void RemoveAt(int index) => RemoveRange(index, 1);
+
+    /// <summary>
+    /// Takes out several items in a row at once. One notification, one frame and one undo step for the
+    /// lot — which is what trimming a list that has grown too long needs, since doing it one item at a
+    /// time would notify once per item and come back the same way.
+    /// </summary>
+    /// <param name="index">Where to start.</param>
+    /// <param name="count">How many to take out. Taking none changes nothing.</param>
+    public void RemoveRange(int index, int count)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, _items.Count);
+
+        if (count == 0)
+        {
+            return;
+        }
+
         Verify();
 
-        var removed = _items[index];
+        var removed = Recording ? _items.GetRange(index, count).ToArray() : [];
 
-        _items.RemoveAt(index);
+        _items.RemoveRange(index, count);
 
-        if (Recording)
+        if (removed.Length > 0)
         {
             AtomChanges.NotifyRecorded(new Removed(this, index, removed));
         }
@@ -329,20 +347,20 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     {
         private readonly AtomsList<T> _list;
         private readonly int _index;
-        private readonly T _item;
+        private readonly T[] _items;
 
-        public Removed(AtomsList<T> list, int index, T item)
+        public Removed(AtomsList<T> list, int index, T[] items)
         {
             _list = list;
             _index = index;
-            _item = item;
+            _items = items;
         }
 
         public object Owner => _list;
 
-        public void Undo() => _list.InsertSilently(_index, [_item]);
+        public void Undo() => _list.InsertSilently(_index, _items);
 
-        public void Redo() => _list.RemoveSilently(_index, 1);
+        public void Redo() => _list.RemoveSilently(_index, _items.Length);
     }
 
     private sealed class Replaced : IAtomEdit

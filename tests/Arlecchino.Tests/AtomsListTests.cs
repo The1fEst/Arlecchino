@@ -147,6 +147,55 @@ public sealed class AtomsListTests
     }
 
     [Fact]
+    public void ARangeGoesOutAsOneChange()
+    {
+        var rows = new LocalAtomsList<int>([0, 1, 2, 3, 4]);
+        var heard = 0;
+
+        using var subscription = rows.Subscribe(() => heard++);
+
+        rows.RemoveRange(0, 3);
+
+        Assert.Equal(1, heard);
+        Assert.Equal([3, 4], rows.Value);
+
+        rows.RemoveRange(0, 0);
+
+        Assert.Equal(1, heard);
+    }
+
+    [Fact]
+    public void ATrimmedListIsFilledBackInWhereItWasCut()
+    {
+        using var history = new AtomHistory();
+        var rows = new TrackedAtomsList<string>(["one", "two", "three", "four"]);
+
+        rows.RemoveRange(1, 2);
+
+        Assert.Equal(["one", "four"], rows.Value);
+        Assert.Equal(1, history.Depth);
+
+        history.Undo();
+
+        Assert.Equal(["one", "two", "three", "four"], rows.Value);
+
+        history.Redo();
+
+        Assert.Equal(["one", "four"], rows.Value);
+    }
+
+    [Fact]
+    public void ARangeOutsideTheListIsRefused()
+    {
+        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => rows.RemoveRange(1, 5));
+        Assert.Throws<ArgumentOutOfRangeException>(() => rows.RemoveRange(-1, 1));
+
+        Assert.Equal(2, rows.Count);
+    }
+
+    [Fact]
     public void ReadingHowManyOrWhichIsEnoughToDependOnIt()
     {
         var rows = new LocalAtomsList<string>(["alpha"]);

@@ -27,6 +27,7 @@ Arlecchino.Atoms.AtomsList<T>.IndexOf(T item) -> int
 Arlecchino.Atoms.AtomsList<T>.Insert(int index, T item) -> void
 Arlecchino.Atoms.AtomsList<T>.Remove(T item) -> void
 Arlecchino.Atoms.AtomsList<T>.RemoveAt(int index) -> void
+Arlecchino.Atoms.AtomsList<T>.RemoveRange(int index, int count) -> void
 Arlecchino.Atoms.AtomsList<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.AtomsList<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.AtomsList<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
