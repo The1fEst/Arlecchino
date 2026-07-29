@@ -16,8 +16,8 @@ namespace Arlecchino.Atoms;
 public abstract class Atom<T> : IReadableAtom<T>
 {
     private readonly IEqualityComparer<T> _comparer;
+    private readonly Listeners _listeners = new();
 
-    private Action[] _listeners = [];
     private T _value;
 
     /// <summary>Creates an atom holding a starting value.</summary>
@@ -69,11 +69,7 @@ public abstract class Atom<T> : IReadableAtom<T>
     /// <summary>Calls back whenever the value changes.</summary>
     /// <param name="listener">What to run on change.</param>
     /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener)
-    {
-        _listeners = [.. _listeners, listener];
-        return new Subscription(this, listener);
-    }
+    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
     private void Write(T value, bool recordHistory)
     {
@@ -92,26 +88,9 @@ public abstract class Atom<T> : IReadableAtom<T>
             AtomChanges.NotifyRecorded(new Edit(this, previous, value));
         }
 
-        foreach (var listener in _listeners)
-        {
-            listener();
-        }
+        _listeners.Notify();
 
         AtomChanges.NotifyWritten();
-    }
-
-    private void Unsubscribe(Action listener)
-    {
-        var index = Array.IndexOf(_listeners, listener);
-        if (index < 0)
-        {
-            return;
-        }
-
-        var remaining = new Action[_listeners.Length - 1];
-        Array.Copy(_listeners, remaining, index);
-        Array.Copy(_listeners, index + 1, remaining, index, remaining.Length - index);
-        _listeners = remaining;
     }
 
     private sealed class Edit : IAtomEdit
@@ -134,26 +113,4 @@ public abstract class Atom<T> : IReadableAtom<T>
         public void Redo() => _state.Write(_after, recordHistory: false);
     }
 
-    private sealed class Subscription : IDisposable
-    {
-        private readonly Atom<T> _atom;
-        private Action? _listener;
-
-        public Subscription(Atom<T> atom, Action listener)
-        {
-            _atom = atom;
-            _listener = listener;
-        }
-
-        public void Dispose()
-        {
-            if (_listener is null)
-            {
-                return;
-            }
-
-            _atom.Unsubscribe(_listener);
-            _listener = null;
-        }
-    }
 }

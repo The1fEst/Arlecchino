@@ -9,6 +9,35 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.8.0
+
+### Added
+
+- **A list can be state of its own.** An `Atom<List<T>>` is a trap: adding to the list inside it never
+  goes through `Atom.Value`, so nothing is notified, no frame is asked for and the drawing thread is
+  not checked — and writing the same instance back does not help either, because an atom compares by
+  the default comparer and a list is compared by reference, so the write is taken for a change of
+  nothing. `AtomsList<T>` changes in place and still does everything a write does:
+
+  ```csharp
+  public LocalAtomsList<string> Log { get; } = new();
+  public TrackedAtomsList<Task> Plan { get; } = new();
+
+  Log.Add(line);
+  Plan.Add(imported);          // one notification and one undo step for the lot
+  Plan.Reset(loaded);
+  ```
+
+  The two kinds mirror the two atoms — `TrackedAtomsList<T>` goes on the undo stack and
+  `LocalAtomsList<T>` does not — and one call is one step, which is why adding several items at once
+  is a member of its own rather than a loop. `Value` is a live, read-only view, so a widget handed it
+  once draws whatever is in the list on every later frame.
+
+  The list held in an `Atom<IReadOnlyList<T>>` and replaced wholesale is still the right answer for a
+  handful of things that change on a keystroke; the new type is for the ones appended to often or
+  long enough that copying hurts. [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms) says
+  which to reach for.
+
 ## 2.7.0
 
 ### Added
