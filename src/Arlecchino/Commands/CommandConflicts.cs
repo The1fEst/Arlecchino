@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Arlecchino.Diagnostics;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 
@@ -43,9 +44,7 @@ internal sealed class CommandConflicts
         {
             if (seen.TryGetValue(command.Binding, out var earlier))
             {
-                _logger.LogWarning(
-                    "{Route} binds {Binding} to both '{Kept}' and '{Shadowed}'; only the first one can run.",
-                    route, command.Binding, earlier.Label(), command.Label());
+                Log.KeyBoundTwice(_logger, route, command.Binding, earlier.Label(), command.Label());
                 continue;
             }
 
@@ -58,9 +57,7 @@ internal sealed class CommandConflicts
                     continue;
                 }
 
-                _logger.LogWarning(
-                    "{Route} binds {Binding} to '{View}', shadowing the application command '{Global}'.",
-                    route, command.Binding, command.Label(), global.Label);
+                Log.KeyShadowsCommand(_logger, route, command.Binding, command.Label(), global.Label);
             }
         }
     }

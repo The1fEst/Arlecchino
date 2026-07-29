@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Arlecchino.Modals;
 
 /// <summary>
@@ -13,6 +15,11 @@ public interface IBoundedModal
     decimal Maximum { get; }
 
     /// <summary>How far the arrow keys move the value.</summary>
+    [SuppressMessage(
+        "Naming",
+        "CA1716:Identifiers should not match keywords",
+        Justification = "Step has been the name of this member since 1.0; renaming it to spare Visual Basic " +
+                        "would break every application that implements the interface.")]
     decimal Step { get; }
 
     /// <summary>How far the page keys move the value.</summary>

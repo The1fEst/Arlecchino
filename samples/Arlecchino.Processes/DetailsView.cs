@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
@@ -34,9 +35,9 @@ public sealed class DetailsView : IArlecchinoView
         var labels = new (string Label, string Value)[]
         {
             ("Working set", $"{row.Memory / (1024d * 1024d):0.0} MB"),
-            ("Threads", row.Threads.ToString()),
-            ("Processor time", row.Cpu.ToString(@"hh\:mm\:ss")),
-            ("Started", row.Started is { } started ? started.ToString("yyyy-MM-dd HH:mm:ss") : "not available"),
+            ("Threads", row.Threads.ToString(CultureInfo.InvariantCulture)),
+            ("Processor time", row.Cpu.ToString(@"hh\:mm\:ss", CultureInfo.InvariantCulture)),
+            ("Started", row.Started is { } started ? started.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) : "not available"),
         };
 
         var width = 0;

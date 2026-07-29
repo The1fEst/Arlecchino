@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using Arlecchino.Forms;
 using Arlecchino.Hosting;
@@ -44,7 +45,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
                 Field.MultiChoice(static () => "Columns", ["Name", "Date Modified", "Size", "Kind"],
                     settings.Columns, static picked => string.Join(", ", picked)),
                 Field.Date(static () => "Release", settings.Release,
-                    static value => value.ToString("yyyy-MM-dd")),
+                    static value => value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 Field.Color(static () => "Accent", settings.Accent),
                 Field.Path(static () => "Folder", settings.Profile, ViewKind.Settings, pickFolder: true,
                     static () => "opens the file picker"),

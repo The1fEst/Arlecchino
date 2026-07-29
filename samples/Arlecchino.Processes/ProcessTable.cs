@@ -27,7 +27,7 @@ public sealed class ProcessTable : IArlecchinoStore
 
     public DateTimeOffset LoadedAt { get; private set; }
 
-    public void Refresh() => _rows.Load(token => Task.Run(() => Read(token), token));
+    public void Refresh() => _rows.Load(token => Task.Run<IReadOnlyList<ProcessRow>>(() => Read(token), token));
 
     public IReadOnlyList<ProcessRow> Visible()
     {
@@ -49,7 +49,7 @@ public sealed class ProcessTable : IArlecchinoStore
         return matching;
     }
 
-    private IReadOnlyList<ProcessRow> Read(CancellationToken token)
+    private List<ProcessRow> Read(CancellationToken token)
     {
         var rows = new List<ProcessRow>();
 

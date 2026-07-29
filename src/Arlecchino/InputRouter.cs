@@ -75,7 +75,7 @@ public class InputRouter
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Handling {Key} failed at route {Route}.", key.Key, _navigator.CurrentRoute);
+            Log.KeyFailed(_logger, exception, key.Key, _navigator.CurrentRoute);
             _state.Output = _options.Strings.ViewFailed(exception.Message);
         }
     }
@@ -91,7 +91,7 @@ public class InputRouter
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Handling a mouse event failed at route {Route}.", _navigator.CurrentRoute);
+            Log.MouseFailed(_logger, exception, _navigator.CurrentRoute);
             _state.Output = _options.Strings.ViewFailed(exception.Message);
         }
     }
@@ -110,7 +110,7 @@ public class InputRouter
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Handling a paste failed at route {Route}.", _navigator.CurrentRoute);
+            Log.PasteFailed(_logger, exception, _navigator.CurrentRoute);
             _state.Output = _options.Strings.ViewFailed(exception.Message);
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Arlecchino.Modals;
 
@@ -98,7 +99,7 @@ public abstract class SegmentedModal : Modal
 
         var typed = _typedDigits;
         _typedDigits = "";
-        ApplyTypedValue(Segment, int.Parse(typed));
+        ApplyTypedValue(Segment, int.Parse(typed, CultureInfo.InvariantCulture));
     }
 
     /// <summary>Throws away a partly typed segment, restoring what was stored.</summary>

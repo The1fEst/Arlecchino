@@ -7,6 +7,9 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <ArlecchinoViewNamespace>Arlecchino.Tests.Views</ArlecchinoViewNamespace>
+    <!-- Library rules, on the library. A test formats strings it never shows anyone and holds
+         disposables for the length of one fact, so the recommended set is noise here. -->
+    <AnalysisLevel>latest-default</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,6 +7,9 @@
     <IsPublishable>false</IsPublishable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- A benchmark holds its subject for the length of a run and formats nothing anyone reads;
+         the recommended set has nothing to say about that. -->
+    <AnalysisLevel>latest-default</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

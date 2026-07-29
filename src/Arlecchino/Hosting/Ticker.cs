@@ -123,7 +123,7 @@ public sealed class Ticker
         return next > now ? next : now + entry.Interval;
     }
 
-    private IDisposable Schedule(TimeSpan interval, Action action, bool repeating)
+    private Entry Schedule(TimeSpan interval, Action action, bool repeating)
     {
         var step = interval < TimeSpan.FromMilliseconds(1) ? TimeSpan.FromMilliseconds(1) : interval;
         var entry = new Entry(step, _time.GetUtcNow() + step, action, repeating);

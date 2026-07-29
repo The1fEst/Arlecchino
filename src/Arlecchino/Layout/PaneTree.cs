@@ -243,7 +243,7 @@ public sealed class PaneTree
     public void Draw(SurfaceRegion region) =>
         Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap);
 
-    private static IArlecchinoColor BorderOf(IArlecchinoWidget widget) =>
+    private static TermColor BorderOf(IArlecchinoWidget widget) =>
         widget is IArlecchinoFocusable { IsFocused: true } ? Theme.Active : Theme.Info;
 
     private static PaneTree Build(PaneSplit? split, PaneSize size, PaneTree first, PaneTree second)

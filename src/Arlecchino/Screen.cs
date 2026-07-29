@@ -182,13 +182,13 @@ public class Screen
 
     private void TickFailed(Exception exception)
     {
-        _logger.LogError(exception, "Scheduled work failed.");
+        Log.TickFailed(_logger, exception);
         _state.Output = _strings.ViewFailed(exception.Message);
     }
 
     private void RunFailed(Exception exception)
     {
-        _logger.LogError(exception, "A posted action failed before the frame was drawn.");
+        Log.PostedWorkFailed(_logger, exception);
         _state.Output = _strings.ViewFailed(exception.Message);
     }
 
@@ -231,7 +231,7 @@ public class Screen
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "The view at route {Route} failed to draw.", _navigator.CurrentRoute);
+            Log.DrawFailed(_logger, exception, _navigator.CurrentRoute);
             _state.Output = _strings.ViewFailed(exception.Message);
         }
 
@@ -256,12 +256,7 @@ public class Screen
 
         if (DrawFaults.TakeSkippedRows() is var skipped and > 0)
         {
-            _logger.LogWarning(
-                "A collection shrank while it was being drawn at route {Route}; {Skipped} frame(s) were " +
-                "cut short. Change what a widget draws from the drawing thread — through FrameThread.Post " +
-                "when the change comes from somewhere else.",
-                _navigator.CurrentRoute,
-                skipped);
+            Log.RowsVanished(_logger, _navigator.CurrentRoute, skipped);
         }
     }
 
@@ -314,7 +309,7 @@ public class Screen
         _ => "none",
     };
 
-    private static IArlecchinoColor LevelStyle(LogLevel level) => level switch
+    private static TermColor LevelStyle(LogLevel level) => level switch
     {
         LogLevel.Warning => Theme.Warning,
         LogLevel.Error or LogLevel.Critical => Theme.Error,

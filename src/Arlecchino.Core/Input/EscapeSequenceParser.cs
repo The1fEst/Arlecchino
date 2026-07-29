@@ -24,7 +24,7 @@ internal sealed class EscapeSequenceParser
     {
         mouse = default;
 
-        if (!sequence.StartsWith("<", StringComparison.Ordinal) || sequence.Length < 6)
+        if (!sequence.StartsWith('<') || sequence.Length < 6)
         {
             return false;
         }

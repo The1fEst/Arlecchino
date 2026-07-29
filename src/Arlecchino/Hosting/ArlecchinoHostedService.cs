@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Arlecchino.Input;
 using Arlecchino.Atoms;
@@ -86,7 +87,7 @@ internal class ArlecchinoHostedService : BackgroundService
 
         foreach (var store in _stores)
         {
-            _ = store.RunAsync(stoppingToken, StoreFailed);
+            _ = store.RunAsync(StoreFailed, stoppingToken);
         }
 
         foreach (var startup in _startups)
@@ -106,7 +107,7 @@ internal class ArlecchinoHostedService : BackgroundService
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Arlecchino stopped after an unhandled error.");
+            Log.HostStopped(_logger, exception);
             _lifetime.StopApplication();
         }
         finally
@@ -116,7 +117,7 @@ internal class ArlecchinoHostedService : BackgroundService
     }
 
     private void StoreFailed(Exception exception) =>
-        _logger.LogError(exception, "A store failed to load; the application carries on with what its atoms hold.");
+        Log.StoreFailed(_logger, exception);
 
     private void EnterTerminalModes()
     {
@@ -218,7 +219,7 @@ internal class ArlecchinoHostedService : BackgroundService
 
         if (eventArgs.ExceptionObject is Exception exception)
         {
-            _logger.LogCritical(exception, "Arlecchino restored the terminal after an unhandled error.");
+            Log.TerminalRestored(_logger, exception);
         }
     }
 

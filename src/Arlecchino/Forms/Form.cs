@@ -226,7 +226,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
         return value.Length == 0 ? _strings.Empty() : value;
     }
 
-    private IArlecchinoColor StyleOf(Field field, int index)
+    private TermColor StyleOf(Field field, int index)
     {
         if (index == Selected)
         {

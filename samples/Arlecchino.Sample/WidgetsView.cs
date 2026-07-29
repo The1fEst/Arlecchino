@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using System.Collections.Generic;
 using Arlecchino.Focus;
@@ -47,7 +48,7 @@ public sealed class WidgetsView : IArlecchinoView
             [
                 new() { Header = static () => "Name", Cell = static mod => mod.Name, Sort = static (first, second) => string.CompareOrdinal(first.Name, second.Name) },
                 new() { Header = static () => "Author", Cell = static mod => mod.Author, Width = 12 },
-                new() { Header = static () => "Files", Cell = static mod => mod.Files.ToString(), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
+                new() { Header = static () => "Files", Cell = static mod => mod.Files.ToString(CultureInfo.InvariantCulture), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
             ],
             ItemStyle = static mod => mod.Enabled ? Theme.Default : Theme.Muted,
             Rows = Catalog,
@@ -114,7 +115,7 @@ public sealed class WidgetsView : IArlecchinoView
         ("Esc", "back"),
     ];
 
-    private static IReadOnlyList<string> Authors()
+    private static List<string> Authors()
     {
         var authors = new List<string>();
         foreach (var mod in Catalog)

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
@@ -46,7 +47,7 @@ public sealed class ProcessesView : IArlecchinoView
                 new()
                 {
                     Header = static () => "PID",
-                    Cell = static row => row.Id.ToString(),
+                    Cell = static row => row.Id.ToString(CultureInfo.InvariantCulture),
                     Width = 8,
                     AlignRight = true,
                     Sort = static (first, second) => first.Id.CompareTo(second.Id),
@@ -62,7 +63,7 @@ public sealed class ProcessesView : IArlecchinoView
                 new()
                 {
                     Header = static () => "Threads",
-                    Cell = static row => row.Threads.ToString(),
+                    Cell = static row => row.Threads.ToString(CultureInfo.InvariantCulture),
                     Width = 9,
                     AlignRight = true,
                     Sort = static (first, second) => first.Threads.CompareTo(second.Threads),

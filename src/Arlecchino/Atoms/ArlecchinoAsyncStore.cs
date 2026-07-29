@@ -84,7 +84,7 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
     /// <returns>A task that completes when the store is ready.</returns>
     protected abstract Task LoadAsync(CancellationToken token);
 
-    internal async Task RunAsync(CancellationToken token, Action<Exception>? onError)
+    internal async Task RunAsync(Action<Exception>? onError, CancellationToken token)
     {
         _status.Post(LoadStatus.Loading);
 

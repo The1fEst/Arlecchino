@@ -24,7 +24,7 @@ public sealed class AsyncStoreTests
         using var app = new TestApplication();
         var store = new Probe();
 
-        var running = store.RunAsync(CancellationToken.None, null);
+        var running = store.RunAsync(null, CancellationToken.None);
 
         Settle(store, LoadStatus.Loading);
 
@@ -44,7 +44,7 @@ public sealed class AsyncStoreTests
         using var app = new TestApplication();
         var store = new Probe();
 
-        _ = store.RunAsync(CancellationToken.None, null);
+        _ = store.RunAsync(null, CancellationToken.None);
 
         store.Finish();
 
@@ -62,7 +62,7 @@ public sealed class AsyncStoreTests
         var store = new Probe { Fails = true };
         Exception? reported = null;
 
-        _ = store.RunAsync(CancellationToken.None, exception => reported = exception);
+        _ = store.RunAsync(exception => reported = exception, CancellationToken.None);
 
         store.Finish();
 
@@ -83,7 +83,7 @@ public sealed class AsyncStoreTests
         using var stopping = new CancellationTokenSource();
         var store = new Probe { Cancels = true };
 
-        _ = store.RunAsync(stopping.Token, null);
+        _ = store.RunAsync(null, stopping.Token);
 
         await stopping.CancelAsync();
         store.Finish();
@@ -103,7 +103,7 @@ public sealed class AsyncStoreTests
         using var app = new TestApplication();
         var store = new Probe();
 
-        _ = store.RunAsync(CancellationToken.None, null);
+        _ = store.RunAsync(null, CancellationToken.None);
 
         store.Finish();
         store.Wait();

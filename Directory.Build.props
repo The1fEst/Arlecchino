@@ -5,6 +5,7 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <PropertyGroup>
