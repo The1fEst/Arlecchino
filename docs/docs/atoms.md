@@ -66,6 +66,69 @@ subscription. `Computed<T>` implements `IReadableAtom<T>`, so anything that only
 Making a per-view cursor an atom buys nothing: the view already redraws every frame, and the atom only
 adds a subscription nobody reads.
 
+## Lists
+
+An `Atom<List<T>>` looks like the obvious way to hold many things and is a trap. Adding to the list
+inside it never goes through `Atom.Value`, so:
+
+- **nothing is notified and no frame is asked for** — the screen changes on the next keystroke or
+  resize, which reads as an application that sometimes lags behind itself;
+- **the drawing thread is not checked**, so a background task can append while a widget is
+  enumerating the list mid-frame;
+- **writing the same instance back does not fix it**: an atom compares with
+  `EqualityComparer<T>.Default`, a list is compared by reference, and the write is taken for a change
+  of nothing and dropped.
+
+There are two right answers, and which one to use is a question of size and rate.
+
+**A set of things that is small, or is replaced rather than edited** — hold a read-only list and swap
+it wholesale:
+
+```csharp
+public Atom<IReadOnlyList<string>> Columns { get; } = new TrackedAtom<IReadOnlyList<string>>(["Name", "Size"]);
+
+Columns.Value = [.. Columns.Value, "Kind"];
+```
+
+Every write is a new list, so the undo history holds a before and an after that are genuinely
+different, and the whole thing costs one copy per change.
+
+**A list appended to often, or long enough that copying it hurts** — hold an `AtomsList<T>`, which
+changes in place and still does everything a write does:
+
+```csharp
+public LocalAtomsList<string> Log { get; } = new();
+public TrackedAtomsList<Task> Plan { get; } = new();
+
+Log.Add(line);
+Plan.Insert(0, task);
+```
+
+The two kinds mirror the two atoms: `TrackedAtomsList<T>` goes on the undo stack, `LocalAtomsList<T>`
+does not.
+
+| Member | Meaning |
+|---|---|
+| `Value` | A live, read-only view of the contents. Hand it to a widget once and it draws whatever is in the list on every later frame |
+| `Count`, `this[index]`, `IndexOf(item)` | Reading. Writing the indexer an equal item changes nothing |
+| `Add(item)`, `Add(items)`, `Insert(index, item)` | Adding. The overload taking a list is one notification and one undo step for the lot |
+| `Remove(item)`, `RemoveAt(index)`, `Clear()` | Taking out. Removing something that is not there changes nothing |
+| `Reset(items)` | Replaces the contents, for a list that is reloaded rather than edited |
+| `Subscribe(listener)` | Same as an atom's |
+
+One call is one step, which is why `Add(rows)` exists: a loop of `Add(row)` would come back a row at a
+time. `Value` is read-only all the way down — there is no cast back to the list underneath — so every
+change is seen by the frame and by the history.
+
+An `AtomsList<T>` has no `Post` of its own, because a change is a call rather than a value. Hand the
+whole change over instead:
+
+```csharp
+var loaded = await ReadRowsAsync(token);
+
+FrameThread.Post(() => Rows.Reset(loaded));
+```
+
 ## Undo and redo
 
 `AtomHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
