@@ -9,6 +9,38 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.13.0
+
+### Added
+
+- **`AreaChart`**, a series drawn as a filled area over as many rows as it is given — the shape a
+  system monitor shows, and the one thing `Sparkline` cannot be. A cell carries two samples side by
+  side and several levels of height, so a chart eight rows tall has thirty-two levels between empty
+  and full and twice the history of a row of blocks:
+
+  ```csharp
+  private readonly AreaChart _cpu = new()
+  {
+      Values = _history,
+      Minimum = 0,
+      Maximum = 100,
+      Bands = [new(0m, Theme.Active), new(60m, Theme.Warning), new(85m, Theme.Error)],
+  };
+  ```
+
+  Colour comes from how high the fill climbed rather than from anything the view works out: a
+  terminal with truecolor blends between the bands, a 256-colour one quantises that blend, and one
+  with no colour draws the shape alone. `Invert` hangs the chart from the top, for the second half of
+  a mirrored pair.
+- **`GraphSymbols` and `Glyphs.Graph`**, the choice of what graphs are drawn with — `Braille` for
+  four levels a cell, `Blocks` for two, `Tty` for a console whose font carries little more than
+  ASCII. `ArlecchinoOptions.GraphSymbols` installs it, `Glyphs.Graph` is process-wide and settable
+  afterwards, and a widget's own `Symbols` overrides it, so an application can offer the choice in
+  its own settings and every chart follows on the next frame.
+
+  It is a font question rather than a platform one: Windows Terminal falls back per glyph and renders
+  braille even when the configured font has none of it, while the classic console host does not.
+
 ## 2.12.0
 
 ### Added

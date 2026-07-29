@@ -209,6 +209,11 @@ Arlecchino.Rendering.ColorSupport
 Arlecchino.Rendering.ColorSupport.None = 0 -> Arlecchino.Rendering.ColorSupport
 Arlecchino.Rendering.ColorSupport.Palette = 1 -> Arlecchino.Rendering.ColorSupport
 Arlecchino.Rendering.ColorSupport.TrueColor = 2 -> Arlecchino.Rendering.ColorSupport
+Arlecchino.Rendering.Glyphs
+Arlecchino.Rendering.GraphSymbols
+Arlecchino.Rendering.GraphSymbols.Blocks = 1 -> Arlecchino.Rendering.GraphSymbols
+Arlecchino.Rendering.GraphSymbols.Braille = 0 -> Arlecchino.Rendering.GraphSymbols
+Arlecchino.Rendering.GraphSymbols.Tty = 2 -> Arlecchino.Rendering.GraphSymbols
 Arlecchino.Rendering.IArlecchinoColor
 Arlecchino.Rendering.IArlecchinoColor.Ansi.get -> string!
 Arlecchino.Rendering.Margin
@@ -423,6 +428,8 @@ static Arlecchino.Input.KeyText.LatinOnly.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.MouseEvent.operator !=(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
 static Arlecchino.Input.MouseEvent.operator ==(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
+static Arlecchino.Rendering.Glyphs.Graph.get -> Arlecchino.Rendering.GraphSymbols
+static Arlecchino.Rendering.Glyphs.Graph.set -> void
 static Arlecchino.Rendering.Margin.operator !=(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
 static Arlecchino.Rendering.Margin.operator ==(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
 static Arlecchino.Rendering.Rgb.FromHsl(int hue, int saturation, int lightness) -> Arlecchino.Rendering.Rgb

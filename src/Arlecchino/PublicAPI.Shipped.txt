@@ -264,6 +264,8 @@ Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.get -> char
 Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.get -> Arlecchino.Rendering.GraphSymbols
+Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.get -> System.TimeSpan
@@ -861,6 +863,23 @@ Arlecchino.State.FilePickerRequest.ReturnView.get -> Arlecchino.Navigation.ViewR
 Arlecchino.State.FilePickerRequest.ReturnView.init -> void
 Arlecchino.State.FilePickerRequest.Title.get -> string!
 Arlecchino.State.FilePickerRequest.Title.init -> void
+Arlecchino.Widgets.AreaChart
+Arlecchino.Widgets.AreaChart.AreaChart() -> void
+Arlecchino.Widgets.AreaChart.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.GaugeBand>!
+Arlecchino.Widgets.AreaChart.Bands.init -> void
+Arlecchino.Widgets.AreaChart.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.AreaChart.Invert.get -> bool
+Arlecchino.Widgets.AreaChart.Invert.init -> void
+Arlecchino.Widgets.AreaChart.Maximum.get -> decimal?
+Arlecchino.Widgets.AreaChart.Maximum.init -> void
+Arlecchino.Widgets.AreaChart.Minimum.get -> decimal?
+Arlecchino.Widgets.AreaChart.Minimum.init -> void
+Arlecchino.Widgets.AreaChart.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
+Arlecchino.Widgets.AreaChart.Style.init -> void
+Arlecchino.Widgets.AreaChart.Symbols.get -> Arlecchino.Rendering.GraphSymbols?
+Arlecchino.Widgets.AreaChart.Symbols.set -> void
+Arlecchino.Widgets.AreaChart.Values.get -> System.Collections.Generic.IReadOnlyList<decimal>!
+Arlecchino.Widgets.AreaChart.Values.set -> void
 Arlecchino.Widgets.BarChart<T>
 Arlecchino.Widgets.BarChart<T>.BarChart() -> void
 Arlecchino.Widgets.BarChart<T>.Caption.get -> System.Func<decimal, string!>?

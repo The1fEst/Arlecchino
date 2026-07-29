@@ -107,6 +107,246 @@ public sealed class Sparkline : IArlecchinoWidget
 }
 
 /// <summary>
+/// A series drawn as a filled area over as many rows as it is given — the shape a system monitor
+/// shows. Where <see cref="Sparkline"/> fits a row and reads at a glance, this one fills a pane and
+/// is meant to be looked at: the newest value is at the right, the fill climbs with the value, and
+/// the colour comes from how high it climbed rather than from anything the view works out.
+///
+/// A series with no spread at all — every number the same — draws as the lowest level along the
+/// bottom rather than as nothing, the way a <see cref="Sparkline"/> does.
+///
+/// The resolution is in the characters. A cell carries two samples side by side and several levels
+/// of height, so a chart eight rows tall has thirty-two levels between empty and full and holds
+/// twice the history a row of blocks would — see <see cref="GraphSymbols"/> for what each set costs
+/// in font support.
+/// </summary>
+public sealed class AreaChart : IArlecchinoWidget
+{
+    private const int BrailleBase = 0x2800;
+
+    private static readonly char[] QuadrantsUp = [' ', '▗', '▐', '▖', '▄', '▟', '▌', '▙', '█'];
+    private static readonly char[] QuadrantsDown = [' ', '▝', '▐', '▘', '▀', '▜', '▌', '▛', '█'];
+    private static readonly char[] Shades = [' ', '░', '▒', '█'];
+
+    /// <summary>
+    /// The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application
+    /// appends to between frames is exactly the right thing to hand over.
+    /// </summary>
+    public IReadOnlyList<decimal> Values { get; set; } = [];
+
+    /// <summary>The value an empty chart stands for. The smallest of the drawn values when left alone.</summary>
+    public decimal? Minimum { get; init; }
+
+    /// <summary>The value a full chart stands for. The largest of the drawn values when left alone.</summary>
+    public decimal? Maximum { get; init; }
+
+    /// <summary>
+    /// What to draw with. The application's own setting — <see cref="Glyphs.Graph"/> — when left
+    /// alone, so one chart can differ without every other one being told.
+    /// </summary>
+    public GraphSymbols? Symbols { get; set; }
+
+    /// <summary>
+    /// Where the colour changes as the fill climbs, in the same units as the values and in ascending
+    /// order. A terminal with truecolor blends between them, one without takes the nearest, and a
+    /// chart given none is drawn in <see cref="Style"/> throughout.
+    /// </summary>
+    public IReadOnlyList<GaugeBand> Bands { get; init; } = [];
+
+    /// <summary>Colour of the fill outside every band. The theme's active colour when left alone.</summary>
+    public IArlecchinoColor? Style { get; init; }
+
+    /// <summary>
+    /// Draws it hanging from the top rather than standing on the bottom, for the second half of a
+    /// mirrored pair — what comes in above, what goes out below.
+    /// </summary>
+    public bool Invert { get; init; }
+
+    /// <summary>
+    /// Draws the chart over every row of the region and returns what is left, which is nothing: a
+    /// chart fills what it is given, so hand it the pane it belongs in.
+    /// </summary>
+    /// <param name="region">Where to draw.</param>
+    /// <returns>An empty region.</returns>
+    public SurfaceRegion Draw(SurfaceRegion region)
+    {
+        if (region.IsEmpty)
+        {
+            return region;
+        }
+
+        var symbols = Symbols ?? Glyphs.Graph;
+        var perCell = symbols == GraphSymbols.Tty ? 1 : 2;
+        var levels = symbols switch
+        {
+            GraphSymbols.Braille => 4,
+            GraphSymbols.Blocks => 2,
+            _ => 3,
+        };
+
+        var samples = region.Width * perCell;
+        var first = Math.Max(0, Values.Count - samples);
+        var oldest = Values.Count - samples;
+        var (low, span) = Scale(first);
+        var row = new char[region.Width];
+
+        for (var line = 0; line < region.Height; line++)
+        {
+            var band = Invert ? line : region.Height - 1 - line;
+            var floor = (decimal)band / region.Height;
+            var ceiling = (decimal)(band + 1) / region.Height;
+
+            for (var cell = 0; cell < region.Width; cell++)
+            {
+                var slot = oldest + (cell * perCell);
+                var left = LevelAt(slot, floor, ceiling, low, span, levels);
+
+                if (symbols == GraphSymbols.Tty)
+                {
+                    row[cell] = Shades[left];
+                    continue;
+                }
+
+                var right = LevelAt(slot + 1, floor, ceiling, low, span, levels);
+
+                row[cell] = symbols == GraphSymbols.Braille
+                    ? Braille(left, right, Invert)
+                    : (Invert ? QuadrantsDown : QuadrantsUp)[(left * 3) + right];
+            }
+
+            region.Write(line, 0, new(row), ColourOf(ceiling, low, span));
+        }
+
+        return region.Rows(region.Height, 0);
+    }
+
+    private static char Braille(int left, int right, bool inverted)
+    {
+        var bits = 0;
+
+        for (var dot = 0; dot < 4; dot++)
+        {
+            var lit = inverted ? dot : 3 - dot;
+
+            if (dot < left)
+            {
+                bits |= lit switch { 0 => 0x01, 1 => 0x02, 2 => 0x04, _ => 0x40 };
+            }
+
+            if (dot < right)
+            {
+                bits |= lit switch { 0 => 0x08, 1 => 0x10, 2 => 0x20, _ => 0x80 };
+            }
+        }
+
+        return (char)(BrailleBase + bits);
+    }
+
+    private int LevelAt(int index, decimal floor, decimal ceiling, decimal low, decimal span, int levels)
+    {
+        if (index < 0 || index >= Values.Count)
+        {
+            return 0;
+        }
+
+        if (span <= 0)
+        {
+            return floor == 0 ? 1 : 0;
+        }
+
+        var share = Math.Clamp((Values[index] - low) / span, 0m, 1m);
+
+        if (share >= ceiling)
+        {
+            return levels;
+        }
+
+        if (share <= floor)
+        {
+            return 0;
+        }
+
+        var within = (share - floor) / (ceiling - floor) * levels;
+
+        return Math.Clamp((int)Math.Ceiling(within), 1, levels);
+    }
+
+    private IArlecchinoColor ColourOf(decimal ceiling, decimal low, decimal span)
+    {
+        var fallback = Style ?? Theme.Active;
+
+        if (Bands.Count == 0)
+        {
+            return fallback;
+        }
+
+        var value = low + (span * ceiling);
+        var found = -1;
+
+        for (var index = 0; index < Bands.Count && Bands[index].From <= value; index++)
+        {
+            found = index;
+        }
+
+        if (found < 0)
+        {
+            return fallback;
+        }
+
+        var below = Bands[found];
+
+        if (found == Bands.Count - 1 || below.Style is not TermColor from ||
+            Bands[found + 1].Style is not TermColor to)
+        {
+            return below.Style;
+        }
+
+        var above = Bands[found + 1];
+        var reached = above.From > below.From ? (value - below.From) / (above.From - below.From) : 0m;
+
+        return Blend(from, to, Math.Clamp(reached, 0m, 1m));
+    }
+
+    private static TermColor Blend(TermColor from, TermColor to, decimal reached) =>
+        from.ExactForeground is { } start && to.ExactForeground is { } end
+            ? new()
+            {
+                Foreground = reached < 0.5m ? from.Foreground : to.Foreground,
+                ExactForeground = new(
+                    (byte)(start.Red + ((end.Red - start.Red) * reached)),
+                    (byte)(start.Green + ((end.Green - start.Green) * reached)),
+                    (byte)(start.Blue + ((end.Blue - start.Blue) * reached))),
+            }
+            : from;
+
+    private (decimal Low, decimal Span) Scale(int first)
+    {
+        if (first >= Values.Count)
+        {
+            return (0m, 0m);
+        }
+
+        var low = Minimum ?? Values[first];
+        var high = Maximum ?? Values[first];
+
+        for (var index = first + 1; index < Values.Count; index++)
+        {
+            if (Minimum is null)
+            {
+                low = Math.Min(low, Values[index]);
+            }
+
+            if (Maximum is null)
+            {
+                high = Math.Max(high, Values[index]);
+            }
+        }
+
+        return (low, Math.Max(0m, high - low));
+    }
+}
+
+/// <summary>
 /// One bar per item, laid out down the region: the label in front, the bar across the middle, the
 /// readout behind. Bars are measured against the largest item unless told otherwise, so a chart of
 /// things that are all small still fills the pane instead of drawing four invisible stubs.

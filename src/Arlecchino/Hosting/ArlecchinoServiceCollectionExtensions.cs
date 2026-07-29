@@ -37,6 +37,7 @@ public static class ArlecchinoServiceCollectionExtensions
         {
             _ = provider;
             Theme.Palette = options.Theme;
+            Glyphs.Graph = options.GraphSymbols;
             return options;
         });
 

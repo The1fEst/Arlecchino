@@ -71,6 +71,12 @@ public sealed class ArlecchinoOptions
     /// <summary>Colours behind the roles. Installed into <see cref="Rendering.Theme"/> on resolve.</summary>
     public ThemePalette Theme { get; set; } = new();
 
+    /// <summary>
+    /// What graphs are drawn with. Installed into <see cref="Glyphs.Graph"/> on resolve, and settable
+    /// afterwards, so an application can offer the choice in its own settings.
+    /// </summary>
+    public GraphSymbols GraphSymbols { get; set; } = GraphSymbols.Braille;
+
     /// <summary>Every piece of text the framework draws.</summary>
     public ArlecchinoStrings Strings { get; set; } = new();
 
