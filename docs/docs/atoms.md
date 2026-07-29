@@ -113,11 +113,20 @@ does not.
 | `Count`, `this[index]`, `IndexOf(item)` | Reading. Writing the indexer an equal item changes nothing |
 | `Add(item)`, `Add(items)`, `Insert(index, item)` | Adding. The overload taking a list is one notification and one undo step for the lot |
 | `Remove(item)`, `RemoveAt(index)`, `Clear()` | Taking out. Removing something that is not there changes nothing |
+| `RemoveRange(index, count)` | Takes out several in a row as one change, which is how a list that has grown too long is trimmed |
 | `Reset(items)` | Replaces the contents, for a list that is reloaded rather than edited |
 | `Subscribe(listener)` | Same as an atom's |
 
-One call is one step, which is why `Add(rows)` exists: a loop of `Add(row)` would come back a row at a
-time. `Value` is read-only all the way down — there is no cast back to the list underneath — so every
+One call is one step, which is why `Add(rows)` and `RemoveRange` exist: a loop of `Add(row)` would
+come back a row at a time, and a list kept to a length — the last thousand lines of output, say — is
+trimmed in one call rather than one line at a time:
+
+```csharp
+if (Lines.Count > Kept)
+{
+    Lines.RemoveRange(0, Lines.Count - Kept);
+}
+``` `Value` is read-only all the way down — there is no cast back to the list underneath — so every
 change is seen by the frame and by the history.
 
 An `AtomsList<T>` has no `Post` of its own, because a change is a call rather than a value. Hand the
