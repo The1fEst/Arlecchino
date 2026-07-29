@@ -1,1 +1,2 @@
 #nullable enable
+*REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseNativeInput() -> Arlecchino.Hosting.ArlecchinoBuilder!

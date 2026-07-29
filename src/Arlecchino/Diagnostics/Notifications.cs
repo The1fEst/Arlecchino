@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Atoms;
 using Arlecchino.Hosting;
 
 namespace Arlecchino.Diagnostics;
@@ -121,7 +122,7 @@ public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, 
 /// </summary>
 public sealed class Notifications
 {
-    private readonly List<Notification> _entries = [];
+    private readonly LocalAtomsList<Notification> _entries = new();
     private readonly ArlecchinoOptions _options;
     private readonly TimeProvider _time;
     private readonly Repaint _repaint;
@@ -145,7 +146,7 @@ public sealed class Notifications
     {
         get
         {
-            var newestFirst = new List<Notification>(_entries);
+            var newestFirst = new List<Notification>(_entries.Value);
             newestFirst.Reverse();
             return newestFirst;
         }
@@ -164,7 +165,7 @@ public sealed class Notifications
                 return null;
             }
 
-            var newest = _entries[^1];
+            var newest = _entries.Value[^1];
 
             return newest.IsRunning || _time.GetUtcNow() - newest.Since < _options.NotificationTimeout
                 ? newest
@@ -212,8 +213,6 @@ public sealed class Notifications
             _entries.RemoveRange(0, surplus);
         }
 
-        _repaint.Request();
-
         return entry;
     }
 
@@ -237,44 +236,34 @@ public sealed class Notifications
     /// Takes one entry back, for work whose line should not be kept at all.
     /// </summary>
     /// <param name="entry">The entry to remove; one that is no longer held is ignored.</param>
-    public void Withdraw(Notification entry)
-    {
-        if (_entries.Remove(entry))
-        {
-            _repaint.Request();
-        }
-    }
+    public void Withdraw(Notification entry) => _entries.Remove(entry);
 
     /// <summary>
     /// Throws away everything that has been said, the output row included — except work that is still
     /// running, which keeps its line. A copy does not stop because its line was cleared, and a job
     /// running with nothing on screen to show for it is worse than a list that would not empty.
     /// </summary>
-    public void Clear()
-    {
-        var kept = _entries.FindAll(static entry => entry.IsRunning);
-
-        if (kept.Count == _entries.Count)
-        {
-            return;
-        }
-
-        _entries.Clear();
-        _entries.AddRange(kept);
-        _repaint.Request();
-    }
+    public void Clear() => _entries.Reset(Kept(static entry => entry.IsRunning));
 
     private void Expire()
     {
         var cutoff = _time.GetUtcNow() - _options.NotificationLifetime;
-        var kept = _entries.FindAll(entry => entry.IsRunning || entry.Since > cutoff);
 
-        if (kept.Count == _entries.Count)
+        _entries.Reset(Kept(entry => entry.IsRunning || entry.Since > cutoff));
+    }
+
+    private List<Notification> Kept(Func<Notification, bool> worth)
+    {
+        var kept = new List<Notification>(_entries.Count);
+
+        foreach (var entry in _entries)
         {
-            return;
+            if (worth(entry))
+            {
+                kept.Add(entry);
+            }
         }
 
-        _entries.Clear();
-        _entries.AddRange(kept);
+        return kept;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Xunit;
@@ -291,6 +292,68 @@ public sealed class NotificationTests
 
     private static Notification Running(Func<string> progress) =>
         new(DateTimeOffset.UtcNow, NotificationLevel.Information, "working") { Progress = progress };
+
+    [Fact]
+    public void RaisingFromAnotherThreadIsCaughtRatherThanTolerated()
+    {
+        using var app = new TestApplication();
+        using var drawing = FrameThread.Claim();
+
+        Exception? thrown = null;
+
+        var background = new Thread(() =>
+        {
+            try
+            {
+                app.State.Notifications.Notify("from a worker");
+            }
+            catch (Exception failure)
+            {
+                thrown = failure;
+            }
+        });
+
+        background.Start();
+        background.Join();
+
+        Assert.IsType<InvalidOperationException>(thrown);
+        Assert.Empty(app.State.Notifications.Entries);
+    }
+
+    [Fact]
+    public void PostingIsHowBackgroundWorkSaysSomething()
+    {
+        using var app = new TestApplication();
+        using var drawing = FrameThread.Claim();
+
+        var background = new Thread(() => FrameThread.Post(() => app.State.Notifications.Notify("done")));
+
+        background.Start();
+        background.Join();
+
+        FrameThread.RunPending(static _ => { });
+
+        Assert.Single(app.State.Notifications.Entries);
+    }
+
+    [Fact]
+    public void AnEntryFallingOffAsksForAFrameByItself()
+    {
+        using var app = new TestApplication();
+
+        app.State.Notifications.Notify("said");
+
+        var repaint = (Repaint)app.Services.GetService(typeof(Repaint))!;
+
+        repaint.TakeRequested();
+
+        Assert.False(repaint.IsRequested);
+
+        app.Advance(app.Options.NotificationLifetime + TimeSpan.FromSeconds(1));
+
+        Assert.True(repaint.IsRequested);
+        Assert.Empty(app.State.Notifications.Entries);
+    }
 
     private sealed class Counter
     {

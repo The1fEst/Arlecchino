@@ -43,8 +43,13 @@ public sealed class ArlecchinoOptions
     /// </summary>
     public char CommandPaletteKey { get; set; } = ':';
 
-    /// <summary>How a key press becomes a character on a non-latin layout.</summary>
-    public TextInputMode TextInput { get; set; } = TextInputMode.LatinOnly;
+    /// <summary>
+    /// How a key press becomes a character on a non-latin layout. Whatever the terminal reports is
+    /// taken by default, so any language can be typed without the application asking for it;
+    /// <see cref="ArlecchinoBuilder.UseLatinOnlyInput"/> trades that for keys that always read the
+    /// same.
+    /// </summary>
+    public TextInputMode TextInput { get; set; } = TextInputMode.Native;
 
     /// <summary>
     /// Whether to report mouse events. Off by default, because with it on the terminal stops handling

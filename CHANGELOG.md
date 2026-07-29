@@ -40,6 +40,23 @@ the public API means a new major. See
 
 ### Changed
 
+- **Notifications are state.** `Notifications` held a plain `List<Notification>` and asked for a
+  repaint by hand, which meant two things: an entry falling out on its timeout changed nothing on
+  screen until something else asked for a frame, and `Raise` from a background task corrupted the
+  list quietly. It now holds a `LocalAtomsList<Notification>`, so every change asks for a frame by
+  itself — **and raising one from a thread that is not the drawing thread throws** instead of being
+  tolerated. Work that reports from the background hands it over:
+
+  ```csharp
+  FrameThread.Post(() => state.Notifications.Notify("done"));
+  ```
+
+  This is the reason the change waited for a major: an application that has been raising
+  notifications from a worker has been getting away with it.
+- **Any language can be typed without asking.** `TextInputMode.Native` is the default, so a
+  non-Latin layout works out of the box; `UseLatinOnlyInput()` still trades that for keys that always
+  read the same.
+
 - **A `PaneTree` with no gap draws one line between its panes, not two.** Titled panes went through
   `SurfaceRegion.Border`, so `Gaps(inner: 0)` put `╮╭` where the eye expects `┬`. The tree now records
   its boxes in a `Joinery` and paints them together, and panes in a box that touch are pulled onto
@@ -55,6 +72,11 @@ the public API means a new major. See
   neighbour's border, and any tree with a gap is unchanged. The pane holding the focus is recorded
   last, so the edge it shares takes its colour rather than its neighbour's — `Tab` still moves a
   highlight around the screen, now along lines that meet.
+
+### Removed
+
+- **`ArlecchinoBuilder.UseNativeInput()`**, which now says what already happens. Delete the call —
+  the behaviour it asked for is what an application gets by default.
 
 ## 2.13.0
 

@@ -172,13 +172,13 @@ public sealed class ArlecchinoBuilder
         return this;
     }
 
-    /// <summary>Accepts only Latin letters and digits, in exchange for keys that always read correctly.</summary>
+    /// <summary>
+    /// Accepts only Latin letters and digits, in exchange for keys that always read correctly.
+    /// Whatever the terminal reports is taken otherwise, which is what an application gets without
+    /// asking.
+    /// </summary>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseLatinOnlyInput() => UseTextInput(TextInputMode.LatinOnly);
-
-    /// <summary>Accepts whatever the terminal reports, so any language can be typed.</summary>
-    /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseNativeInput() => UseTextInput(TextInputMode.Native);
 
     /// <summary>Replaces the key bindings, which every widget then follows.</summary>
     /// <param name="keymap">The bindings to use.</param>

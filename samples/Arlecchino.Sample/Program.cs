@@ -37,7 +37,6 @@ builder.Services
     .AddGeneratedViews()
     .AddGeneratedStores()
     .AddGeneratedCommands()
-    .UseLatinOnlyInput()
     .UseMouse()
     .StartAt(ViewKind.Default);
 
