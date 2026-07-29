@@ -41,6 +41,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 | [`Insert(int, T)`](#insert-int-t) | Puts an item at a position, moving the rest along. |
 | [`Remove(T)`](#remove-t) | Takes out the first item equal to this one, and does nothing when there is none. |
 | [`RemoveAt(int)`](#removeat-int) | Takes out the item at a position. |
+| [`RemoveRange(int, int)`](#removerange-int-int) | Takes out several items in a row at once. One notification, one frame and one undo step for the lot — which is what trimming a list that has grown too long needs, since doing it one item at a time would notify once per item and come back the same way. |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the case the list is not edited but reloaded — a query answered, a folder read again, a filter applied. Contents equal to what is already there change nothing. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
 
@@ -205,6 +206,21 @@ Takes out the item at a position.
 | Name | Type | Description |
 |---|---|---|
 | `index` | `int` | Which one. |
+
+### `RemoveRange(int, int)` {#removerange-int-int}
+
+```csharp
+public void RemoveRange(int index, int count);
+```
+
+Takes out several items in a row at once. One notification, one frame and one undo step for the lot — which is what trimming a list that has grown too long needs, since doing it one item at a time would notify once per item and come back the same way.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Where to start. |
+| `count` | `int` | How many to take out. Taking none changes nothing. |
 
 ### `Reset(IReadOnlyList<T>)` {#reset-ireadonlylist-t}
 
