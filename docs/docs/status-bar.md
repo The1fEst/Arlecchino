@@ -70,6 +70,9 @@ progress.Draw(region.Rows(0, 1));
 
 The bar fills the region width minus the caption, so the caption never pushes it off the edge.
 
+For a bar measured against a range that need not start at zero, and coloured by the bands it crosses,
+see [`Gauge`](charts.md#gauge).
+
 ## Spinner
 
 ```csharp

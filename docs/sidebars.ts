@@ -46,6 +46,7 @@ const sidebars: SidebarsConfig = {
         'scrolling',
         'text-view',
         'status-bar',
+        'charts',
         'file-picker',
       ],
     },

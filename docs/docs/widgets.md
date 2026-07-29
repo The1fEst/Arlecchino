@@ -21,7 +21,7 @@ public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFo
 | Widget | Contract |
 |---|---|
 | [`ListBox<T>`](lists.md), [`Table<T>`](table.md), [`Tree<T>`](tree.md), [`Tabs`](tabs.md), [`ScrollPane`](scrolling.md), [`TextView`](text-view.md), [`Form`](forms.md) | `IArlecchinoInteractiveWidget` |
-| [`ProgressBar`](status-bar.md#progressbar), [`StatusBar`](status-bar.md), [`Spinner`](status-bar.md#spinner) | `IArlecchinoWidget` |
+| [`ProgressBar`](status-bar.md#progressbar), [`StatusBar`](status-bar.md), [`Spinner`](status-bar.md#spinner), [`Sparkline`](charts.md#sparkline), [`BarChart<T>`](charts.md#barchart), [`Gauge`](charts.md#gauge) | `IArlecchinoWidget` |
 
 ## Draw returns what is left
 

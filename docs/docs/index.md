@@ -80,6 +80,7 @@ does not have.
 | [Scrolling](scrolling.md) | `ScrollPane`, `ScrollWindow` and `ScrollBar` |
 | [TextView](text-view.md) | A block of text, wrapped and cached |
 | [Status bar and indicators](status-bar.md) | `StatusBar`, `ProgressBar`, `Spinner` |
+| [Charts](charts.md) | `Sparkline`, `BarChart`, `Gauge` |
 | [File picker](file-picker.md) | Requesting a path, the places sidebar, filters and keys |
 
 ## Guides
