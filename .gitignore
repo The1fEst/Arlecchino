@@ -9,4 +9,3 @@ coverage/
 TestResults/
 inspect.json
 inspect.sarif
-tools/

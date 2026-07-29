@@ -17,6 +17,21 @@ Arlecchino.Atoms.AtomHistory.Dispose() -> void
 Arlecchino.Atoms.AtomHistory.Group() -> System.IDisposable!
 Arlecchino.Atoms.AtomHistory.Redo() -> bool
 Arlecchino.Atoms.AtomHistory.Undo() -> bool
+Arlecchino.Atoms.AtomsList<T>
+Arlecchino.Atoms.AtomsList<T>.Add(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.AtomsList<T>.Add(T item) -> void
+Arlecchino.Atoms.AtomsList<T>.AtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.AtomsList<T>.Clear() -> void
+Arlecchino.Atoms.AtomsList<T>.Count.get -> int
+Arlecchino.Atoms.AtomsList<T>.IndexOf(T item) -> int
+Arlecchino.Atoms.AtomsList<T>.Insert(int index, T item) -> void
+Arlecchino.Atoms.AtomsList<T>.Remove(T item) -> void
+Arlecchino.Atoms.AtomsList<T>.RemoveAt(int index) -> void
+Arlecchino.Atoms.AtomsList<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.AtomsList<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.AtomsList<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
+Arlecchino.Atoms.AtomsList<T>.this[int index].get -> T
+Arlecchino.Atoms.AtomsList<T>.this[int index].set -> void
 Arlecchino.Atoms.Computed<T>
 Arlecchino.Atoms.Computed<T>.Computed(System.Func<T>! compute) -> void
 Arlecchino.Atoms.Computed<T>.Subscribe(System.Action! listener) -> System.IDisposable!
@@ -32,8 +47,12 @@ Arlecchino.Atoms.IReadableAtom<T>.Subscribe(System.Action! listener) -> System.I
 Arlecchino.Atoms.IReadableAtom<T>.Value.get -> T
 Arlecchino.Atoms.LocalAtom<T>
 Arlecchino.Atoms.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.LocalAtomsList<T>
+Arlecchino.Atoms.LocalAtomsList<T>.LocalAtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.TrackedAtom<T>
 Arlecchino.Atoms.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.TrackedAtomsList<T>
+Arlecchino.Atoms.TrackedAtomsList<T>.TrackedAtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal
 Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
@@ -297,6 +316,7 @@ Arlecchino.SystemTerminal.SystemTerminal() -> void
 Arlecchino.SystemTerminal.Width.get -> int
 Arlecchino.SystemTerminal.Write(string! text) -> void
 abstract Arlecchino.Atoms.Atom<T>.RecordsHistory.get -> bool
+abstract Arlecchino.Atoms.AtomsList<T>.RecordsHistory.get -> bool
 override Arlecchino.Input.KeyBinding.GetHashCode() -> int
 override Arlecchino.Input.KeyBinding.ToString() -> string!
 override Arlecchino.Input.MouseEvent.GetHashCode() -> int
