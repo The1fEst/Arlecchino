@@ -9,6 +9,32 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.12.0
+
+### Added
+
+- **`AtomsSet<T>`**, in a tracked and a local flavour, for the state that is a question of in or out
+  — the files marked, the rows expanded, the hosts that answered:
+
+  ```csharp
+  public TrackedAtomsSet<string> Marked { get; } = new(comparer: StringComparer.OrdinalIgnoreCase);
+
+  Marked.Add(path);
+  Marked.Add(everythingBelow);          // one notification and one undo step for the lot
+
+  if (Marked.TryRemove(path))
+  {
+      Say($"{path} is no longer marked");
+  }
+  ```
+
+  It follows `HashSet<T>` rather than the map: putting in what is already there is idempotent rather
+  than an exception, which is why `Add` answers nothing and `TryAdd` and `TryRemove` are there for
+  when the answer matters. `Value` is a live, read-only `IReadOnlySet<T>`, so `Contains`,
+  `SetEquals` and `IsSubsetOf` are all reachable without copying anything — the read-only wrapper is
+  the framework's own, since `ReadOnlySet<T>` arrived in .NET 9 and the packages still build for
+  `net8.0`.
+
 ## 2.11.0
 
 ### Added
