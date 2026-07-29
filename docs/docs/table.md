@@ -64,11 +64,11 @@ from the [`ListBox`](lists.md) inside, so everything on that page applies here.
 
 ## A worked example
 
-`samples/Arlecchino.Packages` is a sortable table of a solution's packages behind
-[tabs](tabs.md), coloured by what is wrong with each one:
+Each panel of [`Arlecchino.Commander`](https://github.com/The1fEst/Arlecchino.Commander) is a sortable
+table of one folder, coloured by what each row is — a folder, a marked file, a hidden one:
 
 ```bash
-dotnet run --project samples/Arlecchino.Packages -- --frame inventory 120x30
+dotnet run --project src/Arlecchino.Commander -- --frame 132x26 --left . --right src
 ```
 
 See [Showcase](showcase.md).

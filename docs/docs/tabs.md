@@ -73,8 +73,8 @@ different widgets rather than different rows of the same one.
 
 ## A worked example
 
-`samples/Arlecchino.Packages` narrows one table down to one kind of problem per tab:
+`samples/Arlecchino.Sample` puts its widget gallery behind tabs, one page each:
 
 ```bash
-dotnet run --project samples/Arlecchino.Packages -- --frame inventory 120x30
+dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
 ```

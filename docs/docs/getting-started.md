@@ -112,22 +112,19 @@ dotnet run --project samples/Arlecchino.Processes
 being written down twice. It renders headlessly too — `--frame processes 110x26` or
 `--frame details 90x18`.
 
-`Arlecchino.Packages` is the largest of the three: a dependency review for a .NET solution. It runs
-`dotnet list package` four times — the graph, newer versions, advisories, deprecations — merges the
-reports into one catalogue, and shows what came out across four screens: a filtered table behind
-[tabs](tabs.md), a package page with its advisories and every project that pulls it in, the
-dependency [tree](tree.md) beside a per-project table, and an upgrade [form](forms.md)
-that writes `dotnet add package` commands and can run them:
+[`Arlecchino.Commander`](https://github.com/The1fEst/Arlecchino.Commander) is the largest of the
+three, and the one with a repository of its own: a Midnight Commander with two panels, the function
+keys where they have always been, and the same panel over a local disk, an SFTP server or an FTP one.
+It takes the framework from NuGet, the way an application of yours would.
 
 ```
-dotnet run --project samples/Arlecchino.Packages
+dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 ```
 
-It runs without the output line, so the bottom row belongs to the screen's own status bar, and `:h`
-turns the hints box off and on — the palette command flips `options.ShowHints` at runtime.
+Each panel is a [table](table.md); the menu behind `F9` is a [choice modal](modals.md) per section;
+copy, move and delete ask their questions as modals and then run off the drawing thread, reporting
+themselves as [notifications](notifications.md) with a bar and a key that stops them.
 
-With no arguments it reads the fixture solution kept beside it — three projects wired to packages
-that are outdated, vulnerable, deprecated and resolved at more than one version, so every screen has
-something to show without reaching for a real repository. `--solution <path>` points it at one of
-yours. The four screens render headlessly as `--frame inventory 120x30`, `--frame package 120x26`,
-`--frame projects 120x30` and `--frame upgrade 120x24`.
+It runs without the output line, so the bottom row belongs to the screen's own status bar. Every
+screen renders headlessly as `--frame 132x26`, with `--keys` to play keys first and `--connect` to
+open a panel on a server.

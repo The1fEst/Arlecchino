@@ -64,9 +64,9 @@ blocking the frame.
 
 ## A worked example
 
-The dependency screen of `samples/Arlecchino.Packages` is a tree of projects beside a per-project
-table, with transitive branches folded in:
+`samples/Arlecchino.Sample` shows a tree beside the rest of its gallery, with the branches folded in
+until they are opened:
 
 ```bash
-dotnet run --project samples/Arlecchino.Packages -- --frame projects 120x30
+dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
 ```

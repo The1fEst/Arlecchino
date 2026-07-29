@@ -317,7 +317,6 @@ that is the point of it.
 | `src/Arlecchino.Testing` | Headless test host published as a package |
 | `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
-| `samples/Arlecchino.Packages` | A dependency review of a solution: four screens over `dotnet list package` |
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, colour conversion |
 | `docs` | This documentation |

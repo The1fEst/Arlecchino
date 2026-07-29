@@ -6,11 +6,18 @@ description: Build Arlecchino.Packages from an empty project — a real terminal
 
 # Tutorial: a dependency review
 
-This builds `samples/Arlecchino.Packages` from an empty project. It is a real application rather than
-a widget gallery: it runs `dotnet list package` four times, merges the reports, and shows what came out
-across four screens.
+This builds a dependency review from an empty project. It is a real application rather than a widget
+gallery: it runs `dotnet list package` four times, merges the reports, and shows what came out across
+four screens.
 
-![Every package in the solution, coloured by what is wrong with it](/img/screenshots/inventory.png)
+:::note
+
+The application built here shipped in the framework's repository as `samples/Arlecchino.Packages`
+until 2.6.0, and the sample that ships now is
+[Arlecchino.Commander](https://github.com/The1fEst/Arlecchino.Commander) instead. Every line below
+still builds and runs — the project is simply one you create yourself.
+
+:::
 
 By the end you will have used almost everything the framework has — a
 [store](stores.md) of [atoms](atoms.md), an [async atom](async-atoms.md) with a spinner and a progress

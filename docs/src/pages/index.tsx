@@ -202,13 +202,13 @@ function Screenshot(): ReactNode {
       <div className="container">
         <h2>What it looks like</h2>
         <p>
-          <Link to="/docs/showcase">Arlecchino.Packages</Link> is a dependency review of a .NET
-          solution built on the framework: a sortable table, tabs, a tree, a form on atoms, every
-          modal, the command palette and the file picker.
+          <Link to="/docs/showcase">Arlecchino.Commander</Link> is a Midnight Commander built on the
+          framework: two panels over local disks, SFTP and FTP, every modal, work that runs in the
+          background and reports itself, the command palette and the keys screen.
         </p>
         <img
-          src={useBaseUrl('img/screenshots/inventory.png')}
-          alt="Every package in the solution, coloured by what is wrong with it"
+          src={useBaseUrl('img/screenshots/panels.png')}
+          alt="Two panels over a local disk"
         />
       </div>
     </section>

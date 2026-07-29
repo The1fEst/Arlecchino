@@ -1,50 +1,82 @@
 ---
 title: Showcase
 sidebar_label: Showcase
-description: The three sample applications that ship in the repository, what each one demonstrates, and how to render any of their screens as a single frame.
+description: The applications built on Arlecchino, what each one demonstrates, and how to render any of their screens as a single frame.
 ---
 
 # Showcase
 
-Three applications ship in the repository. They are the readable version of everything on these pages:
-each one is built on the public API and nothing else.
+Three applications are the readable version of everything on these pages: each one is built on the
+public API and nothing else. Two ship beside the framework; the largest has a repository of its own.
 
-## Arlecchino.Packages
+## Arlecchino.Commander
 
-A dependency review for a .NET solution, and the largest of the three. It runs `dotnet list package`
-four times — the graph, newer versions, advisories, deprecations — merges the reports into one
-catalogue, and shows what came out across four screens.
+A Midnight Commander, and the largest of the three. Two panels, the function keys where they have
+always been, and the same panel over a local disk, an SFTP server or an FTP one. It lives in
+[its own repository](https://github.com/The1fEst/Arlecchino.Commander) and takes the framework from
+NuGet, the way an application of yours would.
 
 ```bash
-dotnet run --project samples/Arlecchino.Packages
+dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 ```
 
-![Every package in the solution, coloured by what is wrong with it](/img/screenshots/inventory.png)
+![Two panels over a local disk](/img/screenshots/panels.png)
 
-With no arguments it reads the fixture solution kept beside it — three projects wired to packages that
-are outdated, vulnerable, deprecated and resolved at more than one version, so every screen has
-something to show without reaching for a real repository. `--solution <path>` points it at one of
-yours.
+Each panel is a [table](table.md) over one folder. `Space` marks a row, and what is marked is counted
+at the foot of the panel:
 
-| Screen | What it shows | Uses |
+![Three files marked, counted at the foot of the panel](/img/screenshots/marks.png)
+
+Either panel sorts by name, size or date, narrows down to a filter, and reads a file without leaving
+the panels:
+
+![The right panel sorted by size](/img/screenshots/sorted.png)
+
+![The panel filtered by name](/img/screenshots/filter.png)
+
+![A file read without leaving the panels](/img/screenshots/viewer.png)
+
+| Part | What it shows | Uses |
 |---|---|---|
-| Inventory | A filtered table behind tabs | [`Table`](table.md), [`Tabs`](tabs.md), [text modal](modals.md#text) |
-| Package | One package, its advisories and every project that pulls it in | [Regions](layout.md#regions), [`ListBox`](lists.md) |
-| Projects | The dependency tree beside a per-project table | [`Tree`](tree.md), [`FocusRing`](focus.md) |
-| Upgrade | A form that writes `dotnet add package` commands and can run them | [`Form`](forms.md), [atoms](atoms.md), every [modal](modals.md) |
+| The panels | Two tables in one layout, either of which may hold the focus | [`Table`](table.md), [`PaneTree`](layout.md), [`FocusRing`](focus.md) |
+| The menu | Sections of a menu offered as lists | [choice modal](modals.md), [view commands](commands.md) |
+| Copy, move, delete | Questions asked first, then the work off the drawing thread | [modals](modals.md), [rendering](rendering.md) |
+| Work in flight | A bar, what is being worked on now, and a key that stops it | [status bar](status-bar.md), [notifications](notifications.md) |
+| Servers | A panel over SFTP or FTP, and a screen that runs commands over SSH | [stores](stores.md), [`Form`](forms.md), [async atoms](async-atoms.md) |
 
-![The vulnerable tab](/img/screenshots/vulnerable.png)
+`F9` opens the menu, and what can be done to what is marked is one list under it:
 
-![The dependency tree beside a per-project table](/img/screenshots/projects.png)
+![The menu, opened by F9](/img/screenshots/menu.png)
 
-![The upgrade form and the commands it would run](/img/screenshots/upgrade.png)
+![What can be done to what is marked](/img/screenshots/file-menu.png)
+
+Copying and deleting ask first, with the negative answer selected, so a stray `Enter` cancels:
+
+![Copying asks where to](/img/screenshots/copy.png)
+
+![Deleting asks first, with no selected](/img/screenshots/delete.png)
+
+Work of any size runs in the background with a bar and `Esc` to stop it, and reports itself as a
+[notification](notifications.md) that opens in full and turns into what came of it:
+
+![A copy running in the background, with a bar and Esc to stop](/img/screenshots/progress.png)
+
+![The same copy opened in full, with Stop offered](/img/screenshots/notification.png)
+
+![The same entry once the copy is over](/img/screenshots/done.png)
+
+A panel connects by a `Host` entry from `~/.ssh/config`, browses the server as it browses a disk, and
+the same credentials run a command on it:
+
+![Hosts read from ~/.ssh/config](/img/screenshots/hosts.png)
+
+![A panel browsing a server over SFTP](/img/screenshots/server.png)
+
+![A command run on that server](/img/screenshots/ssh.png)
 
 It runs **without the output line**, so the bottom row belongs to the screen's own
-[status bar](status-bar.md), and `:h` turns the hints box off and on — the palette command flips
-`options.ShowHints` at runtime.
-
-The four screens render headlessly as `--frame inventory 120x30`, `--frame package 120x26`,
-`--frame projects 120x30` and `--frame upgrade 120x24`.
+[status bar](status-bar.md), and every screen renders headlessly — `--frame 132x26`, with `--keys` to
+play keys first and `--connect` to open a panel on a server.
 
 ## Arlecchino.Processes
 
@@ -72,10 +104,6 @@ the file picker.
 dotnet run --project samples/Arlecchino.Sample
 ```
 
-![The command palette over the inventory](/img/screenshots/palette.png)
-
-![The file picker asking for another solution](/img/screenshots/picker.png)
-
 The frame goes to stdout as ANSI text; the view name is `default`, `about`, `picker`, `widgets`, or one
 of `password`, `number`, `slider`, `toggle`, `multi`, `date`, `time`, `color` to render the matching
 modal over the default view:
@@ -86,13 +114,16 @@ dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
 
 ## Rendering any of them as a frame
 
-Every sample takes `--frame <view> <width>x<height>` and writes one composed frame to stdout. That is
-the fastest way to look at a layout, and it is three lines of wiring in an application of your own —
-see [Rendering](rendering.md#rendering-without-a-terminal).
+Every one of them takes `--frame` and writes a composed frame to stdout — the samples beside the
+framework name a view, the commander names a size. That is the fastest way to look at a layout, and it
+is three lines of wiring in an application of your own — see
+[Rendering](rendering.md#rendering-without-a-terminal).
+
+The command palette and the keys screen are the framework's own, and appear in every one of them:
+
+![The command palette](/img/screenshots/palette.png)
 
 ![The keys screen](/img/screenshots/help.png)
-
-![The log overlay](/img/screenshots/log.png)
 
 ## Built something?
 
