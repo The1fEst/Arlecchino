@@ -51,6 +51,76 @@ private readonly Sparkline _failures = new() { Values = _errors, Minimum = 0 };
 A series with no spread at all — every number the same, or one number on its own — draws as the lowest
 block rather than as a full row.
 
+## AreaChart
+
+The same series as a `Sparkline`, but filling a pane instead of a row — the shape a system monitor
+shows:
+
+```csharp
+private readonly AreaChart _cpu = new()
+{
+    Values = _history,
+    Minimum = 0,
+    Maximum = 100,
+    Bands = [new(0m, Theme.Active), new(60m, Theme.Warning), new(85m, Theme.Error)],
+};
+
+_cpu.Draw(region);
+```
+
+```text
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣶⣶⣶⣦⡀⠀⠀⠀
+⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀
+⠀⠀⣠⣾⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀
+⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⣀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+```
+
+| Member | Meaning |
+|---|---|
+| `Values` | The series, oldest first. Held, not copied |
+| `Minimum` / `Maximum` | What empty and full stand for. The drawn values themselves when left alone |
+| `Symbols` | What to draw with; the application's own setting when left alone |
+| `Bands` | Where the colour changes as the fill climbs, in the same units as the values |
+| `Style` | Colours the fill where no band covers it |
+| `Invert` | Hangs it from the top, for the second half of a mirrored pair |
+
+The resolution is in the characters: a cell carries **two samples side by side** and several levels of
+height, so a chart eight rows tall has thirty-two levels between empty and full and holds twice the
+history a row of blocks would. The newest value is at the right, and a series with no spread at all
+draws as the lowest level along the bottom rather than as nothing.
+
+Colour comes from how high the fill climbed rather than from anything the view works out. A terminal
+with truecolor blends between the bands, a 256-colour one quantises that blend, and one with no
+colour draws the shape alone.
+
+### Which symbols
+
+```csharp
+services.AddArlecchino(options => options.GraphSymbols = GraphSymbols.Braille);
+
+Glyphs.Graph = GraphSymbols.Blocks;   // later, from a settings screen
+```
+
+| Set | Resolution | Needs |
+|---|---|---|
+| `Braille` | 4 levels, 2 samples per cell | A font carrying Braille Patterns, or a terminal that falls back to one |
+| `Blocks` | 2 levels, 2 samples per cell | Quadrant blocks, in nearly every monospace font |
+| `Tty` | 3 levels, 1 sample per cell | `░▒█` and little else |
+
+`Glyphs.Graph` is process-wide and settable, the same arrangement as [`Theme.Palette`](theming.md), so
+an application can offer the choice in its own settings and every chart follows on the next frame —
+frames are drawn from scratch, so nothing has to be invalidated. A change made outside the input path
+should ask for a frame with `Repaint.Request()`, since nothing else will.
+
+:::note[Braille and fonts]
+
+This is a font question rather than a platform one. Windows Terminal falls back per glyph, so braille
+renders even when the configured font has none of it; the classic console host does not, and shows
+boxes instead. `Blocks` is the safe middle and still twice the density of a `Sparkline`.
+
+:::
+
 ## BarChart
 
 One bar per item, laid out down the region: the label in front, the bar across the middle, the readout
