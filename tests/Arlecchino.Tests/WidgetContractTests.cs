@@ -31,6 +31,9 @@ public sealed class WidgetContractTests
         typeof(ProgressBar),
         typeof(StatusBar),
         typeof(Spinner),
+        typeof(Sparkline),
+        typeof(BarChart<string>),
+        typeof(Gauge),
     ];
 
     [Theory]

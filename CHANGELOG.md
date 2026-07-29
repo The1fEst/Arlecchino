@@ -9,6 +9,44 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.7.0
+
+### Added
+
+- **Three widgets that draw numbers.** A screen that reports on something had a `ProgressBar` and
+  nothing else, so a series over time or a set of things to compare came out as a column of figures
+  the reader has to add up themselves:
+
+  ```csharp
+  private readonly Sparkline _downloads = new()
+  {
+      Values = _history,
+      Caption = static value => $"{value:0}/s",
+  };
+
+  private readonly BarChart<Mirror> _mirrors = new()
+  {
+      Render = static mirror => mirror.Name,
+      Value = static mirror => mirror.Megabytes,
+      Items = Mirrors,
+      Caption = static value => $"{value:0}",
+  };
+
+  private readonly Gauge _disk = new()
+  {
+      Value = 91,
+      Caption = static value => $"{value:0}%",
+      Bands = [new(0m, Theme.Active), new(70m, Theme.Warning), new(90m, Theme.Error)],
+  };
+  ```
+
+  `Sparkline` draws a series as one row of blocks, newest at the right, and shows as much history as
+  the row is wide. `BarChart<T>` gives every item a bar measured against the largest of them, with the
+  labels in one column and the readouts in another. `Gauge` is a bar against a range that need not
+  start at zero, coloured by the bands it crosses, so a fill that has gone past the line says so
+  without the view testing the value itself. All three are passive: they draw where they are put and
+  hand back the rows below them.
+
 ## 2.6.1
 
 ### Changed
