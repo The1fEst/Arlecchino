@@ -51,7 +51,7 @@ around 5 MB with no runtime to install.
 ## Building
 
 ```
-pack.cmd
+tools\pack.cmd
 ```
 
 Builds all three packages in `Release` and drops the `.nupkg` files into `artifacts/packages`, which is
@@ -229,6 +229,23 @@ under `*REMOVED*` when it was already shipped. At release time the contents of `
 `Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first release on NuGet, did
 with the whole surface, and what `1.0.0` did with the review that preceded it.
 
+That move is what keeps the record worth having. While an entry sits in `Unshipped` it can be deleted
+for nothing; once it is in `Shipped`, taking it away is a build error until the removal is written
+down, so a breaking change cannot slip through as an ordinary diff.
+
+### Preparing a release
+
+Three things change together, so one script does them:
+
+```
+dotnet run tools/ship.cs 2.9.0
+```
+
+It sets `<Version>`, moves every recorded entry from `Unshipped` into `Shipped` for all three
+packages, and points `PackageValidationBaselineVersion` at the release that came before — after
+checking that release really is on nuget.org, since a baseline that is not published fails the pack
+rather than validating anything. Read the diff, commit, tag.
+
 ### And checked against the last release
 
 The API files say what the source declares. `EnablePackageValidation` checks the package that comes
@@ -236,14 +253,15 @@ out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net8
 cannot drift apart, and over the previous release once there is one to compare with.
 
 ```xml
-<PackageValidationBaselineVersion Condition="'$(Version)' != '2.0.0'">2.0.0</PackageValidationBaselineVersion>
+<PackageValidationBaselineVersion Condition="'$(Version)' != '2.0.0'">2.8.0</PackageValidationBaselineVersion>
 ```
 
 The condition is doing the bookkeeping: the release that opens a major line has nothing it may be
-compared with, since a major is where the surface is allowed to move, and every version after it is
-compared with that release automatically. Packing a `2.0.1` whose baseline is missing fails
-with `NU1102` rather than passing quietly, which is the behaviour worth having — a validation that
-silently does nothing is worse than none.
+compared with, since a major is where the surface is allowed to move. Every version after it is
+compared with the release before it, which is the number `tools/ship.cs` advances — a baseline left
+behind on an old release still passes, but it says nothing about everything added since. Packing a
+version whose baseline is missing from NuGet fails with `NU1102` rather than passing quietly, which
+is the behaviour worth having: a validation that silently does nothing is worse than none.
 
 ## Continuous integration
 
@@ -320,7 +338,7 @@ that is the point of it.
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, colour conversion |
 | `docs` | This documentation |
-| `artifacts/packages` | Local package feed produced by `pack.cmd` |
+| `artifacts/packages` | Local package feed produced by `tools\pack.cmd` |
 
 ## Conventions
 
