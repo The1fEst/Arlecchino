@@ -9,6 +9,43 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2.10.0
+
+### Added
+
+- **`AtomsMap<TKey, TValue>`**, the dictionary to `AtomsList<T>`'s list. An atom around a
+  `Dictionary<TKey, TValue>` fails the same way an atom around a list does — writing into it reaches
+  nobody, and putting the same instance back is taken for a change of nothing — so a map that changes
+  entry by entry is held as state of its own:
+
+  ```csharp
+  public LocalAtomsMap<string, ServerState> Servers { get; } = new();
+  public TrackedAtomsMap<string, string> Overrides { get; } = new(comparer: StringComparer.OrdinalIgnoreCase);
+
+  Servers["build-01"] = ServerState.Online;
+  Overrides.Remove("theme");
+  ```
+
+  `TrackedAtomsMap<TKey, TValue>` goes on the undo stack, `LocalAtomsMap<TKey, TValue>` does not, and
+  each call is one step. Reading one key registers the dependency, so a `Computed<T>` that asks
+  `TryGetValue` follows an entry that is not there yet.
+
+  It holds a dictionary but does not implement `IDictionary`: the members it offers are the only way
+  in, which is what keeps every change checked against the drawing thread, seen by the frame and
+  recorded by the history. It is named a map for the same reason — a type that ends in `Dictionary`
+  and is not one is exactly what the naming analyzer objects to.
+
+### Documentation
+
+- **Each package has its own page on NuGet, written for NuGet.** The gallery escapes raw HTML and
+  strips relative image paths, so the readme all three packages carried opened with its
+  `<p align="center">` spelled out, badges and all, and seventeen broken images below it. The pages
+  now live in `nuget/`, one per package: plain Markdown, every image an absolute
+  `raw.githubusercontent.com` or `img.shields.io` URL, and the collapsed screenshot gallery —
+  `<details>` does not survive either — replaced by a link to the readme on GitHub.
+  `Arlecchino.Core` opens on the surface and the atoms rather than on hosting, `Arlecchino.Testing`
+  on what a test can reach, and each says which of the three a reader probably wants.
+
 ## 2.9.0
 
 ### Added

@@ -49,6 +49,15 @@ Two questions come up often enough to answer here:
   `ArlecchinoStrings` as a delegate, so an application can translate it — see
   [Localization](https://the1fest.github.io/Arlecchino.Docs/docs/localization).
 
+## The readmes
+
+`README.md` is the page on GitHub. The pages on nuget.org are in `nuget/`, one per package and named
+after it — `Arlecchino.md`, `Arlecchino.Core.md`, `Arlecchino.Testing.md` — and each `.csproj` packs
+its own as `README.md`. The gallery escapes raw HTML and drops relative image paths, so those three
+stay plain Markdown with absolute image URLs and no `<details>`. A change to the quick start, the
+packages table or what the framework claims for itself belongs in `README.md` and in
+`nuget/Arlecchino.md`.
+
 ## Breaking changes
 
 Since `1.0.0` the public surface is a contract: breaking it means a new major, and the API analyzer

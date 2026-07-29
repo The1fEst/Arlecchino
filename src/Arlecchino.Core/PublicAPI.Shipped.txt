@@ -33,6 +33,19 @@ Arlecchino.Atoms.AtomsList<T>.Subscribe(System.Action! listener) -> System.IDisp
 Arlecchino.Atoms.AtomsList<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Atoms.AtomsList<T>.this[int index].get -> T
 Arlecchino.Atoms.AtomsList<T>.this[int index].set -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Add(TKey key, TValue value) -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.AtomsMap(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>? initial = null, System.Collections.Generic.IEqualityComparer<TKey>? comparer = null) -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Clear() -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.ContainsKey(TKey key) -> bool
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Count.get -> int
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Remove(TKey key) -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Reset(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>! items) -> void
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.TryGetValue(TKey key, out TValue value) -> bool
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.Value.get -> System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>!
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.this[TKey key].get -> TValue
+Arlecchino.Atoms.AtomsMap<TKey, TValue>.this[TKey key].set -> void
 Arlecchino.Atoms.Computed<T>
 Arlecchino.Atoms.Computed<T>.Computed(System.Func<T>! compute) -> void
 Arlecchino.Atoms.Computed<T>.Subscribe(System.Action! listener) -> System.IDisposable!
@@ -50,10 +63,14 @@ Arlecchino.Atoms.LocalAtom<T>
 Arlecchino.Atoms.LocalAtom<T>.LocalAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.LocalAtomsList<T>
 Arlecchino.Atoms.LocalAtomsList<T>.LocalAtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.LocalAtomsMap<TKey, TValue>
+Arlecchino.Atoms.LocalAtomsMap<TKey, TValue>.LocalAtomsMap(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>? initial = null, System.Collections.Generic.IEqualityComparer<TKey>? comparer = null) -> void
 Arlecchino.Atoms.TrackedAtom<T>
 Arlecchino.Atoms.TrackedAtom<T>.TrackedAtom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.TrackedAtomsList<T>
 Arlecchino.Atoms.TrackedAtomsList<T>.TrackedAtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.TrackedAtomsMap<TKey, TValue>
+Arlecchino.Atoms.TrackedAtomsMap<TKey, TValue>.TrackedAtomsMap(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>? initial = null, System.Collections.Generic.IEqualityComparer<TKey>? comparer = null) -> void
 Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal
 Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
@@ -318,6 +335,7 @@ Arlecchino.SystemTerminal.Width.get -> int
 Arlecchino.SystemTerminal.Write(string! text) -> void
 abstract Arlecchino.Atoms.Atom<T>.RecordsHistory.get -> bool
 abstract Arlecchino.Atoms.AtomsList<T>.RecordsHistory.get -> bool
+abstract Arlecchino.Atoms.AtomsMap<TKey, TValue>.RecordsHistory.get -> bool
 override Arlecchino.Input.KeyBinding.GetHashCode() -> int
 override Arlecchino.Input.KeyBinding.ToString() -> string!
 override Arlecchino.Input.MouseEvent.GetHashCode() -> int
