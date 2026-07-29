@@ -138,6 +138,40 @@ var loaded = await ReadRowsAsync(token);
 FrameThread.Post(() => Rows.Reset(loaded));
 ```
 
+## Maps
+
+The same story for a dictionary, and the same trap: writing into a `Dictionary<TKey, TValue>` held in
+an atom notifies nobody, and putting the same instance back is taken for a change of nothing.
+`AtomsMap<TKey, TValue>` holds one and routes every change through the atom's path:
+
+```csharp
+public LocalAtomsMap<string, ServerState> Servers { get; } = new();
+public TrackedAtomsMap<string, string> Overrides { get; } = new(comparer: StringComparer.OrdinalIgnoreCase);
+
+Servers["build-01"] = ServerState.Online;
+Overrides.Remove("theme");
+```
+
+`TrackedAtomsMap<TKey, TValue>` goes on the undo stack, `LocalAtomsMap<TKey, TValue>` does not.
+
+| Member | Meaning |
+|---|---|
+| `Value` | A live, read-only view of the contents |
+| `Count`, `ContainsKey(key)`, `TryGetValue(key, out value)` | Reading without throwing |
+| `this[key]` | Reads, and writes whether or not the key was there. Writing an equal value changes nothing |
+| `Add(key, value)` | Puts one in and throws when the key is taken, as a dictionary does |
+| `Remove(key)` | Takes one out; a key that is not there changes nothing |
+| `Clear()`, `Reset(items)` | Empties it, or replaces the contents in one change |
+| `Subscribe(listener)` | Same as an atom's |
+
+It holds a dictionary but is not one — there is no `IDictionary` to write through, which is what keeps
+every change on the frame's path. Keys are compared by the comparer given to the constructor, values
+by `EqualityComparer<TValue>.Default`, which is what decides that a write changed nothing.
+
+Reading one key is enough to depend on the whole map: `TryGetValue` inside a
+[`Computed<T>`](#derived-values) subscribes to it, so a derived value follows an entry that is not
+there yet.
+
 ## Undo and redo
 
 `AtomHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
