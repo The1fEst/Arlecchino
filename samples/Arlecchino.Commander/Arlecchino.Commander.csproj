@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Arlecchino.Commander</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <ArlecchinoViewNamespace>Arlecchino.Commander.Views</ArlecchinoViewNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentFTP" Version="54.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="SSH.NET" Version="2025.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Arlecchino/Arlecchino.csproj" />
+    <ProjectReference Include="../../src/Arlecchino.Generators/Arlecchino.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace" />
+    <CompilerVisibleProperty Include="ArlecchinoViewNamespace" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateViews" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateStores" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateWidgets" />
+    <CompilerVisibleProperty Include="ArlecchinoGenerateCommands" />
+  </ItemGroup>
+
+</Project>

@@ -20,8 +20,83 @@ dotnet add package Arlecchino
 ## What it looks like
 
 [Arlecchino.Commander](https://github.com/The1fEst/Arlecchino.Commander) is a Midnight Commander built
-on the framework: two panels over local disks, SFTP and FTP, with the file operations running in the
-background and reporting themselves as notifications.
+on the framework, shown here with the two repositories in its panels — a table per panel, every modal,
+the notifications, the command palette and the keys screen:
+
+![Two panels over a local disk](assets/screenshots/panels.png)
+
+<details>
+<summary><b>Sixteen more screens</b> — marks, the menu, file operations, servers, SSH, notifications</summary>
+
+### The panels
+
+Marks are counted at the foot of the panel:
+
+![Three files marked, counted at the foot of the panel](assets/screenshots/marks.png)
+
+Either panel sorts by name, size or date:
+
+![The right panel sorted by size](assets/screenshots/sorted.png)
+
+A filter narrows one down:
+
+![The panel filtered by name](assets/screenshots/filter.png)
+
+A file is read without leaving them:
+
+![A file read without leaving the panels](assets/screenshots/viewer.png)
+
+### Menus and operations
+
+`F9` opens the menu, and each section is a list:
+
+![The menu, opened by F9](assets/screenshots/menu.png)
+
+![What can be done to what is marked](assets/screenshots/file-menu.png)
+
+Copying asks where to; deleting asks first, with no selected:
+
+![Copying asks where to](assets/screenshots/copy.png)
+
+![Deleting asks first, with no selected](assets/screenshots/delete.png)
+
+### Work that takes a while
+
+It runs in the background, with a bar and `Esc` to stop:
+
+![A copy running in the background, with a bar and Esc to stop](assets/screenshots/progress.png)
+
+The same copy is a notification, opened in full and offering to stop it:
+
+![The same copy opened in full, with Stop offered](assets/screenshots/notification.png)
+
+The entry turns into what came of it, in place:
+
+![The same entry once the copy is over](assets/screenshots/done.png)
+
+### Servers
+
+Hosts come from `~/.ssh/config`:
+
+![Hosts read from ~/.ssh/config](assets/screenshots/hosts.png)
+
+A panel browses one over SFTP:
+
+![A panel browsing a server over SFTP](assets/screenshots/server.png)
+
+And a command runs on it:
+
+![A command run on that server](assets/screenshots/ssh.png)
+
+### What comes with the framework
+
+The command palette and the keys screen are the framework's own:
+
+![The command palette](assets/screenshots/palette.png)
+
+![The keys screen](assets/screenshots/help.png)
+
+</details>
 
 ## The shortest app
 
