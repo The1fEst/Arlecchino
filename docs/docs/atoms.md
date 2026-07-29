@@ -172,6 +172,47 @@ Reading one key is enough to depend on the whole map: `TryGetValue` inside a
 [`Computed<T>`](#derived-values) subscribes to it, so a derived value follows an entry that is not
 there yet.
 
+## Queues and stacks
+
+The same again for the two orders that matter: `AtomsQueue<T>` takes at the back and gives at the
+front, `AtomsStack<T>` takes and gives at the top.
+
+```csharp
+public LocalAtomsQueue<FileEntry> ToCopy { get; } = new();
+public LocalAtomsStack<string> Been { get; } = new();
+
+ToCopy.Enqueue(entries);              // one notification for the lot
+Been.Push(folder);
+
+if (ToCopy.TryDequeue(out var next))
+{
+    Copy(next);
+}
+```
+
+| Member | Queue | Stack |
+|---|---|---|
+| Putting in | `Enqueue(item)`, `Enqueue(items)` | `Push(item)`, `Push(items)` |
+| Taking out | `Dequeue()`, `TryDequeue(out item)` | `Pop()`, `TryPop(out item)` |
+| Looking | `Peek()`, `TryPeek(out item)` | `Peek()`, `TryPeek(out item)` |
+| The rest | `Count`, `IsEmpty`, `Clear()`, `Reset(items)`, `Value`, `Subscribe` | the same |
+
+`Dequeue`, `Pop` and `Peek` throw on an empty one, as the collections they are named after do; the
+`Try` members answer instead. `Value` reads in the order the type means — front first for a queue,
+top first for a stack, the way `Stack<T>` itself enumerates — so `Value[0]` is what `Peek` answers and
+a view draws either by walking it.
+
+:::note[Why not the concurrent ones]
+
+`ConcurrentQueue<T>` and `ConcurrentStack<T>` make each operation atomic, which is not the problem a
+frame has. A frame reads state many times; what it needs is for nothing to change while it draws, and
+that is thread affinity rather than a thread-safe container — see [Threads](#threads). Background
+work hands its item over with `FrameThread.Post`, and several changes that belong together go in one
+`Post` so no frame falls between them. `ConcurrentDictionary<TKey, TValue>` maps to
+[`AtomsMap`](#maps) and `ConcurrentBag<T>` to [`AtomsList`](#lists) the same way.
+
+:::
+
 ## Undo and redo
 
 `AtomHistory` is registered by `AddArlecchino` and records every `TrackedAtom<T>` there is — there is
