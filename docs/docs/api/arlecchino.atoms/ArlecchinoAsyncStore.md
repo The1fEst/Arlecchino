@@ -71,7 +71,7 @@ Creates the store.
 ### `Error` {#error}
 
 ```csharp
-public IReadableAtom<Exception> Error { get; }
+public IReadableAtom<Exception?> Error { get; }
 ```
 
 What the load threw, or `null` while it has not failed.

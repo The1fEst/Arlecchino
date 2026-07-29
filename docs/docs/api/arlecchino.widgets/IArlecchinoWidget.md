@@ -13,7 +13,7 @@ A reusable piece of a screen: it draws into the region it is handed and holds no
 public interface IArlecchinoWidget
 ```
 
-**Implemented by** [`Form`](../arlecchino.forms/Form.md), [`IArlecchinoInteractiveWidget`](../arlecchino.widgets/IArlecchinoInteractiveWidget.md), [`ListBox`](../arlecchino.widgets/ListBox-1.md), [`ProgressBar`](../arlecchino.widgets/ProgressBar.md), [`ScrollPane`](../arlecchino.widgets/ScrollPane.md), [`Spinner`](../arlecchino.widgets/Spinner.md), [`StatusBar`](../arlecchino.widgets/StatusBar.md), [`Table`](../arlecchino.widgets/Table-1.md), [`Tabs`](../arlecchino.widgets/Tabs.md), [`TextView`](../arlecchino.widgets/TextView.md), [`Tree`](../arlecchino.widgets/Tree-1.md)
+**Implemented by** [`Form`](../arlecchino.forms/Form.md), [`BarChart`](../arlecchino.widgets/BarChart-1.md), [`Gauge`](../arlecchino.widgets/Gauge.md), [`IArlecchinoInteractiveWidget`](../arlecchino.widgets/IArlecchinoInteractiveWidget.md), [`ListBox`](../arlecchino.widgets/ListBox-1.md), [`ProgressBar`](../arlecchino.widgets/ProgressBar.md), [`ScrollPane`](../arlecchino.widgets/ScrollPane.md), [`Sparkline`](../arlecchino.widgets/Sparkline.md), [`Spinner`](../arlecchino.widgets/Spinner.md), [`StatusBar`](../arlecchino.widgets/StatusBar.md), [`Table`](../arlecchino.widgets/Table-1.md), [`Tabs`](../arlecchino.widgets/Tabs.md), [`TextView`](../arlecchino.widgets/TextView.md), [`Tree`](../arlecchino.widgets/Tree-1.md)
 
 ## Methods
 

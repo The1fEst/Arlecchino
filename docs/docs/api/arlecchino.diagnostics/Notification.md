@@ -79,7 +79,7 @@ What can be done about it, offered when the entry is opened. Work that has ended
 ### `Detail` {#detail}
 
 ```csharp
-public Func<string> Detail { get; set; }
+public Func<string>? Detail { get; set; }
 ```
 
 The whole story, shown when the entry is opened: the errors a copy collected, the output of a command, the stack of what failed. Falls back to [`Notification.Text`](../arlecchino.diagnostics/Notification.md#text) when it is not set.
@@ -89,7 +89,7 @@ The whole story, shown when the entry is opened: the errors a copy collected, th
 ### `Ended` {#ended}
 
 ```csharp
-public string Ended { get; }
+public string? Ended { get; }
 ```
 
 What came of the work, once it ended. Set through [`Notifications.Settle`](../arlecchino.diagnostics/Notifications.md#settle-notification-string-notificationlevel).
@@ -139,7 +139,7 @@ How loud it is now: what it was raised as, or what it turned out to be once the 
 ### `Progress` {#progress}
 
 ```csharp
-public Func<string> Progress { get; init; }
+public Func<string>? Progress { get; init; }
 ```
 
 The line to show while something is still running, read every frame. Left alone for anything that is already over, which is most notifications.

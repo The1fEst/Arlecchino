@@ -10,10 +10,13 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`BarChart<T>`](BarChart-1.md) | One bar per item, laid out down the region: the label in front, the bar across the middle, the readout behind. Bars are measured against the largest item unless told otherwise, so a chart of things that are all small still fills the pane instead of drawing four invisible stubs. |
+| [`Gauge`](Gauge.md) | One value against a range that means something, drawn as a bar whose colour changes as it crosses the bands it was given: the fill turns amber where the load is worth watching and red where it is not, and each part keeps the colour of the band it lies in, so the tail of the bar shows how long it has been past the line. A [`ProgressBar`](../arlecchino.widgets/ProgressBar.md) answers "how far along", and this answers "how bad is it now" — the difference being the bands, and a range that need not start at zero. |
 | [`ListBox<T>`](ListBox-1.md) | A scrolling list of items, one per row. It keeps only the selected index, never a copy of the items, so replacing [`ListBox.Items`](../arlecchino.widgets/ListBox-1.md#items) between frames is a normal thing to do. |
 | [`ProgressBar`](ProgressBar.md) | A filled bar showing how far along something is, with an optional readout beside it. |
 | [`ScrollBar`](ScrollBar.md) | The bar down the side of a list that shows how much of it is on screen and where. Drawn only when there is more than fits, so a short list keeps its full width. |
 | [`ScrollPane`](ScrollPane.md) | A window onto content taller than the space it has. Lists scroll themselves, but a block of text, a long form or a pane of anything at all does not — this is the widget for those: it draws the content shifted up by the offset, confines it to its own rectangle, and answers the movement keys and the wheel. The content is drawn by a delegate rather than owned, so whatever can paint a region can live in here, including other widgets. |
+| [`Sparkline`](Sparkline.md) | A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about what the numbers are — no axis, no scale, no grid — which is what lets it sit in a status bar, a table cell or a corner of a pane and still be read at a glance: the shape of the line is the point. The newest value is the rightmost, and only the last of them fit the row, so a widening terminal shows more history rather than a wider drawing of the same history. |
 | [`Spinner`](Spinner.md) | A one-cell animation for work of unknown length. It does not run on its own: something has to step it, which keeps the framework free of timers the application did not ask for. |
 | [`StatusBar`](StatusBar.md) | A line of short readouts pinned to an edge. Items are delegates because a status line is redrawn every frame and is expected to show what is true now, not what was true when it was built. |
 | [`TableColumn<T>`](TableColumn-1.md) | One column of a table: its heading, what it shows and how it behaves. |
@@ -27,6 +30,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`GaugeBand`](GaugeBand.md) | Where a band of a [`Gauge`](../arlecchino.widgets/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the colour of everything below it. |
 | [`ScrollWindow`](ScrollWindow.md) | The slice of a long list that fits on screen. Every scrolling widget works this out the same way, so the arithmetic lives here rather than in each of them. |
 
 ## Interfaces

@@ -132,7 +132,7 @@ Says something that carries more than a line — work still running, a report to
 ### `Settle(Notification, string, NotificationLevel)` {#settle-notification-string-notificationlevel}
 
 ```csharp
-public void Settle(Notification entry, string text, NotificationLevel level);
+public void Settle(Notification entry, string text, NotificationLevel level = Information);
 ```
 
 Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot in the list and its identity, so a dialog someone already has open changes under them rather than going stale, and the entry starts ageing like any other message.
