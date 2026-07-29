@@ -42,6 +42,7 @@ public class DefaultView : IArlecchinoView
             ViewCommand.Navigating(ConsoleKey.W, static () => "widgets", static () => ViewKind.Widgets),
             ViewCommand.Navigating(ConsoleKey.L, static () => "panes", static () => ViewKind.Panes),
             ViewCommand.Navigating(ConsoleKey.G, static () => "charts", static () => ViewKind.Charts),
+            ViewCommand.Navigating(ConsoleKey.J, static () => "pictures", static () => ViewKind.Pictures),
         ];
     }
 

@@ -175,6 +175,10 @@ static void Frame(string view, string size)
     {
         navigator.Apply(ViewKind.Charts);
     }
+    else if (view.Equals("pictures", StringComparison.OrdinalIgnoreCase))
+    {
+        navigator.Apply(ViewKind.Pictures);
+    }
     else if (view.Equals("picker", StringComparison.OrdinalIgnoreCase))
     {
         state.FilePicker = new(

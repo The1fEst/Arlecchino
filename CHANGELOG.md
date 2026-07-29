@@ -38,6 +38,63 @@ the public API means a new major. See
   recorded together; a cell takes the style of the last thing recorded over it, which is how the pane
   holding the focus wins the edges it shares.
 
+- **`Surface.Passthrough(row, column, payload)`**, for what the cell grid cannot express — an image in
+  one of the terminal graphics protocols. It goes out after the cells, so whatever was under or around
+  it is repainted before it lands and a payload that stops being handed over disappears as the cells
+  beneath it are drawn again; and it is not sent while it stays the same, which matters when a picture
+  weighs kilobytes.
+- **`Picture`**, an image drawn in cells: each one carries two pixels, painted as the colour of the
+  upper half block and the background behind it, so a cell that is twice as tall as it is wide comes
+  out roughly square per pixel.
+
+  ```csharp
+  private readonly Picture _preview = new() { Background = Theme.Default };
+
+  _preview.Show(pixels, width, height);
+  _preview.Draw(region);
+  ```
+
+  It asks nothing of the terminal but the colour it already draws in — no image protocol, no state
+  left behind, nothing to clean up when the picture goes away — so it works everywhere the framework
+  works and degrades with the palette like any other colour. The picture is fitted without stretching
+  and centred, and one smaller than its pane is enlarged, so an icon is visible rather than a speck.
+
+  Pixels are handed over rather than read from a file: decoding PNG or JPEG belongs to the
+  application, which knows what it is willing to depend on, while the framework draws what it is
+  given.
+- **Sixel**, which is what Windows Terminal, xterm and foot speak: `ImageProtocol.Sixel` puts the
+  pixels out in bands of six rows with runs collapsed, without which a photograph would weigh several
+  times what it needs to.
+
+  The format draws from colour registers, so the picture is brought down to a palette of at most 256.
+  That palette is the picture's own: colours are gathered into boxes and the widest box is split at its
+  weighted median until the registers run out, which spends them where the picture actually has detail.
+  Shrinking averages every source pixel a destination pixel covers rather than picking one of them. On
+  the project's own social card reduced to sixty columns, the two together bring the mean error per
+  channel from 22.4 to 1.2 and the worst from 191 to 6 against a fixed cube and nearest-pixel sampling.
+
+  Sixel is measured in pixels and knows nothing of cells, so a picture is resampled to however many
+  pixels the cells it was given come to, and `Glyphs.CellWidth` and `Glyphs.CellHeight` say how large
+  a cell is taken to be — they also set the shape of a cell, so a picture keeps its proportions. There
+  is no asking the terminal yet: ten by twenty is the guess, a wrong one shows as a picture that does
+  not quite fill its pane, and an application that knows better can say so.
+
+  A payload is built once and kept until the picture, the protocol or the room it is drawn in changes,
+  since choosing a palette is real work and a frame asks for the same bytes again.
+- **The kitty graphics protocol**, where the terminal speaks it: `ImageProtocol.Kitty` sends the
+  pixels themselves instead of cells, and the picture is as sharp as the screen allows.
+
+  ```csharp
+  services.AddArlecchino(options => options.ImageProtocol = ImageProtocol.Kitty);
+
+  Glyphs.Picture = ImageProtocol.Blocks;      // later, from a settings screen
+  _preview.Protocol = ImageProtocol.Kitty;    // or for one pane
+  ```
+
+  Cells stay the default: a terminal that cannot speak the protocol would print the escape sequence
+  as text, so this is asked for rather than assumed. Replies are suppressed with `q=2`, since a
+  terminal answering would reach the input reader as a stray escape sequence, and a payload measured
+  in kilobytes is only re-sent when the picture or its placement changed.
 - **`SessionTape`** in `Arlecchino.Testing`, which writes a test as the session it describes rather
   than as a dozen calls with the assertions lost among them:
 

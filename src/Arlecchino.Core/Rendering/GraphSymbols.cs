@@ -40,4 +40,25 @@ public static class Glyphs
 {
     /// <summary>What graphs are drawn with when a widget does not say otherwise.</summary>
     public static GraphSymbols Graph { get; set; } = GraphSymbols.Braille;
+
+    /// <summary>
+    /// How pictures reach the terminal when a widget does not say otherwise. Cells by default, since
+    /// they work everywhere; a graphics protocol is asked for, because a terminal that cannot speak it
+    /// shows the escape sequence as text rather than failing quietly.
+    /// </summary>
+    public static ImageProtocol Picture { get; set; } = ImageProtocol.Blocks;
+
+    /// <summary>
+    /// How many pixels wide a cell is taken to be. Only <see cref="ImageProtocol.Sixel"/> needs it,
+    /// because sixel is measured in pixels and knows nothing of cells: a picture is resampled to
+    /// however many pixels the cells it was given come to.
+    ///
+    /// There is no asking the terminal yet, so this is a guess an application can correct — ten by
+    /// twenty is what a terminal at a common font size tends to be, and a wrong guess shows as a
+    /// picture that does not quite fill its pane rather than as a broken one.
+    /// </summary>
+    public static int CellWidth { get; set; } = 10;
+
+    /// <summary>How many pixels tall a cell is taken to be. See <see cref="CellWidth"/>.</summary>
+    public static int CellHeight { get; set; } = 20;
 }

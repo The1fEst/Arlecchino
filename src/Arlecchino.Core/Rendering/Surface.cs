@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Arlecchino.Rendering;
@@ -23,6 +24,8 @@ public partial class Surface
     private IArlecchinoColor[][] _styles = [];
     private string[][] _previousCells = [];
     private IArlecchinoColor[][] _previousStyles = [];
+    private readonly List<(int Row, int Column, string Payload)> _passthrough = [];
+    private (int Row, int Column, string Payload)[] _previousPassthrough = [];
     private int _width;
     private int _height;
     private int _lines;
@@ -120,6 +123,8 @@ public partial class Surface
         _width = _fixedWidth > 0 ? _fixedWidth : Math.Max(1, _terminal.Width);
         _lines = 0;
 
+        _passthrough.Clear();
+
         if (_cells.Length != _height || (_cells.Length > 0 && _cells[0].Length != _width))
         {
             _cells = new string[_height][];
@@ -161,12 +166,75 @@ public partial class Surface
             AppendWholeFrame();
         }
 
+        AppendPassthrough();
         RememberFrame();
 
         if (_stringBuilder.Length > 0)
         {
             _terminal.Write(_stringBuilder.ToString());
         }
+    }
+
+    /// <summary>
+    /// Hands the terminal something the cell grid cannot express — an image in one of the graphics
+    /// protocols, most of all — to be written verbatim at a cell, after everything the frame drew.
+    ///
+    /// It goes out last on purpose: the cells are written first, so whatever was under or around the
+    /// payload last time is repainted before it lands, and a payload that stops being handed over
+    /// simply disappears as the cells beneath it are drawn again.
+    ///
+    /// Nothing is re-sent while it stays the same. A frame is only composed when something asked for
+    /// one, so a picture that has not changed costs nothing between frames — but a payload measured
+    /// in kilobytes is still worth handing over only when it has to be.
+    /// </summary>
+    /// <param name="row">Row of the cell it starts at, counted from the top of the frame.</param>
+    /// <param name="column">Column of that cell.</param>
+    /// <param name="payload">The bytes to write, escapes and all.</param>
+    public void Passthrough(int row, int column, string payload)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+
+        if (payload.Length > 0)
+        {
+            _passthrough.Add((row, column, payload));
+        }
+    }
+
+    private void AppendPassthrough()
+    {
+        if (Unchanged())
+        {
+            return;
+        }
+
+        foreach (var (row, column, payload) in _passthrough)
+        {
+            _stringBuilder
+                .Append("\e[")
+                .Append(row + 1)
+                .Append(';')
+                .Append(column + 1)
+                .Append('H')
+                .Append(payload);
+        }
+    }
+
+    private bool Unchanged()
+    {
+        if (_passthrough.Count != _previousPassthrough.Length)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < _passthrough.Count; index++)
+        {
+            if (_passthrough[index] != _previousPassthrough[index])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private bool CanDrawChangesOnly() =>
@@ -289,6 +357,8 @@ public partial class Surface
 
     private void RememberFrame()
     {
+        _previousPassthrough = [.. _passthrough];
+
         if (_previousCells.Length != _height || (_height > 0 && _previousCells[0].Length != _width))
         {
             _previousCells = new string[_height][];

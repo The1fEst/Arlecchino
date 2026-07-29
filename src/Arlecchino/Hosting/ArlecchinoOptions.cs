@@ -82,6 +82,13 @@ public sealed class ArlecchinoOptions
     /// </summary>
     public GraphSymbols GraphSymbols { get; set; } = GraphSymbols.Braille;
 
+    /// <summary>
+    /// How pictures reach the terminal. Installed into <see cref="Glyphs.Picture"/> on resolve, and
+    /// settable afterwards. Cells by default, since a terminal that cannot speak a graphics protocol
+    /// would print the escape sequence as text.
+    /// </summary>
+    public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Blocks;
+
     /// <summary>Every piece of text the framework draws.</summary>
     public ArlecchinoStrings Strings { get; set; } = new();
 

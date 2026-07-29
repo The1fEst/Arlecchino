@@ -2,3 +2,17 @@
 *REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseLatinOnlyInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 *REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseNativeInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.set -> void
+Arlecchino.Widgets.Picture
+Arlecchino.Widgets.Picture.Background.get -> Arlecchino.Rendering.IArlecchinoColor?
+Arlecchino.Widgets.Picture.Background.init -> void
+Arlecchino.Widgets.Picture.Clear() -> void
+Arlecchino.Widgets.Picture.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Picture.IsEmpty.get -> bool
+Arlecchino.Widgets.Picture.Picture() -> void
+Arlecchino.Widgets.Picture.PixelHeight.get -> int
+Arlecchino.Widgets.Picture.PixelWidth.get -> int
+Arlecchino.Widgets.Picture.Protocol.get -> Arlecchino.Rendering.ImageProtocol?
+Arlecchino.Widgets.Picture.Protocol.set -> void
+Arlecchino.Widgets.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Rgb> pixels, int width, int height) -> void
