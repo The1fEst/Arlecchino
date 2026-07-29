@@ -24,8 +24,8 @@ does not have.
 | Page | What it covers |
 |---|---|
 | [Getting started](getting-started.md) | Installing the package, the smallest app that runs, the first view |
-| [Tutorial: a dependency review](tutorial-packages.md) | Building a real application end to end, from the project file to the form that runs `dotnet add package` |
-| [Showcase](showcase.md) | The three sample applications and what each one demonstrates |
+| [Tutorial: your first app](tutorial-todo.md) | A todo list from an empty project: a store of atoms, a list, two modals and a status bar |
+| [Showcase](showcase.md) | The applications built on the framework and what each one demonstrates |
 | [Lexicon](lexicon.md) | Every term, in one place |
 
 ## The application
