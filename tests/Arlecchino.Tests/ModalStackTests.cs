@@ -80,6 +80,52 @@ public sealed class ModalStackTests
     }
 
     [Fact]
+    public void OpeningAndClosingADialogAsksForAFrameWithoutBeingTold()
+    {
+        using var app = new TestApplication();
+
+        Assert.True(Changed(app, () => app.State.Modal = Dialog("first")));
+        Assert.True(Changed(app, () => app.State.PushModal(Dialog("second"))));
+        Assert.True(Changed(app, app.State.CloseModal));
+        Assert.True(Changed(app, app.State.CloseAllModals));
+    }
+
+    [Fact]
+    public void ClosingWhatIsNotOpenAsksForNothing()
+    {
+        using var app = new TestApplication();
+
+        Assert.False(Changed(app, app.State.CloseModal));
+        Assert.False(Changed(app, app.State.CloseAllModals));
+    }
+
+    [Fact]
+    public void TheStackHandedOutIsTheOneThatKeepsChanging()
+    {
+        using var app = new TestApplication();
+        var open = app.State.Modals;
+
+        Assert.Empty(open);
+
+        app.State.PushModal(Dialog("later"));
+
+        Assert.Single(open);
+    }
+
+    [Fact]
+    public void ADialogIsNotSomethingUndoStepsBackInto()
+    {
+        using var app = new TestApplication();
+
+        app.State.Modal = Dialog("answered");
+        app.State.PushModal(Dialog("over it"));
+        app.State.CloseAllModals();
+
+        Assert.False(app.History.CanUndo);
+        Assert.Equal(0, app.History.Depth);
+    }
+
+    [Fact]
     public void ASubmittedModalCanOpenTheNextOne()
     {
         using var app = new TestApplication();
@@ -101,4 +147,14 @@ public sealed class ModalStackTests
         Assert.True(confirmed);
         Assert.Null(app.State.Modal);
     }
+
+    private static bool Changed(TestApplication app, Action change)
+    {
+        app.Repaint.TakeRequested();
+        change();
+
+        return app.Repaint.IsRequested;
+    }
+
+    private static MessageModal Dialog(string title) => new() { Title = title, Text = title };
 }

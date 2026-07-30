@@ -24,24 +24,28 @@ public static class ArlecchinoServiceCollectionExtensions
     /// <param name="services">The container being built.</param>
     /// <param name="configure">Adjusts the settings before anything reads them.</param>
     /// <returns>The builder, for describing views, commands and the rest.</returns>
+    /// <remarks>
+    /// The look — <see cref="Theme.Palette"/> and <see cref="Glyphs"/> — is installed here rather than
+    /// when the container hands the options out. Those are read by a frame and so written on the drawing
+    /// thread, and a container resolves on whichever thread asked first; installing at registration
+    /// happens before anything has claimed a thread to draw on.
+    /// </remarks>
     public static ArlecchinoBuilder AddArlecchino(this IServiceCollection services, Action<ArlecchinoOptions>? configure = null)
     {
         var options = new ArlecchinoOptions();
         configure?.Invoke(options);
 
+        Theme.Palette = options.Theme;
+        Glyphs.Graph = options.GraphSymbols;
+        Glyphs.Picture = options.ImageProtocol;
+        Glyphs.CellWidth = options.CellWidth;
+        Glyphs.CellHeight = options.CellHeight;
+
         services.AddLogging();
 
         var registrations = new ViewRegistrations();
 
-        services.AddSingleton(provider =>
-        {
-            _ = provider;
-            Theme.Palette = options.Theme;
-            Glyphs.Graph = options.GraphSymbols;
-            Glyphs.Picture = options.ImageProtocol;
-            return options;
-        });
-
+        services.AddSingleton(options);
         services.AddSingleton(registrations);
         services.TryAddSingleton<IArlecchinoTerminal, SystemTerminal>();
         services.AddSingleton(static provider =>

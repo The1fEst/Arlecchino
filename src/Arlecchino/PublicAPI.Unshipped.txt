@@ -2,6 +2,10 @@
 *REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseLatinOnlyInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 *REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseNativeInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoOptions.CellHeight.get -> int
+Arlecchino.Hosting.ArlecchinoOptions.CellHeight.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.CellWidth.get -> int
+Arlecchino.Hosting.ArlecchinoOptions.CellWidth.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.ImageProtocol
 Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.set -> void
 Arlecchino.Widgets.Picture

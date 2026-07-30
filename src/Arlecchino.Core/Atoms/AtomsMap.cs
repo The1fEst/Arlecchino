@@ -308,7 +308,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         }
     }
 
-    private void Verify() => FrameThread.Verify(_member ??= $"Changing {GetType().Name}");
+    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
 
     private void Notify()
     {

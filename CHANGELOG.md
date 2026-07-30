@@ -134,6 +134,45 @@ the public API means a new major. See
 
   This is the reason the change waited for a major: an application that has been raising
   notifications from a worker has been getting away with it.
+- **The rest of `ArlecchinoState` is checked too.** `Output` asked which thread it was on; `Modal`,
+  `PushModal`, `CloseModal`, `CloseAllModals`, `FilePicker` and `PickerLastFolder` did not, so a
+  background task could open a dialog halfway through a frame — into a surface already measured
+  without it — and the `Request…` helpers inherited the hole, since each of them assigns `Modal`.
+  **All of them now throw off the drawing thread**, and the way through is the same as everywhere
+  else:
+
+  ```csharp
+  FrameThread.Post(() => state.RequestMessage("Done", "The upload finished."));
+  ```
+
+  `Invalidate` is still callable from anywhere: asking for a frame is what a background thread is
+  supposed to do. Same reason for the major as the notifications entry above — code that has been
+  opening dialogs from a worker has been getting away with it.
+- **The stack of dialogs is state too.** It was a plain `List<Modal>` with a `_repaint.Request()` after
+  every mutation — the same shape the notifications had, and the same way to get it wrong: a new way to
+  open or close one is a frame nobody asked for. It is now a `LocalAtomsList<Modal>`, so the list asks
+  by itself, and a close that closes nothing asks for nothing.
+
+  `Modals` still hands out `IReadOnlyList<Modal>` and is still a live view, so nothing an application
+  reads changes. The list is deliberately outside the undo history: stepping back through what was typed
+  should not reopen a dialog that was answered.
+- **The look is state too.** `Theme.Palette`, `Glyphs.Graph`, `Glyphs.Picture`, `Glyphs.CellWidth` and
+  `Glyphs.CellHeight` were plain settable statics: a frame reads every one of them, and a background
+  thread could swap the palette or the protocol halfway through drawing one. They are checked now, the
+  way `ArlecchinoState` is, and each **asks for a frame by itself** — the doc used to tell you to call
+  `Repaint.Request()` after changing them, and that is no longer needed.
+
+  ```csharp
+  FrameThread.Post(() => Glyphs.Picture = ImageProtocol.Sixel);   // from a worker
+  ```
+
+  The look the options asked for is now installed while `AddArlecchino` runs rather than when the
+  container first hands the options out. A container resolves on whichever thread asked first, so the
+  old timing could have installed a palette from a thread that was not drawing — the checks made that
+  visible.
+- **`ArlecchinoOptions.CellWidth` and `CellHeight`**, so the size a cell is taken to be can be
+  configured like its two neighbours instead of only through the static. Sixel is the one that reads
+  them.
 - **Any language can be typed without asking.** `TextInputMode.Native` is the default, so a
   non-Latin layout works out of the box.
 - **The other mode is named for what it does, and now does it without exception.** What was

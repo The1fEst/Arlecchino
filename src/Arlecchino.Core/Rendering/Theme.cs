@@ -1,3 +1,6 @@
+using System;
+using Arlecchino.Atoms;
+
 namespace Arlecchino.Rendering;
 
 /// <summary>
@@ -6,14 +9,30 @@ namespace Arlecchino.Rendering;
 /// </summary>
 public static class Theme
 {
+    private static readonly string SwappingPalette = FrameMembers.Of(typeof(Theme), nameof(Palette));
+
     /// <summary>
     /// The colours behind the roles. Assigned from <c>ArlecchinoOptions</c> when the container resolves
     /// them; set it directly when drawing without a host.
     ///
     /// This is process-wide on purpose — it is what lets a view write <c>Theme.Header</c> with no
     /// plumbing — so two hosts in one process share one palette, and the last one built wins.
+    ///
+    /// A frame reads it, so it is swapped on the drawing thread and asks for a frame by itself. Hand the
+    /// change over with <see cref="FrameThread.Post"/> from anywhere else.
     /// </summary>
-    public static ThemePalette Palette { get; set; } = new();
+    /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
+    public static ThemePalette Palette
+    {
+        get;
+
+        set
+        {
+            FrameThread.Verify(SwappingPalette);
+            field = value;
+            AtomChanges.NotifyWritten();
+        }
+    } = new();
 
     /// <summary>Ordinary text on the terminal's own background.</summary>
     public static TermColor Default => Palette.Default;

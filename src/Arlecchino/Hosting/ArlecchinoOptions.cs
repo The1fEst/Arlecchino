@@ -89,6 +89,20 @@ public sealed class ArlecchinoOptions
     /// </summary>
     public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Blocks;
 
+    /// <summary>
+    /// How many pixels wide a cell is taken to be. Installed into <see cref="Glyphs.CellWidth"/> on
+    /// resolve. Only <see cref="Rendering.ImageProtocol.Sixel"/> reads it, because sixel is measured in
+    /// pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an
+    /// application corrects when it knows the font.
+    /// </summary>
+    public int CellWidth { get; set; } = 10;
+
+    /// <summary>
+    /// How many pixels tall a cell is taken to be. Installed into <see cref="Glyphs.CellHeight"/> on
+    /// resolve. See <see cref="CellWidth"/>.
+    /// </summary>
+    public int CellHeight { get; set; } = 20;
+
     /// <summary>Every piece of text the framework draws.</summary>
     public ArlecchinoStrings Strings { get; set; } = new();
 

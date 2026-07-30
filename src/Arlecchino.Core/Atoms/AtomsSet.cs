@@ -273,7 +273,7 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
         }
     }
 
-    private void Verify() => FrameThread.Verify(_member ??= $"Changing {GetType().Name}");
+    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
 
     private void Notify()
     {

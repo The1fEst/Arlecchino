@@ -1,3 +1,6 @@
+using System;
+using Arlecchino.Atoms;
+
 namespace Arlecchino.Rendering;
 
 /// <summary>
@@ -33,20 +36,48 @@ public enum GraphSymbols
 /// drawing without a host.
 ///
 /// It is process-wide and settable, so an application can offer the choice in its own settings and
-/// have every graph follow on the next frame. A change made outside the input path should ask for a
-/// frame with <c>Repaint.Request()</c>, since nothing else will.
+/// have every graph follow on the next frame. A frame reads all of it, so all of it is written on the
+/// drawing thread and asks for a frame by itself; hand the change over with
+/// <see cref="FrameThread.Post"/> from anywhere else.
 /// </summary>
 public static class Glyphs
 {
+    private static readonly string ChangingGraph = FrameMembers.Of(typeof(Glyphs), nameof(Graph));
+    private static readonly string ChangingPicture = FrameMembers.Of(typeof(Glyphs), nameof(Picture));
+    private static readonly string ChangingCellWidth = FrameMembers.Of(typeof(Glyphs), nameof(CellWidth));
+    private static readonly string ChangingCellHeight = FrameMembers.Of(typeof(Glyphs), nameof(CellHeight));
+
     /// <summary>What graphs are drawn with when a widget does not say otherwise.</summary>
-    public static GraphSymbols Graph { get; set; } = GraphSymbols.Braille;
+    /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
+    public static GraphSymbols Graph
+    {
+        get;
+
+        set
+        {
+            FrameThread.Verify(ChangingGraph);
+            field = value;
+            AtomChanges.NotifyWritten();
+        }
+    } = GraphSymbols.Braille;
 
     /// <summary>
     /// How pictures reach the terminal when a widget does not say otherwise. Cells by default, since
     /// they work everywhere; a graphics protocol is asked for, because a terminal that cannot speak it
     /// shows the escape sequence as text rather than failing quietly.
     /// </summary>
-    public static ImageProtocol Picture { get; set; } = ImageProtocol.Blocks;
+    /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
+    public static ImageProtocol Picture
+    {
+        get;
+
+        set
+        {
+            FrameThread.Verify(ChangingPicture);
+            field = value;
+            AtomChanges.NotifyWritten();
+        }
+    } = ImageProtocol.Blocks;
 
     /// <summary>
     /// How many pixels wide a cell is taken to be. Only <see cref="ImageProtocol.Sixel"/> needs it,
@@ -57,8 +88,30 @@ public static class Glyphs
     /// twenty is what a terminal at a common font size tends to be, and a wrong guess shows as a
     /// picture that does not quite fill its pane rather than as a broken one.
     /// </summary>
-    public static int CellWidth { get; set; } = 10;
+    /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
+    public static int CellWidth
+    {
+        get;
+
+        set
+        {
+            FrameThread.Verify(ChangingCellWidth);
+            field = value;
+            AtomChanges.NotifyWritten();
+        }
+    } = 10;
 
     /// <summary>How many pixels tall a cell is taken to be. See <see cref="CellWidth"/>.</summary>
-    public static int CellHeight { get; set; } = 20;
+    /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
+    public static int CellHeight
+    {
+        get;
+
+        set
+        {
+            FrameThread.Verify(ChangingCellHeight);
+            field = value;
+            AtomChanges.NotifyWritten();
+        }
+    } = 20;
 }

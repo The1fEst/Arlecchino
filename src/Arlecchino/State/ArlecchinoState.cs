@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Atoms;
 using Arlecchino.Diagnostics;
 using Arlecchino.Rendering;
 using Arlecchino.Modals;
@@ -9,15 +10,31 @@ namespace Arlecchino.State;
 /// <summary>
 /// State that outlives a single screen: the output line, the dialog that is open, and a pending file
 /// picker request. Derive from it to hang application state that every screen reads.
+///
+/// A frame reads all of it, so all of it is written on the drawing thread — the <c>Request…</c> methods
+/// included, since each of them opens a dialog. Anything arriving on a timer, a task or a socket hands
+/// the change over with <see cref="FrameThread.Post"/>, which runs it just before the next frame; only
+/// <see cref="Invalidate"/> may be called from anywhere.
+///
+/// The stack of dialogs is a <see cref="LocalAtomsList{T}"/>, so opening or closing one asks for a frame
+/// by itself. It is outside the undo history: stepping back through what was typed should not reopen a
+/// dialog that was answered.
 /// </summary>
 public class ArlecchinoState
 {
+    private static readonly string WritingOutput = FrameMembers.Of<ArlecchinoState>(nameof(Output));
+    private static readonly string OpeningModal = FrameMembers.Of<ArlecchinoState>(nameof(Modal));
+    private static readonly string Pushing = FrameMembers.Of<ArlecchinoState>(nameof(PushModal));
+    private static readonly string Closing = FrameMembers.Of<ArlecchinoState>(nameof(CloseModal));
+    private static readonly string ClosingAll = FrameMembers.Of<ArlecchinoState>(nameof(CloseAllModals));
+    private static readonly string Picking = FrameMembers.Of<ArlecchinoState>(nameof(FilePicker));
+    private static readonly string Remembering =
+        FrameMembers.Of<ArlecchinoState>(nameof(PickerLastFolder));
+
     private readonly Repaint _repaint;
     private readonly Notifications _notifications;
 
-    private readonly List<Modal> _modals = [];
-
-    private FilePickerRequest? _filePicker;
+    private readonly LocalAtomsList<Modal> _modals = new();
 
     /// <summary>Creates the state.</summary>
     /// <param name="repaint">Signal raised whenever any of this changes.</param>
@@ -38,7 +55,7 @@ public class ArlecchinoState
         get => _notifications.Current?.Line ?? string.Empty;
         set
         {
-            FrameThread.Verify("ArlecchinoState.Output");
+            FrameThread.Verify(WritingOutput);
             _notifications.Notify(value);
         }
     }
@@ -50,59 +67,75 @@ public class ArlecchinoState
     /// The dialog on top, or <c>null</c> when none is open. It takes every key while it is there.
     /// Assigning replaces whatever was open, however deep it was stacked; use <see cref="PushModal"/>
     /// to open one over another instead.
+    ///
+    /// Opened on the drawing thread: a dialog that appeared halfway through a frame would be drawn
+    /// into a surface that has already been measured without it. Hand it over with
+    /// <see cref="FrameThread.Post"/> from anywhere else.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public Modal? Modal
     {
         get => _modals.Count == 0 ? null : _modals[^1];
         set
         {
-            _modals.Clear();
-
-            if (value is not null)
-            {
-                _modals.Add(value);
-            }
-
-            _repaint.Request();
+            FrameThread.Verify(OpeningModal);
+            _modals.Reset(value is null ? [] : [value]);
         }
     }
 
     /// <summary>
     /// Every open dialog, bottom first. Drawing goes through this so the ones underneath stay visible
     /// behind the top one.
+    ///
+    /// A live view of the stack rather than a copy, and read-only all the way down: a widget handed it
+    /// once draws whatever is open on every later frame, and there is no cast that gets a caller back
+    /// to the list underneath.
     /// </summary>
-    public IReadOnlyList<Modal> Modals => _modals;
+    public IReadOnlyList<Modal> Modals => _modals.Value;
 
     /// <summary>
     /// Opens a dialog over whatever is already open, which is how a callback asks a follow-up question
     /// without losing what the user was in the middle of. Closing it uncovers the one underneath.
     /// </summary>
     /// <param name="modal">The dialog to open.</param>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void PushModal(Modal modal)
     {
+        FrameThread.Verify(Pushing);
         _modals.Add(modal);
-        _repaint.Request();
     }
 
     /// <summary>
     /// What the file picker should show. Fill it in, then navigate to <c>Routes.FilePicker</c>; it
-    /// is cleared when the picker finishes either way.
+    /// is cleared when the picker finishes either way. Written on the drawing thread, as
+    /// <see cref="Modal"/> is.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public FilePickerRequest? FilePicker
     {
-        get => _filePicker;
+        get;
         set
         {
-            _filePicker = value;
+            FrameThread.Verify(Picking);
+            field = value;
             _repaint.Request();
         }
     }
 
     /// <summary>
     /// Folder the picker ended in. Pass it as the next starting path to resume where the user left
-    /// off.
+    /// off. Written on the drawing thread, as <see cref="Modal"/> is.
     /// </summary>
-    public string PickerLastFolder { get; set; } = string.Empty;
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
+    public string PickerLastFolder
+    {
+        get;
+        set
+        {
+            FrameThread.Verify(Remembering);
+            field = value;
+        }
+    } = string.Empty;
 
     /// <summary>
     /// Asks for a repaint. Needed only for changes the framework cannot see — a field mutated from
@@ -382,27 +415,27 @@ public class ArlecchinoState
     /// Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and
     /// cancelling already do this, so it is only needed to dismiss one from the outside.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void CloseModal()
     {
-        if (_modals.Count == 0)
-        {
-            return;
-        }
+        FrameThread.Verify(Closing);
 
-        _modals.RemoveAt(_modals.Count - 1);
-        _repaint.Request();
+        if (_modals.Count > 0)
+        {
+            _modals.RemoveAt(_modals.Count - 1);
+        }
     }
 
     /// <summary>Closes every open dialog at once, however deep they are stacked.</summary>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void CloseAllModals()
     {
-        if (_modals.Count == 0)
-        {
-            return;
-        }
+        FrameThread.Verify(ClosingAll);
 
-        _modals.Clear();
-        _repaint.Request();
+        if (_modals.Count > 0)
+        {
+            _modals.Clear();
+        }
     }
 
     private static int IndexOf(IReadOnlyList<string> options, string current)

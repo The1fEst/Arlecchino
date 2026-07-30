@@ -12,6 +12,8 @@ namespace Arlecchino.Navigation;
 /// </summary>
 public class Navigator
 {
+    private static readonly string Applying = FrameMembers.Of<Navigator>(nameof(Apply));
+
     private readonly ViewResolver _resolver;
     private readonly Repaint _repaint;
     private readonly CommandConflicts _conflicts;
@@ -150,7 +152,7 @@ public class Navigator
     /// <param name="route">Where to go.</param>
     public void Apply(ViewRoute route)
     {
-        FrameThread.Verify("Navigator.Apply");
+        FrameThread.Verify(Applying);
 
         if (route.IsNone || route == _currentRoute)
         {

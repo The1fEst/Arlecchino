@@ -265,7 +265,7 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
         }
     }
 
-    private void Verify() => FrameThread.Verify(_member ??= $"Changing {GetType().Name}");
+    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
 
     private void Notify()
     {
