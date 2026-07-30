@@ -37,6 +37,17 @@ internal static partial class Log
         Message = "A store failed to load; the application carries on with what its atoms hold.")]
     public static partial void StoreFailed(ILogger logger, Exception exception);
 
+    [LoggerMessage(Level = LogLevel.Debug,
+        Message = "The terminal was asked what it can do. Answered: {Answered}. Sixel {Sixel}, " +
+                  "kitty {Kitty}, a cell {CellWidth} by {CellHeight} pixels.")]
+    public static partial void TerminalAnswered(
+        ILogger logger,
+        bool answered,
+        bool sixel,
+        bool kitty,
+        int cellWidth,
+        int cellHeight);
+
     [LoggerMessage(Level = LogLevel.Critical,
         Message = "Arlecchino restored the terminal after an unhandled error.")]
     public static partial void TerminalRestored(ILogger logger, Exception exception);

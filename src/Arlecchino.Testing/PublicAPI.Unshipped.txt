@@ -2,6 +2,7 @@
 Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Send(System.ConsoleKeyInfo key) -> void
 Arlecchino.Testing.ArlecchinoTestHost.SendPaste(string! text) -> void
+Arlecchino.Testing.FakeTerminal.Unread(System.ConsoleKeyInfo key) -> void
 Arlecchino.Testing.SessionTape
 Arlecchino.Testing.SessionTape.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.Count.get -> int

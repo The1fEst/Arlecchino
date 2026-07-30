@@ -16,8 +16,14 @@ public class RenderBenchmarks
     private readonly string[] _rows = new string[FrameHeight];
     private readonly string[] _items = new string[2000];
 
-    private Surface _surface = null!;
-    private ListBox<string> _list = null!;
+    private readonly Surface _surface;
+    private readonly ListBox<string> _list;
+
+    public RenderBenchmarks()
+    {
+        _surface = new(_terminal);
+        _list = new(new()) { Render = static item => item, Items = _items };
+    }
 
     [GlobalSetup]
     public void Setup()
@@ -31,9 +37,6 @@ public class RenderBenchmarks
         {
             _items[item] = $"item {item} — a row of the kind an application actually lists";
         }
-
-        _surface = new(_terminal);
-        _list = new(new()) { Render = static item => item, Items = _items };
     }
 
     [Benchmark(Description = "Full frame, every cell changed")]
@@ -103,6 +106,10 @@ public class RenderBenchmarks
         public void Write(string text) => WrittenLength += text.Length;
 
         public ConsoleKeyInfo ReadKey() => default;
+
+        public void Unread(ConsoleKeyInfo key)
+        {
+        }
 
         public MouseEvent ReadMouse() => default;
 

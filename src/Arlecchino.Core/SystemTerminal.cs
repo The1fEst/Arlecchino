@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -23,6 +24,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     private const int RedirectedHeight = 34;
 
     private readonly bool _escapeSequencesWork;
+    private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
 
     private volatile WindowsConsoleInput? _windowsInput;
 
@@ -68,9 +70,9 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     /// answer comes from the console's own event queue rather than from <c>Console</c>, because the two
     /// cannot both consume it.
     /// </summary>
-    public bool KeyAvailable => _windowsInput is { } input
+    public bool KeyAvailable => !_unread.IsEmpty || (_windowsInput is { } input
         ? input.KeyAvailable
-        : !Console.IsInputRedirected && Console.KeyAvailable;
+        : !Console.IsInputRedirected && Console.KeyAvailable);
 
     /// <summary>Whether a mouse event is waiting. Only ever true while the Windows mouse is on.</summary>
     public bool MouseAvailable => _windowsInput?.MouseAvailable ?? false;
@@ -81,7 +83,13 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
     /// <summary>Takes the next key without echoing it.</summary>
     /// <returns>The key that was pressed.</returns>
-    public ConsoleKeyInfo ReadKey() => _windowsInput is { } input ? input.ReadKey() : Console.ReadKey(true);
+    public ConsoleKeyInfo ReadKey() => _unread.TryDequeue(out var back)
+        ? back
+        : _windowsInput is { } input ? input.ReadKey() : Console.ReadKey(true);
+
+    /// <summary>Puts a key back so the next read returns it.</summary>
+    /// <param name="key">The key to put back.</param>
+    public void Unread(ConsoleKeyInfo key) => _unread.Enqueue(key);
 
     /// <summary>Takes the next mouse event read from the console's event queue.</summary>
     /// <returns>What the mouse did, in frame cells.</returns>

@@ -33,6 +33,15 @@ public interface IArlecchinoTerminal
     /// <returns>The key that was pressed.</returns>
     ConsoleKeyInfo ReadKey();
 
+    /// <summary>
+    /// Puts a key back, so the next <see cref="ReadKey"/> returns it and <see cref="KeyAvailable"/>
+    /// reports it as waiting. For code that had to read a key to find out it did not want it — asking
+    /// the terminal what it can do reads until an answer stops looking like one, and whatever ended it
+    /// belongs to whoever pressed it.
+    /// </summary>
+    /// <param name="key">The key to put back.</param>
+    void Unread(ConsoleKeyInfo key);
+
     /// <summary>Takes the next mouse event. Only call it while <see cref="MouseAvailable"/> is true.</summary>
     /// <returns>What the mouse did, in frame cells.</returns>
     MouseEvent ReadMouse();

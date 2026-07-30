@@ -33,10 +33,24 @@ public sealed class PicturesView : IArlecchinoView
         _picture.Draw(left.Border(Theme.Info, $"{_picture.PixelWidth}×{_picture.PixelHeight} pixels"));
 
         var notes = right.Border(Theme.Info, "how").Flow();
+        var asked = Protocol();
+        var drawn = TerminalCapabilities.Resolve(asked);
 
-        notes.AppendLine($"drawn as {Protocol()}", Theme.Accent);
+        notes.AppendLine(asked == drawn ? $"drawn as {drawn}" : $"{asked} → {drawn}", Theme.Accent);
         notes.SkipLine();
-        notes.AppendLine("p walks the three.", Theme.Muted);
+        notes.AppendLine("The terminal says:", Theme.Muted);
+        notes.AppendLine($"  sixel {Said(TerminalCapabilities.Sixel)}", Theme.Muted);
+        notes.AppendLine($"  kitty {Said(TerminalCapabilities.Kitty)}", Theme.Muted);
+        notes.AppendLine(
+            $"  cell {Glyphs.CellWidth}x{Glyphs.CellHeight} " +
+            (TerminalCapabilities.CellSizeKnown ? "reported" : "guessed"),
+            Theme.Muted);
+
+        notes.AppendLine(
+            $"  behind {TerminalCapabilities.Background?.Hex ?? "unknown"}",
+            Theme.Muted);
+        notes.SkipLine();
+        notes.AppendLine("p walks the four.", Theme.Muted);
         notes.SkipLine();
         notes.AppendLine("Blocks work in every", Theme.Muted);
         notes.AppendLine("terminal: two pixels", Theme.Muted);
@@ -71,9 +85,10 @@ public sealed class PicturesView : IArlecchinoView
 
         _picture.Protocol = Protocol() switch
         {
+            ImageProtocol.Auto => ImageProtocol.Blocks,
             ImageProtocol.Blocks => ImageProtocol.Sixel,
             ImageProtocol.Sixel => ImageProtocol.Kitty,
-            _ => ImageProtocol.Blocks,
+            _ => ImageProtocol.Auto,
         };
 
         _surface.ForgetPreviousFrame();
@@ -84,6 +99,8 @@ public sealed class PicturesView : IArlecchinoView
     public ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;
 
     public (string Key, string Description)[] Hints() => [("p", "protocol"), ("Esc", "back")];
+
+    private static string Said(bool yes) => yes ? "yes" : "no";
 
     private ImageProtocol Protocol() => _picture.Protocol ?? Glyphs.Picture;
 

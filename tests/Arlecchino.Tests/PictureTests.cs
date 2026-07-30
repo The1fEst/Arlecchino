@@ -157,10 +157,160 @@ public sealed class PictureTests
 
         var written = Draw(picture, 4, 2);
 
-        Assert.Contains("\e_Ga=T,q=2,f=24,s=1,v=2,c=2,r=2,m=0;", written, StringComparison.Ordinal);
+        Assert.Contains("\e_Ga=T,q=2,f=24,i=", written, StringComparison.Ordinal);
+        Assert.Contains(",s=1,v=2,c=2,r=2,m=0;", written, StringComparison.Ordinal);
         Assert.Contains(Convert.ToBase64String([255, 0, 0, 0, 0, 255]), written, StringComparison.Ordinal);
         Assert.EndsWith("\e\\", written.TrimEnd(), StringComparison.Ordinal);
         Assert.DoesNotContain('▀', written);
+    }
+
+    [Fact]
+    public void EachPictureOwnsAnImageNumberSoOneReplacesItselfRatherThanPileUp()
+    {
+        var first = new Picture { Protocol = ImageProtocol.Kitty };
+        var second = new Picture { Protocol = ImageProtocol.Kitty };
+
+        first.Show([Red, Blue], 1, 2);
+        second.Show([Red, Blue], 1, 2);
+
+        var mine = Image(Draw(first, 4, 2));
+
+        Assert.Equal(mine, Image(Draw(first, 4, 2)));
+        Assert.NotEqual(mine, Image(Draw(second, 4, 2)));
+    }
+
+    [Fact]
+    public void ClearingAKittyPictureTellsTheTerminalToLetGoOfIt()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show([Red, Blue], 1, 2);
+
+        var image = Image(Draw(picture, 4, 2));
+        var written = Undrawn(picture, 4, 2, picture.Clear);
+
+        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", written, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void WhatIsUndrawnIsPaintedOverBeforeTheFrameIsDrawnOverIt()
+    {
+        var was = TerminalCapabilities.Background;
+
+        try
+        {
+            TerminalCapabilities.Background = new(255, 255, 255);
+
+            using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+            var terminal = new FakeTerminal(8, 3);
+            var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+            var picture = new Picture { Protocol = ImageProtocol.Sixel };
+
+            picture.Show([Red, Blue], 1, 2);
+            surface.StartFrame();
+            picture.Draw(surface.Frame);
+            surface.Build();
+
+            var drawn = terminal.Written.Length;
+
+            surface.StartFrame();
+            surface.Frame.Write(0, 0, "kept", Theme.Default);
+            surface.Build();
+
+            var written = terminal.Written[drawn..];
+
+            Assert.True(
+                written.IndexOf("\eP", StringComparison.Ordinal) <
+                written.IndexOf("kept", StringComparison.Ordinal),
+                "the undraw has to go out before the cells it paints over");
+        }
+        finally
+        {
+            TerminalCapabilities.Background = was;
+        }
+    }
+
+    [Fact]
+    public void APictureThatStopsBeingDrawnIsUndrawnAllTheSame()
+    {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+        var terminal = new FakeTerminal(6, 3);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show([Red, Blue], 1, 2);
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        var drawn = terminal.Written.Length;
+        var image = Image(terminal.Written);
+
+        surface.StartFrame();
+        surface.Build();
+
+        Assert.Contains(
+            $"\e_Ga=d,d=i,i={image},q=2\e\\",
+            terminal.Written[drawn..],
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ClearingASixelPicturePaintsOverItInTheColourTheTerminalNamed()
+    {
+        var was = TerminalCapabilities.Background;
+
+        try
+        {
+            TerminalCapabilities.Background = new(255, 255, 255);
+
+            var picture = new Picture { Protocol = ImageProtocol.Sixel };
+
+            picture.Show([Red, Blue], 1, 2);
+
+            var written = Undrawn(picture, 4, 2, picture.Clear);
+
+            Assert.Contains("#0;2;100;100;100", written, StringComparison.Ordinal);
+            Assert.Contains('~', written);
+        }
+        finally
+        {
+            TerminalCapabilities.Background = was;
+        }
+    }
+
+    [Fact]
+    public void ASixelPictureIsLeftWhereItIsWhenTheTerminalNeverSaidItsColour()
+    {
+        var was = TerminalCapabilities.Background;
+
+        try
+        {
+            TerminalCapabilities.Background = null;
+
+            var picture = new Picture { Protocol = ImageProtocol.Sixel };
+
+            picture.Show([Red, Blue], 1, 2);
+            Draw(picture, 4, 2);
+            picture.Clear();
+
+            Assert.DoesNotContain("\eP", Draw(picture, 4, 2), StringComparison.Ordinal);
+        }
+        finally
+        {
+            TerminalCapabilities.Background = was;
+        }
+    }
+
+    [Fact]
+    public void ClearingAPictureThatNeverReachedTheTerminalSaysNothing()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show([Red, Blue], 1, 2);
+        picture.Clear();
+
+        Assert.DoesNotContain("a=d", Draw(picture, 4, 2), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -327,6 +477,14 @@ public sealed class PictureTests
         }
     }
 
+    private static string Image(string written)
+    {
+        var at = written.IndexOf("i=", StringComparison.Ordinal) + 2;
+        var end = written.IndexOf(',', at);
+
+        return written[at..end];
+    }
+
     private static int Occurrences(string text, string what)
     {
         var found = 0;
@@ -339,6 +497,27 @@ public sealed class PictureTests
         }
 
         return found;
+    }
+
+    private static string Undrawn(Picture picture, int width, int height, Action between)
+    {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+        var terminal = new FakeTerminal(width, height);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        var drawn = terminal.Written.Length;
+
+        between();
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        return terminal.Written[drawn..];
     }
 
     private static string Draw(Picture picture, int width, int height)

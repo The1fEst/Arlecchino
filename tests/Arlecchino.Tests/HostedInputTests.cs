@@ -32,6 +32,7 @@ public sealed class HostedInputTests
         {
             options.MinimumWidth = 1;
             options.MinimumHeight = 1;
+            options.AskTerminal = false;
         }).AddGeneratedViews().StartAt(ViewKind.Probe);
         if (mouse)
         {

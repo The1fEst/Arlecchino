@@ -44,6 +44,7 @@ public sealed class ArlecchinoTestHost : IDisposable
             {
                 options.MinimumWidth = 1;
                 options.MinimumHeight = 1;
+                options.AskTerminal = false;
             })
             .WithoutHostedService();
 

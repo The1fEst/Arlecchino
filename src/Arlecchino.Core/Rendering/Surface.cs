@@ -24,8 +24,8 @@ public partial class Surface
     private IArlecchinoColor[][] _styles = [];
     private string[][] _previousCells = [];
     private IArlecchinoColor[][] _previousStyles = [];
-    private readonly List<(int Row, int Column, string Payload)> _passthrough = [];
-    private (int Row, int Column, string Payload)[] _previousPassthrough = [];
+    private readonly List<(int Row, int Column, string Payload, string Undraw)> _passthrough = [];
+    private (int Row, int Column, string Payload, string Undraw)[] _previousPassthrough = [];
     private int _width;
     private int _height;
     private int _lines;
@@ -157,7 +157,9 @@ public partial class Surface
         _stringBuilder.Clear();
         _stringBuilder.EnsureCapacity(_height * (_width + 64));
 
-        if (CanDrawChangesOnly())
+        var undrawn = AppendUndraws();
+
+        if (!undrawn && CanDrawChangesOnly())
         {
             AppendChangedRuns();
         }
@@ -180,8 +182,18 @@ public partial class Surface
     /// protocols, most of all — to be written verbatim at a cell, after everything the frame drew.
     ///
     /// It goes out last on purpose: the cells are written first, so whatever was under or around the
-    /// payload last time is repainted before it lands, and a payload that stops being handed over
-    /// simply disappears as the cells beneath it are drawn again.
+    /// payload last time is repainted before it lands.
+    ///
+    /// Repainting the cells is not enough to remove it, though, which is what <paramref name="undraw"/>
+    /// is for. A payload that was handed over last frame and is not handed over this one — the widget
+    /// moved, or shrank, or is not on screen at all any more — has its undraw written at the place it used
+    /// to be, and written **first**, before a single cell of the new frame. An undraw paints over what it
+    /// removes, so whatever the frame draws lands on top of it; the other way round it would erase the
+    /// frame instead of the picture. A frame that undraws anything is written whole rather than diffed,
+    /// since the cells the undraw painted over have to be put back whether they changed or not.
+    ///
+    /// Whoever hands over pixels says how to take them back, because only they know: kitty deletes an
+    /// image by number, a sixel has to be painted over.
     ///
     /// Nothing is re-sent while it stays the same. A frame is only composed when something asked for
     /// one, so a picture that has not changed costs nothing between frames — but a payload measured
@@ -190,14 +202,49 @@ public partial class Surface
     /// <param name="row">Row of the cell it starts at, counted from the top of the frame.</param>
     /// <param name="column">Column of that cell.</param>
     /// <param name="payload">The bytes to write, escapes and all.</param>
-    public void Passthrough(int row, int column, string payload)
+    /// <param name="undraw">
+    /// What removes it again, written where the payload was. Empty when nothing can: a sixel on a
+    /// terminal that will not say what colour is behind its text has to be left where it is.
+    /// </param>
+    public void Passthrough(int row, int column, string payload, string undraw = "")
     {
         ArgumentNullException.ThrowIfNull(payload);
+        ArgumentNullException.ThrowIfNull(undraw);
 
         if (payload.Length > 0)
         {
-            _passthrough.Add((row, column, payload));
+            _passthrough.Add((row, column, payload, undraw));
         }
+    }
+
+    /// <summary>
+    /// Writes what removes the payloads this frame no longer hands over, before a single cell goes out.
+    /// The order is the whole point: an undraw paints over what it removes, so anything the frame draws
+    /// afterwards is drawn on top of it. Written the other way round it erases the frame instead of the
+    /// picture.
+    /// </summary>
+    /// <returns><c>true</c> when something was undrawn, so the frame is written whole rather than diffed.</returns>
+    private bool AppendUndraws()
+    {
+        if (Unchanged())
+        {
+            return false;
+        }
+
+        var undrawn = false;
+
+        foreach (var gone in _previousPassthrough)
+        {
+            if (gone.Undraw.Length == 0 || _passthrough.Contains(gone))
+            {
+                continue;
+            }
+
+            Place(gone.Row, gone.Column).Append(gone.Undraw);
+            undrawn = true;
+        }
+
+        return undrawn;
     }
 
     private void AppendPassthrough()
@@ -207,17 +254,19 @@ public partial class Surface
             return;
         }
 
-        foreach (var (row, column, payload) in _passthrough)
+        foreach (var (row, column, payload, _) in _passthrough)
         {
-            _stringBuilder
-                .Append("\e[")
-                .Append(row + 1)
-                .Append(';')
-                .Append(column + 1)
-                .Append('H')
-                .Append(payload);
+            Place(row, column).Append(payload);
         }
     }
+
+    private StringBuilder Place(int row, int column) =>
+        _stringBuilder
+            .Append("\e[")
+            .Append(row + 1)
+            .Append(';')
+            .Append(column + 1)
+            .Append('H');
 
     private bool Unchanged()
     {

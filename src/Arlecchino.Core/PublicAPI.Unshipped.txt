@@ -1,8 +1,10 @@
 #nullable enable
 *REMOVED*Arlecchino.Input.TextInputMode.LatinOnly = 0 -> Arlecchino.Input.TextInputMode
 *REMOVED*static Arlecchino.Input.KeyText.LatinOnly.get -> Arlecchino.Input.KeyText!
+Arlecchino.IArlecchinoTerminal.Unread(System.ConsoleKeyInfo key) -> void
 Arlecchino.Input.TextInputMode.ByPosition = 0 -> Arlecchino.Input.TextInputMode
 Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.ImageProtocol.Auto = 3 -> Arlecchino.Rendering.ImageProtocol
 Arlecchino.Rendering.ImageProtocol.Blocks = 0 -> Arlecchino.Rendering.ImageProtocol
 Arlecchino.Rendering.ImageProtocol.Kitty = 1 -> Arlecchino.Rendering.ImageProtocol
 Arlecchino.Rendering.ImageProtocol.Sixel = 2 -> Arlecchino.Rendering.ImageProtocol
@@ -13,7 +15,9 @@ Arlecchino.Rendering.Joinery.Count.get -> int
 Arlecchino.Rendering.Joinery.Down(Arlecchino.Rendering.SurfaceRegion region, int column, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
 Arlecchino.Rendering.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion into, Arlecchino.Rendering.IArlecchinoColor! style) -> void
 Arlecchino.Rendering.Joinery.Joinery() -> void
-Arlecchino.Rendering.Surface.Passthrough(int row, int column, string! payload) -> void
+Arlecchino.Rendering.Surface.Passthrough(int row, int column, string! payload, string! undraw = "") -> void
+Arlecchino.Rendering.TerminalProbe
+Arlecchino.SystemTerminal.Unread(System.ConsoleKeyInfo key) -> void
 static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Rendering.Glyphs.CellHeight.get -> int
 static Arlecchino.Rendering.Glyphs.CellHeight.set -> void
@@ -21,3 +25,13 @@ static Arlecchino.Rendering.Glyphs.CellWidth.get -> int
 static Arlecchino.Rendering.Glyphs.CellWidth.set -> void
 static Arlecchino.Rendering.Glyphs.Picture.get -> Arlecchino.Rendering.ImageProtocol
 static Arlecchino.Rendering.Glyphs.Picture.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.Background.get -> Arlecchino.Rendering.Rgb?
+static Arlecchino.Rendering.TerminalCapabilities.Background.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.CellSizeKnown.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.CellSizeKnown.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.Kitty.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Kitty.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.Resolve(Arlecchino.Rendering.ImageProtocol protocol) -> Arlecchino.Rendering.ImageProtocol
+static Arlecchino.Rendering.TerminalCapabilities.Sixel.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Sixel.set -> void
+static Arlecchino.Rendering.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan within) -> bool

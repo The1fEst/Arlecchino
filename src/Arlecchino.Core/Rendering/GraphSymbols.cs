@@ -62,9 +62,10 @@ public static class Glyphs
     } = GraphSymbols.Braille;
 
     /// <summary>
-    /// How pictures reach the terminal when a widget does not say otherwise. Cells by default, since
-    /// they work everywhere; a graphics protocol is asked for, because a terminal that cannot speak it
-    /// shows the escape sequence as text rather than failing quietly.
+    /// How pictures reach the terminal when a widget does not say otherwise.
+    /// <see cref="ImageProtocol.Auto"/> by default, which is the best of what the terminal admitted to
+    /// when it was asked and cells when it admitted to nothing. Name a protocol to decide yourself — a
+    /// terminal that cannot speak the one you name shows the escape sequence as text.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static ImageProtocol Picture
@@ -77,16 +78,16 @@ public static class Glyphs
             field = value;
             AtomChanges.NotifyWritten();
         }
-    } = ImageProtocol.Blocks;
+    } = ImageProtocol.Auto;
 
     /// <summary>
     /// How many pixels wide a cell is taken to be. Only <see cref="ImageProtocol.Sixel"/> needs it,
     /// because sixel is measured in pixels and knows nothing of cells: a picture is resampled to
     /// however many pixels the cells it was given come to.
     ///
-    /// There is no asking the terminal yet, so this is a guess an application can correct — ten by
-    /// twenty is what a terminal at a common font size tends to be, and a wrong guess shows as a
-    /// picture that does not quite fill its pane rather than as a broken one.
+    /// <see cref="TerminalProbe.Ask"/> sets it from what the terminal reports. Ten by twenty is the
+    /// standing guess for a terminal that does not answer, and a wrong guess shows as a picture that
+    /// does not quite fill its pane rather than as a broken one.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static int CellWidth

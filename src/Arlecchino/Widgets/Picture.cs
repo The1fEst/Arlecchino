@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading;
 using Arlecchino.Rendering;
 
 namespace Arlecchino.Widgets;
@@ -29,6 +30,10 @@ public sealed class Picture : IArlecchinoWidget
 {
     private const char UpperHalf = '▀';
     private const int PixelsPerCell = 2;
+
+    private static int _lastKittyImage = Random.Shared.Next(1, 1 << 24);
+
+    private readonly int _kittyImage = Interlocked.Increment(ref _lastKittyImage);
 
     private Rgb[] _pixels = [];
     private string _payload = "";
@@ -82,7 +87,11 @@ public sealed class Picture : IArlecchinoWidget
         _version++;
     }
 
-    /// <summary>Forgets the picture, leaving the region to whatever draws next.</summary>
+    /// <summary>
+    /// Forgets the picture, leaving the region to whatever draws next. What the terminal was handed as
+    /// pixels is undrawn on the next frame — see the undraw that goes with
+    /// <see cref="Surface.Passthrough"/> — so this needs no more than forgetting them.
+    /// </summary>
     public void Clear()
     {
         _pixels = [];
@@ -114,7 +123,7 @@ public sealed class Picture : IArlecchinoWidget
             return region.Rows(region.Height, 0);
         }
 
-        var protocol = Protocol ?? Glyphs.Picture;
+        var protocol = TerminalCapabilities.Resolve(Protocol ?? Glyphs.Picture);
         var cellWidth = Math.Max(1, Glyphs.CellWidth);
         var cellHeight = Math.Max(1, Glyphs.CellHeight);
 
@@ -142,13 +151,19 @@ public sealed class Picture : IArlecchinoWidget
             if (_made != made)
             {
                 _payload = protocol == ImageProtocol.Kitty
-                    ? Kitty(_pixels, PixelWidth, PixelHeight, columns, rows)
+                    ? Kitty(_pixels, PixelWidth, PixelHeight, columns, rows, _kittyImage)
                     : Sixel(_pixels, PixelWidth, PixelHeight, columns * cellWidth, rows * cellHeight);
 
                 _made = made;
             }
 
-            region.Surface.Passthrough(region.Top + top, region.Left + left, _payload);
+            region.Surface.Passthrough(
+                region.Top + top,
+                region.Left + left,
+                _payload,
+                protocol == ImageProtocol.Kitty
+                    ? Forgotten(_kittyImage)
+                    : Painted(columns * cellWidth, rows * cellHeight));
 
             return region.Rows(region.Height, 0);
         }
@@ -172,18 +187,68 @@ public sealed class Picture : IArlecchinoWidget
     }
 
     /// <summary>
+    /// Builds a sixel that paints a rectangle in the colour the terminal said was behind its text, which
+    /// is the only way to undraw one: sixel writes pixels into the screen, so what was drawn is gone only
+    /// once something else is drawn over it.
+    ///
+    /// Empty when the terminal never said what colour that is — see
+    /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed colour leaves a
+    /// rectangle anyone can see, which is worse than the pixels it was meant to remove.
+    /// </summary>
+    /// <param name="across">How many pixels wide the picture was.</param>
+    /// <param name="down">How many pixels tall it was.</param>
+    /// <returns>The sequence to hand to the terminal, or an empty string.</returns>
+    private static string Painted(int across, int down)
+    {
+        if (TerminalCapabilities.Background is not { } behind || across <= 0 || down <= 0)
+        {
+            return "";
+        }
+
+        var painted = new StringBuilder(64);
+
+        painted
+            .Append("\ePq\"1;1;").Append(across).Append(';').Append(down)
+            .Append("#0;2;")
+            .Append(Percent(behind.Red)).Append(';')
+            .Append(Percent(behind.Green)).Append(';')
+            .Append(Percent(behind.Blue));
+
+        for (var band = 0; band < down; band += 6)
+        {
+            painted.Append("#0!").Append(across).Append('~').Append('-');
+        }
+
+        return painted.Append("\e\\").ToString();
+    }
+
+    /// <summary>
+    /// Builds the sequence that tells the terminal to let go of an image it was handed. Only kitty has
+    /// one: sixel writes pixels into the screen rather than into a registry of images, so there is
+    /// nothing there to name and nothing to delete.
+    /// </summary>
+    /// <param name="image">Which image to delete.</param>
+    /// <returns>The sequence to hand to the terminal.</returns>
+    private static string Forgotten(int image) => $"\e_Ga=d,d=i,i={image},q=2\e\\";
+
+    /// <summary>
     /// Builds the kitty graphics escape sequence: the pixels as they are, base64 across chunks of the
     /// size the protocol allows, told which cell rectangle to scale into. Responses are suppressed with
     /// <c>q=2</c>, since a reply from the terminal would arrive at the input reader as a stray escape
     /// sequence.
+    ///
+    /// It carries an image number of its own, so a picture that changes replaces the one the terminal is
+    /// holding instead of adding to it. Without that every new set of pixels would be another image kept
+    /// in the terminal's memory for as long as the session lasts.
     /// </summary>
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
     /// <param name="columns">Cells to fill across.</param>
     /// <param name="rows">Cells to fill down.</param>
+    /// <param name="image">Which image this widget owns.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    private static string Kitty(Rgb[] pixels, int width, int height, int columns, int rows)
+    private static string Kitty(Rgb[] pixels, int width, int height, int columns, int rows, int image)
     {
         const int chunk = 4096;
 
@@ -210,7 +275,8 @@ public sealed class Picture : IArlecchinoWidget
             if (sent == 0)
             {
                 sequence
-                    .Append("a=T,q=2,f=24,s=").Append(width)
+                    .Append("a=T,q=2,f=24,i=").Append(image)
+                    .Append(",s=").Append(width)
                     .Append(",v=").Append(height)
                     .Append(",c=").Append(columns)
                     .Append(",r=").Append(rows)

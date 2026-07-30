@@ -27,4 +27,14 @@ public enum ImageProtocol
     /// <see cref="Glyphs.CellHeight"/> say how large a cell is taken to be.
     /// </summary>
     Sixel,
+
+    /// <summary>
+    /// The best of what the terminal admitted to when it was asked — see
+    /// <see cref="TerminalProbe.Ask"/> — and <see cref="Blocks"/> when it admitted to nothing, so a
+    /// picture appears either way. Kitty is preferred over sixel where both are on offer.
+    ///
+    /// This is the default, because the alternative is an application choosing on a terminal it cannot
+    /// see. Name a protocol instead when you would rather decide, or when the terminal is one that lies.
+    /// </summary>
+    Auto,
 }

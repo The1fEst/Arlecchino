@@ -10,6 +10,7 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Arlecchino.Input;
 using Arlecchino.Atoms;
+using Arlecchino.Rendering;
 
 namespace Arlecchino.Hosting;
 
@@ -126,6 +127,19 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         if (_options.UseAlternateScreen)
         {
             _terminal.EnterFullScreen();
+        }
+
+        if (_options.AskTerminal)
+        {
+            var answered = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
+
+            Log.TerminalAnswered(
+                _logger,
+                answered,
+                TerminalCapabilities.Sixel,
+                TerminalCapabilities.Kitty,
+                Glyphs.CellWidth,
+                Glyphs.CellHeight);
         }
 
         if (_options.MouseInput)

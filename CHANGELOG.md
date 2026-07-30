@@ -62,6 +62,34 @@ the public API means a new major. See
   Pixels are handed over rather than read from a file: decoding PNG or JPEG belongs to the
   application, which knows what it is willing to depend on, while the framework draws what it is
   given.
+- **The terminal is asked what it can do**, once, as the application starts: which graphics protocols it
+  speaks and how many pixels a cell is. `ImageProtocol.Auto` is the new default, so a picture is drawn
+  with the best of what the terminal admitted to — kitty, else sixel, else cells — instead of with a
+  protocol an application had to guess at.
+
+  ```csharp
+  TerminalCapabilities.Sixel          // what it said
+  TerminalCapabilities.Kitty
+  TerminalCapabilities.CellSizeKnown  // whether the size below was reported or guessed
+  Glyphs.CellWidth
+  ```
+
+  `CellSizeKnown` earns its place: ten by twenty is both the standing guess and what a terminal at a
+  common font size actually reports, so without it there is no telling the two apart — and sixel sizing
+  rests on the difference.
+
+  The whole thing turns on one arrangement: the questions go out in an order ending with primary device
+  attributes, which every terminal answers, so **that** reply is the signal no other reply is coming.
+  Without a fence like it there is nothing to wait on but a guess at how long silence takes.
+
+  Nothing typed is swallowed. Every answer opens with an escape, so the first character that is not one
+  ends the wait and goes back to the terminal through the new `IArlecchinoTerminal.Unread`. A terminal
+  that says nothing at all costs `ArlecchinoOptions.TerminalAnswer` — 120 ms by default — once, and
+  leaves every setting alone; `AskTerminal = false` skips even that.
+- **`IArlecchinoTerminal.Unread(key)`**, which puts a key back so the next read returns it and
+  `KeyAvailable` reports it. A custom terminal has to implement it — a queue in front of the real read is
+  the whole of it. It exists because code that must read a key to discover it did not want it should hand
+  it back to the terminal, rather than make its caller carry it.
 - **Sixel**, which is what Windows Terminal, xterm and foot speak: `ImageProtocol.Sixel` puts the
   pixels out in bands of six rows with runs collapsed, without which a photograph would weigh several
   times what it needs to.
@@ -81,6 +109,33 @@ the public API means a new major. See
 
   A payload is built once and kept until the picture, the protocol or the room it is drawn in changes,
   since choosing a palette is real work and a frame asks for the same bytes again.
+- **`Surface.Passthrough` takes what undraws the payload as well as the payload.** A payload that was
+  handed over last frame and is not handed over this one — the widget moved, or shrank, or its screen is
+  not on show any more — has its undraw written where it used to be, before anything new is written.
+
+  Repainting the cells was supposed to be enough. It is not: a sixel that a view stopped drawing stayed on
+  the screen, over whatever was drawn next, because the widget that could have removed it was no longer
+  being asked to draw at all. Only the surface knows a payload disappeared, and only whoever sent it knows
+  how to take it back, so the two have to meet in the seam.
+
+  The undraw goes out **before** the frame's cells, and a frame that undraws anything is written whole
+  rather than diffed. Both follow from what an undraw is: painting over. Written after the cells it paints
+  over them, which erases the frame instead of the picture; and the cells it painted over have to be put
+  back whether the diff thinks they changed or not.
+- **A picture is undrawn when it is cleared.** Every `Picture` owns a kitty image number, so new pixels
+  replace the image the terminal is holding rather than adding another one, and `Clear()` deletes it. What
+  was there before handed the terminal an image per change and never took one back — a picture updated on
+  a timer grew the terminal's memory for as long as the session lasted.
+
+  Sixel has nothing to delete: it writes pixels into the screen rather than into a registry of images, so
+  undrawing means painting over them, and painting needs a colour. That is the fifth thing the terminal is
+  asked for — `OSC 11`, the colour behind its text — and it lands in `TerminalCapabilities.Background`. A
+  terminal that will not say leaves the pixels where they are on purpose: a guessed colour paints a
+  rectangle anyone can see, which is worse than the leftover it was meant to remove.
+
+  Whether the leftover shows at all is a matter of terminal: Windows Terminal ties image data to the cell
+  and drops it when the cell is written, xterm keeps sixel in a layer text does not disturb. Neither
+  behaviour is written down anywhere to rely on, which is why this does not lean on either.
 - **The kitty graphics protocol**, where the terminal speaks it: `ImageProtocol.Kitty` sends the
   pixels themselves instead of cells, and the picture is as sharp as the screen allows.
 

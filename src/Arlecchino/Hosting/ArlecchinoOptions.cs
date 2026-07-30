@@ -84,10 +84,23 @@ public sealed class ArlecchinoOptions
 
     /// <summary>
     /// How pictures reach the terminal. Installed into <see cref="Glyphs.Picture"/> on resolve, and
-    /// settable afterwards. Cells by default, since a terminal that cannot speak a graphics protocol
-    /// would print the escape sequence as text.
+    /// settable afterwards. <see cref="Rendering.ImageProtocol.Auto"/> by default, which asks the
+    /// terminal rather than guessing; name a protocol to decide it yourself.
     /// </summary>
-    public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Blocks;
+    public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Auto;
+
+    /// <summary>
+    /// Whether to ask the terminal what it can do as the application starts — which graphics protocols
+    /// it speaks and how many pixels a cell is. Costs at most <see cref="TerminalAnswer"/> once, and only
+    /// on a terminal that stays silent; the answers usually arrive in a millisecond or two.
+    ///
+    /// Turn it off for a terminal that answers something strange, or to keep startup free of the wait.
+    /// <see cref="Rendering.ImageProtocol.Auto"/> then has nothing to go on and settles for cells.
+    /// </summary>
+    public bool AskTerminal { get; set; } = true;
+
+    /// <summary>How long to wait for the terminal to finish answering. See <see cref="AskTerminal"/>.</summary>
+    public TimeSpan TerminalAnswer { get; set; } = TimeSpan.FromMilliseconds(120);
 
     /// <summary>
     /// How many pixels wide a cell is taken to be. Installed into <see cref="Glyphs.CellWidth"/> on
