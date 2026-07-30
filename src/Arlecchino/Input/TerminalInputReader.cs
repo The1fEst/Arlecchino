@@ -56,9 +56,9 @@ public sealed class TerminalInputReader
 
     private void Send(ConsoleKeyInfo key)
     {
-        if (_pending is { } queue)
+        if (_pending is not null)
         {
-            queue.Add(key);
+            _pending.Add(key);
             return;
         }
 
@@ -67,9 +67,9 @@ public sealed class TerminalInputReader
 
     private void Send(MouseEvent mouse)
     {
-        if (_pending is { } queue)
+        if (_pending is not null)
         {
-            queue.Add(mouse);
+            _pending.Add(mouse);
             return;
         }
 
@@ -78,9 +78,9 @@ public sealed class TerminalInputReader
 
     private void SendPaste(string text)
     {
-        if (_pending is { } queue)
+        if (_pending is not null)
         {
-            queue.AddPaste(text);
+            _pending.AddPaste(text);
             return;
         }
 
@@ -113,6 +113,11 @@ public sealed class TerminalInputReader
     /// <param name="key">The key that was read.</param>
     public void Read(ConsoleKeyInfo key)
     {
+        if (Nothing(key))
+        {
+            return;
+        }
+
         if (key.Key != ConsoleKey.Escape || !WaitForKey())
         {
             Send(key);
@@ -194,9 +199,21 @@ public sealed class TerminalInputReader
     }
 
     /// <summary>
+    /// Whether the key is the one a terminal hands back when there was nothing to read. A console read
+    /// that fails answers <c>default</c>, which is indistinguishable from a key press of NUL with no
+    /// modifiers — and a view that is handed that has no way to tell either. Nobody presses it, so it is
+    /// dropped here rather than routed as input.
+    /// </summary>
+    /// <param name="key">The key that was read.</param>
+    /// <returns><c>true</c> when nothing was actually pressed.</returns>
+    private static bool Nothing(ConsoleKeyInfo key) =>
+        key.Key == ConsoleKey.None && key.KeyChar == '\0' && key.Modifiers == 0;
+
+    /// <summary>
     /// Waits for the next key of a sequence. A key already waiting returns at once; otherwise the
     /// terminal is given the configured grace period before the sequence is given up on.
     /// </summary>
+    /// <returns><c>true</c> when a key arrived before the grace period ran out.</returns>
     private bool WaitForKey()
     {
         if (_terminal.KeyAvailable)

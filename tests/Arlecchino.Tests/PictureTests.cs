@@ -193,6 +193,103 @@ public sealed class PictureTests
     }
 
     [Fact]
+    public void ForgettingTheLastFrameSendsThePictureAgain()
+    {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+        var terminal = new FakeTerminal(6, 3);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show([Red, Blue], 1, 2);
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        var drawn = terminal.Written.Length;
+
+        surface.ForgetPreviousFrame();
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        Assert.Contains("\e_G", terminal.Written[drawn..], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AFixedSizeSurfaceSendsThePictureWithEveryFrameItWritesWhole()
+    {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+        var terminal = new FakeTerminal(6, 3);
+        var surface = new Surface(terminal);
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        surface.SetFixedSize(6, 3);
+        picture.Show([Red, Blue], 1, 2);
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        var drawn = terminal.Written.Length;
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        Assert.Contains("\e_G", terminal.Written[drawn..], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AStillPictureInCellsIsNotWrittenOutAgain()
+    {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+        var terminal = new FakeTerminal(8, 4);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+        var picture = new Picture();
+
+        picture.Show([Red, Blue], 1, 2);
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        var drawn = terminal.Written.Length;
+
+        surface.StartFrame();
+        picture.Draw(surface.Frame);
+        surface.Build();
+
+        Assert.Equal(drawn, terminal.Written.Length);
+    }
+
+    [Fact]
+    public void TheLastBandOfAnUndrawPaintsOnlyTheRowsThePictureHad()
+    {
+        var was = (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight);
+
+        try
+        {
+            TerminalCapabilities.Background = new(0, 0, 0);
+            Glyphs.CellWidth = 1;
+            Glyphs.CellHeight = 8;
+
+            var picture = new Picture { Protocol = ImageProtocol.Sixel };
+
+            picture.Show([Red], 1, 1);
+
+            var written = Undrawn(picture, 1, 1, picture.Clear);
+
+            Assert.Contains("!1~-", written, StringComparison.Ordinal);
+            Assert.Contains("!1B-", written, StringComparison.Ordinal);
+        }
+        finally
+        {
+            (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+        }
+    }
+
+    [Fact]
     public void WhatIsUndrawnIsPaintedOverBeforeTheFrameIsDrawnOverIt()
     {
         var was = TerminalCapabilities.Background;

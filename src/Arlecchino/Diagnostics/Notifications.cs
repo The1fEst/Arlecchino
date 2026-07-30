@@ -125,18 +125,15 @@ public sealed class Notifications
     private readonly LocalAtomsList<Notification> _entries = new();
     private readonly ArlecchinoOptions _options;
     private readonly TimeProvider _time;
-    private readonly Repaint _repaint;
 
     /// <summary>Creates the list.</summary>
     /// <param name="options">Supplies both timeouts.</param>
     /// <param name="time">Where the current time comes from.</param>
     /// <param name="ticker">Counts the timeouts between frames.</param>
-    /// <param name="repaint">Asked for a frame whenever something arrives or expires.</param>
-    public Notifications(ArlecchinoOptions options, TimeProvider time, Ticker ticker, Repaint repaint)
+    public Notifications(ArlecchinoOptions options, TimeProvider time, Ticker ticker)
     {
         _options = options;
         _time = time;
-        _repaint = repaint;
 
         ticker.Every(options.NotificationTimeout, Expire);
     }
@@ -229,7 +226,7 @@ public sealed class Notifications
         ArgumentNullException.ThrowIfNull(entry);
 
         entry.Complete(text, level, _time.GetUtcNow());
-        _repaint.Request();
+        _entries.Touch();
     }
 
     /// <summary>

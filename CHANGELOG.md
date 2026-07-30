@@ -258,6 +258,33 @@ the public API means a new major. See
   last, so the edge it shares takes its colour rather than its neighbour's — `Tab` still moves a
   highlight around the screen, now along lines that meet.
 
+### Fixed
+
+Found by reading the whole of it rather than by anything failing.
+
+- **A picture could vanish from a frame that was written whole.** Writing every cell is what removes the
+  pixels over them in some terminals, and the payload was only re-sent when it had changed — so a frame
+  written whole erased the picture and did not put it back. `Surface.ForgetPreviousFrame`, a resize and
+  every frame of a fixed-size surface all took that path.
+- **A picture drawn in cells was written out again every frame, however still it was.** It built the
+  colour of each cell fresh each time, and the frame diff tells cells apart by reference, so nothing ever
+  looked unchanged. The colours are worked out when the picture or its room changes and kept between
+  frames — which also stops an allocation per cell per frame, and stops the escape sequence for each one
+  being rebuilt.
+- **Undrawing a sixel could paint below it.** Bands are six rows whatever the picture's height, and the
+  last one was painted full, reaching up to five rows past the picture on a terminal that does not clip to
+  the raster size.
+- **The terminal probe assumed answers came back in the order they were asked for.** Primary device
+  attributes are asked last and used as the fence, so a terminal answering it early cut off whatever was
+  still coming. The fence now stops the waiting rather than the reading: what is already buffered is taken
+  too.
+- **A notification settled in place told nothing that watched the list.** `Notification` is mutable on
+  purpose — a dialog someone has open changes under them — but writing a property of an item is not a
+  change to the list it sits in, so a `Computed` over it never recomputed. `AtomsList.Touch()` says an
+  item changed inside itself; `Notifications` no longer needs `Repaint` at all.
+- **A console read that failed reached views as a key press of NUL.** `default` is what a failed read
+  answers and nothing tells it apart from a real key, so it is dropped where input enters instead.
+
 ### Removed
 
 - **`ArlecchinoBuilder.UseNativeInput()`**, which now says what already happens. Delete the call —

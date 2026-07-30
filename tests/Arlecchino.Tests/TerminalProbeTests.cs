@@ -196,6 +196,31 @@ public sealed class TerminalProbeTests
     }
 
     [Fact]
+    public void RubbishInFrontOfTheAnswersDoesNotThrowThemAway()
+    {
+        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+            TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight);
+
+        try
+        {
+            var terminal = new FakeTerminal(80, 24);
+
+            terminal.EnqueueText("\\\e[6;25;11t\e]11;rgb:2020/2020/2222\e\\\e[?65;4;6;18;22;52c");
+
+            Assert.True(TerminalProbe.Ask(terminal, TimeSpan.FromSeconds(5)));
+            Assert.True(TerminalCapabilities.Sixel);
+            Assert.Equal(11, Glyphs.CellWidth);
+            Assert.Equal(25, Glyphs.CellHeight);
+            Assert.Equal(new Rgb(0x20, 0x20, 0x22), TerminalCapabilities.Background);
+        }
+        finally
+        {
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+        }
+    }
+
+    [Fact]
     public void AutoTakesTheBestOfWhatWasAdmittedTo()
     {
         var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty);

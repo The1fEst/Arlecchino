@@ -280,7 +280,7 @@ public sealed class PaneTree
 
         for (var index = 0; index < placed.Count; index++)
         {
-            placed[index].Pane._content!(inside[index]);
+            placed[index].Pane._content?.Invoke(inside[index]);
         }
 
         joinery.Draw(region, Theme.Info);
@@ -363,14 +363,19 @@ public sealed class PaneTree
             return;
         }
 
+        if (_first is null || _second is null)
+        {
+            return;
+        }
+
         if (SplitOf(region) == PaneSplit.Columns)
         {
             var usable = Math.Max(0, region.Width - gap);
             var (left, rest) = region.SplitLeft(_size.Of(usable));
             var (_, right) = rest.SplitLeft(Math.Min(gap, rest.Width));
 
-            _first!.Place(left, gap, placed);
-            _second!.Place(right, gap, placed);
+            _first.Place(left, gap, placed);
+            _second.Place(right, gap, placed);
 
             return;
         }
@@ -379,8 +384,8 @@ public sealed class PaneTree
         var (top, below) = region.SplitTop(_size.Of(rows));
         var (_, bottom) = below.SplitTop(Math.Min(gap, below.Height));
 
-        _first!.Place(top, gap, placed);
-        _second!.Place(bottom, gap, placed);
+        _first.Place(top, gap, placed);
+        _second.Place(bottom, gap, placed);
     }
 
     private PaneSplit SplitOf(SurfaceRegion region) =>

@@ -2,11 +2,124 @@ root = true
 
 [*]
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 indent_style = space
 indent_size = 4
-insert_final_newline = true
+insert_final_newline = false
 trim_trailing_whitespace = true
+
+# Microsoft .NET properties
+csharp_new_line_before_members_in_object_initializers = false
+csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:suggestion
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+dotnet_naming_rule.interfaces_rule.import_to_resharper = True
+dotnet_naming_rule.interfaces_rule.resharper_description = Interfaces
+dotnet_naming_rule.interfaces_rule.resharper_guid = a7a3339e-4e89-4319-9735-a9dc4cb74cc7
+dotnet_naming_rule.interfaces_rule.severity = none
+dotnet_naming_rule.interfaces_rule.style = i_upper_camel_case_style
+dotnet_naming_rule.interfaces_rule.symbols = interfaces_symbols
+dotnet_naming_rule.unity_serialized_field_rule.import_to_resharper = True
+dotnet_naming_rule.unity_serialized_field_rule.resharper_description = Unity serialized field
+dotnet_naming_rule.unity_serialized_field_rule.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
+dotnet_naming_rule.unity_serialized_field_rule.severity = none
+dotnet_naming_rule.unity_serialized_field_rule.style = lower_camel_case_style
+dotnet_naming_rule.unity_serialized_field_rule.symbols = unity_serialized_field_symbols
+dotnet_naming_style.i_upper_camel_case_style.capitalization = pascal_case
+dotnet_naming_style.i_upper_camel_case_style.required_prefix = I
+dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
+dotnet_naming_symbols.interfaces_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.interfaces_symbols.applicable_kinds = interface
+dotnet_naming_symbols.interfaces_symbols.resharper_applicable_kinds = interface
+dotnet_naming_symbols.interfaces_symbols.resharper_required_modifiers = any
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds = 
+dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
+dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:none
+dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+
+# ReSharper properties
+resharper_autodetect_indent_settings = true
+resharper_braces_for_for = required
+resharper_braces_for_foreach = required
+resharper_braces_for_ifelse = required
+resharper_braces_for_while = required
+resharper_braces_redundant = false
+resharper_csharp_empty_block_style = together_same_line
+resharper_csharp_insert_final_newline = false
+resharper_csharp_wrap_lines = false
+resharper_csharp_wrap_parameters_style = chop_if_long
+resharper_formatter_off_tag = @formatter:off
+resharper_formatter_on_tag = @formatter:on
+resharper_formatter_tags_enabled = true
+resharper_fsharp_insert_final_newline = false
+resharper_html_insert_final_newline = false
+resharper_object_creation_when_type_not_evident = target_typed
+resharper_resx_insert_final_newline = false
+resharper_shaderlab_insert_final_newline = false
+resharper_show_autodetect_configure_formatting_tip = false
+resharper_T4_insert_final_newline = false
+resharper_use_indent_from_vs = false
+resharper_vb_insert_final_newline = false
+resharper_xmldoc_insert_final_newline = false
+resharper_xml_insert_final_newline = false
+
+# ReSharper inspection severities
+resharper_access_to_disposed_closure_highlighting = hint
+resharper_arrange_null_checking_pattern_highlighting = warning
+resharper_arrange_object_creation_when_type_evident_highlighting = warning
+resharper_arrange_object_creation_when_type_not_evident_highlighting = warning
+resharper_arrange_redundant_parentheses_highlighting = hint
+resharper_arrange_this_qualifier_highlighting = hint
+resharper_arrange_type_member_modifiers_highlighting = hint
+resharper_arrange_type_modifiers_highlighting = hint
+resharper_built_in_type_reference_style_for_member_access_highlighting = hint
+resharper_built_in_type_reference_style_highlighting = hint
+resharper_convert_to_primary_constructor_highlighting = none
+resharper_empty_general_catch_clause_highlighting = none
+resharper_enforce_do_while_statement_braces_highlighting = warning
+resharper_enforce_fixed_statement_braces_highlighting = warning
+resharper_enforce_foreach_statement_braces_highlighting = warning
+resharper_enforce_for_statement_braces_highlighting = warning
+resharper_enforce_if_statement_braces_highlighting = warning
+resharper_enforce_lock_statement_braces_highlighting = warning
+resharper_enforce_using_statement_braces_highlighting = warning
+resharper_enforce_while_statement_braces_highlighting = warning
+resharper_foreach_can_be_converted_to_query_using_another_get_enumerator_highlighting = none
+resharper_inconsistent_naming_highlighting = none
+resharper_inline_temporary_variable_highlighting = warning
+resharper_invert_if_highlighting = warning
+resharper_loop_can_be_converted_to_query_highlighting = none
+resharper_member_can_be_made_static_global_highlighting = warning
+resharper_mvc_action_not_resolved_highlighting = warning
+resharper_mvc_area_not_resolved_highlighting = warning
+resharper_mvc_controller_not_resolved_highlighting = warning
+resharper_mvc_masterpage_not_resolved_highlighting = warning
+resharper_mvc_partial_view_not_resolved_highlighting = warning
+resharper_mvc_template_not_resolved_highlighting = warning
+resharper_mvc_view_component_not_resolved_highlighting = warning
+resharper_mvc_view_component_view_not_resolved_highlighting = warning
+resharper_mvc_view_not_resolved_highlighting = warning
+resharper_razor_assembly_not_resolved_highlighting = warning
+resharper_redundant_base_qualifier_highlighting = warning
+resharper_replace_auto_property_with_computed_property_highlighting = warning
+resharper_suggest_var_or_type_built_in_types_highlighting = hint
+resharper_suggest_var_or_type_elsewhere_highlighting = hint
+resharper_suggest_var_or_type_simple_types_highlighting = hint
+resharper_web_config_module_not_resolved_highlighting = warning
+resharper_web_config_type_not_resolved_highlighting = warning
+resharper_web_config_wrong_module_highlighting = warning
 
 [*.{yml,yaml,json,md}]
 indent_size = 2
@@ -17,19 +130,19 @@ csharp_style_namespace_declarations = file_scoped:warning
 csharp_prefer_braces = true:warning
 dotnet_style_namespace_match_folder = false
 
-dotnet_diagnostic.IDE0005.severity = warning
-dotnet_diagnostic.IDE0011.severity = warning
-dotnet_diagnostic.IDE0090.severity = warning
-dotnet_diagnostic.IDE0161.severity = warning
-dotnet_diagnostic.CA1822.severity = warning
+dotnet_diagnostic.ide0005.severity = warning
+dotnet_diagnostic.ide0011.severity = warning
+dotnet_diagnostic.ide0090.severity = warning
+dotnet_diagnostic.ide0161.severity = warning
+dotnet_diagnostic.ca1822.severity = warning
 
-dotnet_diagnostic.IDE0290.severity = none
-dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.ide0290.severity = none
+dotnet_diagnostic.ide1006.severity = none
 
 # The atoms that hold a queue and a stack are named after what they are, since that is the word
 # anyone looks for. Every other reserved suffix — Collection, Dictionary, Exception, EventArgs —
 # still fails the build.
-dotnet_code_quality.CA1711.allowed_suffixes = Queue|Stack
+dotnet_code_quality.ca1711.allowed_suffixes = Queue|Stack
 
 resharper_object_creation_when_type_not_evident = target_typed
 resharper_braces_for_ifelse = required
@@ -54,7 +167,6 @@ resharper_enforce_fixed_statement_braces_highlighting = warning
 resharper_invert_if_highlighting = warning
 resharper_member_can_be_made_static_global_highlighting = warning
 resharper_replace_async_with_task_return_highlighting = warning
-resharper_nullable_warning_suppression_is_used_highlighting = warning
 resharper_async_void_method_highlighting = warning
 resharper_method_supports_cancellation_highlighting = warning
 resharper_not_disposed_resource_is_returned_highlighting = warning
@@ -72,7 +184,7 @@ resharper_empty_general_catch_clause_highlighting = none
 resharper_unused_auto_property_accessor_global_highlighting = none
 
 [benchmarks/**.cs]
-dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.ca1822.severity = none
 
 [tests/**.cs]
 resharper_access_to_disposed_closure_highlighting = none

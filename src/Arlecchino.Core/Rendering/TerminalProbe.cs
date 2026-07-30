@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
@@ -27,9 +28,19 @@ internal readonly record struct TerminalAnswers(
 /// reply is coming. Without that fence there is nothing to wait for but a guess at how long a terminal
 /// takes to stay silent.
 ///
+/// The fence stops the waiting, not the reading: once it has arrived, whatever is already buffered is
+/// taken too, and only a lull or a keystroke ends it. A terminal that answers out of the order it was
+/// asked would otherwise have its last answer cut off, and nothing in any specification says it must
+/// answer in order.
+///
 /// A terminal that answers nothing costs the deadline and leaves every setting as it was, which is the
-/// behaviour an application already had to live with. Nothing a person typed is swallowed either: every
-/// answer opens with an escape, so a character that is not one ends the wait and is handed straight back.
+/// behaviour an application already had to live with. Nothing a person typed is swallowed either, and the
+/// rule for that is the fence again rather than the shape of what arrives: whatever was read is handed
+/// straight back unless the fence came, because only then is it certain that what arrived was answers.
+///
+/// Judging it by shape does not work. On Windows the console layer eats the kitty query's reply and
+/// leaves the last character of it behind, so the first thing a terminal says can be a lone backslash —
+/// and treating that as something a person typed threw away every answer behind it.
 /// </summary>
 public static class TerminalProbe
 {
@@ -90,31 +101,41 @@ public static class TerminalProbe
         var heard = new StringBuilder();
         var until = DateTime.UtcNow + within;
 
+        var read = new List<ConsoleKeyInfo>();
+        var fenced = false;
+
         while (DateTime.UtcNow < until)
         {
             if (!terminal.KeyAvailable)
             {
+                if (fenced)
+                {
+                    break;
+                }
+
                 Thread.Sleep(1);
                 continue;
             }
 
             var key = terminal.ReadKey();
 
-            if (heard.Length == 0 && key.KeyChar != '\e')
-            {
-                terminal.Unread(key);
-                break;
-            }
-
+            read.Add(key);
             heard.Append(key.KeyChar);
 
-            if (Fenced(heard))
-            {
-                break;
-            }
+            fenced = fenced || Fenced(heard);
         }
 
-        return heard.ToString();
+        if (fenced)
+        {
+            return heard.ToString();
+        }
+
+        foreach (var key in read)
+        {
+            terminal.Unread(key);
+        }
+
+        return "";
     }
 
     private static bool Fenced(StringBuilder heard) =>

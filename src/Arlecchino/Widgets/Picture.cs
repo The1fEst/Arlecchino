@@ -38,6 +38,8 @@ public sealed class Picture : IArlecchinoWidget
     private Rgb[] _pixels = [];
     private string _payload = "";
     private (ImageProtocol Protocol, int Columns, int Rows, int Width, int Height, int Version) _made;
+    private RgbTermColor[] _blocks = [];
+    private (int Columns, int Rows, int Version) _composed;
     private int _version;
 
     /// <summary>How wide the picture is, in pixels.</summary>
@@ -113,9 +115,9 @@ public sealed class Picture : IArlecchinoWidget
             return region;
         }
 
-        if (Background is { } behind)
+        if (Background is not null)
         {
-            region.Fill(behind);
+            region.Fill(Background);
         }
 
         if (IsEmpty)
@@ -168,18 +170,13 @@ public sealed class Picture : IArlecchinoWidget
             return region.Rows(region.Height, 0);
         }
 
+        Compose(columns, rows);
+
         for (var row = 0; row < rows; row++)
         {
             for (var column = 0; column < columns; column++)
             {
-                var upper = At(column, columns, (row * PixelsPerCell) + 0, rows * PixelsPerCell);
-                var lower = At(column, columns, (row * PixelsPerCell) + 1, rows * PixelsPerCell);
-
-                region.Write(
-                    top + row,
-                    left + column,
-                    UpperHalf.ToString(),
-                    new RgbTermColor { Foreground = upper, Background = lower });
+                region.Write(top + row, left + column, UpperHalf.ToString(), _blocks[(row * columns) + column]);
             }
         }
 
@@ -194,6 +191,10 @@ public sealed class Picture : IArlecchinoWidget
     /// Empty when the terminal never said what colour that is — see
     /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed colour leaves a
     /// rectangle anyone can see, which is worse than the pixels it was meant to remove.
+    ///
+    /// The last band paints only the rows the picture actually had. Sixel bands are six rows whatever the
+    /// picture's height, so painting all six would reach up to five rows past it, and a terminal that does
+    /// not clip to the raster size would show that as a line under the picture.
     /// </summary>
     /// <param name="across">How many pixels wide the picture was.</param>
     /// <param name="down">How many pixels tall it was.</param>
@@ -216,10 +217,53 @@ public sealed class Picture : IArlecchinoWidget
 
         for (var band = 0; band < down; band += 6)
         {
-            painted.Append("#0!").Append(across).Append('~').Append('-');
+            var rows = Math.Min(6, down - band);
+
+            painted
+                .Append("#0!").Append(across)
+                .Append((char)(63 + ((1 << rows) - 1)))
+                .Append('-');
         }
 
         return painted.Append("\e\\").ToString();
+    }
+
+    /// <summary>
+    /// Works out the colour of every cell and keeps the objects, so the next frame hands the surface the
+    /// same instances rather than equal ones.
+    ///
+    /// That is what lets the frame diff do its job: it tells a cell apart from the one before it by
+    /// reference, so a picture built fresh each frame looks changed in every cell and is written out in
+    /// full however still it is. Rebuilding costs one pass over the cells and only when the picture or the
+    /// room it is drawn in changes.
+    /// </summary>
+    /// <param name="columns">Cells across.</param>
+    /// <param name="rows">Cells down.</param>
+    private void Compose(int columns, int rows)
+    {
+        if (_composed == (columns, rows, _version))
+        {
+            return;
+        }
+
+        if (_blocks.Length != columns * rows)
+        {
+            _blocks = new RgbTermColor[columns * rows];
+        }
+
+        for (var row = 0; row < rows; row++)
+        {
+            for (var column = 0; column < columns; column++)
+            {
+                _blocks[(row * columns) + column] = new()
+                {
+                    Foreground = At(column, columns, (row * PixelsPerCell) + 0, rows * PixelsPerCell),
+                    Background = At(column, columns, (row * PixelsPerCell) + 1, rows * PixelsPerCell),
+                };
+            }
+        }
+
+        _composed = (columns, rows, _version);
     }
 
     /// <summary>

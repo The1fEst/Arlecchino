@@ -100,9 +100,13 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
         set
         {
-            var held = _items.TryGetValue(key, out var previous);
+            if (!_items.TryGetValue(key, out var previous))
+            {
+                Insert(key, value);
+                return;
+            }
 
-            if (held && EqualityComparer<TValue>.Default.Equals(previous, value))
+            if (EqualityComparer<TValue>.Default.Equals(previous, value))
             {
                 return;
             }
@@ -113,9 +117,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
             if (Recording)
             {
-                AtomChanges.NotifyRecorded(held
-                    ? new Replaced(this, key, previous!, value)
-                    : new Added(this, key, value));
+                AtomChanges.NotifyRecorded(new Replaced(this, key, previous, value));
             }
 
             Notify();
@@ -123,6 +125,20 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     }
 
     private bool Recording => RecordsHistory && AtomChanges.IsRecording;
+
+    private void Insert(TKey key, TValue value)
+    {
+        Verify();
+
+        _items[key] = value;
+
+        if (Recording)
+        {
+            AtomChanges.NotifyRecorded(new Added(this, key, value));
+        }
+
+        Notify();
+    }
 
     /// <summary>
     /// Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the
@@ -138,7 +154,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
             throw new ArgumentException($"{key} is already in this {GetType().Name}", nameof(key));
         }
 
-        this[key] = value;
+        Insert(key, value);
     }
 
     /// <summary>
@@ -156,7 +172,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
             return false;
         }
 
-        this[key] = value;
+        Insert(key, value);
 
         return true;
     }

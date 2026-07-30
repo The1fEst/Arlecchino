@@ -158,17 +158,18 @@ public partial class Surface
         _stringBuilder.EnsureCapacity(_height * (_width + 64));
 
         var undrawn = AppendUndraws();
+        var whole = undrawn || !CanDrawChangesOnly();
 
-        if (!undrawn && CanDrawChangesOnly())
-        {
-            AppendChangedRuns();
-        }
-        else
+        if (whole)
         {
             AppendWholeFrame();
         }
+        else
+        {
+            AppendChangedRuns();
+        }
 
-        AppendPassthrough();
+        AppendPassthrough(whole);
         RememberFrame();
 
         if (_stringBuilder.Length > 0)
@@ -226,11 +227,6 @@ public partial class Surface
     /// <returns><c>true</c> when something was undrawn, so the frame is written whole rather than diffed.</returns>
     private bool AppendUndraws()
     {
-        if (Unchanged())
-        {
-            return false;
-        }
-
         var undrawn = false;
 
         foreach (var gone in _previousPassthrough)
@@ -247,9 +243,18 @@ public partial class Surface
         return undrawn;
     }
 
-    private void AppendPassthrough()
+    /// <summary>
+    /// Writes the payloads this frame hands over, after every cell.
+    /// </summary>
+    /// <param name="whole">
+    /// Whether the frame was written whole rather than diffed, in which case every payload goes out again
+    /// even if it has not changed. It has to: writing a cell is what removes the pixels over it in some
+    /// terminals, so a frame that rewrote every cell rewrote the picture away. This is what a fixed-size
+    /// surface, a resize and <see cref="ForgetPreviousFrame"/> all end up needing.
+    /// </param>
+    private void AppendPassthrough(bool whole)
     {
-        if (Unchanged())
+        if (!whole && Unchanged())
         {
             return;
         }
