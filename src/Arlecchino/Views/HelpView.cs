@@ -14,7 +14,7 @@ namespace Arlecchino.Views;
 /// registered. The hints box has room for a handful of keys and the palette lists commands only, so
 /// this is the screen to send someone to when they ask what a key does.
 /// </summary>
-internal class HelpView : IArlecchinoView
+internal sealed class HelpView : IArlecchinoView
 {
     /// <summary>The route it answers to.</summary>
     public const string Route = "Help";

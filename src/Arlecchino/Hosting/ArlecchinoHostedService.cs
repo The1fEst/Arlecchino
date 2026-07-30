@@ -19,7 +19,7 @@ namespace Arlecchino.Hosting;
 /// Ctrl+C, an unhandled error, even process exit — because a terminal left in full-screen mode with
 /// the mouse captured is unusable once the process is gone.
 /// </summary>
-internal class ArlecchinoHostedService : BackgroundService
+internal sealed class ArlecchinoHostedService : BackgroundService
 {
     private readonly IArlecchinoTerminal _terminal;
     private readonly Screen _screen;

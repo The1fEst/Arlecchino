@@ -17,7 +17,7 @@ namespace Arlecchino.Views;
 /// it has to say where to return to. It is registered automatically, so an application only has to
 /// fill in <see cref="ArlecchinoState.FilePicker"/> and navigate here.
 /// </summary>
-internal class FilePickerView : IArlecchinoView
+internal sealed class FilePickerView : IArlecchinoView
 {
     /// <summary>The route it answers to.</summary>
     public const string Route = "FilePicker";
