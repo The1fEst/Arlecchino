@@ -22,13 +22,42 @@ _preview.Draw(region);
 `Show` copies the pixels, so the caller is free to reuse its buffer. `Clear` forgets them; whatever
 the terminal was handed is undrawn on the next frame.
 
-## The pixels are yours to produce
+## Showing a PNG from disk
 
 Arlecchino draws pixels rather than files. Decoding PNG or JPEG belongs to the application, which
-knows what it wants to depend on — the framework only draws what it is given, and carries no image
-library into your build.
+knows what it wants to depend on — the framework carries no image library into your build.
 
-An `Rgb` is three bytes, and the array runs row by row from the top left:
+A PNG needs no library. It is eight bytes of signature, a handful of chunks and one deflate stream,
+and `ZLibStream` is in the framework already — a reader for the eight-bit non-interlaced files that
+nearly all PNGs are fits in about two hundred lines:
+
+```csharp
+var raster = Png.Read(File.ReadAllBytes(path));
+
+if (raster is not null)
+{
+    _preview.Show(raster.Pixels, raster.Width, raster.Height);
+}
+```
+
+[Arlecchino Commander](https://github.com/The1fEst/Arlecchino.Commander/blob/master/src/Arlecchino.Commander/Files/Png.cs)
+has that `Png` — grey, palette, truecolour and either with alpha, written so that anything it cannot
+read comes back as `null` rather than throwing, which is what a viewer opening arbitrary files needs.
+Copy it, or write your own against the
+[specification](https://www.w3.org/TR/png/); the whole of the work is walking the chunks, inflating
+the `IDAT`s and undoing five row filters.
+
+Whole-file reads matter here: a PNG is one deflate stream from end to end, so the first half of one
+decodes to nothing.
+
+Reach for a decoder from NuGet when you need the formats a hand-written reader will not give you —
+JPEG, WebP, animation. Check its licence before you do; the popular ones are not all as free as they
+look.
+
+## The array
+
+An `Rgb` is three bytes, and the array runs row by row from the top left. Nothing says the pixels have
+to come from a file — a plot, a heatmap or a gradient is the same array:
 
 ```csharp
 var pixels = new Rgb[width * height];
