@@ -57,7 +57,8 @@ public sealed class WidgetContractTests
         var offenders = new List<string>();
 
         foreach (var type in typeof(IArlecchinoWidget).Assembly.GetTypes()
-                     .Where(static type => type.IsClass && !type.IsAbstract &&
+                     .Where(static type => type.IsClass &&
+                                           !type.IsAbstract &&
                                            typeof(IArlecchinoWidget).IsAssignableFrom(type)))
         {
             var extra = type
@@ -78,7 +79,8 @@ public sealed class WidgetContractTests
         var offenders = new List<string>();
 
         foreach (var type in typeof(IArlecchinoWidget).Assembly.GetTypes()
-                     .Where(static type => type.IsClass && !type.IsAbstract &&
+                     .Where(static type => type.IsClass &&
+                                           !type.IsAbstract &&
                                            typeof(IArlecchinoWidget).IsAssignableFrom(type)))
         {
             var draw = type.GetMethod(

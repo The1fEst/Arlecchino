@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using Arlecchino.Rendering;
@@ -158,6 +159,12 @@ internal sealed class BlockPicture : PictureProtocol
 /// </summary>
 internal abstract class PixelPicture : PictureProtocol
 {
+    /// <summary>
+    /// What numbers are written with. An escape sequence is read by the terminal rather than by a
+    /// person, so the digits in it must be the same whatever the machine is set to.
+    /// </summary>
+    protected static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
+
     private string _payload = "";
     private (int Columns, int Rows, int CellWidth, int CellHeight, int Version) _made;
 
@@ -249,15 +256,14 @@ internal sealed class KittyPicture : PixelPicture
             if (sent == 0)
             {
                 sequence
-                    .Append("a=T,q=2,f=24,i=").Append(_image)
-                    .Append(",s=").Append(width)
-                    .Append(",v=").Append(height)
-                    .Append(",c=").Append(placed.Columns)
-                    .Append(",r=").Append(placed.Rows)
-                    .Append(',');
+                    .Append(Invariant, $"a=T,q=2,f=24,i={_image}")
+                    .Append(Invariant, $",s={width}")
+                    .Append(Invariant, $",v={height}")
+                    .Append(Invariant, $",c={placed.Columns}")
+                    .Append(Invariant, $",r={placed.Rows},");
             }
 
-            sequence.Append("m=").Append(more).Append(';').Append(encoded, sent, take).Append("\e\\");
+            sequence.Append(Invariant, $"m={more};").Append(encoded, sent, take).Append("\e\\");
 
             sent += take;
         }
@@ -310,17 +316,15 @@ internal sealed class SixelPicture : PixelPicture
 
         var sixel = new StringBuilder(image.Width * image.Height / 4);
 
-        sixel.Append("\ePq\"1;1;").Append(image.Width).Append(';').Append(image.Height);
+        sixel.Append(Invariant, $"\ePq\"1;1;{image.Width};{image.Height}");
 
         for (var index = 0; index < image.Palette.Length; index++)
         {
             var color = image.Palette[index];
 
-            sixel
-                .Append('#').Append(index).Append(";2;")
-                .Append(Percent(color.Red)).Append(';')
-                .Append(Percent(color.Green)).Append(';')
-                .Append(Percent(color.Blue));
+            sixel.Append(
+                Invariant,
+                $"#{index};2;{Percent(color.Red)};{Percent(color.Green)};{Percent(color.Blue)}");
         }
 
         var here = new bool[image.Palette.Length];
@@ -352,7 +356,7 @@ internal sealed class SixelPicture : PixelPicture
                 }
 
                 written = true;
-                sixel.Append('#').Append(index);
+                sixel.Append(Invariant, $"#{index}");
 
                 AppendBand(sixel, image, top, index);
             }
@@ -391,20 +395,14 @@ internal sealed class SixelPicture : PixelPicture
         var painted = new StringBuilder(64);
 
         painted
-            .Append("\ePq\"1;1;").Append(across).Append(';').Append(down)
-            .Append("#0;2;")
-            .Append(Percent(behind.Red)).Append(';')
-            .Append(Percent(behind.Green)).Append(';')
-            .Append(Percent(behind.Blue));
+            .Append(Invariant, $"\ePq\"1;1;{across};{down}")
+            .Append(Invariant, $"#0;2;{Percent(behind.Red)};{Percent(behind.Green)};{Percent(behind.Blue)}");
 
         for (var band = 0; band < down; band += Band)
         {
             var rows = Math.Min(Band, down - band);
 
-            painted
-                .Append("#0!").Append(across)
-                .Append((char)(63 + ((1 << rows) - 1)))
-                .Append('-');
+            painted.Append(Invariant, $"#0!{across}{(char)(63 + ((1 << rows) - 1))}-");
         }
 
         return painted.Append("\e\\").ToString();
@@ -454,7 +452,7 @@ internal sealed class SixelPicture : PixelPicture
 
         if (run > 3)
         {
-            sixel.Append('!').Append(run);
+            sixel.Append(Invariant, $"!{run}");
         }
         else
         {

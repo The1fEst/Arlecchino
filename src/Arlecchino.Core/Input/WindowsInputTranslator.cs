@@ -27,7 +27,11 @@ internal sealed class WindowsInputTranslator
             (controlKeyState & (LeftAltPressed | RightAltPressed)) != 0,
             (controlKeyState & (LeftControlPressed | RightControlPressed)) != 0);
 
-    public bool TryTranslateMouse(int row, int column, uint buttonState, uint controlKeyState, uint eventFlags,
+    public bool TryTranslateMouse(int row,
+        int column,
+        uint buttonState,
+        uint controlKeyState,
+        uint eventFlags,
         out MouseEvent mouse)
     {
         var modifiers = ToModifiers(controlKeyState);

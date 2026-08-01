@@ -254,7 +254,8 @@ public sealed class AreaChart : IArlecchinoWidget
 
         var below = Bands[found];
 
-        if (found == Bands.Count - 1 || below.Style is not TermColor from ||
+        if (found == Bands.Count - 1 ||
+            below.Style is not TermColor from ||
             Bands[found + 1].Style is not TermColor to)
         {
             return below.Style;

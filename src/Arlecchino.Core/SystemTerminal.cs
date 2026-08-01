@@ -68,9 +68,10 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     /// answer comes from the console's own event queue rather than from <c>Console</c>, because the two
     /// cannot both consume it.
     /// </summary>
-    public bool KeyAvailable => !_unread.IsEmpty || (_windowsInput is { } input
-        ? input.KeyAvailable
-        : !Console.IsInputRedirected && Console.KeyAvailable);
+    public bool KeyAvailable => !_unread.IsEmpty ||
+                                (_windowsInput is { } input
+                                    ? input.KeyAvailable
+                                    : !Console.IsInputRedirected && Console.KeyAvailable);
 
     /// <summary>Whether a mouse event is waiting. Only ever true while the Windows mouse is on.</summary>
     public bool MouseAvailable => _windowsInput?.MouseAvailable ?? false;
@@ -131,7 +132,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (OperatingSystem.IsWindows())
         {
-            if (_windowsInput is null && WindowsConsoleInput.TryStart() is { } started &&
+            if (_windowsInput is null &&
+                WindowsConsoleInput.TryStart() is { } started &&
                 Interlocked.CompareExchange(ref _windowsInput, started, null) is not null)
             {
                 started.Stop();

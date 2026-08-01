@@ -106,8 +106,7 @@ public sealed class PicturesView : IArlecchinoView
 
     private static (Rgb[] Pixels, int Width, int Height) Card()
     {
-        using var stream = typeof(PicturesView).Assembly.GetManifestResourceStream(Resource)
-                           ?? throw new InvalidOperationException($"{Resource} was not built into the sample");
+        using var stream = typeof(PicturesView).Assembly.GetManifestResourceStream(Resource) ?? throw new InvalidOperationException($"{Resource} was not built into the sample");
 
         return Png(stream);
     }

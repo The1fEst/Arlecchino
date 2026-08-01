@@ -45,8 +45,10 @@ public sealed class BrandPaletteTests
         var palette = ThemePalette.Arlecchino;
 
         TermColor[] overText =
-            [palette.Default, palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted,
-             palette.Active];
+        [
+            palette.Default, palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted,
+            palette.Active
+        ];
 
         Assert.All(overText, colour => Assert.Equal(TerminalColor.Default, colour.Background));
         Assert.All(overText, colour => Assert.Null(colour.ExactBackground));
@@ -61,8 +63,10 @@ public sealed class BrandPaletteTests
         var palette = ThemePalette.Arlecchino;
 
         TermColor[] entries =
-            [palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted, palette.Input,
-             palette.Selected, palette.Active, palette.ActiveSelected, palette.Warning, palette.Error];
+        [
+            palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted, palette.Input,
+            palette.Selected, palette.Active, palette.ActiveSelected, palette.Warning, palette.Error
+        ];
 
         Assert.All(entries.Where(static colour => colour.ExactForeground is not null),
             colour => Assert.NotEqual(TerminalColor.Default, colour.Foreground));
