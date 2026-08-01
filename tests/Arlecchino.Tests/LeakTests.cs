@@ -17,9 +17,11 @@ public sealed class LeakTests
     {
         WatchingView.Notified = 0;
 
-        using var app = new TestApplication(60, 20, static builder => builder
-            .AddStore<CounterStore>()
-            .AddView<WatchingView>("Watching"));
+        using var app = new TestApplication(60,
+            20,
+            static builder => builder
+                .AddStore<CounterStore>()
+                .AddView<WatchingView>("Watching"));
 
         var counter = app.Services.GetService(typeof(CounterStore)) as CounterStore;
         Assert.NotNull(counter);
@@ -44,9 +46,11 @@ public sealed class LeakTests
         DraftStore.Created = 0;
         DraftStore.Disposed = 0;
 
-        using var app = new TestApplication(60, 20, static builder => builder
-            .AddStore<DraftStore>()
-            .AddView<DraftingView>("Drafting"));
+        using var app = new TestApplication(60,
+            20,
+            static builder => builder
+                .AddStore<DraftStore>()
+                .AddView<DraftingView>("Drafting"));
 
         for (var visit = 0; visit < Visits; visit++)
         {
@@ -63,8 +67,10 @@ public sealed class LeakTests
     {
         TickingView.Ticks = 0;
 
-        using var app = new TestApplication(60, 20, static builder => builder
-            .AddView<TickingView>("Ticking"));
+        using var app = new TestApplication(60,
+            20,
+            static builder => builder
+                .AddView<TickingView>("Ticking"));
 
         app.Navigator.Apply(new("Ticking"));
         app.Advance(TimeSpan.FromSeconds(3));

@@ -106,8 +106,10 @@ public sealed class KeymapTests
     [Fact]
     public void FilePickerLegendShowsTheBoundKeys()
     {
-        using var app = new TestApplication(150, 30, static builder =>
-            builder.UseKeymap(new() { NextField = new(ConsoleKey.F2) }));
+        using var app = new TestApplication(150,
+            30,
+            static builder =>
+                builder.UseKeymap(new() { NextField = new(ConsoleKey.F2) }));
 
         app.State.FilePicker = new("Pick", PickFolder: true, "", ViewRoute.None, static _ => { });
         app.Navigator.Apply(Routes.FilePicker);

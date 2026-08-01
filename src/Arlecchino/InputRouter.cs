@@ -333,7 +333,8 @@ public class InputRouter
             }
 
             modal.Channel = (ColorChannel)channel;
-            DragTrack(modal.ChannelTracks[channel], mouse,
+            DragTrack(modal.ChannelTracks[channel],
+                mouse,
                 fraction => modal.SetChannelFromFraction((ColorChannel)channel, fraction));
             return;
         }

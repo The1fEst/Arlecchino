@@ -47,7 +47,9 @@ public static class ScrollBar
         for (var row = 0; row < rows; row++)
         {
             var onThumb = row >= thumbStart && row < thumbStart + thumbRows;
-            region.Write(row, column, onThumb ? ThumbCell.ToString() : TrackCell.ToString(),
+            region.Write(row,
+                column,
+                onThumb ? ThumbCell.ToString() : TrackCell.ToString(),
                 onThumb ? style ?? Theme.Active : Theme.Muted);
         }
     }

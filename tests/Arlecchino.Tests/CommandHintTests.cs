@@ -8,15 +8,18 @@ public sealed class CommandHintTests
     [Fact]
     public void TheHintsBoxOffersThePaletteWhenThereIsACommand()
     {
-        using var app = new TestApplication(120, 40, static builder =>
-        {
-            builder.Options.ShowHints = true;
-            builder.AddCommand<ProbeCommand>();
-        });
+        using var app = new TestApplication(120,
+            40,
+            static builder =>
+            {
+                builder.Options.ShowHints = true;
+                builder.AddCommand<ProbeCommand>();
+            });
 
         var frame = app.Frame();
 
-        Assert.Contains($"{app.Options.CommandPaletteKey} → {app.Options.Strings.HintCommands()}", frame,
+        Assert.Contains($"{app.Options.CommandPaletteKey} → {app.Options.Strings.HintCommands()}",
+            frame,
             StringComparison.Ordinal);
     }
 
@@ -31,12 +34,14 @@ public sealed class CommandHintTests
     [Fact]
     public void TheHintFollowsTheKeyThatOpensThePalette()
     {
-        using var app = new TestApplication(120, 40, static builder =>
-        {
-            builder.Options.ShowHints = true;
-            builder.Options.CommandPaletteKey = '!';
-            builder.AddCommand<ProbeCommand>();
-        });
+        using var app = new TestApplication(120,
+            40,
+            static builder =>
+            {
+                builder.Options.ShowHints = true;
+                builder.Options.CommandPaletteKey = '!';
+                builder.AddCommand<ProbeCommand>();
+            });
 
         var frame = app.Frame();
 
@@ -47,12 +52,14 @@ public sealed class CommandHintTests
     [Fact]
     public void ThePaletteLineIsTranslatedLikeEverythingElse()
     {
-        using var app = new TestApplication(120, 40, static builder =>
-        {
-            builder.Options.ShowHints = true;
-            builder.UseStrings(new() { HintCommands = static () => "«команды»" });
-            builder.AddCommand<ProbeCommand>();
-        });
+        using var app = new TestApplication(120,
+            40,
+            static builder =>
+            {
+                builder.Options.ShowHints = true;
+                builder.UseStrings(new() { HintCommands = static () => "«команды»" });
+                builder.AddCommand<ProbeCommand>();
+            });
 
         Assert.Contains("«команды»", app.Frame(), StringComparison.Ordinal);
     }
@@ -60,11 +67,13 @@ public sealed class CommandHintTests
     [Fact]
     public void TheViewKeepsItsOwnHintsAbove()
     {
-        using var app = new TestApplication(120, 40, static builder =>
-        {
-            builder.Options.ShowHints = true;
-            builder.AddCommand<ProbeCommand>();
-        });
+        using var app = new TestApplication(120,
+            40,
+            static builder =>
+            {
+                builder.Options.ShowHints = true;
+                builder.AddCommand<ProbeCommand>();
+            });
 
         var frame = app.Frame();
         var own = frame.IndexOf("other", StringComparison.Ordinal);

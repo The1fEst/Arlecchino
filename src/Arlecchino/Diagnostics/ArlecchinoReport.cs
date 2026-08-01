@@ -80,9 +80,11 @@ public sealed class ArlecchinoReport
         Line(report, "can go back", _navigator.CanGoBack.ToString());
         Line(report, "can go forward", _navigator.CanGoForward.ToString());
         Line(report, "commands", _navigator.CurrentCommands.Count.ToString(CultureInfo.InvariantCulture));
-        Line(report, "modals", _state.Modals.Count == 0
-            ? "none"
-            : string.Join(" over ", _state.Modals.Select(static modal => modal.GetType().Name)));
+        Line(report,
+            "modals",
+            _state.Modals.Count == 0
+                ? "none"
+                : string.Join(" over ", _state.Modals.Select(static modal => modal.GetType().Name)));
         Line(report, "undo depth", _history.Depth.ToString(CultureInfo.InvariantCulture));
 
         Section(report, "Options");

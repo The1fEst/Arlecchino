@@ -30,8 +30,10 @@ public sealed class ReentrancyTests
     [Fact]
     public void TrackingSomethingWhileTheScreenIsClosingDoesNotThrow()
     {
-        using var app = new TestApplication(80, 24, static builder =>
-            builder.AddView<ClosingView>("Closing"));
+        using var app = new TestApplication(80,
+            24,
+            static builder =>
+                builder.AddView<ClosingView>("Closing"));
 
         app.Navigator.Apply(new("Closing"));
         app.Navigator.Apply(ViewKind.Probe);

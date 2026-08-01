@@ -40,33 +40,36 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
                 static (ctx, _) => GetCommand(ctx))
             .Where(static command => command != null);
 
-        context.RegisterSourceOutput(commandDeclarations.Collect().Combine(settings), static (ctx, pair) =>
-        {
-            var (commands, settings) = pair;
-            if (!settings.IsEnabled)
+        context.RegisterSourceOutput(commandDeclarations.Collect().Combine(settings),
+            static (ctx, pair) =>
             {
-                return;
-            }
-
-            var commandModels = commands
-                .OfType<CommandModel>()
-                .OrderBy(static command => command.TypeName, StringComparer.Ordinal)
-                .ToArray();
-
-            foreach (var command in commandModels)
-            {
-                if (!command.HasPublicConstructor)
+                var (commands, settings) = pair;
+                if (!settings.IsEnabled)
                 {
-                    ctx.ReportDiagnostic(Diagnostic.Create(
-                        CommandDiagnostics.NoPublicConstructor, command.Location, command.TypeName));
+                    return;
                 }
-            }
 
-            var registrable = commandModels.Where(static command => command.HasPublicConstructor).ToArray();
+                var commandModels = commands
+                    .OfType<CommandModel>()
+                    .OrderBy(static command => command.TypeName, StringComparer.Ordinal)
+                    .ToArray();
 
-            ctx.AddSource("ArlecchinoCommandRegistration.g.cs",
-                SourceText.From(Generate(registrable, settings.CommandNamespace), Encoding.UTF8));
-        });
+                foreach (var command in commandModels)
+                {
+                    if (!command.HasPublicConstructor)
+                    {
+                        ctx.ReportDiagnostic(Diagnostic.Create(
+                            CommandDiagnostics.NoPublicConstructor,
+                            command.Location,
+                            command.TypeName));
+                    }
+                }
+
+                var registrable = commandModels.Where(static command => command.HasPublicConstructor).ToArray();
+
+                ctx.AddSource("ArlecchinoCommandRegistration.g.cs",
+                    SourceText.From(Generate(registrable, settings.CommandNamespace), Encoding.UTF8));
+            });
     }
 
     private static CommandModel? GetCommand(GeneratorSyntaxContext context)

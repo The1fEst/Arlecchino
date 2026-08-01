@@ -56,8 +56,10 @@ public sealed class HelpViewTests
     [Fact]
     public void TheCommandsOfTheScreenItWasOpenedFromAreListed()
     {
-        using var app = new TestApplication(120, 40, static builder =>
-            builder.AddView<CommandingView>("Commanding"));
+        using var app = new TestApplication(120,
+            40,
+            static builder =>
+                builder.AddView<CommandingView>("Commanding"));
 
         app.Navigator.Apply(new("Commanding"));
         app.Press(ConsoleKey.F1);
@@ -75,15 +77,18 @@ public sealed class HelpViewTests
 
         app.Press(ConsoleKey.F1);
 
-        Assert.DoesNotContain(app.Options.Strings.HelpScreenSection(ViewKind.Probe.Name), app.Frame(),
+        Assert.DoesNotContain(app.Options.Strings.HelpScreenSection(ViewKind.Probe.Name),
+            app.Frame(),
             StringComparison.Ordinal);
     }
 
     [Fact]
     public void TheKeysOfTheScreenStandBesideTheOnesThatWorkEverywhere()
     {
-        using var app = new TestApplication(120, 24, static builder =>
-            builder.AddView<CommandingView>("Commanding"));
+        using var app = new TestApplication(120,
+            24,
+            static builder =>
+                builder.AddView<CommandingView>("Commanding"));
 
         app.Navigator.Apply(new("Commanding"));
         app.Press(ConsoleKey.F1);
@@ -94,8 +99,10 @@ public sealed class HelpViewTests
     [Fact]
     public void TooNarrowForTwoColumnsTheyStackInstead()
     {
-        using var app = new TestApplication(60, 24, static builder =>
-            builder.AddView<CommandingView>("Commanding"));
+        using var app = new TestApplication(60,
+            24,
+            static builder =>
+                builder.AddView<CommandingView>("Commanding"));
 
         app.Navigator.Apply(new("Commanding"));
         app.Press(ConsoleKey.F1);

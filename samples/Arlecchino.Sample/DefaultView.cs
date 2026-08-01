@@ -57,7 +57,9 @@ public class DefaultView : IArlecchinoView
             var command = _commands.Commands[i];
             var style = i == _selected ? Theme.Selected : Theme.Info;
             _surface.AppendLine($"{command.Icon}  {command.Label,-24}{command.Binding}",
-                style, Align.Center, new(0, 0, 0, 1));
+                style,
+                Align.Center,
+                new(0, 0, 0, 1));
         }
     }
 
@@ -103,7 +105,9 @@ public class DefaultView : IArlecchinoView
     }
 
     private void AskName() =>
-        _state.RequestText("Your name", "", static text => text.Length == 0 ? "must not be empty" : null,
+        _state.RequestText("Your name",
+            "",
+            static text => text.Length == 0 ? "must not be empty" : null,
             text => _state.Output = $"hello, {text}");
 
     private void AskPassphrase() =>
@@ -146,7 +150,8 @@ public class DefaultView : IArlecchinoView
             picked => _state.Output = $"columns: {string.Join(", ", picked)}");
 
     private void AskReleaseDate() =>
-        _state.RequestDate("Release date", DateOnly.FromDateTime(DateTime.Today),
+        _state.RequestDate("Release date",
+            DateOnly.FromDateTime(DateTime.Today),
             value => _state.Output = $"date: {value:yyyy-MM-dd}");
 
     private void AskStartTime() =>

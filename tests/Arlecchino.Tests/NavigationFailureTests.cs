@@ -58,13 +58,16 @@ public sealed class NavigationFailureTests
         app.Press(ConsoleKey.B);
 
         Assert.Equal("Gateway", app.Navigator.CurrentRoute.Name);
-        Assert.Contains(app.Options.Strings.ViewFailed("the store is missing"), app.Frame(),
+        Assert.Contains(app.Options.Strings.ViewFailed("the store is missing"),
+            app.Frame(),
             StringComparison.Ordinal);
     }
 
-    private static TestApplication Application() => new(80, 24, static builder => builder
-        .AddView<BrokenView>("Broken")
-        .AddView<GatewayView>("Gateway"));
+    private static TestApplication Application() => new(80,
+        24,
+        static builder => builder
+            .AddView<BrokenView>("Broken")
+            .AddView<GatewayView>("Gateway"));
 
     public sealed class BrokenView : IArlecchinoView
     {

@@ -132,7 +132,10 @@ public sealed class FocusTests
     {
         using var app = new TestApplication(100, 26);
 
-        app.State.FilePicker = new("Pick", PickFolder: true, Environment.CurrentDirectory, ViewRoute.None,
+        app.State.FilePicker = new("Pick",
+            PickFolder: true,
+            Environment.CurrentDirectory,
+            ViewRoute.None,
             static _ => { });
         app.Navigator.Apply(Routes.FilePicker);
 

@@ -16,11 +16,13 @@ public sealed class TestApplication : IDisposable
 
     public TestApplication(int width = 80, int height = 24, Action<ArlecchinoBuilder>? configure = null)
     {
-        _host = new(width, height, builder =>
-        {
-            builder.AddGeneratedViews().StartAt(ViewKind.Probe);
-            configure?.Invoke(builder);
-        });
+        _host = new(width,
+            height,
+            builder =>
+            {
+                builder.AddGeneratedViews().StartAt(ViewKind.Probe);
+                configure?.Invoke(builder);
+            });
     }
 
     public FakeTerminal Terminal => _host.Terminal;

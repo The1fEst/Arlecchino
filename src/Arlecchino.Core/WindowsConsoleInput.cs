@@ -116,7 +116,8 @@ internal sealed partial class WindowsConsoleInput
         switch (record.EventType)
         {
             case KeyEventType when record.Key.KeyDown != 0:
-                _keys.Enqueue(WindowsInputTranslator.ToKeyInfo(record.Key.VirtualKeyCode, record.Key.UnicodeChar,
+                _keys.Enqueue(WindowsInputTranslator.ToKeyInfo(record.Key.VirtualKeyCode,
+                    record.Key.UnicodeChar,
                     record.Key.ControlKeyState));
                 return true;
             case MouseEventType:
@@ -131,7 +132,11 @@ internal sealed partial class WindowsConsoleInput
     {
         var (row, column) = ToFrameCell(mouse.PositionY, mouse.PositionX);
 
-        if (_translator.TryTranslateMouse(row, column, mouse.ButtonState, mouse.ControlKeyState, mouse.EventFlags,
+        if (_translator.TryTranslateMouse(row,
+                column,
+                mouse.ButtonState,
+                mouse.ControlKeyState,
+                mouse.EventFlags,
                 out var translated))
         {
             _mouse.Enqueue(translated);

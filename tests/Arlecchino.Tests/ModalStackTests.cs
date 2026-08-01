@@ -131,13 +131,16 @@ public sealed class ModalStackTests
         using var app = new TestApplication();
         var confirmed = false;
 
-        app.State.RequestText("Name", "abc", null, _ =>
-            app.State.PushModal(new ToggleModal
-            {
-                Title = "Save?",
-                Value = true,
-                OnSubmit = value => confirmed = value,
-            }));
+        app.State.RequestText("Name",
+            "abc",
+            null,
+            _ =>
+                app.State.PushModal(new ToggleModal
+                {
+                    Title = "Save?",
+                    Value = true,
+                    OnSubmit = value => confirmed = value,
+                }));
 
         app.Press(ConsoleKey.Enter);
         Assert.IsType<ToggleModal>(app.State.Modal);

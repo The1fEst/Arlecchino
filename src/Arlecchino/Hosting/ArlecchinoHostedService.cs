@@ -204,11 +204,12 @@ internal sealed class ArlecchinoHostedService : BackgroundService
 
         Register(PosixSignal.SIGHUP, _ => LeaveTerminalModes());
         Register(PosixSignal.SIGTSTP, _ => LeaveTerminalModes());
-        Register(PosixSignal.SIGCONT, _ =>
-        {
-            EnterTerminalModes();
-            _screen.RedrawEverything();
-        });
+        Register(PosixSignal.SIGCONT,
+            _ =>
+            {
+                EnterTerminalModes();
+                _screen.RedrawEverything();
+            });
     }
 
     private void Register(PosixSignal signal, Action<PosixSignalContext> handler)

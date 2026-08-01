@@ -222,7 +222,11 @@ static void Frame(string view, string size)
     else if (view.Equals("picker", StringComparison.OrdinalIgnoreCase))
     {
         state.FilePicker = new(
-            "Pick a folder", PickFolder: true, Environment.CurrentDirectory, ViewKind.Default, static _ => { });
+            "Pick a folder",
+            PickFolder: true,
+            Environment.CurrentDirectory,
+            ViewKind.Default,
+            static _ => { });
         navigator.Apply(Routes.FilePicker);
     }
     else if (view.Equals("about", StringComparison.OrdinalIgnoreCase))

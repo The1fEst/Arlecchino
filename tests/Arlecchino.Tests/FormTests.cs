@@ -132,7 +132,9 @@ public sealed class FormTests
     {
         using var app = new TestApplication();
         var ran = false;
-        var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false),
+        var form = CreateForm(app,
+            new TrackedAtom<string>(""),
+            new TrackedAtom<bool>(false),
             () =>
             {
                 ran = true;

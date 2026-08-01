@@ -20,13 +20,15 @@ public sealed class JoineryTests
     [Fact]
     public void TwoPanesThatTouchShareOneLine()
     {
-        var lines = Draw(12, 3, (surface, joinery) =>
-        {
-            var (left, right) = surface.Frame.SplitLeft(6);
+        var lines = Draw(12,
+            3,
+            (surface, joinery) =>
+            {
+                var (left, right) = surface.Frame.SplitLeft(6);
 
-            joinery.Box(left);
-            joinery.Box(new(right.Surface, right.Left - 1, right.Top, right.Width + 1, right.Height));
-        });
+                joinery.Box(left);
+                joinery.Box(new(right.Surface, right.Left - 1, right.Top, right.Width + 1, right.Height));
+            });
 
         Assert.Equal("╭────┬─────╮", lines[0]);
         Assert.Equal("│    │     │", lines[1]);
@@ -36,13 +38,15 @@ public sealed class JoineryTests
     [Fact]
     public void FourPanesMeetInACross()
     {
-        var lines = Draw(10, 5, (surface, joinery) =>
-        {
-            joinery.Box(new(surface.Frame.Surface, 0, 0, 6, 3));
-            joinery.Box(new(surface.Frame.Surface, 5, 0, 5, 3));
-            joinery.Box(new(surface.Frame.Surface, 0, 2, 6, 3));
-            joinery.Box(new(surface.Frame.Surface, 5, 2, 5, 3));
-        });
+        var lines = Draw(10,
+            5,
+            (surface, joinery) =>
+            {
+                joinery.Box(new(surface.Frame.Surface, 0, 0, 6, 3));
+                joinery.Box(new(surface.Frame.Surface, 5, 0, 5, 3));
+                joinery.Box(new(surface.Frame.Surface, 0, 2, 6, 3));
+                joinery.Box(new(surface.Frame.Surface, 5, 2, 5, 3));
+            });
 
         Assert.Equal("╭────┬───╮", lines[0]);
         Assert.Equal("├────┼───┤", lines[2]);
@@ -52,11 +56,13 @@ public sealed class JoineryTests
     [Fact]
     public void ARuleJoinsTheBoxAroundIt()
     {
-        var lines = Draw(8, 5, (surface, joinery) =>
-        {
-            joinery.Box(surface.Frame);
-            joinery.Across(surface.Frame, 2);
-        });
+        var lines = Draw(8,
+            5,
+            (surface, joinery) =>
+            {
+                joinery.Box(surface.Frame);
+                joinery.Across(surface.Frame, 2);
+            });
 
         Assert.Equal("╭──────╮", lines[0]);
         Assert.Equal("├──────┤", lines[2]);
@@ -66,11 +72,13 @@ public sealed class JoineryTests
     [Fact]
     public void ARuleDownJoinsItToo()
     {
-        var lines = Draw(7, 3, (surface, joinery) =>
-        {
-            joinery.Box(surface.Frame);
-            joinery.Down(surface.Frame, 3);
-        });
+        var lines = Draw(7,
+            3,
+            (surface, joinery) =>
+            {
+                joinery.Box(surface.Frame);
+                joinery.Down(surface.Frame, 3);
+            });
 
         Assert.Equal("╭──┬──╮", lines[0]);
         Assert.Equal("│  │  │", lines[1]);
@@ -132,8 +140,10 @@ public sealed class JoineryTests
     [Fact]
     public void WhatFallsOutsideIsLeftUndrawn()
     {
-        var lines = Draw(6, 3, (surface, joinery) =>
-            joinery.Box(new(surface.Frame.Surface, -2, 0, 6, 3)));
+        var lines = Draw(6,
+            3,
+            (surface, joinery) =>
+                joinery.Box(new(surface.Frame.Surface, -2, 0, 6, 3)));
 
         Assert.Equal("───╮  ", lines[0]);
         Assert.Equal("   │  ", lines[1]);

@@ -39,8 +39,11 @@ internal sealed class WindowsInputTranslator
         if ((eventFlags & MouseWheeled) != 0)
         {
             var up = (int)buttonState >> 16 > 0;
-            mouse = new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown, MouseButton.None,
-                row, column, modifiers);
+            mouse = new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown,
+                MouseButton.None,
+                row,
+                column,
+                modifiers);
             return true;
         }
 

@@ -42,50 +42,53 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                 static (ctx, _) => GetView(ctx))
             .Where(static view => view != null);
 
-        context.RegisterSourceOutput(viewDeclarations.Collect().Combine(settings), static (ctx, pair) =>
-        {
-            var (views, settings) = pair;
-            if (!settings.IsEnabled)
+        context.RegisterSourceOutput(viewDeclarations.Collect().Combine(settings),
+            static (ctx, pair) =>
             {
-                return;
-            }
+                var (views, settings) = pair;
+                if (!settings.IsEnabled)
+                {
+                    return;
+                }
 
-            var declared = views.OfType<ViewModel>().ToArray();
+                var declared = views.OfType<ViewModel>().ToArray();
 
-            var named = declared
-                .GroupBy(static view => view.RouteName)
-                .Select(group => ReportDuplicates(ctx, group))
-                .OrderBy(static view => view.RouteName == "Default" ? 0 : 1)
-                .ThenBy(static view => view.RouteName, StringComparer.Ordinal)
-                .ToArray();
+                var named = declared
+                    .GroupBy(static view => view.RouteName)
+                    .Select(group => ReportDuplicates(ctx, group))
+                    .OrderBy(static view => view.RouteName == "Default" ? 0 : 1)
+                    .ThenBy(static view => view.RouteName, StringComparer.Ordinal)
+                    .ToArray();
 
-            foreach (var view in named)
-            {
-                if (!view.HasPublicConstructor)
+                foreach (var view in named)
+                {
+                    if (!view.HasPublicConstructor)
+                    {
+                        ctx.ReportDiagnostic(Diagnostic.Create(
+                            ViewDiagnostics.NoPublicConstructor,
+                            view.Location,
+                            view.TypeName));
+                    }
+                }
+
+                var viewModels = named.Where(static view => view.HasPublicConstructor).ToArray();
+
+                if (!settings.NamespaceWasChosen)
                 {
                     ctx.ReportDiagnostic(Diagnostic.Create(
-                        ViewDiagnostics.NoPublicConstructor, view.Location, view.TypeName));
+                        ViewDiagnostics.ViewNamespaceNotSet,
+                        viewModels.Length == 0 ? Location.None : viewModels[0].Location,
+                        settings.ViewNamespace));
                 }
-            }
 
-            var viewModels = named.Where(static view => view.HasPublicConstructor).ToArray();
+                if (viewModels.Length == 0)
+                {
+                    ctx.ReportDiagnostic(Diagnostic.Create(ViewDiagnostics.NoViews, Location.None));
+                }
 
-            if (!settings.NamespaceWasChosen)
-            {
-                ctx.ReportDiagnostic(Diagnostic.Create(
-                    ViewDiagnostics.ViewNamespaceNotSet,
-                    viewModels.Length == 0 ? Location.None : viewModels[0].Location,
-                    settings.ViewNamespace));
-            }
-
-            if (viewModels.Length == 0)
-            {
-                ctx.ReportDiagnostic(Diagnostic.Create(ViewDiagnostics.NoViews, Location.None));
-            }
-
-            ctx.AddSource("ArlecchinoViewNavigation.g.cs",
-                SourceText.From(Generate(viewModels, settings.ViewNamespace), Encoding.UTF8));
-        });
+                ctx.AddSource("ArlecchinoViewNavigation.g.cs",
+                    SourceText.From(Generate(viewModels, settings.ViewNamespace), Encoding.UTF8));
+            });
     }
 
     private static ViewModel? GetView(GeneratorSyntaxContext context)
@@ -126,7 +129,11 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         foreach (var ignored in group.Skip(1))
         {
             context.ReportDiagnostic(Diagnostic.Create(
-                ViewDiagnostics.DuplicateRoute, ignored.Location, ignored.TypeName, kept.TypeName, group.Key));
+                ViewDiagnostics.DuplicateRoute,
+                ignored.Location,
+                ignored.TypeName,
+                kept.TypeName,
+                group.Key));
         }
 
         return kept;

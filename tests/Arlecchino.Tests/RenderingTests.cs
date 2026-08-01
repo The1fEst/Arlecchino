@@ -76,11 +76,13 @@ public sealed class RenderingTests
     [Fact]
     public void TooSmallTerminalReplacesTheViewWithANotice()
     {
-        using var app = new TestApplication(34, 6, static builder =>
-        {
-            builder.Options.MinimumWidth = 40;
-            builder.Options.MinimumHeight = 10;
-        });
+        using var app = new TestApplication(34,
+            6,
+            static builder =>
+            {
+                builder.Options.MinimumWidth = 40;
+                builder.Options.MinimumHeight = 10;
+            });
 
         var frame = app.Frame();
 

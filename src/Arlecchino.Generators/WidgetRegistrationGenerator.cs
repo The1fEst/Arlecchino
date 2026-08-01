@@ -40,30 +40,34 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
                 static (ctx, _) => GetWidget(ctx))
             .Where(static widget => widget != null);
 
-        context.RegisterSourceOutput(widgetDeclarations.Collect().Combine(settings), static (ctx, pair) =>
-        {
-            var (widgets, settings) = pair;
-            if (!settings.IsEnabled)
+        context.RegisterSourceOutput(widgetDeclarations.Collect().Combine(settings),
+            static (ctx, pair) =>
             {
-                return;
-            }
+                var (widgets, settings) = pair;
+                if (!settings.IsEnabled)
+                {
+                    return;
+                }
 
-            var declared = widgets
-                .OfType<WidgetModel>()
-                .OrderBy(static widget => widget.TypeName, StringComparer.Ordinal)
-                .ToArray();
+                var declared = widgets
+                    .OfType<WidgetModel>()
+                    .OrderBy(static widget => widget.TypeName, StringComparer.Ordinal)
+                    .ToArray();
 
-            foreach (var widget in declared.Where(static widget => widget.Obstacle.Length > 0))
-            {
-                ctx.ReportDiagnostic(Diagnostic.Create(
-                    WidgetDiagnostics.CannotBeBuilt, widget.Location, widget.TypeName, widget.Obstacle));
-            }
+                foreach (var widget in declared.Where(static widget => widget.Obstacle.Length > 0))
+                {
+                    ctx.ReportDiagnostic(Diagnostic.Create(
+                        WidgetDiagnostics.CannotBeBuilt,
+                        widget.Location,
+                        widget.TypeName,
+                        widget.Obstacle));
+                }
 
-            var buildable = declared.Where(static widget => widget.Obstacle.Length == 0).ToArray();
+                var buildable = declared.Where(static widget => widget.Obstacle.Length == 0).ToArray();
 
-            ctx.AddSource("ArlecchinoWidgetRegistration.g.cs",
-                SourceText.From(Generate(buildable, settings.WidgetNamespace), Encoding.UTF8));
-        });
+                ctx.AddSource("ArlecchinoWidgetRegistration.g.cs",
+                    SourceText.From(Generate(buildable, settings.WidgetNamespace), Encoding.UTF8));
+            });
     }
 
     private static WidgetModel? GetWidget(GeneratorSyntaxContext context)
