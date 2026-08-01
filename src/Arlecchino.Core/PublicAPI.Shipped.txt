@@ -31,6 +31,7 @@ Arlecchino.Atoms.AtomsList<T>.RemoveAt(int index) -> void
 Arlecchino.Atoms.AtomsList<T>.RemoveRange(int index, int count) -> void
 Arlecchino.Atoms.AtomsList<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.AtomsList<T>.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.AtomsList<T>.Touch() -> void
 Arlecchino.Atoms.AtomsList<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Atoms.AtomsList<T>.this[int index].get -> T
 Arlecchino.Atoms.AtomsList<T>.this[int index].set -> void
@@ -146,6 +147,7 @@ Arlecchino.IArlecchinoTerminal.LeaveFullScreen() -> void
 Arlecchino.IArlecchinoTerminal.MouseAvailable.get -> bool
 Arlecchino.IArlecchinoTerminal.ReadKey() -> System.ConsoleKeyInfo
 Arlecchino.IArlecchinoTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.IArlecchinoTerminal.Unread(System.ConsoleKeyInfo key) -> void
 Arlecchino.IArlecchinoTerminal.Width.get -> int
 Arlecchino.IArlecchinoTerminal.Write(string! text) -> void
 Arlecchino.Input.KeyBinding
@@ -196,7 +198,7 @@ Arlecchino.Input.MouseEvent.MouseEvent(Arlecchino.Input.MouseAction Action, Arle
 Arlecchino.Input.MouseEvent.Row.get -> int
 Arlecchino.Input.MouseEvent.Row.init -> void
 Arlecchino.Input.TextInputMode
-Arlecchino.Input.TextInputMode.LatinOnly = 0 -> Arlecchino.Input.TextInputMode
+Arlecchino.Input.TextInputMode.ByPosition = 0 -> Arlecchino.Input.TextInputMode
 Arlecchino.Input.TextInputMode.Native = 1 -> Arlecchino.Input.TextInputMode
 Arlecchino.Rendering.Align
 Arlecchino.Rendering.Align.Bottom = 32 -> Arlecchino.Rendering.Align
@@ -216,6 +218,18 @@ Arlecchino.Rendering.GraphSymbols.Braille = 0 -> Arlecchino.Rendering.GraphSymbo
 Arlecchino.Rendering.GraphSymbols.Tty = 2 -> Arlecchino.Rendering.GraphSymbols
 Arlecchino.Rendering.IArlecchinoColor
 Arlecchino.Rendering.IArlecchinoColor.Ansi.get -> string!
+Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.ImageProtocol.Auto = 3 -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.ImageProtocol.Blocks = 0 -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.ImageProtocol.Kitty = 1 -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.ImageProtocol.Sixel = 2 -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Rendering.Joinery
+Arlecchino.Rendering.Joinery.Across(Arlecchino.Rendering.SurfaceRegion region, int row, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Joinery.Box(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.IArlecchinoColor? style = null, string! title = "") -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Rendering.Joinery.Count.get -> int
+Arlecchino.Rendering.Joinery.Down(Arlecchino.Rendering.SurfaceRegion region, int column, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
+Arlecchino.Rendering.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion into, Arlecchino.Rendering.IArlecchinoColor! style) -> void
+Arlecchino.Rendering.Joinery.Joinery() -> void
 Arlecchino.Rendering.Margin
 Arlecchino.Rendering.Margin.Bottom.get -> int
 Arlecchino.Rendering.Margin.Bottom.init -> void
@@ -277,6 +291,7 @@ Arlecchino.Rendering.Surface.FrameWidth.get -> int
 Arlecchino.Rendering.Surface.HorizontalPadding.get -> int
 Arlecchino.Rendering.Surface.HorizontalPadding.set -> void
 Arlecchino.Rendering.Surface.ListWindow() -> int
+Arlecchino.Rendering.Surface.Passthrough(int row, int column, string! payload, string! undraw = "") -> void
 Arlecchino.Rendering.Surface.SetFixedSize(int width, int height) -> void
 Arlecchino.Rendering.Surface.SkipLine() -> void
 Arlecchino.Rendering.Surface.StartFrame() -> void
@@ -349,6 +364,7 @@ Arlecchino.Rendering.TerminalColor.Magenta = 6 -> Arlecchino.Rendering.TerminalC
 Arlecchino.Rendering.TerminalColor.Red = 2 -> Arlecchino.Rendering.TerminalColor
 Arlecchino.Rendering.TerminalColor.White = 8 -> Arlecchino.Rendering.TerminalColor
 Arlecchino.Rendering.TerminalColor.Yellow = 4 -> Arlecchino.Rendering.TerminalColor
+Arlecchino.Rendering.TerminalProbe
 Arlecchino.Rendering.TextStyle
 Arlecchino.Rendering.TextStyle.Bold = 1 -> Arlecchino.Rendering.TextStyle
 Arlecchino.Rendering.TextStyle.Dim = 8 -> Arlecchino.Rendering.TextStyle
@@ -397,6 +413,7 @@ Arlecchino.SystemTerminal.MouseAvailable.get -> bool
 Arlecchino.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
 Arlecchino.SystemTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
 Arlecchino.SystemTerminal.SystemTerminal() -> void
+Arlecchino.SystemTerminal.Unread(System.ConsoleKeyInfo key) -> void
 Arlecchino.SystemTerminal.Width.get -> int
 Arlecchino.SystemTerminal.Write(string! text) -> void
 abstract Arlecchino.Atoms.Atom<T>.RecordsHistory.get -> bool
@@ -423,13 +440,19 @@ static Arlecchino.FrameThread.RunPending(System.Action<System.Exception!>! onErr
 static Arlecchino.FrameThread.Verify(string! member) -> void
 static Arlecchino.Input.KeyBinding.operator !=(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyBinding.operator ==(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
+static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
-static Arlecchino.Input.KeyText.LatinOnly.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.MouseEvent.operator !=(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
 static Arlecchino.Input.MouseEvent.operator ==(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
+static Arlecchino.Rendering.Glyphs.CellHeight.get -> int
+static Arlecchino.Rendering.Glyphs.CellHeight.set -> void
+static Arlecchino.Rendering.Glyphs.CellWidth.get -> int
+static Arlecchino.Rendering.Glyphs.CellWidth.set -> void
 static Arlecchino.Rendering.Glyphs.Graph.get -> Arlecchino.Rendering.GraphSymbols
 static Arlecchino.Rendering.Glyphs.Graph.set -> void
+static Arlecchino.Rendering.Glyphs.Picture.get -> Arlecchino.Rendering.ImageProtocol
+static Arlecchino.Rendering.Glyphs.Picture.set -> void
 static Arlecchino.Rendering.Margin.operator !=(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
 static Arlecchino.Rendering.Margin.operator ==(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
 static Arlecchino.Rendering.Rgb.FromHsl(int hue, int saturation, int lightness) -> Arlecchino.Rendering.Rgb
@@ -438,11 +461,21 @@ static Arlecchino.Rendering.Rgb.operator !=(Arlecchino.Rendering.Rgb left, Arlec
 static Arlecchino.Rendering.Rgb.operator ==(Arlecchino.Rendering.Rgb left, Arlecchino.Rendering.Rgb right) -> bool
 static Arlecchino.Rendering.SurfaceRegion.operator !=(Arlecchino.Rendering.SurfaceRegion left, Arlecchino.Rendering.SurfaceRegion right) -> bool
 static Arlecchino.Rendering.SurfaceRegion.operator ==(Arlecchino.Rendering.SurfaceRegion left, Arlecchino.Rendering.SurfaceRegion right) -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Background.get -> Arlecchino.Rendering.Rgb?
+static Arlecchino.Rendering.TerminalCapabilities.Background.set -> void
+static Arlecchino.Rendering.TerminalCapabilities.CellSizeKnown.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.CellSizeKnown.set -> void
 static Arlecchino.Rendering.TerminalCapabilities.Color.get -> Arlecchino.Rendering.ColorSupport
 static Arlecchino.Rendering.TerminalCapabilities.Color.set -> void
 static Arlecchino.Rendering.TerminalCapabilities.DetectColor() -> Arlecchino.Rendering.ColorSupport
 static Arlecchino.Rendering.TerminalCapabilities.DetectColor(string? noColor, string? term, string? colorTerm, string? windowsTerminalSession) -> Arlecchino.Rendering.ColorSupport
+static Arlecchino.Rendering.TerminalCapabilities.Kitty.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Kitty.set -> void
 static Arlecchino.Rendering.TerminalCapabilities.NearestPaletteColor(Arlecchino.Rendering.Rgb color) -> Arlecchino.Rendering.TerminalColor
+static Arlecchino.Rendering.TerminalCapabilities.Resolve(Arlecchino.Rendering.ImageProtocol protocol) -> Arlecchino.Rendering.ImageProtocol
+static Arlecchino.Rendering.TerminalCapabilities.Sixel.get -> bool
+static Arlecchino.Rendering.TerminalCapabilities.Sixel.set -> void
+static Arlecchino.Rendering.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan within) -> bool
 static Arlecchino.Rendering.TextWidth.CountClusters(string! text) -> int
 static Arlecchino.Rendering.TextWidth.NextClusterEnd(string! text, int index) -> int
 static Arlecchino.Rendering.TextWidth.NextClusterLength(string! text, int index) -> int

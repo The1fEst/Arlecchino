@@ -17,6 +17,9 @@ Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, bool shift = 
 Arlecchino.Testing.ArlecchinoTestHost.ReadFromTerminal(string! sequence) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Repaint!
 Arlecchino.Testing.ArlecchinoTestHost.Scroll(int row, int column, bool down) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.MouseEvent mouse) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Send(System.ConsoleKeyInfo key) -> void
+Arlecchino.Testing.ArlecchinoTestHost.SendPaste(string! text) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Services.get -> System.IServiceProvider!
 Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
 Arlecchino.Testing.ArlecchinoTestHost.Styles() -> System.Collections.Generic.IReadOnlyList<string!>!
@@ -46,14 +49,30 @@ Arlecchino.Testing.FakeTerminal.LeaveFullScreen() -> void
 Arlecchino.Testing.FakeTerminal.MouseAvailable.get -> bool
 Arlecchino.Testing.FakeTerminal.ReadKey() -> System.ConsoleKeyInfo
 Arlecchino.Testing.FakeTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
+Arlecchino.Testing.FakeTerminal.Unread(System.ConsoleKeyInfo key) -> void
 Arlecchino.Testing.FakeTerminal.Width.get -> int
 Arlecchino.Testing.FakeTerminal.Width.set -> void
 Arlecchino.Testing.FakeTerminal.Write(string! text) -> void
 Arlecchino.Testing.FakeTerminal.Written.get -> string!
 Arlecchino.Testing.FrameText
+Arlecchino.Testing.SessionTape
+Arlecchino.Testing.SessionTape.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Count.get -> int
+Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Paste(string! text) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Play(Arlecchino.Testing.ArlecchinoTestHost! host) -> System.Collections.Generic.List<string!>!
+Arlecchino.Testing.SessionTape.RecordKey(System.ConsoleKeyInfo key) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.RecordMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Scroll(int row, int column, bool down) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.SessionTape() -> void
+Arlecchino.Testing.SessionTape.SessionTape(System.TimeProvider! clock) -> void
+Arlecchino.Testing.SessionTape.Shot() -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Type(string! text) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Wait(int milliseconds) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.TestClock
 Arlecchino.Testing.TestClock.Advance(System.TimeSpan amount) -> void
 Arlecchino.Testing.TestClock.TestClock() -> void
+override Arlecchino.Testing.SessionTape.ToString() -> string!
 override Arlecchino.Testing.TestClock.GetUtcNow() -> System.DateTimeOffset
 static Arlecchino.Testing.FrameText.AnsiSequence() -> System.Text.RegularExpressions.Regex!
 static Arlecchino.Testing.FrameText.BoxWidth(string! line) -> int
@@ -63,3 +82,4 @@ static Arlecchino.Testing.FrameText.Lines(string! text) -> string![]!
 static Arlecchino.Testing.FrameText.StyleSequence() -> System.Text.RegularExpressions.Regex!
 static Arlecchino.Testing.FrameText.StylesIn(string! text) -> System.Collections.Generic.List<string!>!
 static Arlecchino.Testing.FrameText.WithoutStyles(string! text) -> string!
+static Arlecchino.Testing.SessionTape.Read(string! text) -> Arlecchino.Testing.SessionTape!

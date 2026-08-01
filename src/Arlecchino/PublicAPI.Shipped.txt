@@ -111,7 +111,7 @@ Arlecchino.Diagnostics.Notifications.Capacity.set -> void
 Arlecchino.Diagnostics.Notifications.Clear() -> void
 Arlecchino.Diagnostics.Notifications.Current.get -> Arlecchino.Diagnostics.Notification?
 Arlecchino.Diagnostics.Notifications.Entries.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
-Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker, Arlecchino.Repaint! repaint) -> void
+Arlecchino.Diagnostics.Notifications.Notifications(Arlecchino.Hosting.ArlecchinoOptions! options, System.TimeProvider! time, Arlecchino.Hosting.Ticker! ticker) -> void
 Arlecchino.Diagnostics.Notifications.Notify(string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
 Arlecchino.Diagnostics.Notifications.Raise(Arlecchino.Diagnostics.Notification! entry) -> Arlecchino.Diagnostics.Notification!
 Arlecchino.Diagnostics.Notifications.Settle(Arlecchino.Diagnostics.Notification! entry, string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
@@ -188,9 +188,8 @@ Arlecchino.Hosting.ArlecchinoBuilder.Services.get -> Microsoft.Extensions.Depend
 Arlecchino.Hosting.ArlecchinoBuilder.StartAt(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.StartAt(string! route) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseKeymap(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseLatinOnlyInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseMouse() -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseNativeInput() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.ConsoleKeyInfo? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseStrings(Arlecchino.Hosting.ArlecchinoStrings! strings) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTerminal<TTerminal>() -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -258,8 +257,14 @@ Arlecchino.Hosting.ArlecchinoKeymap.WordRight.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.WordRight.init -> void
 Arlecchino.Hosting.ArlecchinoOptions
 Arlecchino.Hosting.ArlecchinoOptions.ArlecchinoOptions() -> void
+Arlecchino.Hosting.ArlecchinoOptions.AskTerminal.get -> bool
+Arlecchino.Hosting.ArlecchinoOptions.AskTerminal.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.BracketedPaste.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.BracketedPaste.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.CellHeight.get -> int
+Arlecchino.Hosting.ArlecchinoOptions.CellHeight.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.CellWidth.get -> int
+Arlecchino.Hosting.ArlecchinoOptions.CellWidth.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.get -> char
 Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.get -> System.TimeSpan
@@ -268,6 +273,8 @@ Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.get -> Arlecchino.Rendering.Gr
 Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Keymap.get -> Arlecchino.Hosting.ArlecchinoKeymap!
@@ -292,6 +299,8 @@ Arlecchino.Hosting.ArlecchinoOptions.Strings.get -> Arlecchino.Hosting.Arlecchin
 Arlecchino.Hosting.ArlecchinoOptions.Strings.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.TargetFramesPerSecond.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.TargetFramesPerSecond.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.get -> System.TimeSpan
+Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.TextInput.get -> Arlecchino.Input.TextInputMode
 Arlecchino.Hosting.ArlecchinoOptions.TextInput.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Theme.get -> Arlecchino.Rendering.ThemePalette!
@@ -944,6 +953,18 @@ Arlecchino.Widgets.ListBox<T>.Render.init -> void
 Arlecchino.Widgets.ListBox<T>.Selected.get -> int
 Arlecchino.Widgets.ListBox<T>.Selected.set -> void
 Arlecchino.Widgets.ListBox<T>.SelectedItem.get -> T?
+Arlecchino.Widgets.Picture
+Arlecchino.Widgets.Picture.Background.get -> Arlecchino.Rendering.IArlecchinoColor?
+Arlecchino.Widgets.Picture.Background.init -> void
+Arlecchino.Widgets.Picture.Clear() -> void
+Arlecchino.Widgets.Picture.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Picture.IsEmpty.get -> bool
+Arlecchino.Widgets.Picture.Picture() -> void
+Arlecchino.Widgets.Picture.PixelHeight.get -> int
+Arlecchino.Widgets.Picture.PixelWidth.get -> int
+Arlecchino.Widgets.Picture.Protocol.get -> Arlecchino.Rendering.ImageProtocol?
+Arlecchino.Widgets.Picture.Protocol.set -> void
+Arlecchino.Widgets.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Rgb> pixels, int width, int height) -> void
 Arlecchino.Widgets.ProgressBar
 Arlecchino.Widgets.ProgressBar.Caption.get -> System.Func<decimal, string!>?
 Arlecchino.Widgets.ProgressBar.Caption.init -> void
