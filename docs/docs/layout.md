@@ -349,6 +349,19 @@ inside the region `Draw` is handed. Both default to nothing, which packs panes e
 screen of bordered boxes wants, since the borders already separate them. `Gaps` returns the tree it
 was called on, so it finishes the expression that built it.
 
+With no inner gap, panes in a box **share** the line between them rather than each drawing one of
+their own — the tree records its boxes in a [`Joinery`](#borders-that-join) and paints them together:
+
+```text
+├─ files ────────────┬─ authors ─────────────┬─ log ────────────┤
+│ Program.cs         │ fEst                  │ the rest of it   │
+╰────────────────────┴───────────────────────┴──────────────────╯
+```
+
+A pane without a box keeps the room it was given — it would lose a column of what it draws to a
+neighbour's border — and a tree with a gap is drawn as it always was. The pane holding the focus wins
+the colour of the edges it shares, so `Tab` still moves a highlight around the screen.
+
 A region too small for what it holds does not overflow. Each split is clamped to the space that
 exists, so the first half takes what it can and the panes that did not fit are handed **empty**
 regions; drawing into one of those writes nothing, exactly as writing outside a region does. A view
@@ -377,6 +390,45 @@ A tree earns its keep from about three panes up. A view that draws a list under 
 with flow calls, and two panes side by side are clearer as one `SplitLeft`. The tree is for screens
 whose shape is worth naming — and where changing `0.25` to `0.3` should be a one-character edit
 rather than a hunt through `Draw`.
+
+## Borders that join
+
+`region.Border(...)` draws a box that knows nothing about its neighbours. That is right for a box
+standing on its own and wrong for panes that touch: two of them side by side put two verticals where
+the eye expects one.
+
+`Joinery` records boxes and rules instead of drawing them, and paints at the end — so a shared cell
+becomes the glyph that joins them:
+
+```csharp
+var joinery = new Joinery();
+
+var files = joinery.Box(left, Theme.Info, "files");
+var log = joinery.Box(right, Theme.Active, "log");
+
+joinery.Draw(surface.Content, Theme.Info);
+```
+
+```text
+╭─ one ───────────────┬─ three ──────────────╮
+│                     │                      │
+├─ two ───────────────┼─ four ───────────────┤
+│                     │                      │
+╰─────────────────────┴──────────────────────╯
+```
+
+| Member | Meaning |
+|---|---|
+| `Box(region, style, title)` | Records four edges and hands back the room inside, as `Border` does |
+| `Across(region, row)` | A rule across the region, joining whatever it meets |
+| `Down(region, column)` | A rule down it |
+| `Draw(into, style)` | Paints everything, then the titles. `style` covers what was recorded without one |
+| `Count` | How many cells carry a line so far |
+
+Coordinates are the surface's own, so regions from anywhere on the frame are recorded together, and
+anything falling outside `into` is left undrawn rather than clamped into it. A cell takes the style of
+the last thing recorded over it, which is how the pane holding the focus wins the edges it shares —
+record it last.
 
 ## Clipping a whole stretch of drawing
 
