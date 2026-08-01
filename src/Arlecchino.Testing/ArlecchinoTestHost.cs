@@ -132,8 +132,9 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <param name="column">Column the pointer is over.</param>
     /// <param name="down">Whether the wheel turned down.</param>
     public void Scroll(int row, int column, bool down) =>
-        _provider.GetRequiredService<InputRouter>().ProcessMouse(
-            new(down ? MouseAction.ScrolledDown : MouseAction.ScrolledUp, MouseButton.None, row, column, default));
+        _provider.GetRequiredService<InputRouter>()
+            .ProcessMouse(
+                new(down ? MouseAction.ScrolledDown : MouseAction.ScrolledUp, MouseButton.None, row, column, default));
 
     /// <summary>
     /// Feeds raw characters through the reader that recognises escape sequences. This is the way to

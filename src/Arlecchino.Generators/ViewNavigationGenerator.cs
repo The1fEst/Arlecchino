@@ -191,8 +191,11 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
         foreach (var view in views)
         {
-            builder.Append("    public static readonly ViewRoute ").Append(view.RouteName)
-                .Append(" = new ViewRoute(\"").Append(view.RouteName).AppendLine("\");");
+            builder.Append($"""    public static readonly ViewRoute """)
+                .Append(view.RouteName)
+                .Append(" = new ViewRoute(\"")
+                .Append(view.RouteName)
+                .AppendLine("\");");
         }
 
         builder.AppendLine("}");

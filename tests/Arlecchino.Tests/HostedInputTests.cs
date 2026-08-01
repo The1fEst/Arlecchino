@@ -29,11 +29,14 @@ public sealed class HostedInputTests
         services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
 
         var builder = services.AddArlecchino(options =>
-        {
-            options.MinimumWidth = 1;
-            options.MinimumHeight = 1;
-            options.AskTerminal = false;
-        }).AddGeneratedViews().StartAt(ViewKind.Probe);
+            {
+                options.MinimumWidth = 1;
+                options.MinimumHeight = 1;
+                options.AskTerminal = false;
+            })
+            .AddGeneratedViews()
+            .StartAt(ViewKind.Probe);
+
         if (mouse)
         {
             builder.UseMouse();

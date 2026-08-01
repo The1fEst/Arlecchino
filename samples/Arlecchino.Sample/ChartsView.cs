@@ -98,7 +98,7 @@ public sealed class ChartsView : IArlecchinoView
     {
         _surface = surface;
 
-        _layout = Branch(
+        var panes = Branch(
             Rows,
             0.5,
             Leaf(_mirrors, static () => "downloads by mirror, MB"),
@@ -106,7 +106,9 @@ public sealed class ChartsView : IArlecchinoView
                 Columns,
                 0.5,
                 Leaf(DrawTrends, static () => "last 20 minutes"),
-                Leaf(DrawHost, static () => "host"))).Gaps(inner: 1, outer: 1);
+                Leaf(DrawHost, static () => "host")));
+
+        _layout = panes.Gaps(inner: 1, outer: 1);
     }
 
     public void Draw() => _layout.Draw(_surface.Content);

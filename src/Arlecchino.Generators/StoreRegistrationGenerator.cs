@@ -155,7 +155,8 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
 
         foreach (var store in stores)
         {
-            builder.Append("        builder.Services.Add").Append(store.IsScoped ? "Scoped" : "Singleton")
+            builder.Append("        builder.Services.Add")
+                .Append(store.IsScoped ? "Scoped" : "Singleton")
                 .Append("(static services => ")
                 .Append(ConstructorBinding.CreateExpression(store.TypeName, store.ConstructorParameters))
                 .AppendLine(");");
@@ -163,7 +164,9 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
             if (store.IsAsync && !store.IsScoped)
             {
                 builder.Append("        builder.Services.AddSingleton<global::Arlecchino.Atoms.ArlecchinoAsyncStore>(")
-                    .Append("static services => services.GetRequiredService<").Append(store.TypeName).AppendLine(">());");
+                    .Append("static services => services.GetRequiredService<")
+                    .Append(store.TypeName)
+                    .AppendLine(">());");
             }
         }
 

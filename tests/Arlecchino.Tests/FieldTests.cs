@@ -182,8 +182,9 @@ public sealed class FieldTests
         Assert.Equal("", Field.Text(static () => "Name", value).Help());
         Assert.Equal("the one on the badge",
             Field.Text(static () => "Name",
-                value,
-                help: static () => "the one on the badge").Help());
+                    value,
+                    help: static () => "the one on the badge")
+                .Help());
     }
 
     [Fact]

@@ -86,10 +86,10 @@ resharper_use_indent_from_vs = false
 resharper_vb_insert_final_newline = false
 resharper_wrap_array_initializer_style = chop_if_long
 resharper_wrap_chained_binary_expressions = chop_if_long
-resharper_wrap_chained_method_calls = wrap_if_long
+resharper_wrap_chained_method_calls = chop_if_long
 resharper_wrap_list_pattern = chop_if_long
 resharper_xmldoc_insert_final_newline = false
-resharper_xml_insert_final_newline = false
+resharper_xml_insert_final_newline = true
 
 # ReSharper inspection severities
 resharper_access_to_disposed_closure_highlighting = hint
