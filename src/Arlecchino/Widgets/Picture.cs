@@ -1,6 +1,4 @@
 using System;
-using System.Text;
-using System.Threading;
 using Arlecchino.Rendering;
 
 namespace Arlecchino.Widgets;
@@ -28,18 +26,8 @@ namespace Arlecchino.Widgets;
 /// </summary>
 public sealed class Picture : IArlecchinoWidget
 {
-    private const char UpperHalf = '▀';
-    private const int PixelsPerCell = 2;
-
-    private static int _lastKittyImage = Random.Shared.Next(1, 1 << 24);
-
-    private readonly int _kittyImage = Interlocked.Increment(ref _lastKittyImage);
-
     private Rgb[] _pixels = [];
-    private string _payload = "";
-    private (ImageProtocol Protocol, int Columns, int Rows, int Width, int Height, int Version) _made;
-    private RgbTermColor[] _blocks = [];
-    private (int Columns, int Rows, int Version) _composed;
+    private PictureProtocol? _drawing;
     private int _version;
 
     /// <summary>How wide the picture is, in pixels.</summary>
@@ -125,13 +113,11 @@ public sealed class Picture : IArlecchinoWidget
             return region.Rows(region.Height, 0);
         }
 
-        var protocol = TerminalCapabilities.Resolve(Protocol ?? Glyphs.Picture);
+        var drawing = Chosen(TerminalCapabilities.Resolve(Protocol ?? Glyphs.Picture));
         var cellWidth = Math.Max(1, Glyphs.CellWidth);
         var cellHeight = Math.Max(1, Glyphs.CellHeight);
 
-        var perCell = protocol == ImageProtocol.Blocks
-            ? PixelsPerCell
-            : (double)cellHeight / cellWidth;
+        var perCell = drawing.PerCell(cellWidth, cellHeight);
 
         var scale = Math.Min(
             (double)region.Width / PixelWidth,
@@ -146,333 +132,39 @@ public sealed class Picture : IArlecchinoWidget
         var left = (region.Width - columns) / 2;
         var top = (region.Height - rows) / 2;
 
-        if (protocol != ImageProtocol.Blocks)
-        {
-            var made = (protocol, columns, rows, cellWidth, cellHeight, _version);
-
-            if (_made != made)
-            {
-                _payload = protocol == ImageProtocol.Kitty
-                    ? Kitty(_pixels, PixelWidth, PixelHeight, columns, rows, _kittyImage)
-                    : Sixel(_pixels, PixelWidth, PixelHeight, columns * cellWidth, rows * cellHeight);
-
-                _made = made;
-            }
-
-            region.Surface.Passthrough(
-                region.Top + top,
-                region.Left + left,
-                _payload,
-                protocol == ImageProtocol.Kitty
-                    ? Forgotten(_kittyImage)
-                    : Painted(columns * cellWidth, rows * cellHeight));
-
-            return region.Rows(region.Height, 0);
-        }
-
-        Compose(columns, rows);
-
-        for (var row = 0; row < rows; row++)
-        {
-            for (var column = 0; column < columns; column++)
-            {
-                region.Write(top + row, left + column, UpperHalf.ToString(), _blocks[(row * columns) + column]);
-            }
-        }
+        drawing.Draw(
+            region,
+            _pixels,
+            PixelWidth,
+            PixelHeight,
+            new(left, top, columns, rows, cellWidth, cellHeight, _version));
 
         return region.Rows(region.Height, 0);
     }
 
     /// <summary>
-    /// Builds a sixel that paints a rectangle in the colour the terminal said was behind its text, which
-    /// is the only way to undraw one: sixel writes pixels into the screen, so what was drawn is gone only
-    /// once something else is drawn over it.
+    /// Picks the way of drawing that was asked for. This is the one place the protocol is named: the
+    /// three ways share the arithmetic above and nothing else, so past this line each runs only its own
+    /// code and holds only its own state.
     ///
-    /// Empty when the terminal never said what colour that is — see
-    /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed colour leaves a
-    /// rectangle anyone can see, which is worse than the pixels it was meant to remove.
-    ///
-    /// The last band paints only the rows the picture actually had. Sixel bands are six rows whatever the
-    /// picture's height, so painting all six would reach up to five rows past it, and a terminal that does
-    /// not clip to the raster size would show that as a line under the picture.
+    /// Only the one in use is ever built, and it is kept until the protocol changes — which is what
+    /// makes the caches inside it worth having. A picture that is never drawn builds nothing at all, and
+    /// a picture drawn in cells never takes a kitty image number it would not use.
     /// </summary>
-    /// <param name="across">How many pixels wide the picture was.</param>
-    /// <param name="down">How many pixels tall it was.</param>
-    /// <returns>The sequence to hand to the terminal, or an empty string.</returns>
-    private static string Painted(int across, int down)
+    /// <param name="protocol">Which protocol the terminal and the application settled on.</param>
+    /// <returns>The one that draws it.</returns>
+    private PictureProtocol Chosen(ImageProtocol protocol)
     {
-        if (TerminalCapabilities.Background is not { } behind || across <= 0 || down <= 0)
+        if (_drawing?.Kind == protocol)
         {
-            return "";
+            return _drawing;
         }
 
-        var painted = new StringBuilder(64);
-
-        painted
-            .Append("\ePq\"1;1;").Append(across).Append(';').Append(down)
-            .Append("#0;2;")
-            .Append(Percent(behind.Red)).Append(';')
-            .Append(Percent(behind.Green)).Append(';')
-            .Append(Percent(behind.Blue));
-
-        for (var band = 0; band < down; band += 6)
+        return _drawing = protocol switch
         {
-            var rows = Math.Min(6, down - band);
-
-            painted
-                .Append("#0!").Append(across)
-                .Append((char)(63 + ((1 << rows) - 1)))
-                .Append('-');
-        }
-
-        return painted.Append("\e\\").ToString();
-    }
-
-    /// <summary>
-    /// Works out the colour of every cell and keeps the objects, so the next frame hands the surface the
-    /// same instances rather than equal ones.
-    ///
-    /// That is what lets the frame diff do its job: it tells a cell apart from the one before it by
-    /// reference, so a picture built fresh each frame looks changed in every cell and is written out in
-    /// full however still it is. Rebuilding costs one pass over the cells and only when the picture or the
-    /// room it is drawn in changes.
-    /// </summary>
-    /// <param name="columns">Cells across.</param>
-    /// <param name="rows">Cells down.</param>
-    private void Compose(int columns, int rows)
-    {
-        if (_composed == (columns, rows, _version))
-        {
-            return;
-        }
-
-        if (_blocks.Length != columns * rows)
-        {
-            _blocks = new RgbTermColor[columns * rows];
-        }
-
-        for (var row = 0; row < rows; row++)
-        {
-            for (var column = 0; column < columns; column++)
-            {
-                _blocks[(row * columns) + column] = new()
-                {
-                    Foreground = At(column, columns, (row * PixelsPerCell) + 0, rows * PixelsPerCell),
-                    Background = At(column, columns, (row * PixelsPerCell) + 1, rows * PixelsPerCell),
-                };
-            }
-        }
-
-        _composed = (columns, rows, _version);
-    }
-
-    /// <summary>
-    /// Builds the sequence that tells the terminal to let go of an image it was handed. Only kitty has
-    /// one: sixel writes pixels into the screen rather than into a registry of images, so there is
-    /// nothing there to name and nothing to delete.
-    /// </summary>
-    /// <param name="image">Which image to delete.</param>
-    /// <returns>The sequence to hand to the terminal.</returns>
-    private static string Forgotten(int image) => $"\e_Ga=d,d=i,i={image},q=2\e\\";
-
-    /// <summary>
-    /// Builds the kitty graphics escape sequence: the pixels as they are, base64 across chunks of the
-    /// size the protocol allows, told which cell rectangle to scale into. Responses are suppressed with
-    /// <c>q=2</c>, since a reply from the terminal would arrive at the input reader as a stray escape
-    /// sequence.
-    ///
-    /// It carries an image number of its own, so a picture that changes replaces the one the terminal is
-    /// holding instead of adding to it. Without that every new set of pixels would be another image kept
-    /// in the terminal's memory for as long as the session lasts.
-    /// </summary>
-    /// <param name="pixels">The picture.</param>
-    /// <param name="width">Its width in pixels.</param>
-    /// <param name="height">Its height in pixels.</param>
-    /// <param name="columns">Cells to fill across.</param>
-    /// <param name="rows">Cells to fill down.</param>
-    /// <param name="image">Which image this widget owns.</param>
-    /// <returns>The sequence to hand to the terminal.</returns>
-    private static string Kitty(Rgb[] pixels, int width, int height, int columns, int rows, int image)
-    {
-        const int chunk = 4096;
-
-        var bytes = new byte[width * height * 3];
-
-        for (var index = 0; index < width * height; index++)
-        {
-            bytes[(index * 3) + 0] = pixels[index].Red;
-            bytes[(index * 3) + 1] = pixels[index].Green;
-            bytes[(index * 3) + 2] = pixels[index].Blue;
-        }
-
-        var encoded = Convert.ToBase64String(bytes);
-        var sequence = new StringBuilder(encoded.Length + 128);
-        var sent = 0;
-
-        while (sent < encoded.Length)
-        {
-            var take = Math.Min(chunk, encoded.Length - sent);
-            var more = sent + take < encoded.Length ? 1 : 0;
-
-            sequence.Append("\e_G");
-
-            if (sent == 0)
-            {
-                sequence
-                    .Append("a=T,q=2,f=24,i=").Append(image)
-                    .Append(",s=").Append(width)
-                    .Append(",v=").Append(height)
-                    .Append(",c=").Append(columns)
-                    .Append(",r=").Append(rows)
-                    .Append(',');
-            }
-
-            sequence.Append("m=").Append(more).Append(';').Append(encoded, sent, take).Append("\e\\");
-
-            sent += take;
-        }
-
-        return sequence.ToString();
-    }
-
-    /// <summary>
-    /// Builds the sixel escape sequence. Two things make it unlike kitty: the format draws from colour
-    /// registers, so the picture is brought down to a palette of at most 256 by
-    /// <see cref="IndexedImage"/>, and it is measured in pixels rather than cells, so it is resampled to
-    /// however many pixels the cells it was given come to.
-    ///
-    /// The pixels go out in bands of six rows, one pass per colour in the band, with runs of the same
-    /// column collapsed — without that a photograph would weigh several times what it needs to.
-    /// </summary>
-    /// <param name="pixels">The picture.</param>
-    /// <param name="width">Its width in pixels.</param>
-    /// <param name="height">Its height in pixels.</param>
-    /// <param name="across">Pixels to fill across.</param>
-    /// <param name="down">Pixels to fill down.</param>
-    /// <returns>The sequence to hand to the terminal.</returns>
-    private static string Sixel(Rgb[] pixels, int width, int height, int across, int down)
-    {
-        const int registers = 256;
-        const int band = 6;
-
-        var image = IndexedImage.From(pixels, width, height, Math.Max(1, across), Math.Max(1, down), registers);
-        var sixel = new StringBuilder(image.Width * image.Height / 4);
-
-        sixel.Append("\ePq\"1;1;").Append(image.Width).Append(';').Append(image.Height);
-
-        for (var index = 0; index < image.Palette.Length; index++)
-        {
-            var color = image.Palette[index];
-
-            sixel
-                .Append('#').Append(index).Append(";2;")
-                .Append(Percent(color.Red)).Append(';')
-                .Append(Percent(color.Green)).Append(';')
-                .Append(Percent(color.Blue));
-        }
-
-        var here = new bool[image.Palette.Length];
-
-        for (var top = 0; top < image.Height; top += band)
-        {
-            Array.Clear(here);
-
-            for (var row = top; row < Math.Min(top + band, image.Height); row++)
-            {
-                for (var column = 0; column < image.Width; column++)
-                {
-                    here[image.At(column, row)] = true;
-                }
-            }
-
-            var written = false;
-
-            for (var index = 0; index < here.Length; index++)
-            {
-                if (!here[index])
-                {
-                    continue;
-                }
-
-                if (written)
-                {
-                    sixel.Append('$');
-                }
-
-                written = true;
-                sixel.Append('#').Append(index);
-
-                AppendBand(sixel, image, top, index);
-            }
-
-            sixel.Append('-');
-        }
-
-        return sixel.Append("\e\\").ToString();
-    }
-
-    private static int Percent(byte value) => ((value * 100) + 127) / 255;
-
-    private static void AppendBand(StringBuilder sixel, IndexedImage image, int top, int index)
-    {
-        var run = 0;
-        var previous = '\0';
-
-        for (var column = 0; column < image.Width; column++)
-        {
-            var bits = 0;
-
-            for (var bit = 0; bit < 6 && top + bit < image.Height; bit++)
-            {
-                if (image.At(column, top + bit) == index)
-                {
-                    bits |= 1 << bit;
-                }
-            }
-
-            var symbol = (char)(63 + bits);
-
-            if (symbol == previous)
-            {
-                run++;
-                continue;
-            }
-
-            AppendRun(sixel, previous, run);
-            previous = symbol;
-            run = 1;
-        }
-
-        AppendRun(sixel, previous, run);
-    }
-
-    private static void AppendRun(StringBuilder sixel, char symbol, int run)
-    {
-        if (run == 0)
-        {
-            return;
-        }
-
-        if (run > 3)
-        {
-            sixel.Append('!').Append(run);
-        }
-        else
-        {
-            for (var again = 1; again < run; again++)
-            {
-                sixel.Append(symbol);
-            }
-        }
-
-        sixel.Append(symbol);
-    }
-
-    private Rgb At(int column, int columns, int row, int lines)
-    {
-        var x = Math.Clamp(column * PixelWidth / columns, 0, PixelWidth - 1);
-        var y = Math.Clamp(row * PixelHeight / lines, 0, PixelHeight - 1);
-
-        return _pixels[(y * PixelWidth) + x];
+            ImageProtocol.Kitty => new KittyPicture(),
+            ImageProtocol.Sixel => new SixelPicture(),
+            _ => new BlockPicture(),
+        };
     }
 }

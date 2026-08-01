@@ -193,6 +193,19 @@ public sealed class PictureTests
     }
 
     [Fact]
+    public void SwitchingAwayFromKittyTellsTheTerminalToLetGoOfThePicture()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show([Red, Blue], 1, 2);
+
+        var image = Image(Draw(picture, 4, 2));
+        var written = Undrawn(picture, 4, 2, () => picture.Protocol = ImageProtocol.Blocks);
+
+        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", written, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ForgettingTheLastFrameSendsThePictureAgain()
     {
         using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
