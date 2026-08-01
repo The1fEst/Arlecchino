@@ -17,7 +17,7 @@ public sealed class Notifications
 
 | Member | Summary |
 |---|---|
-| [`Notifications(ArlecchinoOptions, TimeProvider, Ticker, Repaint)`](#notifications-arlecchinooptions-timeprovider-ticker-repaint) | Creates the list. |
+| [`Notifications(ArlecchinoOptions, TimeProvider, Ticker)`](#notifications-arlecchinooptions-timeprovider-ticker) | Creates the list. |
 
 ## Properties
 
@@ -39,10 +39,10 @@ public sealed class Notifications
 
 ## Constructors in detail
 
-### `Notifications(ArlecchinoOptions, TimeProvider, Ticker, Repaint)` {#notifications-arlecchinooptions-timeprovider-ticker-repaint}
+### `Notifications(ArlecchinoOptions, TimeProvider, Ticker)` {#notifications-arlecchinooptions-timeprovider-ticker}
 
 ```csharp
-public Notifications(ArlecchinoOptions options, TimeProvider time, Ticker ticker, Repaint repaint);
+public Notifications(ArlecchinoOptions options, TimeProvider time, Ticker ticker);
 ```
 
 Creates the list.
@@ -54,7 +54,6 @@ Creates the list.
 | `options` | [`ArlecchinoOptions`](../arlecchino.hosting/ArlecchinoOptions.md) | Supplies both timeouts. |
 | `time` | `TimeProvider` | Where the current time comes from. |
 | `ticker` | [`Ticker`](../arlecchino.hosting/Ticker.md) | Counts the timeouts between frames. |
-| `repaint` | [`Repaint`](../arlecchino/Repaint.md) | Asked for a frame whenever something arrives or expires. |
 
 ## Properties in detail
 

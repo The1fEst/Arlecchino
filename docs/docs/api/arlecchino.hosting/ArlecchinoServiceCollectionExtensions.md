@@ -40,3 +40,5 @@ Registers everything an application needs and returns the builder that describes
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder, for describing views, commands and the rest.
 
+The look — [`Theme.Palette`](../arlecchino.rendering/Theme.md#palette) and [`Glyphs`](../arlecchino.rendering/Glyphs.md) — is installed here rather than when the container hands the options out. Those are read by a frame and so written on the drawing thread, and a container resolves on whichever thread asked first; installing at registration happens before anything has claimed a thread to draw on.
+

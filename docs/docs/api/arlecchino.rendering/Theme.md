@@ -26,7 +26,7 @@ public static class Theme
 | [`Info`](#info) | Box borders and other structural lines. |
 | [`Input`](#input) | The editable part of a text field. |
 | [`Muted`](#muted) | Secondary text: hints, footers, disabled rows. |
-| [`Palette`](#palette) | The colours behind the roles. Assigned from `ArlecchinoOptions` when the container resolves them; set it directly when drawing without a host. This is process-wide on purpose — it is what lets a view write `Theme.Header` with no plumbing — so two hosts in one process share one palette, and the last one built wins. |
+| [`Palette`](#palette) | The colours behind the roles. Assigned from `ArlecchinoOptions` when the container resolves them; set it directly when drawing without a host. This is process-wide on purpose — it is what lets a view write `Theme.Header` with no plumbing — so two hosts in one process share one palette, and the last one built wins. A frame reads it, so it is swapped on the drawing thread and asks for a frame by itself. Hand the change over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else. |
 | [`Selected`](#selected) | The row under the cursor while its pane is not focused. |
 | [`TableHeader`](#tableheader) | Column headers of a table. |
 | [`Warning`](#warning) | Something the user should notice, such as the output line. |
@@ -129,9 +129,15 @@ Secondary text: hints, footers, disabled rows.
 public static ThemePalette Palette { get; set; }
 ```
 
-The colours behind the roles. Assigned from `ArlecchinoOptions` when the container resolves them; set it directly when drawing without a host. This is process-wide on purpose — it is what lets a view write `Theme.Header` with no plumbing — so two hosts in one process share one palette, and the last one built wins.
+The colours behind the roles. Assigned from `ArlecchinoOptions` when the container resolves them; set it directly when drawing without a host. This is process-wide on purpose — it is what lets a view write `Theme.Header` with no plumbing — so two hosts in one process share one palette, and the last one built wins. A frame reads it, so it is swapped on the drawing thread and asks for a frame by itself. Hand the change over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else.
 
 **Type** [`ThemePalette`](../arlecchino.rendering/ThemePalette.md)
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | Assigned from off the drawing thread. |
 
 ### `Selected` {#selected}
 

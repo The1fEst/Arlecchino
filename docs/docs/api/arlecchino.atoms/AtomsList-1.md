@@ -45,6 +45,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 | [`RemoveRange(int, int)`](#removerange-int-int) | Takes out several items in a row at once. One notification, one frame and one undo step for the lot — which is what trimming a list that has grown too long needs, since doing it one item at a time would notify once per item and come back the same way. |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the case the list is not edited but reloaded — a query answered, a folder read again, a filter applied. Contents equal to what is already there change nothing. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
+| [`Touch()`](#touch) | Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute and no frame would be asked for. Prefer replacing the item where you can — an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it. |
 
 ## Constructors in detail
 
@@ -262,4 +263,18 @@ Calls back whenever the contents change.
 | `listener` | `Action` | What to run on change. |
 
 **Returns** `IDisposable` — Dispose it to stop listening.
+
+### `Touch()` {#touch}
+
+```csharp
+public void Touch();
+```
+
+Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute and no frame would be asked for. Prefer replacing the item where you can — an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it.
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | Called from off the drawing thread. |
 

@@ -41,6 +41,7 @@ public class Surface
 | [`FillLineAt(int, IArlecchinoColor)`](#filllineat-int-iarlecchinocolor) | Draws a rule across the content width on a given row. |
 | [`ForgetPreviousFrame()`](#forgetpreviousframe) | Drops the memory of the last frame, so the next [`Surface.Build`](../arlecchino.rendering/Surface.md#build) sends the whole screen instead of the difference. Use it after something else wrote to the terminal. |
 | [`ListWindow()`](#listwindow) | How many rows a scrolling list may use: what is left of the frame minus room for the chrome, never fewer than four. |
+| [`Passthrough(int, int, string, string)`](#passthrough-int-int-string-string) | Hands the terminal something the cell grid cannot express — an image in one of the graphics protocols, most of all — to be written verbatim at a cell, after everything the frame drew. It goes out last on purpose: the cells are written first, so whatever was under or around the payload last time is repainted before it lands. Repainting the cells is not enough to remove it, though, which is what `undraw` is for. A payload that was handed over last frame and is not handed over this one — the widget moved, or shrank, or is not on screen at all any more — has its undraw written at the place it used to be, and written **first**, before a single cell of the new frame. An undraw paints over what it removes, so whatever the frame draws lands on top of it; the other way round it would erase the frame instead of the picture. A frame that undraws anything is written whole rather than diffed, since the cells the undraw painted over have to be put back whether they changed or not. Whoever hands over pixels says how to take them back, because only they know: kitty deletes an image by number, a sixel has to be painted over. Nothing is re-sent while it stays the same. A frame is only composed when something asked for one, so a picture that has not changed costs nothing between frames — but a payload measured in kilobytes is still worth handing over only when it has to be. |
 | [`SetFixedSize(int, int)`](#setfixedsize-int-int) | Pins the frame size instead of asking the terminal, which is what makes headless rendering possible. A fixed-size surface always sends whole frames. |
 | [`SkipLine()`](#skipline) | Leaves a blank line at the flow cursor. |
 | [`StartFrame()`](#startframe) | Begins a frame: reads the terminal size, reallocates if it changed, clears every cell and skips the vertical padding. Nothing reaches the terminal until [`Surface.Build`](../arlecchino.rendering/Surface.md#build). |
@@ -210,6 +211,23 @@ public int ListWindow();
 How many rows a scrolling list may use: what is left of the frame minus room for the chrome, never fewer than four.
 
 **Returns** `int` — Rows available for list content.
+
+### `Passthrough(int, int, string, string)` {#passthrough-int-int-string-string}
+
+```csharp
+public void Passthrough(int row, int column, string payload, string undraw = "");
+```
+
+Hands the terminal something the cell grid cannot express — an image in one of the graphics protocols, most of all — to be written verbatim at a cell, after everything the frame drew. It goes out last on purpose: the cells are written first, so whatever was under or around the payload last time is repainted before it lands. Repainting the cells is not enough to remove it, though, which is what `undraw` is for. A payload that was handed over last frame and is not handed over this one — the widget moved, or shrank, or is not on screen at all any more — has its undraw written at the place it used to be, and written **first**, before a single cell of the new frame. An undraw paints over what it removes, so whatever the frame draws lands on top of it; the other way round it would erase the frame instead of the picture. A frame that undraws anything is written whole rather than diffed, since the cells the undraw painted over have to be put back whether they changed or not. Whoever hands over pixels says how to take them back, because only they know: kitty deletes an image by number, a sixel has to be painted over. Nothing is re-sent while it stays the same. A frame is only composed when something asked for one, so a picture that has not changed costs nothing between frames — but a payload measured in kilobytes is still worth handing over only when it has to be.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `row` | `int` | Row of the cell it starts at, counted from the top of the frame. |
+| `column` | `int` | Column of that cell. |
+| `payload` | `string` | The bytes to write, escapes and all. |
+| `undraw` | `string` | What removes it again, written where the payload was. Empty when nothing can: a sixel on a terminal that will not say what colour is behind its text has to be left where it is. |
 
 ### `SetFixedSize(int, int)` {#setfixedsize-int-int}
 

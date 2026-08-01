@@ -37,6 +37,7 @@ public interface IArlecchinoTerminal
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and shows the cursor again. |
 | [`ReadKey()`](#readkey) | Takes the next key, blocking until one arrives. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvailable`](../arlecchino/IArlecchinoTerminal.md#mouseavailable) is true. |
+| [`Unread(ConsoleKeyInfo)`](#unread-consolekeyinfo) | Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it and [`IArlecchinoTerminal.KeyAvailable`](../arlecchino/IArlecchinoTerminal.md#keyavailable) reports it as waiting. For code that had to read a key to find out it did not want it — asking the terminal what it can do reads until an answer stops looking like one, and whatever ended it belongs to whoever pressed it. |
 | [`Write(string)`](#write-string) | Writes composed output. A frame arrives as one call. |
 
 ## Properties in detail
@@ -164,6 +165,20 @@ public MouseEvent ReadMouse();
 Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvailable`](../arlecchino/IArlecchinoTerminal.md#mouseavailable) is true.
 
 **Returns** [`MouseEvent`](../arlecchino.input/MouseEvent.md) — What the mouse did, in frame cells.
+
+### `Unread(ConsoleKeyInfo)` {#unread-consolekeyinfo}
+
+```csharp
+public void Unread(ConsoleKeyInfo key);
+```
+
+Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it and [`IArlecchinoTerminal.KeyAvailable`](../arlecchino/IArlecchinoTerminal.md#keyavailable) reports it as waiting. For code that had to read a key to find out it did not want it — asking the terminal what it can do reads until an answer stops looking like one, and whatever ended it belongs to whoever pressed it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `ConsoleKeyInfo` | The key to put back. |
 
 ### `Write(string)` {#write-string}
 

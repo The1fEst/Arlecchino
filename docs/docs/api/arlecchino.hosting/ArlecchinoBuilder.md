@@ -34,9 +34,8 @@ public sealed class ArlecchinoBuilder
 | [`StartAt(ViewRoute)`](#startat-viewroute) | Sets the view the application opens on. |
 | [`StartAt(string)`](#startat-string) | Sets the view the application opens on, by name. |
 | [`UseKeymap(ArlecchinoKeymap)`](#usekeymap-arlecchinokeymap) | Replaces the key bindings, which every widget then follows. |
-| [`UseLatinOnlyInput()`](#uselatinonlyinput) | Accepts only Latin letters and digits, in exchange for keys that always read correctly. |
+| [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default. |
 | [`UseMouse()`](#usemouse) | Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs. |
-| [`UseNativeInput()`](#usenativeinput) | Accepts whatever the terminal reports, so any language can be typed. |
 | [`UseNotifications(Nullable<ConsoleKeyInfo>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-consolekeyinfo-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
 | [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localised: nothing is looked up from resources. |
 | [`UseTerminal<TTerminal>()`](#useterminal-tterminal) | Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them. |
@@ -200,13 +199,13 @@ Replaces the key bindings, which every widget then follows.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
-### `UseLatinOnlyInput()` {#uselatinonlyinput}
+### `UseKeysByPosition()` {#usekeysbyposition}
 
 ```csharp
-public ArlecchinoBuilder UseLatinOnlyInput();
+public ArlecchinoBuilder UseKeysByPosition();
 ```
 
-Accepts only Latin letters and digits, in exchange for keys that always read correctly.
+Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -217,16 +216,6 @@ public ArlecchinoBuilder UseMouse();
 ```
 
 Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs.
-
-**Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
-
-### `UseNativeInput()` {#usenativeinput}
-
-```csharp
-public ArlecchinoBuilder UseNativeInput();
-```
-
-Accepts whatever the terminal reports, so any language can be typed.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

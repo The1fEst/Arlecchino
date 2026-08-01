@@ -17,6 +17,6 @@ public enum TextInputMode : byte
 
 | Name | Value | Summary |
 |---|---:|---|
-| `LatinOnly` | `0` | ASCII is taken as typed; anything else falls back to the physical key, so filters and shortcuts keep working on a Cyrillic layout without switching it. |
-| `Native` | `1` | Any non-control character is taken as typed. |
+| `ByPosition` | `0` | The character is taken from where the key sits on the keyboard rather than from what the layout makes of it, so a filter or a shortcut reads the same on a Cyrillic or a Greek layout as it does on a US one — at the cost of not being able to type that language at all. |
+| `Native` | `1` | Any non-control character is taken as typed, so any language can be typed. |
 

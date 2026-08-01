@@ -23,11 +23,15 @@ public sealed class ArlecchinoOptions
 
 | Member | Summary |
 |---|---|
+| [`AskTerminal`](#askterminal) | Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) then has nothing to go on and settles for cells. |
 | [`BracketedPaste`](#bracketedpaste) | Whether pasted text arrives as one block. On by default: without it a paste reads as a burst of key presses, and a long one can trip validation or a shortcut halfway through. |
+| [`CellHeight`](#cellheight) | How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth). |
+| [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font. |
 | [`CommandPaletteKey`](#commandpalettekey) | Character that opens the command palette. A character rather than a binding, so it survives a layout where the key sits elsewhere. |
 | [`EscapeTimeout`](#escapetimeout) | How long to wait for the rest of an escape sequence before deciding there is none. Arrows and function keys arrive as several characters, and over a slow link they do not always arrive together; this is also the delay a lone `Esc` costs, so keep it short. |
 | [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings. |
 | [`HorizontalPadding`](#horizontalpadding) | Cells kept free on the left and right of the content area. |
+| [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself. |
 | [`InputPollInterval`](#inputpollinterval) | How long the input loop sleeps when no key is waiting. |
 | [`Keymap`](#keymap) | Keys the framework itself reacts to. |
 | [`MinimumHeight`](#minimumheight) | Below this height the view is replaced by a "make the window bigger" notice. |
@@ -40,7 +44,8 @@ public sealed class ArlecchinoOptions
 | [`StartRoute`](#startroute) | Route shown on the first frame. For a start that depends on state, use a startup. |
 | [`Strings`](#strings) | Every piece of text the framework draws. |
 | [`TargetFramesPerSecond`](#targetframespersecond) | How often the loop may draw. Frames are only composed when something asked for one. |
-| [`TextInput`](#textinput) | How a key press becomes a character on a non-latin layout. |
+| [`TerminalAnswer`](#terminalanswer) | How long to wait for the terminal to finish answering. See [`ArlecchinoOptions.AskTerminal`](../arlecchino.hosting/ArlecchinoOptions.md#askterminal). |
+| [`TextInput`](#textinput) | How a key press becomes a character on a non-latin layout. Whatever the terminal reports is taken by default, so any language can be typed without the application asking for it; [`ArlecchinoBuilder.UseKeysByPosition`](../arlecchino.hosting/ArlecchinoBuilder.md#usekeysbyposition) trades that for keys that always read the same. |
 | [`Theme`](#theme) | Colours behind the roles. Installed into [`Theme`](../arlecchino.rendering/Theme.md) on resolve. |
 | [`UseAlternateScreen`](#usealternatescreen) | Whether to run on the alternate screen, which leaves the user's scrollback untouched on exit. |
 | [`VerticalPadding`](#verticalpadding) | Rows kept free above and below the content area. |
@@ -55,6 +60,16 @@ public ArlecchinoOptions();
 
 ## Properties in detail
 
+### `AskTerminal` {#askterminal}
+
+```csharp
+public bool AskTerminal { get; set; }
+```
+
+Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) then has nothing to go on and settles for cells.
+
+**Type** `bool`
+
 ### `BracketedPaste` {#bracketedpaste}
 
 ```csharp
@@ -64,6 +79,26 @@ public bool BracketedPaste { get; set; }
 Whether pasted text arrives as one block. On by default: without it a paste reads as a burst of key presses, and a long one can trip validation or a shortcut halfway through.
 
 **Type** `bool`
+
+### `CellHeight` {#cellheight}
+
+```csharp
+public int CellHeight { get; set; }
+```
+
+How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth).
+
+**Type** `int`
+
+### `CellWidth` {#cellwidth}
+
+```csharp
+public int CellWidth { get; set; }
+```
+
+How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font.
+
+**Type** `int`
 
 ### `CommandPaletteKey` {#commandpalettekey}
 
@@ -104,6 +139,16 @@ public int HorizontalPadding { get; set; }
 Cells kept free on the left and right of the content area.
 
 **Type** `int`
+
+### `ImageProtocol` {#imageprotocol}
+
+```csharp
+public ImageProtocol ImageProtocol { get; set; }
+```
+
+How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself.
+
+**Type** [`ImageProtocol`](../arlecchino.rendering/ImageProtocol.md)
 
 ### `InputPollInterval` {#inputpollinterval}
 
@@ -225,13 +270,23 @@ How often the loop may draw. Frames are only composed when something asked for o
 
 **Type** `int`
 
+### `TerminalAnswer` {#terminalanswer}
+
+```csharp
+public TimeSpan TerminalAnswer { get; set; }
+```
+
+How long to wait for the terminal to finish answering. See [`ArlecchinoOptions.AskTerminal`](../arlecchino.hosting/ArlecchinoOptions.md#askterminal).
+
+**Type** `TimeSpan`
+
 ### `TextInput` {#textinput}
 
 ```csharp
 public TextInputMode TextInput { get; set; }
 ```
 
-How a key press becomes a character on a non-latin layout.
+How a key press becomes a character on a non-latin layout. Whatever the terminal reports is taken by default, so any language can be typed without the application asking for it; [`ArlecchinoBuilder.UseKeysByPosition`](../arlecchino.hosting/ArlecchinoBuilder.md#usekeysbyposition) trades that for keys that always read the same.
 
 **Type** [`TextInputMode`](../arlecchino.input/TextInputMode.md)
 

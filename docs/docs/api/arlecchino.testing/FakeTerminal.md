@@ -52,6 +52,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal
 | [`LeaveFullScreen()`](#leavefullscreen) | Records that the screen was given back, which is what a test checks after a crash. |
 | [`ReadKey()`](#readkey) | Takes the next queued key, or nothing when the queue has run dry. |
 | [`ReadMouse()`](#readmouse) | Takes the next queued mouse event, or nothing when the queue has run dry. |
+| [`Unread(ConsoleKeyInfo)`](#unread-consolekeyinfo) | Puts a key back so the next read returns it. |
 | [`Write(string)`](#write-string) | Collects output instead of showing it. |
 
 ## Constructors in detail
@@ -296,6 +297,20 @@ public MouseEvent ReadMouse();
 Takes the next queued mouse event, or nothing when the queue has run dry.
 
 **Returns** [`MouseEvent`](../arlecchino.input/MouseEvent.md) — The event.
+
+### `Unread(ConsoleKeyInfo)` {#unread-consolekeyinfo}
+
+```csharp
+public void Unread(ConsoleKeyInfo key);
+```
+
+Puts a key back so the next read returns it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `ConsoleKeyInfo` | The key to put back. |
 
 ### `Write(string)` {#write-string}
 

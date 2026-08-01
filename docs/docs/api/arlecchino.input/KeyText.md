@@ -23,7 +23,7 @@ public sealed class KeyText
 
 | Member | Summary |
 |---|---|
-| [`LatinOnly`](#latinonly) | Shared resolver for [`TextInputMode.LatinOnly`](../arlecchino.input/TextInputMode.md). |
+| [`ByPosition`](#byposition) | Shared resolver for [`TextInputMode.ByPosition`](../arlecchino.input/TextInputMode.md). |
 | [`Mode`](#mode) | The mode this resolver works in. |
 | [`Native`](#native) | Shared resolver for [`TextInputMode.Native`](../arlecchino.input/TextInputMode.md). |
 
@@ -52,13 +52,13 @@ Creates a resolver for one mode.
 
 ## Properties in detail
 
-### `LatinOnly` {#latinonly}
+### `ByPosition` {#byposition}
 
 ```csharp
-public static KeyText LatinOnly { get; }
+public static KeyText ByPosition { get; }
 ```
 
-Shared resolver for [`TextInputMode.LatinOnly`](../arlecchino.input/TextInputMode.md).
+Shared resolver for [`TextInputMode.ByPosition`](../arlecchino.input/TextInputMode.md).
 
 **Type** [`KeyText`](../arlecchino.input/KeyText.md)
 

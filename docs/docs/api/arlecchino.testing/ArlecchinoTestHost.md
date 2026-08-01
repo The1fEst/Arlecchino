@@ -50,6 +50,9 @@ public sealed class ArlecchinoTestHost : IDisposable
 | [`Press(ConsoleKey, bool, bool, bool)`](#press-consolekey-bool-bool-bool) | Presses a key, routed exactly as a real one would be. |
 | [`ReadFromTerminal(string)`](#readfromterminal-string) | Feeds raw characters through the reader that recognises escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports. |
 | [`Scroll(int, int, bool)`](#scroll-int-int-bool) | Turns the wheel over a cell. |
+| [`Send(ConsoleKeyInfo)`](#send-consolekeyinfo) | Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-bool-bool-bool) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter. |
+| [`Send(MouseEvent)`](#send-mouseevent) | Routes a mouse event exactly as the terminal reported it. |
+| [`SendPaste(string)`](#sendpaste-string) | Pastes a block of text, as bracketed paste delivers it. |
 | [`Styles()`](#styles) | Draws a frame and returns the colour sequences in it, in order. |
 | [`Type(string)`](#type-string) | Types text one character at a time. The presses carry a character but no key, which is what a terminal reports for ordinary typing. |
 
@@ -312,6 +315,48 @@ Turns the wheel over a cell.
 | `row` | `int` | Row the pointer is over. |
 | `column` | `int` | Column the pointer is over. |
 | `down` | `bool` | Whether the wheel turned down. |
+
+### `Send(ConsoleKeyInfo)` {#send-consolekeyinfo}
+
+```csharp
+public void Send(ConsoleKeyInfo key);
+```
+
+Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-bool-bool-bool) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `ConsoleKeyInfo` | The key as the terminal reported it. |
+
+### `Send(MouseEvent)` {#send-mouseevent}
+
+```csharp
+public void Send(MouseEvent mouse);
+```
+
+Routes a mouse event exactly as the terminal reported it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `mouse` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) | The event. |
+
+### `SendPaste(string)` {#sendpaste-string}
+
+```csharp
+public void SendPaste(string text);
+```
+
+Pastes a block of text, as bracketed paste delivers it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `text` | `string` | What was pasted. |
 
 ### `Styles()` {#styles}
 
