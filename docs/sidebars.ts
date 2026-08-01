@@ -59,7 +59,12 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Releases',
-      items: ['migrating-to-3.0', 'whats-new-in-2.0', 'migrating-to-2.0'],
+      items: [
+        'whats-new-in-3.0',
+        'migrating-to-3.0',
+        'whats-new-in-2.0',
+        'migrating-to-2.0',
+      ],
     },
   ],
 
