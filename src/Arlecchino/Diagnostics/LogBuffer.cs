@@ -56,9 +56,7 @@ public sealed class LogBuffer
 
         lock (_trimming)
         {
-            while (_entries.Count > Capacity && _entries.TryDequeue(out _))
-            {
-            }
+            while (_entries.Count > Capacity && _entries.TryDequeue(out _)) { }
         }
 
         _repaint.Request();
@@ -74,9 +72,7 @@ public sealed class LogBuffer
 
         lock (_trimming)
         {
-            while (_entries.TryDequeue(out _))
-            {
-            }
+            while (_entries.TryDequeue(out _)) { }
         }
 
         _repaint.Request();

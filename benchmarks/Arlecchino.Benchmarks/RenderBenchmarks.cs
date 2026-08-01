@@ -107,38 +107,22 @@ public class RenderBenchmarks
 
         public ConsoleKeyInfo ReadKey() => default;
 
-        public void Unread(ConsoleKeyInfo key)
-        {
-        }
+        public void Unread(ConsoleKeyInfo key) { }
 
         public MouseEvent ReadMouse() => default;
 
-        public void EnterFullScreen()
-        {
-        }
+        public void EnterFullScreen() { }
 
-        public void LeaveFullScreen()
-        {
-        }
+        public void LeaveFullScreen() { }
 
-        public void EnableMouse()
-        {
-        }
+        public void EnableMouse() { }
 
-        public void DisableMouse()
-        {
-        }
+        public void DisableMouse() { }
 
-        public void EnablePaste()
-        {
-        }
+        public void EnablePaste() { }
 
-        public void DisablePaste()
-        {
-        }
+        public void DisablePaste() { }
 
-        public void CopyToClipboard(string text)
-        {
-        }
+        public void CopyToClipboard(string text) { }
     }
 }

@@ -43,9 +43,7 @@ public sealed class ReentrancyTests
     {
         public ClosingView(ViewLifetime lifetime) => lifetime.Track(new Nested(lifetime));
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
 
@@ -60,9 +58,7 @@ public sealed class ReentrancyTests
 
         private sealed class Leaf : IDisposable
         {
-            public void Dispose()
-            {
-            }
+            public void Dispose() { }
         }
     }
 }

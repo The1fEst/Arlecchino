@@ -5,7 +5,7 @@ charset = utf-8
 end_of_line = lf
 indent_style = space
 indent_size = 4
-insert_final_newline = false
+insert_final_newline = true
 trim_trailing_whitespace = true
 
 # Microsoft .NET properties
@@ -57,7 +57,7 @@ resharper_braces_for_ifelse = required
 resharper_braces_for_while = required
 resharper_braces_redundant = false
 resharper_csharp_empty_block_style = together_same_line
-resharper_csharp_insert_final_newline = false
+resharper_csharp_insert_final_newline = true
 resharper_csharp_wrap_lines = false
 resharper_csharp_wrap_parameters_style = chop_if_long
 resharper_formatter_off_tag = @formatter:off

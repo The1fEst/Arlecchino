@@ -166,9 +166,7 @@ public sealed class NavigationTests
 
         public static int Built { get; set; }
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
     }
@@ -193,9 +191,7 @@ public sealed class NavigationTests
     {
         public EagerView(Navigator navigator) => navigator.Apply(ViewKind.Other);
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
     }

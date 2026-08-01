@@ -39,9 +39,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
             Console.OutputEncoding = Encoding.UTF8;
             Console.CursorVisible = false;
         }
-        catch (IOException)
-        {
-        }
+        catch (IOException) { }
 
         if (OperatingSystem.IsWindows())
         {
@@ -85,7 +83,9 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     /// <returns>The key that was pressed.</returns>
     public ConsoleKeyInfo ReadKey() => _unread.TryDequeue(out var back)
         ? back
-        : _windowsInput is { } input ? input.ReadKey() : Console.ReadKey(true);
+        : _windowsInput is { } input
+            ? input.ReadKey()
+            : Console.ReadKey(true);
 
     /// <summary>Puts a key back so the next read returns it.</summary>
     /// <param name="key">The key to put back.</param>
@@ -118,9 +118,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
         {
             Console.CursorVisible = true;
         }
-        catch (IOException)
-        {
-        }
+        catch (IOException) { }
     }
 
     /// <summary>
@@ -212,12 +210,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
                 SetConsoleMode(handle, mode & ~flag);
             }
         }
-        catch (DllNotFoundException)
-        {
-        }
-        catch (EntryPointNotFoundException)
-        {
-        }
+        catch (DllNotFoundException) { }
+        catch (EntryPointNotFoundException) { }
     }
 
     private static bool TryAddConsoleMode(int standardHandle, uint flag)

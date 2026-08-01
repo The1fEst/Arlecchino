@@ -17,9 +17,7 @@ public sealed class TrackedAtom<T> : Atom<T>
     /// is used when omitted.
     /// </param>
     public TrackedAtom(T initial, IEqualityComparer<T>? comparer = null)
-        : base(initial, comparer)
-    {
-    }
+        : base(initial, comparer) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => true;

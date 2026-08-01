@@ -113,5 +113,4 @@ public abstract class Atom<T> : IReadableAtom<T>
 
         public void Redo() => _state.Write(_after, recordHistory: false);
     }
-
 }

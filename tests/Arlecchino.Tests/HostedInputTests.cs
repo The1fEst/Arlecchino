@@ -162,9 +162,7 @@ public sealed class HostedInputTests
     {
         public ILogger CreateLogger(string categoryName) => new Capturing();
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
 
         private sealed class Capturing : ILogger
         {
@@ -190,8 +188,6 @@ public sealed class HostedInputTests
 
         public CancellationToken ApplicationStopped => CancellationToken.None;
 
-        public void StopApplication()
-        {
-        }
+        public void StopApplication() { }
     }
 }

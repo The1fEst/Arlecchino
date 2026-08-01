@@ -30,9 +30,7 @@ internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
     public ILogger CreateLogger(string categoryName) => new BufferLogger(_buffer, ShortName(categoryName), _time);
 
     /// <summary>Nothing is held open, so there is nothing to release.</summary>
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 
     private static string ShortName(string categoryName)
     {

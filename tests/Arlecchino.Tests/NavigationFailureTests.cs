@@ -70,9 +70,7 @@ public sealed class NavigationFailureTests
     {
         public BrokenView() => throw new InvalidOperationException("the store is missing");
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
     }

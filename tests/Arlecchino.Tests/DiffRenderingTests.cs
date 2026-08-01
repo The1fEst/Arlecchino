@@ -139,5 +139,4 @@ public sealed class DiffRenderingTests
         app.State.RequestText("Name", "", null, static _ => { });
         Assert.True(repaint.TakeRequested());
     }
-
 }

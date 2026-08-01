@@ -18,9 +18,7 @@ public sealed class TrackedAtomsMap<TKey, TValue> : AtomsMap<TKey, TValue>
     public TrackedAtomsMap(
         IReadOnlyDictionary<TKey, TValue>? initial = null,
         IEqualityComparer<TKey>? comparer = null)
-        : base(initial, comparer)
-    {
-    }
+        : base(initial, comparer) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => true;

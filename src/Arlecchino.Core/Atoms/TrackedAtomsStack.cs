@@ -13,9 +13,7 @@ public sealed class TrackedAtomsStack<T> : AtomsStack<T>
     /// <summary>Creates an undoable stack.</summary>
     /// <param name="initial">What is already on it, top first; empty when omitted.</param>
     public TrackedAtomsStack(IReadOnlyList<T>? initial = null)
-        : base(initial)
-    {
-    }
+        : base(initial) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => true;

@@ -274,9 +274,7 @@ public sealed class FrameThreadTests
     {
         var value = new LocalAtom<int>(0);
 
-        using (FrameThread.Claim())
-        {
-        }
+        using (FrameThread.Claim()) { }
 
         value.Value = 3;
 

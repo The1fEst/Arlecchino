@@ -42,9 +42,7 @@ public sealed class SessionTape
     private DateTimeOffset _last;
 
     /// <summary>Starts an empty tape, for one written by hand.</summary>
-    public SessionTape()
-    {
-    }
+    public SessionTape() { }
 
     /// <summary>
     /// Starts an empty tape that measures the gaps between events itself, for one captured from an

@@ -38,9 +38,7 @@ public sealed class TerminalInputReader
     /// <param name="router">Where the result is sent.</param>
     /// <param name="options">Supplies how long to wait for the rest of a sequence.</param>
     public TerminalInputReader(IArlecchinoTerminal terminal, InputRouter router, ArlecchinoOptions options)
-        : this(terminal, router, options, null)
-    {
-    }
+        : this(terminal, router, options, null) { }
 
     internal TerminalInputReader(
         IArlecchinoTerminal terminal,

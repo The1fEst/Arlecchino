@@ -251,8 +251,6 @@ namespace Arlecchino.Sample
         public CancellationToken ApplicationStopping => CancellationToken.None;
         public CancellationToken ApplicationStopped => CancellationToken.None;
 
-        public void StopApplication()
-        {
-        }
+        public void StopApplication() { }
     }
 }

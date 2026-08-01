@@ -18,9 +18,7 @@ public sealed class LocalAtomsMap<TKey, TValue> : AtomsMap<TKey, TValue>
     public LocalAtomsMap(
         IReadOnlyDictionary<TKey, TValue>? initial = null,
         IEqualityComparer<TKey>? comparer = null)
-        : base(initial, comparer)
-    {
-    }
+        : base(initial, comparer) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => false;

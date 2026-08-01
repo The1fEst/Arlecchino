@@ -13,9 +13,7 @@ public sealed class LocalAtomsStack<T> : AtomsStack<T>
     /// <summary>Creates a stack outside the undo history.</summary>
     /// <param name="initial">What is already on it, top first; empty when omitted.</param>
     public LocalAtomsStack(IReadOnlyList<T>? initial = null)
-        : base(initial)
-    {
-    }
+        : base(initial) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => false;

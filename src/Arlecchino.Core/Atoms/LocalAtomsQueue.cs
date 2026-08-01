@@ -13,9 +13,7 @@ public sealed class LocalAtomsQueue<T> : AtomsQueue<T>
     /// <summary>Creates a queue outside the undo history.</summary>
     /// <param name="initial">What is already waiting, front first; empty when omitted.</param>
     public LocalAtomsQueue(IReadOnlyList<T>? initial = null)
-        : base(initial)
-    {
-    }
+        : base(initial) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => false;

@@ -103,9 +103,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         {
             await Task.WhenAll(_screen.Run(stoppingToken), ReadInput(stoppingToken));
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception exception)
         {
             Log.HostStopped(_logger, exception);
@@ -219,12 +217,8 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         {
             _signals.Add(PosixSignalRegistration.Create(signal, handler));
         }
-        catch (PlatformNotSupportedException)
-        {
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-        }
+        catch (PlatformNotSupportedException) { }
+        catch (ArgumentOutOfRangeException) { }
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)

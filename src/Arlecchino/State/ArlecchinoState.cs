@@ -28,6 +28,7 @@ public class ArlecchinoState
     private static readonly string Closing = FrameMembers.Of<ArlecchinoState>(nameof(CloseModal));
     private static readonly string ClosingAll = FrameMembers.Of<ArlecchinoState>(nameof(CloseAllModals));
     private static readonly string Picking = FrameMembers.Of<ArlecchinoState>(nameof(FilePicker));
+
     private static readonly string Remembering =
         FrameMembers.Of<ArlecchinoState>(nameof(PickerLastFolder));
 

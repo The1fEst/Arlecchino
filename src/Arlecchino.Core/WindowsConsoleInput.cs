@@ -171,14 +171,11 @@ internal sealed partial class WindowsConsoleInput
     [StructLayout(LayoutKind.Explicit)]
     private struct InputRecord
     {
-        [FieldOffset(0)]
-        public ushort EventType;
+        [FieldOffset(0)] public ushort EventType;
 
-        [FieldOffset(4)]
-        public KeyEventRecord Key;
+        [FieldOffset(4)] public KeyEventRecord Key;
 
-        [FieldOffset(4)]
-        public MouseEventRecord Mouse;
+        [FieldOffset(4)] public MouseEventRecord Mouse;
     }
 
     [StructLayout(LayoutKind.Sequential)]
