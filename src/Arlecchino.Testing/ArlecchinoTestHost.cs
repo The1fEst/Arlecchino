@@ -60,6 +60,13 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <summary>The terminal being drawn to, for asserting on raw output or resizing mid-test.</summary>
     public FakeTerminal Terminal { get; }
 
+    /// <summary>
+    /// What is on screen after every frame drawn so far. <see cref="FrameLines"/> reads the last frame
+    /// as it was written, which is the whole picture only while frames are written whole; this is the
+    /// picture itself, diffed frames and all.
+    /// </summary>
+    public ScreenGrid Screen => Terminal.Screen;
+
     /// <summary>The container, for reaching whatever the test registered.</summary>
     public IServiceProvider Services => _provider;
 
@@ -167,21 +174,36 @@ public sealed class ArlecchinoTestHost : IDisposable
         _provider.GetRequiredService<Ticker>().Run(static _ => { });
     }
 
-    /// <summary>Draws a frame and returns it as plain text, with the styling stripped.</summary>
-    /// <returns>The frame.</returns>
+    /// <summary>
+    /// Draws a frame the way a running application does — as the difference from the last one — and
+    /// returns what is on screen afterwards, styling and all stripped away.
+    ///
+    /// The frame written and the screen returned are not the same thing, and that is the point: an
+    /// idle frame writes nothing at all, and a frame that changed one cell writes one cell. Reading
+    /// the screen is what lets a test assert on the whole picture regardless.
+    /// </summary>
+    /// <returns>The screen.</returns>
     public string Frame()
     {
         DrainInput();
         Terminal.Clear();
-        _provider.GetRequiredService<Screen>().DrawOnce();
-        return FrameText.WithoutStyles(Terminal.Written);
+        _provider.GetRequiredService<Screen>().DrawFrame();
+        return string.Join("\r\n", Terminal.Screen.Lines());
     }
 
-    /// <summary>Draws a frame and returns its rows.</summary>
+    /// <summary>Draws a frame and returns the rows on screen afterwards.</summary>
     /// <returns>One string per row.</returns>
-    public string[] FrameLines() => Frame().Split("\r\n");
+    public string[] FrameLines()
+    {
+        Frame();
+        return Terminal.Screen.Lines();
+    }
 
-    /// <summary>Draws a frame and returns the colour sequences in it, in order.</summary>
+    /// <summary>
+    /// Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed
+    /// on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences
+    /// in it are the ones that changed rather than the ones the frame is drawn in.
+    /// </summary>
     /// <returns>The sequences as they appeared.</returns>
     public IReadOnlyList<string> Styles()
     {

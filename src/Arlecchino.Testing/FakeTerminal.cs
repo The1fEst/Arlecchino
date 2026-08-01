@@ -17,21 +17,48 @@ public sealed class FakeTerminal : IArlecchinoTerminal
     private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
     private readonly ConcurrentQueue<MouseEvent> _mouse = new();
     private readonly StringBuilder _written = new();
+    private int _width;
+    private int _height;
 
     /// <summary>Creates the terminal at a fixed size.</summary>
     /// <param name="width">Columns.</param>
     /// <param name="height">Rows.</param>
     public FakeTerminal(int width, int height)
     {
-        Width = width;
-        Height = height;
+        _width = width;
+        _height = height;
+        Screen = new(width, height);
     }
 
     /// <summary>Columns. Assigning simulates a resize.</summary>
-    public int Width { get; set; }
+    public int Width
+    {
+        get => _width;
+        set
+        {
+            _width = value;
+            Screen.Resize(value, _height);
+        }
+    }
 
     /// <summary>Rows. Assigning simulates a resize.</summary>
-    public int Height { get; set; }
+    public int Height
+    {
+        get => _height;
+        set
+        {
+            _height = value;
+            Screen.Resize(_width, value);
+        }
+    }
+
+    /// <summary>
+    /// What is on screen, rather than what was written to get it there. Frames are written as the
+    /// difference from the last one, so <see cref="Written"/> holds cursor jumps and short runs;
+    /// this holds the picture they add up to, and survives <see cref="Clear"/> the way a real screen
+    /// survives forgetting what you typed.
+    /// </summary>
+    public ScreenGrid Screen { get; }
 
     /// <summary>Whether the application took over the screen and has not given it back.</summary>
     public bool IsFullScreen { get; private set; }
@@ -71,9 +98,13 @@ public sealed class FakeTerminal : IArlecchinoTerminal
         }
     }
 
-    /// <summary>Collects output instead of showing it.</summary>
+    /// <summary>Collects output instead of showing it, and applies it to <see cref="Screen"/>.</summary>
     /// <param name="text">What was written.</param>
-    public void Write(string text) => _written.Append(text);
+    public void Write(string text)
+    {
+        _written.Append(text);
+        Screen.Apply(text);
+    }
 
     /// <summary>Takes the next queued key, or nothing when the queue has run dry.</summary>
     /// <returns>The key press.</returns>

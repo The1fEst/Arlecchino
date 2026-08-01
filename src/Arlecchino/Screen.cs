@@ -207,7 +207,12 @@ public class Screen
         return true;
     }
 
-    private void DrawFrame()
+    /// <summary>
+    /// Draws one frame the way the loop does, as the difference from the last one. Reachable from the
+    /// testing package so that a test drives the same path a running application takes, rather than
+    /// the whole-frame path <see cref="DrawOnce"/> forces.
+    /// </summary>
+    internal void DrawFrame()
     {
         FrameThread.RunPending(RunFailed);
 

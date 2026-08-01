@@ -1,1 +1,18 @@
 #nullable enable
+Arlecchino.Testing.ArlecchinoTestHost.Screen.get -> Arlecchino.Testing.ScreenGrid!
+Arlecchino.Testing.FakeTerminal.Screen.get -> Arlecchino.Testing.ScreenGrid!
+Arlecchino.Testing.ScreenGrid
+Arlecchino.Testing.ScreenGrid.Apply(string! output) -> void
+Arlecchino.Testing.ScreenGrid.CellAt(int row, int column) -> string!
+Arlecchino.Testing.ScreenGrid.CursorColumn.get -> int
+Arlecchino.Testing.ScreenGrid.CursorRow.get -> int
+Arlecchino.Testing.ScreenGrid.Height.get -> int
+Arlecchino.Testing.ScreenGrid.IsCursorVisible.get -> bool
+Arlecchino.Testing.ScreenGrid.Line(int row) -> string!
+Arlecchino.Testing.ScreenGrid.Lines() -> string![]!
+Arlecchino.Testing.ScreenGrid.Matches(Arlecchino.Testing.ScreenGrid! other) -> bool
+Arlecchino.Testing.ScreenGrid.Resize(int width, int height) -> void
+Arlecchino.Testing.ScreenGrid.ScreenGrid(int width, int height) -> void
+Arlecchino.Testing.ScreenGrid.StyleAt(int row, int column) -> string!
+Arlecchino.Testing.ScreenGrid.Width.get -> int
+override Arlecchino.Testing.ScreenGrid.ToString() -> string!

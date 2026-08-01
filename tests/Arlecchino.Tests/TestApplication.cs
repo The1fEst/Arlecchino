@@ -27,6 +27,8 @@ public sealed class TestApplication : IDisposable
 
     public FakeTerminal Terminal => _host.Terminal;
 
+    public ScreenGrid Screen => _host.Screen;
+
     public IServiceProvider Services => _host.Services;
 
     public ArlecchinoState State => _host.State;
