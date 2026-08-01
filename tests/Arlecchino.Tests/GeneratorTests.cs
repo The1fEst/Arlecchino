@@ -509,7 +509,8 @@ public sealed class GeneratorTests
         var (generated, diagnostics) = Run(source);
 
         Assert.Contains("public static ArlecchinoBuilder AddGeneratedViews(this ArlecchinoBuilder builder)",
-            generated, StringComparison.Ordinal);
+            generated,
+            StringComparison.Ordinal);
         Assert.Contains("public static ViewRoute None => ViewRoute.None;", generated, StringComparison.Ordinal);
         Assert.DoesNotContain("switch (route.Name)", generated, StringComparison.Ordinal);
 
