@@ -111,6 +111,49 @@ The helper behind the frame assertions, public for tests that do their own:
 | `CursorJumpsIn(text)` | The cursor moves, for asserting on the differential write |
 | `BoxWidth(lines)` | Checks that a box is rectangular |
 
+## SessionTape
+
+A tape is a session written down: every event that goes in, how long the application waits for it,
+and where a frame is worth looking at. It is for writing a test as the session it describes, rather
+than as a dozen calls with the assertions lost among them.
+
+```csharp
+var frames = new SessionTape()
+    .Type(":")
+    .Shot()
+    .Type("copy")
+    .Wait(200)
+    .Shot()
+    .Play(host);
+
+Assert.Contains("Copy files", frames[^1], StringComparison.Ordinal);
+```
+
+`Play` returns one frame per `Shot`, in order. Playing a tape draws the same frames every time: a
+screen here is a function of state, state only changes on an event, and the time comes from a
+provider rather than from the clock on the wall — so `Wait` moves the clock instead of sleeping.
+
+| Step | What it does |
+|---|---|
+| `Key(key, shift, alt, control)` | One key press |
+| `Type(text)` | Each character as its own key |
+| `Click(row, column, button)` / `Scroll(row, column, down)` | Mouse |
+| `Paste(text)` | A block arriving through bracketed paste |
+| `Wait(milliseconds)` | Moves the clock forward |
+| `Shot()` | Marks a frame worth keeping |
+
+A tape holds what the terminal reported rather than what it meant, so it replays the same whatever
+the keyboard layout, and it holds no application state at all — only what was done to it. `ToString`
+writes it out and `Read` takes it back, so a tape travels as a file.
+
+:::caution[Not for recording a real session]
+
+`RecordKey` and `RecordMouse` exist for a harness building a tape from events it already has. Do not
+point them at a running application: the framework has a password modal and a paste step, so a tape
+captured that way would hold whatever a person typed into them.
+
+:::
+
 ## What a test is usually about
 
 | Question | How |

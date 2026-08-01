@@ -104,15 +104,16 @@ Text input — modal fields, list filters, the palette key — goes through `Key
 
 | Mode | Behaviour |
 |---|---|
-| `TextInputMode.LatinOnly` (default) | ASCII characters are taken as typed; anything else falls back to the physical key position, so a Cyrillic layout still produces `q` for the `Q` key |
-| `TextInputMode.Native` | Any non-control character is taken as typed |
+| `TextInputMode.Native` (default) | Any non-control character is taken as typed, so a layout that is not Latin works without being asked for |
+| `TextInputMode.ByPosition` | Every character comes from where its key sits on the keyboard rather than from what the layout makes of it, so the key left of `S` types `a` whether the layout says `a`, `ф` or `α` |
 
 ```csharp
-.UseNativeInput()      // or .UseLatinOnlyInput(), or options.TextInput = TextInputMode.Native
+.UseKeysByPosition()   // or options.TextInput = TextInputMode.ByPosition
 ```
 
-The fallback covers letters, digits (with shifted symbols), the numpad, space and the OEM punctuation
-keys.
+Position covers letters, digits (with shifted symbols), the numpad, space and the OEM punctuation
+keys. The price of that mode is worth stating plainly: in it, the languages those layouts exist for
+cannot be typed at all.
 
 :::tip
 

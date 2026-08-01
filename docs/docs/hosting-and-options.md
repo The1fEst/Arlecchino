@@ -49,12 +49,17 @@ it puts in the container are singletons:
 | `ShowHints` | `true` | Draw the `Keys` box from the current view's `Hints()` |
 | `ShowOutputLine` | `true` | Draw `ArlecchinoState.Output` on the last row |
 | `CommandPaletteKey` | `':'` | Key that opens the palette |
-| `TextInput` | `LatinOnly` | How typed characters are resolved |
+| `TextInput` | `Native` | How typed characters are resolved |
 | `MouseInput` | `false` | Report clicks, drags and the wheel to views |
 | `BracketedPaste` | `true` | Pasted text arrives as one block instead of a burst of keys |
 | `EscapeTimeout` | `25 ms` | How long the reader waits for the rest of an escape sequence |
 | `Keymap` | `new ArlecchinoKeymap()` | Keys the framework itself reacts to |
 | `Theme` | `ThemePalette.Arlecchino` | Colour roles |
+| `GraphSymbols` | `Braille` | Which characters charts are drawn with |
+| `ImageProtocol` | `Auto` | How a `Picture` reaches the terminal |
+| `AskTerminal` | `true` | Ask the terminal what it can draw before the first frame |
+| `TerminalAnswer` | `120 ms` | How long to wait for that answer before giving up on it |
+| `CellWidth` / `CellHeight` | `10` / `20` | Pixels a cell is taken to be when the terminal will not say |
 | `Strings` | `new ArlecchinoStrings()` | User-visible text |
 | `StartRoute` | `ViewRoute.None` | Route shown on the first frame |
 | `InputPollInterval` | `8 ms` | Sleep between key polls when the input queue is empty |
@@ -76,7 +81,7 @@ it puts in the container are singletons:
 | `AddCommand<T>()` | Registers one `IArlecchinoCommand` by hand; an alternative to `AddGeneratedCommands()`, not a layer on top |
 | `AddStartup<T>()` | Registers an `IArlecchinoStartup` |
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |
-| `UseTextInput(mode)`, `UseLatinOnlyInput()`, `UseNativeInput()` | Keyboard layout handling |
+| `UseTextInput(mode)`, `UseKeysByPosition()` | Keyboard layout handling |
 | `UseKeymap(keymap)` | Replaces the key bindings |
 | `UseNotifications(key, timeout, lifetime)` | Turns the output row on, sets both timeouts and the key that opens the notifications screen |
 | `WithoutNotifications()` | Leaves the output row off |
