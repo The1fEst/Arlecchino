@@ -1,1 +1,21 @@
 #nullable enable
+Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.MouseEvent mouse) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Send(System.ConsoleKeyInfo key) -> void
+Arlecchino.Testing.ArlecchinoTestHost.SendPaste(string! text) -> void
+Arlecchino.Testing.FakeTerminal.Unread(System.ConsoleKeyInfo key) -> void
+Arlecchino.Testing.SessionTape
+Arlecchino.Testing.SessionTape.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Count.get -> int
+Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Paste(string! text) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Play(Arlecchino.Testing.ArlecchinoTestHost! host) -> System.Collections.Generic.List<string!>!
+Arlecchino.Testing.SessionTape.RecordKey(System.ConsoleKeyInfo key) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.RecordMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Scroll(int row, int column, bool down) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.SessionTape() -> void
+Arlecchino.Testing.SessionTape.SessionTape(System.TimeProvider! clock) -> void
+Arlecchino.Testing.SessionTape.Shot() -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Type(string! text) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Wait(int milliseconds) -> Arlecchino.Testing.SessionTape!
+override Arlecchino.Testing.SessionTape.ToString() -> string!
+static Arlecchino.Testing.SessionTape.Read(string! text) -> Arlecchino.Testing.SessionTape!

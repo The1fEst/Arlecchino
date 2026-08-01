@@ -263,7 +263,8 @@ public class InputRouter
 
     private void ClickCommandModal(CommandModal modal, MouseEvent mouse)
     {
-        if (mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left ||
+        if (mouse.Action != MouseAction.Pressed ||
+            mouse.Button != MouseButton.Left ||
             !modal.Rows.Contains(mouse.Row, mouse.Column))
         {
             return;
@@ -332,7 +333,8 @@ public class InputRouter
             }
 
             modal.Channel = (ColorChannel)channel;
-            DragTrack(modal.ChannelTracks[channel], mouse,
+            DragTrack(modal.ChannelTracks[channel],
+                mouse,
                 fraction => modal.SetChannelFromFraction((ColorChannel)channel, fraction));
             return;
         }
@@ -340,7 +342,8 @@ public class InputRouter
 
     private static void DragTrack(SurfaceRegion track, MouseEvent mouse, Action<decimal> apply)
     {
-        if (track.IsEmpty || mouse.Action is not (MouseAction.Pressed or MouseAction.Moved) ||
+        if (track.IsEmpty ||
+            mouse.Action is not (MouseAction.Pressed or MouseAction.Moved) ||
             !track.Contains(mouse.Row, mouse.Column))
         {
             return;
@@ -901,8 +904,10 @@ public class InputRouter
             return;
         }
 
-        if (_keymap.MoveLeft.Matches(key) || _keymap.MoveRight.Matches(key) ||
-            _keymap.NextField.Matches(key) || _keymap.Mark.Matches(key))
+        if (_keymap.MoveLeft.Matches(key) ||
+            _keymap.MoveRight.Matches(key) ||
+            _keymap.NextField.Matches(key) ||
+            _keymap.Mark.Matches(key))
         {
             modal.Value = !modal.Value;
         }

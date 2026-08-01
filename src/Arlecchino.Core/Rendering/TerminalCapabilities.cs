@@ -37,6 +37,55 @@ public static class TerminalCapabilities
     /// </summary>
     public static ColorSupport Color { get; set; } = DetectColor();
 
+    /// <summary>
+    /// Whether the terminal said it speaks sixel. Set by <see cref="TerminalProbe.Ask"/>; assign it to
+    /// answer for a terminal that will not, and read it to decide what to offer in a settings screen.
+    /// </summary>
+    public static bool Sixel { get; set; }
+
+    /// <summary>
+    /// Whether the terminal answered the kitty graphics query. Set by <see cref="TerminalProbe.Ask"/>;
+    /// assign it to answer for a terminal that will not.
+    /// </summary>
+    public static bool Kitty { get; set; }
+
+    /// <summary>
+    /// Whether <see cref="Glyphs.CellWidth"/> and <see cref="Glyphs.CellHeight"/> came from the terminal
+    /// rather than from the standing guess. Sixel sizing rests on them, so this is how an application
+    /// tells a picture that will land exactly from one that will land approximately — and it is the only
+    /// way to tell a terminal that reported ten by twenty from one that said nothing.
+    /// </summary>
+    public static bool CellSizeKnown { get; set; }
+
+    /// <summary>
+    /// The colour behind the text, as the terminal reported it, or <c>null</c> when it did not say.
+    ///
+    /// It is here because undrawing a sixel means painting over it, and painting needs a colour: sixel
+    /// writes pixels into the screen rather than into a registry of images, so there is nothing to
+    /// delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle
+    /// on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal
+    /// has said what colour to paint.
+    /// </summary>
+    public static Rgb? Background { get; set; }
+
+    /// <summary>
+    /// Turns <see cref="ImageProtocol.Auto"/> into the best of what the terminal admitted to, and hands
+    /// anything else back unchanged. Kitty first: it carries exact colour and lets the terminal do the
+    /// scaling, where sixel takes a palette of 256 and a guess at the size of a cell.
+    ///
+    /// With nothing detected this answers <see cref="ImageProtocol.Blocks"/>, which is why a picture
+    /// still appears on a terminal that never replied.
+    /// </summary>
+    /// <param name="protocol">What was asked for.</param>
+    /// <returns>What to actually draw with.</returns>
+    public static ImageProtocol Resolve(ImageProtocol protocol) => protocol switch
+    {
+        ImageProtocol.Auto when Kitty => ImageProtocol.Kitty,
+        ImageProtocol.Auto when Sixel => ImageProtocol.Sixel,
+        ImageProtocol.Auto => ImageProtocol.Blocks,
+        _ => protocol,
+    };
+
     /// <summary>Reads the environment and decides what the terminal can show.</summary>
     /// <returns>The detected level of colour support.</returns>
     public static ColorSupport DetectColor() => DetectColor(

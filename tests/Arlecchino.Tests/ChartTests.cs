@@ -237,6 +237,8 @@ public sealed class ChartTests
     [Fact]
     public void TheFillChangesColourWhereItCrossesABand()
     {
+        using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
+
         var oneBand = new Gauge { Value = 100, Bands = [new(0m, Theme.Active)] };
         var crossing = new Gauge { Value = 100, Bands = [new(0m, Theme.Active), new(50m, Theme.Error)] };
 

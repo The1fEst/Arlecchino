@@ -122,12 +122,6 @@ public sealed class Sparkline : IArlecchinoWidget
 /// </summary>
 public sealed class AreaChart : IArlecchinoWidget
 {
-    private const int BrailleBase = 0x2800;
-
-    private static readonly char[] QuadrantsUp = [' ', '▗', '▐', '▖', '▄', '▟', '▌', '▙', '█'];
-    private static readonly char[] QuadrantsDown = [' ', '▝', '▐', '▘', '▀', '▜', '▌', '▛', '█'];
-    private static readonly char[] Shades = [' ', '░', '▒', '█'];
-
     /// <summary>
     /// The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application
     /// appends to between frames is exactly the right thing to hand over.
@@ -175,14 +169,9 @@ public sealed class AreaChart : IArlecchinoWidget
             return region;
         }
 
-        var symbols = Symbols ?? Glyphs.Graph;
-        var perCell = symbols == GraphSymbols.Tty ? 1 : 2;
-        var levels = symbols switch
-        {
-            GraphSymbols.Braille => 4,
-            GraphSymbols.Blocks => 2,
-            _ => 3,
-        };
+        var glyphs = GraphGlyphs.Chosen(Symbols ?? Glyphs.Graph);
+        var perCell = glyphs.PerCell;
+        var levels = glyphs.Levels;
 
         var samples = region.Width * perCell;
         var first = Math.Max(0, Values.Count - samples);
@@ -199,47 +188,17 @@ public sealed class AreaChart : IArlecchinoWidget
             for (var cell = 0; cell < region.Width; cell++)
             {
                 var slot = oldest + (cell * perCell);
-                var left = LevelAt(slot, floor, ceiling, low, span, levels);
 
-                if (symbols == GraphSymbols.Tty)
-                {
-                    row[cell] = Shades[left];
-                    continue;
-                }
-
-                var right = LevelAt(slot + 1, floor, ceiling, low, span, levels);
-
-                row[cell] = symbols == GraphSymbols.Braille
-                    ? Braille(left, right, Invert)
-                    : (Invert ? QuadrantsDown : QuadrantsUp)[(left * 3) + right];
+                row[cell] = glyphs.Of(
+                    LevelAt(slot, floor, ceiling, low, span, levels),
+                    LevelAt(slot + 1, floor, ceiling, low, span, levels),
+                    Invert);
             }
 
             region.Write(line, 0, new(row), ColourOf(ceiling, low, span));
         }
 
         return region.Rows(region.Height, 0);
-    }
-
-    private static char Braille(int left, int right, bool inverted)
-    {
-        var bits = 0;
-
-        for (var dot = 0; dot < 4; dot++)
-        {
-            var lit = inverted ? dot : 3 - dot;
-
-            if (dot < left)
-            {
-                bits |= lit switch { 0 => 0x01, 1 => 0x02, 2 => 0x04, _ => 0x40 };
-            }
-
-            if (dot < right)
-            {
-                bits |= lit switch { 0 => 0x08, 1 => 0x10, 2 => 0x20, _ => 0x80 };
-            }
-        }
-
-        return (char)(BrailleBase + bits);
     }
 
     private int LevelAt(int index, decimal floor, decimal ceiling, decimal low, decimal span, int levels)
@@ -295,7 +254,8 @@ public sealed class AreaChart : IArlecchinoWidget
 
         var below = Bands[found];
 
-        if (found == Bands.Count - 1 || below.Style is not TermColor from ||
+        if (found == Bands.Count - 1 ||
+            below.Style is not TermColor from ||
             Bands[found + 1].Style is not TermColor to)
         {
             return below.Style;

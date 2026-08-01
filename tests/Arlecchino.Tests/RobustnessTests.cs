@@ -51,9 +51,7 @@ public sealed class RobustnessTests
     {
         using var app = new TestApplication();
 
-        using (app.History.Group())
-        {
-        }
+        using (app.History.Group()) { }
 
         Assert.False(app.History.CanUndo);
     }

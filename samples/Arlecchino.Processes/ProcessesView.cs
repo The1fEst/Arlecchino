@@ -129,11 +129,14 @@ public sealed class ProcessesView : IArlecchinoView
     }
 
     private void Filter() =>
-        _state.RequestText("Filter", _processes.Filter.Value, null, typed =>
-        {
-            _processes.Filter.Value = typed;
-            _table.Selected = 0;
-        });
+        _state.RequestText("Filter",
+            _processes.Filter.Value,
+            null,
+            typed =>
+            {
+                _processes.Filter.Value = typed;
+                _table.Selected = 0;
+            });
 
     private string Headline() => _processes.Rows.Error.Value is { } failure
         ? $"could not read the process list — {failure.Message}"

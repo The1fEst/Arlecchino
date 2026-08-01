@@ -23,8 +23,8 @@ internal static class TypeNames
         for (var type = symbol; type is not null; type = type.ContainingType)
         {
             if (type.DeclaredAccessibility is not (Accessibility.Public or
-                                                   Accessibility.Internal or
-                                                   Accessibility.ProtectedOrInternal))
+                Accessibility.Internal or
+                Accessibility.ProtectedOrInternal))
             {
                 return false;
             }

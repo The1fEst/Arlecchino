@@ -116,9 +116,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
                 _status.Value = LoadStatus.Loaded;
             });
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception exception)
         {
             if (running.IsCancellationRequested)

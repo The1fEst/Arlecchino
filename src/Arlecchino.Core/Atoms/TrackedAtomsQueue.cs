@@ -13,9 +13,7 @@ public sealed class TrackedAtomsQueue<T> : AtomsQueue<T>
     /// <summary>Creates an undoable queue.</summary>
     /// <param name="initial">What is already waiting, front first; empty when omitted.</param>
     public TrackedAtomsQueue(IReadOnlyList<T>? initial = null)
-        : base(initial)
-    {
-    }
+        : base(initial) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => true;

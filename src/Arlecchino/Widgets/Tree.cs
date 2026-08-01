@@ -133,7 +133,9 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
             var marker = node.HasChildren ? node.IsExpanded ? ExpandedMarker : CollapsedMarker : LeafMarker;
             var line = new string(' ', depth * IndentWidth) + marker + Render(node.Value);
 
-            region.Write(row, 0, TextWidth.PadRight(TextWidth.Truncate(line, textWidth), textWidth),
+            region.Write(row,
+                0,
+                TextWidth.PadRight(TextWidth.Truncate(line, textWidth), textWidth),
                 StyleOf(node, index));
         }
 

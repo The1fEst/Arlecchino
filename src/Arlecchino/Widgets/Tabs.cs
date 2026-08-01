@@ -116,8 +116,10 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// <returns>What became of the event.</returns>
     public FocusResult HandleMouse(MouseEvent mouse)
     {
-        if (_drawn.IsEmpty || !_drawn.Contains(mouse.Row, mouse.Column) ||
-            mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left)
+        if (_drawn.IsEmpty ||
+            !_drawn.Contains(mouse.Row, mouse.Column) ||
+            mouse.Action != MouseAction.Pressed ||
+            mouse.Button != MouseButton.Left)
         {
             return FocusResult.Ignored;
         }

@@ -137,8 +137,10 @@ public sealed class BoundaryTests
     [Fact]
     public void TwoCommandsClaimingTheSameKey()
     {
-        using var app = new TestApplication(80, 24, static builder => builder
-            .AddView<ClashingView>("Clashing"));
+        using var app = new TestApplication(80,
+            24,
+            static builder => builder
+                .AddView<ClashingView>("Clashing"));
 
         app.Navigator.Apply(new("Clashing"));
         app.Press(ConsoleKey.D);

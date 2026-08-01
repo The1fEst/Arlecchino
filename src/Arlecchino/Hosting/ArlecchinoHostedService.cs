@@ -10,6 +10,7 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Arlecchino.Input;
 using Arlecchino.Atoms;
+using Arlecchino.Rendering;
 
 namespace Arlecchino.Hosting;
 
@@ -19,7 +20,7 @@ namespace Arlecchino.Hosting;
 /// Ctrl+C, an unhandled error, even process exit — because a terminal left in full-screen mode with
 /// the mouse captured is unusable once the process is gone.
 /// </summary>
-internal class ArlecchinoHostedService : BackgroundService
+internal sealed class ArlecchinoHostedService : BackgroundService
 {
     private readonly IArlecchinoTerminal _terminal;
     private readonly Screen _screen;
@@ -102,9 +103,7 @@ internal class ArlecchinoHostedService : BackgroundService
         {
             await Task.WhenAll(_screen.Run(stoppingToken), ReadInput(stoppingToken));
         }
-        catch (OperationCanceledException)
-        {
-        }
+        catch (OperationCanceledException) { }
         catch (Exception exception)
         {
             Log.HostStopped(_logger, exception);
@@ -126,6 +125,19 @@ internal class ArlecchinoHostedService : BackgroundService
         if (_options.UseAlternateScreen)
         {
             _terminal.EnterFullScreen();
+        }
+
+        if (_options.AskTerminal)
+        {
+            var answered = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
+
+            Log.TerminalAnswered(
+                _logger,
+                answered,
+                TerminalCapabilities.Sixel,
+                TerminalCapabilities.Kitty,
+                Glyphs.CellWidth,
+                Glyphs.CellHeight);
         }
 
         if (_options.MouseInput)
@@ -192,11 +204,12 @@ internal class ArlecchinoHostedService : BackgroundService
 
         Register(PosixSignal.SIGHUP, _ => LeaveTerminalModes());
         Register(PosixSignal.SIGTSTP, _ => LeaveTerminalModes());
-        Register(PosixSignal.SIGCONT, _ =>
-        {
-            EnterTerminalModes();
-            _screen.RedrawEverything();
-        });
+        Register(PosixSignal.SIGCONT,
+            _ =>
+            {
+                EnterTerminalModes();
+                _screen.RedrawEverything();
+            });
     }
 
     private void Register(PosixSignal signal, Action<PosixSignalContext> handler)
@@ -205,12 +218,8 @@ internal class ArlecchinoHostedService : BackgroundService
         {
             _signals.Add(PosixSignalRegistration.Create(signal, handler));
         }
-        catch (PlatformNotSupportedException)
-        {
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-        }
+        catch (PlatformNotSupportedException) { }
+        catch (ArgumentOutOfRangeException) { }
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs eventArgs)

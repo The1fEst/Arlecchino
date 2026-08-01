@@ -14,9 +14,7 @@ public sealed class LocalAtomsList<T> : AtomsList<T>
     /// <param name="initial">What it starts with; empty when omitted.</param>
     /// <param name="comparer">How items are compared; the default comparer when omitted.</param>
     public LocalAtomsList(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
-        : base(initial, comparer)
-    {
-    }
+        : base(initial, comparer) { }
 
     /// <inheritdoc />
     protected override bool RecordsHistory => false;

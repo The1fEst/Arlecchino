@@ -24,6 +24,12 @@ if (args is ["--keys"])
     return;
 }
 
+if (args is ["--ask", ..])
+{
+    AskTheTerminal(args.Length >= 2 && int.TryParse(args[1], out var wait) ? wait : 2000);
+    return;
+}
+
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Logging.ClearProviders();
@@ -37,11 +43,44 @@ builder.Services
     .AddGeneratedViews()
     .AddGeneratedStores()
     .AddGeneratedCommands()
-    .UseLatinOnlyInput()
     .UseMouse()
     .StartAt(ViewKind.Default);
 
 await builder.Build().RunAsync();
+
+static void AskTheTerminal(int milliseconds)
+{
+    Console.WriteLine($"Asking, and listening for {milliseconds} ms. Do not press anything.");
+
+    Console.Out.Write(
+        "\e_Gi=31,s=1,v=1,a=q,t=d,f=24;AAAA\e\\" +
+        "\e[16t" +
+        "\e[14t" +
+        "\e]11;?\a" +
+        "\e[c");
+
+    Console.Out.Flush();
+
+    var heard = new System.Text.StringBuilder();
+    var until = DateTime.UtcNow.AddMilliseconds(milliseconds);
+
+    while (DateTime.UtcNow < until)
+    {
+        if (Console.KeyAvailable)
+        {
+            heard.Append(Console.ReadKey(true).KeyChar);
+            continue;
+        }
+
+        Thread.Sleep(1);
+    }
+
+    Console.WriteLine();
+    Console.WriteLine($"Heard {heard.Length} characters:");
+    Console.WriteLine(heard.ToString()
+        .Replace("\e", "<ESC>", StringComparison.Ordinal)
+        .Replace("\a", "<BEL>", StringComparison.Ordinal));
+}
 
 static void ReportKeys()
 {
@@ -176,10 +215,18 @@ static void Frame(string view, string size)
     {
         navigator.Apply(ViewKind.Charts);
     }
+    else if (view.Equals("pictures", StringComparison.OrdinalIgnoreCase))
+    {
+        navigator.Apply(ViewKind.Pictures);
+    }
     else if (view.Equals("picker", StringComparison.OrdinalIgnoreCase))
     {
         state.FilePicker = new(
-            "Pick a folder", PickFolder: true, Environment.CurrentDirectory, ViewKind.Default, static _ => { });
+            "Pick a folder",
+            PickFolder: true,
+            Environment.CurrentDirectory,
+            ViewKind.Default,
+            static _ => { });
         navigator.Apply(Routes.FilePicker);
     }
     else if (view.Equals("about", StringComparison.OrdinalIgnoreCase))
@@ -208,8 +255,6 @@ namespace Arlecchino.Sample
         public CancellationToken ApplicationStopping => CancellationToken.None;
         public CancellationToken ApplicationStopped => CancellationToken.None;
 
-        public void StopApplication()
-        {
-        }
+        public void StopApplication() { }
     }
 }

@@ -44,6 +44,7 @@ public sealed class ArlecchinoTestHost : IDisposable
             {
                 options.MinimumWidth = 1;
                 options.MinimumHeight = 1;
+                options.AskTerminal = false;
             })
             .WithoutHostedService();
 
@@ -102,6 +103,22 @@ public sealed class ArlecchinoTestHost : IDisposable
         }
     }
 
+    /// <summary>
+    /// Routes a key exactly as the terminal reported it, character and all. <see cref="Press"/> and
+    /// <see cref="Type"/> cover what a test writes by hand; this is for one played back from a
+    /// <see cref="SessionTape"/>, where the character and the key both matter.
+    /// </summary>
+    /// <param name="key">The key as the terminal reported it.</param>
+    public void Send(ConsoleKeyInfo key) => _provider.GetRequiredService<InputRouter>().ProcessKey(key);
+
+    /// <summary>Routes a mouse event exactly as the terminal reported it.</summary>
+    /// <param name="mouse">The event.</param>
+    public void Send(MouseEvent mouse) => _provider.GetRequiredService<InputRouter>().ProcessMouse(mouse);
+
+    /// <summary>Pastes a block of text, as bracketed paste delivers it.</summary>
+    /// <param name="text">What was pasted.</param>
+    public void SendPaste(string text) => _provider.GetRequiredService<InputRouter>().ProcessPaste(text);
+
     /// <summary>Clicks a cell, in the terminal's own coordinates.</summary>
     /// <param name="row">Row, counted from the top of the terminal.</param>
     /// <param name="column">Column, counted from its left edge.</param>
@@ -115,8 +132,9 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <param name="column">Column the pointer is over.</param>
     /// <param name="down">Whether the wheel turned down.</param>
     public void Scroll(int row, int column, bool down) =>
-        _provider.GetRequiredService<InputRouter>().ProcessMouse(
-            new(down ? MouseAction.ScrolledDown : MouseAction.ScrolledUp, MouseButton.None, row, column, default));
+        _provider.GetRequiredService<InputRouter>()
+            .ProcessMouse(
+                new(down ? MouseAction.ScrolledDown : MouseAction.ScrolledUp, MouseButton.None, row, column, default));
 
     /// <summary>
     /// Feeds raw characters through the reader that recognises escape sequences. This is the way to

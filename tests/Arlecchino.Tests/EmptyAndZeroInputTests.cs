@@ -132,8 +132,11 @@ public sealed class EmptyAndZeroInputTests
     {
         using var app = new TestApplication(100, 26);
 
-        app.State.FilePicker = new("Pick", PickFolder: true, Path.Combine(Path.GetTempPath(), "no-such-folder-here"),
-            ViewRoute.None, static _ => { });
+        app.State.FilePicker = new("Pick",
+            PickFolder: true,
+            Path.Combine(Path.GetTempPath(), "no-such-folder-here"),
+            ViewRoute.None,
+            static _ => { });
         app.Navigator.Apply(Routes.FilePicker);
 
         Assert.NotNull(app.Frame());

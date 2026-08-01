@@ -115,8 +115,9 @@ asks it for a frame; a native build that draws nothing fails the build.
 
 **The keys and the words belong to the application.** The key map is a record, so
 `keymap with { Cancel = new(ConsoleKey.Q) }` rebinds one key and every hint and palette entry
-relabels itself. Every string the framework draws is a delegate, and `UseNativeInput()` takes
-layouts that are not Latin.
+relabels itself. Every string the framework draws is a delegate, and layouts that are not Latin are
+typed as they are — or read from where the keys sit, with `UseKeysByPosition()`, when shortcuts
+matter more than typing.
 
 ## Where it sits
 

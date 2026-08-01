@@ -109,9 +109,7 @@ public sealed class StateHistoryTests
 
         Assert.Equal(3, history.Depth);
 
-        while (history.Undo())
-        {
-        }
+        while (history.Undo()) { }
 
         Assert.Equal("7", text.Value);
     }

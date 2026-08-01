@@ -76,7 +76,11 @@ public sealed class ProcessTable : IArlecchinoStore
 
         try
         {
-            return new(id, name, process.WorkingSet64, process.Threads.Count, process.TotalProcessorTime,
+            return new(id,
+                name,
+                process.WorkingSet64,
+                process.Threads.Count,
+                process.TotalProcessorTime,
                 process.StartTime);
         }
         catch (Exception exception) when (exception is InvalidOperationException or SystemException)

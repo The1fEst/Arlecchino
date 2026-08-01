@@ -66,8 +66,7 @@ public sealed class AsyncStoreTests
 
         store.Finish();
 
-        var thrown = await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
+        var thrown = await Assert.ThrowsAsync<InvalidOperationException>(() => store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
 
         Settle(store, LoadStatus.Failed);
 
@@ -88,8 +87,7 @@ public sealed class AsyncStoreTests
         await stopping.CancelAsync();
         store.Finish();
 
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(
-            async () => await store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => store.Ready.WaitAsync(TimeSpan.FromSeconds(5), CancellationToken.None));
 
         Settle(store, LoadStatus.Idle);
 

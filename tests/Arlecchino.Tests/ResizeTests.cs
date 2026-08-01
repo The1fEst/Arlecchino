@@ -114,11 +114,13 @@ public sealed class ResizeTests
     [Fact]
     public void AWindowTooSmallForTheViewIsAnswerWithTheNotice()
     {
-        using var app = new TestApplication(80, 24, static builder =>
-        {
-            builder.Options.MinimumWidth = 40;
-            builder.Options.MinimumHeight = 10;
-        });
+        using var app = new TestApplication(80,
+            24,
+            static builder =>
+            {
+                builder.Options.MinimumWidth = 40;
+                builder.Options.MinimumHeight = 10;
+            });
 
         Assert.DoesNotContain(app.Options.Strings.TerminalTooSmall(), app.Frame(), StringComparison.Ordinal);
 
@@ -136,11 +138,13 @@ public sealed class ResizeTests
     [Fact]
     public void AWindowOfOneCellStillDraws()
     {
-        using var app = new TestApplication(80, 24, static builder =>
-        {
-            builder.Options.MinimumWidth = 1;
-            builder.Options.MinimumHeight = 1;
-        });
+        using var app = new TestApplication(80,
+            24,
+            static builder =>
+            {
+                builder.Options.MinimumWidth = 1;
+                builder.Options.MinimumHeight = 1;
+            });
 
         app.Terminal.Width = 1;
         app.Terminal.Height = 1;

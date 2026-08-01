@@ -17,7 +17,7 @@ namespace Arlecchino.Views;
 /// only for a few seconds, so this is where it is read afterwards. Entries leave on their own once
 /// they are older than the configured lifetime — the screen shows what is still held, not a log.
 /// </summary>
-internal class NotificationsView : IArlecchinoView
+internal sealed class NotificationsView : IArlecchinoView
 {
     /// <summary>The route it answers to.</summary>
     public const string Route = "Notifications";

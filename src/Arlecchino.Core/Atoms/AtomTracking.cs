@@ -9,8 +9,7 @@ namespace Arlecchino.Atoms;
 /// </summary>
 internal static class AtomTracking
 {
-    [ThreadStatic]
-    private static Action<Func<Action, IDisposable>>? _track;
+    [ThreadStatic] private static Action<Func<Action, IDisposable>>? _track;
 
     /// <summary>
     /// Whether anything on this thread is collecting reads. Atoms check this before handing over a

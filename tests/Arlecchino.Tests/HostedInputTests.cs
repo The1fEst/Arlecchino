@@ -29,10 +29,14 @@ public sealed class HostedInputTests
         services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
 
         var builder = services.AddArlecchino(options =>
-        {
-            options.MinimumWidth = 1;
-            options.MinimumHeight = 1;
-        }).AddGeneratedViews().StartAt(ViewKind.Probe);
+            {
+                options.MinimumWidth = 1;
+                options.MinimumHeight = 1;
+                options.AskTerminal = false;
+            })
+            .AddGeneratedViews()
+            .StartAt(ViewKind.Probe);
+
         if (mouse)
         {
             builder.UseMouse();
@@ -161,9 +165,7 @@ public sealed class HostedInputTests
     {
         public ILogger CreateLogger(string categoryName) => new Capturing();
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() { }
 
         private sealed class Capturing : ILogger
         {
@@ -189,8 +191,6 @@ public sealed class HostedInputTests
 
         public CancellationToken ApplicationStopped => CancellationToken.None;
 
-        public void StopApplication()
-        {
-        }
+        public void StopApplication() { }
     }
 }

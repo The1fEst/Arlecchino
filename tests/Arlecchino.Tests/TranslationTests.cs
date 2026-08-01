@@ -51,8 +51,10 @@ public sealed class TranslationTests
     [Fact]
     public void ATranslationCanBePartial()
     {
-        using var app = new TestApplication(100, 30, static builder =>
-            builder.UseStrings(new() { KeysTitle = static () => "«клавиши»" }));
+        using var app = new TestApplication(100,
+            30,
+            static builder =>
+                builder.UseStrings(new() { KeysTitle = static () => "«клавиши»" }));
 
         var frame = app.Frame();
 

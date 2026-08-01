@@ -58,21 +58,22 @@ public sealed class NavigationFailureTests
         app.Press(ConsoleKey.B);
 
         Assert.Equal("Gateway", app.Navigator.CurrentRoute.Name);
-        Assert.Contains(app.Options.Strings.ViewFailed("the store is missing"), app.Frame(),
+        Assert.Contains(app.Options.Strings.ViewFailed("the store is missing"),
+            app.Frame(),
             StringComparison.Ordinal);
     }
 
-    private static TestApplication Application() => new(80, 24, static builder => builder
-        .AddView<BrokenView>("Broken")
-        .AddView<GatewayView>("Gateway"));
+    private static TestApplication Application() => new(80,
+        24,
+        static builder => builder
+            .AddView<BrokenView>("Broken")
+            .AddView<GatewayView>("Gateway"));
 
     public sealed class BrokenView : IArlecchinoView
     {
         public BrokenView() => throw new InvalidOperationException("the store is missing");
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
     }

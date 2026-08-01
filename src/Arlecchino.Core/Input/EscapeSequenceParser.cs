@@ -71,8 +71,11 @@ internal sealed class EscapeSequenceParser
                 ? MouseAction.Moved
                 : MouseAction.Pressed;
 
-        mouse = new(action, action == MouseAction.Moved && buttonBits == 3 ? MouseButton.None : button,
-            row - 1, column - 1, modifiers);
+        mouse = new(action,
+            action == MouseAction.Moved && buttonBits == 3 ? MouseButton.None : button,
+            row - 1,
+            column - 1,
+            modifiers);
         return true;
     }
 
@@ -124,8 +127,11 @@ internal sealed class EscapeSequenceParser
             modifiers |= ConsoleModifiers.Shift;
         }
 
-        key = new('\0', consoleKey, modifiers.HasFlag(ConsoleModifiers.Shift),
-            modifiers.HasFlag(ConsoleModifiers.Alt), modifiers.HasFlag(ConsoleModifiers.Control));
+        key = new('\0',
+            consoleKey,
+            modifiers.HasFlag(ConsoleModifiers.Shift),
+            modifiers.HasFlag(ConsoleModifiers.Alt),
+            modifiers.HasFlag(ConsoleModifiers.Control));
         return true;
     }
 

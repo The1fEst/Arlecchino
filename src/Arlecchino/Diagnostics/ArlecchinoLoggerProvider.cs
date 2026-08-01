@@ -10,23 +10,27 @@ namespace Arlecchino.Diagnostics;
 internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
 {
     private readonly LogBuffer _buffer;
+    private readonly TimeProvider _time;
 
     /// <summary>Creates the provider.</summary>
     /// <param name="buffer">Where the lines are kept.</param>
-    public ArlecchinoLoggerProvider(LogBuffer buffer)
+    /// <param name="time">
+    /// Where the timestamps come from. Taken from the container rather than from the clock on the wall,
+    /// so a session played back from a tape stamps its lines the same way it did when it was recorded.
+    /// </param>
+    public ArlecchinoLoggerProvider(LogBuffer buffer, TimeProvider time)
     {
         _buffer = buffer;
+        _time = time;
     }
 
     /// <summary>Creates a logger for one category.</summary>
     /// <param name="categoryName">Full category name; only its last part is shown.</param>
     /// <returns>The logger.</returns>
-    public ILogger CreateLogger(string categoryName) => new BufferLogger(_buffer, ShortName(categoryName));
+    public ILogger CreateLogger(string categoryName) => new BufferLogger(_buffer, ShortName(categoryName), _time);
 
     /// <summary>Nothing is held open, so there is nothing to release.</summary>
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 
     private static string ShortName(string categoryName)
     {
@@ -39,10 +43,13 @@ internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
         private readonly LogBuffer _buffer;
         private readonly string _category;
 
-        public BufferLogger(LogBuffer buffer, string category)
+        private readonly TimeProvider _time;
+
+        public BufferLogger(LogBuffer buffer, string category, TimeProvider time)
         {
             _buffer = buffer;
             _category = category;
+            _time = time;
         }
 
         public IDisposable? BeginScope<TState>(TState state)
@@ -68,7 +75,7 @@ internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
                 message = $"{message} — {exception.Message}";
             }
 
-            _buffer.Add(new(DateTimeOffset.Now, logLevel, _category, message));
+            _buffer.Add(new(_time.GetLocalNow(), logLevel, _category, message));
         }
     }
 }

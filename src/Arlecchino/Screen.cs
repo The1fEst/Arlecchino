@@ -291,7 +291,9 @@ public class Screen
             var entry = entries[first + row];
             var line = $"{entry.Time:HH:mm:ss} {LevelName(entry.Level)} {entry.Category}: {entry.Message}";
 
-            inside.Write(row, 0, TextWidth.PadRight(TextWidth.Truncate(line, inside.Width), inside.Width),
+            inside.Write(row,
+                0,
+                TextWidth.PadRight(TextWidth.Truncate(line, inside.Width), inside.Width),
                 LevelStyle(entry.Level));
         }
 
@@ -733,7 +735,9 @@ public class Screen
     private void DrawMultiChoiceModal(MultiChoiceModal modal)
     {
         var title = $"{modal.Title} — {_strings.SelectedCount(modal.Selected.Count)}";
-        DrawOptionList(modal, title, _strings.ModalMultiChoiceHints(),
+        DrawOptionList(modal,
+            title,
+            _strings.ModalMultiChoiceHints(),
             option => $"[{(modal.IsSelected(option) ? '×' : ' ')}] {option}");
     }
 
@@ -777,8 +781,10 @@ public class Screen
         for (var i = 0; i < visible; i++)
         {
             var style = start + i == modal.Index ? Theme.Selected : Theme.Default;
-            inside.Write(2 + emptyNotice + i, 0,
-                TextWidth.PadRight(TextWidth.Truncate(rows[i], rowWidth), rowWidth), style);
+            inside.Write(2 + emptyNotice + i,
+                0,
+                TextWidth.PadRight(TextWidth.Truncate(rows[i], rowWidth), rowWidth),
+                style);
         }
 
         if (scrolled)

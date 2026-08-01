@@ -27,7 +27,11 @@ internal sealed class WindowsInputTranslator
             (controlKeyState & (LeftAltPressed | RightAltPressed)) != 0,
             (controlKeyState & (LeftControlPressed | RightControlPressed)) != 0);
 
-    public bool TryTranslateMouse(int row, int column, uint buttonState, uint controlKeyState, uint eventFlags,
+    public bool TryTranslateMouse(int row,
+        int column,
+        uint buttonState,
+        uint controlKeyState,
+        uint eventFlags,
         out MouseEvent mouse)
     {
         var modifiers = ToModifiers(controlKeyState);
@@ -35,8 +39,11 @@ internal sealed class WindowsInputTranslator
         if ((eventFlags & MouseWheeled) != 0)
         {
             var up = (int)buttonState >> 16 > 0;
-            mouse = new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown, MouseButton.None,
-                row, column, modifiers);
+            mouse = new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown,
+                MouseButton.None,
+                row,
+                column,
+                modifiers);
             return true;
         }
 

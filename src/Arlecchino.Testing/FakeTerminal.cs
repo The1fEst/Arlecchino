@@ -14,6 +14,7 @@ namespace Arlecchino.Testing;
 public sealed class FakeTerminal : IArlecchinoTerminal
 {
     private readonly ConcurrentQueue<ConsoleKeyInfo> _keys = new();
+    private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
     private readonly ConcurrentQueue<MouseEvent> _mouse = new();
     private readonly StringBuilder _written = new();
 
@@ -45,7 +46,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal
     public string? Copied { get; private set; }
 
     /// <summary>Whether any queued key is still waiting.</summary>
-    public bool KeyAvailable => !_keys.IsEmpty;
+    public bool KeyAvailable => !_unread.IsEmpty || !_keys.IsEmpty;
 
     /// <summary>Whether any queued mouse event is still waiting.</summary>
     public bool MouseAvailable => !_mouse.IsEmpty;
@@ -76,7 +77,12 @@ public sealed class FakeTerminal : IArlecchinoTerminal
 
     /// <summary>Takes the next queued key, or nothing when the queue has run dry.</summary>
     /// <returns>The key press.</returns>
-    public ConsoleKeyInfo ReadKey() => _keys.TryDequeue(out var key) ? key : default;
+    public ConsoleKeyInfo ReadKey() => _unread.TryDequeue(out var back) ? back
+        : _keys.TryDequeue(out var key) ? key : default;
+
+    /// <summary>Puts a key back so the next read returns it.</summary>
+    /// <param name="key">The key to put back.</param>
+    public void Unread(ConsoleKeyInfo key) => _unread.Enqueue(key);
 
     /// <summary>
     /// Queues a mouse event to be read, the way a console that reports the mouse outside the key

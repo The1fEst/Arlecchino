@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Arlecchino.Focus;
 using Arlecchino.Input;
 using Arlecchino.Layout;
@@ -436,6 +437,102 @@ public sealed class PaneTreeTests
         Assert.Throws<ArgumentNullException>(static () => Leaf((Action<SurfaceRegion>)null!));
         Assert.Throws<ArgumentNullException>(static () => Branch(Leaf(), null!));
         Assert.Throws<ArgumentNullException>(static () => Branch(Rows, 0.5, null!, Leaf()));
+    }
+
+    [Fact]
+    public void PanesWithNoGapBetweenThemShareOneLine()
+    {
+        var terminal = new FakeTerminal(20, 4);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+
+        surface.StartFrame();
+
+        Branch(Columns, 0.5, Leaf(static _ => { }, static () => "a"), Leaf(static _ => { }, static () => "b"))
+            .Gaps(inner: 0)
+            .Draw(surface.Frame);
+
+        surface.Build();
+
+        var lines = FrameText.Lines(terminal.Written);
+
+        Assert.Contains('┬', lines[0]);
+        Assert.Contains('┴', lines[3]);
+        Assert.DoesNotContain("╮╭", lines[0]);
+    }
+
+    [Fact]
+    public void AGapLeavesThemStandingApart()
+    {
+        var terminal = new FakeTerminal(20, 4);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+
+        surface.StartFrame();
+
+        Branch(Columns, 0.5, Leaf(static _ => { }, static () => "a"), Leaf(static _ => { }, static () => "b"))
+            .Gaps(inner: 1)
+            .Draw(surface.Frame);
+
+        surface.Build();
+
+        var lines = FrameText.Lines(terminal.Written);
+
+        Assert.DoesNotContain('┬', lines[0]);
+        Assert.Equal(2, lines[0].Count(static symbol => symbol == '╭'));
+    }
+
+    [Fact]
+    public void APaneWithoutABoxIsNotPulledOntoItsNeighbour()
+    {
+        var terminal = new FakeTerminal(20, 4);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+        var body = new Probe();
+
+        surface.StartFrame();
+
+        Branch(Columns, 0.5, Leaf(static _ => { }, static () => "a"), Leaf(body.Draw))
+            .Gaps(inner: 0)
+            .Draw(surface.Frame);
+
+        surface.Build();
+
+        Assert.Equal(10, body.Region.Left);
+        Assert.Equal(10, body.Region.Width);
+    }
+
+    [Fact]
+    public void ThePaneWithTheFocusOwnsTheEdgeItShares()
+    {
+        using var app = new TestApplication();
+
+        var first = new Badge();
+        var second = new Badge();
+        var layout = Branch(Columns, 0.5, Leaf(first, static () => "a"), Leaf(second, static () => "b"))
+            .Gaps(inner: 0);
+
+        var ring = layout.AsFocusRing(app.Options.Keymap);
+
+        Assert.True(first.IsFocused);
+        Assert.Equal(Theme.Active.Ansi, EdgeStyle(layout));
+
+        ring.FocusNext();
+
+        Assert.True(second.IsFocused);
+        Assert.Equal(Theme.Active.Ansi, EdgeStyle(layout));
+    }
+
+    private static string EdgeStyle(PaneTree layout)
+    {
+        var terminal = new FakeTerminal(20, 4);
+        var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+
+        surface.StartFrame();
+        layout.Draw(surface.Frame);
+        surface.Build();
+
+        var written = terminal.Written;
+        var shared = written.IndexOf('┬');
+
+        return FrameText.StylesIn(written[..shared]).LastOrDefault() ?? "";
     }
 
     private static SurfaceRegion Frame(int width, int height)

@@ -76,11 +76,13 @@ public sealed class RenderingTests
     [Fact]
     public void TooSmallTerminalReplacesTheViewWithANotice()
     {
-        using var app = new TestApplication(34, 6, static builder =>
-        {
-            builder.Options.MinimumWidth = 40;
-            builder.Options.MinimumHeight = 10;
-        });
+        using var app = new TestApplication(34,
+            6,
+            static builder =>
+            {
+                builder.Options.MinimumWidth = 40;
+                builder.Options.MinimumHeight = 10;
+            });
 
         var frame = app.Frame();
 
@@ -131,15 +133,50 @@ public sealed class RenderingTests
     }
 
     [Fact]
-    public void LatinOnlyInputFallsBackToThePhysicalKey()
+    public void KeysByPositionReadTheKeyRatherThanTheLayout()
     {
-        var latin = KeyText.For(TextInputMode.LatinOnly);
+        var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
         var cyrillicQ = new ConsoleKeyInfo('й', ConsoleKey.Q, false, false, false);
 
-        Assert.Equal('q', latin.Resolve(cyrillicQ));
+        Assert.Equal('q', byPosition.Resolve(cyrillicQ));
         Assert.Equal('й', native.Resolve(cyrillicQ));
-        Assert.Equal('Q', latin.Resolve(new('Й', ConsoleKey.Q, true, false, false)));
-        Assert.Null(latin.Resolve(new('\0', ConsoleKey.F5, false, false, false)));
+        Assert.Equal('Q', byPosition.Resolve(new('Й', ConsoleKey.Q, true, false, false)));
+        Assert.Null(byPosition.Resolve(new('\0', ConsoleKey.F5, false, false, false)));
+    }
+
+    [Fact]
+    public void ThePositionWinsEvenWhenTheLayoutTypedSomethingOrdinary()
+    {
+        var byPosition = KeyText.For(TextInputMode.ByPosition);
+        var native = KeyText.For(TextInputMode.Native);
+        var moved = new ConsoleKeyInfo('a', ConsoleKey.Q, false, false, false);
+
+        Assert.Equal('q', byPosition.Resolve(moved));
+        Assert.Equal('a', native.Resolve(moved));
+    }
+
+    [Fact]
+    public void AKeyWithNoPositionOfItsOwnTypesNothing()
+    {
+        var byPosition = KeyText.For(TextInputMode.ByPosition);
+        var native = KeyText.For(TextInputMode.Native);
+        var unmapped = new ConsoleKeyInfo('€', ConsoleKey.Oem8, false, false, false);
+
+        Assert.Null(byPosition.Resolve(unmapped));
+        Assert.Equal('€', native.Resolve(unmapped));
+    }
+
+    [Fact]
+    public void EveryPrintableKeyOfAUsKeyboardHasAPosition()
+    {
+        var byPosition = KeyText.For(TextInputMode.ByPosition);
+
+        Assert.Equal(' ', byPosition.Resolve(new('\0', ConsoleKey.Spacebar, false, false, false)));
+        Assert.Equal('7', byPosition.Resolve(new('\0', ConsoleKey.D7, false, false, false)));
+        Assert.Equal('&', byPosition.Resolve(new('\0', ConsoleKey.D7, true, false, false)));
+        Assert.Equal('3', byPosition.Resolve(new('\0', ConsoleKey.NumPad3, false, false, false)));
+        Assert.Equal(';', byPosition.Resolve(new('\0', ConsoleKey.Oem1, false, false, false)));
+        Assert.Equal('?', byPosition.Resolve(new('\0', ConsoleKey.Oem2, true, false, false)));
     }
 }

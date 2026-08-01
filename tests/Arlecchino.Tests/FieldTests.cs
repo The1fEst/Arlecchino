@@ -99,7 +99,9 @@ public sealed class FieldTests
     {
         using var app = new TestApplication();
         var value = new LocalAtom<IReadOnlyList<string>>(["alpha"]);
-        var field = Field.MultiChoice(static () => "Columns", _options, value,
+        var field = Field.MultiChoice(static () => "Columns",
+            _options,
+            value,
             static picked => string.Join(", ", picked));
 
         Assert.Equal("alpha", field.Value());
@@ -178,8 +180,11 @@ public sealed class FieldTests
         var value = new LocalAtom<string>("");
 
         Assert.Equal("", Field.Text(static () => "Name", value).Help());
-        Assert.Equal("the one on the badge", Field.Text(static () => "Name", value,
-            help: static () => "the one on the badge").Help());
+        Assert.Equal("the one on the badge",
+            Field.Text(static () => "Name",
+                    value,
+                    help: static () => "the one on the badge")
+                .Help());
     }
 
     [Fact]

@@ -19,6 +19,7 @@ public abstract class Atom<T> : IReadableAtom<T>
     private readonly Listeners _listeners = new();
 
     private T _value;
+    private string? _member;
 
     /// <summary>Creates an atom holding a starting value.</summary>
     /// <param name="initial">The value to start with.</param>
@@ -78,7 +79,7 @@ public abstract class Atom<T> : IReadableAtom<T>
             return;
         }
 
-        FrameThread.Verify($"Writing {GetType().Name}");
+        FrameThread.Verify(_member ??= FrameMembers.Writing(this));
 
         var previous = _value;
         _value = value;
@@ -112,5 +113,4 @@ public abstract class Atom<T> : IReadableAtom<T>
 
         public void Redo() => _state.Write(_after, recordHistory: false);
     }
-
 }

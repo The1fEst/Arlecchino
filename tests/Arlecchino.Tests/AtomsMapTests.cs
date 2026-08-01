@@ -333,6 +333,33 @@ public sealed class AtomsMapTests
         Assert.Equal(1, sizes["alpha"]);
     }
 
+    [Fact]
+    public void AKeyThatWasNotThereIsPutInWhateverTheValueTypeIs()
+    {
+        var names = new LocalAtomsMap<int, string>();
+
+        names[1] = "alpha";
+
+        Assert.Equal(1, names.Count);
+        Assert.Equal("alpha", names[1]);
+    }
+
+    [Fact]
+    public void AKeyHeldAgainstNullIsReplacedRatherThanAdded()
+    {
+        using var history = new AtomHistory();
+        var names = new TrackedAtomsMap<int, string?>(new Dictionary<int, string?> { [1] = null });
+
+        names[1] = "alpha";
+
+        Assert.Equal("alpha", names[1]);
+
+        history.Undo();
+
+        Assert.True(names.ContainsKey(1));
+        Assert.Null(names[1]);
+    }
+
     private static InvalidOperationException Refused(Action change)
     {
         Exception? thrown = null;

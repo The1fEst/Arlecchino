@@ -207,6 +207,22 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     public void Clear() => Reset([]);
 
     /// <summary>
+    /// Says that an item already in the list changed inside itself, so everything watching the list hears
+    /// about it. For a list of mutable things, which the list cannot see into: writing a property of an
+    /// item is not a change to the list, so nothing would recompute and no frame would be asked for.
+    ///
+    /// Prefer replacing the item where you can — an immutable item is one less thing to remember. This is
+    /// for the case where the item's identity has to survive the change, because something else is holding
+    /// it.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
+    public void Touch()
+    {
+        Verify();
+        Notify();
+    }
+
+    /// <summary>
     /// Replaces the contents in one go, for the case the list is not edited but reloaded — a query
     /// answered, a folder read again, a filter applied. Contents equal to what is already there
     /// change nothing.
@@ -299,7 +315,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         }
     }
 
-    private void Verify() => FrameThread.Verify(_member ??= $"Changing {GetType().Name}");
+    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
 
     private void Notify()
     {

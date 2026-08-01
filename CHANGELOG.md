@@ -9,6 +9,290 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 3.0.0
+
+### Added
+
+- **`Joinery`**, lines that know about one another. `region.Border(...)` draws a box that knows
+  nothing of its neighbours, so two panes that touch put two verticals where the eye expects one.
+  Boxes and rules recorded here are painted at the end, and a shared cell becomes the glyph that
+  joins them:
+
+  ```csharp
+  var joinery = new Joinery();
+
+  var files = joinery.Box(left, Theme.Info, "files");
+  var log = joinery.Box(right, Theme.Active, "log");
+
+  joinery.Draw(surface.Content, Theme.Info);
+  ```
+
+  ```text
+  ╭─ one ───────────────┬─ three ──────────────╮
+  ├─ two ───────────────┼─ four ───────────────┤
+  ╰─────────────────────┴──────────────────────╯
+  ```
+
+  `Box` hands back the room inside, as `Border` does, and `Across` and `Down` record rules that join
+  whatever they meet. Coordinates are the surface's own, so regions from anywhere on the frame are
+  recorded together; a cell takes the style of the last thing recorded over it, which is how the pane
+  holding the focus wins the edges it shares.
+
+- **`Surface.Passthrough(row, column, payload)`**, for what the cell grid cannot express — an image in
+  one of the terminal graphics protocols. It goes out after the cells, so whatever was under or around
+  it is repainted before it lands and a payload that stops being handed over disappears as the cells
+  beneath it are drawn again; and it is not sent while it stays the same, which matters when a picture
+  weighs kilobytes.
+- **`Picture`**, an image drawn in cells: each one carries two pixels, painted as the colour of the
+  upper half block and the background behind it, so a cell that is twice as tall as it is wide comes
+  out roughly square per pixel.
+
+  ```csharp
+  private readonly Picture _preview = new() { Background = Theme.Default };
+
+  _preview.Show(pixels, width, height);
+  _preview.Draw(region);
+  ```
+
+  It asks nothing of the terminal but the colour it already draws in — no image protocol, no state
+  left behind, nothing to clean up when the picture goes away — so it works everywhere the framework
+  works and degrades with the palette like any other colour. The picture is fitted without stretching
+  and centred, and one smaller than its pane is enlarged, so an icon is visible rather than a speck.
+
+  Pixels are handed over rather than read from a file: decoding PNG or JPEG belongs to the
+  application, which knows what it is willing to depend on, while the framework draws what it is
+  given.
+- **The terminal is asked what it can do**, once, as the application starts: which graphics protocols it
+  speaks and how many pixels a cell is. `ImageProtocol.Auto` is the new default, so a picture is drawn
+  with the best of what the terminal admitted to — kitty, else sixel, else cells — instead of with a
+  protocol an application had to guess at.
+
+  ```csharp
+  TerminalCapabilities.Sixel          // what it said
+  TerminalCapabilities.Kitty
+  TerminalCapabilities.CellSizeKnown  // whether the size below was reported or guessed
+  Glyphs.CellWidth
+  ```
+
+  `CellSizeKnown` earns its place: ten by twenty is both the standing guess and what a terminal at a
+  common font size actually reports, so without it there is no telling the two apart — and sixel sizing
+  rests on the difference.
+
+  The whole thing turns on one arrangement: the questions go out in an order ending with primary device
+  attributes, which every terminal answers, so **that** reply is the signal no other reply is coming.
+  Without a fence like it there is nothing to wait on but a guess at how long silence takes.
+
+  Nothing typed is swallowed. Every answer opens with an escape, so the first character that is not one
+  ends the wait and goes back to the terminal through the new `IArlecchinoTerminal.Unread`. A terminal
+  that says nothing at all costs `ArlecchinoOptions.TerminalAnswer` — 120 ms by default — once, and
+  leaves every setting alone; `AskTerminal = false` skips even that.
+- **`IArlecchinoTerminal.Unread(key)`**, which puts a key back so the next read returns it and
+  `KeyAvailable` reports it. A custom terminal has to implement it — a queue in front of the real read is
+  the whole of it. It exists because code that must read a key to discover it did not want it should hand
+  it back to the terminal, rather than make its caller carry it.
+- **Sixel**, which is what Windows Terminal, xterm and foot speak: `ImageProtocol.Sixel` puts the
+  pixels out in bands of six rows with runs collapsed, without which a photograph would weigh several
+  times what it needs to.
+
+  The format draws from colour registers, so the picture is brought down to a palette of at most 256.
+  That palette is the picture's own: colours are gathered into boxes and the widest box is split at its
+  weighted median until the registers run out, which spends them where the picture actually has detail.
+  Shrinking averages every source pixel a destination pixel covers rather than picking one of them. On
+  the project's own social card reduced to sixty columns, the two together bring the mean error per
+  channel from 22.4 to 1.2 and the worst from 191 to 6 against a fixed cube and nearest-pixel sampling.
+
+  Sixel is measured in pixels and knows nothing of cells, so a picture is resampled to however many
+  pixels the cells it was given come to, and `Glyphs.CellWidth` and `Glyphs.CellHeight` say how large
+  a cell is taken to be — they also set the shape of a cell, so a picture keeps its proportions. There
+  is no asking the terminal yet: ten by twenty is the guess, a wrong one shows as a picture that does
+  not quite fill its pane, and an application that knows better can say so.
+
+  A payload is built once and kept until the picture, the protocol or the room it is drawn in changes,
+  since choosing a palette is real work and a frame asks for the same bytes again.
+- **`Surface.Passthrough` takes what undraws the payload as well as the payload.** A payload that was
+  handed over last frame and is not handed over this one — the widget moved, or shrank, or its screen is
+  not on show any more — has its undraw written where it used to be, before anything new is written.
+
+  Repainting the cells was supposed to be enough. It is not: a sixel that a view stopped drawing stayed on
+  the screen, over whatever was drawn next, because the widget that could have removed it was no longer
+  being asked to draw at all. Only the surface knows a payload disappeared, and only whoever sent it knows
+  how to take it back, so the two have to meet in the seam.
+
+  The undraw goes out **before** the frame's cells, and a frame that undraws anything is written whole
+  rather than diffed. Both follow from what an undraw is: painting over. Written after the cells it paints
+  over them, which erases the frame instead of the picture; and the cells it painted over have to be put
+  back whether the diff thinks they changed or not.
+- **A picture is undrawn when it is cleared.** Every `Picture` owns a kitty image number, so new pixels
+  replace the image the terminal is holding rather than adding another one, and `Clear()` deletes it. What
+  was there before handed the terminal an image per change and never took one back — a picture updated on
+  a timer grew the terminal's memory for as long as the session lasted.
+
+  Sixel has nothing to delete: it writes pixels into the screen rather than into a registry of images, so
+  undrawing means painting over them, and painting needs a colour. That is the fifth thing the terminal is
+  asked for — `OSC 11`, the colour behind its text — and it lands in `TerminalCapabilities.Background`. A
+  terminal that will not say leaves the pixels where they are on purpose: a guessed colour paints a
+  rectangle anyone can see, which is worse than the leftover it was meant to remove.
+
+  Whether the leftover shows at all is a matter of terminal: Windows Terminal ties image data to the cell
+  and drops it when the cell is written, xterm keeps sixel in a layer text does not disturb. Neither
+  behaviour is written down anywhere to rely on, which is why this does not lean on either.
+- **The kitty graphics protocol**, where the terminal speaks it: `ImageProtocol.Kitty` sends the
+  pixels themselves instead of cells, and the picture is as sharp as the screen allows.
+
+  ```csharp
+  services.AddArlecchino(options => options.ImageProtocol = ImageProtocol.Kitty);
+
+  Glyphs.Picture = ImageProtocol.Blocks;      // later, from a settings screen
+  _preview.Protocol = ImageProtocol.Kitty;    // or for one pane
+  ```
+
+  Cells stay the default: a terminal that cannot speak the protocol would print the escape sequence
+  as text, so this is asked for rather than assumed. Replies are suppressed with `q=2`, since a
+  terminal answering would reach the input reader as a stray escape sequence, and a payload measured
+  in kilobytes is only re-sent when the picture or its placement changed.
+- **`SessionTape`** in `Arlecchino.Testing`, which writes a test as the session it describes rather
+  than as a dozen calls with the assertions lost among them:
+
+  ```csharp
+  var frames = new SessionTape()
+      .Type(":")
+      .Shot()
+      .Type("copy")
+      .Wait(200)
+      .Shot()
+      .Play(host);
+
+  Assert.Contains("Copy files", frames[^1], StringComparison.Ordinal);
+  ```
+
+  A tape is text, one step to a line, so `Read` takes back what `ToString` wrote and a session travels
+  as a file. Waits are part of it, which is what makes timeouts and work on a clock replayable, and
+  every mark hands back a frame. `ArlecchinoTestHost` gained `Send(ConsoleKeyInfo)`, `Send(MouseEvent)`
+  and `SendPaste` for feeding an event exactly as a terminal reports one.
+
+  It records nothing on its own. Capturing a running application was considered and dropped: the
+  framework has a password modal and a paste step, so a tape from a real session would hold whatever
+  was typed into them, and no application should write a file like that on a user's behalf.
+
+### Changed
+
+- **Notifications are state.** `Notifications` held a plain `List<Notification>` and asked for a
+  repaint by hand, which meant two things: an entry falling out on its timeout changed nothing on
+  screen until something else asked for a frame, and `Raise` from a background task corrupted the
+  list quietly. It now holds a `LocalAtomsList<Notification>`, so every change asks for a frame by
+  itself — **and raising one from a thread that is not the drawing thread throws** instead of being
+  tolerated. Work that reports from the background hands it over:
+
+  ```csharp
+  FrameThread.Post(() => state.Notifications.Notify("done"));
+  ```
+
+  This is the reason the change waited for a major: an application that has been raising
+  notifications from a worker has been getting away with it.
+- **The rest of `ArlecchinoState` is checked too.** `Output` asked which thread it was on; `Modal`,
+  `PushModal`, `CloseModal`, `CloseAllModals`, `FilePicker` and `PickerLastFolder` did not, so a
+  background task could open a dialog halfway through a frame — into a surface already measured
+  without it — and the `Request…` helpers inherited the hole, since each of them assigns `Modal`.
+  **All of them now throw off the drawing thread**, and the way through is the same as everywhere
+  else:
+
+  ```csharp
+  FrameThread.Post(() => state.RequestMessage("Done", "The upload finished."));
+  ```
+
+  `Invalidate` is still callable from anywhere: asking for a frame is what a background thread is
+  supposed to do. Same reason for the major as the notifications entry above — code that has been
+  opening dialogs from a worker has been getting away with it.
+- **The stack of dialogs is state too.** It was a plain `List<Modal>` with a `_repaint.Request()` after
+  every mutation — the same shape the notifications had, and the same way to get it wrong: a new way to
+  open or close one is a frame nobody asked for. It is now a `LocalAtomsList<Modal>`, so the list asks
+  by itself, and a close that closes nothing asks for nothing.
+
+  `Modals` still hands out `IReadOnlyList<Modal>` and is still a live view, so nothing an application
+  reads changes. The list is deliberately outside the undo history: stepping back through what was typed
+  should not reopen a dialog that was answered.
+- **The look is state too.** `Theme.Palette`, `Glyphs.Graph`, `Glyphs.Picture`, `Glyphs.CellWidth` and
+  `Glyphs.CellHeight` were plain settable statics: a frame reads every one of them, and a background
+  thread could swap the palette or the protocol halfway through drawing one. They are checked now, the
+  way `ArlecchinoState` is, and each **asks for a frame by itself** — the doc used to tell you to call
+  `Repaint.Request()` after changing them, and that is no longer needed.
+
+  ```csharp
+  FrameThread.Post(() => Glyphs.Picture = ImageProtocol.Sixel);   // from a worker
+  ```
+
+  The look the options asked for is now installed while `AddArlecchino` runs rather than when the
+  container first hands the options out. A container resolves on whichever thread asked first, so the
+  old timing could have installed a palette from a thread that was not drawing — the checks made that
+  visible.
+- **`ArlecchinoOptions.CellWidth` and `CellHeight`**, so the size a cell is taken to be can be
+  configured like its two neighbours instead of only through the static. Sixel is the one that reads
+  them.
+- **Any language can be typed without asking.** `TextInputMode.Native` is the default, so a
+  non-Latin layout works out of the box.
+- **The other mode is named for what it does, and now does it without exception.** What was
+  `UseLatinOnlyInput()` is `UseKeysByPosition()`: every character comes from where its key sits on
+  the keyboard rather than from what the layout makes of it, so the key left of `S` types `a` whether
+  the layout says `a`, `ф` or `α`. It used to make an exception for characters that were already
+  ASCII, which meant a layout that moves letters around was read inconsistently; the position now
+  decides on its own. The price is unchanged and worth stating plainly: in this mode those languages
+  cannot be typed at all.
+
+  ```csharp
+  builder.UseKeysByPosition();
+  ```
+
+- **A `PaneTree` with no gap draws one line between its panes, not two.** Titled panes went through
+  `SurfaceRegion.Border`, so `Gaps(inner: 0)` put `╮╭` where the eye expects `┬`. The tree now records
+  its boxes in a `Joinery` and paints them together, and panes in a box that touch are pulled onto
+  one another's edge so the line is shared:
+
+  ```text
+  ├─ files ────────────┬─ authors ─────────────┬─ log ────────────┤
+  │ Program.cs         │ fEst                  │ the rest of it   │
+  ╰────────────────────┴───────────────────────┴──────────────────╯
+  ```
+
+  A pane without a box is left where it was, since it would lose a column of what it draws to a
+  neighbour's border, and any tree with a gap is unchanged. The pane holding the focus is recorded
+  last, so the edge it shares takes its colour rather than its neighbour's — `Tab` still moves a
+  highlight around the screen, now along lines that meet.
+
+### Fixed
+
+Found by reading the whole of it rather than by anything failing.
+
+- **A picture could vanish from a frame that was written whole.** Writing every cell is what removes the
+  pixels over them in some terminals, and the payload was only re-sent when it had changed — so a frame
+  written whole erased the picture and did not put it back. `Surface.ForgetPreviousFrame`, a resize and
+  every frame of a fixed-size surface all took that path.
+- **A picture drawn in cells was written out again every frame, however still it was.** It built the
+  colour of each cell fresh each time, and the frame diff tells cells apart by reference, so nothing ever
+  looked unchanged. The colours are worked out when the picture or its room changes and kept between
+  frames — which also stops an allocation per cell per frame, and stops the escape sequence for each one
+  being rebuilt.
+- **Undrawing a sixel could paint below it.** Bands are six rows whatever the picture's height, and the
+  last one was painted full, reaching up to five rows past the picture on a terminal that does not clip to
+  the raster size.
+- **The terminal probe assumed answers came back in the order they were asked for.** Primary device
+  attributes are asked last and used as the fence, so a terminal answering it early cut off whatever was
+  still coming. The fence now stops the waiting rather than the reading: what is already buffered is taken
+  too.
+- **A notification settled in place told nothing that watched the list.** `Notification` is mutable on
+  purpose — a dialog someone has open changes under them — but writing a property of an item is not a
+  change to the list it sits in, so a `Computed` over it never recomputed. `AtomsList.Touch()` says an
+  item changed inside itself; `Notifications` no longer needs `Repaint` at all.
+- **A console read that failed reached views as a key press of NUL.** `default` is what a failed read
+  answers and nothing tells it apart from a real key, so it is dropped where input enters instead.
+
+### Removed
+
+- **`ArlecchinoBuilder.UseNativeInput()`**, which now says what already happens. Delete the call —
+  the behaviour it asked for is what an application gets by default.
+- **`UseLatinOnlyInput()`, `TextInputMode.LatinOnly` and `KeyText.LatinOnly`**, renamed to
+  `UseKeysByPosition()`, `TextInputMode.ByPosition` and `KeyText.ByPosition`. The old names described
+  what the mode accepted; the new ones describe how it decides.
+
 ## 2.13.0
 
 ### Added
