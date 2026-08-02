@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
@@ -24,6 +25,57 @@ public sealed class MouseTests
         Assert.Equal(MouseButton.Right, released.Button);
         Assert.Equal(0, released.Row);
         Assert.Equal(0, released.Column);
+    }
+
+
+    /// <summary>
+    /// A stretch of what a real terminal really sent, caught once from kitty with a hand on a mouse:
+    /// a click on a known cell, the wheel both ways, and a drag. Mouse reports are the one thing that
+    /// cannot be asked for — no amount of driving a terminal produces them, only a person does — so the
+    /// way to keep them honest is to hold on to a recording. Taken with
+    /// <c>tools/Arlecchino.Tools -- keys --decode</c>.
+    /// </summary>
+    [Fact]
+    public void WhatARealMouseSentIsReadBackAsWhereItWasPointed()
+    {
+        const string Caught =
+            "\e[<0;17;6M\e[<0;17;6m" +
+            "\e[<65;24;5M\e[<64;24;5M" +
+            "\e[<0;12;3M\e[<32;13;3M\e[<32;14;4M\e[<0;14;4m";
+
+        var events = new List<MouseEvent>();
+        var index = 0;
+
+        while (index < Caught.Length)
+        {
+            var end = Caught.IndexOf('M', index) is var press && press >= 0 ? press : Caught.Length;
+            var release = Caught.IndexOf('m', index);
+            var stop = release >= 0 && release < end ? release : end;
+
+            Assert.True(EscapeSequenceParser.TryParseMouse(Caught[(index + 2)..(stop + 1)], out var mouse));
+            events.Add(mouse);
+            index = stop + 1;
+        }
+
+        Assert.Equal(MouseAction.Pressed, events[0].Action);
+        Assert.Equal(MouseButton.Left, events[0].Button);
+        Assert.Equal(5, events[0].Row);
+        Assert.Equal(16, events[0].Column);
+
+        Assert.Equal(MouseAction.Released, events[1].Action);
+        Assert.Equal(5, events[1].Row);
+        Assert.Equal(16, events[1].Column);
+
+        Assert.Equal(MouseAction.ScrolledDown, events[2].Action);
+        Assert.Equal(MouseAction.ScrolledUp, events[3].Action);
+
+        Assert.Equal(MouseAction.Pressed, events[4].Action);
+        Assert.Equal(MouseAction.Moved, events[5].Action);
+        Assert.Equal(MouseButton.Left, events[5].Button);
+        Assert.Equal(MouseAction.Moved, events[6].Action);
+        Assert.Equal(3, events[6].Row);
+        Assert.Equal(13, events[6].Column);
+        Assert.Equal(MouseAction.Released, events[7].Action);
     }
 
     [Fact]

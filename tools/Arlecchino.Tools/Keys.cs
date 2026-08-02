@@ -41,6 +41,11 @@ internal static class Keys
             return Listening(into);
         }
 
+        if (args is ["--decode", var captured, ..])
+        {
+            return Decode(captured);
+        }
+
         if (Which("tmux") is "")
         {
             Console.WriteLine("tmux is not on PATH; nothing to press keys with");
@@ -277,6 +282,34 @@ internal static class Keys
         return 0;
     }
 
+    /// <summary>
+    /// Reads a stretch of bytes captured from a terminal and says what an application would have been
+    /// told. Some of what a terminal sends cannot be asked for on demand — a mouse report is made by a
+    /// hand on a mouse — so the way to check those is to catch them once and hold the reader to them.
+    /// </summary>
+    /// <param name="captured">A file of bytes as they came off the pty.</param>
+    /// <returns>Zero when the bytes said something.</returns>
+    private static int Decode(string captured)
+    {
+        if (!File.Exists(captured))
+        {
+            Console.WriteLine($"nothing captured at {captured}");
+
+            return 1;
+        }
+
+        var bytes = Encoding.Latin1.GetString(File.ReadAllBytes(captured));
+
+        using var reader = new Reading();
+        var heard = reader.ReadText(bytes);
+
+        Console.WriteLine($"{bytes.Length} bytes: {Program.Escaped(bytes[..Math.Min(60, bytes.Length)])}...");
+        Console.WriteLine();
+        Console.WriteLine(heard.ToString());
+
+        return heard.ToString() is "nothing" ? 1 : 0;
+    }
+
     private static int Explain()
     {
         Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- keys [name]");
@@ -434,7 +467,11 @@ internal static class Keys
     /// <summary>What the reader made of some presses.</summary>
     /// <param name="Keys">The key presses it reported, in order.</param>
     /// <param name="Pastes">The blocks of pasted text it reported.</param>
-    private sealed record Heard(IReadOnlyList<ConsoleKeyInfo> Keys, IReadOnlyList<string> Pastes)
+    /// <param name="Mice">The mouse events it reported, spelled out.</param>
+    private sealed record Heard(
+        IReadOnlyList<ConsoleKeyInfo> Keys,
+        IReadOnlyList<string> Pastes,
+        IReadOnlyList<string> Mice)
     {
         public override string ToString()
         {
@@ -442,7 +479,8 @@ internal static class Keys
                 .Select(static key => key.Modifiers == default
                     ? Spell(key)
                     : $"{Spell(key)}+{key.Modifiers}")
-                .Concat(Pastes.Select(static paste => $"paste {Program.Escaped(paste)}"));
+                .Concat(Pastes.Select(static paste => $"paste {Program.Escaped(paste)}"))
+                .Concat(Mice);
 
             return string.Join(", ", parts) is var text && text.Length > 0 ? text : "nothing";
         }
@@ -492,7 +530,7 @@ internal static class Keys
             _host.Services.GetRequiredService<TerminalInputReader>().ReadPending();
             _host.DrainInput();
 
-            return new([.. _recorder.Keys], [.. _recorder.Pastes]);
+            return new([.. _recorder.Keys], [.. _recorder.Pastes], [.. _recorder.Mice]);
         }
 
         internal Heard ReadText(string bytes)
@@ -500,7 +538,7 @@ internal static class Keys
             _recorder.Forget();
             _host.ReadFromTerminal(bytes);
 
-            return new([.. _recorder.Keys], [.. _recorder.Pastes]);
+            return new([.. _recorder.Keys], [.. _recorder.Pastes], [.. _recorder.Mice]);
         }
 
         public void Dispose() => _host.Dispose();
@@ -512,10 +550,13 @@ internal static class Keys
 
         internal List<string> Pastes { get; } = [];
 
+        internal List<string> Mice { get; } = [];
+
         internal void Forget()
         {
             Keys.Clear();
             Pastes.Clear();
+            Mice.Clear();
         }
 
         public void Draw()
@@ -532,6 +573,13 @@ internal static class Keys
         public ViewRoute HandlePaste(string text)
         {
             Pastes.Add(text);
+
+            return ViewRoute.None;
+        }
+
+        public ViewRoute HandleMouse(MouseEvent mouse)
+        {
+            Mice.Add($"{mouse.Action} {mouse.Button} at {mouse.Row},{mouse.Column}");
 
             return ViewRoute.None;
         }

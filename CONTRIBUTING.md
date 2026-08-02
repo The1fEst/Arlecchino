@@ -53,7 +53,9 @@ and analysed with everything else — a script beside the repository is checked 
   in every test and does nothing at all in a terminal. This presses each key in a tmux pane, reads the
   bytes it really produced off the pty, and hands them to the reader — along with what
   `Console.ReadKey` made of the same press, which is the shape an application actually meets. Also
-  needs `tmux`.
+  needs `tmux`. `keys --decode <file>` reads a stretch of bytes caught from a terminal and says what an
+  application would have been told — which is how the mouse was checked, since no amount of driving a
+  terminal produces a mouse report and only a hand on a mouse does.
 - **`live`** runs a whole application in a pane and holds it to what a terminal application owes the
   person who started it: take the screen, draw on it, give it back as it was found. The fake terminal
   records taking the screen as a flag being set, which is true whether or not the sequence that does it
