@@ -7,6 +7,8 @@ using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 
 namespace Arlecchino.Views;

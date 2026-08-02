@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.Local;
 using Arlecchino.Diagnostics;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Modals;
+using Arlecchino.Modals.Asking;
+using Arlecchino.Modals.Choosing;
+using Arlecchino.Modals.Setting;
+using Arlecchino.Modals.Telling;
 
 namespace Arlecchino.State;
 

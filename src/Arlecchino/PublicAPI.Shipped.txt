@@ -194,7 +194,7 @@ Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.ConsoleKeyInfo? key
 Arlecchino.Hosting.ArlecchinoBuilder.UseStrings(Arlecchino.Hosting.ArlecchinoStrings! strings) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTerminal<TTerminal>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTextInput(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseTheme(Arlecchino.Rendering.ThemePalette! palette) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.UseTheme(Arlecchino.Rendering.Colors.ThemePalette! palette) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.WithoutHostedService() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.WithoutNotifications() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoKeymap
@@ -269,11 +269,11 @@ Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.get -> char
 Arlecchino.Hosting.ArlecchinoOptions.CommandPaletteKey.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.get -> Arlecchino.Rendering.GraphSymbols
+Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.get -> Arlecchino.Rendering.Text.GraphSymbols
 Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.ImageProtocol
+Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.Terminals.ImageProtocol
 Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.set -> void
@@ -303,7 +303,7 @@ Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.TextInput.get -> Arlecchino.Input.TextInputMode
 Arlecchino.Hosting.ArlecchinoOptions.TextInput.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.Theme.get -> Arlecchino.Rendering.ThemePalette!
+Arlecchino.Hosting.ArlecchinoOptions.Theme.get -> Arlecchino.Rendering.Colors.ThemePalette!
 Arlecchino.Hosting.ArlecchinoOptions.Theme.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.UseAlternateScreen.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.UseAlternateScreen.set -> void
@@ -505,256 +505,256 @@ Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> vo
 Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
 Arlecchino.Layout.PaneTree.InnerGap.get -> int
 Arlecchino.Layout.PaneTree.OuterGap.get -> int
-Arlecchino.Modals.ChoiceModal
-Arlecchino.Modals.ChoiceModal.ChoiceModal() -> void
-Arlecchino.Modals.ChoiceModal.OnPicked.get -> System.Action<string!>!
-Arlecchino.Modals.ChoiceModal.OnPicked.init -> void
-Arlecchino.Modals.ColorChannel
-Arlecchino.Modals.ColorChannel.Hue = 0 -> Arlecchino.Modals.ColorChannel
-Arlecchino.Modals.ColorChannel.Lightness = 2 -> Arlecchino.Modals.ColorChannel
-Arlecchino.Modals.ColorChannel.Saturation = 1 -> Arlecchino.Modals.ColorChannel
-Arlecchino.Modals.ColorModal
-Arlecchino.Modals.ColorModal.Add(int delta) -> void
-Arlecchino.Modals.ColorModal.Channel.get -> Arlecchino.Modals.ColorChannel
-Arlecchino.Modals.ColorModal.Channel.set -> void
-Arlecchino.Modals.ColorModal.ChannelMaximum.get -> int
-Arlecchino.Modals.ColorModal.ChannelRows.get -> Arlecchino.Rendering.SurfaceRegion[]!
-Arlecchino.Modals.ColorModal.ChannelRows.set -> void
-Arlecchino.Modals.ColorModal.ChannelTracks.get -> Arlecchino.Rendering.SurfaceRegion[]!
-Arlecchino.Modals.ColorModal.ChannelTracks.set -> void
-Arlecchino.Modals.ColorModal.ChannelValue.get -> int
-Arlecchino.Modals.ColorModal.ColorModal() -> void
-Arlecchino.Modals.ColorModal.Hue.get -> int
-Arlecchino.Modals.ColorModal.Hue.set -> void
-Arlecchino.Modals.ColorModal.LargeStep.get -> int
-Arlecchino.Modals.ColorModal.LargeStep.init -> void
-Arlecchino.Modals.ColorModal.Lightness.get -> int
-Arlecchino.Modals.ColorModal.Lightness.set -> void
-Arlecchino.Modals.ColorModal.MoveChannel(int delta) -> void
-Arlecchino.Modals.ColorModal.MoveToMaximum() -> void
-Arlecchino.Modals.ColorModal.MoveToMinimum() -> void
-Arlecchino.Modals.ColorModal.OnPicked.get -> System.Action<Arlecchino.Rendering.Rgb>!
-Arlecchino.Modals.ColorModal.OnPicked.init -> void
-Arlecchino.Modals.ColorModal.Saturation.get -> int
-Arlecchino.Modals.ColorModal.Saturation.set -> void
-Arlecchino.Modals.ColorModal.SetChannelFromFraction(Arlecchino.Modals.ColorChannel channel, decimal fraction) -> void
-Arlecchino.Modals.ColorModal.SetValue(Arlecchino.Rendering.Rgb color) -> void
-Arlecchino.Modals.ColorModal.Step.get -> int
-Arlecchino.Modals.ColorModal.Step.init -> void
-Arlecchino.Modals.ColorModal.Value.get -> Arlecchino.Rendering.Rgb
-Arlecchino.Modals.ColorModal.ValueOf(Arlecchino.Modals.ColorChannel channel) -> int
-Arlecchino.Modals.CommandModal
-Arlecchino.Modals.CommandModal.CommandModal() -> void
-Arlecchino.Modals.CommandModal.Commands.get -> System.Collections.Generic.IReadOnlyList<(string! Key, string! Label)>!
-Arlecchino.Modals.CommandModal.Commands.init -> void
-Arlecchino.Modals.CommandModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.CommandModal.Rows.set -> void
-Arlecchino.Modals.DateModal
-Arlecchino.Modals.DateModal.DateModal() -> void
-Arlecchino.Modals.DateModal.Maximum.get -> System.DateOnly
-Arlecchino.Modals.DateModal.Maximum.init -> void
-Arlecchino.Modals.DateModal.Minimum.get -> System.DateOnly
-Arlecchino.Modals.DateModal.Minimum.init -> void
-Arlecchino.Modals.DateModal.OnSubmit.get -> System.Action<System.DateOnly>!
-Arlecchino.Modals.DateModal.OnSubmit.init -> void
-Arlecchino.Modals.DateModal.Value.get -> System.DateOnly
-Arlecchino.Modals.DateModal.Value.set -> void
-Arlecchino.Modals.IAffixedModal
-Arlecchino.Modals.IAffixedModal.Prefix.get -> string!
-Arlecchino.Modals.IAffixedModal.Suffix.get -> string!
-Arlecchino.Modals.IBoundedModal
-Arlecchino.Modals.IBoundedModal.Add(decimal delta) -> void
-Arlecchino.Modals.IBoundedModal.LargeStep.get -> decimal
-Arlecchino.Modals.IBoundedModal.Maximum.get -> decimal
-Arlecchino.Modals.IBoundedModal.Minimum.get -> decimal
-Arlecchino.Modals.IBoundedModal.Step.get -> decimal
-Arlecchino.Modals.ITextEntryModal
-Arlecchino.Modals.ITextEntryModal.AcceptsCharacter(char character) -> bool
-Arlecchino.Modals.ITextEntryModal.Caret.get -> int
-Arlecchino.Modals.ITextEntryModal.Caret.set -> void
-Arlecchino.Modals.ITextEntryModal.Masked.get -> bool
-Arlecchino.Modals.ITextEntryModal.Message.get -> string?
-Arlecchino.Modals.ITextEntryModal.Message.set -> void
-Arlecchino.Modals.ITextEntryModal.Text.get -> string!
-Arlecchino.Modals.ITextEntryModal.Text.set -> void
-Arlecchino.Modals.MessageModal
-Arlecchino.Modals.MessageModal.MessageModal() -> void
-Arlecchino.Modals.MessageModal.OnClosed.get -> System.Action?
-Arlecchino.Modals.MessageModal.OnClosed.init -> void
-Arlecchino.Modals.MessageModal.Text.get -> string!
-Arlecchino.Modals.MessageModal.Text.init -> void
+Arlecchino.Modals.Choosing.ChoiceModal
+Arlecchino.Modals.Choosing.ChoiceModal.ChoiceModal() -> void
+Arlecchino.Modals.Choosing.ChoiceModal.OnPicked.get -> System.Action<string!>!
+Arlecchino.Modals.Choosing.ChoiceModal.OnPicked.init -> void
+Arlecchino.Modals.Setting.ColorChannel
+Arlecchino.Modals.Setting.ColorChannel.Hue = 0 -> Arlecchino.Modals.Setting.ColorChannel
+Arlecchino.Modals.Setting.ColorChannel.Lightness = 2 -> Arlecchino.Modals.Setting.ColorChannel
+Arlecchino.Modals.Setting.ColorChannel.Saturation = 1 -> Arlecchino.Modals.Setting.ColorChannel
+Arlecchino.Modals.Setting.ColorModal
+Arlecchino.Modals.Setting.ColorModal.Add(int delta) -> void
+Arlecchino.Modals.Setting.ColorModal.Channel.get -> Arlecchino.Modals.Setting.ColorChannel
+Arlecchino.Modals.Setting.ColorModal.Channel.set -> void
+Arlecchino.Modals.Setting.ColorModal.ChannelMaximum.get -> int
+Arlecchino.Modals.Setting.ColorModal.ChannelRows.get -> Arlecchino.Rendering.SurfaceRegion[]!
+Arlecchino.Modals.Setting.ColorModal.ChannelRows.set -> void
+Arlecchino.Modals.Setting.ColorModal.ChannelTracks.get -> Arlecchino.Rendering.SurfaceRegion[]!
+Arlecchino.Modals.Setting.ColorModal.ChannelTracks.set -> void
+Arlecchino.Modals.Setting.ColorModal.ChannelValue.get -> int
+Arlecchino.Modals.Setting.ColorModal.ColorModal() -> void
+Arlecchino.Modals.Setting.ColorModal.Hue.get -> int
+Arlecchino.Modals.Setting.ColorModal.Hue.set -> void
+Arlecchino.Modals.Setting.ColorModal.LargeStep.get -> int
+Arlecchino.Modals.Setting.ColorModal.LargeStep.init -> void
+Arlecchino.Modals.Setting.ColorModal.Lightness.get -> int
+Arlecchino.Modals.Setting.ColorModal.Lightness.set -> void
+Arlecchino.Modals.Setting.ColorModal.MoveChannel(int delta) -> void
+Arlecchino.Modals.Setting.ColorModal.MoveToMaximum() -> void
+Arlecchino.Modals.Setting.ColorModal.MoveToMinimum() -> void
+Arlecchino.Modals.Setting.ColorModal.OnPicked.get -> System.Action<Arlecchino.Rendering.Colors.Rgb>!
+Arlecchino.Modals.Setting.ColorModal.OnPicked.init -> void
+Arlecchino.Modals.Setting.ColorModal.Saturation.get -> int
+Arlecchino.Modals.Setting.ColorModal.Saturation.set -> void
+Arlecchino.Modals.Setting.ColorModal.SetChannelFromFraction(Arlecchino.Modals.Setting.ColorChannel channel, decimal fraction) -> void
+Arlecchino.Modals.Setting.ColorModal.SetValue(Arlecchino.Rendering.Colors.Rgb color) -> void
+Arlecchino.Modals.Setting.ColorModal.Step.get -> int
+Arlecchino.Modals.Setting.ColorModal.Step.init -> void
+Arlecchino.Modals.Setting.ColorModal.Value.get -> Arlecchino.Rendering.Colors.Rgb
+Arlecchino.Modals.Setting.ColorModal.ValueOf(Arlecchino.Modals.Setting.ColorChannel channel) -> int
+Arlecchino.Modals.Choosing.CommandModal
+Arlecchino.Modals.Choosing.CommandModal.CommandModal() -> void
+Arlecchino.Modals.Choosing.CommandModal.Commands.get -> System.Collections.Generic.IReadOnlyList<(string! Key, string! Label)>!
+Arlecchino.Modals.Choosing.CommandModal.Commands.init -> void
+Arlecchino.Modals.Choosing.CommandModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Choosing.CommandModal.Rows.set -> void
+Arlecchino.Modals.Setting.DateModal
+Arlecchino.Modals.Setting.DateModal.DateModal() -> void
+Arlecchino.Modals.Setting.DateModal.Maximum.get -> System.DateOnly
+Arlecchino.Modals.Setting.DateModal.Maximum.init -> void
+Arlecchino.Modals.Setting.DateModal.Minimum.get -> System.DateOnly
+Arlecchino.Modals.Setting.DateModal.Minimum.init -> void
+Arlecchino.Modals.Setting.DateModal.OnSubmit.get -> System.Action<System.DateOnly>!
+Arlecchino.Modals.Setting.DateModal.OnSubmit.init -> void
+Arlecchino.Modals.Setting.DateModal.Value.get -> System.DateOnly
+Arlecchino.Modals.Setting.DateModal.Value.set -> void
+Arlecchino.Modals.Asking.IAffixedModal
+Arlecchino.Modals.Asking.IAffixedModal.Prefix.get -> string!
+Arlecchino.Modals.Asking.IAffixedModal.Suffix.get -> string!
+Arlecchino.Modals.Setting.IBoundedModal
+Arlecchino.Modals.Setting.IBoundedModal.Add(decimal delta) -> void
+Arlecchino.Modals.Setting.IBoundedModal.LargeStep.get -> decimal
+Arlecchino.Modals.Setting.IBoundedModal.Maximum.get -> decimal
+Arlecchino.Modals.Setting.IBoundedModal.Minimum.get -> decimal
+Arlecchino.Modals.Setting.IBoundedModal.Step.get -> decimal
+Arlecchino.Modals.Asking.ITextEntryModal
+Arlecchino.Modals.Asking.ITextEntryModal.AcceptsCharacter(char character) -> bool
+Arlecchino.Modals.Asking.ITextEntryModal.Caret.get -> int
+Arlecchino.Modals.Asking.ITextEntryModal.Caret.set -> void
+Arlecchino.Modals.Asking.ITextEntryModal.Masked.get -> bool
+Arlecchino.Modals.Asking.ITextEntryModal.Message.get -> string?
+Arlecchino.Modals.Asking.ITextEntryModal.Message.set -> void
+Arlecchino.Modals.Asking.ITextEntryModal.Text.get -> string!
+Arlecchino.Modals.Asking.ITextEntryModal.Text.set -> void
+Arlecchino.Modals.Telling.MessageModal
+Arlecchino.Modals.Telling.MessageModal.MessageModal() -> void
+Arlecchino.Modals.Telling.MessageModal.OnClosed.get -> System.Action?
+Arlecchino.Modals.Telling.MessageModal.OnClosed.init -> void
+Arlecchino.Modals.Telling.MessageModal.Text.get -> string!
+Arlecchino.Modals.Telling.MessageModal.Text.init -> void
 Arlecchino.Modals.Modal
 Arlecchino.Modals.Modal.Box.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.Modal.Box.set -> void
 Arlecchino.Modals.Modal.Modal() -> void
 Arlecchino.Modals.Modal.Title.get -> string!
 Arlecchino.Modals.Modal.Title.init -> void
-Arlecchino.Modals.MultiChoiceModal
-Arlecchino.Modals.MultiChoiceModal.IsSelected(string! option) -> bool
-Arlecchino.Modals.MultiChoiceModal.MultiChoiceModal() -> void
-Arlecchino.Modals.MultiChoiceModal.OnSubmit.get -> System.Action<System.Collections.Generic.IReadOnlyList<string!>!>!
-Arlecchino.Modals.MultiChoiceModal.OnSubmit.init -> void
-Arlecchino.Modals.MultiChoiceModal.Selected.get -> System.Collections.Generic.HashSet<string!>!
-Arlecchino.Modals.MultiChoiceModal.Selected.init -> void
-Arlecchino.Modals.MultiChoiceModal.SelectedInOptionOrder() -> System.Collections.Generic.List<string!>!
-Arlecchino.Modals.MultiChoiceModal.Toggle(string! option) -> void
-Arlecchino.Modals.NotificationModal
-Arlecchino.Modals.NotificationModal.Actions.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.NotificationAction!>!
-Arlecchino.Modals.NotificationModal.Chips.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Rendering.SurfaceRegion>!
-Arlecchino.Modals.NotificationModal.Chips.set -> void
-Arlecchino.Modals.NotificationModal.Entry.get -> Arlecchino.Diagnostics.Notification!
-Arlecchino.Modals.NotificationModal.Entry.init -> void
-Arlecchino.Modals.NotificationModal.Index.get -> int
-Arlecchino.Modals.NotificationModal.Index.set -> void
-Arlecchino.Modals.NotificationModal.Move(int delta) -> void
-Arlecchino.Modals.NotificationModal.NotificationModal() -> void
-Arlecchino.Modals.NotificationModal.Run() -> void
-Arlecchino.Modals.NotificationModal.Text.get -> string!
-Arlecchino.Modals.NumberModal
-Arlecchino.Modals.NumberModal.AcceptsCharacter(char character) -> bool
-Arlecchino.Modals.NumberModal.Add(decimal delta) -> void
-Arlecchino.Modals.NumberModal.Caret.get -> int
-Arlecchino.Modals.NumberModal.Caret.set -> void
-Arlecchino.Modals.NumberModal.Masked.get -> bool
-Arlecchino.Modals.NumberModal.Maximum.get -> decimal
-Arlecchino.Modals.NumberModal.Maximum.init -> void
-Arlecchino.Modals.NumberModal.Message.get -> string?
-Arlecchino.Modals.NumberModal.Message.set -> void
-Arlecchino.Modals.NumberModal.Minimum.get -> decimal
-Arlecchino.Modals.NumberModal.Minimum.init -> void
-Arlecchino.Modals.NumberModal.NumberModal() -> void
-Arlecchino.Modals.NumberModal.OnSubmit.get -> System.Action<decimal>!
-Arlecchino.Modals.NumberModal.OnSubmit.init -> void
-Arlecchino.Modals.NumberModal.Text.get -> string!
-Arlecchino.Modals.NumberModal.Text.set -> void
-Arlecchino.Modals.NumberModal.TryGetValue(out decimal value) -> bool
-Arlecchino.Modals.NumberModal.Validate.get -> System.Func<decimal, string?>?
-Arlecchino.Modals.NumberModal.Validate.init -> void
-Arlecchino.Modals.NumericModal
-Arlecchino.Modals.NumericModal.Decimals.get -> int
-Arlecchino.Modals.NumericModal.Decimals.init -> void
-Arlecchino.Modals.NumericModal.Display(decimal value) -> string!
-Arlecchino.Modals.NumericModal.FormatNumber(decimal value) -> string!
-Arlecchino.Modals.NumericModal.LargeStep.get -> decimal
-Arlecchino.Modals.NumericModal.LargeStep.init -> void
-Arlecchino.Modals.NumericModal.NumericModal() -> void
-Arlecchino.Modals.NumericModal.Prefix.get -> string!
-Arlecchino.Modals.NumericModal.Prefix.init -> void
-Arlecchino.Modals.NumericModal.Step.get -> decimal
-Arlecchino.Modals.NumericModal.Step.init -> void
-Arlecchino.Modals.NumericModal.Suffix.get -> string!
-Arlecchino.Modals.NumericModal.Suffix.init -> void
-Arlecchino.Modals.OptionListModal
-Arlecchino.Modals.OptionListModal.Filter.get -> string!
-Arlecchino.Modals.OptionListModal.Filter.set -> void
-Arlecchino.Modals.OptionListModal.FirstVisible.get -> int
-Arlecchino.Modals.OptionListModal.FirstVisible.set -> void
-Arlecchino.Modals.OptionListModal.Index.get -> int
-Arlecchino.Modals.OptionListModal.Index.set -> void
-Arlecchino.Modals.OptionListModal.MatchingOptions() -> System.Collections.Generic.List<string!>!
-Arlecchino.Modals.OptionListModal.OptionListModal() -> void
-Arlecchino.Modals.OptionListModal.Options.get -> System.Collections.Generic.IReadOnlyList<string!>!
-Arlecchino.Modals.OptionListModal.Options.init -> void
-Arlecchino.Modals.OptionListModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.OptionListModal.Rows.set -> void
-Arlecchino.Modals.SegmentedModal
-Arlecchino.Modals.SegmentedModal.ClearTypedDigits() -> void
-Arlecchino.Modals.SegmentedModal.CommitTypedDigits() -> void
-Arlecchino.Modals.SegmentedModal.EditedSegmentTexts() -> string![]!
-Arlecchino.Modals.SegmentedModal.MoveSegment(int delta) -> void
-Arlecchino.Modals.SegmentedModal.Segment.get -> int
-Arlecchino.Modals.SegmentedModal.SegmentedModal() -> void
-Arlecchino.Modals.SegmentedModal.TypeDigit(char digit) -> void
-Arlecchino.Modals.SliderModal
-Arlecchino.Modals.SliderModal.Add(decimal delta) -> void
-Arlecchino.Modals.SliderModal.Fraction.get -> decimal
-Arlecchino.Modals.SliderModal.Maximum.get -> decimal
-Arlecchino.Modals.SliderModal.Maximum.init -> void
-Arlecchino.Modals.SliderModal.Minimum.get -> decimal
-Arlecchino.Modals.SliderModal.Minimum.init -> void
-Arlecchino.Modals.SliderModal.MoveToMaximum() -> void
-Arlecchino.Modals.SliderModal.MoveToMinimum() -> void
-Arlecchino.Modals.SliderModal.OnSubmit.get -> System.Action<decimal>!
-Arlecchino.Modals.SliderModal.OnSubmit.init -> void
-Arlecchino.Modals.SliderModal.SetFromFraction(decimal fraction) -> void
-Arlecchino.Modals.SliderModal.SliderModal() -> void
-Arlecchino.Modals.SliderModal.Track.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.SliderModal.Track.set -> void
-Arlecchino.Modals.SliderModal.Value.get -> decimal
-Arlecchino.Modals.SliderModal.Value.set -> void
-Arlecchino.Modals.TextAreaModal
-Arlecchino.Modals.TextAreaModal.Break() -> void
-Arlecchino.Modals.TextAreaModal.Column.get -> int
-Arlecchino.Modals.TextAreaModal.DeleteForward() -> void
-Arlecchino.Modals.TextAreaModal.Erase() -> void
-Arlecchino.Modals.TextAreaModal.FirstVisible.get -> int
-Arlecchino.Modals.TextAreaModal.FirstVisible.set -> void
-Arlecchino.Modals.TextAreaModal.Insert(char character) -> void
-Arlecchino.Modals.TextAreaModal.InsertText(string! text) -> void
-Arlecchino.Modals.TextAreaModal.Lines.get -> System.Collections.Generic.IReadOnlyList<string!>!
-Arlecchino.Modals.TextAreaModal.Message.get -> string!
-Arlecchino.Modals.TextAreaModal.Message.set -> void
-Arlecchino.Modals.TextAreaModal.MoveCaret(int row, int column) -> void
-Arlecchino.Modals.TextAreaModal.MoveLeft() -> void
-Arlecchino.Modals.TextAreaModal.MoveRight() -> void
-Arlecchino.Modals.TextAreaModal.MoveRows(int rows) -> void
-Arlecchino.Modals.TextAreaModal.MoveToLineEnd() -> void
-Arlecchino.Modals.TextAreaModal.MoveToLineStart() -> void
-Arlecchino.Modals.TextAreaModal.OnSubmit.get -> System.Action<string!>!
-Arlecchino.Modals.TextAreaModal.OnSubmit.init -> void
-Arlecchino.Modals.TextAreaModal.Row.get -> int
-Arlecchino.Modals.TextAreaModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.TextAreaModal.Rows.set -> void
-Arlecchino.Modals.TextAreaModal.SetText(string! text) -> void
-Arlecchino.Modals.TextAreaModal.Text.get -> string!
-Arlecchino.Modals.TextAreaModal.Text.init -> void
-Arlecchino.Modals.TextAreaModal.TextAreaModal() -> void
-Arlecchino.Modals.TextAreaModal.Validate.get -> System.Func<string!, string?>?
-Arlecchino.Modals.TextAreaModal.Validate.init -> void
-Arlecchino.Modals.TextAreaModal.VisibleRows.get -> int
-Arlecchino.Modals.TextAreaModal.VisibleRows.init -> void
-Arlecchino.Modals.TextEditing
-Arlecchino.Modals.TextFormat
-Arlecchino.Modals.TextFormat.Email = 1 -> Arlecchino.Modals.TextFormat
-Arlecchino.Modals.TextFormat.Free = 0 -> Arlecchino.Modals.TextFormat
-Arlecchino.Modals.TextFormat.Url = 2 -> Arlecchino.Modals.TextFormat
-Arlecchino.Modals.TextModal
-Arlecchino.Modals.TextModal.AcceptsCharacter(char character) -> bool
-Arlecchino.Modals.TextModal.Caret.get -> int
-Arlecchino.Modals.TextModal.Caret.set -> void
-Arlecchino.Modals.TextModal.Format.get -> Arlecchino.Modals.TextFormat
-Arlecchino.Modals.TextModal.Format.init -> void
-Arlecchino.Modals.TextModal.Masked.get -> bool
-Arlecchino.Modals.TextModal.Masked.init -> void
-Arlecchino.Modals.TextModal.Message.get -> string?
-Arlecchino.Modals.TextModal.Message.set -> void
-Arlecchino.Modals.TextModal.OnSubmit.get -> System.Action<string!>!
-Arlecchino.Modals.TextModal.OnSubmit.init -> void
-Arlecchino.Modals.TextModal.Prefix.get -> string!
-Arlecchino.Modals.TextModal.Prefix.init -> void
-Arlecchino.Modals.TextModal.Suffix.get -> string!
-Arlecchino.Modals.TextModal.Suffix.init -> void
-Arlecchino.Modals.TextModal.Text.get -> string!
-Arlecchino.Modals.TextModal.Text.set -> void
-Arlecchino.Modals.TextModal.TextModal() -> void
-Arlecchino.Modals.TextModal.Validate.get -> System.Func<string!, string?>?
-Arlecchino.Modals.TextModal.Validate.init -> void
-Arlecchino.Modals.TimeModal
-Arlecchino.Modals.TimeModal.OnSubmit.get -> System.Action<System.TimeOnly>!
-Arlecchino.Modals.TimeModal.OnSubmit.init -> void
-Arlecchino.Modals.TimeModal.TimeModal() -> void
-Arlecchino.Modals.TimeModal.Value.get -> System.TimeOnly
-Arlecchino.Modals.TimeModal.Value.set -> void
-Arlecchino.Modals.ToggleModal
-Arlecchino.Modals.ToggleModal.NoChip.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.ToggleModal.NoChip.set -> void
-Arlecchino.Modals.ToggleModal.OnSubmit.get -> System.Action<bool>!
-Arlecchino.Modals.ToggleModal.OnSubmit.init -> void
-Arlecchino.Modals.ToggleModal.ToggleModal() -> void
-Arlecchino.Modals.ToggleModal.Value.get -> bool
-Arlecchino.Modals.ToggleModal.Value.set -> void
-Arlecchino.Modals.ToggleModal.YesChip.get -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Modals.ToggleModal.YesChip.set -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal
+Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! option) -> bool
+Arlecchino.Modals.Choosing.MultiChoiceModal.MultiChoiceModal() -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal.OnSubmit.get -> System.Action<System.Collections.Generic.IReadOnlyList<string!>!>!
+Arlecchino.Modals.Choosing.MultiChoiceModal.OnSubmit.init -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.get -> System.Collections.Generic.HashSet<string!>!
+Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.init -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedInOptionOrder() -> System.Collections.Generic.List<string!>!
+Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! option) -> void
+Arlecchino.Modals.Telling.NotificationModal
+Arlecchino.Modals.Telling.NotificationModal.Actions.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.NotificationAction!>!
+Arlecchino.Modals.Telling.NotificationModal.Chips.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Rendering.SurfaceRegion>!
+Arlecchino.Modals.Telling.NotificationModal.Chips.set -> void
+Arlecchino.Modals.Telling.NotificationModal.Entry.get -> Arlecchino.Diagnostics.Notification!
+Arlecchino.Modals.Telling.NotificationModal.Entry.init -> void
+Arlecchino.Modals.Telling.NotificationModal.Index.get -> int
+Arlecchino.Modals.Telling.NotificationModal.Index.set -> void
+Arlecchino.Modals.Telling.NotificationModal.Move(int delta) -> void
+Arlecchino.Modals.Telling.NotificationModal.NotificationModal() -> void
+Arlecchino.Modals.Telling.NotificationModal.Run() -> void
+Arlecchino.Modals.Telling.NotificationModal.Text.get -> string!
+Arlecchino.Modals.Asking.NumberModal
+Arlecchino.Modals.Asking.NumberModal.AcceptsCharacter(char character) -> bool
+Arlecchino.Modals.Asking.NumberModal.Add(decimal delta) -> void
+Arlecchino.Modals.Asking.NumberModal.Caret.get -> int
+Arlecchino.Modals.Asking.NumberModal.Caret.set -> void
+Arlecchino.Modals.Asking.NumberModal.Masked.get -> bool
+Arlecchino.Modals.Asking.NumberModal.Maximum.get -> decimal
+Arlecchino.Modals.Asking.NumberModal.Maximum.init -> void
+Arlecchino.Modals.Asking.NumberModal.Message.get -> string?
+Arlecchino.Modals.Asking.NumberModal.Message.set -> void
+Arlecchino.Modals.Asking.NumberModal.Minimum.get -> decimal
+Arlecchino.Modals.Asking.NumberModal.Minimum.init -> void
+Arlecchino.Modals.Asking.NumberModal.NumberModal() -> void
+Arlecchino.Modals.Asking.NumberModal.OnSubmit.get -> System.Action<decimal>!
+Arlecchino.Modals.Asking.NumberModal.OnSubmit.init -> void
+Arlecchino.Modals.Asking.NumberModal.Text.get -> string!
+Arlecchino.Modals.Asking.NumberModal.Text.set -> void
+Arlecchino.Modals.Asking.NumberModal.TryGetValue(out decimal value) -> bool
+Arlecchino.Modals.Asking.NumberModal.Validate.get -> System.Func<decimal, string?>?
+Arlecchino.Modals.Asking.NumberModal.Validate.init -> void
+Arlecchino.Modals.Asking.NumericModal
+Arlecchino.Modals.Asking.NumericModal.Decimals.get -> int
+Arlecchino.Modals.Asking.NumericModal.Decimals.init -> void
+Arlecchino.Modals.Asking.NumericModal.Display(decimal value) -> string!
+Arlecchino.Modals.Asking.NumericModal.FormatNumber(decimal value) -> string!
+Arlecchino.Modals.Asking.NumericModal.LargeStep.get -> decimal
+Arlecchino.Modals.Asking.NumericModal.LargeStep.init -> void
+Arlecchino.Modals.Asking.NumericModal.NumericModal() -> void
+Arlecchino.Modals.Asking.NumericModal.Prefix.get -> string!
+Arlecchino.Modals.Asking.NumericModal.Prefix.init -> void
+Arlecchino.Modals.Asking.NumericModal.Step.get -> decimal
+Arlecchino.Modals.Asking.NumericModal.Step.init -> void
+Arlecchino.Modals.Asking.NumericModal.Suffix.get -> string!
+Arlecchino.Modals.Asking.NumericModal.Suffix.init -> void
+Arlecchino.Modals.Choosing.OptionListModal
+Arlecchino.Modals.Choosing.OptionListModal.Filter.get -> string!
+Arlecchino.Modals.Choosing.OptionListModal.Filter.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.FirstVisible.get -> int
+Arlecchino.Modals.Choosing.OptionListModal.FirstVisible.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.Index.get -> int
+Arlecchino.Modals.Choosing.OptionListModal.Index.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.MatchingOptions() -> System.Collections.Generic.List<string!>!
+Arlecchino.Modals.Choosing.OptionListModal.OptionListModal() -> void
+Arlecchino.Modals.Choosing.OptionListModal.Options.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Arlecchino.Modals.Choosing.OptionListModal.Options.init -> void
+Arlecchino.Modals.Choosing.OptionListModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Choosing.OptionListModal.Rows.set -> void
+Arlecchino.Modals.Setting.SegmentedModal
+Arlecchino.Modals.Setting.SegmentedModal.ClearTypedDigits() -> void
+Arlecchino.Modals.Setting.SegmentedModal.CommitTypedDigits() -> void
+Arlecchino.Modals.Setting.SegmentedModal.EditedSegmentTexts() -> string![]!
+Arlecchino.Modals.Setting.SegmentedModal.MoveSegment(int delta) -> void
+Arlecchino.Modals.Setting.SegmentedModal.Segment.get -> int
+Arlecchino.Modals.Setting.SegmentedModal.SegmentedModal() -> void
+Arlecchino.Modals.Setting.SegmentedModal.TypeDigit(char digit) -> void
+Arlecchino.Modals.Setting.SliderModal
+Arlecchino.Modals.Setting.SliderModal.Add(decimal delta) -> void
+Arlecchino.Modals.Setting.SliderModal.Fraction.get -> decimal
+Arlecchino.Modals.Setting.SliderModal.Maximum.get -> decimal
+Arlecchino.Modals.Setting.SliderModal.Maximum.init -> void
+Arlecchino.Modals.Setting.SliderModal.Minimum.get -> decimal
+Arlecchino.Modals.Setting.SliderModal.Minimum.init -> void
+Arlecchino.Modals.Setting.SliderModal.MoveToMaximum() -> void
+Arlecchino.Modals.Setting.SliderModal.MoveToMinimum() -> void
+Arlecchino.Modals.Setting.SliderModal.OnSubmit.get -> System.Action<decimal>!
+Arlecchino.Modals.Setting.SliderModal.OnSubmit.init -> void
+Arlecchino.Modals.Setting.SliderModal.SetFromFraction(decimal fraction) -> void
+Arlecchino.Modals.Setting.SliderModal.SliderModal() -> void
+Arlecchino.Modals.Setting.SliderModal.Track.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Setting.SliderModal.Track.set -> void
+Arlecchino.Modals.Setting.SliderModal.Value.get -> decimal
+Arlecchino.Modals.Setting.SliderModal.Value.set -> void
+Arlecchino.Modals.Asking.TextAreaModal
+Arlecchino.Modals.Asking.TextAreaModal.Break() -> void
+Arlecchino.Modals.Asking.TextAreaModal.Column.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.DeleteForward() -> void
+Arlecchino.Modals.Asking.TextAreaModal.Erase() -> void
+Arlecchino.Modals.Asking.TextAreaModal.FirstVisible.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.FirstVisible.set -> void
+Arlecchino.Modals.Asking.TextAreaModal.Insert(char character) -> void
+Arlecchino.Modals.Asking.TextAreaModal.InsertText(string! text) -> void
+Arlecchino.Modals.Asking.TextAreaModal.Lines.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Arlecchino.Modals.Asking.TextAreaModal.Message.get -> string!
+Arlecchino.Modals.Asking.TextAreaModal.Message.set -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveCaret(int row, int column) -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveLeft() -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveRight() -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveRows(int rows) -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveToLineEnd() -> void
+Arlecchino.Modals.Asking.TextAreaModal.MoveToLineStart() -> void
+Arlecchino.Modals.Asking.TextAreaModal.OnSubmit.get -> System.Action<string!>!
+Arlecchino.Modals.Asking.TextAreaModal.OnSubmit.init -> void
+Arlecchino.Modals.Asking.TextAreaModal.Row.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Asking.TextAreaModal.Rows.set -> void
+Arlecchino.Modals.Asking.TextAreaModal.SetText(string! text) -> void
+Arlecchino.Modals.Asking.TextAreaModal.Text.get -> string!
+Arlecchino.Modals.Asking.TextAreaModal.Text.init -> void
+Arlecchino.Modals.Asking.TextAreaModal.TextAreaModal() -> void
+Arlecchino.Modals.Asking.TextAreaModal.Validate.get -> System.Func<string!, string?>?
+Arlecchino.Modals.Asking.TextAreaModal.Validate.init -> void
+Arlecchino.Modals.Asking.TextAreaModal.VisibleRows.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.VisibleRows.init -> void
+Arlecchino.Modals.Asking.TextEditing
+Arlecchino.Modals.Asking.TextFormat
+Arlecchino.Modals.Asking.TextFormat.Email = 1 -> Arlecchino.Modals.Asking.TextFormat
+Arlecchino.Modals.Asking.TextFormat.Free = 0 -> Arlecchino.Modals.Asking.TextFormat
+Arlecchino.Modals.Asking.TextFormat.Url = 2 -> Arlecchino.Modals.Asking.TextFormat
+Arlecchino.Modals.Asking.TextModal
+Arlecchino.Modals.Asking.TextModal.AcceptsCharacter(char character) -> bool
+Arlecchino.Modals.Asking.TextModal.Caret.get -> int
+Arlecchino.Modals.Asking.TextModal.Caret.set -> void
+Arlecchino.Modals.Asking.TextModal.Format.get -> Arlecchino.Modals.Asking.TextFormat
+Arlecchino.Modals.Asking.TextModal.Format.init -> void
+Arlecchino.Modals.Asking.TextModal.Masked.get -> bool
+Arlecchino.Modals.Asking.TextModal.Masked.init -> void
+Arlecchino.Modals.Asking.TextModal.Message.get -> string?
+Arlecchino.Modals.Asking.TextModal.Message.set -> void
+Arlecchino.Modals.Asking.TextModal.OnSubmit.get -> System.Action<string!>!
+Arlecchino.Modals.Asking.TextModal.OnSubmit.init -> void
+Arlecchino.Modals.Asking.TextModal.Prefix.get -> string!
+Arlecchino.Modals.Asking.TextModal.Prefix.init -> void
+Arlecchino.Modals.Asking.TextModal.Suffix.get -> string!
+Arlecchino.Modals.Asking.TextModal.Suffix.init -> void
+Arlecchino.Modals.Asking.TextModal.Text.get -> string!
+Arlecchino.Modals.Asking.TextModal.Text.set -> void
+Arlecchino.Modals.Asking.TextModal.TextModal() -> void
+Arlecchino.Modals.Asking.TextModal.Validate.get -> System.Func<string!, string?>?
+Arlecchino.Modals.Asking.TextModal.Validate.init -> void
+Arlecchino.Modals.Setting.TimeModal
+Arlecchino.Modals.Setting.TimeModal.OnSubmit.get -> System.Action<System.TimeOnly>!
+Arlecchino.Modals.Setting.TimeModal.OnSubmit.init -> void
+Arlecchino.Modals.Setting.TimeModal.TimeModal() -> void
+Arlecchino.Modals.Setting.TimeModal.Value.get -> System.TimeOnly
+Arlecchino.Modals.Setting.TimeModal.Value.set -> void
+Arlecchino.Modals.Setting.ToggleModal
+Arlecchino.Modals.Setting.ToggleModal.NoChip.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Setting.ToggleModal.NoChip.set -> void
+Arlecchino.Modals.Setting.ToggleModal.OnSubmit.get -> System.Action<bool>!
+Arlecchino.Modals.Setting.ToggleModal.OnSubmit.init -> void
+Arlecchino.Modals.Setting.ToggleModal.ToggleModal() -> void
+Arlecchino.Modals.Setting.ToggleModal.Value.get -> bool
+Arlecchino.Modals.Setting.ToggleModal.Value.set -> void
+Arlecchino.Modals.Setting.ToggleModal.YesChip.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.Setting.ToggleModal.YesChip.set -> void
 Arlecchino.Navigation.ActiveView
 Arlecchino.Navigation.ActiveView.ActiveView(Arlecchino.Navigation.IArlecchinoView! view, Microsoft.Extensions.DependencyInjection.IServiceScope! scope) -> void
 Arlecchino.Navigation.ActiveView.Dispose() -> void
@@ -828,7 +828,7 @@ Arlecchino.State.ArlecchinoState.PickerLastFolder.get -> string!
 Arlecchino.State.ArlecchinoState.PickerLastFolder.set -> void
 Arlecchino.State.ArlecchinoState.PushModal(Arlecchino.Modals.Modal! modal) -> void
 Arlecchino.State.ArlecchinoState.RequestChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Action<string!>! onPicked, string! current = "") -> void
-Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Rgb initial, System.Action<Arlecchino.Rendering.Rgb>! onPicked) -> void
+Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Colors.Rgb initial, System.Action<Arlecchino.Rendering.Colors.Rgb>! onPicked) -> void
 Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onConfirmed) -> void
 Arlecchino.State.ArlecchinoState.RequestDate(string! title, System.DateOnly initial, System.Action<System.DateOnly>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestEmail(string! title, string! initial, System.Action<string!>! onSubmit) -> void
@@ -872,271 +872,271 @@ Arlecchino.State.FilePickerRequest.ReturnView.get -> Arlecchino.Navigation.ViewR
 Arlecchino.State.FilePickerRequest.ReturnView.init -> void
 Arlecchino.State.FilePickerRequest.Title.get -> string!
 Arlecchino.State.FilePickerRequest.Title.init -> void
-Arlecchino.Widgets.AreaChart
-Arlecchino.Widgets.AreaChart.AreaChart() -> void
-Arlecchino.Widgets.AreaChart.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.GaugeBand>!
-Arlecchino.Widgets.AreaChart.Bands.init -> void
-Arlecchino.Widgets.AreaChart.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.AreaChart.Invert.get -> bool
-Arlecchino.Widgets.AreaChart.Invert.init -> void
-Arlecchino.Widgets.AreaChart.Maximum.get -> decimal?
-Arlecchino.Widgets.AreaChart.Maximum.init -> void
-Arlecchino.Widgets.AreaChart.Minimum.get -> decimal?
-Arlecchino.Widgets.AreaChart.Minimum.init -> void
-Arlecchino.Widgets.AreaChart.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.AreaChart.Style.init -> void
-Arlecchino.Widgets.AreaChart.Symbols.get -> Arlecchino.Rendering.GraphSymbols?
-Arlecchino.Widgets.AreaChart.Symbols.set -> void
-Arlecchino.Widgets.AreaChart.Values.get -> System.Collections.Generic.IReadOnlyList<decimal>!
-Arlecchino.Widgets.AreaChart.Values.set -> void
-Arlecchino.Widgets.BarChart<T>
-Arlecchino.Widgets.BarChart<T>.BarChart() -> void
-Arlecchino.Widgets.BarChart<T>.Caption.get -> System.Func<decimal, string!>?
-Arlecchino.Widgets.BarChart<T>.Caption.init -> void
-Arlecchino.Widgets.BarChart<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.BarChart<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.IArlecchinoColor!>?
-Arlecchino.Widgets.BarChart<T>.ItemStyle.set -> void
-Arlecchino.Widgets.BarChart<T>.Items.get -> System.Collections.Generic.IReadOnlyList<T>!
-Arlecchino.Widgets.BarChart<T>.Items.set -> void
-Arlecchino.Widgets.BarChart<T>.LabelWidth.get -> int
-Arlecchino.Widgets.BarChart<T>.LabelWidth.init -> void
-Arlecchino.Widgets.BarChart<T>.Maximum.get -> decimal?
-Arlecchino.Widgets.BarChart<T>.Maximum.init -> void
-Arlecchino.Widgets.BarChart<T>.Render.get -> System.Func<T, string!>!
-Arlecchino.Widgets.BarChart<T>.Render.init -> void
-Arlecchino.Widgets.BarChart<T>.Value.get -> System.Func<T, decimal>!
-Arlecchino.Widgets.BarChart<T>.Value.init -> void
-Arlecchino.Widgets.Gauge
-Arlecchino.Widgets.Gauge.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.GaugeBand>!
-Arlecchino.Widgets.Gauge.Bands.init -> void
-Arlecchino.Widgets.Gauge.Caption.get -> System.Func<decimal, string!>?
-Arlecchino.Widgets.Gauge.Caption.init -> void
-Arlecchino.Widgets.Gauge.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Gauge.Fraction.get -> decimal
-Arlecchino.Widgets.Gauge.Gauge() -> void
-Arlecchino.Widgets.Gauge.Maximum.get -> decimal
-Arlecchino.Widgets.Gauge.Maximum.init -> void
-Arlecchino.Widgets.Gauge.Minimum.get -> decimal
-Arlecchino.Widgets.Gauge.Minimum.init -> void
-Arlecchino.Widgets.Gauge.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.Gauge.Style.init -> void
-Arlecchino.Widgets.Gauge.StyleAt(decimal value) -> Arlecchino.Rendering.IArlecchinoColor!
-Arlecchino.Widgets.Gauge.Value.get -> decimal
-Arlecchino.Widgets.Gauge.Value.set -> void
-Arlecchino.Widgets.GaugeBand
-Arlecchino.Widgets.GaugeBand.Deconstruct(out decimal From, out Arlecchino.Rendering.IArlecchinoColor! Style) -> void
-Arlecchino.Widgets.GaugeBand.Equals(Arlecchino.Widgets.GaugeBand other) -> bool
-Arlecchino.Widgets.GaugeBand.From.get -> decimal
-Arlecchino.Widgets.GaugeBand.From.init -> void
-Arlecchino.Widgets.GaugeBand.GaugeBand() -> void
-Arlecchino.Widgets.GaugeBand.GaugeBand(decimal From, Arlecchino.Rendering.IArlecchinoColor! Style) -> void
-Arlecchino.Widgets.GaugeBand.Style.get -> Arlecchino.Rendering.IArlecchinoColor!
-Arlecchino.Widgets.GaugeBand.Style.init -> void
+Arlecchino.Widgets.Readouts.AreaChart
+Arlecchino.Widgets.Readouts.AreaChart.AreaChart() -> void
+Arlecchino.Widgets.Readouts.AreaChart.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Readouts.GaugeBand>!
+Arlecchino.Widgets.Readouts.AreaChart.Bands.init -> void
+Arlecchino.Widgets.Readouts.AreaChart.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.AreaChart.Invert.get -> bool
+Arlecchino.Widgets.Readouts.AreaChart.Invert.init -> void
+Arlecchino.Widgets.Readouts.AreaChart.Maximum.get -> decimal?
+Arlecchino.Widgets.Readouts.AreaChart.Maximum.init -> void
+Arlecchino.Widgets.Readouts.AreaChart.Minimum.get -> decimal?
+Arlecchino.Widgets.Readouts.AreaChart.Minimum.init -> void
+Arlecchino.Widgets.Readouts.AreaChart.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.AreaChart.Style.init -> void
+Arlecchino.Widgets.Readouts.AreaChart.Symbols.get -> Arlecchino.Rendering.Text.GraphSymbols?
+Arlecchino.Widgets.Readouts.AreaChart.Symbols.set -> void
+Arlecchino.Widgets.Readouts.AreaChart.Values.get -> System.Collections.Generic.IReadOnlyList<decimal>!
+Arlecchino.Widgets.Readouts.AreaChart.Values.set -> void
+Arlecchino.Widgets.Readouts.BarChart<T>
+Arlecchino.Widgets.Readouts.BarChart<T>.BarChart() -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Caption.get -> System.Func<decimal, string!>?
+Arlecchino.Widgets.Readouts.BarChart<T>.Caption.init -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.BarChart<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.Colors.IArlecchinoColor!>?
+Arlecchino.Widgets.Readouts.BarChart<T>.ItemStyle.set -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Items.get -> System.Collections.Generic.IReadOnlyList<T>!
+Arlecchino.Widgets.Readouts.BarChart<T>.Items.set -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.LabelWidth.get -> int
+Arlecchino.Widgets.Readouts.BarChart<T>.LabelWidth.init -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Maximum.get -> decimal?
+Arlecchino.Widgets.Readouts.BarChart<T>.Maximum.init -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Render.get -> System.Func<T, string!>!
+Arlecchino.Widgets.Readouts.BarChart<T>.Render.init -> void
+Arlecchino.Widgets.Readouts.BarChart<T>.Value.get -> System.Func<T, decimal>!
+Arlecchino.Widgets.Readouts.BarChart<T>.Value.init -> void
+Arlecchino.Widgets.Readouts.Gauge
+Arlecchino.Widgets.Readouts.Gauge.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Readouts.GaugeBand>!
+Arlecchino.Widgets.Readouts.Gauge.Bands.init -> void
+Arlecchino.Widgets.Readouts.Gauge.Caption.get -> System.Func<decimal, string!>?
+Arlecchino.Widgets.Readouts.Gauge.Caption.init -> void
+Arlecchino.Widgets.Readouts.Gauge.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.Gauge.Fraction.get -> decimal
+Arlecchino.Widgets.Readouts.Gauge.Gauge() -> void
+Arlecchino.Widgets.Readouts.Gauge.Maximum.get -> decimal
+Arlecchino.Widgets.Readouts.Gauge.Maximum.init -> void
+Arlecchino.Widgets.Readouts.Gauge.Minimum.get -> decimal
+Arlecchino.Widgets.Readouts.Gauge.Minimum.init -> void
+Arlecchino.Widgets.Readouts.Gauge.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.Gauge.Style.init -> void
+Arlecchino.Widgets.Readouts.Gauge.StyleAt(decimal value) -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Readouts.Gauge.Value.get -> decimal
+Arlecchino.Widgets.Readouts.Gauge.Value.set -> void
+Arlecchino.Widgets.Readouts.GaugeBand
+Arlecchino.Widgets.Readouts.GaugeBand.Deconstruct(out decimal From, out Arlecchino.Rendering.Colors.IArlecchinoColor! Style) -> void
+Arlecchino.Widgets.Readouts.GaugeBand.Equals(Arlecchino.Widgets.Readouts.GaugeBand other) -> bool
+Arlecchino.Widgets.Readouts.GaugeBand.From.get -> decimal
+Arlecchino.Widgets.Readouts.GaugeBand.From.init -> void
+Arlecchino.Widgets.Readouts.GaugeBand.GaugeBand() -> void
+Arlecchino.Widgets.Readouts.GaugeBand.GaugeBand(decimal From, Arlecchino.Rendering.Colors.IArlecchinoColor! Style) -> void
+Arlecchino.Widgets.Readouts.GaugeBand.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Readouts.GaugeBand.Style.init -> void
 Arlecchino.Widgets.IArlecchinoInteractiveWidget
 Arlecchino.Widgets.IArlecchinoWidget
 Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ListBox<T>
-Arlecchino.Widgets.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.ListBox<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.ListBox<T>.IsFocused.get -> bool
-Arlecchino.Widgets.ListBox<T>.IsFocused.set -> void
-Arlecchino.Widgets.ListBox<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.IArlecchinoColor!>?
-Arlecchino.Widgets.ListBox<T>.ItemStyle.set -> void
-Arlecchino.Widgets.ListBox<T>.Items.get -> System.Collections.Generic.IReadOnlyList<T>!
-Arlecchino.Widgets.ListBox<T>.Items.set -> void
-Arlecchino.Widgets.ListBox<T>.ListBox(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.ListBox<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
-Arlecchino.Widgets.ListBox<T>.OnActivate.init -> void
-Arlecchino.Widgets.ListBox<T>.Render.get -> System.Func<T, string!>!
-Arlecchino.Widgets.ListBox<T>.Render.init -> void
-Arlecchino.Widgets.ListBox<T>.Selected.get -> int
-Arlecchino.Widgets.ListBox<T>.Selected.set -> void
-Arlecchino.Widgets.ListBox<T>.SelectedItem.get -> T?
-Arlecchino.Widgets.Picture
-Arlecchino.Widgets.Picture.Background.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.Picture.Background.init -> void
-Arlecchino.Widgets.Picture.Clear() -> void
-Arlecchino.Widgets.Picture.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Picture.IsEmpty.get -> bool
-Arlecchino.Widgets.Picture.Picture() -> void
-Arlecchino.Widgets.Picture.PixelHeight.get -> int
-Arlecchino.Widgets.Picture.PixelWidth.get -> int
-Arlecchino.Widgets.Picture.Protocol.get -> Arlecchino.Rendering.ImageProtocol?
-Arlecchino.Widgets.Picture.Protocol.set -> void
-Arlecchino.Widgets.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Rgb> pixels, int width, int height) -> void
-Arlecchino.Widgets.ProgressBar
-Arlecchino.Widgets.ProgressBar.Caption.get -> System.Func<decimal, string!>?
-Arlecchino.Widgets.ProgressBar.Caption.init -> void
-Arlecchino.Widgets.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ProgressBar.Fraction.get -> decimal
-Arlecchino.Widgets.ProgressBar.Maximum.get -> decimal
-Arlecchino.Widgets.ProgressBar.Maximum.init -> void
-Arlecchino.Widgets.ProgressBar.Minimum.get -> decimal
-Arlecchino.Widgets.ProgressBar.Minimum.init -> void
-Arlecchino.Widgets.ProgressBar.ProgressBar() -> void
-Arlecchino.Widgets.ProgressBar.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.ProgressBar.Style.init -> void
-Arlecchino.Widgets.ProgressBar.Value.get -> decimal
-Arlecchino.Widgets.ProgressBar.Value.set -> void
-Arlecchino.Widgets.ScrollBar
-Arlecchino.Widgets.ScrollPane
-Arlecchino.Widgets.ScrollPane.Content.get -> System.Action<Arlecchino.Rendering.SurfaceRegion>!
-Arlecchino.Widgets.ScrollPane.Content.init -> void
-Arlecchino.Widgets.ScrollPane.ContentHeight.get -> System.Func<int>!
-Arlecchino.Widgets.ScrollPane.ContentHeight.init -> void
-Arlecchino.Widgets.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.ScrollPane.IsFocused.get -> bool
-Arlecchino.Widgets.ScrollPane.IsFocused.set -> void
-Arlecchino.Widgets.ScrollPane.Offset.get -> int
-Arlecchino.Widgets.ScrollPane.Offset.set -> void
-Arlecchino.Widgets.ScrollPane.ScrollPane(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.ScrollPane.ShowScrollBar.get -> bool
-Arlecchino.Widgets.ScrollPane.ShowScrollBar.set -> void
-Arlecchino.Widgets.ScrollWindow
-Arlecchino.Widgets.ScrollWindow.Contains(int index) -> bool
-Arlecchino.Widgets.ScrollWindow.Count.get -> int
-Arlecchino.Widgets.ScrollWindow.Count.init -> void
-Arlecchino.Widgets.ScrollWindow.Deconstruct(out int First, out int Count) -> void
-Arlecchino.Widgets.ScrollWindow.Equals(Arlecchino.Widgets.ScrollWindow other) -> bool
-Arlecchino.Widgets.ScrollWindow.First.get -> int
-Arlecchino.Widgets.ScrollWindow.First.init -> void
-Arlecchino.Widgets.ScrollWindow.Last.get -> int
-Arlecchino.Widgets.ScrollWindow.ScrollWindow() -> void
-Arlecchino.Widgets.ScrollWindow.ScrollWindow(int First, int Count) -> void
-Arlecchino.Widgets.Sparkline
-Arlecchino.Widgets.Sparkline.Caption.get -> System.Func<decimal, string!>?
-Arlecchino.Widgets.Sparkline.Caption.init -> void
-Arlecchino.Widgets.Sparkline.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Sparkline.Maximum.get -> decimal?
-Arlecchino.Widgets.Sparkline.Maximum.init -> void
-Arlecchino.Widgets.Sparkline.Minimum.get -> decimal?
-Arlecchino.Widgets.Sparkline.Minimum.init -> void
-Arlecchino.Widgets.Sparkline.Sparkline() -> void
-Arlecchino.Widgets.Sparkline.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.Sparkline.Style.init -> void
-Arlecchino.Widgets.Sparkline.Values.get -> System.Collections.Generic.IReadOnlyList<decimal>!
-Arlecchino.Widgets.Sparkline.Values.set -> void
-Arlecchino.Widgets.Spinner
-Arlecchino.Widgets.Spinner.Advance() -> void
-Arlecchino.Widgets.Spinner.Current.get -> string!
-Arlecchino.Widgets.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Spinner.Frames.get -> string![]!
-Arlecchino.Widgets.Spinner.Frames.init -> void
-Arlecchino.Widgets.Spinner.Spinner() -> void
-Arlecchino.Widgets.Spinner.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.Spinner.Style.init -> void
-Arlecchino.Widgets.StatusBar
-Arlecchino.Widgets.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.StatusBar.Left.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
-Arlecchino.Widgets.StatusBar.Left.init -> void
-Arlecchino.Widgets.StatusBar.Right.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
-Arlecchino.Widgets.StatusBar.Right.init -> void
-Arlecchino.Widgets.StatusBar.StatusBar() -> void
-Arlecchino.Widgets.StatusBar.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.StatusBar.Style.init -> void
-Arlecchino.Widgets.Table<T>
-Arlecchino.Widgets.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TableColumn<T>!>!
-Arlecchino.Widgets.Table<T>.Columns.init -> void
-Arlecchino.Widgets.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Table<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Table<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Table<T>.IsFocused.get -> bool
-Arlecchino.Widgets.Table<T>.IsFocused.set -> void
-Arlecchino.Widgets.Table<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.IArlecchinoColor!>?
-Arlecchino.Widgets.Table<T>.ItemStyle.init -> void
-Arlecchino.Widgets.Table<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
-Arlecchino.Widgets.Table<T>.OnActivate.init -> void
-Arlecchino.Widgets.Table<T>.Rows.get -> System.Collections.Generic.IReadOnlyList<T>!
-Arlecchino.Widgets.Table<T>.Rows.set -> void
-Arlecchino.Widgets.Table<T>.Selected.get -> int
-Arlecchino.Widgets.Table<T>.Selected.set -> void
-Arlecchino.Widgets.Table<T>.SelectedRow.get -> T?
-Arlecchino.Widgets.Table<T>.SortBy(int column) -> void
-Arlecchino.Widgets.Table<T>.SortedBy.get -> int
-Arlecchino.Widgets.Table<T>.SortsDescending.get -> bool
-Arlecchino.Widgets.Table<T>.Table(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.TableColumn<T>
-Arlecchino.Widgets.TableColumn<T>.AlignRight.get -> bool
-Arlecchino.Widgets.TableColumn<T>.AlignRight.init -> void
-Arlecchino.Widgets.TableColumn<T>.Cell.get -> System.Func<T, string!>!
-Arlecchino.Widgets.TableColumn<T>.Cell.init -> void
-Arlecchino.Widgets.TableColumn<T>.Header.get -> System.Func<string!>!
-Arlecchino.Widgets.TableColumn<T>.Header.init -> void
-Arlecchino.Widgets.TableColumn<T>.Sort.get -> System.Comparison<T>?
-Arlecchino.Widgets.TableColumn<T>.Sort.init -> void
-Arlecchino.Widgets.TableColumn<T>.TableColumn() -> void
-Arlecchino.Widgets.TableColumn<T>.Width.get -> int
-Arlecchino.Widgets.TableColumn<T>.Width.init -> void
-Arlecchino.Widgets.Tabs
-Arlecchino.Widgets.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Tabs.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Tabs.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Tabs.IsFocused.get -> bool
-Arlecchino.Widgets.Tabs.IsFocused.set -> void
-Arlecchino.Widgets.Tabs.OnSelected.get -> System.Action<int>?
-Arlecchino.Widgets.Tabs.OnSelected.init -> void
-Arlecchino.Widgets.Tabs.Select(int index) -> void
-Arlecchino.Widgets.Tabs.Selected.get -> int
-Arlecchino.Widgets.Tabs.Tabs(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.Tabs.Titles.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
-Arlecchino.Widgets.Tabs.Titles.init -> void
-Arlecchino.Widgets.TextView
-Arlecchino.Widgets.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.TextView.IsFocused.get -> bool
-Arlecchino.Widgets.TextView.IsFocused.set -> void
-Arlecchino.Widgets.TextView.LineCount.get -> int
-Arlecchino.Widgets.TextView.Offset.get -> int
-Arlecchino.Widgets.TextView.Offset.set -> void
-Arlecchino.Widgets.TextView.ShowScrollBar.get -> bool
-Arlecchino.Widgets.TextView.ShowScrollBar.init -> void
-Arlecchino.Widgets.TextView.Style.get -> Arlecchino.Rendering.IArlecchinoColor?
-Arlecchino.Widgets.TextView.Style.set -> void
-Arlecchino.Widgets.TextView.Text.get -> string!
-Arlecchino.Widgets.TextView.Text.set -> void
-Arlecchino.Widgets.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.Tree<T>
-Arlecchino.Widgets.Tree<T>.CollapseAll() -> void
-Arlecchino.Widgets.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Tree<T>.ExpandAll() -> void
-Arlecchino.Widgets.Tree<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Tree<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
-Arlecchino.Widgets.Tree<T>.IsFocused.get -> bool
-Arlecchino.Widgets.Tree<T>.IsFocused.set -> void
-Arlecchino.Widgets.Tree<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.IArlecchinoColor!>?
-Arlecchino.Widgets.Tree<T>.ItemStyle.set -> void
-Arlecchino.Widgets.Tree<T>.OnActivate.get -> System.Func<Arlecchino.Widgets.TreeNode<T>!, Arlecchino.Navigation.ViewRoute>?
-Arlecchino.Widgets.Tree<T>.OnActivate.init -> void
-Arlecchino.Widgets.Tree<T>.OnExpanding.get -> System.Action<Arlecchino.Widgets.TreeNode<T>!>?
-Arlecchino.Widgets.Tree<T>.OnExpanding.init -> void
-Arlecchino.Widgets.Tree<T>.Render.get -> System.Func<T, string!>!
-Arlecchino.Widgets.Tree<T>.Render.init -> void
-Arlecchino.Widgets.Tree<T>.Roots.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TreeNode<T>!>!
-Arlecchino.Widgets.Tree<T>.Roots.set -> void
-Arlecchino.Widgets.Tree<T>.Selected.get -> int
-Arlecchino.Widgets.Tree<T>.Selected.set -> void
-Arlecchino.Widgets.Tree<T>.SelectedNode.get -> Arlecchino.Widgets.TreeNode<T>?
-Arlecchino.Widgets.Tree<T>.Tree(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Widgets.TreeNode<T>
-Arlecchino.Widgets.TreeNode<T>.Children.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.TreeNode<T>!>!
-Arlecchino.Widgets.TreeNode<T>.Children.set -> void
-Arlecchino.Widgets.TreeNode<T>.HasChildren.get -> bool
-Arlecchino.Widgets.TreeNode<T>.IsExpanded.get -> bool
-Arlecchino.Widgets.TreeNode<T>.IsExpanded.set -> void
-Arlecchino.Widgets.TreeNode<T>.TreeNode() -> void
-Arlecchino.Widgets.TreeNode<T>.Value.get -> T
-Arlecchino.Widgets.TreeNode<T>.Value.init -> void
+Arlecchino.Widgets.Lists.ListBox<T>
+Arlecchino.Widgets.Lists.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Lists.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ListBox<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ListBox<T>.IsFocused.get -> bool
+Arlecchino.Widgets.Lists.ListBox<T>.IsFocused.set -> void
+Arlecchino.Widgets.Lists.ListBox<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.Colors.IArlecchinoColor!>?
+Arlecchino.Widgets.Lists.ListBox<T>.ItemStyle.set -> void
+Arlecchino.Widgets.Lists.ListBox<T>.Items.get -> System.Collections.Generic.IReadOnlyList<T>!
+Arlecchino.Widgets.Lists.ListBox<T>.Items.set -> void
+Arlecchino.Widgets.Lists.ListBox<T>.ListBox(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.ListBox<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Widgets.Lists.ListBox<T>.OnActivate.init -> void
+Arlecchino.Widgets.Lists.ListBox<T>.Render.get -> System.Func<T, string!>!
+Arlecchino.Widgets.Lists.ListBox<T>.Render.init -> void
+Arlecchino.Widgets.Lists.ListBox<T>.Selected.get -> int
+Arlecchino.Widgets.Lists.ListBox<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.ListBox<T>.SelectedItem.get -> T?
+Arlecchino.Widgets.Pictures.Picture
+Arlecchino.Widgets.Pictures.Picture.Background.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Pictures.Picture.Background.init -> void
+Arlecchino.Widgets.Pictures.Picture.Clear() -> void
+Arlecchino.Widgets.Pictures.Picture.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Pictures.Picture.IsEmpty.get -> bool
+Arlecchino.Widgets.Pictures.Picture.Picture() -> void
+Arlecchino.Widgets.Pictures.Picture.PixelHeight.get -> int
+Arlecchino.Widgets.Pictures.Picture.PixelWidth.get -> int
+Arlecchino.Widgets.Pictures.Picture.Protocol.get -> Arlecchino.Rendering.Terminals.ImageProtocol?
+Arlecchino.Widgets.Pictures.Picture.Protocol.set -> void
+Arlecchino.Widgets.Pictures.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Colors.Rgb> pixels, int width, int height) -> void
+Arlecchino.Widgets.Readouts.ProgressBar
+Arlecchino.Widgets.Readouts.ProgressBar.Caption.get -> System.Func<decimal, string!>?
+Arlecchino.Widgets.Readouts.ProgressBar.Caption.init -> void
+Arlecchino.Widgets.Readouts.ProgressBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.ProgressBar.Fraction.get -> decimal
+Arlecchino.Widgets.Readouts.ProgressBar.Maximum.get -> decimal
+Arlecchino.Widgets.Readouts.ProgressBar.Maximum.init -> void
+Arlecchino.Widgets.Readouts.ProgressBar.Minimum.get -> decimal
+Arlecchino.Widgets.Readouts.ProgressBar.Minimum.init -> void
+Arlecchino.Widgets.Readouts.ProgressBar.ProgressBar() -> void
+Arlecchino.Widgets.Readouts.ProgressBar.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.ProgressBar.Style.init -> void
+Arlecchino.Widgets.Readouts.ProgressBar.Value.get -> decimal
+Arlecchino.Widgets.Readouts.ProgressBar.Value.set -> void
+Arlecchino.Widgets.Lists.ScrollBar
+Arlecchino.Widgets.Lists.ScrollPane
+Arlecchino.Widgets.Lists.ScrollPane.Content.get -> System.Action<Arlecchino.Rendering.SurfaceRegion>!
+Arlecchino.Widgets.Lists.ScrollPane.Content.init -> void
+Arlecchino.Widgets.Lists.ScrollPane.ContentHeight.get -> System.Func<int>!
+Arlecchino.Widgets.Lists.ScrollPane.ContentHeight.init -> void
+Arlecchino.Widgets.Lists.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Lists.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ScrollPane.IsFocused.get -> bool
+Arlecchino.Widgets.Lists.ScrollPane.IsFocused.set -> void
+Arlecchino.Widgets.Lists.ScrollPane.Offset.get -> int
+Arlecchino.Widgets.Lists.ScrollPane.Offset.set -> void
+Arlecchino.Widgets.Lists.ScrollPane.ScrollPane(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.ScrollPane.ShowScrollBar.get -> bool
+Arlecchino.Widgets.Lists.ScrollPane.ShowScrollBar.set -> void
+Arlecchino.Widgets.Lists.ScrollWindow
+Arlecchino.Widgets.Lists.ScrollWindow.Contains(int index) -> bool
+Arlecchino.Widgets.Lists.ScrollWindow.Count.get -> int
+Arlecchino.Widgets.Lists.ScrollWindow.Count.init -> void
+Arlecchino.Widgets.Lists.ScrollWindow.Deconstruct(out int First, out int Count) -> void
+Arlecchino.Widgets.Lists.ScrollWindow.Equals(Arlecchino.Widgets.Lists.ScrollWindow other) -> bool
+Arlecchino.Widgets.Lists.ScrollWindow.First.get -> int
+Arlecchino.Widgets.Lists.ScrollWindow.First.init -> void
+Arlecchino.Widgets.Lists.ScrollWindow.Last.get -> int
+Arlecchino.Widgets.Lists.ScrollWindow.ScrollWindow() -> void
+Arlecchino.Widgets.Lists.ScrollWindow.ScrollWindow(int First, int Count) -> void
+Arlecchino.Widgets.Readouts.Sparkline
+Arlecchino.Widgets.Readouts.Sparkline.Caption.get -> System.Func<decimal, string!>?
+Arlecchino.Widgets.Readouts.Sparkline.Caption.init -> void
+Arlecchino.Widgets.Readouts.Sparkline.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.Sparkline.Maximum.get -> decimal?
+Arlecchino.Widgets.Readouts.Sparkline.Maximum.init -> void
+Arlecchino.Widgets.Readouts.Sparkline.Minimum.get -> decimal?
+Arlecchino.Widgets.Readouts.Sparkline.Minimum.init -> void
+Arlecchino.Widgets.Readouts.Sparkline.Sparkline() -> void
+Arlecchino.Widgets.Readouts.Sparkline.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.Sparkline.Style.init -> void
+Arlecchino.Widgets.Readouts.Sparkline.Values.get -> System.Collections.Generic.IReadOnlyList<decimal>!
+Arlecchino.Widgets.Readouts.Sparkline.Values.set -> void
+Arlecchino.Widgets.Readouts.Spinner
+Arlecchino.Widgets.Readouts.Spinner.Advance() -> void
+Arlecchino.Widgets.Readouts.Spinner.Current.get -> string!
+Arlecchino.Widgets.Readouts.Spinner.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.Spinner.Frames.get -> string![]!
+Arlecchino.Widgets.Readouts.Spinner.Frames.init -> void
+Arlecchino.Widgets.Readouts.Spinner.Spinner() -> void
+Arlecchino.Widgets.Readouts.Spinner.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.Spinner.Style.init -> void
+Arlecchino.Widgets.Readouts.StatusBar
+Arlecchino.Widgets.Readouts.StatusBar.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.StatusBar.Left.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
+Arlecchino.Widgets.Readouts.StatusBar.Left.init -> void
+Arlecchino.Widgets.Readouts.StatusBar.Right.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
+Arlecchino.Widgets.Readouts.StatusBar.Right.init -> void
+Arlecchino.Widgets.Readouts.StatusBar.StatusBar() -> void
+Arlecchino.Widgets.Readouts.StatusBar.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.StatusBar.Style.init -> void
+Arlecchino.Widgets.Lists.Table<T>
+Arlecchino.Widgets.Lists.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Lists.TableColumn<T>!>!
+Arlecchino.Widgets.Lists.Table<T>.Columns.init -> void
+Arlecchino.Widgets.Lists.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Lists.Table<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Table<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Table<T>.IsFocused.get -> bool
+Arlecchino.Widgets.Lists.Table<T>.IsFocused.set -> void
+Arlecchino.Widgets.Lists.Table<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.Colors.IArlecchinoColor!>?
+Arlecchino.Widgets.Lists.Table<T>.ItemStyle.init -> void
+Arlecchino.Widgets.Lists.Table<T>.OnActivate.get -> System.Func<T, Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Widgets.Lists.Table<T>.OnActivate.init -> void
+Arlecchino.Widgets.Lists.Table<T>.Rows.get -> System.Collections.Generic.IReadOnlyList<T>!
+Arlecchino.Widgets.Lists.Table<T>.Rows.set -> void
+Arlecchino.Widgets.Lists.Table<T>.Selected.get -> int
+Arlecchino.Widgets.Lists.Table<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.Table<T>.SelectedRow.get -> T?
+Arlecchino.Widgets.Lists.Table<T>.SortBy(int column) -> void
+Arlecchino.Widgets.Lists.Table<T>.SortedBy.get -> int
+Arlecchino.Widgets.Lists.Table<T>.SortsDescending.get -> bool
+Arlecchino.Widgets.Lists.Table<T>.Table(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.TableColumn<T>
+Arlecchino.Widgets.Lists.TableColumn<T>.AlignRight.get -> bool
+Arlecchino.Widgets.Lists.TableColumn<T>.AlignRight.init -> void
+Arlecchino.Widgets.Lists.TableColumn<T>.Cell.get -> System.Func<T, string!>!
+Arlecchino.Widgets.Lists.TableColumn<T>.Cell.init -> void
+Arlecchino.Widgets.Lists.TableColumn<T>.Header.get -> System.Func<string!>!
+Arlecchino.Widgets.Lists.TableColumn<T>.Header.init -> void
+Arlecchino.Widgets.Lists.TableColumn<T>.Sort.get -> System.Comparison<T>?
+Arlecchino.Widgets.Lists.TableColumn<T>.Sort.init -> void
+Arlecchino.Widgets.Lists.TableColumn<T>.TableColumn() -> void
+Arlecchino.Widgets.Lists.TableColumn<T>.Width.get -> int
+Arlecchino.Widgets.Lists.TableColumn<T>.Width.init -> void
+Arlecchino.Widgets.Lists.Tabs
+Arlecchino.Widgets.Lists.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Lists.Tabs.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tabs.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tabs.IsFocused.get -> bool
+Arlecchino.Widgets.Lists.Tabs.IsFocused.set -> void
+Arlecchino.Widgets.Lists.Tabs.OnSelected.get -> System.Action<int>?
+Arlecchino.Widgets.Lists.Tabs.OnSelected.init -> void
+Arlecchino.Widgets.Lists.Tabs.Select(int index) -> void
+Arlecchino.Widgets.Lists.Tabs.Selected.get -> int
+Arlecchino.Widgets.Lists.Tabs.Tabs(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.Tabs.Titles.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
+Arlecchino.Widgets.Lists.Tabs.Titles.init -> void
+Arlecchino.Widgets.Readouts.TextView
+Arlecchino.Widgets.Readouts.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Readouts.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Readouts.TextView.IsFocused.get -> bool
+Arlecchino.Widgets.Readouts.TextView.IsFocused.set -> void
+Arlecchino.Widgets.Readouts.TextView.LineCount.get -> int
+Arlecchino.Widgets.Readouts.TextView.Offset.get -> int
+Arlecchino.Widgets.Readouts.TextView.Offset.set -> void
+Arlecchino.Widgets.Readouts.TextView.ShowScrollBar.get -> bool
+Arlecchino.Widgets.Readouts.TextView.ShowScrollBar.init -> void
+Arlecchino.Widgets.Readouts.TextView.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.TextView.Style.set -> void
+Arlecchino.Widgets.Readouts.TextView.Text.get -> string!
+Arlecchino.Widgets.Readouts.TextView.Text.set -> void
+Arlecchino.Widgets.Readouts.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.Tree<T>
+Arlecchino.Widgets.Lists.Tree<T>.CollapseAll() -> void
+Arlecchino.Widgets.Lists.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Lists.Tree<T>.ExpandAll() -> void
+Arlecchino.Widgets.Lists.Tree<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tree<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tree<T>.IsFocused.get -> bool
+Arlecchino.Widgets.Lists.Tree<T>.IsFocused.set -> void
+Arlecchino.Widgets.Lists.Tree<T>.ItemStyle.get -> System.Func<T, Arlecchino.Rendering.Colors.IArlecchinoColor!>?
+Arlecchino.Widgets.Lists.Tree<T>.ItemStyle.set -> void
+Arlecchino.Widgets.Lists.Tree<T>.OnActivate.get -> System.Func<Arlecchino.Widgets.Lists.TreeNode<T>!, Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Widgets.Lists.Tree<T>.OnActivate.init -> void
+Arlecchino.Widgets.Lists.Tree<T>.OnExpanding.get -> System.Action<Arlecchino.Widgets.Lists.TreeNode<T>!>?
+Arlecchino.Widgets.Lists.Tree<T>.OnExpanding.init -> void
+Arlecchino.Widgets.Lists.Tree<T>.Render.get -> System.Func<T, string!>!
+Arlecchino.Widgets.Lists.Tree<T>.Render.init -> void
+Arlecchino.Widgets.Lists.Tree<T>.Roots.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Lists.TreeNode<T>!>!
+Arlecchino.Widgets.Lists.Tree<T>.Roots.set -> void
+Arlecchino.Widgets.Lists.Tree<T>.Selected.get -> int
+Arlecchino.Widgets.Lists.Tree<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.Tree<T>.SelectedNode.get -> Arlecchino.Widgets.Lists.TreeNode<T>?
+Arlecchino.Widgets.Lists.Tree<T>.Tree(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Lists.TreeNode<T>
+Arlecchino.Widgets.Lists.TreeNode<T>.Children.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Lists.TreeNode<T>!>!
+Arlecchino.Widgets.Lists.TreeNode<T>.Children.set -> void
+Arlecchino.Widgets.Lists.TreeNode<T>.HasChildren.get -> bool
+Arlecchino.Widgets.Lists.TreeNode<T>.IsExpanded.get -> bool
+Arlecchino.Widgets.Lists.TreeNode<T>.IsExpanded.set -> void
+Arlecchino.Widgets.Lists.TreeNode<T>.TreeNode() -> void
+Arlecchino.Widgets.Lists.TreeNode<T>.Value.get -> T
+Arlecchino.Widgets.Lists.TreeNode<T>.Value.init -> void
 abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
-abstract Arlecchino.Modals.SegmentedModal.Add(int delta) -> void
-abstract Arlecchino.Modals.SegmentedModal.ApplyTypedValue(int segment, int value) -> void
-abstract Arlecchino.Modals.SegmentedModal.SegmentCount.get -> int
-abstract Arlecchino.Modals.SegmentedModal.SegmentLength(int segment) -> int
-abstract Arlecchino.Modals.SegmentedModal.SegmentTexts() -> string![]!
-abstract Arlecchino.Modals.SegmentedModal.Separator.get -> string!
+abstract Arlecchino.Modals.Setting.SegmentedModal.Add(int delta) -> void
+abstract Arlecchino.Modals.Setting.SegmentedModal.ApplyTypedValue(int segment, int value) -> void
+abstract Arlecchino.Modals.Setting.SegmentedModal.SegmentCount.get -> int
+abstract Arlecchino.Modals.Setting.SegmentedModal.SegmentLength(int segment) -> int
+abstract Arlecchino.Modals.Setting.SegmentedModal.SegmentTexts() -> string![]!
+abstract Arlecchino.Modals.Setting.SegmentedModal.Separator.get -> string!
 override Arlecchino.Diagnostics.LogEntry.Equals(object? obj) -> bool
 override Arlecchino.Diagnostics.LogEntry.GetHashCode() -> int
 override Arlecchino.Diagnostics.LogEntry.ToString() -> string!
@@ -1151,14 +1151,14 @@ override Arlecchino.Hosting.ArlecchinoKeymap.Equals(object? obj) -> bool
 override Arlecchino.Hosting.ArlecchinoKeymap.GetHashCode() -> int
 override Arlecchino.Hosting.ArlecchinoKeymap.ToString() -> string!
 override Arlecchino.Layout.PaneSize.GetHashCode() -> int
-override Arlecchino.Modals.DateModal.Add(int delta) -> void
-override Arlecchino.Modals.DateModal.SegmentCount.get -> int
-override Arlecchino.Modals.DateModal.SegmentTexts() -> string![]!
-override Arlecchino.Modals.DateModal.Separator.get -> string!
-override Arlecchino.Modals.TimeModal.Add(int delta) -> void
-override Arlecchino.Modals.TimeModal.SegmentCount.get -> int
-override Arlecchino.Modals.TimeModal.SegmentTexts() -> string![]!
-override Arlecchino.Modals.TimeModal.Separator.get -> string!
+override Arlecchino.Modals.Setting.DateModal.Add(int delta) -> void
+override Arlecchino.Modals.Setting.DateModal.SegmentCount.get -> int
+override Arlecchino.Modals.Setting.DateModal.SegmentTexts() -> string![]!
+override Arlecchino.Modals.Setting.DateModal.Separator.get -> string!
+override Arlecchino.Modals.Setting.TimeModal.Add(int delta) -> void
+override Arlecchino.Modals.Setting.TimeModal.SegmentCount.get -> int
+override Arlecchino.Modals.Setting.TimeModal.SegmentTexts() -> string![]!
+override Arlecchino.Modals.Setting.TimeModal.Separator.get -> string!
 override Arlecchino.Navigation.ViewRoute.GetHashCode() -> int
 override Arlecchino.Navigation.ViewRoute.ToString() -> string!
 override Arlecchino.State.FilePickerPlace.Equals(object? obj) -> bool
@@ -1167,8 +1167,8 @@ override Arlecchino.State.FilePickerPlace.ToString() -> string!
 override Arlecchino.State.FilePickerRequest.Equals(object? obj) -> bool
 override Arlecchino.State.FilePickerRequest.GetHashCode() -> int
 override Arlecchino.State.FilePickerRequest.ToString() -> string!
-override Arlecchino.Widgets.GaugeBand.GetHashCode() -> int
-override Arlecchino.Widgets.ScrollWindow.GetHashCode() -> int
+override Arlecchino.Widgets.Readouts.GaugeBand.GetHashCode() -> int
+override Arlecchino.Widgets.Lists.ScrollWindow.GetHashCode() -> int
 static Arlecchino.Commands.ViewCommand.For(Arlecchino.Input.KeyBinding binding, System.Func<string!>! label, System.Action! run) -> Arlecchino.Commands.ViewCommand!
 static Arlecchino.Commands.ViewCommand.For(System.ConsoleKey key, System.Func<string!>! label, System.Action! run) -> Arlecchino.Commands.ViewCommand!
 static Arlecchino.Commands.ViewCommand.Navigating(System.ConsoleKey key, System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run) -> Arlecchino.Commands.ViewCommand!
@@ -1185,7 +1185,7 @@ static Arlecchino.Focus.FocusResult.operator !=(Arlecchino.Focus.FocusResult lef
 static Arlecchino.Focus.FocusResult.operator ==(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
 static Arlecchino.Forms.Field.Action(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run, System.Func<bool>? enabled = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Rgb>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Colors.Rgb>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Date(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.DateOnly>! value, System.Func<System.DateOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<System.Collections.Generic.IReadOnlyList<string!>!>! value, System.Func<System.Collections.Generic.IReadOnlyList<string!>!, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Number(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
@@ -1215,16 +1215,16 @@ static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! wid
 static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Modals.ColorModal.MaximumOf(Arlecchino.Modals.ColorChannel channel) -> int
-static Arlecchino.Modals.TextEditing.Backspace(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.Delete(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.EraseToStart(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.EraseWord(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.Insert(Arlecchino.Modals.ITextEntryModal! modal, char character) -> void
-static Arlecchino.Modals.TextEditing.MoveCaret(Arlecchino.Modals.ITextEntryModal! modal, int delta) -> void
-static Arlecchino.Modals.TextEditing.MoveToEnd(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.MoveToStart(Arlecchino.Modals.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.TextEditing.MoveWord(Arlecchino.Modals.ITextEntryModal! modal, int direction) -> void
+static Arlecchino.Modals.Setting.ColorModal.MaximumOf(Arlecchino.Modals.Setting.ColorChannel channel) -> int
+static Arlecchino.Modals.Asking.TextEditing.Backspace(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.Delete(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.EraseToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.EraseWord(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.Insert(Arlecchino.Modals.Asking.ITextEntryModal! modal, char character) -> void
+static Arlecchino.Modals.Asking.TextEditing.MoveCaret(Arlecchino.Modals.Asking.ITextEntryModal! modal, int delta) -> void
+static Arlecchino.Modals.Asking.TextEditing.MoveToEnd(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.MoveToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Modals.Asking.TextEditing.MoveWord(Arlecchino.Modals.Asking.ITextEntryModal! modal, int direction) -> void
 static Arlecchino.Navigation.ViewRoute.None.get -> Arlecchino.Navigation.ViewRoute
 static Arlecchino.Navigation.ViewRoute.operator !=(Arlecchino.Navigation.ViewRoute left, Arlecchino.Navigation.ViewRoute right) -> bool
 static Arlecchino.Navigation.ViewRoute.operator ==(Arlecchino.Navigation.ViewRoute left, Arlecchino.Navigation.ViewRoute right) -> bool
@@ -1232,13 +1232,13 @@ static Arlecchino.State.FilePickerPlace.operator !=(Arlecchino.State.FilePickerP
 static Arlecchino.State.FilePickerPlace.operator ==(Arlecchino.State.FilePickerPlace? left, Arlecchino.State.FilePickerPlace? right) -> bool
 static Arlecchino.State.FilePickerRequest.operator !=(Arlecchino.State.FilePickerRequest? left, Arlecchino.State.FilePickerRequest? right) -> bool
 static Arlecchino.State.FilePickerRequest.operator ==(Arlecchino.State.FilePickerRequest? left, Arlecchino.State.FilePickerRequest? right) -> bool
-static Arlecchino.Widgets.GaugeBand.operator !=(Arlecchino.Widgets.GaugeBand left, Arlecchino.Widgets.GaugeBand right) -> bool
-static Arlecchino.Widgets.GaugeBand.operator ==(Arlecchino.Widgets.GaugeBand left, Arlecchino.Widgets.GaugeBand right) -> bool
-static Arlecchino.Widgets.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.IArlecchinoColor? style = null) -> void
-static Arlecchino.Widgets.ScrollBar.IsNeeded(int total, int rows) -> bool
-static Arlecchino.Widgets.ScrollWindow.Around(int selected, int itemCount, int rows) -> Arlecchino.Widgets.ScrollWindow
-static Arlecchino.Widgets.ScrollWindow.operator !=(Arlecchino.Widgets.ScrollWindow left, Arlecchino.Widgets.ScrollWindow right) -> bool
-static Arlecchino.Widgets.ScrollWindow.operator ==(Arlecchino.Widgets.ScrollWindow left, Arlecchino.Widgets.ScrollWindow right) -> bool
+static Arlecchino.Widgets.Readouts.GaugeBand.operator !=(Arlecchino.Widgets.Readouts.GaugeBand left, Arlecchino.Widgets.Readouts.GaugeBand right) -> bool
+static Arlecchino.Widgets.Readouts.GaugeBand.operator ==(Arlecchino.Widgets.Readouts.GaugeBand left, Arlecchino.Widgets.Readouts.GaugeBand right) -> bool
+static Arlecchino.Widgets.Lists.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.Colors.IArlecchinoColor? style = null) -> void
+static Arlecchino.Widgets.Lists.ScrollBar.IsNeeded(int total, int rows) -> bool
+static Arlecchino.Widgets.Lists.ScrollWindow.Around(int selected, int itemCount, int rows) -> Arlecchino.Widgets.Lists.ScrollWindow
+static Arlecchino.Widgets.Lists.ScrollWindow.operator !=(Arlecchino.Widgets.Lists.ScrollWindow left, Arlecchino.Widgets.Lists.ScrollWindow right) -> bool
+static Arlecchino.Widgets.Lists.ScrollWindow.operator ==(Arlecchino.Widgets.Lists.ScrollWindow left, Arlecchino.Widgets.Lists.ScrollWindow right) -> bool
 static readonly Arlecchino.Navigation.Routes.FilePicker -> Arlecchino.Navigation.ViewRoute
 static readonly Arlecchino.Navigation.Routes.Help -> Arlecchino.Navigation.ViewRoute
 static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigation.ViewRoute
@@ -1247,7 +1247,7 @@ static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigat
 ~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
 ~override Arlecchino.Layout.PaneSize.ToString() -> string
 ~override Arlecchino.Navigation.ViewRoute.Equals(object obj) -> bool
-~override Arlecchino.Widgets.GaugeBand.Equals(object obj) -> bool
-~override Arlecchino.Widgets.GaugeBand.ToString() -> string
-~override Arlecchino.Widgets.ScrollWindow.Equals(object obj) -> bool
-~override Arlecchino.Widgets.ScrollWindow.ToString() -> string
+~override Arlecchino.Widgets.Readouts.GaugeBand.Equals(object obj) -> bool
+~override Arlecchino.Widgets.Readouts.GaugeBand.ToString() -> string
+~override Arlecchino.Widgets.Lists.ScrollWindow.Equals(object obj) -> bool
+~override Arlecchino.Widgets.Lists.ScrollWindow.ToString() -> string

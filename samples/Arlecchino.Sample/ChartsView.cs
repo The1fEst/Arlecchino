@@ -4,8 +4,10 @@ using Arlecchino.Input;
 using Arlecchino.Layout;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Sample.Views;
 using Arlecchino.Widgets;
+using Arlecchino.Widgets.Readouts;
 using static Arlecchino.Layout.PaneSplit;
 using static Arlecchino.Layout.PaneTree;
 

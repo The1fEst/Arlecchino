@@ -8,6 +8,7 @@ using Arlecchino.Atoms;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Terminals;
 using Arlecchino.State;
 
 namespace Arlecchino.Diagnostics;

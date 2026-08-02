@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Atoms;
+using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Sample;
 

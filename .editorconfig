@@ -128,7 +128,7 @@ indent_size = 2
 csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_prefer_braces = true:warning
-dotnet_style_namespace_match_folder = false
+dotnet_style_namespace_match_folder = true
 
 dotnet_diagnostic.ide0005.severity = warning
 dotnet_diagnostic.ide0011.severity = warning

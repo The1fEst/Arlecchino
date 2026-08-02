@@ -6,7 +6,7 @@ using Arlecchino.Atoms;
 using Arlecchino.Commands;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Widgets;
 
 namespace Arlecchino.Hosting;

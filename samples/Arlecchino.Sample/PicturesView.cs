@@ -5,8 +5,11 @@ using System.Text;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
+using Arlecchino.Rendering.Terminals;
 using Arlecchino.Sample.Views;
-using Arlecchino.Widgets;
+using Arlecchino.Widgets.Pictures;
 
 namespace Arlecchino.Sample;
 

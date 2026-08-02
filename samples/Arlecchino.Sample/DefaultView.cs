@@ -4,9 +4,11 @@ using Arlecchino.Commands;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
-using Arlecchino.Modals;
+using Arlecchino.Modals.Asking;
+using Arlecchino.Modals.Setting;
 
 namespace Arlecchino.Sample;
 

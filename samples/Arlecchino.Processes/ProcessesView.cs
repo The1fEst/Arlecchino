@@ -7,8 +7,10 @@ using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Processes.Views;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.State;
-using Arlecchino.Widgets;
+using Arlecchino.Widgets.Lists;
+using Arlecchino.Widgets.Readouts;
 
 namespace Arlecchino.Processes;
 

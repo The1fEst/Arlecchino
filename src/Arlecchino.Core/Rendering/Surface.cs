@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Terminals;
+
 namespace Arlecchino.Rendering;
 
 /// <summary>

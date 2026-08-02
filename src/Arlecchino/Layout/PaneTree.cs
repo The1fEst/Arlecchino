@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 using Arlecchino.Widgets;
 
 namespace Arlecchino.Layout;

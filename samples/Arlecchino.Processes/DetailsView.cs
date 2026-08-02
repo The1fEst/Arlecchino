@@ -5,6 +5,8 @@ using Arlecchino.Commands;
 using Arlecchino.Navigation;
 using Arlecchino.Processes.Views;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 
 namespace Arlecchino.Processes;
 

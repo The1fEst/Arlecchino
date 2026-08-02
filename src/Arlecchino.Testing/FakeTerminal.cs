@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Text;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Terminals;
 
 namespace Arlecchino.Testing;
 

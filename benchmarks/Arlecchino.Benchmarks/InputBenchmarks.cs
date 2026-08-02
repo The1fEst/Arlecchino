@@ -5,8 +5,9 @@ using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Testing;
-using Arlecchino.Widgets;
 using BenchmarkDotNet.Attributes;
+
+using Arlecchino.Widgets.Lists;
 
 namespace Arlecchino.Benchmarks;
 

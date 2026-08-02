@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Hosting;
 
 namespace Arlecchino.Diagnostics;
 
@@ -55,5 +56,55 @@ internal sealed class LogOverlay
     {
         _scroll = 0;
         IsVisible = !_isVisible;
+    }
+
+    /// <summary>
+    /// Scrolling and closing. Only these keys are taken while the overlay is open, so the screen behind
+    /// it keeps working — it is for reading, not a mode to get stuck in.
+    /// </summary>
+    /// <param name="key">The key that arrived.</param>
+    /// <param name="keymap">Keys to obey.</param>
+    /// <returns><c>true</c> when the overlay took it.</returns>
+    public bool Handle(ConsoleKeyInfo key, ArlecchinoKeymap keymap)
+    {
+        ArgumentNullException.ThrowIfNull(keymap);
+
+        if (keymap.Cancel.Matches(key))
+        {
+            IsVisible = false;
+
+            return true;
+        }
+
+        if (keymap.MoveUp.Matches(key))
+        {
+            Scroll++;
+
+            return true;
+        }
+
+        if (keymap.MoveDown.Matches(key))
+        {
+            Scroll--;
+
+            return true;
+        }
+
+        if (keymap.Last.Matches(key))
+        {
+            Scroll = 0;
+
+            return true;
+        }
+
+        if (!keymap.Erase.Matches(key))
+        {
+            return false;
+        }
+
+        Buffer.Clear();
+        Scroll = 0;
+
+        return true;
     }
 }

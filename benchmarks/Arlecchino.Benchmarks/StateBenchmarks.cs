@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Atoms;
 using BenchmarkDotNet.Attributes;
+using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Benchmarks;
 

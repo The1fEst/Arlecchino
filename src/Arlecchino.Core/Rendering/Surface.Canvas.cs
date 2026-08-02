@@ -1,5 +1,8 @@
 using System;
 
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
+
 namespace Arlecchino.Rendering;
 
 public partial class Surface

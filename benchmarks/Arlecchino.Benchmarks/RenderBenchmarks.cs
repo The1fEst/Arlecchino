@@ -2,7 +2,9 @@ using System;
 using BenchmarkDotNet.Attributes;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
-using Arlecchino.Widgets;
+
+using Arlecchino.Widgets.Lists;
+using Arlecchino.Rendering.Colors;
 
 namespace Arlecchino.Benchmarks;
 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Terminals;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

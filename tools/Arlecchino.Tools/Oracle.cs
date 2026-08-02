@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
+using Arlecchino.Rendering.Terminals;
 using Arlecchino.Testing;
 
 namespace Arlecchino.Tools;

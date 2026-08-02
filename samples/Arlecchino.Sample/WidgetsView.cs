@@ -6,8 +6,10 @@ using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Sample.Views;
-using Arlecchino.Widgets;
+using Arlecchino.Widgets.Lists;
+using Arlecchino.Widgets.Readouts;
 
 namespace Arlecchino.Sample;
 

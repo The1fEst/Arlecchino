@@ -10,7 +10,8 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Arlecchino.Input;
 using Arlecchino.Atoms;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Text;
+using Arlecchino.Rendering.Terminals;
 
 namespace Arlecchino.Hosting;
 

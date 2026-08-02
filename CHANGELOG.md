@@ -9,7 +9,7 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## Unreleased
+## 4.0.0
 
 ### Added
 
@@ -81,6 +81,24 @@ the public API means a new major. See
       },
   };
   ```
+
+### Changed
+
+- **Namespaces now follow the folders they are in**, which is the whole of the break in this major.
+  Four folders had grown past the point where a name could be found in them by looking, so each was
+  split by what its files are for, and the namespaces went with them:
+
+  | Was | Now |
+  | --- | --- |
+  | `Arlecchino.Modals` | `.Asking` (text, number), `.Choosing` (choice, palette), `.Setting` (slider, toggle, colour, date, time), `.Telling` (message, notification) |
+  | `Arlecchino.Widgets` | `.Lists` (list, table, tree, tabs, scrolling), `.Pictures`, `.Readouts` (charts, indicators, status bar, text view) |
+  | `Arlecchino.Rendering` | `.Colors` (theme, palette, colour types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
+  | `Arlecchino.Atoms` | `.Local`, `.Tracked`, `.Collections` |
+
+  `Modal`, `CustomModal`, `Surface`, `SurfaceRegion`, `Margin`, `Align`, `Atom` and the store
+  interfaces stay where they were: they are the vocabulary every file already reaches for. Nothing was
+  renamed and nothing was removed — a build that fails on this is fixed by adding the sub-namespace to
+  a `using`.
 
 ## 3.1.0
 

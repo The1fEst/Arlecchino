@@ -1,7 +1,9 @@
 using System;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
+using Arlecchino.Rendering.Terminals;
 
 namespace Arlecchino.Hosting;
 
@@ -73,7 +75,7 @@ public sealed class ArlecchinoOptions
     /// <summary>Keys the framework itself reacts to.</summary>
     public ArlecchinoKeymap Keymap { get; set; } = new();
 
-    /// <summary>Colours behind the roles. Installed into <see cref="Rendering.Theme"/> on resolve.</summary>
+    /// <summary>Colours behind the roles. Installed into <see cref="Theme"/> on resolve.</summary>
     public ThemePalette Theme { get; set; } = new();
 
     /// <summary>
@@ -84,7 +86,7 @@ public sealed class ArlecchinoOptions
 
     /// <summary>
     /// How pictures reach the terminal. Installed into <see cref="Glyphs.Picture"/> on resolve, and
-    /// settable afterwards. <see cref="Rendering.ImageProtocol.Auto"/> by default, which asks the
+    /// settable afterwards. <see cref="ImageProtocol.Auto"/> by default, which asks the
     /// terminal rather than guessing; name a protocol to decide it yourself.
     /// </summary>
     public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Auto;
@@ -95,7 +97,7 @@ public sealed class ArlecchinoOptions
     /// on a terminal that stays silent; the answers usually arrive in a millisecond or two.
     ///
     /// Turn it off for a terminal that answers something strange, or to keep startup free of the wait.
-    /// <see cref="Rendering.ImageProtocol.Auto"/> then has nothing to go on and settles for cells.
+    /// <see cref="ImageProtocol.Auto"/> then has nothing to go on and settles for cells.
     /// </summary>
     public bool AskTerminal { get; set; } = true;
 
@@ -104,7 +106,7 @@ public sealed class ArlecchinoOptions
 
     /// <summary>
     /// How many pixels wide a cell is taken to be. Installed into <see cref="Glyphs.CellWidth"/> on
-    /// resolve. Only <see cref="Rendering.ImageProtocol.Sixel"/> reads it, because sixel is measured in
+    /// resolve. Only <see cref="ImageProtocol.Sixel"/> reads it, because sixel is measured in
     /// pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an
     /// application corrects when it knows the font.
     /// </summary>

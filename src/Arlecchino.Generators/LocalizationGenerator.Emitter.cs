@@ -107,12 +107,12 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("    }");
         source.AppendLine();
 
-        Language(source, "Standard_", standard.Entries, false);
+        Table(source, "Standard_", standard.Entries, false);
 
         foreach (var translation in translations)
         {
             source.AppendLine();
-            Language(source, MethodFor(translation.Language), translation.Entries, true);
+            Table(source, MethodFor(translation.Language), translation.Entries, true);
         }
 
         source.AppendLine();
@@ -146,7 +146,7 @@ public sealed partial class LocalizationGenerator
         return source.ToString();
     }
 
-    private static void Language(
+    private static void Table(
         StringBuilder source,
         string method,
         IReadOnlyList<LocalizationEntry> entries,

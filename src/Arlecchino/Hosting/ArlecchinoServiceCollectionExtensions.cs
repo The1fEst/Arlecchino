@@ -7,6 +7,8 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 using Arlecchino.Views;
 using Arlecchino.Atoms;

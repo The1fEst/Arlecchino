@@ -96,7 +96,7 @@ public sealed partial class LocalizationGenerator
             errors.Add($"{source.Path}: [strings] holds nothing");
         }
 
-        return new(source.Path, language, entries, errors);
+        return new(language, entries, errors);
     }
 
     private static bool TryReadString(string raw, out string value)
@@ -222,18 +222,14 @@ public sealed partial class LocalizationGenerator
     private sealed class LocalizationFile
     {
         public LocalizationFile(
-            string path,
             string language,
             IReadOnlyList<LocalizationEntry> entries,
             IReadOnlyList<string> errors)
         {
-            Path = path;
             Language = language;
             Entries = entries;
             Errors = errors;
         }
-
-        public string Path { get; }
 
         public string Language { get; }
 

@@ -1,6 +1,7 @@
 using System;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Sample.Views;
 
 namespace Arlecchino.Sample;

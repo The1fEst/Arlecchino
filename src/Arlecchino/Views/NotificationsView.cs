@@ -4,11 +4,12 @@ using System.Globalization;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
-using Arlecchino.Modals;
+using Arlecchino.Modals.Telling;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.State;
-using Arlecchino.Widgets;
+using Arlecchino.Widgets.Lists;
 
 namespace Arlecchino.Views;
 

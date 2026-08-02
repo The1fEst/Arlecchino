@@ -1,5 +1,6 @@
 using System;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 
 namespace Arlecchino.Testing;
 

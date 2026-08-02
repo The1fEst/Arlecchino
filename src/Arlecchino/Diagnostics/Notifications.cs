@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.Local;
 using Arlecchino.Hosting;
 
 namespace Arlecchino.Diagnostics;

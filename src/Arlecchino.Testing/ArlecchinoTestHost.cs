@@ -5,6 +5,8 @@ using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Terminals;
 using Arlecchino.State;
 using Arlecchino.Atoms;
 

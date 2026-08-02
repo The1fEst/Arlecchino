@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Arlecchino.Navigation;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.State;
 using Arlecchino.Atoms;
+using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Forms;
 

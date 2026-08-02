@@ -1,8 +1,8 @@
 #nullable enable
 Arlecchino.Modals.CustomModal
 Arlecchino.Modals.CustomModal.CustomModal() -> void
-Arlecchino.Widgets.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?
-Arlecchino.Widgets.ListBox<T>.PaintRow.init -> void
+Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?
+Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.init -> void
 abstract Arlecchino.Modals.CustomModal.Draw(Arlecchino.Rendering.SurfaceRegion screen) -> void
 abstract Arlecchino.Modals.CustomModal.Handle(System.ConsoleKeyInfo key) -> void
 virtual Arlecchino.Modals.CustomModal.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> void

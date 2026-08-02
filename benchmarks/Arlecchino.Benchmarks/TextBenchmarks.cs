@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using Arlecchino.Rendering;
+using Arlecchino.Rendering.Text;
 
 namespace Arlecchino.Benchmarks;
 
