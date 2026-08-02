@@ -76,7 +76,7 @@ internal static class Oracle
                 Console.WriteLine($"          {difference}");
             }
 
-            Console.WriteLine($"          stream: {Escaped(drawn.Output)}");
+            Console.WriteLine($"          stream: {Program.Escaped(drawn.Output)}");
         }
 
         Tmux("kill-server");
@@ -414,8 +414,8 @@ internal static class Oracle
                 continue;
             }
 
-            differences.Add($"row {row}  grid: {Escaped(ours)}");
-            differences.Add($"          tmux: {Escaped(theirs)}");
+            differences.Add($"row {row}  grid: {Program.Escaped(ours)}");
+            differences.Add($"          tmux: {Program.Escaped(theirs)}");
         }
 
         for (var row = 0; row < drawn.Paints.Length; row++)
@@ -442,26 +442,6 @@ internal static class Oracle
         }
 
         return differences;
-    }
-
-    private static string Escaped(string text)
-    {
-        var escaped = new StringBuilder("\"");
-
-        foreach (var character in text)
-        {
-            escaped.Append(character switch
-            {
-                '\e' => "\\e",
-                '\r' => "\\r",
-                '\n' => "\\n",
-                '"' => "\\\"",
-                _ when char.IsControl(character) => $"\\u{(int)character:x4}",
-                _ => character.ToString(),
-            });
-        }
-
-        return escaped.Append('"').ToString();
     }
 
     private static void Await(Func<bool> done, string complaint)

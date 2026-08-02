@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Arlecchino.Tools;
@@ -13,6 +14,7 @@ internal static class Program
 {
     private static Task<int> Main(string[] args) => args switch
     {
+        ["keys", .. var rest] => Task.FromResult(Keys.Run(rest)),
         ["oracle", .. var rest] => Task.FromResult(Oracle.Run(rest)),
         ["pack", .. var rest] => Task.FromResult(Pack.Run(rest)),
         ["ship", .. var rest] => Ship.Run(rest),
@@ -23,6 +25,7 @@ internal static class Program
     {
         Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- <tool> [arguments]");
         Console.WriteLine();
+        Console.WriteLine("  keys [name]       compare what a real terminal sends against what is read");
         Console.WriteLine("  oracle [name]     compare the screen the frames leave against a real terminal");
         Console.WriteLine("  pack              build the three packages into the local feed");
         Console.WriteLine("  ship <version>    prepare a release: version, public API, validation baseline");
@@ -30,6 +33,33 @@ internal static class Program
         Console.WriteLine("Ask a tool for --help to hear what it does at length.");
 
         return 1;
+    }
+
+    /// <summary>
+    /// Bytes as they can be read back: escapes spelled out, everything else left alone. Both tools that
+    /// argue with a terminal print sequences, and a sequence printed raw is a sequence that redraws the
+    /// report it appears in.
+    /// </summary>
+    /// <param name="text">The bytes.</param>
+    /// <returns>The bytes, quoted and legible.</returns>
+    internal static string Escaped(string text)
+    {
+        var escaped = new StringBuilder("\"");
+
+        foreach (var character in text)
+        {
+            escaped.Append(character switch
+            {
+                '\e' => "\\e",
+                '\r' => "\\r",
+                '\n' => "\\n",
+                '"' => "\\\"",
+                _ when char.IsControl(character) => $"\\u{(int)character:x4}",
+                _ => character.ToString(),
+            });
+        }
+
+        return escaped.Append('"').ToString();
     }
 
     /// <summary>

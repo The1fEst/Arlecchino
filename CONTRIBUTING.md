@@ -29,6 +29,7 @@ is named by the first argument:
 ```bash
 dotnet run --project tools/Arlecchino.Tools -- pack
 dotnet run --project tools/Arlecchino.Tools -- oracle
+dotnet run --project tools/Arlecchino.Tools -- keys
 dotnet run --project tools/Arlecchino.Tools -- ship 3.1.0
 ```
 
@@ -45,6 +46,12 @@ and analysed with everything else — a script beside the repository is checked 
   of the same size, and compares the screen tmux ended up with against the one `ScreenGrid` did — the
   symbols, the colour of every cell, and where the cursor was left. It needs `tmux` on `PATH`, and it is
   not part of the test run — run it after a change to `ScreenGrid` or to how `Surface` writes a frame.
+- **`keys`** is the same argument about input. The escape sequences the tests feed the reader were
+  written by the same head that wrote the reader, so a key spelled wrong in both places reads correctly
+  in every test and does nothing at all in a terminal. This presses each key in a tmux pane, reads the
+  bytes it really produced off the pty, and hands them to the reader — along with what
+  `Console.ReadKey` made of the same press, which is the shape an application actually meets. Also
+  needs `tmux`.
 - **`ship`** prepares a release: it sets the version, moves the recorded public API from
   `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
   before it. Run it, read the diff, commit, tag.

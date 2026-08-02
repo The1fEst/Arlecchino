@@ -87,17 +87,51 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public void Enqueue(ConsoleKeyInfo key) => _keys.Enqueue(key);
 
     /// <summary>
-    /// Queues text one character at a time, as a terminal reports it. Escapes are marked as such, so
-    /// whole escape sequences can be fed in as a plain string.
+    /// Queues text one character at a time, as a terminal reports it, naming the key where a console
+    /// names it. Whole escape sequences can be fed in as a plain string: the runtime recognises some
+    /// itself and hands the rest over a character at a time, and this is that second shape — the one
+    /// the reader has to make sense of on its own.
+    ///
+    /// The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a
+    /// letter, a digit and a control chord all arrive carrying their key, because that is what
+    /// <see cref="Console.ReadKey(bool)"/> hands an application; a fake that handed over the bare character
+    /// would have every test agreeing with a shape no terminal produces.
+    ///
+    /// One thing it deliberately does not do is fold an escape and the letter after it into one press
+    /// with Alt held. A console may well do that, but the other reading — two presses in quick
+    /// succession — is what a terminal sends and what the reader is built to time out on, and that is
+    /// the harder case to get right.
     /// </summary>
     /// <param name="text">The characters to queue.</param>
     public void EnqueueText(string text)
     {
+        ArgumentNullException.ThrowIfNull(text);
+
         foreach (var character in text)
         {
-            _keys.Enqueue(new(character, character == '\e' ? ConsoleKey.Escape : default, false, false, false));
+            _keys.Enqueue(Named(character));
         }
     }
+
+    /// <summary>
+    /// A character as a console reports it. Anything a console has no name for — punctuation, letters
+    /// outside ASCII — keeps the character and no key, which is also what a console does with it.
+    /// </summary>
+    /// <param name="character">The character that arrived.</param>
+    /// <returns>The press.</returns>
+    private static ConsoleKeyInfo Named(char character) => character switch
+    {
+        '\e' => new(character, ConsoleKey.Escape, false, false, false),
+        '\r' or '\n' => new(character, ConsoleKey.Enter, false, false, false),
+        '\t' => new(character, ConsoleKey.Tab, false, false, false),
+        '\b' or '' => new(character, ConsoleKey.Backspace, false, false, false),
+        ' ' => new(character, ConsoleKey.Spacebar, false, false, false),
+        >= 'a' and <= 'z' => new(character, ConsoleKey.A + (character - 'a'), false, false, false),
+        >= 'A' and <= 'Z' => new(character, ConsoleKey.A + (character - 'A'), true, false, false),
+        >= '0' and <= '9' => new(character, ConsoleKey.D0 + (character - '0'), false, false, false),
+        >= '' and <= '' => new(character, ConsoleKey.A + (character - ''), false, false, true),
+        _ => new(character, default, false, false, false),
+    };
 
     /// <summary>Collects output instead of showing it, and applies it to <see cref="Screen"/>.</summary>
     /// <param name="text">What was written.</param>
