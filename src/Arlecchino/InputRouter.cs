@@ -168,6 +168,9 @@ public class InputRouter
             case null:
                 _navigator.HandleMouse(mouse);
                 return;
+            case CustomModal custom:
+                custom.HandleMouse(mouse);
+                return;
             case OptionListModal list:
                 ClickOptionList(list, mouse);
                 return;
@@ -502,6 +505,9 @@ public class InputRouter
     {
         switch (modal)
         {
+            case CustomModal custom:
+                custom.Handle(key);
+                return;
             case CommandModal:
                 ProcessCommandModal(key);
                 return;

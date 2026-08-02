@@ -339,6 +339,10 @@ public class Screen
     {
         switch (open)
         {
+            case CustomModal modal:
+                modal.Box = _surface.Content;
+                modal.Draw(_surface.Content);
+                return;
             case ChoiceModal modal:
                 DrawChoiceModal(modal);
                 return;

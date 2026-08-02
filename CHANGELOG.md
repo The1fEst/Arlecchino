@@ -13,6 +13,26 @@ the public API means a new major. See
 
 ### Added
 
+- **`CustomModal`**, a dialog the application draws and drives itself. The framework's own dialogs know
+  what a number looks like and what a choice looks like; an application with a look of its own wants
+  neither. The answer is not a second dialog slot beside `Modal` — two things that both take every key
+  will disagree about which of them has it — so this is the same slot, the same stack and the same
+  rules, with only the drawing and the keys handed back:
+
+  ```csharp
+  public sealed class ConfirmModal : CustomModal
+  {
+      public bool Answered { get; private set; }
+
+      public override void Draw(SurfaceRegion screen) =>
+          screen.Rows(2, 1).WriteLine(0, "Really?", Theme.Warning, Align.Center);
+
+      public override void Handle(ConsoleKeyInfo key) => Answered = key.Key == ConsoleKey.Y;
+  }
+
+  state.Modal = new ConfirmModal { Title = "Careful" };
+  ```
+
 - **`ListBox<T>.PaintRow`**, for a list whose rows are not one colour. `Render` and `ItemStyle` write a
   row as one string in one style, which is right for most lists and wrong for any where a name, a size
   and a date each want their own. Set this instead and the list hands over one row of itself to draw
