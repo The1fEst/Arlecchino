@@ -73,6 +73,21 @@ jobs:
           }
         shell: pwsh
 
+      - name: Against a real terminal
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq tmux
+          tmux -V
+
+          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- oracle
+          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- keys
+          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- terminal
+          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- live
+        shell: bash
+
       - name: Benchmarks
         if: matrix.os == 'ubuntu-latest'
         run: dotnet run --project benchmarks/Arlecchino.Benchmarks/Arlecchino.Benchmarks.csproj --configuration Release --no-build -- --filter "*" --job dry

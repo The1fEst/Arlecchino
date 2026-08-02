@@ -211,7 +211,7 @@ internal static class Keys
 
         var settled = -1L;
 
-        for (var attempt = 0; attempt < 40; attempt++)
+        for (var attempt = 0; attempt < 200; attempt++)
         {
             Thread.Sleep(10);
 

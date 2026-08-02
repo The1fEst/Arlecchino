@@ -284,7 +284,7 @@ internal static class Terminal
 
     private static string Wait(string file)
     {
-        for (var attempt = 0; attempt < 200; attempt++)
+        for (var attempt = 0; attempt < 600; attempt++)
         {
             Thread.Sleep(50);
 

@@ -73,6 +73,17 @@ internal static class Live
         }
 
         Say(app);
+
+        if (!Until(() => State().Alternate == 1))
+        {
+            Console.WriteLine(Framed("what the application drew", Screen()));
+            Console.WriteLine("it never took a screen of its own");
+
+            Tmux("kill-server");
+
+            return 1;
+        }
+
         Settle();
 
         var running = State();
@@ -104,6 +115,7 @@ internal static class Live
         }
 
         Tmux("send-keys", quit);
+        Until(() => State().Alternate == 0);
         Settle();
 
         var after = State();
@@ -234,6 +246,28 @@ internal static class Live
 
     private static int Number(string[] told, int at) =>
         at < told.Length && int.TryParse(told[at], CultureInfo.InvariantCulture, out var value) ? value : -1;
+
+    /// <summary>
+    /// Waits for the terminal to say something is so, or gives up. Everything here happens at the pace
+    /// of a process starting and a frame being drawn, which on a busy machine is not the pace anything
+    /// here can guess at.
+    /// </summary>
+    /// <param name="said">What is being waited for.</param>
+    /// <returns><c>true</c> when it became so.</returns>
+    private static bool Until(Func<bool> said)
+    {
+        for (var attempt = 0; attempt < 300; attempt++)
+        {
+            if (said())
+            {
+                return true;
+            }
+
+            Thread.Sleep(100);
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Waits for the pane to stop changing. An application draws when it has something to draw and not
