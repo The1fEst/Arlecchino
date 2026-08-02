@@ -31,6 +31,7 @@ dotnet run --project tools/Arlecchino.Tools -- pack
 dotnet run --project tools/Arlecchino.Tools -- oracle
 dotnet run --project tools/Arlecchino.Tools -- keys
 dotnet run --project tools/Arlecchino.Tools -- live
+dotnet run --project tools/Arlecchino.Tools -- terminal
 dotnet run --project tools/Arlecchino.Tools -- ship 3.1.0
 ```
 
@@ -60,6 +61,13 @@ and analysed with everything else — a script beside the repository is checked 
   screen is really in force, whether the cursor is showing, whether the mouse was released, and the
   shell underneath is still there to compare against. Runs the sample by default, `--app` for anything
   else, `--keys "Down Tab"` to drive it. Also needs `tmux`.
+- **`terminal`** checks the three things an application says to a terminal that a fake cannot answer
+  for. Asking what the terminal can do rests on the reply to the last question arriving last — a fake
+  that replies on demand cannot get that wrong, and a real one can; the check types while the asking is
+  going on and insists the characters still arrive. Copying rests on a sequence a terminal has to
+  parse, so what was copied is read back out of tmux's own buffer. Pasting rests on markers the
+  terminal wraps the text in, so the text is pasted by tmux rather than handed over as a string. Also
+  needs `tmux`.
 - **`ship`** prepares a release: it sets the version, moves the recorded public API from
   `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
   before it. Run it, read the diff, commit, tag.
