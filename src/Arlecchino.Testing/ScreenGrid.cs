@@ -18,6 +18,7 @@ public sealed class ScreenGrid
 {
     private const string Blank = " ";
     private const string WideTail = "";
+    private const int TabStop = 8;
 
     private string[][] _cells = [];
     private string[][] _styles = [];
@@ -43,8 +44,12 @@ public sealed class ScreenGrid
     /// <summary>The row the cursor sits on, counted from the top.</summary>
     public int CursorRow => _row;
 
-    /// <summary>The column the cursor sits on, counted from the left.</summary>
-    public int CursorColumn => Math.Min(_column, Math.Max(0, Width - 1));
+    /// <summary>
+    /// The column the cursor sits on, counted from the left. A symbol written into the last column
+    /// while wrapping is on leaves it one past the right edge, waiting to wrap: the next symbol goes
+    /// to the row below, and a terminal asked where its cursor is answers the same way.
+    /// </summary>
+    public int CursorColumn => Math.Min(_column, Width);
 
     /// <summary>Whether the cursor was left visible.</summary>
     public bool IsCursorVisible { get; private set; } = true;
@@ -67,6 +72,7 @@ public sealed class ScreenGrid
                 '\r' => Return(index),
                 '\n' => Feed(index),
                 '\b' => Back(index),
+                '\t' => Tab(index),
                 _ => Put(output, index),
             };
         }
@@ -187,7 +193,16 @@ public sealed class ScreenGrid
 
     private int Back(int index)
     {
-        _column = Math.Max(0, Math.Min(_column, Width - 1) - 1);
+        _column = Math.Max(0, _column - 1);
+
+        return index + 1;
+    }
+
+    private int Tab(int index)
+    {
+        var from = Math.Min(_column, Math.Max(0, Width - 1));
+
+        _column = Math.Min((from / TabStop + 1) * TabStop, Math.Max(0, Width - 1));
 
         return index + 1;
     }
@@ -400,12 +415,12 @@ public sealed class ScreenGrid
 
     /// <summary>
     /// Makes room for a symbol about to be written. A symbol that runs past the right edge moves to
-    /// the next row, or, when the application turned wrapping off, overwrites what is at the edge —
-    /// which is what makes a frame drawn past its own width show up as a defect rather than as a row
-    /// that quietly grew.
+    /// the next row; with wrapping off there is nowhere to move it to, so the cursor stays in the last
+    /// column and the symbol is dropped rather than pushed inwards — which is what makes a frame drawn
+    /// past its own width show up as a defect rather than as a row that quietly grew.
     /// </summary>
     /// <param name="width">Columns the symbol takes.</param>
-    /// <returns><c>false</c> when the row is too narrow to hold it at all.</returns>
+    /// <returns><c>false</c> when there is nowhere to put it.</returns>
     private bool Fits(int width)
     {
         if (_column + width <= Width)
@@ -415,9 +430,7 @@ public sealed class ScreenGrid
 
         if (!_wraps)
         {
-            _column = Math.Max(0, Width - width);
-
-            return width <= Width;
+            return false;
         }
 
         _column = 0;
@@ -444,12 +457,14 @@ public sealed class ScreenGrid
             _styles[_row][_column + 1] = _style;
         }
 
-        _column += width;
+        var next = _column + width;
 
-        if (_column < Width && cells[_column].Length == 0)
+        if (next < Width && cells[next].Length == 0)
         {
-            cells[_column] = Blank;
+            cells[next] = Blank;
         }
+
+        _column = _wraps ? next : Math.Min(next, Width - 1);
     }
 
     private static string Head(string parameters)

@@ -61,6 +61,17 @@ public partial class Surface
     private int FreeLines => Math.Max(0, _height - _lines);
 
     /// <summary>
+    /// What the frame just built put in a cell. The testing package reads it to hold the terminal's
+    /// screen against the frame that was composed: a diff that dropped a cell and a cell that never
+    /// had anything in it look the same on screen, and only the frame itself tells them apart.
+    /// </summary>
+    /// <param name="row">Row in frame coordinates.</param>
+    /// <param name="column">Column in frame coordinates.</param>
+    /// <returns>The symbol, empty for the second half of a wide one, and the style it carries.</returns>
+    internal (string Cell, IArlecchinoColor Style) Composed(int row, int column) =>
+        (_cells[row][column], _styles[row][column]);
+
+    /// <summary>
     /// How many rows a scrolling list may use: what is left of the frame minus room for the chrome,
     /// never fewer than four.
     /// </summary>

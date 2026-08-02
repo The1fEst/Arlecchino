@@ -149,6 +149,69 @@ public sealed class ScreenGridTests
     }
 
     [Fact]
+    public void AWideSymbolPastTheRightEdgeIsDroppedWhenWrappingIsOff()
+    {
+        var grid = new ScreenGrid(5, 2);
+
+        grid.Apply("\e[?7l日本語");
+
+        Assert.Equal("日本 ", grid.Line(0));
+        Assert.Equal("     ", grid.Line(1));
+    }
+
+    [Fact]
+    public void ASymbolInTheLastColumnLeavesTheCursorWaitingToWrap()
+    {
+        var grid = new ScreenGrid(4, 2);
+
+        grid.Apply("abcd");
+
+        Assert.Equal(0, grid.CursorRow);
+        Assert.Equal(4, grid.CursorColumn);
+    }
+
+    [Fact]
+    public void TheCursorStopsAtTheLastColumnWhenWrappingIsOff()
+    {
+        var grid = new ScreenGrid(4, 2);
+
+        grid.Apply("\e[?7labcd");
+
+        Assert.Equal(3, grid.CursorColumn);
+    }
+
+    [Fact]
+    public void ABackspaceFromTheEdgeStepsOntoTheLastColumn()
+    {
+        var grid = new ScreenGrid(6, 1);
+
+        grid.Apply("abcdef\bX");
+
+        Assert.Equal("abcdeX", grid.Line(0));
+    }
+
+    [Fact]
+    public void ATabMovesToTheNextStop()
+    {
+        var grid = new ScreenGrid(32, 2);
+
+        grid.Apply("a\tb\tc\e[2;1H\tz");
+
+        Assert.Equal("a       b       c", grid.Line(0).TrimEnd());
+        Assert.Equal("        z", grid.Line(1).TrimEnd());
+    }
+
+    [Fact]
+    public void ATabStopsAtTheLastColumn()
+    {
+        var grid = new ScreenGrid(6, 1);
+
+        grid.Apply("ab\t\tz");
+
+        Assert.Equal("ab   z", grid.Line(0));
+    }
+
+    [Fact]
     public void AFeedOnTheLastRowScrollsTheScreen()
     {
         var grid = new ScreenGrid(3, 2);
