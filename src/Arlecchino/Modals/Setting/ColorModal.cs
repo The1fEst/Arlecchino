@@ -2,6 +2,8 @@ using System;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 
+using Arlecchino.Input;
+
 namespace Arlecchino.Modals.Setting;
 
 /// <summary>One of the three sliders in the colour dialog.</summary>
@@ -158,6 +160,37 @@ public sealed class ColorModal : Modal
             default:
                 Lightness = value;
                 return;
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Values.Color(this);
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Steps.Color(this, key);
+
+    /// <inheritdoc/>
+    public override void HandleMouse(ModalFrame frame, MouseEvent mouse)
+    {
+        if (mouse.Action is not (MouseAction.Pressed or MouseAction.Moved) || mouse.Button != MouseButton.Left)
+        {
+            return;
+        }
+
+        for (var channel = 0; channel < ChannelRows.Length; channel++)
+        {
+            if (!ChannelRows[channel].Contains(mouse.Row, mouse.Column))
+            {
+                continue;
+            }
+
+            var which = (ColorChannel)channel;
+
+            Channel = which;
+
+            Tracking.Follow(ChannelTracks[channel], mouse, fraction => SetChannelFromFraction(which, fraction));
+
+            return;
         }
     }
 }

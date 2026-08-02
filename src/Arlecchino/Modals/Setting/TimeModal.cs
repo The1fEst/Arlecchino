@@ -56,4 +56,10 @@ public sealed class TimeModal : SegmentedModal
 
         Value = new(hour, minute);
     }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Values.Segmented(this, frame.Strings.ModalTimeHints());
+
+    /// <inheritdoc/>
+    protected override void Submit() => OnSubmit(Value);
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering;
 
+using Arlecchino.Input;
+
 namespace Arlecchino.Modals.Choosing;
 
 /// <summary>
@@ -43,5 +45,56 @@ public abstract class OptionListModal : Modal
         }
 
         return matching;
+    }
+
+    /// <summary>Acts on the row that was picked, which is what tells one kind of list from the other.</summary>
+    /// <param name="frame">How to close, when picking closes.</param>
+    /// <param name="picked">The option.</param>
+    protected abstract void Take(ModalFrame frame, string picked);
+
+    /// <summary>
+    /// The wheel walks the list, and a click picks the row it landed on — but only takes it when that
+    /// row was already the one under the cursor, so a click never confirms something the eye had not
+    /// settled on yet.
+    /// </summary>
+    /// <param name="frame">How to close.</param>
+    /// <param name="mouse">The event that arrived.</param>
+    public override void HandleMouse(ModalFrame frame, MouseEvent mouse)
+    {
+        var matching = MatchingOptions();
+
+        switch (mouse.Action)
+        {
+            case MouseAction.ScrolledUp:
+                Index = Math.Max(0, Index - 1);
+                return;
+            case MouseAction.ScrolledDown:
+                Index = Math.Min(Math.Max(0, matching.Count - 1), Index + 1);
+                return;
+            case MouseAction.Pressed when mouse.Button == MouseButton.Left &&
+                Rows.Contains(mouse.Row, mouse.Column):
+                Picked(frame, matching, mouse);
+                return;
+        }
+    }
+
+    private void Picked(ModalFrame frame, List<string> matching, MouseEvent mouse)
+    {
+        var (row, _) = Rows.ToLocal(mouse.Row, mouse.Column);
+        var index = FirstVisible + row;
+
+        if (index < 0 || index >= matching.Count)
+        {
+            return;
+        }
+
+        var settled = index == Index;
+
+        Index = index;
+
+        if (settled)
+        {
+            Take(frame, matching[Math.Clamp(Index, 0, matching.Count - 1)]);
+        }
     }
 }

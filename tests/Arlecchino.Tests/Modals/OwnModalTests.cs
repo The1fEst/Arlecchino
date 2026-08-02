@@ -1,6 +1,5 @@
 using System;
 using Arlecchino.Modals;
-using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Xunit;
 
@@ -9,10 +8,11 @@ using Arlecchino.Tests.Support;
 namespace Arlecchino.Tests.Modals;
 
 /// <summary>
-/// A dialog the application draws itself. It goes in the same slot as the framework's own, so what has
-/// to hold is that it is drawn where they are drawn and takes the keys they would have taken.
+/// A dialog the application draws itself. It derives from <c>Modal</c> like every dialog the framework
+/// brings, so what has to hold is that it is drawn where they are drawn and takes the keys they would
+/// have taken — no branch anywhere knows this type exists.
 /// </summary>
-public sealed class CustomModalTests
+public sealed class OwnModalTests
 {
     [Fact]
     public void ItIsDrawnOverTheView()
@@ -55,13 +55,13 @@ public sealed class CustomModalTests
         Assert.DoesNotContain("drawn by the application", app.Frame(), StringComparison.Ordinal);
     }
 
-    private sealed class Painted : CustomModal
+    private sealed class Painted : Modal
     {
         public int Keys { get; private set; }
 
-        public override void Draw(SurfaceRegion screen) =>
-            screen.Rows(1, 1).WriteLine(0, "drawn by the application", Theme.Accent);
+        public override void Draw(ModalFrame frame) =>
+            frame.Screen.Rows(1, 1).WriteLine(0, "drawn by the application", Theme.Accent);
 
-        public override void Handle(ConsoleKeyInfo key) => Keys++;
+        public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => Keys++;
     }
 }

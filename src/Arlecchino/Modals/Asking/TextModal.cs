@@ -56,4 +56,11 @@ public sealed class TextModal : Modal, ITextEntryModal
     /// <param name="character">The character resolved from the key press.</param>
     /// <returns>Always <c>true</c>.</returns>
     public bool AcceptsCharacter(char character) => true;
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) =>
+        frame.Paint.Entry(this, Title, frame.Strings.ModalTextHints());
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Fields.Text(this, key);
 }

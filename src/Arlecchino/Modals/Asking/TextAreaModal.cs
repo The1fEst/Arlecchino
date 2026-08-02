@@ -212,4 +212,10 @@ public sealed class TextAreaModal : Modal
 
     /// <summary>Puts the caret at the end of its line.</summary>
     public void MoveToLineEnd() => _column = _lines[_row].Length;
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Paint.Area(this);
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Areas.Handle(this, key);
 }

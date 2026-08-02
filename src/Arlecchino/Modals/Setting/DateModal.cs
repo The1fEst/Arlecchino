@@ -89,4 +89,10 @@ public sealed class DateModal : SegmentedModal
 
         return value > Maximum ? Maximum : value;
     }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Values.Segmented(this, frame.Strings.ModalDateHints());
+
+    /// <inheritdoc/>
+    protected override void Submit() => OnSubmit(Value);
 }

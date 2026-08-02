@@ -57,6 +57,8 @@ internal sealed class CommandPalette
         {
             Title = _options.Strings.CommandPaletteTitle(),
             Commands = Entries(),
+            OnKey = Handle,
+            OnRow = Run,
         };
     }
 
@@ -100,18 +102,9 @@ internal sealed class CommandPalette
     }
 
     /// <summary>Runs whichever row was clicked.</summary>
-    /// <param name="modal">The palette.</param>
-    /// <param name="mouse">The event that arrived.</param>
-    public void Click(CommandModal modal, MouseEvent mouse)
+    /// <param name="row">Which row.</param>
+    private void Run(int row)
     {
-        if (mouse.Action != MouseAction.Pressed ||
-            mouse.Button != MouseButton.Left ||
-            !modal.Rows.Contains(mouse.Row, mouse.Column))
-        {
-            return;
-        }
-
-        var (row, _) = modal.Rows.ToLocal(mouse.Row, mouse.Column);
         var viewCommands = _navigator.CurrentCommands;
 
         if (row < 0 || row >= viewCommands.Count + _commands.Commands.Count)

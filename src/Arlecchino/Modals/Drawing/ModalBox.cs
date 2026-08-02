@@ -6,11 +6,6 @@ using Arlecchino.Rendering.Text;
 
 namespace Arlecchino.Modals.Drawing;
 
-/// <summary>One run of a line inside a dialog, with the colour it is written in.</summary>
-/// <param name="Text">The words.</param>
-/// <param name="Style">How they are written.</param>
-internal readonly record struct Piece(string Text, IArlecchinoColor Style);
-
 /// <summary>
 /// The box every dialog is drawn in: bordered, centred, as wide as the widest line in it and no
 /// wider, with a rule above the row of hints along the bottom.

@@ -1,9 +1,71 @@
 #nullable enable
 Arlecchino.Diagnostics.Notifications.Recent.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
-Arlecchino.Modals.CustomModal
-Arlecchino.Modals.CustomModal.CustomModal() -> void
+Arlecchino.Modals.Choosing.CommandModal.OnKey.get -> System.Action<System.ConsoleKeyInfo>?
+Arlecchino.Modals.Choosing.CommandModal.OnKey.init -> void
+Arlecchino.Modals.Choosing.CommandModal.OnRow.get -> System.Action<int>?
+Arlecchino.Modals.Choosing.CommandModal.OnRow.init -> void
+Arlecchino.Modals.ModalFrame
+Arlecchino.Modals.ModalFrame.Box(string! title, System.Collections.Generic.IReadOnlyList<Arlecchino.Modals.Piece[]!>! body, string! footer) -> (Arlecchino.Rendering.SurfaceRegion Box, Arlecchino.Rendering.SurfaceRegion Content)
+Arlecchino.Modals.ModalFrame.Centered(int contentWidth, int contentHeight) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.ModalFrame.Close() -> void
+Arlecchino.Modals.ModalFrame.Copy(string! text) -> void
+Arlecchino.Modals.ModalFrame.Depth.get -> int
+Arlecchino.Modals.ModalFrame.Height.get -> int
+Arlecchino.Modals.ModalFrame.Keymap.get -> Arlecchino.Hosting.ArlecchinoKeymap!
+Arlecchino.Modals.ModalFrame.Keys.get -> Arlecchino.Input.KeyText!
+Arlecchino.Modals.ModalFrame.Screen.get -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Modals.ModalFrame.Strings.get -> Arlecchino.Hosting.ArlecchinoStrings!
+Arlecchino.Modals.ModalFrame.Width.get -> int
+Arlecchino.Modals.Piece
+Arlecchino.Modals.Piece.Deconstruct(out string! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Style) -> void
+Arlecchino.Modals.Piece.Equals(Arlecchino.Modals.Piece other) -> bool
+Arlecchino.Modals.Piece.Piece() -> void
+Arlecchino.Modals.Piece.Piece(string! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Style) -> void
+Arlecchino.Modals.Piece.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Modals.Piece.Style.init -> void
+Arlecchino.Modals.Piece.Text.get -> string!
+Arlecchino.Modals.Piece.Text.init -> void
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.init -> void
-abstract Arlecchino.Modals.CustomModal.Draw(Arlecchino.Rendering.SurfaceRegion screen) -> void
-abstract Arlecchino.Modals.CustomModal.Handle(System.ConsoleKeyInfo key) -> void
-virtual Arlecchino.Modals.CustomModal.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> void
+abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void
+abstract Arlecchino.Modals.Modal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+abstract Arlecchino.Modals.Modal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+abstract Arlecchino.Modals.Setting.SegmentedModal.Submit() -> void
+override Arlecchino.Modals.Asking.NumberModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Asking.NumberModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Asking.TextModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Asking.TextModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.ChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Choosing.ChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.CommandModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Choosing.CommandModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.CommandModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Choosing.MultiChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Choosing.MultiChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.OptionListModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Piece.GetHashCode() -> int
+override Arlecchino.Modals.Setting.ColorModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Setting.ColorModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.ColorModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Setting.DateModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Setting.SegmentedModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.SliderModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Setting.SliderModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.SliderModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Setting.TimeModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Setting.ToggleModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Setting.ToggleModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.ToggleModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Telling.MessageModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Telling.MessageModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Telling.NotificationModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
+override Arlecchino.Modals.Telling.NotificationModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Telling.NotificationModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+static Arlecchino.Modals.ModalFrame.Divider(Arlecchino.Rendering.SurfaceRegion box, int insideRow) -> void
+static Arlecchino.Modals.Piece.operator !=(Arlecchino.Modals.Piece left, Arlecchino.Modals.Piece right) -> bool
+static Arlecchino.Modals.Piece.operator ==(Arlecchino.Modals.Piece left, Arlecchino.Modals.Piece right) -> bool
+virtual Arlecchino.Modals.Modal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+~override Arlecchino.Modals.Piece.Equals(object obj) -> bool
+~override Arlecchino.Modals.Piece.ToString() -> string

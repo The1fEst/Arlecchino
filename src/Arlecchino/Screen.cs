@@ -7,7 +7,7 @@ using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
-using Arlecchino.Modals.Drawing;
+using Arlecchino.Modals;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -38,7 +38,7 @@ public class Screen
     private readonly PendingInput _pending;
     private readonly InputRouter _router;
     private readonly CommandRegistry _commands;
-    private readonly ModalPaint _modalPaint;
+    private readonly ModalFrame _frame;
     private readonly LogPaint _logPaint;
 
     private int _lastWidth;
@@ -57,6 +57,7 @@ public class Screen
     /// <param name="pending">Input read since the last frame, routed on this thread before drawing.</param>
     /// <param name="router">Where that input goes.</param>
     /// <param name="commands">The registered commands, for offering the palette in the hints box.</param>
+    /// <param name="frame">What a dialog is handed while it is on screen.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
     internal Screen(
         ArlecchinoState state,
@@ -70,6 +71,7 @@ public class Screen
         PendingInput pending,
         InputRouter router,
         CommandRegistry commands,
+        ModalFrame frame,
         ILogger<Screen> logger)
     {
         _commands = commands;
@@ -85,9 +87,24 @@ public class Screen
         _repaint = repaint;
         _ticker = ticker;
         _logger = logger;
-
-        _modalPaint = new(surface, _strings);
+        _frame = frame;
         _logPaint = new(surface, _strings);
+    }
+
+    /// <summary>
+    /// Draws whatever dialogs are open, oldest first and each a little below and to the right of the
+    /// one under it. What each of them looks like is its own to say.
+    /// </summary>
+    private void DrawModals()
+    {
+        for (var depth = 0; depth < _state.Modals.Count; depth++)
+        {
+            _frame.Depth = depth;
+
+            _state.Modals[depth].Draw(_frame);
+        }
+
+        _frame.Depth = 0;
     }
 
     /// <summary>
@@ -248,7 +265,7 @@ public class Screen
             _logPaint.Draw(_log);
         }
 
-        _modalPaint.Draw(_state.Modals);
+        DrawModals();
 
         _surface.Build();
 

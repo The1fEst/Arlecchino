@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Arlecchino.Diagnostics;
 using Arlecchino.Rendering;
 
+using Arlecchino.Input;
+
 namespace Arlecchino.Modals.Telling;
 
 /// <summary>
@@ -43,6 +45,75 @@ public sealed class NotificationModal : Modal
         if (Actions.Count > 0)
         {
             Actions[Math.Clamp(Index, 0, Actions.Count - 1)].Run();
+        }
+    }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Tells.Notification(this);
+
+    /// <summary>
+    /// The arrows walk its actions, confirming runs the one selected and cancelling only closes. The
+    /// dialog is closed before the action runs, so an action is free to open one of its own.
+    /// </summary>
+    /// <param name="frame">How to close.</param>
+    /// <param name="key">The key that arrived.</param>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        if (frame.Keymap.MoveLeft.Matches(key))
+        {
+            Move(-1);
+
+            return;
+        }
+
+        if (frame.Keymap.MoveRight.Matches(key))
+        {
+            Move(1);
+
+            return;
+        }
+
+        if (frame.Keymap.Cancel.Matches(key))
+        {
+            frame.Close();
+
+            return;
+        }
+
+        if (!frame.Keymap.Confirm.Matches(key))
+        {
+            return;
+        }
+
+        frame.Close();
+        Run();
+    }
+
+    /// <inheritdoc/>
+    public override void HandleMouse(ModalFrame frame, MouseEvent mouse)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        if (mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left)
+        {
+            return;
+        }
+
+        for (var index = 0; index < Chips.Count; index++)
+        {
+            if (!Chips[index].Contains(mouse.Row, mouse.Column))
+            {
+                continue;
+            }
+
+            Index = index;
+
+            frame.Close();
+            Run();
+
+            return;
         }
     }
 }

@@ -3,6 +3,8 @@ using Arlecchino.Rendering;
 
 using Arlecchino.Modals.Asking;
 
+using Arlecchino.Input;
+
 namespace Arlecchino.Modals.Setting;
 
 /// <summary>
@@ -45,4 +47,14 @@ public sealed class SliderModal : NumericModal, IBoundedModal
 
     /// <summary>Jumps to the right end.</summary>
     public void MoveToMaximum() => Value = Maximum;
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Values.Slider(this);
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Steps.Slider(this, key);
+
+    /// <inheritdoc/>
+    public override void HandleMouse(ModalFrame frame, MouseEvent mouse) =>
+        Tracking.Follow(Track, mouse, SetFromFraction);
 }

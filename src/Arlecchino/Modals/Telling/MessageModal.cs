@@ -14,4 +14,21 @@ public sealed class MessageModal : Modal
 
     /// <summary>Called once it is dismissed, for a screen that wants to carry on afterwards.</summary>
     public Action? OnClosed { get; init; }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) => frame.Tells.Message(this);
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        if (!frame.Keymap.Cancel.Matches(key) && !frame.Keymap.Confirm.Matches(key))
+        {
+            return;
+        }
+
+        frame.Close();
+        OnClosed?.Invoke();
+    }
 }

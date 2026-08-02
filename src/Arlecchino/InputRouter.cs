@@ -6,7 +6,6 @@ using Arlecchino.Input;
 using Arlecchino.Modals;
 using Arlecchino.Modals.Asking;
 using Arlecchino.Modals.Choosing;
-using Arlecchino.Modals.Reading;
 using Arlecchino.Navigation;
 using Arlecchino.State;
 using Microsoft.Extensions.Logging;
@@ -33,8 +32,7 @@ public class InputRouter
     private readonly ArlecchinoKeymap _keymap;
     private readonly Repaint _repaint;
     private readonly ILogger<InputRouter> _logger;
-    private readonly ModalKeys _modalKeys;
-    private readonly ModalClicks _modalClicks;
+    private readonly ModalFrame _frame;
     private readonly CommandPalette _palette;
 
     /// <summary>Creates the router.</summary>
@@ -46,6 +44,7 @@ public class InputRouter
     /// <param name="options">Settings gathered at startup.</param>
     /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
+    /// <param name="frame">What a dialog is handed while it is on screen.</param>
     /// <param name="logger">Where handler failures are reported.</param>
     internal InputRouter(
         ArlecchinoState state,
@@ -56,6 +55,7 @@ public class InputRouter
         ArlecchinoOptions options,
         KeyText keyText,
         Repaint repaint,
+        ModalFrame frame,
         ILogger<InputRouter> logger)
     {
         _state = state;
@@ -67,9 +67,8 @@ public class InputRouter
         _keymap = options.Keymap;
         _repaint = repaint;
         _logger = logger;
+        _frame = frame;
 
-        _modalKeys = new(state, _keymap, keyText, terminal, options.Strings);
-        _modalClicks = new(state);
         _palette = new(state, navigator, commands, options, keyText);
     }
 
@@ -128,7 +127,7 @@ public class InputRouter
     {
         if (_state.Modal is { } modal)
         {
-            RouteModal(modal, key);
+            modal.Handle(_frame, key);
 
             return;
         }
@@ -225,28 +224,6 @@ public class InputRouter
         return true;
     }
 
-    /// <summary>
-    /// Hands a key to the open dialog. The two the framework does not read itself are the application's
-    /// own, which reads its keys for itself, and the palette, whose keys are every other key there is.
-    /// </summary>
-    /// <param name="modal">The dialog.</param>
-    /// <param name="key">The key that arrived.</param>
-    private void RouteModal(Modal modal, ConsoleKeyInfo key)
-    {
-        switch (modal)
-        {
-            case CustomModal custom:
-                custom.Handle(key);
-                return;
-            case CommandModal:
-                _palette.Handle(key);
-                return;
-            default:
-                _modalKeys.Handle(modal, key);
-                return;
-        }
-    }
-
     private void RouteMouse(MouseEvent mouse)
     {
         switch (_state.Modal)
@@ -257,14 +234,8 @@ public class InputRouter
             case null:
                 _navigator.HandleMouse(mouse);
                 return;
-            case CustomModal custom:
-                custom.HandleMouse(mouse);
-                return;
-            case CommandModal commands:
-                _palette.Click(commands, mouse);
-                return;
             case { } modal:
-                _modalClicks.Handle(modal, mouse);
+                modal.HandleMouse(_frame, mouse);
                 return;
         }
     }
@@ -311,7 +282,7 @@ public class InputRouter
             }
         }
 
-        _modalKeys.Recheck(modal);
+        _frame.Fields.Recheck(modal);
     }
 
     private static string FirstLine(string text)

@@ -79,4 +79,11 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
         var current = TryGetValue(out var value) ? value : 0m;
         Text = FormatNumber(Math.Clamp(current + delta, Minimum, Maximum));
     }
+
+    /// <inheritdoc/>
+    public override void Draw(ModalFrame frame) =>
+        frame.Paint.Entry(this, Title, frame.Strings.ModalNumberHints());
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Fields.Number(this, key);
 }

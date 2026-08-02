@@ -104,4 +104,69 @@ public abstract class SegmentedModal : Modal
 
     /// <summary>Throws away a partly typed segment, restoring what was stored.</summary>
     public void ClearTypedDigits() => _typedDigits = "";
+
+    /// <summary>Hands the value over to whoever asked for it, once the segments have been committed.</summary>
+    protected abstract void Submit();
+
+    /// <inheritdoc/>
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    {
+        ArgumentNullException.ThrowIfNull(frame);
+
+        if (frame.Keymap.Cancel.Matches(key))
+        {
+            frame.Close();
+
+            return;
+        }
+
+        if (frame.Keymap.Confirm.Matches(key))
+        {
+            CommitTypedDigits();
+            frame.Close();
+            Submit();
+
+            return;
+        }
+
+        if (frame.Keymap.MoveLeft.Matches(key) || frame.Keymap.PreviousField.Matches(key))
+        {
+            MoveSegment(-1);
+
+            return;
+        }
+
+        if (frame.Keymap.MoveRight.Matches(key) || frame.Keymap.NextField.Matches(key))
+        {
+            MoveSegment(1);
+
+            return;
+        }
+
+        if (frame.Keymap.MoveUp.Matches(key))
+        {
+            Add(1);
+
+            return;
+        }
+
+        if (frame.Keymap.MoveDown.Matches(key))
+        {
+            Add(-1);
+
+            return;
+        }
+
+        if (frame.Keymap.Erase.Matches(key))
+        {
+            ClearTypedDigits();
+
+            return;
+        }
+
+        if (frame.Keys.Resolve(key) is { } typed && char.IsAsciiDigit(typed))
+        {
+            TypeDigit(typed);
+        }
+    }
 }
