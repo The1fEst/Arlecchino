@@ -22,8 +22,8 @@ dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 
 ![Two panels over a local disk](/img/screenshots/panels.png)
 
-Each panel is a [table](table.md) over one folder. `Space` marks a row, and what is marked is counted
-at the foot of the panel:
+Each panel is a [widget](widgets.md) of its own over one folder. `Space` marks a row, and what is
+marked is counted at the foot of the panel:
 
 ![Three files marked, counted at the foot of the panel](/img/screenshots/marks.png)
 
@@ -38,8 +38,9 @@ the panels:
 
 | Part | What it shows | Uses |
 |---|---|---|
-| The panels | Two tables in one layout, either of which may hold the focus | [`Table`](table.md), [`PaneTree`](layout.md), [`FocusRing`](focus.md) |
-| The menu | Sections of a menu offered as lists | [choice modal](modals.md), [view commands](commands.md) |
+| The panels | Two widgets in one layout, either of which may hold the focus | [widgets](widgets.md), [`PaneTree`](layout.md), [`FocusRing`](focus.md) |
+| The tabs | A band that says what is open and takes a click on it | [mouse](mouse.md), [atoms](atoms.md) |
+| The menu | Sections of a menu offered as lists | [modals](modals.md#a-dialog-of-your-own), [view commands](commands.md) |
 | Copy, move, delete | Questions asked first, then the work off the drawing thread | [modals](modals.md), [rendering](rendering.md) |
 | Work in flight | A bar, what is being worked on now, and a key that stops it | [status bar](status-bar.md), [notifications](state.md#notifications) |
 | Servers | A panel over SFTP or FTP, and a screen that runs commands over SSH | [stores](stores.md), [`Form`](forms.md), [async atoms](async-atoms.md) |
@@ -64,6 +65,10 @@ Work of any size runs in the background with a bar and `Esc` to stop it, and rep
 ![The same copy opened in full, with Stop offered](/img/screenshots/notification.png)
 
 ![The same entry once the copy is over](/img/screenshots/done.png)
+
+Each tab holds two panels of its own, so a second pair of folders is a tab away rather than a place to
+navigate back to. The band along the top says what each one is connected to; `Alt+T` opens one,
+`Alt+W` closes it, `Alt+PgDn` and `Alt+PgUp` step between them, and `F2` lists them all.
 
 A panel connects by a `Host` entry from `~/.ssh/config`, browses the server as it browses a disk, and
 the same credentials run a command on it:
