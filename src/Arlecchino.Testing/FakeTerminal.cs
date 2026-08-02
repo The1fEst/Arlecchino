@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Text;
 using Arlecchino.Input;
+using Arlecchino.Rendering;
 
 namespace Arlecchino.Testing;
 
@@ -11,7 +12,7 @@ namespace Arlecchino.Testing;
 /// and assert on what would have been drawn. The input queues are concurrent, so a test can deliver
 /// keys late — the way a real terminal splits an escape sequence across two reads.
 /// </summary>
-public sealed class FakeTerminal : IArlecchinoTerminal
+public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 {
     private readonly ConcurrentQueue<ConsoleKeyInfo> _keys = new();
     private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
@@ -152,4 +153,74 @@ public sealed class FakeTerminal : IArlecchinoTerminal
     /// Throws away what has been written, so the next assertion sees one frame rather than all of them.
     /// </summary>
     public void Clear() => _written.Clear();
+
+    /// <summary>
+    /// Holds the screen against the frame that was just composed. Every frame but the first is written
+    /// as the difference from the one before, so a cell the difference failed to send stays on screen as
+    /// whatever used to be there — a stale symbol no assertion would think to look for, since a test
+    /// only ever asks what is on screen. Comparing the two says outright that the differences added up
+    /// to the picture.
+    ///
+    /// It runs on every frame any test builds rather than in a test of its own, because the frames worth
+    /// checking are the ones real views and widgets produce, and those only exist while a test is
+    /// running.
+    /// </summary>
+    /// <param name="surface">The surface holding the cells the frame was composed into.</param>
+    /// <exception cref="InvalidOperationException">The screen and the frame disagree somewhere.</exception>
+    void IChecksFrames.FrameBuilt(Surface surface)
+    {
+        if (surface.IsPinned)
+        {
+            return;
+        }
+
+        if (surface.FrameWidth != Screen.Width || surface.FrameHeight != Screen.Height)
+        {
+            throw new InvalidOperationException(
+                $"the frame is {surface.FrameWidth}x{surface.FrameHeight} and the screen it was drawn to " +
+                $"is {Screen.Width}x{Screen.Height}");
+        }
+
+        for (var row = 0; row < Screen.Height; row++)
+        {
+            for (var column = 0; column < Screen.Width; column++)
+            {
+                var (cell, style) = surface.Composed(row, column);
+
+                if (string.Equals(cell, Screen.CellAt(row, column), StringComparison.Ordinal) &&
+                    string.Equals(style.Ansi, Screen.StyleAt(row, column), StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                throw new InvalidOperationException(
+                    $"the diffed frames left row {row}, column {column} showing " +
+                    $"{Quoted(Screen.CellAt(row, column))} in {Quoted(Screen.StyleAt(row, column))} " +
+                    $"where the frame drew {Quoted(cell)} in {Quoted(style.Ansi)}." +
+                    $"{Environment.NewLine}{Environment.NewLine}on screen:{Environment.NewLine}" +
+                    $"{Screen}{Environment.NewLine}{Environment.NewLine}drawn:{Environment.NewLine}{Drawn(surface)}");
+            }
+        }
+    }
+
+    private static string Drawn(Surface surface)
+    {
+        var lines = new string[surface.FrameHeight];
+
+        for (var row = 0; row < surface.FrameHeight; row++)
+        {
+            var line = new StringBuilder(surface.FrameWidth);
+
+            for (var column = 0; column < surface.FrameWidth; column++)
+            {
+                line.Append(surface.Composed(row, column).Cell);
+            }
+
+            lines[row] = line.ToString();
+        }
+
+        return string.Join('\n', lines);
+    }
+
+    private static string Quoted(string text) => $"\"{text.Replace("\e", "\\e", StringComparison.Ordinal)}\"";
 }

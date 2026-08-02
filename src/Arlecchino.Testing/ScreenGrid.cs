@@ -22,6 +22,7 @@ public sealed class ScreenGrid
 
     private string[][] _cells = [];
     private string[][] _styles = [];
+    private Kept? _normal;
     private string _style = "";
     private int _row;
     private int _column;
@@ -244,6 +245,12 @@ public sealed class ScreenGrid
     /// Skips a payload handed to the terminal whole — an image in one of the graphics protocols, most
     /// of all. It is not text and never lands on a cell, so the screen has to step over it rather
     /// than spell it out.
+    ///
+    /// What the pixels themselves come to is not modelled and cannot be: a grid of cells has nowhere to
+    /// put them, and a terminal that draws a sixel inline moves the cursor by however tall the picture
+    /// turned out. Nothing here depends on that — every frame positions the cursor outright before it
+    /// writes anything — but a screen read back after a picture was drawn is a screen with the picture
+    /// missing.
     /// </summary>
     /// <param name="output">What was written.</param>
     /// <param name="start">The first character after the introducer.</param>
@@ -318,8 +325,54 @@ public sealed class ScreenGrid
                 case "25":
                     IsCursorVisible = on;
                     break;
+                case "1049":
+                    AlternateScreen(on);
+                    break;
             }
         }
+    }
+
+    /// <summary>
+    /// Takes the screen over, or gives it back. An application that draws full screen asks for a screen
+    /// of its own, which arrives blank and hands the one underneath back untouched when it leaves — the
+    /// shell scrollback a user sees again on exit. Asking twice for what is already in force changes
+    /// nothing, which is what a terminal does with it.
+    /// </summary>
+    /// <param name="on">Whether the screen is being taken over.</param>
+    private void AlternateScreen(bool on)
+    {
+        if (_normal is not { } kept)
+        {
+            if (!on)
+            {
+                return;
+            }
+
+            _normal = new(_cells, _styles, _row, _column);
+            _cells = new string[Height][];
+            _styles = new string[Height][];
+
+            for (var row = 0; row < Height; row++)
+            {
+                _cells[row] = new string[Width];
+                _styles[row] = new string[Width];
+                Array.Fill(_cells[row], Blank);
+                Array.Fill(_styles[row], "");
+            }
+
+            return;
+        }
+
+        if (on)
+        {
+            return;
+        }
+
+        _cells = kept.Cells;
+        _styles = kept.Styles;
+        _row = Math.Clamp(kept.Row, 0, Math.Max(0, Height - 1));
+        _column = Math.Clamp(kept.Column, 0, Math.Max(0, Width));
+        _normal = null;
     }
 
     private void Style(string parameters)
@@ -473,6 +526,13 @@ public sealed class ScreenGrid
 
         return end < 0 ? parameters : parameters[..end];
     }
+
+    /// <summary>The screen an application took over, kept until it gives it back.</summary>
+    /// <param name="Cells">The symbols that were on it.</param>
+    /// <param name="Styles">The styles they were in.</param>
+    /// <param name="Row">Where the cursor was.</param>
+    /// <param name="Column">Where the cursor was.</param>
+    private readonly record struct Kept(string[][] Cells, string[][] Styles, int Row, int Column);
 
     private static int Parameter(string parameters, int position, int fallback)
     {

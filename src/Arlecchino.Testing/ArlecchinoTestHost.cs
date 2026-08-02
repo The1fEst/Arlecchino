@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -189,7 +188,6 @@ public sealed class ArlecchinoTestHost : IDisposable
         DrainInput();
         Terminal.Clear();
         _provider.GetRequiredService<Screen>().DrawFrame();
-        VerifyTheScreenIsTheFrame();
 
         return string.Join("\r\n", Terminal.Screen.Lines());
     }
@@ -235,72 +233,6 @@ public sealed class ArlecchinoTestHost : IDisposable
 
         return "";
     }
-
-    /// <summary>
-    /// Holds the screen the frames left against the frame that was last composed. Every frame but the
-    /// first is written as the difference from the one before, so a cell the difference failed to send
-    /// stays on screen as whatever used to be there — a stale symbol no assertion would think to look
-    /// for, since the test only ever asks what is on screen. Comparing the two says outright that the
-    /// difference added up to the picture.
-    ///
-    /// It runs on every frame a test draws rather than in a test of its own, because the frames worth
-    /// checking are the ones real views produce, and those only exist while a test is running.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">The screen and the frame disagree somewhere.</exception>
-    private void VerifyTheScreenIsTheFrame()
-    {
-        var surface = Surface;
-        var screen = Terminal.Screen;
-
-        if (surface.FrameWidth != screen.Width || surface.FrameHeight != screen.Height)
-        {
-            throw new InvalidOperationException(
-                $"the frame is {surface.FrameWidth}x{surface.FrameHeight} and the screen it was drawn to " +
-                $"is {screen.Width}x{screen.Height}");
-        }
-
-        for (var row = 0; row < screen.Height; row++)
-        {
-            for (var column = 0; column < screen.Width; column++)
-            {
-                var (cell, style) = surface.Composed(row, column);
-
-                if (string.Equals(cell, screen.CellAt(row, column), StringComparison.Ordinal) &&
-                    string.Equals(style.Ansi, screen.StyleAt(row, column), StringComparison.Ordinal))
-                {
-                    continue;
-                }
-
-                throw new InvalidOperationException(
-                    $"the diffed frames left row {row}, column {column} showing " +
-                    $"{Quoted(screen.CellAt(row, column))} in {Quoted(screen.StyleAt(row, column))} " +
-                    $"where the frame drew {Quoted(cell)} in {Quoted(style.Ansi)}." +
-                    $"{Environment.NewLine}{Environment.NewLine}on screen:{Environment.NewLine}" +
-                    $"{screen}{Environment.NewLine}{Environment.NewLine}drawn:{Environment.NewLine}{Drawn(surface)}");
-            }
-        }
-    }
-
-    private static string Drawn(Surface surface)
-    {
-        var lines = new string[surface.FrameHeight];
-
-        for (var row = 0; row < surface.FrameHeight; row++)
-        {
-            var line = new StringBuilder(surface.FrameWidth);
-
-            for (var column = 0; column < surface.FrameWidth; column++)
-            {
-                line.Append(surface.Composed(row, column).Cell);
-            }
-
-            lines[row] = line.ToString();
-        }
-
-        return string.Join('\n', lines);
-    }
-
-    private static string Quoted(string text) => $"\"{text.Replace("\e", "\\e", StringComparison.Ordinal)}\"";
 
     /// <summary>Disposes the container and everything in it, and drops work still posted to the frame.</summary>
     public void Dispose()

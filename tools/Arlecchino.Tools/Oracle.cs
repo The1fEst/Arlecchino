@@ -153,6 +153,7 @@ internal static class Oracle
 
             return new(
                 Grid(height),
+                Colours(width, height),
                 int.Parse(cursor[0], CultureInfo.InvariantCulture),
                 int.Parse(cursor[1], CultureInfo.InvariantCulture));
         }
@@ -182,7 +183,7 @@ internal static class Oracle
 
     private static string[] Grid(int height)
     {
-        var lines = Tmux("capture-pane", "-p").Split('\n');
+        var lines = Tmux("capture-pane", "-p", "-N").Split('\n');
         var grid = new string[height];
 
         for (var row = 0; row < height; row++)
@@ -191,6 +192,188 @@ internal static class Oracle
         }
 
         return grid;
+    }
+
+    /// <summary>
+    /// The colour every cell ended up in, as tmux hands it back: the text again, with the sequences it
+    /// would send to redraw it left in. Reading them is a matter of walking the line and remembering
+    /// what is in force, the same thing a terminal does — which is why both sides of the comparison are
+    /// boiled down to <see cref="Paint"/> rather than compared as sequences. tmux writes the same colour
+    /// differently from the way the frame asked for it, and neither spelling is wrong.
+    ///
+    /// A cell tmux never touched is not handed back at all, and reads as plain, which is what it is.
+    /// </summary>
+    /// <param name="width">Columns the pane is.</param>
+    /// <param name="height">Rows the pane is.</param>
+    /// <returns>The colour of every cell.</returns>
+    private static Paint[][] Colours(int width, int height)
+    {
+        var lines = Tmux("capture-pane", "-p", "-N", "-e").Split('\n');
+        var paints = new Paint[height][];
+        var carried = Paint.Plain;
+
+        for (var row = 0; row < height; row++)
+        {
+            paints[row] = Painted(row < lines.Length ? lines[row] : "", width, ref carried);
+        }
+
+        return paints;
+    }
+
+    /// <summary>
+    /// What a cell's recorded style comes to. The screen keeps the sequence that was in force when the
+    /// cell was written, which is how the frame spelled the colour; this is the colour itself.
+    /// </summary>
+    /// <param name="style">The sequence, empty where the style was reset.</param>
+    /// <returns>The colour.</returns>
+    private static Paint Painted(string style)
+    {
+        var paint = Paint.Plain;
+        var index = 0;
+
+        while (index < style.Length)
+        {
+            index = style[index] == '\e' ? Sequence(style, index, ref paint) : index + 1;
+        }
+
+        return paint;
+    }
+
+    /// <summary>
+    /// The colour of every cell in one captured row. tmux writes the capture as the difference from
+    /// what it last said, and carries that across the line break — a row drawn in the colour the row
+    /// above ended in is handed back saying nothing about its colour at all. So the state is threaded
+    /// from row to row rather than started afresh, which is the only reading under which the capture
+    /// means what it looks like.
+    ///
+    /// A cell it never hands back is a different matter: it is blank and carries nothing, whatever was
+    /// in force when the row before it ended.
+    /// </summary>
+    /// <param name="line">The captured row, sequences and all.</param>
+    /// <param name="width">Columns the pane is.</param>
+    /// <param name="paint">What is in force coming in, and what is left in force going out.</param>
+    /// <returns>The colour of every cell in the row.</returns>
+    private static Paint[] Painted(string line, int width, ref Paint paint)
+    {
+        var paints = new Paint[width];
+        Array.Fill(paints, Paint.Plain);
+
+        var column = 0;
+        var index = 0;
+
+        while (index < line.Length && column < width)
+        {
+            if (line[index] == '\e')
+            {
+                index = Sequence(line, index, ref paint);
+
+                continue;
+            }
+
+            var length = TextWidth.NextClusterLength(line, index);
+            var cells = Math.Max(1, TextWidth.OfCluster(line.AsSpan(index, length)));
+
+            for (var cell = 0; cell < cells && column < width; cell++)
+            {
+                paints[column++] = paint;
+            }
+
+            index += length;
+        }
+
+        return paints;
+    }
+
+    private static int Sequence(string line, int index, ref Paint paint)
+    {
+        var at = index + 2;
+
+        if (index + 1 >= line.Length || line[index + 1] != '[')
+        {
+            return index + 2;
+        }
+
+        while (at < line.Length && !char.IsBetween(line[at], '@', '~'))
+        {
+            at++;
+        }
+
+        if (at >= line.Length)
+        {
+            return line.Length;
+        }
+
+        if (line[at] == 'm')
+        {
+            paint = Repainted(paint, line[(index + 2)..at]);
+        }
+
+        return at + 1;
+    }
+
+    /// <summary>
+    /// What a run of colour parameters leaves in force. Only what the framework can ask for is read —
+    /// the eight colours and their bright halves, the palette, exact colour, and the four attributes a
+    /// <see cref="TermColor"/> carries.
+    /// </summary>
+    /// <param name="paint">What was in force.</param>
+    /// <param name="parameters">The parameters between the bracket and the <c>m</c>.</param>
+    /// <returns>What is in force afterwards.</returns>
+    private static Paint Repainted(Paint paint, string parameters)
+    {
+        var codes = parameters.Length == 0
+            ? [0]
+            : parameters.Split(';').Select(static code => int.TryParse(code, out var value) ? value : 0).ToArray();
+
+        for (var at = 0; at < codes.Length; at++)
+        {
+            switch (codes[at])
+            {
+                case 0: paint = Paint.Plain; break;
+                case 1: paint = paint with { Bold = true }; break;
+                case 2: paint = paint with { Dim = true }; break;
+                case 3: paint = paint with { Italic = true }; break;
+                case 4: paint = paint with { Underline = true }; break;
+                case 22: paint = paint with { Bold = false, Dim = false }; break;
+                case 23: paint = paint with { Italic = false }; break;
+                case 24: paint = paint with { Underline = false }; break;
+                case 39: paint = paint with { Foreground = Paint.Default }; break;
+                case 49: paint = paint with { Background = Paint.Default }; break;
+                case >= 30 and <= 37: paint = paint with { Foreground = Indexed(codes[at] - 30) }; break;
+                case >= 40 and <= 47: paint = paint with { Background = Indexed(codes[at] - 40) }; break;
+                case >= 90 and <= 97: paint = paint with { Foreground = Indexed(codes[at] - 82) }; break;
+                case >= 100 and <= 107: paint = paint with { Background = Indexed(codes[at] - 92) }; break;
+                case 38: paint = paint with { Foreground = Extended(codes, ref at) }; break;
+                case 48: paint = paint with { Background = Extended(codes, ref at) }; break;
+            }
+        }
+
+        return paint;
+    }
+
+    private static string Indexed(int index) => index.ToString(CultureInfo.InvariantCulture);
+
+    private static string Extended(int[] codes, ref int at)
+    {
+        if (at + 2 < codes.Length && codes[at + 1] == 5)
+        {
+            var index = codes[at + 2];
+            at += 2;
+
+            return Indexed(index);
+        }
+
+        if (at + 4 < codes.Length && codes[at + 1] == 2)
+        {
+            var colour = $"{codes[at + 2]},{codes[at + 3]},{codes[at + 4]}";
+            at += 4;
+
+            return colour;
+        }
+
+        at = codes.Length;
+
+        return Paint.Default;
     }
 
     private static string Detabbed(string line)
@@ -233,6 +416,23 @@ internal static class Oracle
 
             differences.Add($"row {row}  grid: {Escaped(ours)}");
             differences.Add($"          tmux: {Escaped(theirs)}");
+        }
+
+        for (var row = 0; row < drawn.Paints.Length; row++)
+        {
+            for (var column = 0; column < drawn.Paints[row].Length; column++)
+            {
+                var ours = drawn.Paints[row][column];
+                var theirs = played.Paints[row][column];
+
+                if (ours == theirs)
+                {
+                    continue;
+                }
+
+                differences.Add($"paint at {row},{column}  grid: {ours}");
+                differences.Add($"                  tmux: {theirs}");
+            }
         }
 
         if (drawn.CursorRow != played.CursorRow || drawn.CursorColumn != played.CursorColumn)
@@ -444,6 +644,59 @@ internal static class Oracle
             static surface => surface.WriteAt(3, 19, "日", Theme.Default),
         ]);
 
+        yield return new Frames("styles-attributes", 20, 4, [
+            static surface =>
+            {
+                surface.WriteAt(0, 0, "bold", new TermColor { Style = TextStyle.Bold, Foreground = TerminalColor.Red });
+                surface.WriteAt(1, 0, "dim italic", new TermColor
+                {
+                    Style = TextStyle.Dim | TextStyle.Italic,
+                    ExactForeground = new(10, 200, 30),
+                });
+                surface.WriteAt(2, 0, "underlined", new TermColor
+                {
+                    Style = TextStyle.Underline,
+                    ExactForeground = new(255, 255, 255),
+                    ExactBackground = new(0, 0, 128),
+                });
+                surface.WriteAt(3, 0, "all four", new TermColor
+                {
+                    Style = TextStyle.Bold | TextStyle.Dim | TextStyle.Italic | TextStyle.Underline,
+                    Foreground = TerminalColor.BrightYellow,
+                    Background = TerminalColor.Blue,
+                });
+            },
+        ]);
+
+        yield return new Frames("styles-palette", 20, 3, [
+            static surface =>
+            {
+                surface.WriteAt(0, 0, "plain sixteen", new TermColor
+                {
+                    Foreground = TerminalColor.Cyan,
+                    Background = TerminalColor.Black,
+                });
+                surface.WriteAt(1, 0, "bright", new TermColor
+                {
+                    Foreground = TerminalColor.BrightMagenta,
+                    Background = TerminalColor.BrightBlack,
+                });
+                surface.WriteAt(2, 0, "exact falls back", new TermColor
+                {
+                    Foreground = TerminalColor.Green,
+                    ExactForeground = new(1, 2, 3),
+                });
+            },
+        ]) { Colour = ColorSupport.Palette };
+
+        yield return new Frames("styles-none", 20, 3, [
+            static surface =>
+            {
+                surface.WriteAt(0, 0, "no colour at all", Theme.Error);
+                surface.WriteAt(1, 0, "none here either", Theme.Selected);
+            },
+        ]) { Colour = ColorSupport.None };
+
         yield return new Frames("diff-styles-only", 20, 3, [
             static surface => surface.WriteAt(0, 0, "recoloured", Theme.Default),
             static surface => surface.WriteAt(0, 0, "recoloured", Theme.Error),
@@ -494,6 +747,20 @@ internal static class Oracle
         yield return new Raw("raw-over-wide-tail", 12, 2, "日本語\e[1;2Hx");
 
         yield return new Raw("raw-off-screen-jump", 12, 3, "\e[9;99Hx");
+
+        yield return new Frames("passthrough", 20, 3, [
+            static surface =>
+            {
+                surface.WriteAt(0, 0, "under the picture", Theme.Default);
+                surface.Passthrough(1, 2, "\e_Gf=100,a=T;AAAABBBBCCCC\e\\");
+            },
+        ]);
+
+        yield return new Raw("raw-passthrough-osc", 20, 3, "text\e]1337;File=inline=1:AAAA\amore");
+
+        yield return new Raw("raw-alt-screen", 12, 3, "first\r\nsecond\e[?1049h\e[1;1Hover here");
+
+        yield return new Raw("raw-alt-screen-back", 12, 3, "first\r\nsecond\e[?1049h\e[1;1Hover here\e[?1049l");
     }
 
     /// <summary>Something to write to a terminal, and the screen the emulator says it leaves.</summary>
@@ -502,10 +769,30 @@ internal static class Oracle
     /// <param name="Height">Rows the screen is.</param>
     private abstract record Scenario(string Name, int Width, int Height)
     {
+        /// <summary>
+        /// How much colour the terminal is told it can do. The sequences a style writes depend on it,
+        /// and so does whether the emulator and tmux can be made to disagree about them.
+        /// </summary>
+        internal ColorSupport Colour { get; init; } = ColorSupport.TrueColor;
+
         internal abstract Drawn Draw();
 
-        private protected static Drawn Read(string output, ScreenGrid screen) =>
-            new(output, screen.Lines(), screen.CursorRow, screen.CursorColumn);
+        private protected static Drawn Read(string output, ScreenGrid screen)
+        {
+            var paints = new Paint[screen.Height][];
+
+            for (var row = 0; row < screen.Height; row++)
+            {
+                paints[row] = new Paint[screen.Width];
+
+                for (var column = 0; column < screen.Width; column++)
+                {
+                    paints[row][column] = Painted(screen.StyleAt(row, column));
+                }
+            }
+
+            return new(output, screen.Lines(), paints, screen.CursorRow, screen.CursorColumn);
+        }
     }
 
     /// <summary>
@@ -522,17 +809,27 @@ internal static class Oracle
     {
         internal override Drawn Draw()
         {
-            var terminal = new FakeTerminal(Width, Height);
-            var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
+            var previous = TerminalCapabilities.Color;
+            TerminalCapabilities.Color = Colour;
 
-            foreach (var draw in Draws)
+            try
             {
-                surface.StartFrame();
-                draw(surface);
-                surface.Build();
-            }
+                var terminal = new FakeTerminal(Width, Height);
+                var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
 
-            return Read(terminal.Written, terminal.Screen);
+                foreach (var draw in Draws)
+                {
+                    surface.StartFrame();
+                    draw(surface);
+                    surface.Build();
+                }
+
+                return Read(terminal.Written, terminal.Screen);
+            }
+            finally
+            {
+                TerminalCapabilities.Color = previous;
+            }
         }
     }
 
@@ -559,13 +856,46 @@ internal static class Oracle
     /// <summary>What was written, and the screen the emulator says it leaves.</summary>
     /// <param name="Output">The bytes written.</param>
     /// <param name="Lines">The screen, one string per row.</param>
+    /// <param name="Paints">The colour of every cell.</param>
     /// <param name="CursorRow">Where the cursor ended up.</param>
     /// <param name="CursorColumn">Where the cursor ended up.</param>
-    private sealed record Drawn(string Output, string[] Lines, int CursorRow, int CursorColumn);
+    private sealed record Drawn(string Output, string[] Lines, Paint[][] Paints, int CursorRow, int CursorColumn);
 
     /// <summary>The screen tmux ended up with.</summary>
     /// <param name="Lines">The screen, one string per row.</param>
+    /// <param name="Paints">The colour of every cell.</param>
     /// <param name="CursorRow">Where the cursor ended up.</param>
     /// <param name="CursorColumn">Where the cursor ended up.</param>
-    private sealed record Played(string[] Lines, int CursorRow, int CursorColumn);
+    private sealed record Played(string[] Lines, Paint[][] Paints, int CursorRow, int CursorColumn);
+
+    /// <summary>
+    /// A colour boiled down to what it means rather than how it was spelled, so that the frame's way of
+    /// asking for it and tmux's way of handing it back can be held against one another.
+    /// </summary>
+    /// <param name="Foreground">The colour of the symbol: <c>default</c>, a palette index, or <c>r,g,b</c>.</param>
+    /// <param name="Background">The colour behind it, spelled the same way.</param>
+    /// <param name="Bold">Whether it is bold.</param>
+    /// <param name="Dim">Whether it is dim.</param>
+    /// <param name="Italic">Whether it is italic.</param>
+    /// <param name="Underline">Whether it is underlined.</param>
+    private readonly record struct Paint(
+        string Foreground,
+        string Background,
+        bool Bold,
+        bool Dim,
+        bool Italic,
+        bool Underline)
+    {
+        internal const string Default = "default";
+
+        internal static Paint Plain => new(Default, Default, false, false, false, false);
+
+        public override string ToString()
+        {
+            var attributes = string.Concat(Bold ? " bold" : "", Dim ? " dim" : "", Italic ? " italic" : "",
+                Underline ? " underline" : "");
+
+            return $"on {Background} in {Foreground}{attributes}";
+        }
+    }
 }

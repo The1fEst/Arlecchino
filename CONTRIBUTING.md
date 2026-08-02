@@ -42,9 +42,9 @@ and analysed with everything else — a script beside the repository is checked 
   and the code that writes the frames were written by the same head, so a wrong idea about the edge of
   a row or the width of a symbol would be held by both and cancel out, leaving every test green and the
   picture wrong. This draws frames through the real `Surface`, plays what was written into a `tmux` pane
-  of the same size, and compares the screen tmux ended up with against the one `ScreenGrid` did, cursor
-  included. It needs `tmux` on `PATH`, and it is not part of the test run — run it after a change to
-  `ScreenGrid` or to how `Surface` writes a frame.
+  of the same size, and compares the screen tmux ended up with against the one `ScreenGrid` did — the
+  symbols, the colour of every cell, and where the cursor was left. It needs `tmux` on `PATH`, and it is
+  not part of the test run — run it after a change to `ScreenGrid` or to how `Surface` writes a frame.
 - **`ship`** prepares a release: it sets the version, moves the recorded public API from
   `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
   before it. Run it, read the diff, commit, tag.

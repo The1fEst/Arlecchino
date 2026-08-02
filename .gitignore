@@ -9,3 +9,6 @@ coverage/
 TestResults/
 inspect.json
 inspect.sarif
+
+# macOS
+.DS_Store

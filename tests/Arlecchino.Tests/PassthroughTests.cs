@@ -12,6 +12,9 @@ namespace Arlecchino.Tests;
 /// </summary>
 public sealed class PassthroughTests
 {
+    private const string Payload = "\e_Gf=100,a=T;AAAA\e\\";
+    private const string Other = "\e_Gf=100,a=T;BBBB\e\\";
+
     [Fact]
     public void ItLandsWhereItWasPutAndAfterTheCells()
     {
@@ -20,16 +23,16 @@ public sealed class PassthroughTests
 
         surface.StartFrame();
         surface.Frame.WriteLine(0, "under", Theme.Default);
-        surface.Passthrough(1, 2, "<payload>");
+        surface.Passthrough(1, 2, Payload);
         surface.Build();
 
         var written = terminal.Written;
 
-        Assert.Contains("<payload>", written, StringComparison.Ordinal);
+        Assert.Contains(Payload, written, StringComparison.Ordinal);
         Assert.True(
-            written.IndexOf("under", StringComparison.Ordinal) < written.IndexOf("<payload>", StringComparison.Ordinal),
+            written.IndexOf("under", StringComparison.Ordinal) < written.IndexOf(Payload, StringComparison.Ordinal),
             "the cells are written before the payload");
-        Assert.Contains("\e[2;3H<payload>", written, StringComparison.Ordinal);
+        Assert.Contains($"\e[2;3H{Payload}", written, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -38,13 +41,13 @@ public sealed class PassthroughTests
         var terminal = new FakeTerminal(10, 3);
         var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
 
-        Frame(surface, "<payload>");
+        Frame(surface, Payload);
 
         terminal.Clear();
 
-        Frame(surface, "<payload>");
+        Frame(surface, Payload);
 
-        Assert.DoesNotContain("<payload>", terminal.Written, StringComparison.Ordinal);
+        Assert.DoesNotContain(Payload, terminal.Written, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -53,13 +56,13 @@ public sealed class PassthroughTests
         var terminal = new FakeTerminal(10, 3);
         var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
 
-        Frame(surface, "<first>");
+        Frame(surface, Payload);
 
         terminal.Clear();
 
-        Frame(surface, "<second>");
+        Frame(surface, Other);
 
-        Assert.Contains("<second>", terminal.Written, StringComparison.Ordinal);
+        Assert.Contains(Other, terminal.Written, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -68,14 +71,14 @@ public sealed class PassthroughTests
         var terminal = new FakeTerminal(10, 3);
         var surface = new Surface(terminal) { HorizontalPadding = 0, VerticalPadding = 0 };
 
-        Frame(surface, "<payload>");
+        Frame(surface, Payload);
 
         terminal.Clear();
 
         surface.StartFrame();
         surface.Build();
 
-        Assert.DoesNotContain("<payload>", terminal.Written, StringComparison.Ordinal);
+        Assert.DoesNotContain(Payload, terminal.Written, StringComparison.Ordinal);
     }
 
     [Fact]

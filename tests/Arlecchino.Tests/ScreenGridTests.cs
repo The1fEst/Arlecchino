@@ -212,6 +212,30 @@ public sealed class ScreenGridTests
     }
 
     [Fact]
+    public void TakingTheScreenOverStartsItBlank()
+    {
+        var grid = new ScreenGrid(8, 2);
+
+        grid.Apply("first\r\nsecond\e[?1049h");
+
+        Assert.Equal("        ", grid.Line(0));
+        Assert.Equal("        ", grid.Line(1));
+    }
+
+    [Fact]
+    public void GivingTheScreenBackLeavesWhatWasUnderIt()
+    {
+        var grid = new ScreenGrid(8, 2);
+
+        grid.Apply("first\r\nsecond\e[?1049h\e[1;1Hover\e[?1049l");
+
+        Assert.Equal("first   ", grid.Line(0));
+        Assert.Equal("second  ", grid.Line(1));
+        Assert.Equal(1, grid.CursorRow);
+        Assert.Equal(6, grid.CursorColumn);
+    }
+
+    [Fact]
     public void AFeedOnTheLastRowScrollsTheScreen()
     {
         var grid = new ScreenGrid(3, 2);

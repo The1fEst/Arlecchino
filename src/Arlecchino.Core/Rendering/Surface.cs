@@ -18,6 +18,7 @@ public partial class Surface
     private static readonly string[] AsciiCells = BuildAsciiCells();
 
     private readonly IArlecchinoTerminal _terminal;
+    private readonly IChecksFrames? _check;
     private readonly StringBuilder _stringBuilder = new();
 
     private string[][] _cells = [];
@@ -38,6 +39,7 @@ public partial class Surface
     public Surface(IArlecchinoTerminal terminal)
     {
         _terminal = terminal;
+        _check = terminal as IChecksFrames;
     }
 
     /// <summary>Cells kept free on the left and right by the flow calls.</summary>
@@ -70,6 +72,13 @@ public partial class Surface
     /// <returns>The symbol, empty for the second half of a wide one, and the style it carries.</returns>
     internal (string Cell, IArlecchinoColor Style) Composed(int row, int column) =>
         (_cells[row][column], _styles[row][column]);
+
+    /// <summary>
+    /// Whether the frame size was pinned rather than read from the terminal. A pinned frame is drawn
+    /// wherever the cursor happens to be and is not the whole screen, so the screen is under no
+    /// obligation to look like it.
+    /// </summary>
+    internal bool IsPinned => _fixedWidth > 0;
 
     /// <summary>
     /// How many rows a scrolling list may use: what is left of the frame minus room for the chrome,
@@ -187,6 +196,8 @@ public partial class Surface
         {
             _terminal.Write(_stringBuilder.ToString());
         }
+
+        _check?.FrameBuilt(this);
     }
 
     /// <summary>
