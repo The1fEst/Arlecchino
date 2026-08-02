@@ -1,7 +1,7 @@
 ---
 title: Testing
 sidebar_label: Testing
-description: ArlecchinoTestHost, FakeTerminal and FrameText — driving an application headlessly and asserting on the frame it drew.
+description: ArlecchinoTestHost, ScreenGrid, FakeTerminal and FrameText — driving an application headlessly and asserting on the screen it left.
 ---
 
 # Testing
@@ -44,11 +44,24 @@ It builds the container exactly as `AddArlecchino` would, minus the hosted servi
 
 | Member | Use |
 |---|---|
-| `Frame()` | Draws a frame and returns it as plain text, styling stripped |
+| `Frame()` | Draws a frame and returns **what is on screen** afterwards, styling stripped |
 | `FrameLines()` | The same, as rows |
+| `Screen` | The screen itself, as a [`ScreenGrid`](#screengrid) — cells, styles and the cursor |
 | `FrameContains(text)` | Whether a frame holds some text anywhere — text split across rows will not be found |
 | `FrameLineContaining(text)` | The first row holding some text, which is how a test reads what was drawn beside a label |
 | `Styles()` | The colour sequences in the frame, in order |
+
+:::note[What a frame writes and what it leaves are not the same thing]
+
+Frames are written as [the difference from the last one](rendering.md#what-a-frame-costs): an idle
+frame writes nothing at all, and a frame that changed one cell writes one cell. `Frame()` draws that
+way — the path a running application takes — and then returns the **screen**, so an assertion reads
+the whole picture however little of it was written.
+
+`Styles()` is the exception: it draws a whole frame on purpose, because a diffed frame only restates
+the colours of the cells it rewrote.
+
+:::
 
 ### Reaching inside
 
@@ -62,6 +75,45 @@ Colour is pinned to `ColorSupport.TrueColor` as the host is built, so a build ag
 `NO_COLOR` does not quietly strip the styling a test asserts on. Set `TerminalCapabilities.Color`
 after building to test another level — and remember it is
 [process-wide](theming.md#swapping-the-palette).
+
+:::
+
+## ScreenGrid
+
+The screen a terminal would be holding, rather than the bytes that got it there: a grid that output is
+applied to, obeying the escapes instead of stripping them. A cursor jump moves the cursor, a style
+sticks to the cells that follow, a wide symbol takes two columns.
+
+```csharp
+app.Press(ConsoleKey.DownArrow);
+app.Frame();
+
+Assert.Equal("Widebody kit", app.Screen.Line(3).Trim());
+Assert.Equal(Theme.Selected.Ansi, app.Screen.StyleAt(3, 2));
+```
+
+| Member | Use |
+|---|---|
+| `Line(row)` / `Lines()` | A row, or every row, as it reads |
+| `CellAt(row, column)` | The symbol on a cell — empty for the second half of a wide one |
+| `StyleAt(row, column)` | The style in force on a cell; compare against `TermColor.Ansi` |
+| `CursorRow` / `CursorColumn` | Where the cursor was left |
+| `IsCursorVisible` | Whether it was left showing |
+| `Matches(other)` | Whether two screens hold the same symbols in the same styles |
+| `Apply(output)` | Applies more output; `Resize(width, height)` keeps what fits |
+
+A symbol written into the last column while wrapping is on leaves `CursorColumn` one past the right
+edge, waiting to wrap — which is what a terminal reports too.
+
+:::tip[The screen is held against the frame on every draw]
+
+Every frame built against a `FakeTerminal` is compared, cell by cell, with what the surface composed:
+same symbol, same style. A difference means the frame written left something on screen that the frame
+drawn did not have, and the draw throws with both pictures in the message.
+
+It costs a pass over the cells and no second render, and it applies to a bare `Surface` over a
+`FakeTerminal` as much as to the host — so a widget of your own that draws outside its region, or
+draws differently the second time, is caught by whichever test happens to draw it twice.
 
 :::
 
@@ -93,6 +145,12 @@ The terminal underneath records what an application asked of it, which is how th
 | `Copied` | The last text copied |
 | `Width` / `Height` | Assigning simulates a resize |
 | `Enqueue`, `EnqueueText`, `EnqueueMouse` | Queue input the way a real terminal delivers it |
+| `Screen` | What is on screen, surviving `Clear()` the way a real screen survives forgetting what you typed |
+
+`EnqueueText` names the key where a console names it: Enter, Tab, Backspace, the space bar, a letter,
+a digit and a control chord all arrive carrying their `ConsoleKey`, because that is what
+`Console.ReadKey` hands an application. Escape sequences still arrive a character at a time, which is
+the other shape a console produces — the one the reader has to make sense of on its own.
 
 ```csharp
 app.Terminal.Width = 40;
@@ -177,6 +235,20 @@ dotnet test tests/Arlecchino.Tests -f net8.0
 
 In this repository `ProbeView` / `OtherView` also keep the [source generator](source-generator.md)
 under test: the routes they produce are used by the navigation tests.
+
+### Held against a real terminal
+
+`ScreenGrid` and the code that writes the frames were written by the same head, so a wrong idea about
+the edge of a row or the width of a symbol would be held by both, cancel out, and leave every test
+green with the picture wrong. The repository settles that from outside: frames are played into a real
+`tmux` pane and the screen it ends up with is compared against the screen `ScreenGrid` ended up with —
+symbols, the colour of every cell, and where the cursor was left — and keys are pressed in a pane so
+the bytes a terminal really sends are the ones the reader is asked to make sense of. Both found real
+defects; `CONTRIBUTING.md` says how to run them.
+
+Terminals do not always agree with each other either. A wide symbol written into the last column with
+wrapping off is dropped by tmux and shifted a column inwards by kitty, and the emulator can only follow
+one of them — so where that is the case, the code says which and why nothing turns on it.
 
 ### Two corners tested differently
 
