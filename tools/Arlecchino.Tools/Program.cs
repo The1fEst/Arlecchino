@@ -15,6 +15,7 @@ internal static class Program
     private static Task<int> Main(string[] args) => args switch
     {
         ["keys", .. var rest] => Task.FromResult(Keys.Run(rest)),
+        ["live", .. var rest] => Task.FromResult(Live.Run(rest)),
         ["oracle", .. var rest] => Task.FromResult(Oracle.Run(rest)),
         ["pack", .. var rest] => Task.FromResult(Pack.Run(rest)),
         ["ship", .. var rest] => Ship.Run(rest),
@@ -26,6 +27,7 @@ internal static class Program
         Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- <tool> [arguments]");
         Console.WriteLine();
         Console.WriteLine("  keys [name]       compare what a real terminal sends against what is read");
+        Console.WriteLine("  live [options]    run an application in a real terminal and see it give it back");
         Console.WriteLine("  oracle [name]     compare the screen the frames leave against a real terminal");
         Console.WriteLine("  pack              build the three packages into the local feed");
         Console.WriteLine("  ship <version>    prepare a release: version, public API, validation baseline");

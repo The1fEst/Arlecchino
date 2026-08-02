@@ -30,6 +30,7 @@ is named by the first argument:
 dotnet run --project tools/Arlecchino.Tools -- pack
 dotnet run --project tools/Arlecchino.Tools -- oracle
 dotnet run --project tools/Arlecchino.Tools -- keys
+dotnet run --project tools/Arlecchino.Tools -- live
 dotnet run --project tools/Arlecchino.Tools -- ship 3.1.0
 ```
 
@@ -52,6 +53,13 @@ and analysed with everything else — a script beside the repository is checked 
   bytes it really produced off the pty, and hands them to the reader — along with what
   `Console.ReadKey` made of the same press, which is the shape an application actually meets. Also
   needs `tmux`.
+- **`live`** runs a whole application in a pane and holds it to what a terminal application owes the
+  person who started it: take the screen, draw on it, give it back as it was found. The fake terminal
+  records taking the screen as a flag being set, which is true whether or not the sequence that does it
+  was ever written, written correctly, or written back on the way out; tmux says whether the alternate
+  screen is really in force, whether the cursor is showing, whether the mouse was released, and the
+  shell underneath is still there to compare against. Runs the sample by default, `--app` for anything
+  else, `--keys "Down Tab"` to drive it. Also needs `tmux`.
 - **`ship`** prepares a release: it sets the version, moves the recorded public API from
   `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
   before it. Run it, read the diff, commit, tag.
