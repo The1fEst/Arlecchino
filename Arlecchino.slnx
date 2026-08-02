@@ -6,6 +6,9 @@
     <Project Path="samples/Arlecchino.Processes/Arlecchino.Processes.csproj" />
     <Project Path="samples/Arlecchino.Sample/Arlecchino.Sample.csproj" />
   </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="tools/Arlecchino.Tools/Arlecchino.Tools.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="benchmarks/Arlecchino.Benchmarks/Arlecchino.Benchmarks.csproj" />
     <Project Path="src/Arlecchino.Testing/Arlecchino.Testing.csproj" />

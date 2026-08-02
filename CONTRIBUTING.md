@@ -21,6 +21,34 @@ dotnet tool install --global JetBrains.ReSharper.GlobalTools
 jb inspectcode Arlecchino.slnx --severity=WARNING
 ```
 
+## The tools
+
+Everything the repository is maintained with lives in `tools/Arlecchino.Tools`, one file to a tool, and
+is named by the first argument:
+
+```bash
+dotnet run --project tools/Arlecchino.Tools -- pack
+dotnet run --project tools/Arlecchino.Tools -- oracle
+dotnet run --project tools/Arlecchino.Tools -- ship 3.1.0
+```
+
+It is a project in the solution rather than a folder of scripts so that the tools are built, inspected
+and analysed with everything else — a script beside the repository is checked by nothing.
+
+- **`pack`** builds the three packages into `artifacts/packages`. That local feed is how an application
+  is tried against a change before it is released; skip it and the application quietly keeps building
+  against the version on nuget.org.
+- **`oracle`** holds the screen the tests read frames back from against a real terminal. `ScreenGrid`
+  and the code that writes the frames were written by the same head, so a wrong idea about the edge of
+  a row or the width of a symbol would be held by both and cancel out, leaving every test green and the
+  picture wrong. This draws frames through the real `Surface`, plays what was written into a `tmux` pane
+  of the same size, and compares the screen tmux ended up with against the one `ScreenGrid` did, cursor
+  included. It needs `tmux` on `PATH`, and it is not part of the test run — run it after a change to
+  `ScreenGrid` or to how `Surface` writes a frame.
+- **`ship`** prepares a release: it sets the version, moves the recorded public API from
+  `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
+  before it. Run it, read the diff, commit, tag.
+
 ## What the build will insist on
 
 | Rule | Why |
