@@ -48,7 +48,12 @@ public sealed class ScreenGrid
     /// <summary>
     /// The column the cursor sits on, counted from the left. A symbol written into the last column
     /// while wrapping is on leaves it one past the right edge, waiting to wrap: the next symbol goes
-    /// to the row below, and a terminal asked where its cursor is answers the same way.
+    /// to the row below, and a terminal asked where its cursor is answers the same way — tmux and kitty
+    /// both do.
+    ///
+    /// With wrapping off they stop agreeing: the same symbol leaves the cursor in the last column for
+    /// tmux and one past it for kitty. Nothing visible turns on it, since with nowhere to wrap to the
+    /// next symbol lands in the last column either way; this follows tmux and says so.
     /// </summary>
     public int CursorColumn => Math.Min(_column, Width);
 

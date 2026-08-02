@@ -176,6 +176,11 @@ public sealed class ScreenGridTests
         Assert.Equal(4, grid.CursorColumn);
     }
 
+    /// <summary>
+    /// tmux's reading. kitty leaves the cursor one past the edge here as it does with wrapping on;
+    /// nothing visible turns on which, because with nowhere to wrap to the next symbol lands in the
+    /// last column either way.
+    /// </summary>
     [Fact]
     public void TheCursorStopsAtTheLastColumnWhenWrappingIsOff()
     {
