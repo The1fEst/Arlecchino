@@ -51,6 +51,11 @@ says so as `ARL004`. See [Source generator](source-generator.md) to put them som
 A view is a class implementing `IArlecchinoView`. Constructor parameters are resolved from the container:
 
 ```csharp
+using Arlecchino.Navigation;
+using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using MyApp.Navigation;
+
 public class DefaultView : IArlecchinoView
 {
     private readonly Surface _surface;
@@ -70,8 +75,13 @@ public class DefaultView : IArlecchinoView
 ```
 
 `Draw` is called once per frame, `Handle` gets every key the framework did not consume itself, and the
-route it returns navigates. `Hints` fills the box in the bottom-right corner. Details in
+route it returns navigates. `Hints` fills the box in the bottom-right corner. `HandleMouse`,
+`HandlePaste` and `Commands` have defaults, so a view implements only what it uses. Details in
 [Views and navigation](views-and-navigation.md) and [Rendering](rendering.md).
+
+The colours live in `Arlecchino.Rendering.Colors` and the surface in `Arlecchino.Rendering`; since
+`4.0` those are two namespaces rather than one, and it is the commonest thing to be missing a `using`
+for — see [Migrating to 4.0](migrating-to-4.0.md#namespaces-follow-their-folders).
 
 The `DefaultView` class name is what produces `ViewKind.Default`: the generator strips the `View`
 suffix. The view itself may live in any namespace — the generated factory imports whatever it needs.
@@ -121,9 +131,11 @@ It takes the framework from NuGet, the way an application of yours would.
 dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 ```
 
-Each panel is a [table](table.md); the menu behind `F9` is a [choice modal](modals.md) per section;
-copy, move and delete ask their questions as modals and then run off the drawing thread, reporting
-themselves as [notifications](state.md#notifications) with a bar and a key that stops them.
+Each panel is a [widget](widgets.md) of its own and each dialog is a [`Modal`](modals.md) of its own,
+which is how it wears a look the framework does not bring; the menu behind `F9` is one list per
+section. Copy, move and delete ask their questions as modals and then run off the drawing thread,
+reporting themselves as [notifications](diagnostics.md#work-that-takes-a-while) with a bar and a key
+that stops them.
 
 It runs without the output line, so the bottom row belongs to the screen's own status bar. Every
 screen renders headlessly as `--frame 132x26`, with `--keys` to play keys first and `--connect` to

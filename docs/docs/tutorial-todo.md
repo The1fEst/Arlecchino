@@ -43,6 +43,7 @@ away and back, and it is still there.
 ```csharp title="Tasks.cs"
 using System.Collections.Generic;
 using Arlecchino.Atoms;
+using Arlecchino.Atoms.Tracked;
 
 namespace Todo;
 
@@ -125,6 +126,7 @@ using Arlecchino.Input;
 using Arlecchino.Layout;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.State;
 using Arlecchino.Widgets.Lists;
 using Arlecchino.Widgets.Readouts;
@@ -296,11 +298,43 @@ dotnet run
 The same application can compose one frame and exit, which is how the picture at the top of this page
 was made — useful for a README, and for a check in CI that a screen still draws.
 
+The whole of it goes in `Program.cs`. The `--frame` check has to come before the host is built, since
+top-level statements run in the order they are written:
+
 ```csharp title="Program.cs"
+using System;
+using System.Threading;
+using Arlecchino;
+using Arlecchino.Hosting;
+using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Terminals;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Todo;
+using Todo.Navigation;
+
 if (args is ["--frame", ..])
 {
     Frame(args.Length >= 2 ? args[1] : "70x16");
     return;
+}
+
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services
+    .AddArlecchino(Configure)
+    .AddGeneratedViews()
+    .AddGeneratedStores()
+    .StartAt(ViewKind.Tasks);
+
+await builder.Build().RunAsync();
+
+static void Configure(ArlecchinoOptions options)
+{
+    options.MinimumWidth = 60;
+    options.MinimumHeight = 14;
+    options.ShowOutputLine = false;
 }
 
 static void Frame(string size)
@@ -336,12 +370,28 @@ static void Frame(string size)
 
     Console.WriteLine();
 }
+
+namespace Todo
+{
+    internal sealed class NoLifetime : IHostApplicationLifetime
+    {
+        public CancellationToken ApplicationStarted => CancellationToken.None;
+
+        public CancellationToken ApplicationStopping => CancellationToken.None;
+
+        public CancellationToken ApplicationStopped => CancellationToken.None;
+
+        public void StopApplication() { }
+    }
+}
 ```
 
 `WithoutHostedService` builds everything except the loop that would take over the terminal, and
-`DrawOnce` composes a single frame to stdout as ANSI text. A process started without a console of its
-own is told there is no colour, which is right for a log and wrong for a picture — that is what the
-first line overrides.
+`DrawOnce` composes a single frame to stdout as ANSI text. `NoLifetime` stands in for the one the host
+would have registered: nothing here is going to ask the application to stop.
+
+A process started without a console of its own is told there is no colour, which is right for a log and
+wrong for a picture — that is what the first line of `Frame` overrides.
 
 ```bash
 dotnet run -- --frame 76x18
@@ -354,5 +404,9 @@ dotnet run -- --frame 76x18
 - A second screen is another `IArlecchinoView` and a route the generator writes for you — see
   [Views and navigation](views-and-navigation.md).
 - Anything the list cannot express is a [widget](widgets.md) of your own: a class with
-  `Draw(SurfaceRegion)`, and `IArlecchinoInteractiveWidget` when it takes keys.
+  `Draw(SurfaceRegion)`, and `IArlecchinoInteractiveWidget` when it takes keys. A dialog of your own is
+  a [`Modal`](modals.md#a-dialog-of-your-own) in the same way.
+- Every label above is a literal, which is fine until the second one says the same thing differently.
+  A TOML file and the [localization generator](localization.md#text-with-a-name) turn each into a name
+  the compiler checks — worth doing before there are twenty of them.
 - [Showcase](showcase.md) is the larger version of all of this.
