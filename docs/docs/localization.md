@@ -1,10 +1,91 @@
 ---
 title: Localization
 sidebar_label: Localization
-description: ArlecchinoStrings and why no user-visible text is hardcoded.
+description: The localization generator that gives every string a name, ArlecchinoStrings for the framework's own chrome, and why no user-visible text is hardcoded.
 ---
 
 # Localization
+
+There are two halves to this. The application's own text gets a name from the
+[localization generator](#text-with-a-name); the framework's chrome is translated through
+[`ArlecchinoStrings`](#the-frameworks-own-words). Both exist for the same reason, which is that a
+sentence typed twice is a sentence that will one day disagree with itself.
+
+## Text with a name
+
+Text written in the place it is drawn gets written twice — the same sentence in a dialog and in the log
+line that follows it — and the day one of them is reworded the two quietly disagree. Put the text in a
+TOML file instead, and a generator turns it into a name the compiler checks. Translation comes free of
+the same machinery, but one language is reason enough to do it.
+
+```toml
+# Localization/Localization.toml
+[localization]
+language = "en"
+
+[strings]
+Copy = "Copy"
+CopyManyTitle = "Copy {0} items"
+Overwrite = "{0} already exists"
+```
+
+Hand the folder to the compiler, and nothing else:
+
+```xml
+<ItemGroup>
+  <AdditionalFiles Include="Localization\*.toml" />
+</ItemGroup>
+```
+
+What comes out is an enum with one name per entry and a static `Localization` class that resolves it.
+A `using static` at the top of a file is all a call site needs:
+
+```csharp
+using static MyApp.Localization;
+
+Title = sources.Count == 1 ? Loc(LocString.Copy) : Loc(LocString.CopyManyTitle, sources.Count);
+```
+
+`Loc(key)` is the text; `Loc(key, arguments)` fills in its `{0}` placeholders through
+`string.Format`. Each entry carries the default text in its XML doc, so hovering `LocString.Copy` in an
+editor shows what it says without opening the file.
+
+### Translations
+
+Every other TOML file in the folder is a translation of the default, named by its own `language`:
+
+```toml
+# Localization/Localization.ru.toml
+[localization]
+language = "ru"
+
+[strings]
+Copy = "Копировать"
+CopyManyTitle = "Копировать {0} объектов"
+```
+
+`Localization.Language` decides which is drawn and starts at the closest match to the machine's own
+`CurrentUICulture` — `ru-RU` finds `ru` — falling back to the default when there is nothing near. Set
+it at runtime and the next frame is in the new language; nothing is rebuilt, because resolving is a
+`switch` over a closed set rather than a dictionary anyone has to reload.
+
+| The generator says | When |
+|---|---|
+| `ARL021` error | A file could not be read |
+| `ARL022` error | No file claims to be the default |
+| `ARL023` error | A translation has a string the default does not, so nothing would ever ask for it |
+| `ARL024` info | A translation is missing a string, and the default is drawn there instead |
+
+A missing string is information rather than an error on purpose: a half-finished translation should
+show English where it has nothing to say, not stop the build or leave a hole on the screen.
+
+### Where it lands
+
+The enum and the resolver go in `RootNamespace`, or `Localization` when that is empty.
+`ArlecchinoLocalizationFolder` moves the folder it reads (`Localization` by default) and
+`ArlecchinoLocalizationLanguage` says which language is the default (`en`).
+
+## The framework's own words
 
 The framework never hardcodes user-visible text at a call site. Every string it draws is a delegate on
 `ArlecchinoStrings` with an English default, so an application can translate all of the chrome — and

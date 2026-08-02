@@ -29,6 +29,7 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 | `Items` | The rows, read fresh every frame |
 | `Render` | Turns an item into the line that is drawn |
 | `ItemStyle` | Optional per-row style |
+| `PaintRow` | Optional: draws the row itself, for rows that are not one colour |
 | `OnActivate` | Runs on `Confirm` or a second click; returns a route |
 | `Selected` / `SelectedIndex` | Where the cursor is |
 | `IsFocused` | Set by the [focus ring](focus.md) |

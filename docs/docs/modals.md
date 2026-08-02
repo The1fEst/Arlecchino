@@ -26,6 +26,7 @@ description: Every dialog that ships — text, password, number, slider, toggle,
 | `TimeModal` | An `hh:mm` field edited per segment | `Action<TimeOnly>` |
 | `ColorModal` | Hue / saturation / lightness sliders under a live swatch | `Action<Rgb>` |
 | `CommandModal` | The [command palette](commands.md#the-command-palette), opened by the input router | — |
+| Your own | [Whatever the application draws and reads for itself](#a-dialog-of-your-own) | Whatever it decides |
 
 If you are coming from HTML inputs: `text`, `password`, `email` and `url` are all `TextModal`, `number`
 is `NumberModal`, `range` is `SliderModal`, `checkbox` is `ToggleModal` for one flag and
@@ -297,6 +298,80 @@ visible rather than hidden behind the top box. `State.Modals` is the stack itsel
 Modals draw last, on top of the view, and suppress the hints box while open. All chrome text — hints,
 `nothing matches`, `Yes` / `No`, the filter prefix, the validation messages — comes from
 [`ArlecchinoStrings`](localization.md).
+
+## A dialog of your own
+
+The dialogs above know what a number looks like and what a choice looks like. An application with a
+look of its own wants neither, and the answer is not a second slot beside `Modal` — two things that
+both take every key will disagree about which of them has it. Derive from `Modal` instead: the kinds
+the framework brings are nothing more than its first few subclasses, and one you write is the next.
+
+```csharp
+public sealed class ConfirmModal : Modal
+{
+    public required string Question { get; init; }
+
+    public required Action<bool> OnAnswer { get; init; }
+
+    public override void Draw(ModalFrame frame)
+    {
+        var box = frame.Screen.Rows(frame.Height / 3, 3);
+
+        box.Fill(Theme.Selected);
+        box.WriteLine(0, Question, Theme.Header, Align.Center);
+        box.WriteLine(2, "y / n", Theme.Muted, Align.Center);
+
+        Box = box;
+    }
+
+    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    {
+        if (key.Key is not (ConsoleKey.Y or ConsoleKey.N))
+        {
+            return;
+        }
+
+        frame.Close();
+        OnAnswer(key.Key == ConsoleKey.Y);
+    }
+}
+
+state.Modal = new ConfirmModal { Title = "Careful", Question = "Delete it?", OnAnswer = Delete };
+```
+
+`Handle` gets every key while it is on top — including `Esc`, so closing is the dialog's job — and
+`HandleMouse` is there to override when clicks matter. Everything else — where it sits in the stack,
+that it draws last, that the view behind it keeps running — is the framework's, exactly as for the
+dialogs that ship.
+
+### What a dialog is handed
+
+A dialog is a value: an application writes `new ConfirmModal { … }` and hands it over, so there is no
+constructor to give it a keymap or a clipboard. It is given them when it is asked to do something,
+through `ModalFrame`:
+
+| Member | What it is for |
+|---|---|
+| `Screen`, `Width`, `Height` | The whole frame, so the dialog decides its own size and place |
+| `Strings`, `Keymap`, `Keys` | The [words](localization.md) and the [keys](keyboard.md) this application was started with |
+| `Close()` | Closes the dialog on top, which while it is being handled is this one |
+| `Copy(text)` | Puts text on the clipboard |
+| `Centered(width, height)` | A box of that size in the middle, never off the edge |
+| `Box(title, body, footer)` | The titled box every dialog that ships is drawn through |
+| `Depth` | How many dialogs are already open underneath |
+
+Set `Box` to whatever region you drew in: it is what tells a click on the dialog from a click outside.
+Drawing through `frame.Box` sets it for you and gives the same border, the same title in the top edge
+and the same hints under a rule as the rest — which is what makes a dialog you wrote read as part of
+the same application:
+
+```csharp
+public override void Draw(ModalFrame frame) =>
+    (Box, _) = frame.Box(
+        Title,
+        [[new Piece(Question, Theme.Default)]],
+        "y confirms · n cancels");
+```
 
 ## Mouse
 

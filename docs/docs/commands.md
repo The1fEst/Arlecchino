@@ -70,13 +70,23 @@ public IReadOnlyList<ViewCommand> Commands() =>
 |---|---|
 | `Binding` | The key |
 | `Label` | A delegate, so the text follows the current [language](localization.md) |
-| `IsEnabled` | Optional; a disabled command is greyed in the palette |
+| `IsEnabled` | Optional; a disabled command is greyed in the palette and lets its key through |
 | `Run` | Returns a route, so a command can navigate |
 | `ViewCommand.For(key, label, action)` | Wraps an `Action` for a command that stays put |
 | `ViewCommand.Navigating(key, label, route)` | Wraps a command whose whole job is to navigate |
 
-A disabled command **swallows** its key rather than letting it fall through — the key is spoken for
-either way, and a screen does not change behaviour depending on whether a row happens to be selected.
+A disabled command is **skipped**, and its key carries on to the commands available everywhere and then
+to the view's own `Handle`, as if nothing had claimed it. `IsEnabled` says the command is unavailable,
+not that the key is spoken for: a view that binds `Esc` to "stop what is running" still wants `Esc` to
+leave a search while nothing is running. To claim the key regardless, bind it and do nothing rather
+than disable it.
+
+:::note[This changed in 4.0]
+
+Until `4.0` a disabled command swallowed its key. See
+[Migrating to 4.0](migrating-to-4.0.md#a-disabled-command-lets-its-key-through).
+
+:::
 
 `Hints()` is optional for a view with commands: when it returns nothing, the hints box is built from
 the command list, so a rebound key relabels itself there too.

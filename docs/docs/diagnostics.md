@@ -75,15 +75,76 @@ _state.Notifications.Notify("could not reach the server", NotificationLevel.Fail
 | Member | Meaning |
 |---|---|
 | `Notify(text, level)` | Says something; the newest line replaces whatever the output row was showing |
-| `Clear()` | Throws everything away, the output row included |
+| `Raise(entry)` | Says something that carries more than a line, and hands the entry back to keep |
+| `Settle(entry, text, level)` | Turns a line that was reporting work into what came of it, in place |
+| `Withdraw(entry)` | Takes one entry back, for work whose line is not worth keeping at all |
+| `Entries` | Everything still held, newest first |
+| `Current` | The line the output row shows, or `null` once it has timed out |
+| `Recent` | Everything worth showing right now: still running, or ended recently |
+| `Clear()` | Throws everything away, the output row included — except work still running |
 | `Capacity` | How many are kept; 200 by default |
 
 `NotificationLevel` is `Information`, `Warning` or `Failure`, and decides the colour. `Ctrl+N`, or a
-click on the output row, opens `Routes.Notifications`: newest first, `Backspace` clears, `Esc` goes
-back.
+click on the output row, opens `Routes.Notifications`: newest first, `Enter` opens the entry in full,
+`Backspace` clears, `Esc` goes back.
 
 Both timeouts are counted by the [`Ticker`](frame-loop.md#work-on-a-clock) — nothing here runs on a
 thread of its own.
+
+### Work that takes a while
+
+A copy of four hundred files is not one message. Build the entry yourself and give it a `Progress`,
+which is read every frame, and a `Share` between `0` and `1` for the bar drawn beside it:
+
+```csharp
+var entry = _state.Notifications.Raise(
+    new(DateTimeOffset.Now, NotificationLevel.Information, "Copying")
+    {
+        Progress = () => $"Copying {copy.Done} of {copy.Total}",
+        Share = () => copy.Done / (double)copy.Total,
+        Detail = () => string.Join('\n', copy.Failures),
+        Actions = [new(() => "Stop", copy.Cancel)],
+    });
+```
+
+While `Progress` is set and the work has not been settled the entry `IsRunning`: it stays on the output
+row past `NotificationTimeout`, is never expired by `NotificationLifetime`, and survives `Clear()` — a
+copy does not stop because its line was cleared.
+
+`Settle` ends it in place. The entry keeps its spot and its identity, so a dialog someone already has
+open turns from "copying" into what was copied rather than going stale, and it starts ageing from the
+moment it finished rather than the moment it began:
+
+```csharp
+_state.Notifications.Settle(entry, $"Copied {copy.Done} files", NotificationLevel.Information);
+```
+
+`Detail` is the whole story shown when the entry is opened — the errors a copy collected, the output of
+a command — and `Actions` are `NotificationAction(Label, Run)` offers made alongside it. Settling
+clears the actions, since stopping something that is over is not an offer worth making.
+
+### Showing more than the newest line
+
+`Current` answers what one row at the bottom of the screen should say, and one row can only hold the
+newest. An application that shows its work as a stack of cards in the corner wants all of it, and wants
+a copy that is still going to stay up however long it takes. That is `Recent`, newest first: everything
+still running whatever its age, plus everything that ended within `NotificationTimeout`.
+
+```csharp
+foreach (var entry in _state.Notifications.Recent)
+{
+    card.WriteLine(0, entry.Line, entry.Loudness switch
+    {
+        NotificationLevel.Failure => Theme.Error,
+        NotificationLevel.Warning => Theme.Warning,
+        _ => Theme.Default,
+    });
+}
+```
+
+`Line` is the single line to draw — what came of the work, what is happening now, or what was said, in
+that order — `Loudness` is the level it turned out to be rather than the one it was raised as, and
+`Filled()` is how full a bar for it should be, or `null` when there is nothing to draw.
 
 ## A report to attach to a bug
 

@@ -90,7 +90,7 @@ private readonly Picture _preview = new() { Protocol = ImageProtocol.Blocks };
 ## What the terminal was asked
 
 Before the first frame the framework asks the terminal what it can do — see
-[`TerminalProbe`](api/arlecchino.rendering/TerminalProbe.md) — and the answers are in
+[`TerminalProbe`](api/arlecchino.rendering.terminals/TerminalProbe.md) — and the answers are in
 `TerminalCapabilities`. A terminal that says nothing costs the wait and leaves every setting as it
 was.
 

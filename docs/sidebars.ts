@@ -60,6 +60,8 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Releases',
       items: [
+        'whats-new-in-4.0',
+        'migrating-to-4.0',
         'whats-new-in-3.0',
         'migrating-to-3.0',
         'whats-new-in-2.0',

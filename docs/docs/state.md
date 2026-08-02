@@ -51,6 +51,11 @@ back.
 _state.Notifications.Notify("could not reach the server", NotificationLevel.Failure);
 ```
 
+That is the whole of it for a message that fits on a line. Work that takes a while reports its own
+progress and then settles into what came of it, and an application that shows its work as a stack of
+cards rather than one row reads `Notifications.Recent` instead of `Current` — see
+[Diagnostics](diagnostics.md#work-that-takes-a-while).
+
 Both timeouts and the key that opens the screen are set in one call — see
 [Hosting and options](hosting-and-options.md):
 

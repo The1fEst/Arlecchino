@@ -87,7 +87,7 @@ does not have.
 
 | Page | What it covers |
 |---|---|
-| [Localization](localization.md) | `ArlecchinoStrings` and why no user-visible text is hardcoded |
+| [Localization](localization.md) | The generator that gives every string a name, and `ArlecchinoStrings` for the chrome |
 | [Diagnostics](diagnostics.md) | The log overlay, notifications, and the report to attach to a bug |
 | [Testing](testing.md) | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` |
 | [Packages and building](packages-and-building.md) | What ships in which package, versioning, CI, benchmarks |
@@ -96,6 +96,10 @@ does not have.
 
 | Page | What it covers |
 |---|---|
+| [What's new in 4.0](whats-new-in-4.0.md) | Every string gets a name, a dialog draws itself, namespaces follow their folders |
+| [Migrating to 4.0](migrating-to-4.0.md) | The `using` lines a `3.x` application needs, and one quiet behaviour change |
+| [What's new in 3.0](whats-new-in-3.0.md) | Pictures, a terminal that is asked what it can do, panes that share a line |
+| [Migrating to 3.0](migrating-to-3.0.md) | The five members `2.x` lost, all of them about typing |
 | [What's new in 2.0](whats-new-in-2.0.md) | The three breaking changes, and what came with them |
 | [Migrating to 2.0](migrating-to-2.0.md) | The edits an application written against `1.x` needs |
 | [API reference](api/index.md) | Every public type, generated from the assemblies |
@@ -104,10 +108,23 @@ does not have.
 
 | Assembly | Namespaces | Contents |
 |---|---|---|
-| `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input`, `Arlecchino.Atoms` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal`, the atoms — the renderer, no DI |
+| `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input`, `Arlecchino.Atoms` | `Surface`, `SurfaceRegion`, `Atom`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI |
 | `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.Modals`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
 | `Arlecchino.Testing` | `Arlecchino.Testing` | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` — the headless host for tests |
 | `Arlecchino.Generators` | — | the incremental generator, shipped inside the `Arlecchino` package |
+
+Four of those namespaces hold enough to be worth dividing, and since `4.0.0` the divisions are real
+namespaces rather than folders nobody outside the repository can see:
+
+| Namespace | Divided into |
+|---|---|
+| `Arlecchino.Modals` | `.Asking` (text, number), `.Choosing` (choice, palette), `.Setting` (slider, toggle, colour, date, time), `.Telling` (message, notification) |
+| `Arlecchino.Widgets` | `.Lists` (list, table, tree, tabs, scrolling), `.Pictures`, `.Readouts` (charts, indicators, status bar, text view) |
+| `Arlecchino.Rendering` | `.Colors` (theme, palette, colour types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
+| `Arlecchino.Atoms` | `.Local`, `.Tracked`, `.Collections` |
+
+What each of them keeps is the vocabulary every file reaches for anyway: `Modal` and `ModalFrame`,
+`Surface` and `SurfaceRegion`, `Margin` and `Align`, `Atom` and the store interfaces.
 
 What changed between versions is in the
 [changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md).

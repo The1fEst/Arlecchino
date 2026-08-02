@@ -6,11 +6,13 @@ description: How ViewKind, the view factory and the store, command and widget re
 
 # Source generator
 
-`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds four
+`Arlecchino.Generators` ships inside the `Arlecchino` package as `analyzers/dotnet/cs` and holds five
 incremental generators. They write one file each into the project that references the package:
 `ArlecchinoViewNavigation.g.cs` for the routes and the view factory,
-`ArlecchinoStoreRegistration.g.cs` for the stores, and `ArlecchinoCommandRegistration.g.cs` for the
-application commands. All three land in the same namespace.
+`ArlecchinoStoreRegistration.g.cs` for the stores, `ArlecchinoCommandRegistration.g.cs` for the
+application commands, and `ArlecchinoWidgetRegistration.g.cs` for the widgets. All four land in the
+same namespace. The fifth reads files rather than code and is covered under
+[Localization](localization.md#text-with-a-name).
 
 ## What it looks for
 
@@ -250,6 +252,8 @@ The package's `build/Arlecchino.props` marks these properties compiler-visible; 
 | `ArlecchinoGenerateStores` | Set to `false` to emit no store registration |
 | `ArlecchinoGenerateWidgets` | Set to `false` to emit no widget registration |
 | `ArlecchinoGenerateCommands` | Set to `false` to emit no command registration |
+| `ArlecchinoLocalizationFolder` | Which folder holds the [localization](localization.md#text-with-a-name) files; `Localization` unless set |
+| `ArlecchinoLocalizationLanguage` | Which of them is the default the rest translate; `en` unless set |
 
 ```xml
 <PropertyGroup>
@@ -274,6 +278,10 @@ The generator says something instead of quietly doing the wrong thing:
 | `ARL005` | Warning | A store implements `IArlecchinoStore` but has no public constructor, so it is left out of `AddGeneratedStores()` |
 | `ARL006` | Warning | A command implements `IArlecchinoCommand` but has no public constructor, so it is left out of `AddGeneratedCommands()` |
 | `ARL007` | Info | A widget cannot be registered — generic, no public constructor, or `required` members — and is left out of `AddGeneratedWidgets()` |
+| `ARL021` | Error | A localization file could not be read — the message says what is wrong with it |
+| `ARL022` | Error | No localization file says it is the default; one must set `language` to `ArlecchinoLocalizationLanguage` |
+| `ARL023` | Error | A translation has a string the default does not, so nothing would ever ask for it |
+| `ARL024` | Info | A translation is missing a string; the default is drawn there instead |
 
 Whether a constructor parameter is actually registered in the container is not something the generator
 can see; that surfaces at startup as the usual `InvalidOperationException` from the provider.
