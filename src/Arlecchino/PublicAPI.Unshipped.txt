@@ -1,4 +1,5 @@
 #nullable enable
+Arlecchino.Diagnostics.Notifications.Recent.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
 Arlecchino.Modals.CustomModal
 Arlecchino.Modals.CustomModal.CustomModal() -> void
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?

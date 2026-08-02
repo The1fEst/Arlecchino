@@ -171,6 +171,28 @@ public sealed class Notifications
     }
 
     /// <summary>
+    /// What is worth showing right now, newest first: everything still running, and everything that
+    /// ended recently enough not to have timed out yet.
+    ///
+    /// <see cref="Current"/> answers the same question for one row at the bottom of the screen, which
+    /// can only hold the newest. An application that shows its work as a stack of cards rather than a
+    /// line wants all of them, and wants a copy that is still going to stay on screen however long it
+    /// takes — which is why running work is here whatever its age.
+    /// </summary>
+    public IReadOnlyList<Notification> Recent
+    {
+        get
+        {
+            var cutoff = _time.GetUtcNow() - _options.NotificationTimeout;
+            var showing = Kept(entry => entry.IsRunning || entry.Since > cutoff);
+
+            showing.Reverse();
+
+            return showing;
+        }
+    }
+
+    /// <summary>
     /// How many messages to keep at most, however young they are. A list bounded only by time grows
     /// without limit when something reports in a loop, so the oldest fall off once this many are held.
     /// </summary>

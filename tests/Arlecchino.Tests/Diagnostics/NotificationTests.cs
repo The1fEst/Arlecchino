@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
@@ -290,6 +291,42 @@ public sealed class NotificationTests
         app.State.Notifications.Withdraw(entry);
 
         Assert.Empty(app.State.Notifications.Entries);
+    }
+
+    [Fact]
+    public void WhatIsWorthShowingIsEverythingRunningAndWhateverEndedLately()
+    {
+        using var app = new TestApplication();
+
+        app.State.Notifications.Notify("saved");
+
+        var copying = app.State.Notifications.Raise(Running(static () => "copying"));
+
+        Assert.Equal(["copying", "saved"], Lines(app));
+
+        app.Advance(app.Options.NotificationTimeout + TimeSpan.FromSeconds(1));
+
+        Assert.Equal(["copying"], Lines(app));
+
+        app.State.Notifications.Settle(copying, "Copied 9 files");
+
+        Assert.Equal(["Copied 9 files"], Lines(app));
+
+        app.Advance(app.Options.NotificationTimeout + TimeSpan.FromSeconds(1));
+
+        Assert.Empty(app.State.Notifications.Recent);
+    }
+
+    private static string[] Lines(TestApplication app)
+    {
+        var lines = new List<string>();
+
+        foreach (var entry in app.State.Notifications.Recent)
+        {
+            lines.Add(entry.Line);
+        }
+
+        return [.. lines];
     }
 
     private static Notification Running(Func<string> progress) =>
