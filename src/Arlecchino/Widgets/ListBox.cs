@@ -36,6 +36,14 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
+    /// Draws a row itself, for a list whose rows are not one colour: a file name beside a size beside
+    /// a date, each in its own. Given one row of the list to fill and told whether the cursor is on it;
+    /// <see cref="Render"/> and <see cref="ItemStyle"/> are not consulted when this is set, and what is
+    /// left unwritten keeps whatever was behind it.
+    /// </summary>
+    public Action<SurfaceRegion, T, bool>? PaintRow { get; init; }
+
+    /// <summary>
     /// What confirming an item does. Returning a route navigates; without this the list simply reports
     /// the key as handled.
     /// </summary>
@@ -86,6 +94,15 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
             }
 
             var item = Items[index];
+
+            if (PaintRow is not null)
+            {
+                PaintRow(region.Rows(row, 1).Inset(new Margin(0, 0, region.Width - textWidth, 0)), item,
+                    index == Selected);
+
+                continue;
+            }
+
             var text = TextWidth.PadRight(TextWidth.Truncate(Render(item), textWidth), textWidth);
 
             region.Write(row, 0, text, StyleOf(item, index));

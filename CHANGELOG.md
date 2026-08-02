@@ -9,6 +9,28 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Added
+
+- **`ListBox<T>.PaintRow`**, for a list whose rows are not one colour. `Render` and `ItemStyle` write a
+  row as one string in one style, which is right for most lists and wrong for any where a name, a size
+  and a date each want their own. Set this instead and the list hands over one row of itself to draw
+  in, having already worked out the scrolling, the wheel and the clicks:
+
+  ```csharp
+  var files = new ListBox<FileEntry>(keymap)
+  {
+      Render = static entry => entry.Name,
+      PaintRow = (row, entry, chosen) =>
+      {
+          row.Fill(chosen ? Theme.ActiveSelected : Theme.Default);
+          row.Write(0, 0, entry.Name, chosen ? Theme.ActiveSelected : Theme.Accent);
+          row.WriteLine(0, Sizes.Brief(entry.Size), Theme.Muted, Align.Right);
+      },
+  };
+  ```
+
 ## 3.1.0
 
 Everything here is in `Arlecchino.Testing`. A test used to read the bytes a frame wrote; now it reads

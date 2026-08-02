@@ -1,1 +1,3 @@
 #nullable enable
+Arlecchino.Widgets.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?
+Arlecchino.Widgets.ListBox<T>.PaintRow.init -> void
