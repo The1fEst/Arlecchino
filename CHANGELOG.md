@@ -9,6 +9,63 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 3.1.0
+
+Everything here is in `Arlecchino.Testing`. A test used to read the bytes a frame wrote; now it reads
+the screen those bytes left, and the two are not the same thing — frames are written as the difference
+from the last one.
+
+### Added
+
+- **`ScreenGrid`**, the screen a terminal would be holding rather than the bytes that got it there.
+  Where `FrameText` strips escapes out of what was written, this obeys them: a cursor jump moves the
+  cursor, a style sticks to the cells that follow, a wide symbol takes two columns, and a graphics
+  payload is stepped over instead of being spelled out.
+
+  ```csharp
+  app.Press(ConsoleKey.DownArrow);
+  app.Frame();
+
+  Assert.Equal("Widebody kit", app.Screen.Line(3).Trim());
+  Assert.Equal(Theme.Selected.Ansi, app.Screen.StyleAt(3, 2));
+  ```
+
+  It reaches a test as `ArlecchinoTestHost.Screen` and `FakeTerminal.Screen`, and it survives
+  `Clear()` the way a real screen survives forgetting what you typed. `Matches` compares two screens by
+  symbol and by style, `CursorRow` and `CursorColumn` say where the cursor was left, and `Apply` and
+  `Resize` are there for a test driving it directly.
+
+  The screen this emulates was held against real terminals rather than against its author's idea of
+  one: frames are played into a `tmux` pane and compared cell by cell, colour and all, and the corners
+  where terminals disagree with each other are named in the documentation instead of being guessed at.
+
+### Changed
+
+- **Every frame drawn against a `FakeTerminal` is held against the frame that was composed**, cell by
+  cell, symbol and style. A difference means the writing left something on screen that the drawing did
+  not have, and the frame throws with both pictures in the message.
+
+  This is the whole reason the screen exists. An idle frame writes nothing and a frame that changed one
+  cell writes one cell, so what was written says nothing about what is on screen — and a test that only
+  ever asks what was written cannot see a difference that failed to go out. **A widget of your own that
+  draws outside its region, or draws differently the second time, will now fail whichever test happens
+  to draw it twice.** It costs a pass over the cells and no second render.
+
+- **`ArlecchinoTestHost.Frame()` draws the way a running application does** — as the difference from
+  the last frame — and returns the screen afterwards rather than the text of what went out. A test that
+  draws a single frame reads exactly what it read before; a test that draws several now reads the whole
+  picture instead of the handful of cells that changed. `Styles()` still draws whole frames, because a
+  diffed frame only restates the colours of the cells it rewrote.
+
+- **`FakeTerminal.EnqueueText` names the key where a console names it.** Enter, Tab, Backspace, the
+  space bar, a letter, a digit and a control chord now arrive carrying their `ConsoleKey`, because that
+  is what `Console.ReadKey` hands an application; they used to arrive as a bare character with no key,
+  which is a shape no terminal produces. Escape sequences still arrive a character at a time — the
+  other shape a console produces, and the one the reader has to make sense of on its own.
+
+  This was found by pressing every key in a real terminal and reading the bytes off the pty. A test
+  asserting that a typed `'a'` carries no key needs updating; nothing in this repository did.
+
 ## 3.0.0
 
 ### Added
