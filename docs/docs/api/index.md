@@ -26,5 +26,5 @@ place to look a member up.
 | [Arlecchino.Navigation](arlecchino.navigation/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Rendering](arlecchino.rendering/index.md) | `Arlecchino.Core` | 21 |
 | [Arlecchino.State](arlecchino.state/index.md) | `Arlecchino` | 3 |
-| [Arlecchino.Testing](arlecchino.testing/index.md) | `Arlecchino.Testing` | 5 |
+| [Arlecchino.Testing](arlecchino.testing/index.md) | `Arlecchino.Testing` | 6 |
 | [Arlecchino.Widgets](arlecchino.widgets/index.md) | `Arlecchino` | 21 |

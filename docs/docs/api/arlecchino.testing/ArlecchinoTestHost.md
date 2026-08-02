@@ -30,6 +30,7 @@ public sealed class ArlecchinoTestHost : IDisposable
 | [`Navigator`](#navigator) | Navigation, for checking or forcing which view is current. |
 | [`Options`](#options) | The settings, for changing them after the application is built. |
 | [`Repaint`](#repaint) | The repaint flag, for checking that something actually asked for a frame. |
+| [`Screen`](#screen) | What is on screen after every frame drawn so far. [`ArlecchinoTestHost.FrameLines`](../arlecchino.testing/ArlecchinoTestHost.md#framelines) reads the last frame as it was written, which is the whole picture only while frames are written whole; this is the picture itself, diffed frames and all. |
 | [`Services`](#services) | The container, for reaching whatever the test registered. |
 | [`State`](#state) | The shared state, for opening dialogs or reading the output line. |
 | [`Surface`](#surface) | The cell grid, for tests that draw into it directly. |
@@ -43,17 +44,17 @@ public sealed class ArlecchinoTestHost : IDisposable
 | [`Click(int, int, MouseButton)`](#click-int-int-mousebutton) | Clicks a cell, in the terminal's own coordinates. |
 | [`Dispose()`](#dispose) | Disposes the container and everything in it, and drops work still posted to the frame. |
 | [`DrainInput()`](#draininput) | Routes whatever the reader has queued, which is what the frame loop does before it draws. [`ArlecchinoTestHost.ReadFromTerminal`](../arlecchino.testing/ArlecchinoTestHost.md#readfromterminal-string) and [`ArlecchinoTestHost.Frame`](../arlecchino.testing/ArlecchinoTestHost.md#frame) do it for you; call it yourself after driving `TerminalInputReader` directly, since the reader queues rather than routes. |
-| [`Frame()`](#frame) | Draws a frame and returns it as plain text, with the styling stripped. |
+| [`Frame()`](#frame) | Draws a frame the way a running application does — as the difference from the last one — and returns what is on screen afterwards, styling and all stripped away. The frame written and the screen returned are not the same thing, and that is the point: an idle frame writes nothing at all, and a frame that changed one cell writes one cell. Reading the screen is what lets a test assert on the whole picture regardless. |
 | [`FrameContains(string)`](#framecontains-string) | Whether a frame holds some text anywhere. Text split across rows will not be found. |
 | [`FrameLineContaining(string)`](#framelinecontaining-string) | The first row holding some text, which is how a test reads what was drawn beside a label. |
-| [`FrameLines()`](#framelines) | Draws a frame and returns its rows. |
+| [`FrameLines()`](#framelines) | Draws a frame and returns the rows on screen afterwards. |
 | [`Press(ConsoleKey, bool, bool, bool)`](#press-consolekey-bool-bool-bool) | Presses a key, routed exactly as a real one would be. |
 | [`ReadFromTerminal(string)`](#readfromterminal-string) | Feeds raw characters through the reader that recognises escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports. |
 | [`Scroll(int, int, bool)`](#scroll-int-int-bool) | Turns the wheel over a cell. |
 | [`Send(ConsoleKeyInfo)`](#send-consolekeyinfo) | Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-bool-bool-bool) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter. |
 | [`Send(MouseEvent)`](#send-mouseevent) | Routes a mouse event exactly as the terminal reported it. |
 | [`SendPaste(string)`](#sendpaste-string) | Pastes a block of text, as bracketed paste delivers it. |
-| [`Styles()`](#styles) | Draws a frame and returns the colour sequences in it, in order. |
+| [`Styles()`](#styles) | Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in. |
 | [`Type(string)`](#type-string) | Types text one character at a time. The presses carry a character but no key, which is what a terminal reports for ordinary typing. |
 
 ## Constructors in detail
@@ -128,6 +129,16 @@ public Repaint Repaint { get; }
 The repaint flag, for checking that something actually asked for a frame.
 
 **Type** [`Repaint`](../arlecchino/Repaint.md)
+
+### `Screen` {#screen}
+
+```csharp
+public ScreenGrid Screen { get; }
+```
+
+What is on screen after every frame drawn so far. [`ArlecchinoTestHost.FrameLines`](../arlecchino.testing/ArlecchinoTestHost.md#framelines) reads the last frame as it was written, which is the whole picture only while frames are written whole; this is the picture itself, diffed frames and all.
+
+**Type** [`ScreenGrid`](../arlecchino.testing/ScreenGrid.md)
 
 ### `Services` {#services}
 
@@ -223,9 +234,9 @@ Routes whatever the reader has queued, which is what the frame loop does before 
 public string Frame();
 ```
 
-Draws a frame and returns it as plain text, with the styling stripped.
+Draws a frame the way a running application does — as the difference from the last one — and returns what is on screen afterwards, styling and all stripped away. The frame written and the screen returned are not the same thing, and that is the point: an idle frame writes nothing at all, and a frame that changed one cell writes one cell. Reading the screen is what lets a test assert on the whole picture regardless.
 
-**Returns** `string` — The frame.
+**Returns** `string` — The screen.
 
 ### `FrameContains(string)` {#framecontains-string}
 
@@ -265,7 +276,7 @@ The first row holding some text, which is how a test reads what was drawn beside
 public string[] FrameLines();
 ```
 
-Draws a frame and returns its rows.
+Draws a frame and returns the rows on screen afterwards.
 
 **Returns** `string`\[\] — One string per row.
 
@@ -364,7 +375,7 @@ Pastes a block of text, as bracketed paste delivers it.
 public IReadOnlyList<string> Styles();
 ```
 
-Draws a frame and returns the colour sequences in it, in order.
+Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in.
 
 **Returns** `IReadOnlyList<T>`&lt;`string`&gt; — The sequences as they appeared.
 
