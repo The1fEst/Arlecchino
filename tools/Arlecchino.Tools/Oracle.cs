@@ -16,6 +16,12 @@ namespace Arlecchino.Tools;
 /// ends up with. The emulator and the code that writes the frames were written by the same head, so a
 /// wrong idea about the edge of a row or the width of a symbol would be held by both and cancel out,
 /// leaving every test green and the picture wrong. tmux is the second opinion.
+///
+/// A second opinion is not the last word. Terminals differ from one another as well: a wide symbol
+/// written into the last column with wrapping off is dropped by tmux and shifted a column inwards by
+/// kitty, both checked. <c>raw-wrap-off-wide</c> holds the screen to tmux's reading, which is a choice
+/// rather than a fact — the remark on the same case in <see cref="ScreenGrid"/> says why it is safe to
+/// choose either.
 /// </summary>
 internal static class Oracle
 {

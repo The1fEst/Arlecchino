@@ -471,6 +471,13 @@ public sealed class ScreenGrid
     /// the next row; with wrapping off there is nowhere to move it to, so the cursor stays in the last
     /// column and the symbol is dropped rather than pushed inwards — which is what makes a frame drawn
     /// past its own width show up as a defect rather than as a row that quietly grew.
+    ///
+    /// Terminals do not agree about that last case, and there is nothing to be right about: a wide
+    /// symbol written into the last column is dropped by tmux and shifted a column inwards by kitty, so
+    /// whichever this does contradicts one of them. It is dropped here because a frame never asks for
+    /// it — the surface refuses a wide symbol the right edge would split, and writes a blank instead —
+    /// so the only way to reach this is by hand, and a symbol that vanishes is easier to notice than one
+    /// that moved.
     /// </summary>
     /// <param name="width">Columns the symbol takes.</param>
     /// <returns><c>false</c> when there is nowhere to put it.</returns>

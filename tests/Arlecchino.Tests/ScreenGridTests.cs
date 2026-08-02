@@ -148,6 +148,12 @@ public sealed class ScreenGridTests
         Assert.False(grid.IsCursorVisible);
     }
 
+    /// <summary>
+    /// One of the two things a terminal does here, not the only one: tmux drops the symbol, kitty
+    /// shifts it a column inwards. A frame never asks for either — the surface refuses a wide symbol
+    /// the right edge would split — so this pins down the reading rather than claiming it is the only
+    /// one.
+    /// </summary>
     [Fact]
     public void AWideSymbolPastTheRightEdgeIsDroppedWhenWrappingIsOff()
     {
