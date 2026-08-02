@@ -84,6 +84,26 @@ the public API means a new major. See
 
 ### Changed
 
+- **A `ViewCommand` that is disabled no longer swallows its key.** `IsEnabled` used to mean two things
+  at once — greyed out on the key screen, and a key that silently does nothing — and the second one
+  left a view unable to give the key a second meaning for exactly the times its command is off. Now an
+  unavailable command is skipped and the key carries on to the commands available everywhere and then
+  to the view's own `Handle`, as if nothing had claimed it:
+
+  ```csharp
+  new ViewCommand
+  {
+      Binding = new(ConsoleKey.Escape),
+      Label = () => "stop what is running",
+      IsEnabled = () => operations.IsBusy,
+      Run = () => { operations.Cancel(); return ViewRoute.None; },
+  }
+  ```
+
+  With nothing running, Escape now reaches the view — to leave a search, to clear a filter — instead
+  of disappearing. An application that relied on the key being eaten should bind it and return
+  `ViewRoute.None` rather than disable it.
+
 - **Namespaces now follow the folders they are in**, which is the whole of the break in this major.
   Four folders had grown past the point where a name could be found in them by looking, so each was
   split by what its files are for, and the namespaces went with them:

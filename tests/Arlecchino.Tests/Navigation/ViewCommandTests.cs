@@ -37,8 +37,13 @@ public sealed class ViewCommandTests
         Assert.Equal(ViewKind.Other, app.Navigator.CurrentRoute);
     }
 
+    /// <summary>
+    /// A command that is off takes nothing: the key carries on to the view, which is free to give it
+    /// another meaning for exactly the times the command is unavailable. Swallowing it instead left a
+    /// key that silently did nothing, and no way for the view to find out it had been pressed.
+    /// </summary>
     [Fact]
-    public void DisabledViewCommandDoesNothingAndDoesNotFallThrough()
+    public void ADisabledViewCommandLetsItsKeyThrough()
     {
         using var app = new TestApplication();
 
@@ -48,10 +53,23 @@ public sealed class ViewCommandTests
 
         app.Press(ConsoleKey.L);
 
-        Assert.Empty(CommandingView.Ran);
+        Assert.Equal(["handled L"], CommandingView.Ran);
         Assert.Equal(ViewKind.Commanding, app.Navigator.CurrentRoute);
 
         CommandingView.CanClean = true;
+    }
+
+    [Fact]
+    public void AnEnabledViewCommandKeepsItsKeyFromTheView()
+    {
+        using var app = new TestApplication();
+
+        app.Navigator.Apply(ViewKind.Commanding);
+        CommandingView.Ran.Clear();
+
+        app.Press(ConsoleKey.L);
+
+        Assert.Equal(["clean"], CommandingView.Ran);
     }
 
     [Fact]

@@ -192,22 +192,25 @@ public class InputRouter
     /// The view's own commands first, then the ones available everywhere. A command available
     /// everywhere is only reached with a modifier held, so an unmodified letter always belongs to the
     /// view.
+    ///
+    /// A command that says it is not available takes nothing. It used to swallow its key anyway, which
+    /// made <c>IsEnabled</c> mean two different things — greyed out on the key screen, and a key that
+    /// silently does nothing — and left a view unable to give the same key a second meaning for the
+    /// times its command is off. Skipped here, the key carries on to the commands available everywhere
+    /// and then to the view, exactly as if nothing had claimed it.
     /// </summary>
     /// <param name="key">The key that arrived.</param>
-    /// <returns><c>true</c> when something was bound to it.</returns>
+    /// <returns><c>true</c> when something was bound to it and willing to run.</returns>
     private bool RanCommand(ConsoleKeyInfo key)
     {
         foreach (var viewCommand in _navigator.CurrentCommands)
         {
-            if (!viewCommand.Binding.Matches(key))
+            if (!viewCommand.Binding.Matches(key) || !viewCommand.IsEnabled())
             {
                 continue;
             }
 
-            if (viewCommand.IsEnabled())
-            {
-                _navigator.Apply(viewCommand.Run());
-            }
+            _navigator.Apply(viewCommand.Run());
 
             return true;
         }
