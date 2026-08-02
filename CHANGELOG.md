@@ -13,6 +13,37 @@ the public API means a new major. See
 
 ### Added
 
+- **A localization generator.** Text written where it is drawn gets written twice — the same sentence
+  in a dialog and in the log that follows it — and the day one of them is reworded the two quietly
+  disagree. Put the text in a TOML file instead and the generator emits a `LocString` name for each
+  entry and a `Loc` that resolves it, so the second mention is a name the compiler checks rather than
+  a sentence somebody retyped. Translation comes free of the same machinery, but one language is
+  reason enough:
+
+  ```toml
+  # Localization/Localization.toml
+  [localization]
+  language = "en"
+
+  [strings]
+  Copy = "Copy"
+  CopyManyTitle = "Copy {0} items"
+  ```
+
+  ```xml
+  <ItemGroup>
+    <AdditionalFiles Include="Localization\*.toml" />
+  </ItemGroup>
+  ```
+
+  ```csharp
+  Title = sources.Count == 1 ? Loc(LocString.Copy) : Loc(LocString.CopyManyTitle, sources.Count);
+  ```
+
+  Every other file in the folder is a translation of the default; a string it leaves out falls back to
+  the default rather than leaving a hole on the screen, and one it invents is an error. The folder and
+  the default language are `ArlecchinoLocalizationFolder` and `ArlecchinoLocalizationLanguage`.
+
 - **`CustomModal`**, a dialog the application draws and drives itself. The framework's own dialogs know
   what a number looks like and what a choice looks like; an application with a look of its own wants
   neither. The answer is not a second dialog slot beside `Modal` — two things that both take every key
