@@ -82,10 +82,19 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq tmux
           tmux -V
 
-          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- oracle
-          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- keys
-          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- terminal
-          dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- live
+          failed=""
+
+          for check in oracle keys terminal live; do
+            echo "::group::$check"
+            dotnet run --project tools/Arlecchino.Tools --configuration Release --no-build -- "$check" \
+              || failed="$failed $check"
+            echo "::endgroup::"
+          done
+
+          if [ -n "$failed" ]; then
+            echo "::error::The terminal disagreed with:$failed"
+            exit 1
+          fi
         shell: bash
 
       - name: Benchmarks
