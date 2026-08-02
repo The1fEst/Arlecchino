@@ -29,6 +29,7 @@ The words used throughout the documentation, with the page that explains each on
 | **View** | A screen. A plain class implementing `IArlecchinoView`. See [Views and navigation](views-and-navigation.md) |
 | **Route** | The name of a screen — a `ViewRoute`, which is a string wearing a type. See [Views and navigation](views-and-navigation.md) |
 | **`ViewKind`** | The generated class holding one route per view, so routes read like an enum. See [Source generator](source-generator.md) |
+| **`LocString`** | The generated name of one piece of text, resolved by `Loc`. See [Localization](localization.md#text-with-a-name) |
 | **Navigator** | What shows a route and keeps the history. See [Views and navigation](views-and-navigation.md) |
 | **View scope** | The DI scope one screen lives in. See [Views and navigation](views-and-navigation.md) |
 | **Frame loop** | The thread that drains input, runs the ticker and draws. See [The frame loop](frame-loop.md) |
@@ -71,6 +72,7 @@ The words used throughout the documentation, with the page that explains each on
 | **Interactive widget** | A widget that also takes the focus. See [Widgets](widgets.md) |
 | **Modal** | A dialog that takes every key while it is open. See [Modals](modals.md) |
 | **Modal stack** | Several open at once, each drawn offset from the one below. See [Modals](modals.md#stacking) |
+| **Modal frame** | What a dialog is handed for as long as it is on screen — where to draw, the words, the keys, how to close. See [Modals](modals.md#what-a-dialog-is-handed) |
 | **Form** | Atoms rendered as editable rows, each opening the modal that matches its type. See [Forms](forms.md) |
 | **Field** | One row of a form. See [Forms](forms.md#the-fields) |
 
