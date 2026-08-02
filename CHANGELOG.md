@@ -44,25 +44,33 @@ the public API means a new major. See
   the default rather than leaving a hole on the screen, and one it invents is an error. The folder and
   the default language are `ArlecchinoLocalizationFolder` and `ArlecchinoLocalizationLanguage`.
 
-- **`CustomModal`**, a dialog the application draws and drives itself. The framework's own dialogs know
-  what a number looks like and what a choice looks like; an application with a look of its own wants
-  neither. The answer is not a second dialog slot beside `Modal` — two things that both take every key
-  will disagree about which of them has it — so this is the same slot, the same stack and the same
-  rules, with only the drawing and the keys handed back:
+- **A dialog of your own.** The framework's own dialogs know what a number looks like and what a choice
+  looks like; an application with a look of its own wants neither. Derive from `Modal` — the same slot,
+  the same stack and the same rules as every dialog the framework brings, with the drawing and the keys
+  yours:
 
   ```csharp
-  public sealed class ConfirmModal : CustomModal
+  public sealed class ConfirmModal : Modal
   {
       public bool Answered { get; private set; }
 
-      public override void Draw(SurfaceRegion screen) =>
-          screen.Rows(2, 1).WriteLine(0, "Really?", Theme.Warning, Align.Center);
+      public override void Draw(ModalFrame frame) =>
+          frame.Screen.Rows(2, 1).WriteLine(0, "Really?", Theme.Warning, Align.Center);
 
-      public override void Handle(ConsoleKeyInfo key) => Answered = key.Key == ConsoleKey.Y;
+      public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+      {
+          Answered = key.Key == ConsoleKey.Y;
+          frame.Close();
+      }
   }
 
   state.Modal = new ConfirmModal { Title = "Careful" };
   ```
+
+  A dialog is a value, so it cannot be handed services when it is built. **`ModalFrame`** carries them
+  instead, for as long as the dialog is on screen: where to draw, the words, the keys to obey, `Close`,
+  `Copy`, and `Box` — the titled box with its hints under a rule that every dialog the framework brings
+  is drawn through, so one you write reads as the same application.
 
 - **`ListBox<T>.PaintRow`**, for a list whose rows are not one colour. `Render` and `ItemStyle` write a
   row as one string in one style, which is right for most lists and wrong for any where a name, a size
@@ -80,6 +88,19 @@ the public API means a new major. See
           row.WriteLine(0, Sizes.Brief(entry.Size), Theme.Muted, Align.Right);
       },
   };
+  ```
+
+- **`Notifications.Recent`**, everything worth showing right now rather than only the newest line.
+  `Current` answers for one row at the bottom of the screen, and one row can hold one message; an
+  application that shows its work as a stack of cards in the corner wants all of it. This is everything
+  still running whatever its age, plus everything that ended within `NotificationTimeout`, newest
+  first — so a copy that takes an hour stays up for the hour rather than timing out while it works:
+
+  ```csharp
+  foreach (var entry in state.Notifications.Recent)
+  {
+      card.WriteLine(0, entry.Line, entry.Loudness == NotificationLevel.Failure ? Theme.Error : Theme.Default);
+  }
   ```
 
 ### Changed
@@ -115,7 +136,7 @@ the public API means a new major. See
   | `Arlecchino.Rendering` | `.Colors` (theme, palette, colour types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
   | `Arlecchino.Atoms` | `.Local`, `.Tracked`, `.Collections` |
 
-  `Modal`, `CustomModal`, `Surface`, `SurfaceRegion`, `Margin`, `Align`, `Atom` and the store
+  `Modal`, `ModalFrame`, `Surface`, `SurfaceRegion`, `Margin`, `Align`, `Atom` and the store
   interfaces stay where they were: they are the vocabulary every file already reaches for. Nothing was
   renamed and nothing was removed — a build that fails on this is fixed by adding the sub-namespace to
   a `using`.
