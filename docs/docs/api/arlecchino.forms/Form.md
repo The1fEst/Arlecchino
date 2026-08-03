@@ -7,7 +7,7 @@ sidebar_label: Form
 
 **Namespace:** `Arlecchino.Forms` &middot; **Assembly:** `Arlecchino`
 
-A column of fields with their values lined up, and a help line under the selected one. The form holds no values of its own: the fields read and write atoms, so it draws whatever the state says without any copying back and forth. Whether an edit made here can be undone is decided by the atom behind the field — [`TrackedAtom`](../arlecchino.atoms/TrackedAtom-1.md) or [`LocalAtom`](../arlecchino.atoms/LocalAtom-1.md) — not by the form.
+A column of fields with their values lined up, and a help line under the selected one. The form holds no values of its own: the fields read and write atoms, so it draws whatever the state says without any copying back and forth. Whether an edit made here can be undone is decided by the atom behind the field — [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) or [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) — not by the form.
 
 ```csharp
 public sealed class Form : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable

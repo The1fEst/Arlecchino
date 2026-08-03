@@ -35,6 +35,7 @@ public sealed class ArlecchinoBuilder
 | [`StartAt(string)`](#startat-string) | Sets the view the application opens on, by name. |
 | [`UseKeymap(ArlecchinoKeymap)`](#usekeymap-arlecchinokeymap) | Replaces the key bindings, which every widget then follows. |
 | [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default. |
+| [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own: a band along the top, a bar along the bottom, whatever a screen here always has around it. One instance serves the whole application, so what the frame holds outlives the view — a row of tabs keeps its place when a screen is left and come back to. A view that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout` and is drawn without it. |
 | [`UseMouse()`](#usemouse) | Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs. |
 | [`UseNotifications(Nullable<ConsoleKeyInfo>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-consolekeyinfo-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
 | [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localised: nothing is looked up from resources. |
@@ -209,6 +210,16 @@ Takes every character from where its key sits on the keyboard rather than from w
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
+### `UseLayout<TLayout>()` {#uselayout-tlayout}
+
+```csharp
+public ArlecchinoBuilder UseLayout<TLayout>();
+```
+
+Draws every view inside a frame of the application's own: a band along the top, a bar along the bottom, whatever a screen here always has around it. One instance serves the whole application, so what the frame holds outlives the view — a row of tabs keeps its place when a screen is left and come back to. A view that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout` and is drawn without it.
+
+**Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
+
 ### `UseMouse()` {#usemouse}
 
 ```csharp
@@ -294,7 +305,7 @@ Replaces the colours. What actually reaches the screen still depends on what the
 
 | Name | Type | Description |
 |---|---|---|
-| `palette` | [`ThemePalette`](../arlecchino.rendering/ThemePalette.md) | The colours to use. |
+| `palette` | [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md) | The colours to use. |
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

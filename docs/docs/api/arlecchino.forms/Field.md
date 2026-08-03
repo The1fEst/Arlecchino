@@ -7,7 +7,7 @@ sidebar_label: Field
 
 **Namespace:** `Arlecchino.Forms` &middot; **Assembly:** `Arlecchino`
 
-One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything is read through delegates rather than stored, so a field always shows what the state holds now and follows the language the application is running in. The factories bind a field to an atom and pick the dialog that suits its type, which is the usual way to build one. The atom they take is a [`Atom`](../arlecchino.atoms/Atom-1.md), which is either a [`TrackedAtom`](../arlecchino.atoms/TrackedAtom-1.md) — so that editing the field can be undone — or a [`LocalAtom`](../arlecchino.atoms/LocalAtom-1.md) when it should not be.
+One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything is read through delegates rather than stored, so a field always shows what the state holds now and follows the language the application is running in. The factories bind a field to an atom and pick the dialog that suits its type, which is the usual way to build one. The atom they take is a [`Atom`](../arlecchino.atoms/Atom-1.md), which is either a [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) — so that editing the field can be undone — or a [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) when it should not be.
 
 ```csharp
 public sealed class Field
@@ -196,7 +196,7 @@ A colour, shown as its hex code and picked on three sliders. Reopening the dialo
 | Name | Type | Description |
 |---|---|---|
 | `label` | `Func<TResult>`&lt;`string`&gt; | What the field is called. |
-| `value` | [`Atom`](../arlecchino.atoms/Atom-1.md)&lt;[`Rgb`](../arlecchino.rendering/Rgb.md)&gt; | The atom to read and write. |
+| `value` | [`Atom`](../arlecchino.atoms/Atom-1.md)&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt; | The atom to read and write. |
 | `help` | `Func<TResult>`&lt;`string`&gt; | A line shown under the field while it is selected. |
 
 **Returns** [`Field`](../arlecchino.forms/Field.md) — The field.

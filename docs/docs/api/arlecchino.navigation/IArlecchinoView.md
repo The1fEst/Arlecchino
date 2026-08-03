@@ -13,6 +13,12 @@ A screen. Constructor parameters come from the container, and the instance lives
 public interface IArlecchinoView
 ```
 
+## Properties
+
+| Member | Summary |
+|---|---|
+| [`UsesLayout`](#useslayout) | Whether the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) is drawn around this screen, when the application has one. Answer `false` for a screen that wants the whole terminal — a file being read, a picture, anything where the band along the top is in the way rather than in the frame. |
+
 ## Methods
 
 | Member | Summary |
@@ -23,6 +29,18 @@ public interface IArlecchinoView
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Handles a mouse event in frame coordinates. Only views that care about the mouse implement this. |
 | [`HandlePaste(string)`](#handlepaste-string) | Handles text pasted into the terminal. It arrives as one block however long it is, so a screen that takes typed input should take this too rather than leaving pastes on the floor. |
 | [`Hints()`](#hints) | What the hints box shows. Leave it empty and the box is built from [`IArlecchinoView.Commands`](../arlecchino.navigation/IArlecchinoView.md#commands), so a rebound key relabels itself. |
+
+## Properties in detail
+
+### `UsesLayout` {#useslayout}
+
+```csharp
+public bool UsesLayout { get; }
+```
+
+Whether the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) is drawn around this screen, when the application has one. Answer `false` for a screen that wants the whole terminal — a file being read, a picture, anything where the band along the top is in the way rather than in the frame.
+
+**Type** `bool`
 
 ## Methods in detail
 

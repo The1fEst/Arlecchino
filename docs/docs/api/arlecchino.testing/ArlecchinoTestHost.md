@@ -19,7 +19,7 @@ public sealed class ArlecchinoTestHost : IDisposable
 
 | Member | Summary |
 |---|---|
-| [`ArlecchinoTestHost(int, int, Action<ArlecchinoBuilder>)`](#arlecchinotesthost-int-int-action-arlecchinobuilder) | Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering/TerminalCapabilities.md#color) afterwards to test another level. |
+| [`ArlecchinoTestHost(int, int, Action<ArlecchinoBuilder>)`](#arlecchinotesthost-int-int-action-arlecchinobuilder) | Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level. |
 
 ## Properties
 
@@ -68,7 +68,7 @@ public ArlecchinoTestHost(
     Action<ArlecchinoBuilder>? configure = null);
 ```
 
-Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering/TerminalCapabilities.md#color) afterwards to test another level.
+Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level.
 
 **Parameters**
 

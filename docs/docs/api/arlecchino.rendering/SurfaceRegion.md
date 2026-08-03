@@ -168,7 +168,7 @@ Draws a box around the region and hands back the space inside it, so panes and d
 
 | Name | Type | Description |
 |---|---|---|
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the frame. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the frame. |
 | `title` | `string` | Optional title written into the top edge. |
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — The region inside the frame, or this region when it is too small for one.
@@ -223,7 +223,7 @@ Paints every cell of the region.
 
 | Name | Type | Description |
 |---|---|---|
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style to paint with. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style to paint with. |
 | `character` | `char` | Character to fill with; a space by default. |
 
 ### `Flow()` {#flow}
@@ -349,7 +349,7 @@ Writes text in region coordinates, clipped to the region. A negative column star
 | `row` | `int` | Row inside the region. |
 | `column` | `int` | Column inside the region. |
 | `text` | `string` | Text to draw. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the text. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the text. |
 
 ### `WriteLine(int, string, IArlecchinoColor, Align)` {#writeline-int-string-iarlecchinocolor-align}
 
@@ -365,6 +365,6 @@ Writes a whole line, aligned inside the region and clipped to its width.
 |---|---|---|
 | `row` | `int` | Row inside the region. |
 | `text` | `string` | Text to draw. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the text. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the text. |
 | `align` | [`Align`](../arlecchino.rendering/Align.md) | Horizontal alignment inside the region. |
 

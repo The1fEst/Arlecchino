@@ -23,7 +23,7 @@ public sealed class TerminalInputReader
 
 | Member | Summary |
 |---|---|
-| [`Read(ConsoleKeyInfo)`](#read-consolekeyinfo) | Handles one key press, reading further keys itself when it looks like the start of a sequence. |
+| [`Read(ConsoleKeyInfo)`](#read-consolekeyinfo) | Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind. |
 | [`ReadPending()`](#readpending) | Reads everything waiting and returns, without blocking for more. Mouse events are drained too, since a terminal that reports them outside the key stream would otherwise pile them up. |
 
 ## Constructors in detail
@@ -55,7 +55,7 @@ Creates the reader. Everything it reads is routed as it is read, which is what a
 public void Read(ConsoleKeyInfo key);
 ```
 
-Handles one key press, reading further keys itself when it looks like the start of a sequence.
+Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind.
 
 **Parameters**
 

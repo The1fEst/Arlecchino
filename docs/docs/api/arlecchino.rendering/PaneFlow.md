@@ -104,7 +104,7 @@ Writes one line at the cursor and moves it down. Once the region is full the cal
 | Name | Type | Description |
 |---|---|---|
 | `line` | `string` | Text to write. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the line; the default role when omitted. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the line; the default role when omitted. |
 | `align` | [`Align`](../arlecchino.rendering/Align.md) | Horizontal alignment inside the region. |
 
 ### `FillLine(IArlecchinoColor)` {#fillline-iarlecchinocolor}
@@ -119,7 +119,7 @@ Draws a rule of `-` across the region and moves the cursor down.
 
 | Name | Type | Description |
 |---|---|---|
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the rule; the default role when omitted. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the rule; the default role when omitted. |
 
 ### `Rest()` {#rest}
 

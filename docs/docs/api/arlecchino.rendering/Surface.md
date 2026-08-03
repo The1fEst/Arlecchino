@@ -23,7 +23,7 @@ public class Surface
 
 | Member | Summary |
 |---|---|
-| [`Content`](#content) | The frame minus the configured padding — where a view normally draws. |
+| [`Content`](#content) | Where a view draws: the frame minus the configured padding, or the room a layout left it while one is drawing the view inside itself. A view asks for this and gets what it has been given, which is what lets a layout be added to an application without a single view knowing. |
 | [`Frame`](#frame) | The whole frame as a region. |
 | [`FrameHeight`](#frameheight) | Height of the current frame in rows. |
 | [`FrameWidth`](#framewidth) | Width of the current frame in cells. |
@@ -74,7 +74,7 @@ Creates a surface that draws to a terminal.
 public SurfaceRegion Content { get; }
 ```
 
-The frame minus the configured padding — where a view normally draws.
+Where a view draws: the frame minus the configured padding, or the room a layout left it while one is drawing the view inside itself. A view asks for this and gets what it has been given, which is what lets a layout be added to an application without a single view knowing.
 
 **Type** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md)
 
@@ -143,7 +143,7 @@ Writes one line at the flow cursor and moves it down. Stops silently once the fr
 | Name | Type | Description |
 |---|---|---|
 | `line` | `string` | Text to write. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the line; the default role when omitted. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the line; the default role when omitted. |
 | `align` | [`Align`](../arlecchino.rendering/Align.md) | Horizontal alignment inside the content width. |
 | `margin` | [`Margin`](../arlecchino.rendering/Margin.md) | Extra space around the line. |
 
@@ -192,7 +192,7 @@ Draws a rule across the content width on a given row.
 | Name | Type | Description |
 |---|---|---|
 | `row` | `int` | Row in frame coordinates. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the rule; the default role when omitted. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the rule; the default role when omitted. |
 
 ### `ForgetPreviousFrame()` {#forgetpreviousframe}
 
@@ -275,7 +275,7 @@ Writes at an exact cell, clipped to the frame. A wide symbol takes two cells; wr
 | `row` | `int` | Row in frame coordinates. |
 | `column` | `int` | Column in frame coordinates. |
 | `text` | `string` | Text to write. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the text. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the text. |
 
 ### `WriteBlock(IReadOnlyList<string>, IArlecchinoColor, Align, Margin)` {#writeblock-ireadonlylist-string-iarlecchinocolor-align-margin}
 
@@ -294,7 +294,7 @@ Places a block of prepared lines as a unit, ignoring the flow cursor. Vertical a
 | Name | Type | Description |
 |---|---|---|
 | `lines` | `IReadOnlyList<T>`&lt;`string`&gt; | Lines of the block. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the block. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the block. |
 | `align` | [`Align`](../arlecchino.rendering/Align.md) | Horizontal and vertical alignment against the frame. |
 | `margin` | [`Margin`](../arlecchino.rendering/Margin.md) | Space kept free from the edges it is aligned to. |
 
@@ -312,7 +312,7 @@ Restyles a whole row and writes text at the horizontal padding, ignoring the flo
 |---|---|---|
 | `row` | `int` | Row in frame coordinates. |
 | `line` | `string` | Text to write. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the row; the default role when omitted. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the row; the default role when omitted. |
 
 ### `WriteTableRow(string[], int[], IArlecchinoColor, string)` {#writetablerow-string-int-iarlecchinocolor-string}
 
@@ -332,6 +332,6 @@ Writes a row of padded columns at the flow cursor.
 |---|---|---|
 | `strings` | `string`\[\] | Cell texts, in column order. |
 | `widths` | `int`\[\] | Column widths: a positive width right-aligns the cell, a negative one left-aligns it. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering/IArlecchinoColor.md) | Style for the row. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Style for the row. |
 | `prefix` | `string` | Text placed before the first column, such as a marker. |
 

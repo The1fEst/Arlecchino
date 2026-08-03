@@ -23,15 +23,15 @@ public sealed class ArlecchinoOptions
 
 | Member | Summary |
 |---|---|
-| [`AskTerminal`](#askterminal) | Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) then has nothing to go on and settles for cells. |
+| [`AskTerminal`](#askterminal) | Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) then has nothing to go on and settles for cells. |
 | [`BracketedPaste`](#bracketedpaste) | Whether pasted text arrives as one block. On by default: without it a paste reads as a burst of key presses, and a long one can trip validation or a shortcut halfway through. |
-| [`CellHeight`](#cellheight) | How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth). |
-| [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font. |
+| [`CellHeight`](#cellheight) | How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth). |
+| [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font. |
 | [`CommandPaletteKey`](#commandpalettekey) | Character that opens the command palette. A character rather than a binding, so it survives a layout where the key sits elsewhere. |
 | [`EscapeTimeout`](#escapetimeout) | How long to wait for the rest of an escape sequence before deciding there is none. Arrows and function keys arrive as several characters, and over a slow link they do not always arrive together; this is also the delay a lone `Esc` costs, so keep it short. |
-| [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings. |
+| [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings. |
 | [`HorizontalPadding`](#horizontalpadding) | Cells kept free on the left and right of the content area. |
-| [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself. |
+| [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself. |
 | [`InputPollInterval`](#inputpollinterval) | How long the input loop sleeps when no key is waiting. |
 | [`Keymap`](#keymap) | Keys the framework itself reacts to. |
 | [`MinimumHeight`](#minimumheight) | Below this height the view is replaced by a "make the window bigger" notice. |
@@ -46,7 +46,7 @@ public sealed class ArlecchinoOptions
 | [`TargetFramesPerSecond`](#targetframespersecond) | How often the loop may draw. Frames are only composed when something asked for one. |
 | [`TerminalAnswer`](#terminalanswer) | How long to wait for the terminal to finish answering. See [`ArlecchinoOptions.AskTerminal`](../arlecchino.hosting/ArlecchinoOptions.md#askterminal). |
 | [`TextInput`](#textinput) | How a key press becomes a character on a non-latin layout. Whatever the terminal reports is taken by default, so any language can be typed without the application asking for it; [`ArlecchinoBuilder.UseKeysByPosition`](../arlecchino.hosting/ArlecchinoBuilder.md#usekeysbyposition) trades that for keys that always read the same. |
-| [`Theme`](#theme) | Colours behind the roles. Installed into [`Theme`](../arlecchino.rendering/Theme.md) on resolve. |
+| [`Theme`](#theme) | Colours behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve. |
 | [`UseAlternateScreen`](#usealternatescreen) | Whether to run on the alternate screen, which leaves the user's scrollback untouched on exit. |
 | [`VerticalPadding`](#verticalpadding) | Rows kept free above and below the content area. |
 
@@ -66,7 +66,7 @@ public ArlecchinoOptions();
 public bool AskTerminal { get; set; }
 ```
 
-Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) then has nothing to go on and settles for cells.
+Whether to ask the terminal what it can do as the application starts — which graphics protocols it speaks and how many pixels a cell is. Costs at most [`ArlecchinoOptions.TerminalAnswer`](../arlecchino.hosting/ArlecchinoOptions.md#terminalanswer) once, and only on a terminal that stays silent; the answers usually arrive in a millisecond or two. Turn it off for a terminal that answers something strange, or to keep startup free of the wait. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) then has nothing to go on and settles for cells.
 
 **Type** `bool`
 
@@ -86,7 +86,7 @@ Whether pasted text arrives as one block. On by default: without it a paste read
 public int CellHeight { get; set; }
 ```
 
-How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth).
+How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) on resolve. See [`ArlecchinoOptions.CellWidth`](../arlecchino.hosting/ArlecchinoOptions.md#cellwidth).
 
 **Type** `int`
 
@@ -96,7 +96,7 @@ How many pixels tall a cell is taken to be. Installed into [`Glyphs.CellHeight`]
 public int CellWidth { get; set; }
 ```
 
-How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font.
+How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font.
 
 **Type** `int`
 
@@ -126,9 +126,9 @@ How long to wait for the rest of an escape sequence before deciding there is non
 public GraphSymbols GraphSymbols { get; set; }
 ```
 
-What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings.
+What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings.
 
-**Type** [`GraphSymbols`](../arlecchino.rendering/GraphSymbols.md)
+**Type** [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md)
 
 ### `HorizontalPadding` {#horizontalpadding}
 
@@ -146,9 +146,9 @@ Cells kept free on the left and right of the content area.
 public ImageProtocol ImageProtocol { get; set; }
 ```
 
-How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself.
+How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself.
 
-**Type** [`ImageProtocol`](../arlecchino.rendering/ImageProtocol.md)
+**Type** [`ImageProtocol`](../arlecchino.rendering.terminals/ImageProtocol.md)
 
 ### `InputPollInterval` {#inputpollinterval}
 
@@ -296,9 +296,9 @@ How a key press becomes a character on a non-latin layout. Whatever the terminal
 public ThemePalette Theme { get; set; }
 ```
 
-Colours behind the roles. Installed into [`Theme`](../arlecchino.rendering/Theme.md) on resolve.
+Colours behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve.
 
-**Type** [`ThemePalette`](../arlecchino.rendering/ThemePalette.md)
+**Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
 
 ### `UseAlternateScreen` {#usealternatescreen}
 

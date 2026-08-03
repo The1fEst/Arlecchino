@@ -26,6 +26,7 @@ public sealed class Notifications
 | [`Capacity`](#capacity) | How many messages to keep at most, however young they are. A list bounded only by time grows without limit when something reports in a loop, so the oldest fall off once this many are held. |
 | [`Current`](#current) | The line the output row shows, or `null` once it has timed out. The entry itself stays in [`Notifications.Entries`](../arlecchino.diagnostics/Notifications.md#entries) until the longer timeout takes it. |
 | [`Entries`](#entries) | Everything still held, newest first. |
+| [`Recent`](#recent) | What is worth showing right now, newest first: everything still running, and everything that ended recently enough not to have timed out yet. [`Notifications.Current`](../arlecchino.diagnostics/Notifications.md#current) answers the same question for one row at the bottom of the screen, which can only hold the newest. An application that shows its work as a stack of cards rather than a line wants all of them, and wants a copy that is still going to stay on screen however long it takes — which is why running work is here whatever its age. |
 
 ## Methods
 
@@ -84,6 +85,16 @@ public IReadOnlyList<Notification> Entries { get; }
 ```
 
 Everything still held, newest first.
+
+**Type** `IReadOnlyList<T>`&lt;[`Notification`](../arlecchino.diagnostics/Notification.md)&gt;
+
+### `Recent` {#recent}
+
+```csharp
+public IReadOnlyList<Notification> Recent { get; }
+```
+
+What is worth showing right now, newest first: everything still running, and everything that ended recently enough not to have timed out yet. [`Notifications.Current`](../arlecchino.diagnostics/Notifications.md#current) answers the same question for one row at the bottom of the screen, which can only hold the newest. An application that shows its work as a stack of cards rather than a line wants all of them, and wants a copy that is still going to stay on screen however long it takes — which is why running work is here whatever its age.
 
 **Type** `IReadOnlyList<T>`&lt;[`Notification`](../arlecchino.diagnostics/Notification.md)&gt;
 

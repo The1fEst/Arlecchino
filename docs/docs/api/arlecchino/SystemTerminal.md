@@ -19,7 +19,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 
 | Member | Summary |
 |---|---|
-| [`SystemTerminal()`](#systemterminal) | Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering/ColorSupport.md). |
+| [`SystemTerminal()`](#systemterminal) | Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md). |
 
 ## Properties
 
@@ -54,7 +54,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 public SystemTerminal();
 ```
 
-Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering/ColorSupport.md).
+Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md).
 
 ## Properties in detail
 

@@ -22,6 +22,7 @@ public class Navigator
 | [`CurrentCommands`](#currentcommands) | Commands of the screen being shown, for the router and the palette. |
 | [`CurrentHints`](#currenthints) | What the hints box should show: whatever the screen returned, or its commands when it returned nothing. |
 | [`CurrentRoute`](#currentroute) | The route being shown. |
+| [`CurrentUsesLayout`](#currentuseslayout) | Whether the screen being shown wants the layout drawn around it. |
 
 ## Methods
 
@@ -87,6 +88,16 @@ public ViewRoute CurrentRoute { get; }
 The route being shown.
 
 **Type** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md)
+
+### `CurrentUsesLayout` {#currentuseslayout}
+
+```csharp
+public bool CurrentUsesLayout { get; }
+```
+
+Whether the screen being shown wants the layout drawn around it.
+
+**Type** `bool`
 
 ## Methods in detail
 

@@ -7,7 +7,7 @@ sidebar_label: Atom&lt;T&gt;
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino.Core`
 
-An atom: one piece of application state that notifies what reads it and marks the frame stale by itself, so a screen driven by atoms never needs a manual repaint request. Whether an edit can be undone is decided by the type that is created — [`TrackedAtom`](../arlecchino.atoms/TrackedAtom-1.md) or [`LocalAtom`](../arlecchino.atoms/LocalAtom-1.md) — rather than by a flag set afterwards, so the declaration says which kind of state it is. Everything that takes an atom takes this base type, so the two are interchangeable at the call site.
+An atom: one piece of application state that notifies what reads it and marks the frame stale by itself, so a screen driven by atoms never needs a manual repaint request. Whether an edit can be undone is decided by the type that is created — [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) or [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) — rather than by a flag set afterwards, so the declaration says which kind of state it is. Everything that takes an atom takes this base type, so the two are interchangeable at the call site.
 
 ```csharp
 public abstract class Atom<T> : IReadableAtom<T>

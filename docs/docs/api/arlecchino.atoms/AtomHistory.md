@@ -7,7 +7,7 @@ sidebar_label: AtomHistory
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino.Core`
 
-Undo and redo over every [`TrackedAtom`](../arlecchino.atoms/TrackedAtom-1.md). It collects from the moment it exists, so the hosted service resolves it at startup; a headless run has to create it before the edits it wants to undo. The undo stack is bounded: a long-running application would otherwise hold on to every edit it has ever made, and each of those keeps the old value alive too. Steps past [`AtomHistory.Capacity`](../arlecchino.atoms/AtomHistory.md#capacity) fall off the far end, which is the end nobody is going to reach.
+Undo and redo over every [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md). It collects from the moment it exists, so the hosted service resolves it at startup; a headless run has to create it before the edits it wants to undo. The undo stack is bounded: a long-running application would otherwise hold on to every edit it has ever made, and each of those keeps the old value alive too. Steps past [`AtomHistory.Capacity`](../arlecchino.atoms/AtomHistory.md#capacity) fall off the far end, which is the end nobody is going to reach.
 
 ```csharp
 public sealed class AtomHistory : IDisposable
@@ -27,7 +27,7 @@ public sealed class AtomHistory : IDisposable
 |---|---|
 | [`CanRedo`](#canredo) | Whether an undone step can be applied again. |
 | [`CanUndo`](#canundo) | Whether there is a step to undo. |
-| [`Capacity`](#capacity) | How many steps to keep. Lowering it drops the oldest straight away; anything below one step is treated as one, since a history that remembers nothing is what [`LocalAtom`](../arlecchino.atoms/LocalAtom-1.md) is for. |
+| [`Capacity`](#capacity) | How many steps to keep. Lowering it drops the oldest straight away; anything below one step is treated as one, since a history that remembers nothing is what [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) is for. |
 | [`Depth`](#depth) | How many steps are on the undo stack. |
 
 ## Methods
@@ -78,7 +78,7 @@ Whether there is a step to undo.
 public int Capacity { get; set; }
 ```
 
-How many steps to keep. Lowering it drops the oldest straight away; anything below one step is treated as one, since a history that remembers nothing is what [`LocalAtom`](../arlecchino.atoms/LocalAtom-1.md) is for.
+How many steps to keep. Lowering it drops the oldest straight away; anything below one step is treated as one, since a history that remembers nothing is what [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) is for.
 
 **Type** `int`
 

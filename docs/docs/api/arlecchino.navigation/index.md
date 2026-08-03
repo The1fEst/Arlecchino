@@ -26,6 +26,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`IArlecchinoLayout`](IArlecchinoLayout.md) | The frame every view is drawn inside: a band along the top, a bar along the bottom, whatever a screen of this application always has around it. It is one object for the whole application rather than one per screen, so what it holds outlives the view — a row of tabs keeps its scroll position when a screen is left and come back to, which is the whole reason a header is worth having in one place instead of drawn again by every view. [`IArlecchinoLayout.Draw`](../arlecchino.navigation/IArlecchinoLayout.md#draw-surfaceregion-action-surfaceregion) is handed the room there is and a delegate that draws the view. Where that delegate is called is where the view goes, and how much it is given is what the view thinks its screen is — a view asks the [`Surface`](../arlecchino.rendering/Surface.md) for its content and gets the region the layout left it, so no view has to know it is inside one. |
 | [`IArlecchinoView`](IArlecchinoView.md) | A screen. Constructor parameters come from the container, and the instance lives as long as the route is shown — navigating away and back builds a new one, so per-screen state can live in fields. Implement `IDisposable` to be told when the screen goes away. |
 | [`IArlecchinoViewFactory`](IArlecchinoViewFactory.md) | Builds views for routes. Register one with `AddViewFactory<T>()` to serve a whole family of routes at once — a plugin directory, or routes carrying an id in the name. |
 

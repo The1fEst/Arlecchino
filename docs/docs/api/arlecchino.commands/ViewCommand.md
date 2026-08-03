@@ -24,7 +24,7 @@ public sealed class ViewCommand
 | Member | Summary |
 |---|---|
 | [`Binding`](#binding) | Key that runs the command. Checked before the screen's own key handling. |
-| [`IsEnabled`](#isenabled) | Whether the command can run now. A disabled command still swallows its key rather than letting it fall through — the key is spoken for either way. |
+| [`IsEnabled`](#isenabled) | Whether the command can run now. A disabled command is skipped and its key carries on — to the commands available everywhere, and then to the view's own `Handle` — as if nothing had claimed it. To hold the key regardless, bind it and do nothing rather than disable it. |
 | [`Label`](#label) | Name shown in the palette and the hints box; a delegate, so it can be translated. |
 | [`Run`](#run) | What the command does. |
 
@@ -68,7 +68,7 @@ Key that runs the command. Checked before the screen's own key handling.
 public Func<bool> IsEnabled { get; init; }
 ```
 
-Whether the command can run now. A disabled command still swallows its key rather than letting it fall through — the key is spoken for either way.
+Whether the command can run now. A disabled command is skipped and its key carries on — to the commands available everywhere, and then to the view's own `Handle` — as if nothing had claimed it. To hold the key regardless, bind it and do nothing rather than disable it.
 
 **Type** `Func<TResult>`&lt;`bool`&gt;
 
