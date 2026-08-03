@@ -141,6 +141,17 @@ the public API means a new major. See
   renamed and nothing was removed — a build that fails on this is fixed by adding the sub-namespace to
   a `using`.
 
+### Fixed
+
+- **`Alt+Esc` reached an application as two plain Escapes**, which left it impossible to bind. Holding
+  Alt puts an escape in front of the key, so this one is two of them; the runtime folds that prefix
+  back for every other key — `\ea` arrives as `Alt+A` — and leaves `\e\e` as it found it. The reader
+  folds it now.
+
+  There is no such fix for `Ctrl+Esc`, and there cannot be one: a terminal has no encoding for it in
+  the sequences everything speaks today, so nothing is sent at all. Reach for `Alt+Esc` instead, or
+  wait for the kitty keyboard protocol.
+
 ## 3.1.0
 
 Everything here is in `Arlecchino.Testing`. A test used to read the bytes a frame wrote; now it reads

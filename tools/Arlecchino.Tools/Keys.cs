@@ -409,6 +409,8 @@ internal static class Keys
         yield return new("C-End", ConsoleKey.End, ConsoleModifiers.Control);
         yield return new("S-F1", ConsoleKey.F1, ConsoleModifiers.Shift);
 
+        yield return new("M-Escape", ConsoleKey.Escape, ConsoleModifiers.Alt, '\0', true);
+
         yield return new("a", ConsoleKey.A, default, 'a');
         yield return new("Z", ConsoleKey.Z, ConsoleModifiers.Shift, 'Z');
         yield return new("Space", ConsoleKey.Spacebar, default, ' ');

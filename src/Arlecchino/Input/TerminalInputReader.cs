@@ -107,6 +107,11 @@ public sealed class TerminalInputReader
 
     /// <summary>
     /// Handles one key press, reading further keys itself when it looks like the start of a sequence.
+    ///
+    /// An escape followed by another escape is <c>Alt+Escape</c>: holding Alt puts an escape in front
+    /// of the key, and the key here is itself an escape. The runtime folds that prefix back together
+    /// for every other key — <c>\ea</c> arrives as <c>Alt+A</c> — but not for this one, which reached
+    /// an application as two plain Escapes and left <c>Alt+Esc</c> impossible to bind.
     /// </summary>
     /// <param name="key">The key that was read.</param>
     public void Read(ConsoleKeyInfo key)
@@ -123,6 +128,13 @@ public sealed class TerminalInputReader
         }
 
         var introducer = _terminal.ReadKey();
+
+        if (introducer.Key == ConsoleKey.Escape)
+        {
+            Send(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, true, false));
+            return;
+        }
+
         if (introducer.KeyChar is not ('[' or 'O'))
         {
             Send(key);

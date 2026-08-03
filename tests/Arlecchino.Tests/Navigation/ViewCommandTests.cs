@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -148,6 +149,25 @@ public sealed class ViewCommandTests
 
         Assert.Contains("o → other", app.Frame(), StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// Holding Alt puts an escape in front of the key, so <c>Alt+Esc</c> is two of them. The runtime
+    /// folds that prefix back for every other key but not for this one, which reached an application
+    /// as two plain Escapes and left the binding impossible to press. The bytes here are the ones a
+    /// real terminal sends, which is how the fault was found in the first place.
+    /// </summary>
+    [Fact]
+    public void AltEscapeArrivesAsOneKeyRatherThanTwoPlainEscapes()
+    {
+        using var app = new TestApplication();
+
+        app.Navigator.Apply(ViewKind.Commanding);
+        CommandingView.Ran.Clear();
+
+        app.ReadFromTerminal("\e\e");
+
+        Assert.Equal(["stop"], CommandingView.Ran);
+    }
 }
 
 public sealed class CommandingView : IArlecchinoView
@@ -181,6 +201,8 @@ public sealed class CommandingView : IArlecchinoView
                 return ViewRoute.None;
             },
         },
+        ViewCommand.For(new KeyBinding(ConsoleKey.Escape, ConsoleModifiers.Alt), static () => "stop",
+            static () => Ran.Add("stop")),
     ];
 
     public ViewRoute Handle(ConsoleKeyInfo key)
