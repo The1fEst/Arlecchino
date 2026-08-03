@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Arlecchino.Generators;
@@ -29,6 +31,15 @@ public sealed class GeneratorTests
             public void Draw() { }
             public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
         }
+        """;
+
+    private const string Words = """
+        [localization]
+        language = "en"
+
+        [strings]
+        Copy = "Copy"
+        CopyManyTitle = "Copy {0} items"
         """;
 
     private const string TwoStores = """
@@ -752,6 +763,52 @@ public sealed class GeneratorTests
         return messages;
     }
 
+    /// <summary>Every entry of the file becomes a name, and the default text sits in its documentation.</summary>
+    [Fact]
+    public void LocalizationBecomesAnEnumOfNames()
+    {
+        var (generated, diagnostics) = RunLocalization(Words);
+
+        Assert.Empty(diagnostics);
+        Assert.Contains("public enum LocString", generated, StringComparison.Ordinal);
+        Assert.Contains("Copy = 0,", generated, StringComparison.Ordinal);
+        Assert.Contains("CopyManyTitle = 1,", generated, StringComparison.Ordinal);
+        Assert.Contains("<c>Copy {0} items</c>", generated, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// The factories that name a key come with it. They cannot live in the framework — a
+    /// <c>ViewCommand</c> would have to name the enum, and the enum is written here, per application,
+    /// out of that application's own file.
+    /// </summary>
+    [Fact]
+    public void LocalizationBringsTheFactoriesThatNameAKey()
+    {
+        var (generated, _) = RunLocalization(Words);
+
+        Assert.Contains("public static class Bind", generated, StringComparison.Ordinal);
+        Assert.Contains("ViewCommand To(KeyBinding binding, LocString name, Action run)", generated,
+            StringComparison.Ordinal);
+        Assert.Contains("ViewCommand Going(", generated, StringComparison.Ordinal);
+        Assert.Contains("ViewCommand When(", generated, StringComparison.Ordinal);
+        Assert.Contains("Label = () => Localization.Loc(name)", generated, StringComparison.Ordinal);
+    }
+
+    /// <summary>A file that claims no language nobody asked for is an error rather than a silent miss.</summary>
+    [Fact]
+    public void ALocalizationWithoutTheDefaultLanguageIsAnError()
+    {
+        var (_, diagnostics) = RunLocalization("""
+            [localization]
+            language = "fr"
+
+            [strings]
+            Copy = "Copier"
+            """);
+
+        Assert.Contains(diagnostics, static found => found.Id == "ARL022");
+    }
+
     private static List<int> FindAll(string text, string needle)
     {
         var found = new List<int>();
@@ -764,6 +821,45 @@ public sealed class GeneratorTests
         }
 
         return found;
+    }
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunLocalization(string toml)
+    {
+        var compilation = CSharpCompilation.Create(
+            "SampleApplication",
+            [],
+            LoadedReferences(),
+            new(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+
+        var options = new Dictionary<string, string> { ["build_property.RootNamespace"] = "Sample" };
+
+        var driver = CSharpGeneratorDriver
+            .Create(
+                [new LocalizationGenerator().AsSourceGenerator()],
+                additionalTexts: [new Toml("Localization/Localization.toml", toml)],
+                optionsProvider: new FixedOptions(options))
+            .RunGenerators(compilation);
+
+        var result = driver.GetRunResult();
+        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+
+        return (generated, result.Diagnostics);
+    }
+
+    private sealed class Toml : AdditionalText
+    {
+        private readonly string _text;
+
+        public Toml(string path, string text)
+        {
+            Path = path;
+            _text = text;
+        }
+
+        public override string Path { get; }
+
+        public override SourceText GetText(CancellationToken cancellationToken = default) =>
+            SourceText.From(_text);
     }
 
     private sealed class FixedOptions : AnalyzerConfigOptionsProvider

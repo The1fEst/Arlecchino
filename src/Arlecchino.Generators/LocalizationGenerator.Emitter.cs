@@ -34,6 +34,9 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("using System;");
         source.AppendLine("using System.Collections.Generic;");
         source.AppendLine("using System.Globalization;");
+        source.AppendLine("using Arlecchino.Commands;");
+        source.AppendLine("using Arlecchino.Input;");
+        source.AppendLine("using Arlecchino.Navigation;");
         source.AppendLine();
         source.Append("namespace ").Append(where).AppendLine(";");
         source.AppendLine();
@@ -143,7 +146,63 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("    }");
         source.AppendLine("}");
 
+        Bindings(source);
+
         return source.ToString();
+    }
+
+    /// <summary>
+    /// Writes the factories that name a key from the localization.
+    ///
+    /// The framework cannot offer these itself. <c>ViewCommand</c> takes a <c>Func&lt;string&gt;</c>
+    /// because a name is read every frame, so that changing language changes the screen — and it
+    /// cannot take a <c>LocString</c> because there is no such type until an application is compiled:
+    /// the enum is written here, out of that application's own file, with that application's own
+    /// names in it. What can be shipped is the code that writes them, which is this.
+    /// </summary>
+    /// <param name="source">Where the source is being built.</param>
+    private static void Bindings(StringBuilder source)
+    {
+        source.AppendLine();
+        source.AppendLine("/// <summary>A key of this application, named from its own localization.</summary>");
+        source.AppendLine("public static class Bind");
+        source.AppendLine("{");
+        source.AppendLine("    /// <summary>A key that does something and stays on the screen.</summary>");
+        source.AppendLine("    /// <param name=\"binding\">The key.</param>");
+        source.AppendLine("    /// <param name=\"name\">Which string names it.</param>");
+        source.AppendLine("    /// <param name=\"run\">What it does.</param>");
+        source.AppendLine("    /// <returns>The command.</returns>");
+        source.AppendLine("    public static ViewCommand To(KeyBinding binding, LocString name, Action run) =>");
+        source.AppendLine("        ViewCommand.For(binding, () => Localization.Loc(name), run);");
+        source.AppendLine();
+        source.AppendLine("    /// <summary>A key that leaves the screen.</summary>");
+        source.AppendLine("    /// <param name=\"binding\">The key.</param>");
+        source.AppendLine("    /// <param name=\"name\">Which string names it.</param>");
+        source.AppendLine("    /// <param name=\"run\">Where it goes.</param>");
+        source.AppendLine("    /// <returns>The command.</returns>");
+        source.AppendLine("    public static ViewCommand Going(");
+        source.AppendLine("        KeyBinding binding, LocString name, Func<ViewRoute> run) => new()");
+        source.AppendLine("    {");
+        source.AppendLine("        Binding = binding,");
+        source.AppendLine("        Label = () => Localization.Loc(name),");
+        source.AppendLine("        Run = run,");
+        source.AppendLine("    };");
+        source.AppendLine();
+        source.AppendLine("    /// <summary>A key that is only sometimes available.</summary>");
+        source.AppendLine("    /// <param name=\"binding\">The key.</param>");
+        source.AppendLine("    /// <param name=\"name\">Which string names it.</param>");
+        source.AppendLine("    /// <param name=\"enabled\">Whether it can run now.</param>");
+        source.AppendLine("    /// <param name=\"run\">What it does.</param>");
+        source.AppendLine("    /// <returns>The command.</returns>");
+        source.AppendLine("    public static ViewCommand When(");
+        source.AppendLine("        KeyBinding binding, LocString name, Func<bool> enabled, Func<ViewRoute> run) => new()");
+        source.AppendLine("    {");
+        source.AppendLine("        Binding = binding,");
+        source.AppendLine("        Label = () => Localization.Loc(name),");
+        source.AppendLine("        IsEnabled = enabled,");
+        source.AppendLine("        Run = run,");
+        source.AppendLine("    };");
+        source.AppendLine("}");
     }
 
     private static void Table(

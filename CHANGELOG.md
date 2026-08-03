@@ -44,6 +44,19 @@ the public API means a new major. See
   the default rather than leaving a hole on the screen, and one it invents is an error. The folder and
   the default language are `ArlecchinoLocalizationFolder` and `ArlecchinoLocalizationLanguage`.
 
+  It writes **`Bind`** alongside them, which is a key named out of the same file:
+
+  ```csharp
+  Bind.To(new(ConsoleKey.F5), LocString.Copy, files.Copy)
+  Bind.Going(new(ConsoleKey.F3), LocString.View, files.Read)
+  Bind.When(new(ConsoleKey.Escape, ConsoleModifiers.Alt), LocString.Stop, () => work.IsBusy, work.Cancel)
+  ```
+
+  `ViewCommand` takes a `Func<string>` and can take nothing else — a label is read every frame so that
+  changing language changes the screen — and it cannot take a `LocString`, because there is no such
+  type until an application is compiled. So the shorthand is written into the application beside the
+  enum it names, which is the only place both are in scope.
+
 - **A dialog of your own.** The framework's own dialogs know what a number looks like and what a choice
   looks like; an application with a look of its own wants neither. Derive from `Modal` — the same slot,
   the same stack and the same rules as every dialog the framework brings, with the drawing and the keys
