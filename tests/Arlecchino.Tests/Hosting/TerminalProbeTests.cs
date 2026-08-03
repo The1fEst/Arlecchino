@@ -198,6 +198,50 @@ public sealed class TerminalProbeTests
     }
 
     [Fact]
+    public void KeysTypedInBetweenTheAnswersAreHandedBackToo()
+    {
+        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+            TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight);
+
+        try
+        {
+            var terminal = new FakeTerminal(80, 24);
+
+            terminal.EnqueueText("\e[6;25;11txy\e[?65;4;22cz");
+
+            Assert.True(TerminalProbe.Ask(terminal, TimeSpan.FromSeconds(5)));
+            Assert.True(TerminalCapabilities.Sixel);
+            Assert.Equal(11, Glyphs.CellWidth);
+
+            Assert.Equal('x', terminal.ReadKey().KeyChar);
+            Assert.Equal('y', terminal.ReadKey().KeyChar);
+            Assert.Equal('z', terminal.ReadKey().KeyChar);
+            Assert.False(terminal.KeyAvailable);
+        }
+        finally
+        {
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+        }
+    }
+
+    [Fact]
+    public void AnAnswerIsNeverMistakenForTyping()
+    {
+        Assert.Empty(TerminalReply.Typing("\e_Gi=31;OK\e\\\e[6;25;11t\e]11;rgb:20/20/22\a\e[?65;4;22c"));
+        Assert.Empty(TerminalReply.Typing("\\\e[?62;22c"));
+        Assert.Empty(TerminalReply.Typing("\eOP\e[?62;22c"));
+    }
+
+    [Fact]
+    public void TypingIsFoundWhereverItLands()
+    {
+        Assert.Equal([0, 1], TerminalReply.Typing("hi\e[?62;22c"));
+        Assert.Equal([11, 12], TerminalReply.Typing("\e[?62;22c\e\\hi"));
+        Assert.Equal([1], TerminalReply.Typing("\\h\e[?62;22c"));
+    }
+
+    [Fact]
     public void RubbishInFrontOfTheAnswersDoesNotThrowThemAway()
     {
         var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,

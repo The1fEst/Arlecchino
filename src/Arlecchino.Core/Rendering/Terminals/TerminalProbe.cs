@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 
@@ -37,13 +36,14 @@ internal readonly record struct TerminalAnswers(
 /// answer in order.
 ///
 /// A terminal that answers nothing costs the deadline and leaves every setting as it was, which is the
-/// behaviour an application already had to live with. Nothing a person typed is swallowed either, and the
-/// rule for that is the fence again rather than the shape of what arrives: whatever was read is handed
-/// straight back unless the fence came, because only then is it certain that what arrived was answers.
+/// behaviour an application already had to live with. Whatever was read is then handed straight back,
+/// because without the fence there is no telling an answer from a keystroke.
 ///
-/// Judging it by shape does not work. On Windows the console layer eats the kitty query's reply and
-/// leaves the last character of it behind, so the first thing a terminal says can be a lone backslash —
-/// and treating that as something a person typed threw away every answer behind it.
+/// With the fence, there is: answers are escape sequences, so what was read outside every sequence was
+/// typed while the terminal was being asked, and <see cref="TerminalReply"/> picks it out to be handed
+/// back. Judging the whole read by its shape does not work — on Windows the console layer eats the kitty
+/// query's reply and leaves the last character of it behind, so the first thing a terminal says can be a
+/// lone backslash, and treating that as something a person typed threw away every answer behind it.
 /// </summary>
 public static class TerminalProbe
 {
@@ -128,17 +128,24 @@ public static class TerminalProbe
             fenced = fenced || Fenced(heard);
         }
 
-        if (fenced)
+        if (!fenced)
         {
-            return heard.ToString();
+            foreach (var key in read)
+            {
+                terminal.Unread(key);
+            }
+
+            return "";
         }
 
-        foreach (var key in read)
+        var said = heard.ToString();
+
+        foreach (var at in TerminalReply.Typing(said))
         {
-            terminal.Unread(key);
+            terminal.Unread(read[at]);
         }
 
-        return "";
+        return said;
     }
 
     private static bool Fenced(StringBuilder heard) =>

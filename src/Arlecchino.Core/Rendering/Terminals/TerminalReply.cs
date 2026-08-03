@@ -1,0 +1,85 @@
+using System;
+using System.Collections.Generic;
+
+namespace Arlecchino.Rendering.Terminals;
+
+/// <summary>
+/// Which of the characters that came back from a probe belong to an answer, and which were typed by a
+/// person while it was waiting.
+///
+/// Every answer a terminal gives is an escape sequence, so the line is drawn where a sequence opens and
+/// where it closes rather than by the look of any one character. Whatever falls outside every sequence
+/// was typed, and belongs back in the application's hands.
+///
+/// One character is excused. On Windows the console layer can eat the kitty query's reply and leave its
+/// last character behind, so a lone backslash arriving before the terminal has said anything is the tail
+/// of a sequence that was never seen, not a key somebody pressed.
+/// </summary>
+internal static class TerminalReply
+{
+    /// <summary>Finds the characters that no answer accounts for.</summary>
+    /// <param name="heard">Everything that was read while the probe waited.</param>
+    /// <returns>Where each typed character sits in <paramref name="heard"/>, in the order it was read.</returns>
+    public static IReadOnlyList<int> Typing(string heard)
+    {
+        ArgumentNullException.ThrowIfNull(heard);
+
+        var typed = new List<int>();
+        var reading = Reading.Ground;
+        var spoken = false;
+
+        for (var at = 0; at < heard.Length; at++)
+        {
+            var letter = heard[at];
+
+            if (reading == Reading.Ground && letter != '\e' && (spoken || letter != '\\'))
+            {
+                typed.Add(at);
+
+                continue;
+            }
+
+            spoken = spoken || letter == '\e';
+            reading = Next(reading, letter);
+        }
+
+        return typed;
+    }
+
+    private static Reading Next(Reading reading, char letter) => reading switch
+    {
+        Reading.Ground => letter == '\e' ? Reading.Escaped : Reading.Ground,
+        Reading.Escaped => Opens(letter),
+        Reading.Single => Reading.Ground,
+        Reading.Control => letter is >= '@' and <= '~' ? Reading.Ground : Reading.Control,
+        Reading.String when letter == '\a' => Reading.Ground,
+        Reading.String => letter == '\e' ? Reading.Closing : Reading.String,
+        Reading.Closing when letter == '\\' => Reading.Ground,
+        _ => letter == '\e' ? Reading.Closing : Reading.String,
+    };
+
+    /// <summary>
+    /// What an escape opened. A bracket opens a control sequence, which any character from <c>@</c> to
+    /// <c>~</c> closes; the four string openers run until a terminator; an <c>O</c> takes exactly one
+    /// character after it; anything else was a sequence two characters long and is already over.
+    /// </summary>
+    /// <param name="letter">What followed the escape.</param>
+    /// <returns>What is being read now.</returns>
+    private static Reading Opens(char letter) => letter switch
+    {
+        '[' => Reading.Control,
+        ']' or '_' or 'P' or '^' or 'X' => Reading.String,
+        'O' => Reading.Single,
+        _ => Reading.Ground,
+    };
+
+    private enum Reading
+    {
+        Ground,
+        Escaped,
+        Single,
+        Control,
+        String,
+        Closing,
+    }
+}

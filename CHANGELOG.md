@@ -9,6 +9,17 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Fixed
+
+- **Keys pressed while the terminal is being asked what it can do no longer disappear.** The probe
+  hands back what it read only when the terminal said nothing at all, so anything typed in the moment
+  before an answer arrived was filed as part of that answer and lost. It is now told apart by where it
+  sits: every answer a terminal gives is an escape sequence, so what lands outside one was typed and
+  goes back to the application. An application that starts fast enough to be typed at during its first
+  frame keeps those keystrokes.
+
 ## 4.0.0
 
 A release about names and about frames. Text gets a name the compiler checks instead of being typed
