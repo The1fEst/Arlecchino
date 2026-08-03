@@ -11,6 +11,12 @@ the public API means a new major. See
 
 ## 4.0.0
 
+A release about names and about frames. Text gets a name the compiler checks instead of being typed
+twice; a dialog, a list row and the whole screen around a view become things an application writes for
+itself rather than things the framework decides. The one break is namespaces — nothing was renamed or
+removed, and a build that fails on it is fixed by adding a sub-namespace to a `using`. See
+[Migrating to 4.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-4.0).
+
 ### Added
 
 - **A localization generator.** Text written where it is drawn gets written twice — the same sentence

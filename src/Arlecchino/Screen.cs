@@ -19,32 +19,33 @@ using Microsoft.Extensions.Logging;
 namespace Arlecchino;
 
 /// <summary>
-/// Draws the frames: the current view first, then the output line, the hints and any dialog on top.
-/// A view that throws while drawing is reported on the output line instead of taking the application
-/// down, since a half-drawn frame is easier to recover from than a dead process.
+///     Draws the frames: the current view first — inside the <see cref="IArlecchinoLayout" /> when the
+///     application registered one — then the output line, the hints and any dialog on top. A view that
+///     throws while drawing is reported on the output line instead of taking the application down, since
+///     a half-drawn frame is easier to recover from than a dead process.
 /// </summary>
 public class Screen
 {
-    private readonly ArlecchinoState _state;
-    private readonly Surface _surface;
-    private readonly Navigator _navigator;
-    private readonly ArlecchinoOptions _options;
-    private readonly ArlecchinoStrings _strings;
-    private readonly ILogger<Screen> _logger;
-    private readonly IArlecchinoTerminal _terminal;
-    private readonly Repaint _repaint;
-    private readonly Ticker _ticker;
-    private readonly LogOverlay _log;
-    private readonly PendingInput _pending;
-    private readonly InputRouter _router;
     private readonly CommandRegistry _commands;
     private readonly ModalFrame _frame;
-    private readonly LogPaint _logPaint;
     private readonly IArlecchinoLayout? _layout;
+    private readonly LogOverlay _log;
+    private readonly LogPaint _logPaint;
+    private readonly ILogger<Screen> _logger;
+    private readonly Navigator _navigator;
+    private readonly ArlecchinoOptions _options;
+    private readonly PendingInput _pending;
+    private readonly Repaint _repaint;
+    private readonly InputRouter _router;
+    private readonly ArlecchinoState _state;
+    private readonly ArlecchinoStrings _strings;
+    private readonly Surface _surface;
+    private readonly IArlecchinoTerminal _terminal;
+    private readonly Ticker _ticker;
+    private int _forgetFrame;
+    private int _lastHeight;
 
     private int _lastWidth;
-    private int _lastHeight;
-    private int _forgetFrame;
 
     /// <summary>Creates the screen.</summary>
     /// <param name="state">Supplies the output line and the dialog to draw.</param>
@@ -97,8 +98,8 @@ public class Screen
     }
 
     /// <summary>
-    /// Draws whatever dialogs are open, oldest first and each a little below and to the right of the
-    /// one under it. What each of them looks like is its own to say.
+    ///     Draws whatever dialogs are open, oldest first and each a little below and to the right of the
+    ///     one under it. What each of them looks like is its own to say.
     /// </summary>
     private void DrawModals()
     {
@@ -113,8 +114,8 @@ public class Screen
     }
 
     /// <summary>
-    /// Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes
-    /// this usable outside the loop — in tests, or after something else has written to the terminal.
+    ///     Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes
+    ///     this usable outside the loop — in tests, or after something else has written to the terminal.
     /// </summary>
     public void DrawOnce()
     {
@@ -123,9 +124,9 @@ public class Screen
     }
 
     /// <summary>
-    /// Asks for the next frame to be drawn from scratch rather than as a difference. Safe from any
-    /// thread, and needed whenever something outside the framework has written over the screen —
-    /// coming back from a suspended process, for one.
+    ///     Asks for the next frame to be drawn from scratch rather than as a difference. Safe from any
+    ///     thread, and needed whenever something outside the framework has written over the screen —
+    ///     coming back from a suspended process, for one.
     /// </summary>
     public void RedrawEverything()
     {
@@ -134,8 +135,8 @@ public class Screen
     }
 
     /// <summary>
-    /// Draws until stopped, at the configured rate. A frame is only built when something asked for one
-    /// or the terminal changed size, so an idle application costs nothing.
+    ///     Draws until stopped, at the configured rate. A frame is only built when something asked for one
+    ///     or the terminal changed size, so an idle application costs nothing.
     /// </summary>
     /// <param name="stoppingToken">Cancelled when the application is shutting down.</param>
     /// <returns>A task that completes once drawing has stopped.</returns>
@@ -161,7 +162,7 @@ public class Screen
         })
         {
             Name = "arlecchino-frames",
-            IsBackground = true,
+            IsBackground = true
         };
 
         thread.Start();
@@ -223,9 +224,9 @@ public class Screen
     }
 
     /// <summary>
-    /// Draws one frame the way the loop does, as the difference from the last one. Reachable from the
-    /// testing package so that a test drives the same path a running application takes, rather than
-    /// the whole-frame path <see cref="DrawOnce"/> forces.
+    ///     Draws one frame the way the loop does, as the difference from the last one. Reachable from the
+    ///     testing package so that a test drives the same path a running application takes, rather than
+    ///     the whole-frame path <see cref="DrawOnce" /> forces.
     /// </summary>
     internal void DrawFrame()
     {
@@ -281,10 +282,10 @@ public class Screen
     }
 
     /// <summary>
-    /// Draws the view, inside the layout when the application has one and the screen wants it. The
-    /// layout decides where the view goes by where it calls back, and the surface holds that region
-    /// for exactly as long as the view is drawing — a view asks for its content and is handed what it
-    /// was left, which is what lets a layout be added without editing a single view.
+    ///     Draws the view, inside the layout when the application has one and the screen wants it. The
+    ///     layout decides where the view goes by where it calls back, and the surface holds that region
+    ///     for exactly as long as the view is drawing — a view asks for its content and is handed what it
+    ///     was left, which is what lets a layout be added without editing a single view.
     /// </summary>
     private void DrawView()
     {
@@ -295,19 +296,20 @@ public class Screen
             return;
         }
 
-        _layout.Draw(_surface.Content, body =>
-        {
-            _surface.Body = body;
+        _layout.Draw(_surface.Content,
+            body =>
+            {
+                _surface.Body = body;
 
-            try
-            {
-                _navigator.Draw();
-            }
-            finally
-            {
-                _surface.Body = null;
-            }
-        });
+                try
+                {
+                    _navigator.Draw();
+                }
+                finally
+                {
+                    _surface.Body = null;
+                }
+            });
     }
 
     private void DrawOutput()
