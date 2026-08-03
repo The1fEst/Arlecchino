@@ -17,12 +17,13 @@ public interface IArlecchinoView
     ViewRoute HandlePaste(string text) => ViewRoute.None;
     IReadOnlyList<ViewCommand> Commands() => [];
     (string Key, string Description)[] Hints() => [];
+    bool UsesLayout => true;
 }
 ```
 
-Only `Draw` and `Handle` have to be written: `HandleMouse`, `HandlePaste`, `Commands` and `Hints`
-have default implementations, so a view writes what it needs and nothing else — see
-[Commands](commands.md).
+Only `Draw` and `Handle` have to be written: everything else has a default implementation, so a view
+writes what it needs and nothing else — see [Commands](commands.md) and
+[a layout around every view](#a-layout-around-every-view).
 
 `Draw` runs once per frame against the shared [`Surface`](rendering.md). `Handle` receives keys that
 survived the input router — modal keys and the command palette key never reach a view, see
@@ -85,6 +86,74 @@ router: it goes to the log and the output row, the way a view that throws while 
 The start route comes from `ArlecchinoOptions.StartRoute` (`.StartAt(...)`), applied in the navigator's
 constructor. For a start route that depends on runtime state, implement `IArlecchinoStartup` instead —
 see [Hosting and options](hosting-and-options.md).
+
+## A layout around every view
+
+A band along the top, a bar along the bottom, whatever a screen of this application always has around
+it. `IArlecchinoLayout` is Razor's `_Layout.cshtml` with `@RenderBody()`: it is handed the room there
+is and a delegate that draws the view, and where it calls that delegate is where the view goes.
+
+```csharp
+public sealed class Chrome : IArlecchinoLayout
+{
+    private readonly Tabs _tabs;
+
+    public Chrome(Tabs tabs) => _tabs = tabs;
+
+    public void Draw(SurfaceRegion frame, Action<SurfaceRegion> body)
+    {
+        _tabs.Draw(frame.Rows(0, 1));
+
+        body(frame.Rows(1, frame.Height - 2));
+
+        frame.WriteLine(frame.Height - 1, "F1 help · F10 quit", Theme.Muted);
+    }
+}
+```
+
+```csharp
+builder.Services
+    .AddArlecchino()
+    .AddGeneratedViews()
+    .UseLayout<Chrome>()
+    .StartAt(ViewKind.Default);
+```
+
+**No view has to be edited.** A view asks the [`Surface`](rendering.md) for its content and is handed
+the room the layout left it, so the same view draws correctly with a layout, without one, or under a
+different one. A screen that wants the whole terminal — a file being read, a picture — says so:
+
+```csharp
+public bool UsesLayout => false;
+```
+
+One instance serves the whole application, built from the container like anything else. That is the
+point of it: what the layout holds outlives the view, so a row of tabs keeps its scroll position when
+a screen is left and come back to, which a header drawn again by every view cannot do. A layout that
+needs the [`Navigator`](#navigator) should resolve it from `IServiceProvider` when it draws rather than
+take it in the constructor, since the navigator is built after it.
+
+`HandleMouse` sees a click before the view does, for a header that answers to one:
+
+```csharp
+public bool HandleMouse(MouseEvent mouse) => _tabs.Clicked(mouse.Row, mouse.Column);
+```
+
+Returning `true` means the layout took it and the view never sees it. There is no key equivalent on
+purpose: a key that works on every screen is an [application command](commands.md), which the
+framework already had, and two ways to say one thing is one too many.
+
+:::note[The framework's own chrome sits on top]
+
+The [hints box](commands.md) and the [output line](state.md#the-output-line) are drawn over the frame
+after the layout, so an application with a bar of its own turns them off:
+
+```csharp
+options.ShowHints = false;
+options.ShowOutputLine = false;
+```
+
+:::
 
 ## Focus inside a view
 
