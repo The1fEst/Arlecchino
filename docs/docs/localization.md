@@ -79,9 +79,30 @@ it at runtime and the next frame is in the new language; nothing is rebuilt, bec
 A missing string is information rather than an error on purpose: a half-finished translation should
 show English where it has nothing to say, not stop the build or leave a hole on the screen.
 
+### Naming a key
+
+A [view command](commands.md#commands-of-a-view) takes a `Func<string>` for its label, because the
+label is read every frame — that is what lets changing language change the screen. It cannot take a
+`LocString`: there is no such type until an application is compiled, since the enum is written out of
+that application's own file. So the generator writes the shorthand beside the enum, where both are in
+scope:
+
+```csharp
+public IReadOnlyList<ViewCommand> Commands() =>
+[
+    Bind.To(new(ConsoleKey.F5), LocString.Copy, _files.Copy),
+    Bind.Going(new(ConsoleKey.F3), LocString.View, _files.Read),
+    Bind.When(new(ConsoleKey.Escape, ConsoleModifiers.Alt), LocString.Stop,
+        () => _work.IsBusy, _work.Cancel),
+];
+```
+
+`To` stays on the screen, `Going` returns a route, and `When` adds an `IsEnabled`. All three are the
+same `Func<string>` underneath.
+
 ### Where it lands
 
-The enum and the resolver go in `RootNamespace`, or `Localization` when that is empty.
+The enum, the resolver and `Bind` go in `RootNamespace`, or `Localization` when that is empty.
 `ArlecchinoLocalizationFolder` moves the folder it reads (`Localization` by default) and
 `ArlecchinoLocalizationLanguage` says which language is the default (`en`).
 
