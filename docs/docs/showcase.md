@@ -69,7 +69,9 @@ Work of any size runs in the background with a bar and `Esc` to stop it, and rep
 Each tab holds two panels of its own, so a second pair of folders is a tab away rather than a place to
 navigate back to. The band along the top says what each one is connected to and answers to the mouse —
 a click shows a tab, its `×` closes it, the `+` at the end opens another. `Alt+T`, `Alt+W`, `Alt+PgDn`
-and `Alt+PgUp` do the same from the keyboard, and `F2` lists them all.
+and `Alt+PgUp` do the same from the keyboard, and `F2` lists them all. More tabs than the band can hold
+shortens the names first and then scrolls, which is worth stealing: shortening alone ends in a row of
+stubs that name nothing, and scrolling alone hides tabs that two fewer letters would have fitted.
 
 A panel connects by a `Host` entry from `~/.ssh/config`, browses the server as it browses a disk, and
 the same credentials run a command on it:
