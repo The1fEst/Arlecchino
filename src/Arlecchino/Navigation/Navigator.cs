@@ -99,6 +99,17 @@ public class Navigator
     /// <summary>Whether a step back can be retraced.</summary>
     public bool CanGoForward => _forward.Count > 0;
 
+    /// <summary>Whether the screen being shown wants the layout drawn around it.</summary>
+    public bool CurrentUsesLayout
+    {
+        get
+        {
+            Build();
+
+            return _active?.View.UsesLayout ?? true;
+        }
+    }
+
     /// <summary>Draws the current screen. Called once per frame.</summary>
     public void Draw()
     {

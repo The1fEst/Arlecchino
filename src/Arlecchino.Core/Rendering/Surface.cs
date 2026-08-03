@@ -33,6 +33,7 @@ public partial class Surface
     private int _width;
     private int _height;
     private int _lines;
+    private SurfaceRegion? _body;
     private int _fixedWidth;
     private int _fixedHeight;
     private SurfaceRegion? _clip;
@@ -60,8 +61,23 @@ public partial class Surface
     /// <summary>The whole frame as a region.</summary>
     public SurfaceRegion Frame => new(this, 0, 0, _width, _height);
 
-    /// <summary>The frame minus the configured padding — where a view normally draws.</summary>
-    public SurfaceRegion Content => Frame.Inset(new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
+    /// <summary>
+    /// Where a view draws: the frame minus the configured padding, or the room a layout left it while
+    /// one is drawing the view inside itself. A view asks for this and gets what it has been given,
+    /// which is what lets a layout be added to an application without a single view knowing.
+    /// </summary>
+    public SurfaceRegion Content => _body ?? Frame.Inset(
+        new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
+
+    /// <summary>
+    /// The room a layout has left for the view, set for as long as the view is being drawn and put
+    /// back afterwards. Nothing outside the drawing of one frame ever sees it set.
+    /// </summary>
+    internal SurfaceRegion? Body
+    {
+        get => _body;
+        set => _body = value;
+    }
 
     private int FreeLines => Math.Max(0, _height - _lines);
 

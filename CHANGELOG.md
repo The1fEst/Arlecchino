@@ -103,6 +103,35 @@ the public API means a new major. See
   };
   ```
 
+- **`IArlecchinoLayout`**, the frame every view is drawn inside — a band along the top, a bar along the
+  bottom, whatever a screen of this application always has around it. It is Razor's `_Layout` with
+  `@RenderBody()`: the layout is handed the room there is and a delegate that draws the view, and where
+  it calls that delegate is where the view goes.
+
+  ```csharp
+  public sealed class Chrome : IArlecchinoLayout
+  {
+      public void Draw(SurfaceRegion frame, Action<SurfaceRegion> body)
+      {
+          _tabs.Draw(frame.Rows(0, 1));
+          body(frame.Rows(1, frame.Height - 2));
+          _bar.Draw(frame.Rows(frame.Height - 1, 1));
+      }
+  }
+
+  builder.Services.AddArlecchino().UseLayout<Chrome>();
+  ```
+
+  One instance serves the whole application, so what it holds outlives the view — a row of tabs keeps
+  its scroll position when a screen is left and come back to, which is the point of having a header in
+  one place rather than drawn again by every view. `Surface.Content` answers with the room the layout
+  left, so **no view has to be edited**: it asks for its content as it always did and is handed what it
+  was given. A screen that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout`.
+
+  `IArlecchinoLayout.HandleMouse` sees a click before the view does, for a header that answers to one.
+  There is no key equivalent on purpose: a key that works on every screen is an `IArlecchinoCommand`,
+  which the framework already had.
+
 - **`Notifications.Recent`**, everything worth showing right now rather than only the newest line.
   `Current` answers for one row at the bottom of the screen, and one row can hold one message; an
   application that shows its work as a stack of cards in the corner wants all of it. This is everything

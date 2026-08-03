@@ -40,6 +40,7 @@ public class Screen
     private readonly CommandRegistry _commands;
     private readonly ModalFrame _frame;
     private readonly LogPaint _logPaint;
+    private readonly IArlecchinoLayout? _layout;
 
     private int _lastWidth;
     private int _lastHeight;
@@ -59,6 +60,7 @@ public class Screen
     /// <param name="commands">The registered commands, for offering the palette in the hints box.</param>
     /// <param name="frame">What a dialog is handed while it is on screen.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
+    /// <param name="layout">The frame drawn around every view, when the application registered one.</param>
     internal Screen(
         ArlecchinoState state,
         Surface surface,
@@ -72,8 +74,11 @@ public class Screen
         InputRouter router,
         CommandRegistry commands,
         ModalFrame frame,
-        ILogger<Screen> logger)
+        ILogger<Screen> logger,
+        IArlecchinoLayout? layout = null)
     {
+        _layout = layout;
+
         _commands = commands;
         _log = log;
         _pending = pending;
@@ -242,7 +247,7 @@ public class Screen
 
         try
         {
-            _navigator.Draw();
+            DrawView();
         }
         catch (Exception exception)
         {
@@ -273,6 +278,36 @@ public class Screen
         {
             Log.RowsVanished(_logger, _navigator.CurrentRoute, skipped);
         }
+    }
+
+    /// <summary>
+    /// Draws the view, inside the layout when the application has one and the screen wants it. The
+    /// layout decides where the view goes by where it calls back, and the surface holds that region
+    /// for exactly as long as the view is drawing — a view asks for its content and is handed what it
+    /// was left, which is what lets a layout be added without editing a single view.
+    /// </summary>
+    private void DrawView()
+    {
+        if (_layout is null || !_navigator.CurrentUsesLayout)
+        {
+            _navigator.Draw();
+
+            return;
+        }
+
+        _layout.Draw(_surface.Content, body =>
+        {
+            _surface.Body = body;
+
+            try
+            {
+                _navigator.Draw();
+            }
+            finally
+            {
+                _surface.Body = null;
+            }
+        });
     }
 
     private void DrawOutput()

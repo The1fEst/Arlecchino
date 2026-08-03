@@ -52,4 +52,11 @@ public interface IArlecchinoView
     /// </summary>
     /// <returns>Pairs of key and description.</returns>
     (string Key, string Description)[] Hints() => [];
+
+    /// <summary>
+    /// Whether the <see cref="IArlecchinoLayout"/> is drawn around this screen, when the application
+    /// has one. Answer <c>false</c> for a screen that wants the whole terminal — a file being read, a
+    /// picture, anything where the band along the top is in the way rather than in the frame.
+    /// </summary>
+    bool UsesLayout => true;
 }

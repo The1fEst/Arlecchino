@@ -273,6 +273,25 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
+    /// Draws every view inside a frame of the application's own: a band along the top, a bar along the
+    /// bottom, whatever a screen here always has around it.
+    ///
+    /// One instance serves the whole application, so what the frame holds outlives the view — a row of
+    /// tabs keeps its place when a screen is left and come back to. A view that wants the whole
+    /// terminal answers <c>false</c> to <c>IArlecchinoView.UsesLayout</c> and is drawn without it.
+    /// </summary>
+    /// <typeparam name="TLayout">The layout type, built from the container.</typeparam>
+    /// <returns>The builder.</returns>
+    public ArlecchinoBuilder UseLayout<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TLayout>()
+        where TLayout : class, IArlecchinoLayout
+    {
+        Services.RemoveAll<IArlecchinoLayout>();
+        Services.AddSingleton<IArlecchinoLayout, TLayout>();
+
+        return this;
+    }
+
+    /// <summary>
     /// Draws to something other than the console, replacing whatever terminal was registered. This is
     /// how tests capture frames instead of writing them.
     /// </summary>

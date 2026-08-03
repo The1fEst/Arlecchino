@@ -1,5 +1,6 @@
 #nullable enable
 Arlecchino.Diagnostics.Notifications.Recent.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
+Arlecchino.Hosting.ArlecchinoBuilder.UseLayout<TLayout>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Modals.Choosing.CommandModal.OnKey.get -> System.Action<System.ConsoleKeyInfo>?
 Arlecchino.Modals.Choosing.CommandModal.OnKey.init -> void
 Arlecchino.Modals.Choosing.CommandModal.OnRow.get -> System.Action<int>?
@@ -25,6 +26,11 @@ Arlecchino.Modals.Piece.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColo
 Arlecchino.Modals.Piece.Style.init -> void
 Arlecchino.Modals.Piece.Text.get -> string!
 Arlecchino.Modals.Piece.Text.init -> void
+Arlecchino.Navigation.IArlecchinoLayout
+Arlecchino.Navigation.IArlecchinoLayout.Draw(Arlecchino.Rendering.SurfaceRegion frame, System.Action<Arlecchino.Rendering.SurfaceRegion>! body) -> void
+Arlecchino.Navigation.IArlecchinoLayout.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> bool
+Arlecchino.Navigation.IArlecchinoView.UsesLayout.get -> bool
+Arlecchino.Navigation.Navigator.CurrentUsesLayout.get -> bool
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Rendering.SurfaceRegion, T, bool>?
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.init -> void
 abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void

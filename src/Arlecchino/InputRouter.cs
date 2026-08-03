@@ -34,6 +34,7 @@ public class InputRouter
     private readonly ILogger<InputRouter> _logger;
     private readonly ModalFrame _frame;
     private readonly CommandPalette _palette;
+    private readonly IArlecchinoLayout? _layout;
 
     /// <summary>Creates the router.</summary>
     /// <param name="state">Holds the open dialog and the output line.</param>
@@ -46,6 +47,7 @@ public class InputRouter
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
     /// <param name="frame">What a dialog is handed while it is on screen.</param>
     /// <param name="logger">Where handler failures are reported.</param>
+    /// <param name="layout">The frame around every view, which sees a click before the view does.</param>
     internal InputRouter(
         ArlecchinoState state,
         Navigator navigator,
@@ -56,8 +58,10 @@ public class InputRouter
         KeyText keyText,
         Repaint repaint,
         ModalFrame frame,
-        ILogger<InputRouter> logger)
+        ILogger<InputRouter> logger,
+        IArlecchinoLayout? layout = null)
     {
+        _layout = layout;
         _state = state;
         _navigator = navigator;
         _terminal = terminal;
@@ -224,12 +228,20 @@ public class InputRouter
         return true;
     }
 
+    /// <summary>
+    /// Where a mouse event goes: the dialog on top if there is one, then the output row, then the
+    /// layout, then the view. The layout is asked before the view because what it draws is around the
+    /// view rather than under it — a click on the band along the top landed on the band.
+    /// </summary>
+    /// <param name="mouse">The event that arrived.</param>
     private void RouteMouse(MouseEvent mouse)
     {
         switch (_state.Modal)
         {
             case null when ClickedOutputRow(mouse):
                 _navigator.Apply(Routes.Notifications);
+                return;
+            case null when _layout is { } layout && _navigator.CurrentUsesLayout && layout.HandleMouse(mouse):
                 return;
             case null:
                 _navigator.HandleMouse(mouse);
