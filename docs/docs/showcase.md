@@ -57,10 +57,10 @@ Copying and deleting ask first, with the negative answer selected, so a stray `E
 
 ![Deleting asks first, with no selected](/img/screenshots/delete.png)
 
-Work of any size runs in the background with a bar and `Esc` to stop it, and reports itself as a
+Work of any size runs in the background with a bar and `Alt+Esc` to stop it, and reports itself as a
 [notification](state.md#notifications) that opens in full and turns into what came of it:
 
-![A copy running in the background, with a bar and Esc to stop](/img/screenshots/progress.png)
+![A copy running in the background, with a bar and Alt+Esc to stop](/img/screenshots/progress.png)
 
 ![The same copy opened in full, with Stop offered](/img/screenshots/notification.png)
 
