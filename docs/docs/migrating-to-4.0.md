@@ -8,13 +8,14 @@ description: The usings a namespace split needs, the one behaviour change worth 
 
 One break and one behaviour change. The break is namespaces, which the compiler points at and a `using`
 fixes; the behaviour change is quiet and worth two minutes of reading. Everything else 4.0 added — the
-localization generator, dialogs of your own, `PaintRow`, `Notifications.Recent` — is new surface an
-existing application gets without asking.
+localization generator, layouts, dialogs of your own, `PaintRow`, `Notifications.Recent` — is new
+surface an existing application gets without asking.
 
 | What changed | What to do |
 |---|---|
 | Four namespaces split into sub-namespaces | Add the sub-namespace to the `using` the compiler names |
 | A disabled `ViewCommand` no longer swallows its key | Nothing, unless a view relied on the key disappearing |
+| `Alt+Esc` now arrives as one key rather than two Escapes | Nothing, unless a view counted on the two |
 
 ## Namespaces follow their folders
 
@@ -111,3 +112,13 @@ of one string in one style. `Render` and `ItemStyle` still work and are still wh
 **Notifications can be shown as a stack.** `Notifications.Recent` is everything running plus everything
 that ended recently, newest first, for an application that shows its work as cards rather than one
 line. See [Diagnostics](diagnostics.md#showing-more-than-the-newest-line).
+
+**Every view can share one frame.** `UseLayout<T>()` draws a band, a bar, or both around every screen,
+and `Surface.Content` hands each view the room the layout left it — so an application moves its header
+out of the views without editing one of them. See
+[Views and navigation](views-and-navigation.md#a-layout-around-every-view).
+
+**A key can be named from the localization.** The generator writes `Bind` beside `LocString`, so
+`Bind.To(new(ConsoleKey.F5), LocString.Copy, files.Copy)` replaces the lambda. Existing
+`ViewCommand.For(binding, () => "copy", …)` keeps working. See
+[Localization](localization.md#naming-a-key).

@@ -72,6 +72,48 @@ titled box with its hints under a rule that every dialog the framework brings is
 is what makes one you wrote read as the same application. See
 [Modals](modals.md#a-dialog-of-your-own).
 
+## One frame around every view
+
+A band along the top, a bar along the bottom, whatever a screen of this application always has around
+it. `IArlecchinoLayout` is Razor's `_Layout.cshtml` with `@RenderBody()`: it is handed the room there
+is and a delegate that draws the view, and where it calls that delegate is where the view goes.
+
+```csharp
+public sealed class Chrome : IArlecchinoLayout
+{
+    public void Draw(SurfaceRegion frame, Action<SurfaceRegion> body)
+    {
+        _tabs.Draw(frame.Rows(0, 1));
+        body(frame.Rows(1, frame.Height - 2));
+        _bar.Draw(frame.Rows(frame.Height - 1, 1));
+    }
+}
+
+builder.Services.AddArlecchino().UseLayout<Chrome>();
+```
+
+No view has to be edited: it asks the `Surface` for its content as it always did and is handed the
+room the layout left it. One instance serves the whole application, so what it holds outlives the
+view — a row of tabs keeps its scroll position when a screen is left and come back to. A screen that
+wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout`. See
+[Views and navigation](views-and-navigation.md#a-layout-around-every-view).
+
+## A key named from the localization
+
+The generator writes `Bind` beside the `LocString` it emits, so a key is named out of the same file as
+everything else:
+
+```csharp
+Bind.To(new(ConsoleKey.F5), LocString.Copy, files.Copy)
+Bind.Going(new(ConsoleKey.F3), LocString.View, files.Read)
+Bind.When(new(ConsoleKey.Escape, ConsoleModifiers.Alt), LocString.Stop, () => work.IsBusy, work.Cancel)
+```
+
+`ViewCommand` takes a `Func<string>` and can take nothing else — a label is read every frame so that
+changing language changes the screen — and it cannot take a `LocString`, because there is no such type
+until an application is compiled. So the shorthand is written into the application beside the enum it
+names, which is the only place both are in scope.
+
 ## A list row can be painted
 
 `Render` and `ItemStyle` write a row as one string in one style, which is right for most lists and
@@ -134,11 +176,19 @@ stayed put is the vocabulary every file reaches for anyway: `Modal` and `ModalFr
 
 | What | Where |
 |---|---|
-| The localization generator, `LocString`, `Loc` | [Localization](localization.md#text-with-a-name) |
+| The localization generator, `LocString`, `Loc`, `Bind` | [Localization](localization.md#text-with-a-name) |
+| `IArlecchinoLayout`, `UseLayout<T>()`, `IArlecchinoView.UsesLayout` | [Views and navigation](views-and-navigation.md#a-layout-around-every-view) |
 | `Modal.Draw` / `Modal.Handle`, `ModalFrame`, `Piece` | [Modals](modals.md#a-dialog-of-your-own) |
 | `ListBox<T>.PaintRow` | [Lists](lists.md) |
 | `Notifications.Recent` | [Diagnostics](diagnostics.md#showing-more-than-the-newest-line) |
 | `ArlecchinoLocalizationFolder`, `ArlecchinoLocalizationLanguage` | [Source generator](source-generator.md#msbuild-switches) |
+
+## Fixed
+
+- **`Alt+Esc` reached an application as two plain Escapes**, which left it impossible to bind. Holding
+  Alt puts an escape in front of the key, and this key is itself an escape; the runtime folds that
+  prefix back for every other key and left `\e\e` as it found it. There is no such fix for `Ctrl+Esc`
+  and there cannot be one — a terminal has no encoding for it, so nothing is sent at all.
 
 ## What came just before it
 
