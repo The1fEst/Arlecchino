@@ -241,7 +241,7 @@ public class InputRouter
             case null when ClickedOutputRow(mouse):
                 _navigator.Apply(Routes.Notifications);
                 return;
-            case null when _layout is { } layout && _navigator.CurrentUsesLayout && layout.HandleMouse(mouse):
+            case null when _layout is not null && _navigator.CurrentUsesLayout && _layout.HandleMouse(mouse):
                 return;
             case null:
                 _navigator.HandleMouse(mouse);
