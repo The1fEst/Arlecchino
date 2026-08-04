@@ -25,75 +25,37 @@ Above: [Arlecchino.Commander](https://github.com/The1fEst/Arlecchino.Commander),
 on the framework. The dialog, the notification and the keys screen are the framework's own.
 
 <details>
-<summary><b>Sixteen screens</b> — the panels, marks, the menu, file operations, servers, SSH, notifications</summary>
+<summary><b>More screens</summary>
 
 ### The panels
 
-![Two panels over a local disk](assets/screenshots/panels.png)
+![Two panels over a local disk](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/panels.png?raw=true)
 
-Marks are counted at the foot of the panel:
+![Three files marked, counted at the foot of the panel](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/marks.png?raw=true)
 
-![Three files marked, counted at the foot of the panel](assets/screenshots/marks.png)
+![The right panel sorted by size](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/sorted.png?raw=true)
 
-Either panel sorts by name, size or date:
+![The panel filtered by name](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/filter.png?raw=true)
 
-![The right panel sorted by size](assets/screenshots/sorted.png)
+![A file read without leaving the panels](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/viewer.png?raw=true)
 
-A filter narrows one down:
+![The menu, opened by F9](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/menu.png?raw=true)
 
-![The panel filtered by name](assets/screenshots/filter.png)
+![What can be done to what is marked](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/file-menu.png?raw=true)
 
-A file is read without leaving them:
+![Copying asks where to](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/copy.png?raw=true)
 
-![A file read without leaving the panels](assets/screenshots/viewer.png)
+![Deleting asks first, with no selected](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/delete.png?raw=true)
 
-### Menus and operations
+![A copy running in the background, with a bar and Alt+Esc to stop](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/progress.png?raw=true)
 
-`F9` opens the menu, and each section is a list:
+![The same copy opened in full, with Stop offered](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/notification.png?raw=true)
 
-![The menu, opened by F9](assets/screenshots/menu.png)
+![The same entry once the copy is over](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/done.png?raw=true)
 
-![What can be done to what is marked](assets/screenshots/file-menu.png)
+![A panel browsing a server over SFTP](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/server.png?raw=true)
 
-Copying asks where to; deleting asks first, with no selected:
-
-![Copying asks where to](assets/screenshots/copy.png)
-
-![Deleting asks first, with no selected](assets/screenshots/delete.png)
-
-### Work that takes a while
-
-It runs in the background, with a bar and `Esc` to stop:
-
-![A copy running in the background, with a bar and Esc to stop](assets/screenshots/progress.png)
-
-The same copy is a notification, opened in full and offering to stop it:
-
-![The same copy opened in full, with Stop offered](assets/screenshots/notification.png)
-
-The entry turns into what came of it, in place:
-
-![The same entry once the copy is over](assets/screenshots/done.png)
-
-### Servers
-
-Hosts come from `~/.ssh/config`:
-
-![Hosts read from ~/.ssh/config](assets/screenshots/hosts.png)
-
-A panel browses one over SFTP:
-
-![A panel browsing a server over SFTP](assets/screenshots/server.png)
-
-And a command runs on it:
-
-![A command run on that server](assets/screenshots/ssh.png)
-
-### What comes with the framework
-
-The keys screen is the framework's own:
-
-![The keys screen](assets/screenshots/help.png)
+![The keys screen](https://github.com/The1fEst/Arlecchino.Commander/blob/master/assets/screenshots/help.png?raw=true)
 
 </details>
 
