@@ -25,8 +25,8 @@ Arlecchino.Atoms.LoadStatus.Loading = 1 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Commands.CommandRegistry
 Arlecchino.Commands.CommandRegistry.CommandRegistry(System.Collections.Generic.IEnumerable<Arlecchino.Commands.IArlecchinoCommand!>! commands) -> void
 Arlecchino.Commands.CommandRegistry.Commands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.IArlecchinoCommand!>!
-Arlecchino.Commands.CommandRegistry.Send(System.ConsoleKeyInfo pressed) -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Commands.CommandRegistry.TryFind(System.ConsoleKeyInfo pressed, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
+Arlecchino.Commands.CommandRegistry.Send(Arlecchino.Input.KeyPress pressed) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Commands.CommandRegistry.TryFind(Arlecchino.Input.KeyPress pressed, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
 Arlecchino.Commands.IArlecchinoCommand
 Arlecchino.Commands.IArlecchinoCommand.Binding.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Commands.IArlecchinoCommand.Execute() -> Arlecchino.Navigation.ViewRoute
@@ -133,18 +133,18 @@ Arlecchino.Focus.FocusRing.Focus(Arlecchino.Focus.IArlecchinoFocusable! item) ->
 Arlecchino.Focus.FocusRing.FocusNext() -> void
 Arlecchino.Focus.FocusRing.FocusPrevious() -> void
 Arlecchino.Focus.FocusRing.FocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
-Arlecchino.Focus.FocusRing.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Focus.FocusRing.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Focus.FocusRing.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Focus.FocusRing.Index.get -> int
 Arlecchino.Focus.FocusRing.Items.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Focus.IArlecchinoFocusable!>!
 Arlecchino.Focus.FocusablePane
-Arlecchino.Focus.FocusablePane.FocusablePane(System.Func<System.ConsoleKeyInfo, Arlecchino.Focus.FocusResult>! handle, System.Func<Arlecchino.Input.MouseEvent, Arlecchino.Focus.FocusResult>? handleMouse = null) -> void
-Arlecchino.Focus.FocusablePane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Focus.FocusablePane.FocusablePane(System.Func<Arlecchino.Input.KeyPress, Arlecchino.Focus.FocusResult>! handle, System.Func<Arlecchino.Input.MouseEvent, Arlecchino.Focus.FocusResult>? handleMouse = null) -> void
+Arlecchino.Focus.FocusablePane.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Focus.FocusablePane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Focus.FocusablePane.IsFocused.get -> bool
 Arlecchino.Focus.FocusablePane.IsFocused.set -> void
 Arlecchino.Focus.IArlecchinoFocusable
-Arlecchino.Focus.IArlecchinoFocusable.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Focus.IArlecchinoFocusable.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Focus.IArlecchinoFocusable.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.get -> bool
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.set -> void
@@ -170,7 +170,7 @@ Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecch
 Arlecchino.Forms.Form.Fields.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Forms.Field!>!
 Arlecchino.Forms.Form.Fields.init -> void
 Arlecchino.Forms.Form.Form(Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
-Arlecchino.Forms.Form.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Forms.Form.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Forms.Form.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Forms.Form.IsFocused.get -> bool
@@ -192,7 +192,7 @@ Arlecchino.Hosting.ArlecchinoBuilder.UseKeymap(Arlecchino.Hosting.ArlecchinoKeym
 Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseLayout<TLayout>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseMouse() -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(System.ConsoleKeyInfo? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(Arlecchino.Input.KeyPress? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseStrings(Arlecchino.Hosting.ArlecchinoStrings! strings) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTerminal<TTerminal>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTextInput(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -249,6 +249,7 @@ Arlecchino.Hosting.ArlecchinoKeymap.PickCurrentFolder.get -> Arlecchino.Input.Ke
 Arlecchino.Hosting.ArlecchinoKeymap.PickCurrentFolder.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.PreviousField.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.PreviousField.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Hosting.ArlecchinoKeymap!
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.ToggleLog.get -> Arlecchino.Input.KeyBinding
@@ -487,11 +488,11 @@ Arlecchino.Hosting.Ticker.NextDue.get -> System.DateTimeOffset?
 Arlecchino.Hosting.Ticker.Run(System.Action<System.Exception!>! onError) -> void
 Arlecchino.Hosting.Ticker.Ticker(System.TimeProvider! time, Arlecchino.Repaint! repaint) -> void
 Arlecchino.Input.TerminalInputReader
-Arlecchino.Input.TerminalInputReader.Read(System.ConsoleKeyInfo key) -> void
+Arlecchino.Input.TerminalInputReader.Read(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Input.TerminalInputReader.ReadPending() -> void
 Arlecchino.Input.TerminalInputReader.TerminalInputReader(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.InputRouter! router, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
 Arlecchino.InputRouter
-Arlecchino.InputRouter.ProcessKey(System.ConsoleKeyInfo key) -> void
+Arlecchino.InputRouter.ProcessKey(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.InputRouter.ProcessMouse(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.InputRouter.ProcessPaste(string! text) -> void
 Arlecchino.Layout.PaneSize
@@ -618,7 +619,7 @@ Arlecchino.Modals.Choosing.CommandModal
 Arlecchino.Modals.Choosing.CommandModal.CommandModal() -> void
 Arlecchino.Modals.Choosing.CommandModal.Commands.get -> System.Collections.Generic.IReadOnlyList<(string! Key, string! Label)>!
 Arlecchino.Modals.Choosing.CommandModal.Commands.init -> void
-Arlecchino.Modals.Choosing.CommandModal.OnKey.get -> System.Action<System.ConsoleKeyInfo>?
+Arlecchino.Modals.Choosing.CommandModal.OnKey.get -> System.Action<Arlecchino.Input.KeyPress>?
 Arlecchino.Modals.Choosing.CommandModal.OnKey.init -> void
 Arlecchino.Modals.Choosing.CommandModal.OnRow.get -> System.Action<int>?
 Arlecchino.Modals.Choosing.CommandModal.OnRow.init -> void
@@ -792,7 +793,7 @@ Arlecchino.Navigation.IArlecchinoLayout.HandleMouse(Arlecchino.Input.MouseEvent 
 Arlecchino.Navigation.IArlecchinoView
 Arlecchino.Navigation.IArlecchinoView.Commands() -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.ViewCommand!>!
 Arlecchino.Navigation.IArlecchinoView.Draw() -> void
-Arlecchino.Navigation.IArlecchinoView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Navigation.IArlecchinoView.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.HandlePaste(string! text) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.Hints() -> (string! Key, string! Description)[]!
@@ -810,7 +811,7 @@ Arlecchino.Navigation.Navigator.CurrentRoute.get -> Arlecchino.Navigation.ViewRo
 Arlecchino.Navigation.Navigator.CurrentUsesLayout.get -> bool
 Arlecchino.Navigation.Navigator.Draw() -> void
 Arlecchino.Navigation.Navigator.Forward() -> bool
-Arlecchino.Navigation.Navigator.Handle(System.ConsoleKeyInfo key) -> void
+Arlecchino.Navigation.Navigator.Handle(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Navigation.Navigator.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.Navigation.Navigator.HandlePaste(string! text) -> void
 Arlecchino.Navigation.Navigator.Reload() -> void
@@ -909,7 +910,7 @@ Arlecchino.Widgets.IArlecchinoWidget
 Arlecchino.Widgets.IArlecchinoWidget.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Lists.ListBox<T>
 Arlecchino.Widgets.Lists.ListBox<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Lists.ListBox<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ListBox<T>.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.ListBox<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.ListBox<T>.IsFocused.get -> bool
 Arlecchino.Widgets.Lists.ListBox<T>.IsFocused.set -> void
@@ -934,7 +935,7 @@ Arlecchino.Widgets.Lists.ScrollPane.Content.init -> void
 Arlecchino.Widgets.Lists.ScrollPane.ContentHeight.get -> System.Func<int>!
 Arlecchino.Widgets.Lists.ScrollPane.ContentHeight.init -> void
 Arlecchino.Widgets.Lists.ScrollPane.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Lists.ScrollPane.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.ScrollPane.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.ScrollPane.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.ScrollPane.IsFocused.get -> bool
 Arlecchino.Widgets.Lists.ScrollPane.IsFocused.set -> void
@@ -958,7 +959,7 @@ Arlecchino.Widgets.Lists.Table<T>
 Arlecchino.Widgets.Lists.Table<T>.Columns.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Lists.TableColumn<T>!>!
 Arlecchino.Widgets.Lists.Table<T>.Columns.init -> void
 Arlecchino.Widgets.Lists.Table<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Lists.Table<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Table<T>.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Table<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Table<T>.IsFocused.get -> bool
 Arlecchino.Widgets.Lists.Table<T>.IsFocused.set -> void
@@ -989,7 +990,7 @@ Arlecchino.Widgets.Lists.TableColumn<T>.Width.get -> int
 Arlecchino.Widgets.Lists.TableColumn<T>.Width.init -> void
 Arlecchino.Widgets.Lists.Tabs
 Arlecchino.Widgets.Lists.Tabs.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Lists.Tabs.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tabs.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Tabs.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Tabs.IsFocused.get -> bool
 Arlecchino.Widgets.Lists.Tabs.IsFocused.set -> void
@@ -1004,7 +1005,7 @@ Arlecchino.Widgets.Lists.Tree<T>
 Arlecchino.Widgets.Lists.Tree<T>.CollapseAll() -> void
 Arlecchino.Widgets.Lists.Tree<T>.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Lists.Tree<T>.ExpandAll() -> void
-Arlecchino.Widgets.Lists.Tree<T>.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Lists.Tree<T>.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Tree<T>.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Lists.Tree<T>.IsFocused.get -> bool
 Arlecchino.Widgets.Lists.Tree<T>.IsFocused.set -> void
@@ -1150,7 +1151,7 @@ Arlecchino.Widgets.Readouts.StatusBar.Style.get -> Arlecchino.Rendering.Colors.I
 Arlecchino.Widgets.Readouts.StatusBar.Style.init -> void
 Arlecchino.Widgets.Readouts.TextView
 Arlecchino.Widgets.Readouts.TextView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Widgets.Readouts.TextView.Handle(System.ConsoleKeyInfo key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Readouts.TextView.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Readouts.TextView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
 Arlecchino.Widgets.Readouts.TextView.IsFocused.get -> bool
 Arlecchino.Widgets.Readouts.TextView.IsFocused.set -> void
@@ -1167,7 +1168,7 @@ Arlecchino.Widgets.Readouts.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeyma
 abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
 abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void
 abstract Arlecchino.Modals.Modal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-abstract Arlecchino.Modals.Modal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+abstract Arlecchino.Modals.Modal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 abstract Arlecchino.Modals.Setting.SegmentedModal.Add(int delta) -> void
 abstract Arlecchino.Modals.Setting.SegmentedModal.ApplyTypedValue(int segment, int value) -> void
 abstract Arlecchino.Modals.Setting.SegmentedModal.SegmentCount.get -> int
@@ -1190,31 +1191,31 @@ override Arlecchino.Hosting.ArlecchinoKeymap.GetHashCode() -> int
 override Arlecchino.Hosting.ArlecchinoKeymap.ToString() -> string!
 override Arlecchino.Layout.PaneSize.GetHashCode() -> int
 override Arlecchino.Modals.Asking.NumberModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Asking.NumberModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Asking.NumberModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Asking.TextAreaModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Asking.TextAreaModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Asking.TextModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Asking.TextModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Asking.TextModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.ChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Choosing.ChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.ChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.CommandModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Choosing.CommandModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.CommandModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.CommandModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Modals.Choosing.MultiChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Choosing.MultiChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Choosing.MultiChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.OptionListModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Modals.Piece.GetHashCode() -> int
 override Arlecchino.Modals.Setting.ColorModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Setting.ColorModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.ColorModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.ColorModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Modals.Setting.DateModal.Add(int delta) -> void
 override Arlecchino.Modals.Setting.DateModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Setting.DateModal.SegmentCount.get -> int
 override Arlecchino.Modals.Setting.DateModal.SegmentTexts() -> string![]!
 override Arlecchino.Modals.Setting.DateModal.Separator.get -> string!
-override Arlecchino.Modals.Setting.SegmentedModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.SegmentedModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.SliderModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Setting.SliderModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.SliderModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.SliderModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Modals.Setting.TimeModal.Add(int delta) -> void
 override Arlecchino.Modals.Setting.TimeModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
@@ -1222,12 +1223,12 @@ override Arlecchino.Modals.Setting.TimeModal.SegmentCount.get -> int
 override Arlecchino.Modals.Setting.TimeModal.SegmentTexts() -> string![]!
 override Arlecchino.Modals.Setting.TimeModal.Separator.get -> string!
 override Arlecchino.Modals.Setting.ToggleModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Setting.ToggleModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Setting.ToggleModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.ToggleModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Modals.Telling.MessageModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Telling.MessageModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Telling.MessageModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Telling.NotificationModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Telling.NotificationModal.Handle(Arlecchino.Modals.ModalFrame! frame, System.ConsoleKeyInfo key) -> void
+override Arlecchino.Modals.Telling.NotificationModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Telling.NotificationModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
 override Arlecchino.Navigation.ViewRoute.GetHashCode() -> int
 override Arlecchino.Navigation.ViewRoute.ToString() -> string!

@@ -9,7 +9,14 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## Unreleased
+## 5.0.0
+
+A release about the keyboard. A key press stops being the console's own type and becomes `KeyPress`, which
+has room for the modifier that type could not hold: Command, the one key a Mac terminal has going spare
+once Option is spoken for by the characters it types. A whole keymap moves onto it in one call, and the
+history keys read `Cmd+←` on a Mac and `Alt+←` everywhere else without an application saying anything. The
+break is the type itself — a handler takes `KeyPress` and a binding matches one, so `ConsoleKeyInfo` in a
+signature is what a build fails on, and what it is replaced with is spelled the same way.
 
 ### Added
 

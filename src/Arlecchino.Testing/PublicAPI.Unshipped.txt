@@ -1,15 +1,1 @@
 #nullable enable
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> void
-*REMOVED*Arlecchino.Testing.ArlecchinoTestHost.Send(System.ConsoleKeyInfo key) -> void
-*REMOVED*Arlecchino.Testing.FakeTerminal.Enqueue(System.ConsoleKeyInfo key) -> void
-*REMOVED*Arlecchino.Testing.FakeTerminal.ReadKey() -> System.ConsoleKeyInfo
-*REMOVED*Arlecchino.Testing.FakeTerminal.Unread(System.ConsoleKeyInfo key) -> void
-*REMOVED*Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> Arlecchino.Testing.SessionTape!
-*REMOVED*Arlecchino.Testing.SessionTape.RecordKey(System.ConsoleKeyInfo key) -> Arlecchino.Testing.SessionTape!
-Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> void
-Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.KeyPress key) -> void
-Arlecchino.Testing.FakeTerminal.Enqueue(Arlecchino.Input.KeyPress key) -> void
-Arlecchino.Testing.FakeTerminal.ReadKey() -> Arlecchino.Input.KeyPress
-Arlecchino.Testing.FakeTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
-Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> Arlecchino.Testing.SessionTape!
-Arlecchino.Testing.SessionTape.RecordKey(Arlecchino.Input.KeyPress key) -> Arlecchino.Testing.SessionTape!

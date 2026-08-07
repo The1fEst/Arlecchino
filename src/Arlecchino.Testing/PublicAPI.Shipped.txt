@@ -13,13 +13,13 @@ Arlecchino.Testing.ArlecchinoTestHost.FrameLines() -> string![]!
 Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.AtomHistory!
 Arlecchino.Testing.ArlecchinoTestHost.Navigator.get -> Arlecchino.Navigation.Navigator!
 Arlecchino.Testing.ArlecchinoTestHost.Options.get -> Arlecchino.Hosting.ArlecchinoOptions!
-Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> void
 Arlecchino.Testing.ArlecchinoTestHost.ReadFromTerminal(string! sequence) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Repaint.get -> Arlecchino.Repaint!
 Arlecchino.Testing.ArlecchinoTestHost.Screen.get -> Arlecchino.Testing.ScreenGrid!
 Arlecchino.Testing.ArlecchinoTestHost.Scroll(int row, int column, bool down) -> void
+Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Send(Arlecchino.Input.MouseEvent mouse) -> void
-Arlecchino.Testing.ArlecchinoTestHost.Send(System.ConsoleKeyInfo key) -> void
 Arlecchino.Testing.ArlecchinoTestHost.SendPaste(string! text) -> void
 Arlecchino.Testing.ArlecchinoTestHost.Services.get -> System.IServiceProvider!
 Arlecchino.Testing.ArlecchinoTestHost.State.get -> Arlecchino.State.ArlecchinoState!
@@ -35,7 +35,7 @@ Arlecchino.Testing.FakeTerminal.DisableMouse() -> void
 Arlecchino.Testing.FakeTerminal.DisablePaste() -> void
 Arlecchino.Testing.FakeTerminal.EnableMouse() -> void
 Arlecchino.Testing.FakeTerminal.EnablePaste() -> void
-Arlecchino.Testing.FakeTerminal.Enqueue(System.ConsoleKeyInfo key) -> void
+Arlecchino.Testing.FakeTerminal.Enqueue(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Testing.FakeTerminal.EnqueueMouse(Arlecchino.Input.MouseEvent mouse) -> void
 Arlecchino.Testing.FakeTerminal.EnqueueText(string! text) -> void
 Arlecchino.Testing.FakeTerminal.EnterFullScreen() -> void
@@ -48,10 +48,10 @@ Arlecchino.Testing.FakeTerminal.IsPasteEnabled.get -> bool
 Arlecchino.Testing.FakeTerminal.KeyAvailable.get -> bool
 Arlecchino.Testing.FakeTerminal.LeaveFullScreen() -> void
 Arlecchino.Testing.FakeTerminal.MouseAvailable.get -> bool
-Arlecchino.Testing.FakeTerminal.ReadKey() -> System.ConsoleKeyInfo
+Arlecchino.Testing.FakeTerminal.ReadKey() -> Arlecchino.Input.KeyPress
 Arlecchino.Testing.FakeTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
 Arlecchino.Testing.FakeTerminal.Screen.get -> Arlecchino.Testing.ScreenGrid!
-Arlecchino.Testing.FakeTerminal.Unread(System.ConsoleKeyInfo key) -> void
+Arlecchino.Testing.FakeTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Testing.FakeTerminal.Width.get -> int
 Arlecchino.Testing.FakeTerminal.Width.set -> void
 Arlecchino.Testing.FakeTerminal.Write(string! text) -> void
@@ -74,10 +74,10 @@ Arlecchino.Testing.ScreenGrid.Width.get -> int
 Arlecchino.Testing.SessionTape
 Arlecchino.Testing.SessionTape.Click(int row, int column, Arlecchino.Input.MouseButton button = Arlecchino.Input.MouseButton.Left) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.Count.get -> int
-Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, bool shift = false, bool alt = false, bool control = false) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.Key(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.Paste(string! text) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.Play(Arlecchino.Testing.ArlecchinoTestHost! host) -> System.Collections.Generic.List<string!>!
-Arlecchino.Testing.SessionTape.RecordKey(System.ConsoleKeyInfo key) -> Arlecchino.Testing.SessionTape!
+Arlecchino.Testing.SessionTape.RecordKey(Arlecchino.Input.KeyPress key) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.RecordMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.Scroll(int row, int column, bool down) -> Arlecchino.Testing.SessionTape!
 Arlecchino.Testing.SessionTape.SessionTape() -> void
