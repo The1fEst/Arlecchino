@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering;
-
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Choosing;
@@ -72,7 +71,7 @@ public abstract class OptionListModal : Modal
                 Index = Math.Min(Math.Max(0, matching.Count - 1), Index + 1);
                 return;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left &&
-                Rows.Contains(mouse.Row, mouse.Column):
+                                          Rows.Contains(mouse.Row, mouse.Column):
                 Picked(frame, matching, mouse);
                 return;
         }

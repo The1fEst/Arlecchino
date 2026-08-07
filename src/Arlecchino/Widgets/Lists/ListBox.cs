@@ -99,7 +99,8 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
 
             if (PaintRow is not null)
             {
-                PaintRow(region.Rows(row, 1).Inset(new Margin(0, 0, region.Width - textWidth, 0)), item,
+                PaintRow(region.Rows(row, 1).Inset(new Margin(0, 0, region.Width - textWidth, 0)),
+                    item,
                     index == Selected);
 
                 continue;

@@ -6,7 +6,6 @@ using Arlecchino.Input;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
-
 using Arlecchino.Widgets.Lists;
 
 namespace Arlecchino.Widgets.Readouts;

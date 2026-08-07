@@ -11,7 +11,6 @@ using Arlecchino.State;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
 using Xunit;
-
 using Arlecchino.Navigation;
 
 namespace Arlecchino.Tests.Input;

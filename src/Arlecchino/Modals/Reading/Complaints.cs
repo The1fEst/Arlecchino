@@ -1,6 +1,5 @@
 using System;
 using Arlecchino.Hosting;
-
 using Arlecchino.Modals.Asking;
 
 namespace Arlecchino.Modals.Reading;

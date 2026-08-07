@@ -2,9 +2,7 @@ using System;
 using System.Linq;
 using Arlecchino.Rendering.Colors;
 using Xunit;
-
 using Arlecchino.Tests.Support;
-
 using Arlecchino.Navigation;
 
 namespace Arlecchino.Tests.Rendering;

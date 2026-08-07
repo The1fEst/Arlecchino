@@ -7,7 +7,6 @@ using Arlecchino.Navigation;
 using Arlecchino.Tests.Views;
 using Xunit;
 using Arlecchino.Atoms.Tracked;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;

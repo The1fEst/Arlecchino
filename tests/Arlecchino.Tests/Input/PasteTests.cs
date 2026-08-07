@@ -3,7 +3,6 @@ using Arlecchino.Input;
 using Xunit;
 using Arlecchino.Modals.Asking;
 using Arlecchino.Modals.Choosing;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Input;

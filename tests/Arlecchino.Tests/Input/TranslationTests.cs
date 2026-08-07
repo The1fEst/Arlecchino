@@ -6,7 +6,6 @@ using System.Reflection;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Input;

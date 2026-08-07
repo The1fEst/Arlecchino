@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Terminals;
 
@@ -66,8 +65,9 @@ public partial class Surface
     /// one is drawing the view inside itself. A view asks for this and gets what it has been given,
     /// which is what lets a layout be added to an application without a single view knowing.
     /// </summary>
-    public SurfaceRegion Content => _body ?? Frame.Inset(
-        new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
+    public SurfaceRegion Content => _body ??
+                                    Frame.Inset(
+                                        new Margin(HorizontalPadding, VerticalPadding, HorizontalPadding, VerticalPadding));
 
     /// <summary>
     /// The room a layout has left for the view, set for as long as the view is being drawn and put

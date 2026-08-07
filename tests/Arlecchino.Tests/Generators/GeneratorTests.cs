@@ -796,7 +796,8 @@ public sealed class GeneratorTests
         var (generated, _) = RunLocalization(Words);
 
         Assert.Contains("public static class Bind", generated, StringComparison.Ordinal);
-        Assert.Contains("ViewCommand To(KeyBinding binding, LocString name, Action run)", generated,
+        Assert.Contains("ViewCommand To(KeyBinding binding, LocString name, Action run)",
+            generated,
             StringComparison.Ordinal);
         Assert.Contains("ViewCommand Going(", generated, StringComparison.Ordinal);
         Assert.Contains("ViewCommand When(", generated, StringComparison.Ordinal);

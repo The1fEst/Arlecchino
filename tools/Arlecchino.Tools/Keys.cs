@@ -140,13 +140,15 @@ internal static class Keys
 
         foreach (var press in presses)
         {
-            bytes[press.Send] = Grown(typed, press.Send, static (stream, count) =>
-            {
-                var read = new byte[count];
-                stream.ReadExactly(read);
+            bytes[press.Send] = Grown(typed,
+                press.Send,
+                static (stream, count) =>
+                {
+                    var read = new byte[count];
+                    stream.ReadExactly(read);
 
-                return Encoding.Latin1.GetString(read);
-            });
+                    return Encoding.Latin1.GetString(read);
+                });
         }
 
         return bytes;
@@ -171,13 +173,15 @@ internal static class Keys
 
         foreach (var press in presses)
         {
-            handed[press.Send] = Grown(heard, press.Send, static (stream, count) =>
-            {
-                var read = new byte[count];
-                stream.ReadExactly(read);
+            handed[press.Send] = Grown(heard,
+                press.Send,
+                static (stream, count) =>
+                {
+                    var read = new byte[count];
+                    stream.ReadExactly(read);
 
-                return Parsed(Encoding.UTF8.GetString(read));
-            });
+                    return Parsed(Encoding.UTF8.GetString(read));
+                });
         }
 
         return handed;
@@ -501,21 +505,23 @@ internal static class Keys
 
         internal Reading()
         {
-            _host = new(80, 10, builder =>
-            {
-                builder.Options.CommandPaletteKey = '§';
-                builder
-                    .UseKeymap(new()
-                    {
-                        ToggleLog = new(ConsoleKey.F24),
-                        Notifications = new(ConsoleKey.F23),
-                        Help = new(ConsoleKey.F22),
-                        Back = new(ConsoleKey.F21),
-                        Forward = new(ConsoleKey.F20),
-                    })
-                    .AddView("keys", _ => _recorder)
-                    .StartAt("keys");
-            });
+            _host = new(80,
+                10,
+                builder =>
+                {
+                    builder.Options.CommandPaletteKey = '§';
+                    builder
+                        .UseKeymap(new()
+                        {
+                            ToggleLog = new(ConsoleKey.F24),
+                            Notifications = new(ConsoleKey.F23),
+                            Help = new(ConsoleKey.F22),
+                            Back = new(ConsoleKey.F21),
+                            Forward = new(ConsoleKey.F20),
+                        })
+                        .AddView("keys", _ => _recorder)
+                        .StartAt("keys");
+                });
         }
 
         internal Heard Read(IEnumerable<KeyPress> handed)
@@ -559,9 +565,7 @@ internal static class Keys
             Mice.Clear();
         }
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(KeyPress key)
         {

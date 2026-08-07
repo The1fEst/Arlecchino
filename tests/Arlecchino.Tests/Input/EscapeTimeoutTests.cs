@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Arlecchino.Modals.Choosing;
 using Arlecchino.Input;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Input;

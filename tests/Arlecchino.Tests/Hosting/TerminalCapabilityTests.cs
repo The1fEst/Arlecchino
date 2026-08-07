@@ -2,7 +2,6 @@ using System;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Terminals;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Hosting;

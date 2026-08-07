@@ -3,9 +3,7 @@ using Arlecchino.Commands;
 using Arlecchino.Tests.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-
 using Arlecchino.Tests.Support;
-
 using Arlecchino.Tests.Input;
 
 namespace Arlecchino.Tests.Navigation;

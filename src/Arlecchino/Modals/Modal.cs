@@ -35,7 +35,5 @@ public abstract class Modal
     /// <summary>Reads one mouse event. Dialogs that cannot be clicked leave it alone.</summary>
     /// <param name="frame">The keys to obey, and how to close.</param>
     /// <param name="mouse">The event that arrived.</param>
-    public virtual void HandleMouse(ModalFrame frame, MouseEvent mouse)
-    {
-    }
+    public virtual void HandleMouse(ModalFrame frame, MouseEvent mouse) { }
 }

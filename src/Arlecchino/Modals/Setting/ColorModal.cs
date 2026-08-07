@@ -1,7 +1,6 @@
 using System;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
-
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Setting;

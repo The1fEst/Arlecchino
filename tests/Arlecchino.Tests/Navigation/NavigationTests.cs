@@ -6,7 +6,6 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Tests.Views;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Arlecchino.Atoms.Local;
 using Arlecchino.Atoms.Tracked;
 

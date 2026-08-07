@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 using Arlecchino.Atoms;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Atoms;

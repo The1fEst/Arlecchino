@@ -8,7 +8,6 @@ using Arlecchino.Modals.Asking;
 using Arlecchino.Modals.Setting;
 using Arlecchino.Atoms;
 using Arlecchino.Atoms.Tracked;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Widgets;

@@ -61,11 +61,12 @@ public sealed partial class LocalizationGenerator
         source.AppendLine();
         source.AppendLine("    /// <summary>The languages there is text for.</summary>");
         source.Append("    public static IReadOnlyList<string> Languages { get; } = new[] { ")
-            .Append(string.Join(", ", localizations
-                .Select(static localization => localization.Language)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(static language => language, StringComparer.Ordinal)
-                .Select(Quote)))
+            .Append(string.Join(", ",
+                localizations
+                    .Select(static localization => localization.Language)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(static language => language, StringComparer.Ordinal)
+                    .Select(Quote)))
             .AppendLine(" };");
         source.AppendLine();
         source.AppendLine("    /// <summary>Which one is being drawn, taken from the machine's own setting.</summary>");
@@ -93,8 +94,11 @@ public sealed partial class LocalizationGenerator
 
             foreach (var translation in translations)
             {
-                source.Append("            ").Append(Quote(translation.Language)).Append(" => ")
-                    .Append(MethodFor(translation.Language)).AppendLine("(key),");
+                source.Append("            ")
+                    .Append(Quote(translation.Language))
+                    .Append(" => ")
+                    .Append(MethodFor(translation.Language))
+                    .AppendLine("(key),");
             }
 
             source.AppendLine("            _ => null,");
@@ -211,14 +215,19 @@ public sealed partial class LocalizationGenerator
         IReadOnlyList<LocalizationEntry> entries,
         bool partial)
     {
-        source.Append("    private static string").Append(partial ? "? " : " ")
-            .Append(method).AppendLine("(LocString key) => key switch");
+        source.Append("    private static string")
+            .Append(partial ? "? " : " ")
+            .Append(method)
+            .AppendLine("(LocString key) => key switch");
         source.AppendLine("    {");
 
         foreach (var entry in entries)
         {
-            source.Append("        LocString.").Append(entry.Key).Append(" => ")
-                .Append(Quote(entry.Value)).AppendLine(",");
+            source.Append("        LocString.")
+                .Append(entry.Key)
+                .Append(" => ")
+                .Append(Quote(entry.Value))
+                .AppendLine(",");
         }
 
         source.AppendLine(partial ? "        _ => null," : "        _ => key.ToString(),");
@@ -244,10 +253,12 @@ public sealed partial class LocalizationGenerator
         .Replace("\r", " ")
         .Replace("\n", " ");
 
-    private static string Quote(string value) => "\"" + value
-        .Replace("\\", "\\\\")
-        .Replace("\"", "\\\"")
-        .Replace("\r", "\\r")
-        .Replace("\n", "\\n")
-        .Replace("\t", "\\t") + "\"";
+    private static string Quote(string value) => "\"" +
+                                                 value
+                                                     .Replace("\\", "\\\\")
+                                                     .Replace("\"", "\\\"")
+                                                     .Replace("\r", "\\r")
+                                                     .Replace("\n", "\\n")
+                                                     .Replace("\t", "\\t") +
+                                                 "\"";
 }

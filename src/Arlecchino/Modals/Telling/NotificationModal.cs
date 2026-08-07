@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Diagnostics;
 using Arlecchino.Rendering;
-
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Telling;

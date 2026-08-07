@@ -1,7 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
-
 using Arlecchino.Widgets.Lists;
 using Arlecchino.Rendering.Colors;
 

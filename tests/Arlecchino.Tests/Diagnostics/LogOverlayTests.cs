@@ -6,7 +6,6 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Input;
 using Arlecchino.Tests.Views;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Diagnostics;

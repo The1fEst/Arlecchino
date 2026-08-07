@@ -5,7 +5,6 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.Widgets.Lists;
-
 using Arlecchino.Modals.Asking;
 
 namespace Arlecchino.Modals.Drawing;

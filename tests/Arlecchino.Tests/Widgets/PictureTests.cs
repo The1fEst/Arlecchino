@@ -6,7 +6,6 @@ using Arlecchino.Rendering.Terminals;
 using Arlecchino.Testing;
 using Arlecchino.Widgets.Pictures;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Widgets;

@@ -143,13 +143,20 @@ internal static class Oracle
 
             Tmux("kill-session", "-t", Socket);
             Tmux(
-                "-f", "/dev/null",
-                "new-session", "-d",
-                "-s", Socket,
-                "-x", width.ToString(CultureInfo.InvariantCulture),
-                "-y", height.ToString(CultureInfo.InvariantCulture),
+                "-f",
+                "/dev/null",
+                "new-session",
+                "-d",
+                "-s",
+                Socket,
+                "-x",
+                width.ToString(CultureInfo.InvariantCulture),
+                "-y",
+                height.ToString(CultureInfo.InvariantCulture),
                 "--",
-                "sh", "-c", $"cat '{stream}'; : > '{marker}'; sleep 300");
+                "sh",
+                "-c",
+                $"cat '{stream}'; : > '{marker}'; sleep 300");
 
             Await(() => File.Exists(marker), "tmux never finished playing the frames back");
             Settle(height);
@@ -514,200 +521,284 @@ internal static class Oracle
 
     private static IEnumerable<Scenario> Scenarios()
     {
-        yield return new Frames("plain", 20, 4, [
-            static surface =>
-            {
-                surface.AppendLine("hello", Theme.Default);
-                surface.AppendLine("world", Theme.Accent);
-            },
-        ]);
-
-        yield return new Frames("every-cell", 20, 4, [
-            static surface =>
-            {
-                for (var row = 0; row < 4; row++)
+        yield return new Frames("plain",
+            20,
+            4,
+            [
+                static surface =>
                 {
-                    surface.WriteAt(row, 0, new('#', 20), Theme.Default);
-                }
-            },
-        ]);
+                    surface.AppendLine("hello", Theme.Default);
+                    surface.AppendLine("world", Theme.Accent);
+                },
+            ]);
 
-        yield return new Frames("clipped", 20, 3, [
-            static surface => surface.AppendLine(new('x', 60), Theme.Default),
-        ]);
-
-        yield return new Frames("wide", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "日本語テキスト", Theme.Default);
-                surface.WriteAt(1, 1, "日本語", Theme.Accent);
-            },
-        ]);
-
-        yield return new Frames("wide-at-edge", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 18, "日", Theme.Default);
-                surface.WriteAt(1, 19, "日", Theme.Default);
-            },
-        ]);
-
-        yield return new Frames("emoji", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "🙂 ok", Theme.Default);
-                surface.WriteAt(1, 0, "👍🏽 done", Theme.Default);
-                surface.WriteAt(2, 0, "👨‍👩‍👧‍👦 family", Theme.Default);
-            },
-        ]);
-
-        yield return new Frames("combining", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "éclair", Theme.Default);
-                surface.WriteAt(1, 0, "éclair", Theme.Default);
-                surface.WriteAt(2, 0, "àb̈c", Theme.Default);
-            },
-        ]);
-
-        yield return new Frames("box-drawing", 20, 4, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "┌──────────┐", Theme.Default);
-                surface.WriteAt(1, 0, "│ boxed    │", Theme.Default);
-                surface.WriteAt(2, 0, "╞══════════╡", Theme.Default);
-                surface.WriteAt(3, 0, "└──────────┘", Theme.Default);
-            },
-        ]);
-
-        yield return new Frames("styles", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "red", Theme.Error);
-                surface.WriteAt(0, 4, "muted", Theme.Muted);
-                surface.WriteAt(1, 0, "selected row", Theme.Selected);
-            },
-        ]);
-
-        yield return new Frames("diff-one-cell", 20, 4, [
-            static surface => surface.WriteAt(0, 0, "hello", Theme.Default),
-            static surface => surface.WriteAt(0, 0, "hellp", Theme.Default),
-        ]);
-
-        yield return new Frames("diff-scattered", 20, 4, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "aaaaaaaaaaaaaaaaaaaa", Theme.Default);
-                surface.WriteAt(3, 0, "bbbbbbbbbbbbbbbbbbbb", Theme.Default);
-            },
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "xaaaaaaaaaaaaaaaaaax", Theme.Default);
-                surface.WriteAt(3, 0, "ybbbbbbbbbbbbbbbbbby", Theme.Default);
-            },
-        ]);
-
-        yield return new Frames("diff-to-blank", 20, 4, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "something here", Theme.Default);
-                surface.WriteAt(2, 3, "and here", Theme.Accent);
-            },
-            static _ => { },
-        ]);
-
-        yield return new Frames("diff-wide-to-narrow", 20, 3, [
-            static surface => surface.WriteAt(0, 2, "日本語", Theme.Default),
-            static surface => surface.WriteAt(0, 2, "ab", Theme.Default),
-        ]);
-
-        yield return new Frames("diff-narrow-to-wide", 20, 3, [
-            static surface => surface.WriteAt(0, 2, "abcdef", Theme.Default),
-            static surface => surface.WriteAt(0, 3, "日本", Theme.Default),
-        ]);
-
-        yield return new Frames("diff-shifted", 20, 3, [
-            static surface => surface.WriteAt(1, 0, "the quick brown fox", Theme.Default),
-            static surface => surface.WriteAt(1, 1, "the quick brown fox", Theme.Default),
-        ]);
-
-        yield return new Frames("diff-last-cell", 20, 4, [
-            static surface => surface.WriteAt(3, 19, "a", Theme.Default),
-            static surface => surface.WriteAt(3, 19, "b", Theme.Default),
-            static surface => surface.WriteAt(3, 19, "日", Theme.Default),
-        ]);
-
-        yield return new Frames("styles-attributes", 20, 4, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "bold", new TermColor { Style = TextStyle.Bold, Foreground = TerminalColor.Red });
-                surface.WriteAt(1, 0, "dim italic", new TermColor
+        yield return new Frames("every-cell",
+            20,
+            4,
+            [
+                static surface =>
                 {
-                    Style = TextStyle.Dim | TextStyle.Italic,
-                    ExactForeground = new(10, 200, 30),
-                });
-                surface.WriteAt(2, 0, "underlined", new TermColor
-                {
-                    Style = TextStyle.Underline,
-                    ExactForeground = new(255, 255, 255),
-                    ExactBackground = new(0, 0, 128),
-                });
-                surface.WriteAt(3, 0, "all four", new TermColor
-                {
-                    Style = TextStyle.Bold | TextStyle.Dim | TextStyle.Italic | TextStyle.Underline,
-                    Foreground = TerminalColor.BrightYellow,
-                    Background = TerminalColor.Blue,
-                });
-            },
-        ]);
+                    for (var row = 0; row < 4; row++)
+                    {
+                        surface.WriteAt(row, 0, new('#', 20), Theme.Default);
+                    }
+                },
+            ]);
 
-        yield return new Frames("styles-palette", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "plain sixteen", new TermColor
+        yield return new Frames("clipped",
+            20,
+            3,
+            [
+                static surface => surface.AppendLine(new('x', 60), Theme.Default),
+            ]);
+
+        yield return new Frames("wide",
+            20,
+            3,
+            [
+                static surface =>
                 {
-                    Foreground = TerminalColor.Cyan,
-                    Background = TerminalColor.Black,
-                });
-                surface.WriteAt(1, 0, "bright", new TermColor
+                    surface.WriteAt(0, 0, "日本語テキスト", Theme.Default);
+                    surface.WriteAt(1, 1, "日本語", Theme.Accent);
+                },
+            ]);
+
+        yield return new Frames("wide-at-edge",
+            20,
+            3,
+            [
+                static surface =>
                 {
-                    Foreground = TerminalColor.BrightMagenta,
-                    Background = TerminalColor.BrightBlack,
-                });
-                surface.WriteAt(2, 0, "exact falls back", new TermColor
+                    surface.WriteAt(0, 18, "日", Theme.Default);
+                    surface.WriteAt(1, 19, "日", Theme.Default);
+                },
+            ]);
+
+        yield return new Frames("emoji",
+            20,
+            3,
+            [
+                static surface =>
                 {
-                    Foreground = TerminalColor.Green,
-                    ExactForeground = new(1, 2, 3),
-                });
-            },
-        ]) { Colour = ColorSupport.Palette };
+                    surface.WriteAt(0, 0, "🙂 ok", Theme.Default);
+                    surface.WriteAt(1, 0, "👍🏽 done", Theme.Default);
+                    surface.WriteAt(2, 0, "👨‍👩‍👧‍👦 family", Theme.Default);
+                },
+            ]);
 
-        yield return new Frames("styles-none", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "no colour at all", Theme.Error);
-                surface.WriteAt(1, 0, "none here either", Theme.Selected);
-            },
-        ]) { Colour = ColorSupport.None };
+        yield return new Frames("combining",
+            20,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "éclair", Theme.Default);
+                    surface.WriteAt(1, 0, "éclair", Theme.Default);
+                    surface.WriteAt(2, 0, "àb̈c", Theme.Default);
+                },
+            ]);
 
-        yield return new Frames("diff-styles-only", 20, 3, [
-            static surface => surface.WriteAt(0, 0, "recoloured", Theme.Default),
-            static surface => surface.WriteAt(0, 0, "recoloured", Theme.Error),
-        ]);
+        yield return new Frames("box-drawing",
+            20,
+            4,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "┌──────────┐", Theme.Default);
+                    surface.WriteAt(1, 0, "│ boxed    │", Theme.Default);
+                    surface.WriteAt(2, 0, "╞══════════╡", Theme.Default);
+                    surface.WriteAt(3, 0, "└──────────┘", Theme.Default);
+                },
+            ]);
 
-        yield return new Frames("two-columns", 2, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "abc", Theme.Default);
-                surface.WriteAt(1, 0, "日", Theme.Default);
-                surface.WriteAt(2, 1, "日", Theme.Default);
-            },
-        ]);
+        yield return new Frames("styles",
+            20,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "red", Theme.Error);
+                    surface.WriteAt(0, 4, "muted", Theme.Muted);
+                    surface.WriteAt(1, 0, "selected row", Theme.Selected);
+                },
+            ]);
 
-        yield return new Frames("one-row", 20, 1, [
-            static surface => surface.WriteAt(0, 0, "the whole screen ---", Theme.Default),
-            static surface => surface.WriteAt(0, 0, "the whole screen +++", Theme.Default),
-        ]);
+        yield return new Frames("diff-one-cell",
+            20,
+            4,
+            [
+                static surface => surface.WriteAt(0, 0, "hello", Theme.Default),
+                static surface => surface.WriteAt(0, 0, "hellp", Theme.Default),
+            ]);
+
+        yield return new Frames("diff-scattered",
+            20,
+            4,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "aaaaaaaaaaaaaaaaaaaa", Theme.Default);
+                    surface.WriteAt(3, 0, "bbbbbbbbbbbbbbbbbbbb", Theme.Default);
+                },
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "xaaaaaaaaaaaaaaaaaax", Theme.Default);
+                    surface.WriteAt(3, 0, "ybbbbbbbbbbbbbbbbbby", Theme.Default);
+                },
+            ]);
+
+        yield return new Frames("diff-to-blank",
+            20,
+            4,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "something here", Theme.Default);
+                    surface.WriteAt(2, 3, "and here", Theme.Accent);
+                },
+                static _ => { },
+            ]);
+
+        yield return new Frames("diff-wide-to-narrow",
+            20,
+            3,
+            [
+                static surface => surface.WriteAt(0, 2, "日本語", Theme.Default),
+                static surface => surface.WriteAt(0, 2, "ab", Theme.Default),
+            ]);
+
+        yield return new Frames("diff-narrow-to-wide",
+            20,
+            3,
+            [
+                static surface => surface.WriteAt(0, 2, "abcdef", Theme.Default),
+                static surface => surface.WriteAt(0, 3, "日本", Theme.Default),
+            ]);
+
+        yield return new Frames("diff-shifted",
+            20,
+            3,
+            [
+                static surface => surface.WriteAt(1, 0, "the quick brown fox", Theme.Default),
+                static surface => surface.WriteAt(1, 1, "the quick brown fox", Theme.Default),
+            ]);
+
+        yield return new Frames("diff-last-cell",
+            20,
+            4,
+            [
+                static surface => surface.WriteAt(3, 19, "a", Theme.Default),
+                static surface => surface.WriteAt(3, 19, "b", Theme.Default),
+                static surface => surface.WriteAt(3, 19, "日", Theme.Default),
+            ]);
+
+        yield return new Frames("styles-attributes",
+            20,
+            4,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "bold", new TermColor { Style = TextStyle.Bold, Foreground = TerminalColor.Red });
+                    surface.WriteAt(1,
+                        0,
+                        "dim italic",
+                        new TermColor
+                        {
+                            Style = TextStyle.Dim | TextStyle.Italic,
+                            ExactForeground = new(10, 200, 30),
+                        });
+                    surface.WriteAt(2,
+                        0,
+                        "underlined",
+                        new TermColor
+                        {
+                            Style = TextStyle.Underline,
+                            ExactForeground = new(255, 255, 255),
+                            ExactBackground = new(0, 0, 128),
+                        });
+                    surface.WriteAt(3,
+                        0,
+                        "all four",
+                        new TermColor
+                        {
+                            Style = TextStyle.Bold | TextStyle.Dim | TextStyle.Italic | TextStyle.Underline,
+                            Foreground = TerminalColor.BrightYellow,
+                            Background = TerminalColor.Blue,
+                        });
+                },
+            ]);
+
+        yield return new Frames("styles-palette",
+            20,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0,
+                        0,
+                        "plain sixteen",
+                        new TermColor
+                        {
+                            Foreground = TerminalColor.Cyan,
+                            Background = TerminalColor.Black,
+                        });
+                    surface.WriteAt(1,
+                        0,
+                        "bright",
+                        new TermColor
+                        {
+                            Foreground = TerminalColor.BrightMagenta,
+                            Background = TerminalColor.BrightBlack,
+                        });
+                    surface.WriteAt(2,
+                        0,
+                        "exact falls back",
+                        new TermColor
+                        {
+                            Foreground = TerminalColor.Green,
+                            ExactForeground = new(1, 2, 3),
+                        });
+                },
+            ]) { Colour = ColorSupport.Palette };
+
+        yield return new Frames("styles-none",
+            20,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "no colour at all", Theme.Error);
+                    surface.WriteAt(1, 0, "none here either", Theme.Selected);
+                },
+            ]) { Colour = ColorSupport.None };
+
+        yield return new Frames("diff-styles-only",
+            20,
+            3,
+            [
+                static surface => surface.WriteAt(0, 0, "recoloured", Theme.Default),
+                static surface => surface.WriteAt(0, 0, "recoloured", Theme.Error),
+            ]);
+
+        yield return new Frames("two-columns",
+            2,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "abc", Theme.Default);
+                    surface.WriteAt(1, 0, "日", Theme.Default);
+                    surface.WriteAt(2, 1, "日", Theme.Default);
+                },
+            ]);
+
+        yield return new Frames("one-row",
+            20,
+            1,
+            [
+                static surface => surface.WriteAt(0, 0, "the whole screen ---", Theme.Default),
+                static surface => surface.WriteAt(0, 0, "the whole screen +++", Theme.Default),
+            ]);
 
         yield return new Raw("raw-wrap", 10, 4, "aaaaaaaaaabbbbbbbbbbccc");
 
@@ -744,13 +835,16 @@ internal static class Oracle
 
         yield return new Raw("raw-off-screen-jump", 12, 3, "\e[9;99Hx");
 
-        yield return new Frames("passthrough", 20, 3, [
-            static surface =>
-            {
-                surface.WriteAt(0, 0, "under the picture", Theme.Default);
-                surface.Passthrough(1, 2, "\e_Gf=100,a=T;AAAABBBBCCCC\e\\");
-            },
-        ]);
+        yield return new Frames("passthrough",
+            20,
+            3,
+            [
+                static surface =>
+                {
+                    surface.WriteAt(0, 0, "under the picture", Theme.Default);
+                    surface.Passthrough(1, 2, "\e_Gf=100,a=T;AAAABBBBCCCC\e\\");
+                },
+            ]);
 
         yield return new Raw("raw-passthrough-osc", 20, 3, "text\e]1337;File=inline=1:AAAA\amore");
 
@@ -895,7 +989,9 @@ internal static class Oracle
 
         public override string ToString()
         {
-            var attributes = string.Concat(Bold ? " bold" : "", Dim ? " dim" : "", Italic ? " italic" : "",
+            var attributes = string.Concat(Bold ? " bold" : "",
+                Dim ? " dim" : "",
+                Italic ? " italic" : "",
                 Underline ? " underline" : "");
 
             return $"on {Background} in {Foreground}{attributes}";

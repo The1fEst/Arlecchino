@@ -5,7 +5,6 @@ using Arlecchino.Forms;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering.Colors;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Widgets;

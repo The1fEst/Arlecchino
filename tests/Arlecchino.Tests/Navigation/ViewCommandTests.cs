@@ -7,7 +7,6 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Tests.Views;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;
@@ -201,7 +200,8 @@ public sealed class CommandingView : IArlecchinoView
                 return ViewRoute.None;
             },
         },
-        ViewCommand.For(new KeyBinding(ConsoleKey.Escape, KeyModifiers.Alt), static () => "stop",
+        ViewCommand.For(new KeyBinding(ConsoleKey.Escape, KeyModifiers.Alt),
+            static () => "stop",
             static () => Ran.Add("stop")),
     ];
 

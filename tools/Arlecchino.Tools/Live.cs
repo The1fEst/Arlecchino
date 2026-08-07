@@ -210,14 +210,21 @@ internal static class Live
     {
         Tmux("kill-session", "-t", Socket);
         Tmux(
-            "-f", "/dev/null",
-            "new-session", "-d",
-            "-s", Socket,
-            "-x", width,
-            "-y", height,
-            "-e", $"DOTNET_ROOT={Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? Runtime()}",
+            "-f",
+            "/dev/null",
+            "new-session",
+            "-d",
+            "-s",
+            Socket,
+            "-x",
+            width,
+            "-y",
+            height,
+            "-e",
+            $"DOTNET_ROOT={Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? Runtime()}",
             "--",
-            "sh", "-i");
+            "sh",
+            "-i");
 
         Settle();
     }
@@ -236,7 +243,8 @@ internal static class Live
     private static Terminal State()
     {
         var told = Tmux(
-                "display-message", "-p",
+                "display-message",
+                "-p",
                 "#{alternate_on} #{cursor_flag} #{mouse_any_flag}")
             .Trim()
             .Split(' ');
@@ -297,9 +305,7 @@ internal static class Live
         var lines = screen.TrimEnd().Split('\n');
         var rule = new string('─', 100);
 
-        return $"  {title}{Environment.NewLine}  {rule}{Environment.NewLine}"
-            + string.Join(Environment.NewLine, lines.Select(static line => $"  {line}"))
-            + $"{Environment.NewLine}  {rule}{Environment.NewLine}";
+        return $"  {title}{Environment.NewLine}  {rule}{Environment.NewLine}" + string.Join(Environment.NewLine, lines.Select(static line => $"  {line}")) + $"{Environment.NewLine}  {rule}{Environment.NewLine}";
     }
 
     private static string? Option(string[] args, string name)

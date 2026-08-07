@@ -5,7 +5,6 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Testing;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Rendering;

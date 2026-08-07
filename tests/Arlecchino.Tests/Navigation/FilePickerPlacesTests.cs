@@ -3,7 +3,6 @@ using System.IO;
 using Arlecchino.Navigation;
 using Arlecchino.State;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;

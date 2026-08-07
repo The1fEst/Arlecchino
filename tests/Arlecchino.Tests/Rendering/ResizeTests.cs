@@ -9,7 +9,6 @@ using Arlecchino.Widgets;
 using Arlecchino.Widgets.Lists;
 using Arlecchino.Widgets.Readouts;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Rendering;

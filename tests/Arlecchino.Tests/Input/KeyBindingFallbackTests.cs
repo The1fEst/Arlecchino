@@ -1,7 +1,6 @@
 using System;
 using Arlecchino.Input;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Input;

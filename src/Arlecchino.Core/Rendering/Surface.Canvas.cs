@@ -1,5 +1,4 @@
 using System;
-
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 

@@ -130,7 +130,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
         >= 'a' and <= 'z' => new(ConsoleKey.A + (character - 'a'), default, character),
         >= 'A' and <= 'Z' => new(ConsoleKey.A + (character - 'A'), KeyModifiers.Shift, character),
         >= '0' and <= '9' => new(ConsoleKey.D0 + (character - '0'), default, character),
-        >= '' and <= '' => new(ConsoleKey.A + (character -''), KeyModifiers.Control, character),
+        >= '' and <= '' => new(ConsoleKey.A + (character - ''), KeyModifiers.Control, character),
         _ => new(character),
     };
 

@@ -2,7 +2,6 @@ using System;
 using Arlecchino.Rendering.Colors;
 using Xunit;
 using Arlecchino.Modals.Setting;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Modals;

@@ -1,6 +1,5 @@
 using System;
 using Arlecchino.Atoms;
-
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Terminals;
 

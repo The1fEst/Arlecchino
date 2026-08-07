@@ -12,7 +12,6 @@ using Arlecchino.Widgets.Readouts;
 using Xunit;
 using static Arlecchino.Layout.PaneSplit;
 using static Arlecchino.Layout.PaneTree;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Rendering;

@@ -7,7 +7,6 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Testing;
 using BenchmarkDotNet.Attributes;
-
 using Arlecchino.Widgets.Lists;
 
 namespace Arlecchino.Benchmarks;

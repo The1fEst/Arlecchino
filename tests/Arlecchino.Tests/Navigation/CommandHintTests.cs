@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;

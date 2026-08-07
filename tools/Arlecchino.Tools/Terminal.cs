@@ -54,11 +54,12 @@ internal static class Terminal
 
         var wanted = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
         var checks = new (string Name, Func<string, string> Check)[]
-        {
-            ("probe", Probe),
-            ("clipboard", Clipboard),
-            ("paste", Paste),
-        }.Where(one => wanted.Length == 0 || one.Name.Contains(wanted, StringComparison.Ordinal)).ToArray();
+            {
+                ("probe", Probe),
+                ("clipboard", Clipboard),
+                ("paste", Paste),
+            }.Where(one => wanted.Length == 0 || one.Name.Contains(wanted, StringComparison.Ordinal))
+            .ToArray();
 
         if (checks.Length == 0)
         {
@@ -242,12 +243,13 @@ internal static class Terminal
 
         Until(() => asking ? recorder.Typed.Length >= Letters.Length : recorder.Pasted.Length > 0);
 
-        File.WriteAllText(into, asking
-            ? string.Create(
-                CultureInfo.InvariantCulture,
-                $"asked:yes sixel:{TerminalCapabilities.Sixel} kitty:{TerminalCapabilities.Kitty} " +
-                $"cells:{TerminalCapabilities.CellSizeKnown} typed:{recorder.Typed}")
-            : $"pasted:{recorder.Pasted}");
+        File.WriteAllText(into,
+            asking
+                ? string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"asked:yes sixel:{TerminalCapabilities.Sixel} kitty:{TerminalCapabilities.Kitty} " +
+                    $"cells:{TerminalCapabilities.CellSizeKnown} typed:{recorder.Typed}")
+                : $"pasted:{recorder.Pasted}");
 
         host.StopAsync().GetAwaiter().GetResult();
 
@@ -258,14 +260,24 @@ internal static class Terminal
     {
         Tmux("kill-session", "-t", Socket);
         Tmux(
-            "-f", "/dev/null",
-            "new-session", "-d",
-            "-s", Socket,
-            "-x", "80",
-            "-y", "24",
-            "-e", $"DOTNET_ROOT={Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? Runtime()}",
+            "-f",
+            "/dev/null",
+            "new-session",
+            "-d",
+            "-s",
+            Socket,
+            "-x",
+            "80",
+            "-y",
+            "24",
+            "-e",
+            $"DOTNET_ROOT={Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? Runtime()}",
             "--",
-            Self(), "terminal", "--in-pane", check, into);
+            Self(),
+            "terminal",
+            "--in-pane",
+            check,
+            into);
 
         Tmux("set-option", "-s", clipboard.Split(' ')[0], clipboard.Split(' ')[1]);
     }
@@ -359,9 +371,7 @@ internal static class Terminal
 
         internal string Pasted { get; private set; } = "";
 
-        public void Draw()
-        {
-        }
+        public void Draw() { }
 
         public ViewRoute Handle(KeyPress key)
         {

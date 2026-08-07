@@ -8,9 +8,7 @@ using Arlecchino.Testing;
 using Arlecchino.Widgets;
 using Arlecchino.Widgets.Lists;
 using Xunit;
-
 using Arlecchino.Tests.Support;
-
 using Arlecchino.Input;
 
 namespace Arlecchino.Tests.Atoms;

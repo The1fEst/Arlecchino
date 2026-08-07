@@ -4,7 +4,6 @@ using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Tests.Views;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Hosting;

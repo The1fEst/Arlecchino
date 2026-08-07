@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Arlecchino.Atoms;
 using Arlecchino.Atoms.Local;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Atoms;

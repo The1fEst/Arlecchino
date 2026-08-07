@@ -7,7 +7,6 @@ using Arlecchino.Rendering.Colors;
 using Arlecchino.Tests.Views;
 using Xunit;
 using Arlecchino.Modals.Choosing;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Input;

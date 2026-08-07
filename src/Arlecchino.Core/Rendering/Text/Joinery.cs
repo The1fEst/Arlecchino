@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-
 using Arlecchino.Rendering.Colors;
 
 namespace Arlecchino.Rendering.Text;

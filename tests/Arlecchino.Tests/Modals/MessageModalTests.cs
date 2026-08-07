@@ -1,7 +1,6 @@
 using System;
 using Arlecchino.Modals.Setting;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Modals;

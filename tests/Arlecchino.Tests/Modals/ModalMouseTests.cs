@@ -5,7 +5,6 @@ using Arlecchino.Navigation;
 using Xunit;
 using Arlecchino.Modals.Choosing;
 using Arlecchino.Modals.Setting;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Modals;

@@ -1,8 +1,6 @@
 using System;
 using Arlecchino.Rendering;
-
 using Arlecchino.Modals.Asking;
-
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Setting;

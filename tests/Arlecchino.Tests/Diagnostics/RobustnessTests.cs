@@ -5,7 +5,6 @@ using Arlecchino.Atoms.Tracked;
 using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
 using Xunit;
-
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Diagnostics;
