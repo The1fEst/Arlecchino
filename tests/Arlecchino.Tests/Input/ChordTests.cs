@@ -57,10 +57,12 @@ public sealed class ChordTests
     [Fact]
     public void AnAlternativeOpensTheChordToo()
     {
-        var binding = KeyBinding.AltOrSuper(ConsoleKey.X).ThenKey(ConsoleKey.T);
+        var binding = new KeyBinding(ConsoleKey.X, KeyModifiers.Control)
+            .AddAlternative(ConsoleKey.X, KeyModifiers.Alt)
+            .ThenKey(ConsoleKey.T);
 
+        Assert.True(binding.Opens(new(ConsoleKey.X, KeyModifiers.Control)));
         Assert.True(binding.Opens(new(ConsoleKey.X, KeyModifiers.Alt)));
-        Assert.True(binding.Opens(new(ConsoleKey.X, KeyModifiers.Super)));
     }
 
     [Fact]

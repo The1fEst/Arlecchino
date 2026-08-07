@@ -50,8 +50,8 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
 
     /// <summary>
     /// Whether this takes two keystrokes rather than one. A chord is how an application reaches past the
-    /// modifiers a terminal will give it: a Mac terminal keeps Option for typing and its Command belongs to
-    /// the window, so the letters left over are the ones held with Control, and there are not thirty of those.
+    /// modifiers a terminal will give it. A Mac terminal keeps Option for typing and its Command belongs to
+    /// the window, so what is left are the letters held with Control — and there are not thirty of those.
     /// A leader spends one of them and hands back the whole alphabet behind it.
     /// </summary>
     public bool IsChord => _second is not null;
@@ -82,22 +82,6 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
         new(First, _alternatives, new(key, modifiers));
 
     /// <summary>
-    /// A key held with Alt on the machines that send Alt, and with Command on the Mac, where Option is spoken
-    /// for by the characters it types and never arrives as a modifier. Both are bound either way, so a Mac
-    /// over ssh from a PC keyboard answers to Alt as well.
-    ///
-    /// Which of the two goes first is what a binding says about itself: a name is written from the first
-    /// combination alone, so on a Mac this reads <c>Cmd+T</c> and everywhere else <c>Alt+T</c>. An
-    /// application that binds Alt by hand is reachable on one of the two machines and silent on the other,
-    /// which is the mistake this exists to spare it.
-    /// </summary>
-    /// <param name="key">The key to bind.</param>
-    /// <returns>The binding, with the modifier this machine sends named first.</returns>
-    public static KeyBinding AltOrSuper(ConsoleKey key) => OperatingSystem.IsMacOS()
-        ? new KeyBinding(key, KeyModifiers.Super).AddAlternative(key, KeyModifiers.Alt)
-        : new KeyBinding(key, KeyModifiers.Alt).AddAlternative(key, KeyModifiers.Super);
-
-    /// <summary>
     /// The same binding with one modifier put in place of another, wherever it appears. This is how an
     /// application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing
     /// accented characters, so <c>Alt</c> never arrives and <c>Super</c> is what that keyboard has spare.
@@ -105,21 +89,24 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <param name="from">The modifier to take out.</param>
     /// <param name="to">The modifier to put in its place.</param>
     /// <returns>The rewritten binding, or this one when the modifier is not in it.</returns>
-    public KeyBinding Replacing(KeyModifiers from, KeyModifiers to)
+    public KeyBinding Replacing(KeyModifiers from, KeyModifiers to) =>
+        new(First.Replacing(from, to), MovedAlternatives(from, to), _second?.Replacing(from, to));
+
+    private KeyStroke[]? MovedAlternatives(KeyModifiers from, KeyModifiers to)
     {
-        KeyStroke[]? alternatives = null;
-
-        if (_alternatives is { } present)
+        if (_alternatives is not { } present)
         {
-            alternatives = new KeyStroke[present.Length];
-
-            for (var i = 0; i < present.Length; i++)
-            {
-                alternatives[i] = present[i].Replacing(from, to);
-            }
+            return null;
         }
 
-        return new(First.Replacing(from, to), alternatives, _second?.Replacing(from, to));
+        var moved = new KeyStroke[present.Length];
+
+        for (var i = 0; i < present.Length; i++)
+        {
+            moved[i] = present[i].Replacing(from, to);
+        }
+
+        return moved;
     }
 
     /// <summary>

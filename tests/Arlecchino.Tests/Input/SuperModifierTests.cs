@@ -122,35 +122,28 @@ public sealed class SuperModifierTests
         Assert.Equal(KeyModifiers.Control, moved.ToggleLog.Modifiers);
     }
 
-    /// <summary>
-    /// The history keys out of the box. A Mac is told about them the way a Mac names them, and either
-    /// modifier walks the history on either machine — the terminal, not the operating system, decides
-    /// which of the two ever arrives, and somebody sitting at a Mac over ssh has one of each.
-    /// </summary>
     [Fact]
-    public void TheHistoryKeysAreNamedTheWayTheMachineNamesThem()
+    public void TheHistoryKeysAreOnAlt()
     {
         var keymap = new ArlecchinoKeymap();
-        var first = OperatingSystem.IsMacOS() ? KeyModifiers.Super : KeyModifiers.Alt;
-        var second = OperatingSystem.IsMacOS() ? KeyModifiers.Alt : KeyModifiers.Super;
 
-        Assert.Equal(first, keymap.Back.Modifiers);
-        Assert.Equal(second, Assert.Single(keymap.Back.Alternatives).Modifiers);
+        Assert.Equal(KeyModifiers.Alt, keymap.Back.Modifiers);
+        Assert.Empty(keymap.Back.Alternatives);
 
-        Assert.True(keymap.Back.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Super)));
         Assert.True(keymap.Back.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Alt)));
+        Assert.False(keymap.Back.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Super)));
         Assert.False(keymap.Back.Matches(new(ConsoleKey.LeftArrow)));
     }
 
     [Fact]
-    public void TheDefaultMapWalksTheHistoryOnCommand()
+    public void TheDefaultMapWalksTheHistoryOnAlt()
     {
         using var app = new TestApplication();
 
         app.Press(ConsoleKey.O);
         Assert.Equal(ViewKind.Other, app.Navigator.CurrentRoute);
 
-        app.ReadFromTerminal("\e[1;9D");
+        app.ReadFromTerminal("\e[1;3D");
         Assert.Equal(ViewKind.Probe, app.Navigator.CurrentRoute);
     }
 

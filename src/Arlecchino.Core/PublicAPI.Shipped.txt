@@ -477,7 +477,6 @@ static Arlecchino.FrameThread.IsCurrent.get -> bool
 static Arlecchino.FrameThread.Post(System.Action! action) -> void
 static Arlecchino.FrameThread.RunPending(System.Action<System.Exception!>! onError) -> void
 static Arlecchino.FrameThread.Verify(string! member) -> void
-static Arlecchino.Input.KeyBinding.AltOrSuper(System.ConsoleKey key) -> Arlecchino.Input.KeyBinding
 static Arlecchino.Input.KeyBinding.operator !=(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyBinding.operator ==(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyPress.From(System.ConsoleKeyInfo key) -> Arlecchino.Input.KeyPress

@@ -10,11 +10,11 @@ namespace Arlecchino.Hosting;
 /// </summary>
 public sealed record ArlecchinoKeymap
 {
-    /// <summary>Goes back in the history. <c>Cmd+←</c> on a Mac, <c>Alt+←</c> elsewhere.</summary>
-    public KeyBinding Back { get; init; } = History(ConsoleKey.LeftArrow);
+    /// <summary>Goes back in the history. <c>Alt+←</c> by default.</summary>
+    public KeyBinding Back { get; init; } = new(ConsoleKey.LeftArrow, KeyModifiers.Alt);
 
-    /// <summary>Retraces a step back. <c>Cmd+→</c> on a Mac, <c>Alt+→</c> elsewhere.</summary>
-    public KeyBinding Forward { get; init; } = History(ConsoleKey.RightArrow);
+    /// <summary>Retraces a step back. <c>Alt+→</c> by default.</summary>
+    public KeyBinding Forward { get; init; } = new(ConsoleKey.RightArrow, KeyModifiers.Alt);
 
     /// <summary>Accepts a dialog, opens a field, activates a row. <c>Enter</c> by default.</summary>
     public KeyBinding Confirm { get; init; } = new(ConsoleKey.Enter);
@@ -98,22 +98,6 @@ public sealed record ArlecchinoKeymap
 
     /// <summary>Picks the folder open in the file picker. <c>Ctrl+Enter</c> by default.</summary>
     public KeyBinding PickCurrentFolder { get; init; } = new(ConsoleKey.Enter, KeyModifiers.Control);
-
-    /// <summary>
-    /// The two keys that walk the history, named the way the machine underneath names them. Everywhere
-    /// but a Mac that is Alt, which is what a browser uses and what a terminal reports. A Mac terminal
-    /// keeps Option for the characters it types, so <c>Alt</c> never arrives there and Command is the
-    /// modifier that keyboard has going spare — and <c>Cmd+←</c> is what going back means on a Mac
-    /// anyway.
-    ///
-    /// Both are bound either way, with the one that machine is likelier to send named first, since that
-    /// is the one the hints box and the key screen show. Nothing is lost by the arrangement: a Mac
-    /// terminal that does not report Command at all — and several do not — still answers to Alt if the
-    /// user has told it to send one.
-    /// </summary>
-    /// <param name="arrow">Which way it goes.</param>
-    /// <returns>The binding for this machine.</returns>
-    private static KeyBinding History(ConsoleKey arrow) => KeyBinding.AltOrSuper(arrow);
 
     /// <summary>
     /// The whole map with one modifier put in place of another. A keyboard that cannot send a modifier

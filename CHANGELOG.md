@@ -12,11 +12,12 @@ the public API means a new major. See
 ## 5.0.0
 
 A release about the keyboard. A key press stops being the console's own type and becomes `KeyPress`, which
-has room for the modifier that type could not hold: Command, the one key a Mac terminal has going spare
-once Option is spoken for by the characters it types. A whole keymap moves onto it in one call, and the
-history keys read `Cmd+←` on a Mac and `Alt+←` everywhere else without an application saying anything. The
-break is the type itself — a handler takes `KeyPress` and a binding matches one, so `ConsoleKeyInfo` in a
-signature is what a build fails on, and what it is replaced with is spelled the same way.
+has room for the modifier that type could not hold: Command, which a terminal does report and the console
+type could only misread. A binding stops being a list of positions and is built instead — alternatives
+added to it one at a time, and a second keystroke turning it into a chord, which is how an application
+reaches past the handful of combinations a terminal will actually hand on. The break is the type itself —
+a handler takes `KeyPress` and a binding matches one, so `ConsoleKeyInfo` in a signature is what a build
+fails on, and what it is replaced with is spelled the same way.
 
 ### Added
 
@@ -39,13 +40,20 @@ signature is what a build fails on, and what it is replaced with is spelled the 
 
   A binding relabels itself for the machine it is running on: `Cmd+←` on a Mac, `Win+←` elsewhere.
 
-- **The history keys know which machine they are on.** `Back` and `Forward` are bound to both Command
-  and Alt out of the box, with the one that machine is likelier to send named first — so a Mac reads
-  `Cmd+←` in the hints box and everywhere else reads `Alt+←`, and either modifier works on either. The
-  terminal rather than the operating system decides which of the two ever arrives, and somebody sitting
-  at a Mac over ssh has one of each, so binding both is the arrangement that is right in all four
-  cases. Nothing else moved: the rest of the map is on Control, which a Mac terminal sends perfectly
-  well, and moving it to Command would have broken it in the terminals that do not report Command.
+- **A binding of two keystrokes.** `ThenKey` finishes a binding with a second key, pressed after the
+  first is let go, and the pair is one command:
+
+  ```csharp
+  new KeyBinding(ConsoleKey.X, KeyModifiers.Control).ThenKey(ConsoleKey.T);
+  ```
+
+  This is how an application gets past the modifiers a terminal will give it. Option is spoken for by
+  the characters it types and Command belongs to the window, so what is left on a Mac are the letters
+  held with Control, and there are not thirty of those. A leader spends one of them and hands back the
+  alphabet behind it. While a leader is half typed, the hints box stops listing the keys that are out
+  of reach and lists what finishes the chord instead, so the second key is read rather than remembered.
+  `Opens` and `Closes` ask about the two halves; `Matches` answers `false` for a chord, so a leader on
+  its own runs nothing.
 
 ### Changed
 
@@ -57,6 +65,20 @@ signature is what a build fails on, and what it is replaced with is spelled the 
   three, one of them renamed: `Key`, `Modifiers` and `Character` where the console said `KeyChar`.
   A view is fixed by changing the parameter type; `KeyPress.From` takes over a `ConsoleKeyInfo` for
   code that still has one.
+- **A binding is built rather than listed.** `KeyBinding` carried its second combination as two more
+  positional parameters, `AlsoKey` and `AlsoModifiers`, which allowed exactly one of them and read as
+  four keys in a row at the call site. Both are gone. A binding is now the combination it is named
+  after, and everything else is added to it:
+
+  ```csharp
+  new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
+      .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
+  ```
+
+  `AddAlternative` takes as many as there are habits to answer, and the combinations it adds are
+  matched but never written, since a binding is shown under one name. The one it is written from is
+  `First`, the rest are `Alternatives`, and both are the new `KeyStroke` — a key and the modifiers held
+  with it, which is also what a chord's second half is.
 - **The testing helpers take modifiers rather than three booleans.** `ArlecchinoTestHost.Press`,
   `TestApplication.Press` and `SessionTape.Key` read `Press(ConsoleKey.C, KeyModifiers.Super)`, which
   is also the only way to press the modifier the booleans had no room for. A tape written by an older
