@@ -25,7 +25,7 @@ public sealed class ViewLifetime : IDisposable
     }
 
     /// <summary>
-    /// Cancelled when the screen goes away. Pass it into work you start yourself so it stops with the
+    /// Canceled when the screen goes away. Pass it into work you start yourself so it stops with the
     /// screen rather than with the application. It stays readable afterward, so background work that
     /// comes back late can still see that the screen has gone.
     /// </summary>

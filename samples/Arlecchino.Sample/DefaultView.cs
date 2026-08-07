@@ -12,7 +12,7 @@ using Arlecchino.Modals.Setting;
 
 namespace Arlecchino.Sample;
 
-public class DefaultView : IArlecchinoView
+public sealed class DefaultView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly ArlecchinoState _state;

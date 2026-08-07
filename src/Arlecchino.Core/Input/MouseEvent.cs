@@ -15,7 +15,7 @@ public enum MouseAction : byte
     /// <summary>The wheel turned away from the user.</summary>
     ScrolledUp,
 
-    /// <summary>The wheel turned towards the user.</summary>
+    /// <summary>The wheel turned toward the user.</summary>
     ScrolledDown,
 }
 

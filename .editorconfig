@@ -182,6 +182,10 @@ resharper_foreach_can_be_converted_to_query_using_another_get_enumerator_highlig
 resharper_empty_general_catch_clause_highlighting = none
 
 resharper_unused_auto_property_accessor_global_highlighting = none
+resharper_auto_property_can_be_made_get_only_global_highlighting = none
+resharper_member_can_be_private_global_highlighting = none
+resharper_property_can_be_made_init_only_global_highlighting = none
+resharper_unused_member_global_highlighting = none
 
 [benchmarks/**.cs]
 dotnet_diagnostic.ca1822.severity = none

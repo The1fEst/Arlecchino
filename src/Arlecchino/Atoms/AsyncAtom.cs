@@ -66,10 +66,10 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
     public IDisposable SubscribeToStatus(Action listener) => _status.Subscribe(listener);
 
     /// <summary>
-    /// Starts work in the background, cancelling whatever was already running. Returns at once; the
+    /// Starts work in the background, canceling whatever was already running. Returns at once; the
     /// result, or the failure, arrives later on the UI thread.
     /// </summary>
-    /// <param name="load">The work to run, given a token that is cancelled when a newer load starts.</param>
+    /// <param name="load">The work to run, given a token that is canceled when a newer load starts.</param>
     public void Load(Func<CancellationToken, Task<T>> load)
     {
         Cancel();

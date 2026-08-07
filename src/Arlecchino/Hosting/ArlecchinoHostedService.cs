@@ -81,7 +81,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// Runs startup, takes over the terminal, and then draws and reads until the host stops. An error
     /// that escapes stops the host rather than leaving a half-drawn screen behind.
     /// </summary>
-    /// <param name="stoppingToken">Cancelled when the host is shutting down.</param>
+    /// <param name="stoppingToken">Canceled when the host is shutting down.</param>
     /// <returns>A task that completes once the terminal has been restored.</returns>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

@@ -196,7 +196,7 @@ public sealed class AreaChart : IArlecchinoWidget
                     Invert);
             }
 
-            region.Write(line, 0, new(row), ColourOf(ceiling, low, span));
+            region.Write(line, 0, new(row), ColorOf(ceiling, low, span));
         }
 
         return region.Rows(region.Height, 0);
@@ -231,7 +231,7 @@ public sealed class AreaChart : IArlecchinoWidget
         return Math.Clamp((int)Math.Ceiling(within), 1, levels);
     }
 
-    private IArlecchinoColor ColourOf(decimal ceiling, decimal low, decimal span)
+    private IArlecchinoColor ColorOf(decimal ceiling, decimal low, decimal span)
     {
         var fallback = Style ?? Theme.Active;
 

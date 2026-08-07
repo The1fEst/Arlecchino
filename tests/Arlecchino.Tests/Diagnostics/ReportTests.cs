@@ -21,7 +21,7 @@ public sealed class ReportTests
         Assert.Contains("route: Probe", report, StringComparison.Ordinal);
         Assert.Contains("size: 90×30", report, StringComparison.Ordinal);
         Assert.Contains("modals: none", report, StringComparison.Ordinal);
-        Assert.Contains("colour: TrueColor", report, StringComparison.Ordinal);
+        Assert.Contains("color: TrueColor", report, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -8,7 +8,7 @@ using Arlecchino.Sample.Views;
 
 namespace Arlecchino.Sample;
 
-public class AboutView : IArlecchinoView
+public sealed class AboutView : IArlecchinoView
 {
     private readonly Surface _surface;
     private readonly ArlecchinoKeymap _keymap;

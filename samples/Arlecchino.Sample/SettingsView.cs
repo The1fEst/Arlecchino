@@ -42,7 +42,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
                 Field.Choice(static () => "Theme",
                     ["dark", "light", "high contrast"],
                     settings.Theme,
-                    static () => "colour palette of the application"),
+                    static () => "color palette of the application"),
                 Field.Slider(static () => "Volume",
                     settings.Volume,
                     0,

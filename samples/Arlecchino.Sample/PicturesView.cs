@@ -62,12 +62,12 @@ public sealed class PicturesView : IArlecchinoView
         notes.SkipLine();
         notes.AppendLine("Sixel: Windows Terminal,", Theme.Muted);
         notes.AppendLine("xterm, foot, WezTerm.", Theme.Muted);
-        notes.AppendLine("256 colours taken from", Theme.Muted);
+        notes.AppendLine("256 colors taken from", Theme.Muted);
         notes.AppendLine("the picture. Measured", Theme.Muted);
         notes.AppendLine("in pixels, not cells.", Theme.Muted);
         notes.SkipLine();
         notes.AppendLine("Kitty: kitty, WezTerm,", Theme.Muted);
-        notes.AppendLine("Ghostty. Full colour.", Theme.Muted);
+        notes.AppendLine("Ghostty. Full color.", Theme.Muted);
         notes.SkipLine();
         notes.AppendLine("A terminal that cannot", Theme.Muted);
         notes.AppendLine("speak one shows the", Theme.Muted);

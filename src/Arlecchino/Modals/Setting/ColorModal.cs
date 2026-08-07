@@ -34,7 +34,7 @@ public sealed class ColorModal : Modal
     /// <summary>Distance from gray, in percent.</summary>
     public int Saturation { get; set; } = PercentMaximum;
 
-    /// <summary>Distance from black towards white, in percent. Fifty is the pure color.</summary>
+    /// <summary>Distance from black toward white, in percent. Fifty is the pure color.</summary>
     public int Lightness { get; set; } = 50;
 
     /// <summary>Which of the three sliders the arrows move.</summary>

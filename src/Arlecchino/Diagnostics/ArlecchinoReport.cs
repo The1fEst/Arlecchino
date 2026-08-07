@@ -69,7 +69,7 @@ public sealed class ArlecchinoReport
         Line(report, "implementation", _terminal.GetType().Name);
         Line(report, "size", $"{_terminal.Width}×{_terminal.Height}");
         Line(report, "frame", $"{_surface.FrameWidth}×{_surface.FrameHeight}");
-        Line(report, "colour", TerminalCapabilities.Color.ToString());
+        Line(report, "color", TerminalCapabilities.Color.ToString());
         Line(report, "TERM", Variable("TERM"));
         Line(report, "COLORTERM", Variable("COLORTERM"));
         Line(report, "NO_COLOR", Variable("NO_COLOR"));

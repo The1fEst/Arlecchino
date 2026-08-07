@@ -308,9 +308,9 @@ public sealed class PaneTree
 
             for (var before = 0; before < index; before++)
             {
-                var (neighbour, taken) = placed[before];
+                var (neighbor, taken) = placed[before];
 
-                if (neighbour._title is null)
+                if (neighbor._title is null)
                 {
                     continue;
                 }

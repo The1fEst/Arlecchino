@@ -52,7 +52,7 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
 
     /// <summary>
     /// Completes when the store is loaded, faults with whatever <see cref="LoadAsync"/> threw, and is
-    /// cancelled when the application stopped before the load finished. This is the one to await
+    /// canceled when the application stopped before the load finished. This is the one to await
     /// outside a view; a view reads <see cref="Status"/> instead, because it draws every frame rather
     /// than waiting.
     /// </summary>
@@ -81,7 +81,7 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
     /// draw and for <see cref="Ready"/> to hand to whoever awaits it, and the application carries on
     /// with whatever the atoms already hold.
     /// </summary>
-    /// <param name="token">Cancelled when the application is shutting down.</param>
+    /// <param name="token">Canceled when the application is shutting down.</param>
     /// <returns>A task that completes when the store is ready.</returns>
     protected abstract Task LoadAsync(CancellationToken token);
 

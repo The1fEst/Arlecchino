@@ -418,7 +418,7 @@ public class ArlecchinoState
 
     /// <summary>
     /// Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and
-    /// cancelling already do this, so it is only needed to dismiss one from the outside.
+    /// canceling already do this, so it is only needed to dismiss one from the outside.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void CloseModal()

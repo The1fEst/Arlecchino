@@ -51,7 +51,7 @@ public sealed class NotificationModal : Modal
     public override void Draw(ModalFrame frame) => frame.Tells.Notification(this);
 
     /// <summary>
-    /// The arrows walk its actions, confirming runs the one selected and cancelling only closes. The
+    /// The arrows walk its actions, confirming runs the one selected and canceling only closes. The
     /// dialog is closed before the action runs, so an action is free to open one of its own.
     /// </summary>
     /// <param name="frame">How to close.</param>
