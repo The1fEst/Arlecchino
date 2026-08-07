@@ -24,6 +24,22 @@ public readonly record struct KeyBinding(
     public bool IsNone => Key == default;
 
     /// <summary>
+    /// A key held with Alt on the machines that send Alt, and with Command on the Mac, where Option is spoken
+    /// for by the characters it types and never arrives as a modifier. Both are bound either way, so a Mac
+    /// over ssh from a PC keyboard answers to Alt as well.
+    ///
+    /// Which of the two goes first is what a binding says about itself: a name is written from the first
+    /// combination alone, so on a Mac this reads <c>Cmd+T</c> and everywhere else <c>Alt+T</c>. An
+    /// application that binds Alt by hand is reachable on one of the two machines and silent on the other,
+    /// which is the mistake this exists to spare it.
+    /// </summary>
+    /// <param name="key">The key to bind.</param>
+    /// <returns>The binding, with the modifier this machine sends named first.</returns>
+    public static KeyBinding AltOrSuper(ConsoleKey key) => OperatingSystem.IsMacOS()
+        ? new(key, KeyModifiers.Super, key, KeyModifiers.Alt)
+        : new(key, KeyModifiers.Alt, key, KeyModifiers.Super);
+
+    /// <summary>
     /// The same binding with one modifier put in place of another, wherever it appears. This is how an
     /// application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing
     /// accented characters, so <c>Alt</c> never arrives and <c>Super</c> is what that keyboard has spare.

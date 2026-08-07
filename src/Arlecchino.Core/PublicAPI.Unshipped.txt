@@ -1,1 +1,2 @@
 #nullable enable
+static Arlecchino.Input.KeyBinding.AltOrSuper(System.ConsoleKey key) -> Arlecchino.Input.KeyBinding

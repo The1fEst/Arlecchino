@@ -116,9 +116,7 @@ public sealed record ArlecchinoKeymap
     /// </summary>
     /// <param name="arrow">Which way it goes.</param>
     /// <returns>The binding for this machine.</returns>
-    private static KeyBinding History(ConsoleKey arrow) => OperatingSystem.IsMacOS()
-        ? new(arrow, KeyModifiers.Super, arrow, KeyModifiers.Alt)
-        : new(arrow, KeyModifiers.Alt, arrow, KeyModifiers.Super);
+    private static KeyBinding History(ConsoleKey arrow) => KeyBinding.AltOrSuper(arrow);
 
     /// <summary>
     /// The whole map with one modifier put in place of another. A keyboard that cannot send a modifier
