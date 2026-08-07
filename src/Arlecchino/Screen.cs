@@ -26,6 +26,7 @@ namespace Arlecchino;
 /// </summary>
 public class Screen
 {
+    private readonly CommandKeys _keys;
     private readonly CommandRegistry _commands;
     private readonly ModalFrame _frame;
     private readonly IArlecchinoLayout? _layout;
@@ -61,6 +62,7 @@ public class Screen
     /// <param name="commands">The registered commands, for offering the palette in the hints box.</param>
     /// <param name="frame">What a dialog is handed while the screen shows it.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
+    /// <param name="keys">Asked what a half-typed chord has behind it.</param>
     /// <param name="layout">The frame drawn around every view, when the application registered one.</param>
     internal Screen(
         ArlecchinoState state,
@@ -76,10 +78,12 @@ public class Screen
         CommandRegistry commands,
         ModalFrame frame,
         ILogger<Screen> logger,
+        CommandKeys keys,
         IArlecchinoLayout? layout = null)
     {
         _layout = layout;
 
+        _keys = keys;
         _commands = commands;
         _log = log;
         _pending = pending;
@@ -138,7 +142,7 @@ public class Screen
     ///     Draws until stopped, at the configured rate. A frame is only built when something asked for one
     ///     or the terminal changed size, so an idle application costs nothing.
     /// </summary>
-    /// <param name="stoppingToken">Cancelled when the application is shutting down.</param>
+    /// <param name="stoppingToken">Canceled when the application is shutting down.</param>
     /// <returns>A task that completes once drawing has stopped.</returns>
     public Task Run(CancellationToken stoppingToken)
     {
@@ -327,12 +331,7 @@ public class Screen
             return;
         }
 
-        var hints = new List<(string Key, string Description)>(_navigator.CurrentHints);
-
-        if (_commands.Commands.Count > 0)
-        {
-            hints.Add((_options.CommandPaletteKey.ToString(), _strings.HintCommands()));
-        }
+        var hints = Hints();
 
         if (hints.Count == 0)
         {
@@ -363,6 +362,28 @@ public class Screen
         box.Add($"╰{new string('─', inner + 2)}╯");
 
         _surface.WriteBlock(box, Theme.Info, Align.Right | Align.Bottom, new(0, 0, 2, 3));
+    }
+
+    /// <summary>
+    /// What goes in the box. A chord that has been started replaces it outright, since every other key
+    /// on the screen is unreachable until the chord is finished and listing them would be a lie.
+    /// </summary>
+    /// <returns>The keys to draw, and what each of them does.</returns>
+    private List<(string Key, string Description)> Hints()
+    {
+        if (_keys.IsWaiting)
+        {
+            return [.. _keys.Hints()];
+        }
+
+        var hints = new List<(string Key, string Description)>(_navigator.CurrentHints);
+
+        if (_commands.Commands.Count > 0)
+        {
+            hints.Add((_options.CommandPaletteKey.ToString(), _strings.HintCommands()));
+        }
+
+        return hints;
     }
 
     private void DrawSizeNotice()

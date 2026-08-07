@@ -151,21 +151,25 @@ Arlecchino.IArlecchinoTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.IArlecchinoTerminal.Width.get -> int
 Arlecchino.IArlecchinoTerminal.Write(string! text) -> void
 Arlecchino.Input.KeyBinding
-Arlecchino.Input.KeyBinding.AlsoKey.get -> System.ConsoleKey
-Arlecchino.Input.KeyBinding.AlsoKey.init -> void
-Arlecchino.Input.KeyBinding.AlsoModifiers.get -> Arlecchino.Input.KeyModifiers
-Arlecchino.Input.KeyBinding.AlsoModifiers.init -> void
-Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers, out System.ConsoleKey AlsoKey, out Arlecchino.Input.KeyModifiers AlsoModifiers) -> void
+Arlecchino.Input.KeyBinding.AddAlternative(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> Arlecchino.Input.KeyBinding
+Arlecchino.Input.KeyBinding.Alternatives.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Input.KeyStroke>!
+Arlecchino.Input.KeyBinding.Closes(Arlecchino.Input.KeyPress pressed) -> bool
+Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers) -> void
 Arlecchino.Input.KeyBinding.Equals(Arlecchino.Input.KeyBinding other) -> bool
+Arlecchino.Input.KeyBinding.First.get -> Arlecchino.Input.KeyStroke
+Arlecchino.Input.KeyBinding.IsChord.get -> bool
 Arlecchino.Input.KeyBinding.IsNone.get -> bool
 Arlecchino.Input.KeyBinding.Key.get -> System.ConsoleKey
 Arlecchino.Input.KeyBinding.Key.init -> void
 Arlecchino.Input.KeyBinding.KeyBinding() -> void
-Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None, System.ConsoleKey AlsoKey = System.ConsoleKey.None, Arlecchino.Input.KeyModifiers AlsoModifiers = Arlecchino.Input.KeyModifiers.None) -> void
+Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None) -> void
 Arlecchino.Input.KeyBinding.Matches(Arlecchino.Input.KeyPress pressed) -> bool
 Arlecchino.Input.KeyBinding.Modifiers.get -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyBinding.Modifiers.init -> void
+Arlecchino.Input.KeyBinding.Opens(Arlecchino.Input.KeyPress pressed) -> bool
 Arlecchino.Input.KeyBinding.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyBinding
+Arlecchino.Input.KeyBinding.Second.get -> Arlecchino.Input.KeyStroke?
+Arlecchino.Input.KeyBinding.ThenKey(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> Arlecchino.Input.KeyBinding
 Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Alt = 1 -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Control = 4 -> Arlecchino.Input.KeyModifiers
@@ -185,6 +189,18 @@ Arlecchino.Input.KeyPress.KeyPress(System.ConsoleKey Key, Arlecchino.Input.KeyMo
 Arlecchino.Input.KeyPress.KeyPress(char character) -> void
 Arlecchino.Input.KeyPress.Modifiers.get -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyPress.Modifiers.init -> void
+Arlecchino.Input.KeyStroke
+Arlecchino.Input.KeyStroke.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers) -> void
+Arlecchino.Input.KeyStroke.Equals(Arlecchino.Input.KeyStroke other) -> bool
+Arlecchino.Input.KeyStroke.IsNone.get -> bool
+Arlecchino.Input.KeyStroke.Key.get -> System.ConsoleKey
+Arlecchino.Input.KeyStroke.Key.init -> void
+Arlecchino.Input.KeyStroke.KeyStroke() -> void
+Arlecchino.Input.KeyStroke.KeyStroke(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None) -> void
+Arlecchino.Input.KeyStroke.Matches(Arlecchino.Input.KeyPress pressed) -> bool
+Arlecchino.Input.KeyStroke.Modifiers.get -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyStroke.Modifiers.init -> void
+Arlecchino.Input.KeyStroke.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyStroke
 Arlecchino.Input.KeyText
 Arlecchino.Input.KeyText.KeyText(Arlecchino.Input.TextInputMode mode) -> void
 Arlecchino.Input.KeyText.Mode.get -> Arlecchino.Input.TextInputMode
@@ -445,6 +461,8 @@ abstract Arlecchino.Atoms.Collections.AtomsStack<T>.RecordsHistory.get -> bool
 override Arlecchino.Input.KeyBinding.GetHashCode() -> int
 override Arlecchino.Input.KeyBinding.ToString() -> string!
 override Arlecchino.Input.KeyPress.GetHashCode() -> int
+override Arlecchino.Input.KeyStroke.GetHashCode() -> int
+override Arlecchino.Input.KeyStroke.ToString() -> string!
 override Arlecchino.Input.MouseEvent.GetHashCode() -> int
 override Arlecchino.Rendering.Colors.Rgb.GetHashCode() -> int
 override Arlecchino.Rendering.Colors.Rgb.ToString() -> string!
@@ -459,11 +477,14 @@ static Arlecchino.FrameThread.IsCurrent.get -> bool
 static Arlecchino.FrameThread.Post(System.Action! action) -> void
 static Arlecchino.FrameThread.RunPending(System.Action<System.Exception!>! onError) -> void
 static Arlecchino.FrameThread.Verify(string! member) -> void
+static Arlecchino.Input.KeyBinding.AltOrSuper(System.ConsoleKey key) -> Arlecchino.Input.KeyBinding
 static Arlecchino.Input.KeyBinding.operator !=(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyBinding.operator ==(Arlecchino.Input.KeyBinding left, Arlecchino.Input.KeyBinding right) -> bool
 static Arlecchino.Input.KeyPress.From(System.ConsoleKeyInfo key) -> Arlecchino.Input.KeyPress
 static Arlecchino.Input.KeyPress.operator !=(Arlecchino.Input.KeyPress left, Arlecchino.Input.KeyPress right) -> bool
 static Arlecchino.Input.KeyPress.operator ==(Arlecchino.Input.KeyPress left, Arlecchino.Input.KeyPress right) -> bool
+static Arlecchino.Input.KeyStroke.operator !=(Arlecchino.Input.KeyStroke left, Arlecchino.Input.KeyStroke right) -> bool
+static Arlecchino.Input.KeyStroke.operator ==(Arlecchino.Input.KeyStroke left, Arlecchino.Input.KeyStroke right) -> bool
 static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
@@ -532,6 +553,7 @@ static Arlecchino.Rendering.Text.TextWidth.Wrap(string! text, int width) -> Syst
 ~override Arlecchino.Input.KeyBinding.Equals(object obj) -> bool
 ~override Arlecchino.Input.KeyPress.Equals(object obj) -> bool
 ~override Arlecchino.Input.KeyPress.ToString() -> string
+~override Arlecchino.Input.KeyStroke.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.ToString() -> string
 ~override Arlecchino.Rendering.Colors.Rgb.Equals(object obj) -> bool

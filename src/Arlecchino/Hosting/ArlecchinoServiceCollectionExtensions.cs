@@ -87,6 +87,9 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<CommandConflicts>()));
         services.AddSingleton<CommandRegistry>();
         services.AddSingleton<CommandConflicts>();
+        services.AddSingleton(static provider => new CommandKeys(
+            provider.GetRequiredService<Navigator>(),
+            provider.GetRequiredService<CommandRegistry>()));
         services.AddSingleton(static provider => new ModalFrame(
             provider.GetRequiredService<Surface>(),
             provider.GetRequiredService<ArlecchinoState>(),
@@ -106,6 +109,7 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<CommandRegistry>(),
             provider.GetRequiredService<ModalFrame>(),
             provider.GetRequiredService<ILogger<Screen>>(),
+            provider.GetRequiredService<CommandKeys>(),
             provider.GetService<IArlecchinoLayout>()));
         services.AddSingleton(static provider => new InputRouter(
             provider.GetRequiredService<ArlecchinoState>(),
@@ -118,6 +122,7 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<Repaint>(),
             provider.GetRequiredService<ModalFrame>(),
             provider.GetRequiredService<ILogger<InputRouter>>(),
+            provider.GetRequiredService<CommandKeys>(),
             provider.GetService<IArlecchinoLayout>()));
         services.AddSingleton<PendingInput>();
         services.AddSingleton(static provider => new TerminalInputReader(

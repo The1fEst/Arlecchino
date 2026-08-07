@@ -34,6 +34,7 @@ public class InputRouter
     private readonly ILogger<InputRouter> _logger;
     private readonly ModalFrame _frame;
     private readonly CommandPalette _palette;
+    private readonly CommandKeys _keys;
     private readonly IArlecchinoLayout? _layout;
 
     /// <summary>Creates the router.</summary>
@@ -47,6 +48,7 @@ public class InputRouter
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
     /// <param name="frame">What a dialog is handed while the screen shows it.</param>
     /// <param name="logger">Where handler failures are reported.</param>
+    /// <param name="keys">Finds the command a key belongs to, and holds a chord that is half typed.</param>
     /// <param name="layout">The frame around every view, which sees a click before the view does.</param>
     internal InputRouter(
         ArlecchinoState state,
@@ -59,8 +61,10 @@ public class InputRouter
         Repaint repaint,
         ModalFrame frame,
         ILogger<InputRouter> logger,
+        CommandKeys keys,
         IArlecchinoLayout? layout = null)
     {
+        _keys = keys;
         _layout = layout;
         _state = state;
         _navigator = navigator;
@@ -136,6 +140,13 @@ public class InputRouter
             return;
         }
 
+        if (_keys.IsWaiting)
+        {
+            _keys.Finish(key);
+
+            return;
+        }
+
         if (_keymap.ToggleLog.Matches(key))
         {
             _log.Toggle();
@@ -183,49 +194,12 @@ public class InputRouter
             return;
         }
 
-        if (RanCommand(key))
+        if (_keys.Ran(key))
         {
             return;
         }
 
         _navigator.Handle(key);
-    }
-
-    /// <summary>
-    /// The view's own commands first, then the ones available everywhere. A command available
-    /// everywhere is only reached with a modifier held, so an unmodified letter always belongs to the
-    /// view.
-    ///
-    /// A command that says it is not available takes nothing. It used to swallow its key anyway, which made
-    /// <c>IsEnabled</c> mean two different things: grayed out on the key screen, and a key that silently does
-    /// nothing. It also left a view unable to give the same key a second meaning for the times its command is
-    /// off. Skipped here, the key carries on to the commands available everywhere and then to the view, exactly
-    /// as if nothing had claimed it.
-    /// </summary>
-    /// <param name="key">The key that arrived.</param>
-    /// <returns><c>true</c> when something was bound to it and willing to run.</returns>
-    private bool RanCommand(KeyPress key)
-    {
-        foreach (var viewCommand in _navigator.CurrentCommands)
-        {
-            if (!viewCommand.Binding.Matches(key) || !viewCommand.IsEnabled())
-            {
-                continue;
-            }
-
-            _navigator.Apply(viewCommand.Run());
-
-            return true;
-        }
-
-        if (key.Modifiers == default || !_commands.TryFind(key, out var command))
-        {
-            return false;
-        }
-
-        _navigator.Apply(command.Execute());
-
-        return true;
     }
 
     /// <summary>

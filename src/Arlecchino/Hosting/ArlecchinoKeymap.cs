@@ -75,11 +75,8 @@ public sealed record ArlecchinoKeymap
     /// <c>Ctrl+Insert</c> and <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone — that is how the
     /// user stops the application.
     /// </summary>
-    public KeyBinding Copy { get; init; } = new(
-        ConsoleKey.Insert,
-        KeyModifiers.Control,
-        ConsoleKey.C,
-        KeyModifiers.Control | KeyModifiers.Shift);
+    public KeyBinding Copy { get; init; } = new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
+        .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
     /// <summary>Shows or hides the log overlay. <c>Ctrl+L</c> by default.</summary>
     public KeyBinding ToggleLog { get; init; } = new(ConsoleKey.L, KeyModifiers.Control);

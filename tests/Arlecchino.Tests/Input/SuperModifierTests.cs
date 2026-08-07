@@ -91,15 +91,13 @@ public sealed class SuperModifierTests
     [Fact]
     public void ReplacingAModifierRewritesBothCombinationsOfABinding()
     {
-        var copy = new KeyBinding(ConsoleKey.Insert,
-            KeyModifiers.Control,
-            ConsoleKey.C,
-            KeyModifiers.Control | KeyModifiers.Shift);
+        var copy = new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
+            .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
         var moved = copy.Replacing(KeyModifiers.Control, KeyModifiers.Super);
 
         Assert.Equal(KeyModifiers.Super, moved.Modifiers);
-        Assert.Equal(KeyModifiers.Super | KeyModifiers.Shift, moved.AlsoModifiers);
+        Assert.Equal(KeyModifiers.Super | KeyModifiers.Shift, Assert.Single(moved.Alternatives).Modifiers);
     }
 
     [Fact]
@@ -137,7 +135,7 @@ public sealed class SuperModifierTests
         var second = OperatingSystem.IsMacOS() ? KeyModifiers.Alt : KeyModifiers.Super;
 
         Assert.Equal(first, keymap.Back.Modifiers);
-        Assert.Equal(second, keymap.Back.AlsoModifiers);
+        Assert.Equal(second, Assert.Single(keymap.Back.Alternatives).Modifiers);
 
         Assert.True(keymap.Back.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Super)));
         Assert.True(keymap.Back.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Alt)));
