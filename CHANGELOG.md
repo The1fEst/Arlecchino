@@ -53,7 +53,8 @@ fails on, and what it is replaced with is spelled the same way.
   alphabet behind it. While a leader is half typed, the hints box stops listing the keys that are out
   of reach and lists what finishes the chord instead, so the second key is read rather than remembered.
   `Opens` and `Closes` ask about the two halves; `Matches` answers `false` for a chord, so a leader on
-  its own runs nothing.
+  its own runs nothing. An application that turned the hints box off still gets this one: turning it
+  off says something about the keys of a screen, not about a key half pressed.
 
 ### Changed
 
@@ -79,6 +80,16 @@ fails on, and what it is replaced with is spelled the same way.
   matched but never written, since a binding is shown under one name. The one it is written from is
   `First`, the rest are `Alternatives`, and both are the new `KeyStroke` — a key and the modifiers held
   with it, which is also what a chord's second half is.
+
+  An alternative is one press even where the binding is a chord, which is how a chord reaches a
+  keyboard the other way round — `Ctrl+G U` on the laptop that has to spell it out, `Ctrl+PgUp` on the
+  keyboard with the key:
+
+  ```csharp
+  new KeyBinding(ConsoleKey.G, KeyModifiers.Control)
+      .ThenKey(ConsoleKey.U)
+      .AddAlternative(ConsoleKey.PageUp, KeyModifiers.Control);
+  ```
 - **The testing helpers take modifiers rather than three booleans.** `ArlecchinoTestHost.Press`,
   `TestApplication.Press` and `SessionTape.Key` read `Press(ConsoleKey.C, KeyModifiers.Super)`, which
   is also the only way to press the modifier the booleans had no room for. A tape written by an older

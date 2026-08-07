@@ -51,18 +51,25 @@ public sealed class ChordTests
     }
 
     /// <summary>
-    /// A leader with alternatives is opened by any of them, which is what lets a chord be reached from a
-    /// keyboard that sends one modifier and from one that sends another.
+    /// An alternative is one press even where the binding is a chord. That is how the same command reaches
+    /// a keyboard with the key on it and one without: a laptop spells the chord out, a full keyboard holds
+    /// the combination the chord stands in for.
     /// </summary>
     [Fact]
-    public void AnAlternativeOpensTheChordToo()
+    public void AnAlternativeFiresAChordWithoutTheLeader()
     {
-        var binding = new KeyBinding(ConsoleKey.X, KeyModifiers.Control)
-            .AddAlternative(ConsoleKey.X, KeyModifiers.Alt)
-            .ThenKey(ConsoleKey.T);
+        var binding = new KeyBinding(ConsoleKey.G, KeyModifiers.Control)
+            .ThenKey(ConsoleKey.U)
+            .AddAlternative(ConsoleKey.PageUp, KeyModifiers.Control);
 
-        Assert.True(binding.Opens(new(ConsoleKey.X, KeyModifiers.Control)));
-        Assert.True(binding.Opens(new(ConsoleKey.X, KeyModifiers.Alt)));
+        Assert.True(binding.Opens(new(ConsoleKey.G, KeyModifiers.Control)));
+        Assert.True(binding.Closes(new(ConsoleKey.U)));
+
+        Assert.True(binding.Matches(new(ConsoleKey.PageUp, KeyModifiers.Control)));
+        Assert.False(binding.Matches(new(ConsoleKey.G, KeyModifiers.Control)));
+        Assert.False(binding.Opens(new(ConsoleKey.PageUp, KeyModifiers.Control)));
+
+        Assert.Equal("Ctrl+G U", binding.ToString());
     }
 
     [Fact]
@@ -151,6 +158,27 @@ public sealed class ChordTests
 
         Assert.Contains("Tag", frame, StringComparison.Ordinal);
         Assert.Contains("Trash", frame, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// An application that draws its own keys along the bottom has the box turned off, and turning it off
+    /// is a statement about the keys of the screen rather than about a key half pressed. A leader with
+    /// nothing on screen to answer it is a key nobody can press twice.
+    /// </summary>
+    [Fact]
+    public void ALeaderIsAnsweredEvenWhereTheBoxIsTurnedOff()
+    {
+        using var app = new TestApplication(configure: static builder =>
+        {
+            builder.Options.ShowHints = false;
+            builder.AddCommand<TagCommand>();
+        });
+
+        Assert.DoesNotContain("Tag", app.Frame(), StringComparison.Ordinal);
+
+        app.Press(ConsoleKey.X, KeyModifiers.Control);
+
+        Assert.Contains("Tag", app.Frame(), StringComparison.Ordinal);
     }
 }
 

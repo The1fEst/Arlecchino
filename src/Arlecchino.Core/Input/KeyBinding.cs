@@ -39,6 +39,10 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <summary>
     /// The other combinations that trigger the same thing, in the order they were added. They are
     /// matched but never written, since a binding is shown under one name.
+    ///
+    /// An alternative is one keystroke even where the binding is a chord, which is how a chord reaches
+    /// a keyboard the other way round: <c>Ctrl+G U</c> for the machine that has to spell it out, and
+    /// <c>Ctrl+PgUp</c> for the one with the key.
     /// </summary>
     public IReadOnlyList<KeyStroke> Alternatives => _alternatives ?? [];
 
@@ -110,13 +114,13 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     }
 
     /// <summary>
-    /// Whether a key press is this binding, in any of its combinations. A chord matches nothing here:
-    /// its first keystroke only opens it, so a caller that asks this of one gets <c>false</c> and the
-    /// two halves are asked about with <see cref="Opens"/> and <see cref="Closes"/> instead.
+    /// Whether one key press is this whole binding. The combination it is named after counts only when
+    /// the binding is one keystroke — a chord is opened rather than matched — but an alternative counts
+    /// either way, since an alternative is always a single press.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
-    /// <returns><c>true</c> when the press should trigger this binding.</returns>
-    public bool Matches(KeyPress pressed) => !IsChord && MatchesFirst(pressed);
+    /// <returns><c>true</c> when the press should trigger this binding on its own.</returns>
+    public bool Matches(KeyPress pressed) => (!IsChord && First.Matches(pressed)) || MatchesAlternative(pressed);
 
     /// <summary>
     /// Whether a key press is the first half of this chord. A binding of one keystroke opens nothing:
@@ -124,20 +128,15 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the chord has been started and the next key will finish it.</returns>
-    public bool Opens(KeyPress pressed) => IsChord && MatchesFirst(pressed);
+    public bool Opens(KeyPress pressed) => IsChord && First.Matches(pressed);
 
     /// <summary>Whether a key press is the second half of this chord.</summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the chord is complete.</returns>
     public bool Closes(KeyPress pressed) => _second is { } second && second.Matches(pressed);
 
-    private bool MatchesFirst(KeyPress pressed)
+    private bool MatchesAlternative(KeyPress pressed)
     {
-        if (First.Matches(pressed))
-        {
-            return true;
-        }
-
         foreach (var alternative in Alternatives)
         {
             if (alternative.Matches(pressed))

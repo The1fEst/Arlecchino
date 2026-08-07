@@ -265,7 +265,7 @@ public class Screen
             DrawOutput();
         }
 
-        if (_options.ShowHints)
+        if (_options.ShowHints || _keys.IsWaiting)
         {
             DrawHints();
         }
@@ -366,7 +366,9 @@ public class Screen
 
     /// <summary>
     /// What goes in the box. A chord that has been started replaces it outright, since every other key
-    /// on the screen is unreachable until the chord is finished and listing them would be a lie.
+    /// on the screen is unreachable until the chord is finished and listing them would be a lie. It is
+    /// also the one thing an application that turned the box off still gets: a leader with nothing on
+    /// screen to say what is behind it is a key nobody can press twice.
     /// </summary>
     /// <returns>The keys to draw, and what each of them does.</returns>
     private List<(string Key, string Description)> Hints()
