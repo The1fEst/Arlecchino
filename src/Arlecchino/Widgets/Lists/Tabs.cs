@@ -29,7 +29,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
         _keymap = keymap;
     }
 
-    /// <summary>The labels, as delegates so a tab can show a count or a marker that changes.</summary>
+    /// <summary>The labels, as delegates, so a tab can show a count or a marker that changes.</summary>
     public required IReadOnlyList<Func<string>> Titles { get; init; }
 
     /// <summary>Called when the selection actually changes, not on every attempt to move.</summary>
@@ -93,7 +93,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// <summary>Switches tabs with the horizontal arrows, leaving everything else alone.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What became of the key.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key)
+    public FocusResult Handle(KeyPress key)
     {
         if (_keymap.MoveLeft.Matches(key))
         {

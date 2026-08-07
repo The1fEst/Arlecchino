@@ -3,9 +3,9 @@ using System;
 namespace Arlecchino.Layout;
 
 /// <summary>
-/// How much of a region a branch gives to its first half: a share of what there is, a fixed number of
-/// cells, or — for the toolbars and status bars that sit at the far edge — a fixed number of cells
-/// measured from the other end.
+/// How much of a region a branch gives to its first half. It is a share of what there is, a fixed number of
+/// cells, or — for the toolbars and status bars that sit at the far edge — a fixed number of cells measured
+/// from the other end.
 ///
 /// <b>The unit is the literal, not the number.</b> A <c>double</c> is a share and an <c>int</c> is a
 /// count of cells, and both convert on their own, so the call site says which it meant by whether it

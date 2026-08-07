@@ -26,9 +26,9 @@ public class Navigator
     private bool _building;
 
     /// <summary>
-    /// Creates the navigator on the configured start route. The screen itself is built the first time
-    /// one is needed rather than here, because a view is free to ask the container for the navigator —
-    /// building one from this constructor would ask the container for a service it is still building.
+    /// Creates the navigator on the configured start route. The screen itself is built the first time one is
+    /// needed rather than here, because a view is free to ask the container for the navigator. Building one
+    /// from this constructor would ask the container for a service it is still building.
     /// </summary>
     /// <param name="resolver">How routes become views.</param>
     /// <param name="options">Configured options, read for the start route.</param>
@@ -120,7 +120,7 @@ public class Navigator
 
     /// <summary>Passes a key to the current screen and applies the route it returns.</summary>
     /// <param name="key">The key that was pressed.</param>
-    public void Handle(ConsoleKeyInfo key)
+    public void Handle(KeyPress key)
     {
         Build();
 

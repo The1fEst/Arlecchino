@@ -188,8 +188,8 @@ public sealed class TerminalProbeTests
             TerminalProbe.Ask(terminal, TimeSpan.FromSeconds(5));
 
             Assert.True(terminal.KeyAvailable);
-            Assert.Equal('q', terminal.ReadKey().KeyChar);
-            Assert.Equal('w', terminal.ReadKey().KeyChar);
+            Assert.Equal('q', terminal.ReadKey().Character);
+            Assert.Equal('w', terminal.ReadKey().Character);
         }
         finally
         {
@@ -213,9 +213,9 @@ public sealed class TerminalProbeTests
             Assert.True(TerminalCapabilities.Sixel);
             Assert.Equal(11, Glyphs.CellWidth);
 
-            Assert.Equal('x', terminal.ReadKey().KeyChar);
-            Assert.Equal('y', terminal.ReadKey().KeyChar);
-            Assert.Equal('z', terminal.ReadKey().KeyChar);
+            Assert.Equal('x', terminal.ReadKey().Character);
+            Assert.Equal('y', terminal.ReadKey().Character);
+            Assert.Equal('z', terminal.ReadKey().Character);
             Assert.False(terminal.KeyAvailable);
         }
         finally

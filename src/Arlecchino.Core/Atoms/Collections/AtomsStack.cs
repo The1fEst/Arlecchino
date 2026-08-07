@@ -9,11 +9,10 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A stack held as one piece of application state — where the user has been, the modals over one
-/// another, a plan being unwound. Things go on top and come off the top, and every change goes
-/// through the same path a plain atom's write does: it is checked against the drawing thread, it
-/// notifies what reads the stack, it marks the frame stale, and it records an undo step when the
-/// stack is undoable.
+/// A stack held as one piece of application state — where the user has been, the modals over one another, a
+/// plan being unwound. Things go on top and come off the top. Every change takes the same path a plain atom's
+/// write takes: it is checked against the drawing thread, it notifies what reads the stack, it marks the frame
+/// stale, and it records an undo step when the stack is undoable.
 ///
 /// It is what a <c>ConcurrentStack&lt;T&gt;</c> is not for: nothing here is thread-safe, because
 /// nothing needs to be. Background work hands its item over with <c>FrameThread.Post</c> and the

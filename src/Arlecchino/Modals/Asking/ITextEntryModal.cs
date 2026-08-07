@@ -7,7 +7,7 @@ namespace Arlecchino.Modals.Asking;
 public interface ITextEntryModal : IAffixedModal
 {
     /// <summary>
-    /// What has been typed so far. Assigning it puts the caret at the end, since replacing the text
+    /// Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text
     /// wholesale means the old caret no longer refers to anything.
     /// </summary>
     string Text { get; set; }

@@ -9,9 +9,9 @@ namespace Arlecchino.Modals.Reading;
 /// <summary>
 /// The dialogs that are a list to pick from, whether one thing is being picked or several.
 ///
-/// Typing narrows the list rather than jumping to a letter. Jumping works on a list of five and
-/// nothing else; narrowing works on a list of five and on a list of five hundred, and a list that
-/// behaves one way at one size and another at another is one nobody comes to trust.
+/// Typing narrows the list rather than jumping to a letter. Jumping works on a list of five and nothing else,
+/// while narrowing works on a list of five and on a list of five hundred. A list that behaves one way at one
+/// size and another way at another is one nobody comes to trust.
 /// </summary>
 internal sealed class ListKeys
 {
@@ -33,7 +33,7 @@ internal sealed class ListKeys
     /// <summary>Reads a key for a list one thing is picked from.</summary>
     /// <param name="modal">The list.</param>
     /// <param name="key">The key that arrived.</param>
-    public void One(ChoiceModal modal, ConsoleKeyInfo key)
+    public void One(ChoiceModal modal, KeyPress key)
     {
         var matching = modal.MatchingOptions();
 
@@ -60,7 +60,7 @@ internal sealed class ListKeys
     /// <summary>Reads a key for a list several things are picked from.</summary>
     /// <param name="modal">The list.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Several(MultiChoiceModal modal, ConsoleKeyInfo key)
+    public void Several(MultiChoiceModal modal, KeyPress key)
     {
         var matching = modal.MatchingOptions();
 
@@ -95,7 +95,7 @@ internal sealed class ListKeys
     /// <param name="modal">The list.</param>
     /// <param name="matching">How many rows are still showing.</param>
     /// <param name="key">The key that arrived.</param>
-    private void MoveOrFilter(OptionListModal modal, int matching, ConsoleKeyInfo key)
+    private void MoveOrFilter(OptionListModal modal, int matching, KeyPress key)
     {
         if (_keymap.MoveUp.Matches(key))
         {

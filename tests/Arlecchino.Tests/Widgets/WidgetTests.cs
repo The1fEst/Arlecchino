@@ -110,16 +110,16 @@ public sealed class WidgetTests
     {
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c"] };
 
-        Assert.Equal(FocusResult.Handled, list.Handle(new('\0', ConsoleKey.DownArrow, false, false, false)));
+        Assert.Equal(FocusResult.Handled, list.Handle(new(ConsoleKey.DownArrow)));
         Assert.Equal(1, list.Selected);
 
-        list.Handle(new('\0', ConsoleKey.End, false, false, false));
+        list.Handle(new(ConsoleKey.End));
         Assert.Equal(2, list.Selected);
 
-        list.Handle(new('\0', ConsoleKey.Home, false, false, false));
+        list.Handle(new(ConsoleKey.Home));
         Assert.Equal(0, list.Selected);
 
-        Assert.Equal(FocusResult.Ignored, list.Handle(new('\0', ConsoleKey.F5, false, false, false)));
+        Assert.Equal(FocusResult.Ignored, list.Handle(new(ConsoleKey.F5)));
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public sealed class WidgetTests
         };
 
         list.Selected = 1;
-        var result = list.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        var result = list.Handle(new(ConsoleKey.Enter));
 
         Assert.Equal("b", picked);
         Assert.Equal(new("Somewhere"), result.Route);
@@ -274,9 +274,9 @@ public sealed class WidgetTests
             OnSelected = selected.Add,
         };
 
-        tabs.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
-        tabs.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
-        tabs.Handle(new('\0', ConsoleKey.LeftArrow, false, false, false));
+        tabs.Handle(new(ConsoleKey.RightArrow));
+        tabs.Handle(new(ConsoleKey.RightArrow));
+        tabs.Handle(new(ConsoleKey.LeftArrow));
 
         Assert.Equal([1, 2, 1], selected);
         Assert.Equal(1, tabs.Selected);

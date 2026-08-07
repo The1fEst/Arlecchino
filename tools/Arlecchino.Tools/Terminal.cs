@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering.Terminals;
 using Microsoft.Extensions.Hosting;
@@ -362,11 +363,11 @@ internal static class Terminal
         {
         }
 
-        public ViewRoute Handle(ConsoleKeyInfo key)
+        public ViewRoute Handle(KeyPress key)
         {
-            if (!char.IsControl(key.KeyChar))
+            if (!char.IsControl(key.Character))
             {
-                _typed.Add(key.KeyChar);
+                _typed.Add(key.Character);
             }
 
             return ViewRoute.None;

@@ -67,7 +67,7 @@ public class DefaultView : IArlecchinoView
 
     public IReadOnlyList<ViewCommand> Commands() => _own;
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (_commands.TryFind(key, out var command))
         {

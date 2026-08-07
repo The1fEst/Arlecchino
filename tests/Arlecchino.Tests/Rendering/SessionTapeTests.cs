@@ -85,7 +85,7 @@ public sealed class SessionTapeTests
         var clock = new TestClock();
         var tape = new SessionTape(clock);
 
-        tape.RecordKey(new('a', ConsoleKey.A, false, false, false));
+        tape.RecordKey(new(ConsoleKey.A, default, 'a'));
         clock.Advance(TimeSpan.FromMilliseconds(400));
         tape.RecordMouse(new(MouseAction.Pressed, MouseButton.Left, 2, 3, default));
         clock.Advance(TimeSpan.FromMilliseconds(150));

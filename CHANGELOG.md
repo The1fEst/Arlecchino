@@ -11,8 +11,60 @@ the public API means a new major. See
 
 ## Unreleased
 
+### Added
+
+- **Command, and a way to move a whole keymap onto it.** On a Mac terminal the Option key is spoken
+  for by the characters it types, so `Alt` never reaches the application and every binding built on it
+  is unreachable. The key that keyboard has going spare is Command, and terminals do report it — as one
+  more bit in the same modifier field as the rest. `KeyModifiers.Super` is that bit, bindable like any
+  other:
+
+  ```csharp
+  builder.UseKeymap(new ArlecchinoKeymap { Back = new(ConsoleKey.LeftArrow, KeyModifiers.Super) });
+  ```
+
+  Rewriting thirty bindings by hand is how an application ends up with twenty-eight of them rewritten,
+  so the whole map moves at once:
+
+  ```csharp
+  builder.UseKeymap(new ArlecchinoKeymap().Replacing(KeyModifiers.Alt, KeyModifiers.Super));
+  ```
+
+  A binding relabels itself for the machine it is running on: `Cmd+←` on a Mac, `Win+←` elsewhere.
+
+- **The history keys know which machine they are on.** `Back` and `Forward` are bound to both Command
+  and Alt out of the box, with the one that machine is likelier to send named first — so a Mac reads
+  `Cmd+←` in the hints box and everywhere else reads `Alt+←`, and either modifier works on either. The
+  terminal rather than the operating system decides which of the two ever arrives, and somebody sitting
+  at a Mac over ssh has one of each, so binding both is the arrangement that is right in all four
+  cases. Nothing else moved: the rest of the map is on Control, which a Mac terminal sends perfectly
+  well, and moving it to Command would have broken it in the terminals that do not report Command.
+
+### Changed
+
+- **A key press is `KeyPress` rather than `ConsoleKeyInfo`.** The console type stores Shift, Alt and
+  Control as three booleans and has nowhere to put a fourth modifier, so a terminal reporting Command
+  could only be misread or dropped. Everything a view is handed goes through the new type instead:
+  `Handle(KeyPress key)` on views, widgets, focusables and dialogs, `KeyBinding.Matches`,
+  `IArlecchinoTerminal.ReadKey`, `KeyText.Resolve` and `MouseEvent.Modifiers`. The members are the same
+  three, one of them renamed: `Key`, `Modifiers` and `Character` where the console said `KeyChar`.
+  A view is fixed by changing the parameter type; `KeyPress.From` takes over a `ConsoleKeyInfo` for
+  code that still has one.
+- **The testing helpers take modifiers rather than three booleans.** `ArlecchinoTestHost.Press`,
+  `TestApplication.Press` and `SessionTape.Key` read `Press(ConsoleKey.C, KeyModifiers.Super)`, which
+  is also the only way to press the modifier the booleans had no room for. A tape written by an older
+  version does not load: the key line now carries one number for the modifiers instead of three flags.
+
 ### Fixed
 
+- **A letter held with Command is no longer typed into the field as text.** There is no legacy spelling
+  for `Cmd+J`, so a terminal falls back to the `CSI 106;9u` shape — which the reader did not understand
+  and therefore replayed a character at a time, putting `[106;9u` into whatever was being edited. That
+  shape is now read. Keys named in the private use area, which is where a terminal puts the keypad and
+  the media keys, are understood and dropped rather than replayed.
+- **A cursor key held with Command is no longer indistinguishable from the bare key.** `Cmd+←` arrives
+  as `ESC[1;9D`, and the ninth bit was being dropped on the floor, leaving the press to read as a plain
+  `←` and move the cursor.
 - **Keys pressed while the terminal is being asked what it can do no longer disappear.** The probe
   hands back what it read only when the terminal said nothing at all, so anything typed in the moment
   before an answer arrived was filed as part of that answer and lost. It is now told apart by where it

@@ -7,7 +7,7 @@ namespace Arlecchino.Rendering.Colors;
 public interface IArlecchinoColor
 {
     /// <summary>
-    /// The escape sequence that switches the terminal to this style, or an empty string when colour
+    /// The escape sequence that switches the terminal to this style, or an empty string when color
     /// is turned off. Implementations are expected to build it once and cache it.
     /// </summary>
     string Ansi { get; }

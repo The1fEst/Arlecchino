@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 
@@ -36,7 +35,7 @@ public interface IArlecchinoFocusable
     /// <summary>Handles a key while this element has the focus.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What was done with it.</returns>
-    FocusResult Handle(ConsoleKeyInfo key);
+    FocusResult Handle(KeyPress key);
 
     /// <summary>
     /// Handles a mouse event wherever it landed. Claiming one also moves the focus here, so a click

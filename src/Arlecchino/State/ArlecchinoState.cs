@@ -42,7 +42,7 @@ public class ArlecchinoState
     private readonly LocalAtomsList<Modal> _modals = new();
 
     /// <summary>Creates the state.</summary>
-    /// <param name="repaint">Signal raised whenever any of this changes.</param>
+    /// <param name="repaint">Signal raised whenever anything here changes.</param>
     /// <param name="notifications">Holds the output row and the notifications screen behind it.</param>
     public ArlecchinoState(Repaint repaint, Notifications notifications)
     {
@@ -53,7 +53,7 @@ public class ArlecchinoState
     /// <summary>
     /// The status line at the bottom of the frame. Writing to it raises a notification, so the line
     /// clears itself after <c>ArlecchinoOptions.NotificationTimeout</c> and the message stays
-    /// readable afterwards on the notifications screen. An empty string clears the row at once.
+    /// readable afterward on the notifications screen. An empty string clears the row at once.
     /// </summary>
     public string Output
     {
@@ -89,12 +89,12 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// Every open dialog, bottom first. Drawing goes through this so the ones underneath stay visible
+    /// Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible
     /// behind the top one.
     ///
-    /// A live view of the stack rather than a copy, and read-only all the way down: a widget handed it
-    /// once draws whatever is open on every later frame, and there is no cast that gets a caller back
-    /// to the list underneath.
+    /// A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once
+    /// draws whatever is open on every later frame, and there is no cast that gets a caller back to the list
+    /// underneath.
     /// </summary>
     public IReadOnlyList<Modal> Modals => _modals.Value;
 
@@ -240,12 +240,12 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// Asks for a colour with a swatch and three sliders. Channels are whole numbers, so a colour
+    /// Asks for a color with a swatch and three sliders. Channels are whole numbers, so a color
     /// that goes in can come back shifted by a unit or two.
     /// </summary>
     /// <param name="title">Title of the dialog.</param>
-    /// <param name="initial">Colour the sliders start on.</param>
-    /// <param name="onPicked">Called with the chosen colour.</param>
+    /// <param name="initial">Color the sliders start on.</param>
+    /// <param name="onPicked">Called with the chosen color.</param>
     public void RequestColor(string title, Rgb initial, Action<Rgb> onPicked)
     {
         var modal = new ColorModal

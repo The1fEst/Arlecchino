@@ -5,7 +5,7 @@ using Arlecchino.Hosting;
 
 namespace Arlecchino.Diagnostics;
 
-/// <summary>How loud a notification is, which decides how it is coloured.</summary>
+/// <summary>How loud a notification is, which decides how it is colored.</summary>
 public enum NotificationLevel
 {
     /// <summary>Something happened and went well.</summary>
@@ -29,7 +29,7 @@ public sealed record NotificationAction(Func<string> Label, Action Run);
 /// <summary>
 /// One thing the application said, and when it said it. A plain message needs no more than the three
 /// values it is built with; something still running fills in <see cref="Progress"/>, and something
-/// worth reading in full fills in <see cref="Detail"/> and <see cref="Actions"/>, which the
+/// worth reading at length fills in <see cref="Detail"/> and <see cref="Actions"/>, which the
 /// notifications screen offers when the entry is opened.
 /// </summary>
 /// <param name="Time">When it was raised.</param>
@@ -112,10 +112,10 @@ public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, 
 }
 
 /// <summary>
-/// What the application has to say, and for how long. The newest line sits on the output row until it
-/// times out, so a message does not stay on screen for the rest of the session; it stays in the list
-/// for much longer, so opening the notifications screen still shows what went past while the user was
-/// looking elsewhere.
+/// What the application has to say, and for how long. The newest line sits on the output row until it times
+/// out, so a message does not hold the screen for the rest of the session. It stays in the list for much
+/// longer, so opening the notifications screen still shows what went past while the user was looking
+/// elsewhere.
 ///
 /// Both timeouts come from <see cref="ArlecchinoOptions"/>, and both are counted by the
 /// <see cref="Ticker"/> — nothing here runs on its own thread.
@@ -138,7 +138,7 @@ public sealed class Notifications
         ticker.Every(options.NotificationTimeout, Expire);
     }
 
-    /// <summary>Everything still held, newest first.</summary>
+    /// <summary>Everything still held, the newest first.</summary>
     public IReadOnlyList<Notification> Entries
     {
         get
@@ -171,13 +171,13 @@ public sealed class Notifications
     }
 
     /// <summary>
-    /// What is worth showing right now, newest first: everything still running, and everything that
+    /// What is worth showing right now, the newest first: everything still running, and everything that
     /// ended recently enough not to have timed out yet.
     ///
-    /// <see cref="Current"/> answers the same question for one row at the bottom of the screen, which
-    /// can only hold the newest. An application that shows its work as a stack of cards rather than a
-    /// line wants all of them, and wants a copy that is still going to stay on screen however long it
-    /// takes — which is why running work is here whatever its age.
+    /// <see cref="Current"/> answers the same question for one row at the bottom of the screen, which can only
+    /// hold the newest. An application that shows its work as a stack of cards rather than a line wants all of
+    /// them, and wants each one to stay up however long the work takes. That is why running work is here
+    /// whatever its age.
     /// </summary>
     public IReadOnlyList<Notification> Recent
     {
@@ -238,7 +238,7 @@ public sealed class Notifications
     /// <summary>
     /// Turns a line that was reporting work into what came of that work, in place. The entry keeps its
     /// spot in the list and its identity, so a dialog someone already has open changes under them
-    /// rather than going stale, and the entry starts ageing like any other message.
+    /// rather than going stale, and the entry starts aging like any other message.
     /// </summary>
     /// <param name="entry">The entry that was reporting.</param>
     /// <param name="text">What came of the work.</param>

@@ -1,5 +1,6 @@
 using System;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 
 namespace Arlecchino.Diagnostics;
 
@@ -26,7 +27,7 @@ internal sealed class LogOverlay
     /// <summary>The lines being shown.</summary>
     public LogBuffer Buffer { get; }
 
-    /// <summary>Whether the overlay is on screen.</summary>
+    /// <summary>Whether the overlay is showing.</summary>
     public bool IsVisible
     {
         get => _isVisible;
@@ -65,7 +66,7 @@ internal sealed class LogOverlay
     /// <param name="key">The key that arrived.</param>
     /// <param name="keymap">Keys to obey.</param>
     /// <returns><c>true</c> when the overlay took it.</returns>
-    public bool Handle(ConsoleKeyInfo key, ArlecchinoKeymap keymap)
+    public bool Handle(KeyPress key, ArlecchinoKeymap keymap)
     {
         ArgumentNullException.ThrowIfNull(keymap);
 

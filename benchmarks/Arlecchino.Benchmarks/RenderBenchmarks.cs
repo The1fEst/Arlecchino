@@ -1,4 +1,3 @@
-using System;
 using BenchmarkDotNet.Attributes;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
@@ -107,9 +106,9 @@ public class RenderBenchmarks
 
         public void Write(string text) => WrittenLength += text.Length;
 
-        public ConsoleKeyInfo ReadKey() => default;
+        public KeyPress ReadKey() => default;
 
-        public void Unread(ConsoleKeyInfo key) { }
+        public void Unread(KeyPress key) { }
 
         public MouseEvent ReadMouse() => default;
 

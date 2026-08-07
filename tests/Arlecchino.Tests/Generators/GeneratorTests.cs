@@ -16,6 +16,7 @@ public sealed class GeneratorTests
 {
     private const string TwoViews = """
         using System;
+        using Arlecchino.Input;
         using Arlecchino.Navigation;
 
         namespace Sample;
@@ -23,13 +24,13 @@ public sealed class GeneratorTests
         public class ModsView : IArlecchinoView
         {
             public void Draw() { }
-            public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+            public ViewRoute Handle(KeyPress key) => ViewRoute.None;
         }
 
         public class AboutView : IArlecchinoView
         {
             public void Draw() { }
-            public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+            public ViewRoute Handle(KeyPress key) => ViewRoute.None;
         }
         """;
 
@@ -283,6 +284,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample
@@ -290,18 +292,19 @@ public sealed class GeneratorTests
                 public class ModsView : IArlecchinoView
                 {
                     public void Draw() { }
-                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
                 }
             }
 
             namespace Sample.Extra
             {
+                using Arlecchino.Input;
                 using Arlecchino.Navigation;
 
                 public class ModsView : IArlecchinoView
                 {
                     public void Draw() { }
-                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
                 }
             }
             """;
@@ -319,6 +322,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample;
@@ -327,7 +331,7 @@ public sealed class GeneratorTests
             {
                 private HiddenView() { }
                 public void Draw() { }
-                public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                public ViewRoute Handle(KeyPress key) => ViewRoute.None;
             }
             """;
 
@@ -343,6 +347,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample;
@@ -352,7 +357,7 @@ public sealed class GeneratorTests
                 public class ModsView : IArlecchinoView
                 {
                     public void Draw() { }
-                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
                 }
             }
             """;
@@ -367,6 +372,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample;
@@ -376,7 +382,7 @@ public sealed class GeneratorTests
                 private sealed class HiddenView : IArlecchinoView
                 {
                     public void Draw() { }
-                    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
                 }
             }
             """;
@@ -465,6 +471,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
             using Arlecchino.Rendering;
 
@@ -474,7 +481,7 @@ public sealed class GeneratorTests
             {
                 public ModsView(Surface surface) { }
                 public void Draw() { }
-                public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                public ViewRoute Handle(KeyPress key) => ViewRoute.None;
             }
             """;
 
@@ -489,6 +496,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample.Screens;
@@ -496,7 +504,7 @@ public sealed class GeneratorTests
             public class ModsView : IArlecchinoView
             {
                 public void Draw() { }
-                public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                public ViewRoute Handle(KeyPress key) => ViewRoute.None;
             }
             """;
 
@@ -726,6 +734,7 @@ public sealed class GeneratorTests
     {
         const string source = """
             using System;
+            using Arlecchino.Input;
             using Arlecchino.Navigation;
 
             namespace Sample;
@@ -733,13 +742,13 @@ public sealed class GeneratorTests
             public abstract class BaseView : IArlecchinoView
             {
                 public abstract void Draw();
-                public abstract ViewRoute Handle(ConsoleKeyInfo key);
+                public abstract ViewRoute Handle(KeyPress key);
             }
 
             public class RealView : BaseView
             {
                 public override void Draw() { }
-                public override ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+                public override ViewRoute Handle(KeyPress key) => ViewRoute.None;
             }
             """;
 

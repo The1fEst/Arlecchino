@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace Arlecchino.Diagnostics;
 
 /// <summary>
-/// The log, drawn over the bottom half of whatever is on screen. It is pinned to the newest line
+/// The log, drawn over the bottom half of whatever the screen shows. It is pinned to the newest line
 /// unless it has been scrolled back, so a line arriving while it is open is seen without anything
 /// having to be done about it.
 /// </summary>

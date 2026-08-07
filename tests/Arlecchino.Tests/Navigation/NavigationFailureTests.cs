@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -78,7 +79,7 @@ public sealed class NavigationFailureTests
 
         public void Draw() { }
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     public sealed class GatewayView : IArlecchinoView
@@ -89,7 +90,7 @@ public sealed class NavigationFailureTests
 
         public void Draw() => _surface.AppendLine("gateway", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) =>
+        public ViewRoute Handle(KeyPress key) =>
             key.Key == ConsoleKey.B ? new("Broken") : ViewRoute.None;
     }
 }

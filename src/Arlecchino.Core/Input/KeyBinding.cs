@@ -16,12 +16,29 @@ namespace Arlecchino.Input;
 /// <param name="AlsoModifiers">Modifiers for that second key.</param>
 public readonly record struct KeyBinding(
     ConsoleKey Key,
-    ConsoleModifiers Modifiers = default,
+    KeyModifiers Modifiers = default,
     ConsoleKey AlsoKey = default,
-    ConsoleModifiers AlsoModifiers = default)
+    KeyModifiers AlsoModifiers = default)
 {
     /// <summary>Whether this binding is unset and therefore matches nothing.</summary>
     public bool IsNone => Key == default;
+
+    /// <summary>
+    /// The same binding with one modifier put in place of another, wherever it appears. This is how an
+    /// application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing
+    /// accented characters, so <c>Alt</c> never arrives and <c>Super</c> is what that keyboard has spare.
+    /// </summary>
+    /// <param name="from">The modifier to take out.</param>
+    /// <param name="to">The modifier to put in its place.</param>
+    /// <returns>The rewritten binding, or this one when the modifier is not in it.</returns>
+    public KeyBinding Replacing(KeyModifiers from, KeyModifiers to) => this with
+    {
+        Modifiers = Swapped(Modifiers, from, to),
+        AlsoModifiers = Swapped(AlsoModifiers, from, to),
+    };
+
+    private static KeyModifiers Swapped(KeyModifiers held, KeyModifiers from, KeyModifiers to) =>
+        (held & from) == from && from != KeyModifiers.None ? (held & ~from) | to : held;
 
     /// <summary>
     /// Whether a key press is this binding, either of its combinations. Terminals that report no
@@ -30,18 +47,18 @@ public readonly record struct KeyBinding(
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press should trigger this binding.</returns>
-    public bool Matches(ConsoleKeyInfo pressed) =>
+    public bool Matches(KeyPress pressed) =>
         MatchesOne(pressed, Key, Modifiers) ||
         (AlsoKey != default && MatchesOne(pressed, AlsoKey, AlsoModifiers));
 
-    private static bool MatchesOne(ConsoleKeyInfo pressed, ConsoleKey key, ConsoleModifiers modifiers)
+    private static bool MatchesOne(KeyPress pressed, ConsoleKey key, KeyModifiers modifiers)
     {
         if (pressed.Modifiers != modifiers)
         {
             return false;
         }
 
-        return pressed.Key == key || (pressed.Key == default && MatchesCharacter(key, pressed.KeyChar));
+        return pressed.Key == key || (pressed.Key == default && MatchesCharacter(key, pressed.Character));
     }
 
     private static bool MatchesCharacter(ConsoleKey key, char character) => key switch
@@ -71,23 +88,34 @@ public readonly record struct KeyBinding(
 
         var text = new StringBuilder();
 
-        if (Modifiers.HasFlag(ConsoleModifiers.Control))
+        if (Modifiers.HasFlag(KeyModifiers.Control))
         {
             text.Append("Ctrl+");
         }
 
-        if (Modifiers.HasFlag(ConsoleModifiers.Alt))
+        if (Modifiers.HasFlag(KeyModifiers.Alt))
         {
             text.Append("Alt+");
         }
 
-        if (Modifiers.HasFlag(ConsoleModifiers.Shift))
+        if (Modifiers.HasFlag(KeyModifiers.Super))
+        {
+            text.Append(SuperName);
+        }
+
+        if (Modifiers.HasFlag(KeyModifiers.Shift))
         {
             text.Append("Shift+");
         }
 
         return text.Append(NameOf(Key)).ToString();
     }
+
+    /// <summary>
+    /// What to call the key next to the space bar. The same bit is a different key cap depending on
+    /// where the application is running, and the hints box is read by whoever is looking at it.
+    /// </summary>
+    private static string SuperName => OperatingSystem.IsMacOS() ? "Cmd+" : "Win+";
 
     private static string NameOf(ConsoleKey key) => key switch
     {

@@ -17,7 +17,7 @@ namespace Arlecchino.Hosting;
 
 /// <summary>
 /// Runs the application for as long as the host does: it takes over the terminal, drives drawing and
-/// input, and gives the terminal back afterwards. Restoring is done on every way out — a normal stop,
+/// input, and gives the terminal back afterward. Restoring is done on every way out — a normal stop,
 /// Ctrl+C, an unhandled error, even process exit — because a terminal left in full-screen mode with
 /// the mouse captured is unusable once the process is gone.
 /// </summary>
@@ -192,7 +192,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// <summary>
     /// The signals a terminal application has to answer itself. Being killed or suspended without
     /// giving the screen back leaves the user staring at an alternate screen with no cursor and no
-    /// prompt, which no amount of process cleanup afterwards can fix.
+    /// prompt, which no amount of process cleanup afterward can fix.
     /// </summary>
     private void HookPosixSignals()
     {

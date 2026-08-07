@@ -15,7 +15,7 @@ public enum LoadStatus : byte
     /// <summary>A load is running.</summary>
     Loading,
 
-    /// <summary>The last load finished and its result is in place.</summary>
+    /// <summary>The last load finished, and its result is in place.</summary>
     Loaded,
 
     /// <summary>The last load threw; see the error.</summary>
@@ -23,7 +23,7 @@ public enum LoadStatus : byte
 }
 
 /// <summary>
-/// A value produced by background work, with its progress exposed as state so the view can draw a
+/// A value produced by background work, with its progress exposed as state, so the view can draw a
 /// spinner or an error without knowing anything about the task. Results are handed back on the UI
 /// thread, and a new load cancels the one before it, so a slow reply can never overwrite a newer one.
 /// Nothing here is recorded in history, because loading is not something the user undoes.
@@ -86,7 +86,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
 
     /// <summary>
     /// Abandons the running load. Whatever was loaded before stays put — the user asked to stop
-    /// waiting, not to lose what is on screen — but the state stops reporting itself as loading, so a
+    /// waiting, not to lose what the screen shows — but the state stops reporting itself as loading, so a
     /// spinner bound to it does not spin forever.
     /// </summary>
     public void Cancel()

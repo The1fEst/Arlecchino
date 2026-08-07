@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Diagnostics;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Xunit;
 
@@ -56,7 +57,7 @@ public sealed class NotificationTests
         app.State.Notifications.Notify("first");
         app.State.Notifications.Notify("second", NotificationLevel.Failure);
 
-        app.Press(ConsoleKey.N, control: true);
+        app.Press(ConsoleKey.N, KeyModifiers.Control);
 
         Assert.Equal(Routes.Notifications, app.Navigator.CurrentRoute);
 
@@ -86,7 +87,7 @@ public sealed class NotificationTests
         using var app = new TestApplication();
 
         app.State.Notifications.Notify("something");
-        app.Press(ConsoleKey.N, control: true);
+        app.Press(ConsoleKey.N, KeyModifiers.Control);
         app.Press(ConsoleKey.Backspace);
 
         Assert.Empty(app.State.Notifications.Entries);
@@ -101,7 +102,7 @@ public sealed class NotificationTests
     public void TheKeyThatOpensTheScreenCanBeChosen()
     {
         using var app = new TestApplication(configure: static builder => builder.UseNotifications(
-            new('\0', ConsoleKey.F1, shift: false, alt: true, control: false),
+            new(ConsoleKey.F1, KeyModifiers.Alt),
             TimeSpan.FromSeconds(2)));
 
         app.State.Notifications.Notify("something");
@@ -109,7 +110,7 @@ public sealed class NotificationTests
         app.Press(ConsoleKey.F1);
         Assert.NotEqual(Routes.Notifications, app.Navigator.CurrentRoute);
 
-        app.Press(ConsoleKey.F1, alt: true);
+        app.Press(ConsoleKey.F1, KeyModifiers.Alt);
 
         Assert.Equal(Routes.Notifications, app.Navigator.CurrentRoute);
         Assert.Equal(TimeSpan.FromSeconds(2), app.Options.NotificationTimeout);
@@ -270,7 +271,7 @@ public sealed class NotificationTests
 
         var entry = app.State.Notifications.Raise(Running(static () => "copying"));
 
-        app.Press(ConsoleKey.N, control: true);
+        app.Press(ConsoleKey.N, KeyModifiers.Control);
         app.Press(ConsoleKey.Backspace);
 
         Assert.Single(app.State.Notifications.Entries);

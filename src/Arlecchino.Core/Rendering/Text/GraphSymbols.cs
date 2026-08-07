@@ -34,7 +34,7 @@ public enum GraphSymbols
 
 /// <summary>
 /// The symbols in use, reachable from anywhere that draws — the same arrangement as
-/// <see cref="Theme"/>, and for the same reason: a widget picks the look up rather than being told
+/// <see cref="Theme"/>, and for the same reason: a widget reads the look rather than being told
 /// it. Assigned from <c>ArlecchinoOptions</c> when the container resolves them; set it directly when
 /// drawing without a host.
 ///
@@ -90,7 +90,7 @@ public static class Glyphs
     ///
     /// <see cref="TerminalProbe.Ask"/> sets it from what the terminal reports. Ten by twenty is the
     /// standing guess for a terminal that does not answer, and a wrong guess shows as a picture that
-    /// does not quite fill its pane rather than as a broken one.
+    /// does not quite fill its pane rather than as a broken picture.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static int CellWidth

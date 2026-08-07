@@ -5,10 +5,10 @@ using System.Threading;
 namespace Arlecchino;
 
 /// <summary>
-/// Which thread draws. Views, widgets, atoms and the surface are written without locks because one
-/// thread touches them, and this is what turns that from a convention into something the framework
-/// can check: the frame loop claims the thread it runs on, and everything that must happen there
-/// asks before it changes anything.
+/// Which thread draws. Views, widgets, atoms and the surface are written without locks because one thread
+/// touches them, and this is what turns that from a convention into something the framework can check. The
+/// frame loop claims the thread it runs on, and everything that must happen there asks before it changes
+/// anything.
 ///
 /// Nothing claims it outside a running application — a headless host, a test, a single
 /// <c>DrawOnce</c> — so the checks stay quiet there and cost a null comparison.

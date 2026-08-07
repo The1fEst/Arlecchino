@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.State;
@@ -8,9 +7,9 @@ using Arlecchino.Modals.Asking;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// A field of one line, whatever it is asking for. Moving the caret, rubbing out, copying and typing
-/// are the same everywhere, so a dialog that asks for a name and one that asks for a number differ
-/// only in what they will accept and what they do when the answer is given.
+/// A field of one line, whatever it is asking for. Moving the caret, rubbing out, copying and typing are the
+/// same everywhere. So a dialog that asks for a name and one that asks for a number differ only in what they
+/// will accept and what they do when the answer is given.
 /// </summary>
 internal sealed class FieldKeys
 {
@@ -47,7 +46,7 @@ internal sealed class FieldKeys
     /// <summary>Reads a key for a field of text.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Text(TextModal modal, ConsoleKeyInfo key)
+    public void Text(TextModal modal, KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {
@@ -78,7 +77,7 @@ internal sealed class FieldKeys
     /// <summary>Reads a key for a field that asks for a number, which can be typed or stepped.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Number(NumberModal modal, ConsoleKeyInfo key)
+    public void Number(NumberModal modal, KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {
@@ -105,7 +104,7 @@ internal sealed class FieldKeys
     /// <summary>Copying, moving, rubbing out and typing, for any field of one line.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Edit(ITextEntryModal modal, ConsoleKeyInfo key)
+    public void Edit(ITextEntryModal modal, KeyPress key)
     {
         if (_keymap.Copy.Matches(key))
         {
@@ -155,7 +154,7 @@ internal sealed class FieldKeys
         modal.OnSubmit(value);
     }
 
-    private bool Moved(ITextEntryModal modal, ConsoleKeyInfo key)
+    private bool Moved(ITextEntryModal modal, KeyPress key)
     {
         if (_keymap.WordLeft.Matches(key))
         {
@@ -202,7 +201,7 @@ internal sealed class FieldKeys
         return true;
     }
 
-    private bool Erased(ITextEntryModal modal, ConsoleKeyInfo key)
+    private bool Erased(ITextEntryModal modal, KeyPress key)
     {
         if (_keymap.EraseWord.Matches(key))
         {

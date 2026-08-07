@@ -1,4 +1,4 @@
-using System;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -16,7 +16,7 @@ public sealed class WideView : IArlecchinoView
 
     public void Draw() => _surface.AppendLine("日本語のビュー", Theme.Default);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
     public (string Key, string Description)[] Hints() =>
     [

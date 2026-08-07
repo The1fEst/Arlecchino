@@ -14,10 +14,10 @@ public abstract class OptionListModal : Modal
     /// <summary>Everything that can be chosen from.</summary>
     public IReadOnlyList<string> Options { get; init; } = [];
 
-    /// <summary>What has been typed to narrow the list. Editing it resets the cursor to the top.</summary>
+    /// <summary>Whatever has been typed to narrow the list. Editing it resets the cursor to the top.</summary>
     public string Filter { get; set; } = "";
 
-    /// <summary>Cursor position within the options that currently match.</summary>
+    /// <summary>Cursor position within the options that match.</summary>
     public int Index { get; set; }
 
     /// <summary>Where the rows were drawn last frame, used to turn a click into a row.</summary>
@@ -53,9 +53,9 @@ public abstract class OptionListModal : Modal
     protected abstract void Take(ModalFrame frame, string picked);
 
     /// <summary>
-    /// The wheel walks the list, and a click picks the row it landed on — but only takes it when that
-    /// row was already the one under the cursor, so a click never confirms something the eye had not
-    /// settled on yet.
+    /// The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row
+    /// was already the one under the cursor, so a click never confirms something the eye had not settled on
+    /// yet.
     /// </summary>
     /// <param name="frame">How to close.</param>
     /// <param name="mouse">The event that arrived.</param>

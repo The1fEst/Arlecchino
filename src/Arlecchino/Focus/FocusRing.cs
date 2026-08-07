@@ -63,7 +63,7 @@ public sealed class FocusRing
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>The route the element asked for, or <see cref="ViewRoute.None"/>.</returns>
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (_keymap.PreviousField.Matches(key))
         {

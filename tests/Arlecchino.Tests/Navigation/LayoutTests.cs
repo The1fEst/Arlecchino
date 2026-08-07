@@ -202,7 +202,7 @@ public sealed class FramedView : IArlecchinoView
         _surface.Content.WriteLine(0, "framed view", Theme.Default);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         return ViewRoute.None;
     }
@@ -235,7 +235,7 @@ public sealed class WholeView : IArlecchinoView
         _surface.Content.WriteLine(0, "whole view", Theme.Default);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         return ViewRoute.None;
     }

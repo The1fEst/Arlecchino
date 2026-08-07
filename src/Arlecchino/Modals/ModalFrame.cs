@@ -9,13 +9,13 @@ using Arlecchino.State;
 
 namespace Arlecchino.Modals;
 
-/// <summary>One run of a line inside a dialog, with the colour it is written in.</summary>
+/// <summary>One run of a line inside a dialog, with the color it is written in.</summary>
 /// <param name="Text">The words.</param>
 /// <param name="Style">How they are written.</param>
 public readonly record struct Piece(string Text, IArlecchinoColor Style);
 
 /// <summary>
-/// Everything a dialog needs from the application for as long as it is on screen: where to draw, the
+/// Everything a dialog needs from the application for as long as the screen shows it: where to draw, the
 /// words to draw in, the keys to obey, and how to close.
 ///
 /// A dialog is a value — an application writes <c>new TextModal { … }</c> and hands it over — so it
@@ -75,7 +75,7 @@ public sealed class ModalFrame
     /// <summary>How a field of text is drawn.</summary>
     internal FieldPaint Paint { get; }
 
-    /// <summary>How a slider, a toggle, a colour and a segmented field are drawn.</summary>
+    /// <summary>How a slider, a toggle, a color and a segmented field are drawn.</summary>
     internal ValuePaint Values { get; }
 
     /// <summary>How a list is drawn.</summary>
@@ -133,7 +133,7 @@ public sealed class ModalFrame
 
     /// <summary>
     /// Draws a titled box holding the lines given, with the hints under a rule. Every dialog the
-    /// framework brings is drawn through this, which is why a colour picker and a question read as the
+    /// framework brings is drawn through this, which is why a color picker and a question read as the
     /// same application.
     /// </summary>
     /// <param name="title">What the dialog is called.</param>

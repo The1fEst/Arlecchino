@@ -67,8 +67,8 @@ internal abstract class PictureProtocol
 }
 
 /// <summary>
-/// The picture as cells, two pixels to each: the upper half block painted in the colour of the pixel
-/// above and its background in the colour of the pixel below.
+/// The picture as cells, two pixels to each: the upper half block painted in the color of the pixel
+/// above and its background in the color of the pixel below.
 /// </summary>
 internal sealed class BlockPicture : PictureProtocol
 {
@@ -103,13 +103,13 @@ internal sealed class BlockPicture : PictureProtocol
     }
 
     /// <summary>
-    /// Works out the colour of every cell and keeps the objects, so the next frame hands the surface the
+    /// Works out the color of every cell and keeps the objects, so the next frame hands the surface the
     /// same instances rather than equal ones.
     ///
-    /// That is what lets the frame diff do its job: it tells a cell apart from the one before it by
-    /// reference, so a picture built fresh each frame looks changed in every cell and is written out in
-    /// full however still it is. Rebuilding costs one pass over the cells and only when the picture or the
-    /// room it is drawn in changes.
+    /// That is what lets the frame diff do its job. It tells a cell apart from the one before it by
+    /// reference, so a picture built fresh each frame looks changed in every cell and is written out in full
+    /// however still it is. Rebuilding costs one pass over the cells, and only when the picture or the room it
+    /// is drawn in changes.
     /// </summary>
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
@@ -154,10 +154,10 @@ internal sealed class BlockPicture : PictureProtocol
 }
 
 /// <summary>
-/// The picture as pixels handed to the terminal rather than as cells. What the two protocols that do
-/// this share is all of it but the bytes: the same shape of cell, a payload rebuilt only when the
-/// picture or the room it is drawn in changes, and an undraw handed over beside it so the surface can
-/// remove the picture once the frame stops offering it.
+/// The picture as pixels handed to the terminal rather than as cells. The two protocols that do this share
+/// everything but the bytes. Both use the same shape of cell, both rebuild the payload only when the picture
+/// or the room it is drawn in changes, and both hand a way to undraw it over beside the payload. That last one
+/// is what lets the surface remove the picture once the frame stops offering it.
 /// </summary>
 internal abstract class PixelPicture : PictureProtocol
 {
@@ -284,9 +284,9 @@ internal sealed class KittyPicture : PixelPicture
 }
 
 /// <summary>
-/// Sixel: the older protocol. Two things make it unlike kitty — it draws from colour registers, so the
-/// picture is brought down to a palette of at most 256 by <see cref="IndexedImage"/>, and it is measured
-/// in pixels rather than cells, so it is resampled to however many pixels the cells it was given come to.
+/// Sixel: the older protocol. Two things make it unlike kitty. It draws from color registers, so the picture
+/// is brought down to a palette of at most 256 by <see cref="IndexedImage"/>. And it is measured in pixels
+/// rather than cells, so it is resampled to however many pixels the cells it was given come to.
 /// </summary>
 internal sealed class SixelPicture : PixelPicture
 {
@@ -297,7 +297,7 @@ internal sealed class SixelPicture : PixelPicture
     public override ImageProtocol Kind => ImageProtocol.Sixel;
 
     /// <summary>
-    /// Builds the sixel escape sequence. The pixels go out in bands of six rows, one pass per colour in
+    /// Builds the sixel escape sequence. The pixels go out in bands of six rows, one pass per color in
     /// the band, with runs of the same column collapsed — without that a photograph would weigh several
     /// times what it needs to.
     /// </summary>
@@ -370,17 +370,17 @@ internal sealed class SixelPicture : PixelPicture
     }
 
     /// <summary>
-    /// Builds a sixel that paints a rectangle in the colour the terminal said was behind its text, which
-    /// is the only way to undraw one: sixel writes pixels into the screen, so what was drawn is gone only
-    /// once something else is drawn over it.
+    /// Builds a sixel that paints a rectangle in the color the terminal said was behind its text. That is the
+    /// only way to remove one: sixel writes pixels into the screen, so what was drawn is gone only once
+    /// something else is drawn over it.
     ///
-    /// Empty when the terminal never said what colour that is — see
-    /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed colour leaves a
+    /// Empty when the terminal never said what color that is — see
+    /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed color leaves a
     /// rectangle anyone can see, which is worse than the pixels it was meant to remove.
     ///
     /// The last band paints only the rows the picture actually had. Sixel bands are six rows whatever the
-    /// picture's height, so painting all six would reach up to five rows past it, and a terminal that does
-    /// not clip to the raster size would show that as a line under the picture.
+    /// picture's height, so painting all six would reach up to five rows past it. A terminal that does not
+    /// clip to the raster size would show that as a line under the picture.
     /// </summary>
     /// <param name="placed">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal, or an empty string.</returns>

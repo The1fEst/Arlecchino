@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Forms;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
@@ -25,7 +24,7 @@ public sealed class FormHostView : IArlecchinoView
         Hosted?.Draw(Rows);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => Hosted?.Handle(key).Route ?? ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => Hosted?.Handle(key).Route ?? ViewRoute.None;
 
     public ViewRoute HandleMouse(MouseEvent mouse) => Hosted?.HandleMouse(mouse).Route ?? ViewRoute.None;
 }

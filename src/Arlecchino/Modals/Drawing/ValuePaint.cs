@@ -10,7 +10,7 @@ namespace Arlecchino.Modals.Drawing;
 
 /// <summary>
 /// The dialogs that show a value rather than ask for one in words: a slider, a yes-or-no, a date or a
-/// time, a colour. Each says where its parts were drawn as it draws them, so that a click can be
+/// time, a color. Each says where its parts were drawn as it draws them, so that a click can be
 /// answered without anyone having to work out where the track must have gone.
 /// </summary>
 internal sealed class ValuePaint
@@ -100,7 +100,7 @@ internal sealed class ValuePaint
         _box.Draw(modal.Title, [[.. pieces]], hints);
     }
 
-    /// <summary>Draws a colour: what it looks like, and the three sliders that make it.</summary>
+    /// <summary>Draws a color: what it looks like, and the three sliders that make it.</summary>
     /// <param name="modal">The dialog.</param>
     public void Color(ColorModal modal)
     {

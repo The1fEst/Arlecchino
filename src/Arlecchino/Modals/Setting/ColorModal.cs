@@ -6,39 +6,39 @@ using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Setting;
 
-/// <summary>One of the three sliders in the colour dialog.</summary>
+/// <summary>One of the three sliders in the color dialog.</summary>
 public enum ColorChannel : byte
 {
-    /// <summary>Position on the colour wheel, in degrees.</summary>
+    /// <summary>Position on the color wheel, in degrees.</summary>
     Hue,
 
-    /// <summary>How far the colour is from grey, in percent.</summary>
+    /// <summary>How far the color is from gray, in percent.</summary>
     Saturation,
 
-    /// <summary>How far the colour is from black or white, in percent.</summary>
+    /// <summary>How far the color is from black or white, in percent.</summary>
     Lightness,
 }
 
 /// <summary>
-/// A colour picked on three sliders. Hue, saturation and lightness are edited rather than the raw
+/// A color picked on three sliders. Hue, saturation and lightness are edited rather than the raw
 /// channels because they are what people reach for; the result is converted to <see cref="Rgb"/> on
-/// the way out. Both directions round to whole units, so feeding a colour back in can shift it by one.
+/// the way out. Both directions round to whole units, so feeding a color back in can shift it by one.
 /// </summary>
 public sealed class ColorModal : Modal
 {
     private const int HueDegrees = 360;
     private const int PercentMaximum = 100;
 
-    /// <summary>Position on the colour wheel, from <c>0</c> to <c>359</c>. It wraps rather than stopping.</summary>
+    /// <summary>Position on the color wheel, from <c>0</c> to <c>359</c>. It wraps rather than stopping.</summary>
     public int Hue { get; set; }
 
-    /// <summary>Distance from grey, in percent.</summary>
+    /// <summary>Distance from gray, in percent.</summary>
     public int Saturation { get; set; } = PercentMaximum;
 
-    /// <summary>Distance from black towards white, in percent. Fifty is the pure colour.</summary>
+    /// <summary>Distance from black towards white, in percent. Fifty is the pure color.</summary>
     public int Lightness { get; set; } = 50;
 
-    /// <summary>Which of the three sliders the arrows currently move.</summary>
+    /// <summary>Which of the three sliders the arrows move.</summary>
     public ColorChannel Channel { get; set; }
 
     /// <summary>How far the arrow keys move the active slider.</summary>
@@ -47,10 +47,10 @@ public sealed class ColorModal : Modal
     /// <summary>How far the page keys move the active slider.</summary>
     public int LargeStep { get; init; } = 10;
 
-    /// <summary>Called with the colour that was confirmed.</summary>
+    /// <summary>Called with the color that was confirmed.</summary>
     public required Action<Rgb> OnPicked { get; init; }
 
-    /// <summary>The three sliders resolved into a colour, as drawn in the swatch.</summary>
+    /// <summary>The three sliders resolved into a color, as drawn in the swatch.</summary>
     public Rgb Value => Rgb.FromHsl(Hue, Saturation, Lightness);
 
     /// <summary>Where each slider's row was drawn last frame, used to turn a click into a channel.</summary>
@@ -80,7 +80,7 @@ public sealed class ColorModal : Modal
         }
     }
 
-    /// <summary>Value of the slider the arrows currently move.</summary>
+    /// <summary>Value of the slider the arrows move.</summary>
     public int ChannelValue => Channel switch
     {
         ColorChannel.Hue => Hue,
@@ -88,11 +88,11 @@ public sealed class ColorModal : Modal
         _ => Lightness,
     };
 
-    /// <summary>Upper end of the slider the arrows currently move.</summary>
+    /// <summary>Upper end of the slider the arrows move.</summary>
     public int ChannelMaximum => Channel == ColorChannel.Hue ? HueDegrees - 1 : PercentMaximum;
 
-    /// <summary>Loads a colour into the three sliders, which is how an existing value is edited.</summary>
-    /// <param name="color">The colour to start from.</param>
+    /// <summary>Loads a color into the three sliders, which is how an existing value is edited.</summary>
+    /// <param name="color">The color to start from.</param>
     public void SetValue(Rgb color)
     {
         var (hue, saturation, lightness) = color.ToHsl();
@@ -108,7 +108,7 @@ public sealed class ColorModal : Modal
         Channel = (ColorChannel)Math.Clamp((int)Channel + delta, 0, (int)ColorChannel.Lightness);
     }
 
-    /// <summary>Moves the active slider. Hue wraps around the wheel; the other two stop at their ends.</summary>
+    /// <summary>Moves the active slider. Hue wraps around the wheel; the other two halt at their ends.</summary>
     /// <param name="delta">How far to move; negative goes left.</param>
     public void Add(int delta)
     {
@@ -167,7 +167,7 @@ public sealed class ColorModal : Modal
     public override void Draw(ModalFrame frame) => frame.Values.Color(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Steps.Color(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Steps.Color(this, key);
 
     /// <inheritdoc/>
     public override void HandleMouse(ModalFrame frame, MouseEvent mouse)

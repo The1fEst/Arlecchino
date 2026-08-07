@@ -10,7 +10,7 @@ namespace Arlecchino.Rendering;
 ///
 /// <see cref="Surface"/> has flow calls of its own, but they belong to the whole frame — reaching for
 /// <c>region.Surface.AppendLine(...)</c> inside a pane writes at the top of the screen and paints over
-/// borders and neighbours. This is the same idea, bounded by the region: everything is written in its
+/// borders and neighbors. This is the same idea, bounded by the region: everything is written in its
 /// coordinates, clipped to it, and once it is full the calls stop doing anything.
 ///
 /// <code>

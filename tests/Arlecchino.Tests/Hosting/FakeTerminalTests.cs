@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Arlecchino.Testing;
 using Xunit;
 
@@ -11,7 +12,7 @@ namespace Arlecchino.Tests.Hosting;
 /// </summary>
 public sealed class FakeTerminalTests
 {
-    private static ConsoleKeyInfo First(string text)
+    private static KeyPress First(string text)
     {
         var terminal = new FakeTerminal(10, 2);
         terminal.EnqueueText(text);
@@ -32,7 +33,7 @@ public sealed class FakeTerminalTests
         var key = First(text);
 
         Assert.Equal(expected, key.Key);
-        Assert.Equal(text[0], key.KeyChar);
+        Assert.Equal(text[0], key.Character);
         Assert.Equal(default, key.Modifiers);
     }
 
@@ -45,7 +46,7 @@ public sealed class FakeTerminalTests
         Assert.Equal(ConsoleKey.A, lower.Key);
         Assert.Equal(default, lower.Modifiers);
         Assert.Equal(ConsoleKey.Z, upper.Key);
-        Assert.Equal(ConsoleModifiers.Shift, upper.Modifiers);
+        Assert.Equal(KeyModifiers.Shift, upper.Modifiers);
     }
 
     [Fact]
@@ -60,7 +61,7 @@ public sealed class FakeTerminalTests
         var key = First("");
 
         Assert.Equal(ConsoleKey.A, key.Key);
-        Assert.Equal(ConsoleModifiers.Control, key.Modifiers);
+        Assert.Equal(KeyModifiers.Control, key.Modifiers);
     }
 
     [Fact]
@@ -69,7 +70,7 @@ public sealed class FakeTerminalTests
         var key = First("[");
 
         Assert.Equal(default, key.Key);
-        Assert.Equal('[', key.KeyChar);
+        Assert.Equal('[', key.Character);
     }
 
     /// <summary>
@@ -93,7 +94,7 @@ public sealed class FakeTerminalTests
         terminal.EnqueueText("\e[A");
 
         Assert.Equal(ConsoleKey.Escape, terminal.ReadKey().Key);
-        Assert.Equal('[', terminal.ReadKey().KeyChar);
-        Assert.Equal('A', terminal.ReadKey().KeyChar);
+        Assert.Equal('[', terminal.ReadKey().Character);
+        Assert.Equal('A', terminal.ReadKey().Character);
     }
 }

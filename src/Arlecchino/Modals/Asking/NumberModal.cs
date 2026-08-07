@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using Arlecchino.Input;
 using Arlecchino.Modals.Setting;
 
 namespace Arlecchino.Modals.Asking;
@@ -14,7 +15,7 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
     private int _caret;
 
     /// <summary>
-    /// What has been typed so far, which may not parse yet. Assigning it puts the caret at the end,
+    /// Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end,
     /// which is what makes stepping leave the caret after the new number.
     /// </summary>
     public string Text
@@ -85,5 +86,5 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
         frame.Paint.Entry(this, Title, frame.Strings.ModalNumberHints());
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Fields.Number(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Fields.Number(this, key);
 }

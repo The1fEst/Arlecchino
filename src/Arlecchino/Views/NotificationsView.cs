@@ -14,8 +14,8 @@ using Arlecchino.Widgets.Lists;
 namespace Arlecchino.Views;
 
 /// <summary>
-/// What the application has said lately, newest first. The output row only shows the last message and
-/// only for a few seconds, so this is where it is read afterwards. Entries leave on their own once
+/// What the application has said lately, the newest first. The output row only shows the last message and
+/// only for a few seconds, so this is where it is read afterward. Entries leave on their own once
 /// they are older than the configured lifetime — the screen shows what is still held, not a log.
 /// </summary>
 internal sealed class NotificationsView : IArlecchinoView
@@ -74,7 +74,7 @@ internal sealed class NotificationsView : IArlecchinoView
     }
 
     /// <summary>
-    /// Hands the list what is held right now. Keys are answered whether or not a frame has been drawn
+    /// Hands the list what is held right now. Keys are answered whether a frame has been drawn
     /// since the entry arrived, so this runs before drawing and before reading input rather than only
     /// on the way to the screen.
     /// </summary>
@@ -88,7 +88,7 @@ internal sealed class NotificationsView : IArlecchinoView
         return entries;
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (_keymap.Cancel.Matches(key) || _keymap.Notifications.Matches(key))
         {

@@ -7,10 +7,9 @@ using Arlecchino.Rendering;
 namespace Arlecchino.Widgets.Lists;
 
 /// <summary>
-/// A window onto content taller than the space it has. Lists scroll themselves, but a block of text,
-/// a long form or a pane of anything at all does not — this is the widget for those: it draws the
-/// content shifted up by the offset, confines it to its own rectangle, and answers the movement keys
-/// and the wheel.
+/// A window onto content taller than the space it has. Lists scroll themselves, but a block of text, a long
+/// form or a pane of anything at all does not. This is the widget for those: it draws the content shifted up by
+/// the offset, confines it to its own rectangle, and answers the movement keys and the wheel.
 ///
 /// The content is drawn by a delegate rather than owned, so whatever can paint a region can live in
 /// here, including other widgets.
@@ -93,7 +92,7 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
     /// <summary>Moves the window a row, a page, or to either end.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>Whether the pane took it.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key)
+    public FocusResult Handle(KeyPress key)
     {
         if (_keymap.MoveUp.Matches(key))
         {

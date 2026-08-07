@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Testing;
@@ -62,7 +63,7 @@ public class InputBenchmarks
 
         public void Draw() => _list.Draw(_surface.Frame);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => _list.Handle(key).Route;
+        public ViewRoute Handle(KeyPress key) => _list.Handle(key).Route;
 
         public IReadOnlyList<ViewCommand> Commands() => [];
     }

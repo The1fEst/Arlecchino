@@ -51,9 +51,9 @@ public sealed class FocusTests
         var log = new List<string>();
         var ring = CreateRing(log, out _, out _);
 
-        ring.Handle(new('\0', ConsoleKey.A, false, false, false));
-        ring.Handle(new('\0', ConsoleKey.Tab, false, false, false));
-        ring.Handle(new('\0', ConsoleKey.B, false, false, false));
+        ring.Handle(new(ConsoleKey.A));
+        ring.Handle(new(ConsoleKey.Tab));
+        ring.Handle(new(ConsoleKey.B));
 
         Assert.Equal(["first:A", "second:B"], log);
     }
@@ -63,13 +63,13 @@ public sealed class FocusTests
     {
         var ring = CreateRing([], out var first, out var second);
 
-        ring.Handle(new('\0', ConsoleKey.Tab, false, false, false));
+        ring.Handle(new(ConsoleKey.Tab));
         Assert.True(second.IsFocused);
 
-        ring.Handle(new('\0', ConsoleKey.Tab, false, false, false));
+        ring.Handle(new(ConsoleKey.Tab));
         Assert.True(first.IsFocused);
 
-        ring.Handle(new('\0', ConsoleKey.Tab, true, false, false));
+        ring.Handle(new(ConsoleKey.Tab, KeyModifiers.Shift));
         Assert.True(second.IsFocused);
     }
 
@@ -91,7 +91,7 @@ public sealed class FocusTests
         var ring = new FocusRing(new());
         ring.Add(new FocusablePane(static _ => FocusResult.Navigate(new("Somewhere"))));
 
-        Assert.Equal(new("Somewhere"), ring.Handle(new('\0', ConsoleKey.Enter, false, false, false)));
+        Assert.Equal(new("Somewhere"), ring.Handle(new(ConsoleKey.Enter)));
     }
 
     [Fact]

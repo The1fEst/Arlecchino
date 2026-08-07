@@ -59,7 +59,7 @@ public class Screen
     /// <param name="pending">Input read since the last frame, routed on this thread before drawing.</param>
     /// <param name="router">Where that input goes.</param>
     /// <param name="commands">The registered commands, for offering the palette in the hints box.</param>
-    /// <param name="frame">What a dialog is handed while it is on screen.</param>
+    /// <param name="frame">What a dialog is handed while the screen shows it.</param>
     /// <param name="logger">Where drawing failures are reported.</param>
     /// <param name="layout">The frame drawn around every view, when the application registered one.</param>
     internal Screen(
@@ -98,7 +98,7 @@ public class Screen
     }
 
     /// <summary>
-    ///     Draws whatever dialogs are open, oldest first and each a little below and to the right of the
+    ///     Draws whatever dialogs are open, the oldest first and each a little below and to the right of the
     ///     one under it. What each of them looks like is its own to say.
     /// </summary>
     private void DrawModals()
@@ -114,7 +114,7 @@ public class Screen
     }
 
     /// <summary>
-    ///     Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes
+    ///     Draws one full frame, forgetting what the screen held first. Redrawing everything is what makes
     ///     this usable outside the loop — in tests, or after something else has written to the terminal.
     /// </summary>
     public void DrawOnce()
@@ -282,10 +282,10 @@ public class Screen
     }
 
     /// <summary>
-    ///     Draws the view, inside the layout when the application has one and the screen wants it. The
-    ///     layout decides where the view goes by where it calls back, and the surface holds that region
-    ///     for exactly as long as the view is drawing — a view asks for its content and is handed what it
-    ///     was left, which is what lets a layout be added without editing a single view.
+    ///     Draws the view, inside the layout when the application has one and the screen wants it. The layout
+    ///     decides where the view goes by where it calls back, and the surface holds that region for exactly as
+    ///     long as the view is drawing. A view asks for its content and is handed what it was left, which is
+    ///     what lets a layout be added without editing a single view.
     /// </summary>
     private void DrawView()
     {

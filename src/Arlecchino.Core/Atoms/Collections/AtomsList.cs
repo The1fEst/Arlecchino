@@ -8,20 +8,19 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A list held as one piece of application state. Every change goes through the same path a plain
-/// atom's write does — it is checked against the drawing thread, it notifies what reads the list, it
-/// marks the frame stale, and it records an undo step when the list is undoable.
+/// A list held as one piece of application state. Every change takes the same path a plain atom's write
+/// takes: it is checked against the drawing thread, it notifies what reads the list, it marks the frame
+/// stale, and it records an undo step when the list is undoable.
 ///
-/// This is what an <c>Atom&lt;List&lt;T&gt;&gt;</c> cannot be. Adding to a list held in an ordinary
-/// atom never reaches <c>Atom.Value</c>, so nothing is notified and no frame is asked for; writing
-/// the same instance back does not help either, because an atom compares by the default comparer and
-/// a list is compared by reference, so the write is taken for a change of nothing and dropped. Hold
-/// an <c>Atom&lt;IReadOnlyList&lt;T&gt;&gt;</c> and replace it wholesale, or hold this and change it
-/// in place.
+/// This is what an <c>Atom&lt;List&lt;T&gt;&gt;</c> cannot be. Adding to a list held in an ordinary atom
+/// never reaches <c>Atom.Value</c>, so nothing is notified, and no frame is asked for. Writing the same
+/// instance back does not help either: an atom compares by the default comparer and a list is compared by
+/// reference, so writing it is taken for a change of nothing and dropped. Hold an
+/// <c>Atom&lt;IReadOnlyList&lt;T&gt;&gt;</c> and replace it wholesale, or hold this and change it in place.
 ///
-/// Which of the two to reach for is a question of size and rate: replacing a list of a few settings
-/// on a keystroke costs nothing, while a log appended to line by line copies the whole of itself on
-/// every line. Whether edits can be undone is decided by the type created —
+/// Which of the two to reach for is a question of size and rate. Replacing a list of a few settings on a
+/// keystroke costs nothing, while a log appended to line by line copies the whole of itself on every line.
+/// Whether edits can be undone is decided by the type created —
 /// <see cref="TrackedAtomsList{T}"/> or <see cref="LocalAtomsList{T}"/> — exactly as it is for atoms.
 /// </summary>
 /// <typeparam name="T">What the list holds.</typeparam>
@@ -37,7 +36,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <summary>Creates the list.</summary>
     /// <param name="initial">What it starts with; empty when omitted. It is copied, not held.</param>
     /// <param name="comparer">
-    /// How <see cref="Remove"/> finds an item and how a write to the indexer decides it changed
+    /// How <see cref="Remove"/> finds an item, and how writing to the indexer decides it changed
     /// nothing; the default comparer for <typeparamref name="T"/> is used when omitted.
     /// </param>
     protected AtomsList(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
@@ -175,9 +174,9 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     public void RemoveAt(int index) => RemoveRange(index, 1);
 
     /// <summary>
-    /// Takes out several items in a row at once. One notification, one frame and one undo step for the
-    /// lot — which is what trimming a list that has grown too long needs, since doing it one item at a
-    /// time would notify once per item and come back the same way.
+    /// Takes out several items in a row at once, with one notification, one frame and one undo step for the
+    /// lot. That is what trimming a list that has grown too long needs: doing it one item at a time would
+    /// notify once per item and come back the same way.
     /// </summary>
     /// <param name="index">Where to start.</param>
     /// <param name="count">How many to take out. Taking none changes nothing.</param>
@@ -212,10 +211,10 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <summary>
     /// Says that an item already in the list changed inside itself, so everything watching the list hears
     /// about it. For a list of mutable things, which the list cannot see into: writing a property of an
-    /// item is not a change to the list, so nothing would recompute and no frame would be asked for.
+    /// item is not a change to the list, so nothing would recompute, and no frame would be asked for.
     ///
-    /// Prefer replacing the item where you can — an immutable item is one less thing to remember. This is
-    /// for the case where the item's identity has to survive the change, because something else is holding
+    /// Prefer replacing the item where you can, since an immutable item is one less thing to remember. This
+    /// is for the case where the item's identity has to survive the change, because something else is holding
     /// it.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>

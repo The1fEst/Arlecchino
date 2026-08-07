@@ -76,7 +76,7 @@ public sealed class TextViewTests
         view.Draw(surface.Frame);
         Assert.Equal("a", Render(surface, terminal)[0].TrimEnd());
 
-        view.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        view.Handle(new(ConsoleKey.DownArrow));
 
         var (second, terminalAgain) = CreateSurface(10, 2);
         view.Draw(second.Frame);

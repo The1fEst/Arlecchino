@@ -28,12 +28,12 @@ public sealed class CollectionChangeTests
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = items };
 
         Draw(surface, list);
-        list.Handle(new('\0', ConsoleKey.End, false, false, false));
+        list.Handle(new(ConsoleKey.End));
 
         items.Clear();
 
         Draw(surface, list);
-        list.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        list.Handle(new(ConsoleKey.DownArrow));
         list.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 1, 1, default));
         Draw(surface, list);
 
@@ -53,12 +53,12 @@ public sealed class CollectionChangeTests
         };
 
         Draw(surface, table);
-        table.Handle(new('\0', ConsoleKey.End, false, false, false));
+        table.Handle(new(ConsoleKey.End));
 
         rows.Clear();
 
         Draw(surface, table);
-        table.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        table.Handle(new(ConsoleKey.DownArrow));
         Draw(surface, table);
 
         Assert.NotNull(FrameText.Lines(terminal.Written));
@@ -73,12 +73,12 @@ public sealed class CollectionChangeTests
         var tree = new Tree<string>(Keymap) { Roots = roots, Render = static item => item };
 
         Draw(surface, tree);
-        tree.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.DownArrow));
 
         roots.Clear();
 
         Draw(surface, tree);
-        tree.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.DownArrow));
         Draw(surface, tree);
 
         Assert.NotNull(FrameText.Lines(terminal.Written));
@@ -170,7 +170,7 @@ public sealed class CollectionChangeTests
 
         public void Draw() => _list.Draw(_surface.Content);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     private static void Draw(Surface surface, IArlecchinoWidget widget)

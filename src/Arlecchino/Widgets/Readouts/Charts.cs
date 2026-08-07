@@ -7,9 +7,9 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Widgets.Readouts;
 
 /// <summary>
-/// A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about
-/// what the numbers are — no axis, no scale, no grid — which is what lets it sit in a status bar, a
-/// table cell or a corner of a pane and still be read at a glance: the shape of the line is the point.
+/// A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about what the
+/// numbers are: no axis, no scale, no grid. That is what lets it sit in a status bar, a table cell or a corner
+/// of a pane and still be read at a glance, since the shape of the line is the point.
 ///
 /// The newest value is the rightmost, and only the last of them fit the row, so a widening terminal
 /// shows more history rather than a wider drawing of the same history.
@@ -19,7 +19,7 @@ public sealed class Sparkline : IArlecchinoWidget
     private const string Blocks = "▁▂▃▄▅▆▇█";
 
     /// <summary>
-    /// The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends
+    /// The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends
     /// to between frames is exactly the right thing to hand over.
     /// </summary>
     public IReadOnlyList<decimal> Values { get; set; } = [];
@@ -40,7 +40,7 @@ public sealed class Sparkline : IArlecchinoWidget
     /// </summary>
     public Func<decimal, string>? Caption { get; init; }
 
-    /// <summary>Colour of the line. The theme's active colour when left alone.</summary>
+    /// <summary>Color of the line. The theme's active color when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
@@ -109,23 +109,22 @@ public sealed class Sparkline : IArlecchinoWidget
 }
 
 /// <summary>
-/// A series drawn as a filled area over as many rows as it is given — the shape a system monitor
-/// shows. Where <see cref="Sparkline"/> fits a row and reads at a glance, this one fills a pane and
-/// is meant to be looked at: the newest value is at the right, the fill climbs with the value, and
-/// the colour comes from how high it climbed rather than from anything the view works out.
+/// A series drawn as a filled area over as many rows as it is given — the shape a system monitor shows. Where
+/// <see cref="Sparkline"/> fits a row and reads at a glance, this one fills a pane and is meant to be looked
+/// at. The newest value is at the right, the fill climbs with the value, and the color comes from how high it
+/// climbed rather than from anything the view works out.
 ///
-/// A series with no spread at all — every number the same — draws as the lowest level along the
-/// bottom rather than as nothing, the way a <see cref="Sparkline"/> does.
+/// A series with no spread at all — every number the same — draws as the lowest level along the bottom rather
+/// than as nothing, the way a <see cref="Sparkline"/> does.
 ///
-/// The resolution is in the characters. A cell carries two samples side by side and several levels
-/// of height, so a chart eight rows tall has thirty-two levels between empty and full and holds
-/// twice the history a row of blocks would — see <see cref="GraphSymbols"/> for what each set costs
-/// in font support.
+/// The resolution is in the characters. A cell carries two samples side by side and several levels of height,
+/// so a chart eight rows tall has thirty-two levels between empty and full and holds twice the history a row
+/// of blocks would. See <see cref="GraphSymbols"/> for what each set costs in font support.
 /// </summary>
 public sealed class AreaChart : IArlecchinoWidget
 {
     /// <summary>
-    /// The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application
+    /// The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application
     /// appends to between frames is exactly the right thing to hand over.
     /// </summary>
     public IReadOnlyList<decimal> Values { get; set; } = [];
@@ -143,13 +142,13 @@ public sealed class AreaChart : IArlecchinoWidget
     public GraphSymbols? Symbols { get; set; }
 
     /// <summary>
-    /// Where the colour changes as the fill climbs, in the same units as the values and in ascending
+    /// Where the color changes as the fill climbs, in the same units as the values and in ascending
     /// order. A terminal with truecolor blends between them, one without takes the nearest, and a
     /// chart given none is drawn in <see cref="Style"/> throughout.
     /// </summary>
     public IReadOnlyList<GaugeBand> Bands { get; init; } = [];
 
-    /// <summary>Colour of the fill outside every band. The theme's active colour when left alone.</summary>
+    /// <summary>Color of the fill outside every band. The theme's active color when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
@@ -159,8 +158,8 @@ public sealed class AreaChart : IArlecchinoWidget
     public bool Invert { get; init; }
 
     /// <summary>
-    /// Draws the chart over every row of the region and returns what is left, which is nothing: a
-    /// chart fills what it is given, so hand it the pane it belongs in.
+    /// Draws the chart over every row of the region and returns what is left, which is nothing. A chart fills
+    /// what it is given, so hand over the pane it belongs in.
     /// </summary>
     /// <param name="region">Where to draw.</param>
     /// <returns>An empty region.</returns>
@@ -326,7 +325,7 @@ public sealed class BarChart<T> : IArlecchinoWidget
     /// <summary>The number the length of the bar stands for. Anything below zero draws as an empty bar.</summary>
     public required Func<T, decimal> Value { get; init; }
 
-    /// <summary>Colours one bar, for charts where a row means something — over budget, offline, picked.</summary>
+    /// <summary>Colors one bar, for charts where a row means something — over budget, offline, picked.</summary>
     public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
@@ -417,17 +416,16 @@ public sealed class BarChart<T> : IArlecchinoWidget
 /// <summary>
 /// Where a band of a <see cref="Gauge"/> starts and how it is drawn. A band runs from
 /// <see cref="From"/> up to the start of the next one, so the bands are given in order and the first
-/// of them decides the colour of everything below it.
+/// of them decides the color of everything below it.
 /// </summary>
 /// <param name="From">The value the band starts at.</param>
 /// <param name="Style">How the part of the track inside the band is drawn.</param>
 public readonly record struct GaugeBand(decimal From, IArlecchinoColor Style);
 
 /// <summary>
-/// One value against a range that means something, drawn as a bar whose colour changes as it crosses
-/// the bands it was given: the fill turns amber where the load is worth watching and red where it is
-/// not, and each part keeps the colour of the band it lies in, so the tail of the bar shows how long
-/// it has been past the line.
+/// One value against a range that means something, drawn as a bar whose color changes as it crosses the bands
+/// it was given. The fill turns amber where the load is worth watching and red where it is not. Each part
+/// keeps the color of the band it lies in, so the tail of the bar shows how long it has been past the line.
 ///
 /// A <see cref="ProgressBar"/> answers "how far along", and this answers "how bad is it now" — the
 /// difference being the bands, and a range that need not start at zero.
@@ -447,7 +445,7 @@ public sealed class Gauge : IArlecchinoWidget
     public decimal Value { get; set; }
 
     /// <summary>
-    /// The bands the track is coloured by, in ascending order of <see cref="GaugeBand.From"/>. Without
+    /// The bands the track is colored by, in ascending order of <see cref="GaugeBand.From"/>. Without
     /// them the whole fill takes <see cref="Style"/>, which makes the gauge a bar with a range.
     /// </summary>
     public IReadOnlyList<GaugeBand> Bands { get; init; } = [];
@@ -455,7 +453,7 @@ public sealed class Gauge : IArlecchinoWidget
     /// <summary>Builds the text drawn after the gauge, given the value.</summary>
     public Func<decimal, string>? Caption { get; init; }
 
-    /// <summary>Colour of the fill outside every band. The theme's active colour when left alone.</summary>
+    /// <summary>Color of the fill outside every band. The theme's active color when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
     /// <summary>How full the gauge is, from <c>0</c> to <c>1</c>. An empty range reads as <c>0</c>.</summary>
@@ -465,8 +463,8 @@ public sealed class Gauge : IArlecchinoWidget
 
     /// <summary>
     /// How a value of the range is drawn: the style of the last band at or below it, and
-    /// <see cref="Style"/> when it is under every band. Useful for colouring a label the same way the
-    /// gauge under it is coloured.
+    /// <see cref="Style"/> when it is under every band. Useful for coloring a label the same way the
+    /// gauge under it is colored.
     /// </summary>
     /// <param name="value">The value to look up.</param>
     /// <returns>The style that part of the track takes.</returns>

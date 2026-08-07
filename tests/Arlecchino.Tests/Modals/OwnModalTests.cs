@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Arlecchino.Modals;
 using Arlecchino.Rendering.Colors;
 using Xunit;
@@ -62,6 +63,6 @@ public sealed class OwnModalTests
         public override void Draw(ModalFrame frame) =>
             frame.Screen.Rows(1, 1).WriteLine(0, "drawn by the application", Theme.Accent);
 
-        public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => Keys++;
+        public override void Handle(ModalFrame frame, KeyPress key) => Keys++;
     }
 }

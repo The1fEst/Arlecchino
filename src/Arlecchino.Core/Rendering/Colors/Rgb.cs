@@ -5,7 +5,7 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// A 24-bit colour. Shown exactly only where the terminal supports true colour; otherwise it is
+/// A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is
 /// mapped to the nearest palette entry — see <see cref="TerminalCapabilities"/>.
 /// </summary>
 /// <param name="Red">Red channel.</param>
@@ -13,19 +13,19 @@ namespace Arlecchino.Rendering.Colors;
 /// <param name="Blue">Blue channel.</param>
 public readonly record struct Rgb(byte Red, byte Green, byte Blue)
 {
-    /// <summary>The colour as <c>#RRGGBB</c>.</summary>
+    /// <summary>The color as <c>#RRGGBB</c>.</summary>
     public string Hex => $"#{Red:X2}{Green:X2}{Blue:X2}";
 
     /// <summary>Returns <see cref="Hex"/>.</summary>
     public override string ToString() => Hex;
 
     /// <summary>
-    /// Builds a colour from hue, saturation and lightness — the form the colour modal edits.
+    /// Builds a color from hue, saturation and lightness — the form the color modal edits.
     /// </summary>
-    /// <param name="hue">Degrees around the wheel; values outside 0..359 wrap.</param>
-    /// <param name="saturation">Percent, clamped to 0..100.</param>
-    /// <param name="lightness">Percent, clamped to 0..100.</param>
-    /// <returns>The matching colour.</returns>
+    /// <param name="hue">Degrees around the wheel; values outside <c>0..359</c> wrap.</param>
+    /// <param name="saturation">Percent, clamped to <c>0..100</c>.</param>
+    /// <param name="lightness">Percent, clamped to <c>0..100</c>.</param>
+    /// <returns>The matching color.</returns>
     public static Rgb FromHsl(int hue, int saturation, int lightness)
     {
         var turns = ((hue % 360) + 360) % 360 / 360d;
@@ -48,8 +48,8 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
     }
 
     /// <summary>
-    /// Splits the colour back into hue, saturation and lightness. Channels are whole numbers, so a
-    /// round trip through <see cref="FromHsl"/> can shift a colour by a unit or two.
+    /// Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a
+    /// round trip through <see cref="FromHsl"/> can shift a color by a unit or two.
     /// </summary>
     /// <returns>Hue in degrees, saturation and lightness in percent.</returns>
     public (int Hue, int Saturation, int Lightness) ToHsl()
@@ -78,10 +78,10 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
         return ((int)Math.Round(turns * 60) % 360, (int)Math.Round(chroma * 100), (int)Math.Round(level * 100));
     }
 
-    /// <summary>Reads a colour written as <c>#RRGGBB</c> or <c>RRGGBB</c>.</summary>
+    /// <summary>Reads a color written as <c>#RRGGBB</c> or <c>RRGGBB</c>.</summary>
     /// <param name="text">The text to read.</param>
-    /// <param name="color">The colour, or <c>default</c> when the text is not six hex digits.</param>
-    /// <returns><c>true</c> when the text was a colour.</returns>
+    /// <param name="color">The color, or <c>default</c> when the text is not six hex digits.</param>
+    /// <returns><c>true</c> when the text was a color.</returns>
     public static bool TryParseHex(string text, out Rgb color)
     {
         var digits = text.StartsWith('#') ? text[1..] : text;

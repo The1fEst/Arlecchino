@@ -7,13 +7,13 @@ namespace Arlecchino.Atoms.Tracked;
 /// anything a user changed and may want back. <see cref="AtomHistory"/> picks it up with nothing to
 /// register.
 /// </summary>
-/// <typeparam name="T">Type of the value held.</typeparam>
+/// <typeparam name="T">The kind of value held.</typeparam>
 public sealed class TrackedAtom<T> : Atom<T>
 {
     /// <summary>Creates an undoable atom holding a starting value.</summary>
     /// <param name="initial">The value to start with.</param>
     /// <param name="comparer">
-    /// How to decide that a write changed nothing; the default comparer for <typeparamref name="T"/>
+    /// How to decide that writing to it changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
     public TrackedAtom(T initial, IEqualityComparer<T>? comparer = null)

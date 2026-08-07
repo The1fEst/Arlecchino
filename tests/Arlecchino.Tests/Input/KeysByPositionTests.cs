@@ -46,7 +46,7 @@ public sealed class KeysByPositionTests
 
         app.Frame();
 
-        Press(app, 'Ж', ConsoleKey.Oem1, shift: true);
+        Press(app, 'Ж', ConsoleKey.Oem1, KeyModifiers.Shift);
 
         Assert.NotNull(app.State.Modal);
     }
@@ -58,7 +58,7 @@ public sealed class KeysByPositionTests
 
         app.Frame();
 
-        Press(app, 'Ж', ConsoleKey.Oem1, shift: true);
+        Press(app, 'Ж', ConsoleKey.Oem1, KeyModifiers.Shift);
 
         Assert.Null(app.State.Modal);
     }
@@ -71,14 +71,14 @@ public sealed class KeysByPositionTests
         app.State.RequestText("Filter", "", null, static _ => { });
         app.Frame();
 
-        Press(app, 'Ж', ConsoleKey.Oem1, shift: true);
+        Press(app, 'Ж', ConsoleKey.Oem1, KeyModifiers.Shift);
 
         Assert.Contains("Ж", app.Frame(), StringComparison.Ordinal);
     }
 
-    private static void Press(TestApplication app, char typed, ConsoleKey key, bool shift = false)
+    private static void Press(TestApplication app, char typed, ConsoleKey key, KeyModifiers modifiers = default)
     {
-        app.Terminal.Enqueue(new(typed, key, shift, alt: false, control: false));
+        app.Terminal.Enqueue(new(key, modifiers, typed));
 
         ((TerminalInputReader)app.Services.GetService(typeof(TerminalInputReader))!).ReadPending();
 

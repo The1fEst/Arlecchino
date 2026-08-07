@@ -6,7 +6,7 @@ namespace Arlecchino;
 
 /// <summary>
 /// What <see cref="FrameThread.Verify"/> is told it is checking — the names that end up in the message
-/// a thread gets when it writes what a frame draws. They are built here so the wording stays one
+/// a thread gets when it writes what a frame draws. They are built here, so the wording stays one
 /// wording, and so that no call site invents a string of its own.
 ///
 /// Nothing in here is spelled out: the type comes from <c>typeof</c> and the member from
@@ -14,9 +14,9 @@ namespace Arlecchino;
 /// the type as a parameter rather than reading it here because the members that are checked live in the
 /// <c>Arlecchino</c> package, which references this one and not the other way round.
 ///
-/// The atom families take the atom rather than its type: they are named from the type it turns out to
-/// be, since the check sits in the abstract base — <c>typeof</c> there would say <c>Atom`1</c> for every
-/// atom in the application instead of naming the one that was written to.
+/// The atom families take the atom rather than its type, and are named from the type it turns out to be. The
+/// check sits in the abstract base, where <c>typeof</c> would say <c>Atom`1</c> for every atom in the
+/// application instead of naming the one that was written to.
 ///
 /// A name is built once and kept: the caller holds it in a <c>static readonly</c> where the member is
 /// fixed, or in a field beside the value where the name depends on what the type turned out to be.
@@ -42,7 +42,7 @@ internal static class FrameMembers
     public static string Of(Type declaring, string member) => $"{declaring.Name}.{member}";
 
     /// <summary>Names an atom being given a new value.</summary>
-    /// <typeparam name="T">The type of value it holds, inferred.</typeparam>
+    /// <typeparam name="T">The kind of value it holds, inferred.</typeparam>
     /// <param name="atom">The atom itself, named by the type it turns out to be.</param>
     /// <returns>The name to check under.</returns>
     public static string Writing<T>(IReadableAtom<T> atom) => $"Writing {atom.GetType().Name}";

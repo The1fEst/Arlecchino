@@ -56,7 +56,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
     public Field? Current => Fields.Count == 0 ? null : Fields[Math.Clamp(Selected, 0, Fields.Count - 1)];
 
     /// <summary>
-    /// Draws the fields with their labels aligned, scrolled so the selection stays in view, and returns
+    /// Draws the fields with their labels aligned, scrolled, so the selection stays in view, and returns
     /// the rows below the last one written. Buttons are left out of the alignment, since they have no
     /// value to line up against.
     /// </summary>
@@ -118,9 +118,9 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What was done with it, and where to go.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key) => Press(key);
+    public FocusResult Handle(KeyPress key) => Press(key);
 
-    private FocusResult Press(ConsoleKeyInfo key)
+    private FocusResult Press(KeyPress key)
     {
         if (Fields.Count == 0)
         {

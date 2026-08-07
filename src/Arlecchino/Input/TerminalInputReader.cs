@@ -30,9 +30,9 @@ public sealed class TerminalInputReader
     private readonly StringBuilder _sequence = new();
 
     /// <summary>
-    /// Creates the reader. Everything it reads is routed as it is read, which is what a caller driving
-    /// the reader itself wants — inside the framework it is built with a queue instead, so that the
-    /// thread reading the terminal never touches what the frame loop is drawing.
+    /// Creates the reader. Everything it reads is routed as it is read, which is what a caller driving the
+    /// reader itself wants. Inside the framework it is built with a queue instead, so the thread reading the
+    /// terminal never touches what the frame loop is drawing.
     /// </summary>
     /// <param name="terminal">Where key presses come from.</param>
     /// <param name="router">Where the result is sent.</param>
@@ -52,7 +52,7 @@ public sealed class TerminalInputReader
         _pending = pending;
     }
 
-    private void Send(ConsoleKeyInfo key)
+    private void Send(KeyPress key)
     {
         if (_pending is not null)
         {
@@ -114,9 +114,9 @@ public sealed class TerminalInputReader
     /// an application as two plain Escapes and left <c>Alt+Esc</c> impossible to bind.
     /// </summary>
     /// <param name="key">The key that was read.</param>
-    public void Read(ConsoleKeyInfo key)
+    public void Read(KeyPress key)
     {
-        if (Nothing(key))
+        if (key.IsNothing)
         {
             return;
         }
@@ -131,11 +131,11 @@ public sealed class TerminalInputReader
 
         if (introducer.Key == ConsoleKey.Escape)
         {
-            Send(new ConsoleKeyInfo('\e', ConsoleKey.Escape, false, true, false));
+            Send(new KeyPress(ConsoleKey.Escape, KeyModifiers.Alt, '\e'));
             return;
         }
 
-        if (introducer.KeyChar is not ('[' or 'O'))
+        if (introducer.Character is not ('[' or 'O'))
         {
             Send(key);
             Send(introducer);
@@ -145,7 +145,7 @@ public sealed class TerminalInputReader
         ReadSequenceBody(key, introducer);
     }
 
-    private void ReadSequenceBody(ConsoleKeyInfo escape, ConsoleKeyInfo introducer)
+    private void ReadSequenceBody(KeyPress escape, KeyPress introducer)
     {
         _sequence.Clear();
 
@@ -158,9 +158,9 @@ public sealed class TerminalInputReader
             }
 
             var next = _terminal.ReadKey();
-            _sequence.Append(next.KeyChar);
+            _sequence.Append(next.Character);
 
-            if (!IsFinalByte(next.KeyChar))
+            if (!IsFinalByte(next.Character))
             {
                 continue;
             }
@@ -172,7 +172,7 @@ public sealed class TerminalInputReader
         Replay(escape, introducer);
     }
 
-    private void Dispatch(string sequence, ConsoleKeyInfo escape, ConsoleKeyInfo introducer)
+    private void Dispatch(string sequence, KeyPress escape, KeyPress introducer)
     {
         if (sequence == PasteStart)
         {
@@ -188,36 +188,29 @@ public sealed class TerminalInputReader
 
         if (EscapeSequenceParser.TryParseKey(sequence, out var key))
         {
-            Send(key);
+            if (!key.IsNothing)
+            {
+                Send(key);
+            }
+
             return;
         }
 
         Replay(escape, introducer);
     }
 
-    private void Replay(ConsoleKeyInfo escape, ConsoleKeyInfo introducer)
+    private void Replay(KeyPress escape, KeyPress introducer)
     {
         Send(escape);
         Send(introducer);
 
         foreach (var character in _sequence.ToString())
         {
-            Send(new ConsoleKeyInfo(character, default, false, false, false));
+            Send(new KeyPress(character));
         }
 
         _sequence.Clear();
     }
-
-    /// <summary>
-    /// Whether the key is the one a terminal hands back when there was nothing to read. A console read
-    /// that fails answers <c>default</c>, which is indistinguishable from a key press of NUL with no
-    /// modifiers — and a view that is handed that has no way to tell either. Nobody presses it, so it is
-    /// dropped here rather than routed as input.
-    /// </summary>
-    /// <param name="key">The key that was read.</param>
-    /// <returns><c>true</c> when nothing was actually pressed.</returns>
-    private static bool Nothing(ConsoleKeyInfo key) =>
-        key.Key == ConsoleKey.None && key.KeyChar == '\0' && key.Modifiers == 0;
 
     /// <summary>
     /// Waits for the next key of a sequence. A key already waiting returns at once; otherwise the
@@ -252,7 +245,7 @@ public sealed class TerminalInputReader
 
         while (WaitForKey())
         {
-            pasted.Append(_terminal.ReadKey().KeyChar);
+            pasted.Append(_terminal.ReadKey().Character);
 
             if (!EndsPaste(pasted))
             {

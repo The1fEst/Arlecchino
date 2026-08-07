@@ -8,9 +8,9 @@ using Arlecchino.Input;
 namespace Arlecchino.Modals.Telling;
 
 /// <summary>
-/// One notification, read in full. The output row and the notifications screen have one line each to
-/// give a message, which is not enough for the errors a copy collected or the output of a command —
-/// opening the entry shows the whole of it, and offers whatever the entry said could be done about it.
+/// One notification, read in full. The output row and the notifications screen have one line each to give a
+/// message, which is not enough for the errors a copy collected or the output of a command. Opening the entry
+/// shows the whole of it, and offers whatever the entry said could be done about it.
 ///
 /// The notifications screen opens this itself, so an application only fills in
 /// <see cref="Notification.Detail"/> and <see cref="Notification.Actions"/> when it raises the entry.
@@ -30,7 +30,7 @@ public sealed class NotificationModal : Modal
     public int Index { get; set; }
 
     /// <summary>
-    /// Where each action was drawn last frame, filled in by the renderer so a click can be resolved
+    /// Where each action was drawn last frame, filled in by the renderer, so a click can be resolved
     /// to the action under it.
     /// </summary>
     public IReadOnlyList<SurfaceRegion> Chips { get; set; } = [];
@@ -57,7 +57,7 @@ public sealed class NotificationModal : Modal
     /// </summary>
     /// <param name="frame">How to close.</param>
     /// <param name="key">The key that arrived.</param>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    public override void Handle(ModalFrame frame, KeyPress key)
     {
         ArgumentNullException.ThrowIfNull(frame);
 

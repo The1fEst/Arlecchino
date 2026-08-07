@@ -74,14 +74,14 @@ public sealed class PicturesView : IArlecchinoView
         notes.AppendLine("escape as text.", Theme.Muted);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (key.Key == ConsoleKey.Escape)
         {
             return ViewKind.Default;
         }
 
-        if (char.ToLowerInvariant(key.KeyChar) != 'p')
+        if (char.ToLowerInvariant(key.Character) != 'p')
         {
             return ViewRoute.None;
         }

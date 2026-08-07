@@ -32,7 +32,7 @@ public static class TerminalCapabilities
     ];
 
     /// <summary>
-    /// How much colour styles may emit. Detected on first use; a terminal that refuses virtual
+    /// How much color styles may emit. Detected on first use; a terminal that refuses virtual
     /// terminal mode lowers it to <see cref="ColorSupport.None"/> at startup.
     ///
     /// Process-wide, like <see cref="Theme.Palette"/>: one terminal per process is the assumption the
@@ -54,26 +54,25 @@ public static class TerminalCapabilities
 
     /// <summary>
     /// Whether <see cref="Glyphs.CellWidth"/> and <see cref="Glyphs.CellHeight"/> came from the terminal
-    /// rather than from the standing guess. Sixel sizing rests on them, so this is how an application
-    /// tells a picture that will land exactly from one that will land approximately — and it is the only
-    /// way to tell a terminal that reported ten by twenty from one that said nothing.
+    /// rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a
+    /// picture that will land exactly from one that will land approximately. It is also the only way to tell a
+    /// terminal that reported ten by twenty from one that said nothing.
     /// </summary>
     public static bool CellSizeKnown { get; set; }
 
     /// <summary>
-    /// The colour behind the text, as the terminal reported it, or <c>null</c> when it did not say.
+    /// The color behind the text, as the terminal reported it, or <c>null</c> when it did not say.
     ///
-    /// It is here because undrawing a sixel means painting over it, and painting needs a colour: sixel
-    /// writes pixels into the screen rather than into a registry of images, so there is nothing to
-    /// delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle
-    /// on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal
-    /// has said what colour to paint.
+    /// It is here because undrawing a sixel means painting over it, and painting needs a color. Sixel writes
+    /// pixels into the screen rather than into a registry of images, so there is nothing to delete by name the
+    /// way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug
+    /// anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint.
     /// </summary>
     public static Rgb? Background { get; set; }
 
     /// <summary>
     /// Turns <see cref="ImageProtocol.Auto"/> into the best of what the terminal admitted to, and hands
-    /// anything else back unchanged. Kitty first: it carries exact colour and lets the terminal do the
+    /// anything else back unchanged. Kitty first: it carries exact color and lets the terminal do the
     /// scaling, where sixel takes a palette of 256 and a guess at the size of a cell.
     ///
     /// With nothing detected this answers <see cref="ImageProtocol.Blocks"/>, which is why a picture
@@ -90,7 +89,7 @@ public static class TerminalCapabilities
     };
 
     /// <summary>Reads the environment and decides what the terminal can show.</summary>
-    /// <returns>The detected level of colour support.</returns>
+    /// <returns>The detected level of color support.</returns>
     public static ColorSupport DetectColor() => DetectColor(
         Environment.GetEnvironmentVariable("NO_COLOR"),
         Environment.GetEnvironmentVariable("TERM"),
@@ -99,14 +98,14 @@ public static class TerminalCapabilities
 
     /// <summary>
     /// The same decision made from explicit values, which is what makes it testable.
-    /// <c>NO_COLOR</c> or <c>TERM=dumb</c> mean no colour at all; <c>truecolor</c>, <c>24bit</c> or a
+    /// <c>NO_COLOR</c> or <c>TERM=dumb</c> mean no color at all; <c>truecolor</c>, <c>24bit</c> or a
     /// Windows Terminal session mean 24-bit; everything else falls back to the palette.
     /// </summary>
     /// <param name="noColor">Value of <c>NO_COLOR</c>.</param>
     /// <param name="term">Value of <c>TERM</c>.</param>
     /// <param name="colorTerm">Value of <c>COLORTERM</c>.</param>
     /// <param name="windowsTerminalSession">Value of <c>WT_SESSION</c>.</param>
-    /// <returns>The level of colour support those values imply.</returns>
+    /// <returns>How much color those values imply the terminal supports.</returns>
     public static ColorSupport DetectColor(string? noColor, string? term, string? colorTerm, string? windowsTerminalSession)
     {
         if (!string.IsNullOrEmpty(noColor) || string.Equals(term, "dumb", StringComparison.OrdinalIgnoreCase))
@@ -125,12 +124,12 @@ public static class TerminalCapabilities
     }
 
     /// <summary>
-    /// Picks the palette colour closest to an exact one. This is the conversion
+    /// Picks the palette color closest to an exact one. This is the conversion
     /// <see cref="RgbTermColor"/> uses when the terminal cannot do 24-bit, available for your own
     /// rendering.
     /// </summary>
-    /// <param name="color">The colour to approximate.</param>
-    /// <returns>The nearest of the sixteen ANSI colours.</returns>
+    /// <param name="color">The color to approximate.</param>
+    /// <returns>The nearest of the sixteen ANSI colors.</returns>
     public static TerminalColor NearestPaletteColor(Rgb color)
     {
         var nearest = TerminalColor.Default;

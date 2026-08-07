@@ -20,7 +20,7 @@ public sealed class ViewCommand
     public required Func<ViewRoute> Run { get; init; }
 
     /// <summary>
-    ///     Whether the command can run now. A disabled command is skipped and its key carries on — to the
+    ///     Whether the command can run now. A disabled command is skipped, and its key carries on — to the
     ///     commands available everywhere, and then to the view's own <c>Handle</c> — as if nothing had
     ///     claimed it. To hold the key regardless, bind it and do nothing rather than disable it.
     /// </summary>

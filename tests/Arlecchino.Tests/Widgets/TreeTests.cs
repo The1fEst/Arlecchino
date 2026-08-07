@@ -63,7 +63,7 @@ public sealed class TreeTests
     public void ExpandingIndentsChildren()
     {
         var tree = CreateTree();
-        tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.RightArrow));
 
         var lines = Render(tree);
 
@@ -78,8 +78,8 @@ public sealed class TreeTests
     {
         var tree = CreateTree();
 
-        tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
-        tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.RightArrow));
+        tree.Handle(new(ConsoleKey.RightArrow));
 
         Assert.Equal("bmw", tree.SelectedNode?.Value);
     }
@@ -90,15 +90,15 @@ public sealed class TreeTests
         var tree = CreateTree();
         tree.ExpandAll();
 
-        tree.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        tree.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.DownArrow));
+        tree.Handle(new(ConsoleKey.DownArrow));
         Assert.Equal("nissan", tree.SelectedNode?.Value);
 
-        tree.Handle(new('\0', ConsoleKey.LeftArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.LeftArrow));
         Assert.Equal("nissan", tree.SelectedNode?.Value);
         Assert.Equal(4, Render(tree).Length - CountBlank(Render(tree)));
 
-        tree.Handle(new('\0', ConsoleKey.LeftArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.LeftArrow));
         Assert.Equal("cars", tree.SelectedNode?.Value);
     }
 
@@ -130,12 +130,12 @@ public sealed class TreeTests
             Roots = tree.Roots,
         };
 
-        tree.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        tree.Handle(new(ConsoleKey.Enter));
         Assert.Equal(4, CountRows(tree));
         Assert.Equal("", activated);
 
-        tree.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        var result = tree.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        tree.Handle(new(ConsoleKey.DownArrow));
+        var result = tree.Handle(new(ConsoleKey.Enter));
 
         Assert.Equal("bmw", activated);
         Assert.Equal(new("Leaf"), result.Route);
@@ -185,7 +185,7 @@ public sealed class TreeTests
             Roots = CreateTree().Roots,
         };
 
-        tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.RightArrow));
 
         Assert.Equal("cars", loaded);
     }

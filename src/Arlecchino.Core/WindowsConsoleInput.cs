@@ -22,7 +22,7 @@ internal sealed partial class WindowsConsoleInput
     private const ushort KeyEventType = 0x0001;
     private const ushort MouseEventType = 0x0002;
 
-    private readonly Queue<ConsoleKeyInfo> _keys = new();
+    private readonly Queue<KeyPress> _keys = new();
     private readonly Queue<MouseEvent> _mouse = new();
     private readonly WindowsInputTranslator _translator = new();
     private readonly IntPtr _input;
@@ -78,7 +78,7 @@ internal sealed partial class WindowsConsoleInput
         }
     }
 
-    public ConsoleKeyInfo ReadKey()
+    public KeyPress ReadKey()
     {
         while (_keys.Count == 0)
         {
@@ -116,7 +116,7 @@ internal sealed partial class WindowsConsoleInput
         switch (record.EventType)
         {
             case KeyEventType when record.Key.KeyDown != 0:
-                _keys.Enqueue(WindowsInputTranslator.ToKeyInfo(record.Key.VirtualKeyCode,
+                _keys.Enqueue(WindowsInputTranslator.ToKeyPress(record.Key.VirtualKeyCode,
                     record.Key.UnicodeChar,
                     record.Key.ControlKeyState));
                 return true;

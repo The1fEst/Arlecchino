@@ -8,10 +8,10 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A set held as one piece of application state — the files marked, the rows expanded, the hosts
-/// reachable. Every change goes through the same path a plain atom's write does: it is checked
-/// against the drawing thread, it notifies what reads the set, it marks the frame stale, and it
-/// records an undo step when the set is undoable.
+/// A set held as one piece of application state — the files marked, the rows expanded, the hosts reachable.
+/// Every change takes the same path a plain atom's write takes: it is checked against the drawing thread, it
+/// notifies what reads the set, it marks the frame stale, and it records an undo step when the set is
+/// undoable.
 ///
 /// It behaves as a <c>HashSet&lt;T&gt;</c> does rather than as a map: adding what is already there
 /// changes nothing and is not an error, which is why <see cref="Add(T)"/> answers nothing and

@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Xunit;
 using Arlecchino.Modals.Asking;
 using Arlecchino.Modals.Choosing;
@@ -38,7 +39,7 @@ public sealed class PasteTests
         using var app = new TestApplication();
 
         app.State.RequestNumber("Count", 0m, 0m, 100m, static _ => { });
-        app.Press(ConsoleKey.U, control: true);
+        app.Press(ConsoleKey.U, KeyModifiers.Control);
         app.ReadFromTerminal("\e[200~1a2\e[201~");
 
         Assert.Equal("12", ((NumberModal)app.State.Modal!).Text);
@@ -72,7 +73,7 @@ public sealed class PasteTests
         using var app = new TestApplication();
 
         app.State.RequestText("Name", "secret-token", null, static _ => { });
-        app.Press(ConsoleKey.Insert, control: true);
+        app.Press(ConsoleKey.Insert, KeyModifiers.Control);
 
         Assert.Equal("secret-token", app.Terminal.Copied);
     }

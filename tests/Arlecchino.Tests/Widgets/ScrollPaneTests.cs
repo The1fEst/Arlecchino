@@ -59,8 +59,8 @@ public sealed class ScrollPaneTests
         var (surface, terminal) = CreateSurface();
         var pane = PaneOf(40);
 
-        pane.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        pane.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        pane.Handle(new(ConsoleKey.DownArrow));
+        pane.Handle(new(ConsoleKey.DownArrow));
         pane.Draw(surface.Frame.Rows(0, 4));
 
         var lines = Render(surface, terminal);
@@ -106,11 +106,11 @@ public sealed class ScrollPaneTests
         var pane = PaneOf(20);
         var region = surface.Frame.Rows(0, 5);
 
-        pane.Handle(new('\0', ConsoleKey.End, false, false, false));
+        pane.Handle(new(ConsoleKey.End));
         pane.Draw(region);
         Assert.Equal(15, pane.Offset);
 
-        pane.Handle(new('\0', ConsoleKey.Home, false, false, false));
+        pane.Handle(new(ConsoleKey.Home));
         pane.Draw(region);
         Assert.Equal(0, pane.Offset);
     }

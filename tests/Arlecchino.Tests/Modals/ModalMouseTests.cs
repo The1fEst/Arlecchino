@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Xunit;
 using Arlecchino.Modals.Choosing;
@@ -128,7 +129,7 @@ public sealed class ModalMouseTests
     {
         using var app = new TestApplication(configure: static builder => builder.AddCommand<ProbeCommand>());
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
         var (row, column) = RowOf(app, "Probe command");
 
         app.Click(row, column);

@@ -25,13 +25,13 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     private const int RedirectedHeight = 34;
 
     private readonly bool _escapeSequencesWork;
-    private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
+    private readonly ConcurrentQueue<KeyPress> _unread = new();
 
     private volatile WindowsConsoleInput? _windowsInput;
 
     /// <summary>
     /// Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform
-    /// allows them. A console that refuses them drops colour to <see cref="ColorSupport.None"/>.
+    /// allows them. A console that refuses them drops color to <see cref="ColorSupport.None"/>.
     /// </summary>
     public SystemTerminal()
     {
@@ -83,15 +83,15 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
     /// <summary>Takes the next key without echoing it.</summary>
     /// <returns>The key that was pressed.</returns>
-    public ConsoleKeyInfo ReadKey() => _unread.TryDequeue(out var back)
+    public KeyPress ReadKey() => _unread.TryDequeue(out var back)
         ? back
         : _windowsInput is { } input
             ? input.ReadKey()
-            : Console.ReadKey(true);
+            : KeyPress.From(Console.ReadKey(true));
 
-    /// <summary>Puts a key back so the next read returns it.</summary>
+    /// <summary>Puts a key back, so the next read returns it.</summary>
     /// <param name="key">The key to put back.</param>
-    public void Unread(ConsoleKeyInfo key) => _unread.Enqueue(key);
+    public void Unread(KeyPress key) => _unread.Enqueue(key);
 
     /// <summary>Takes the next mouse event read from the console's event queue.</summary>
     /// <returns>What the mouse did, in frame cells.</returns>
@@ -124,7 +124,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
-    /// Starts reporting presses, releases, drags and the wheel. Elsewhere that means SGR reports mixed
+    /// Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed
     /// into the key stream; on Windows the console is read record by record instead, because the flag
     /// that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while
     /// this is on, since otherwise the console eats clicks as text selection.

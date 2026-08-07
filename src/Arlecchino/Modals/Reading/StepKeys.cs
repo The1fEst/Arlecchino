@@ -1,12 +1,12 @@
-using System;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.State;
 using Arlecchino.Modals.Setting;
 
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// The dialogs that hold a value with a step: a slider and a colour. Both are the same gesture — go
+/// The dialogs that hold a value with a step: a slider and a color. Both are the same gesture — go
 /// up, go down, go a long way, go to the end — so both answer to the same keys, and the field that
 /// asks for a number in words answers to them too.
 /// </summary>
@@ -28,7 +28,7 @@ internal sealed class StepKeys
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when it was one of them.</returns>
-    public bool Stepped(IBoundedModal modal, ConsoleKeyInfo key)
+    public bool Stepped(IBoundedModal modal, KeyPress key)
     {
         if (_keymap.MoveUp.Matches(key))
         {
@@ -64,7 +64,7 @@ internal sealed class StepKeys
     /// <summary>Reads a key for a slider.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Slider(SliderModal modal, ConsoleKeyInfo key)
+    public void Slider(SliderModal modal, KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {
@@ -113,12 +113,12 @@ internal sealed class StepKeys
     }
 
     /// <summary>
-    /// Reads a key for a colour. Up and down walk the three channels rather than the value, since a
-    /// colour is three sliders stacked and which of them is being moved has to be sayable.
+    /// Reads a key for a color. Up and down walk the three channels rather than the value, since a
+    /// color is three sliders stacked and which of them is being moved has to be sayable.
     /// </summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Color(ColorModal modal, ConsoleKeyInfo key)
+    public void Color(ColorModal modal, KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {

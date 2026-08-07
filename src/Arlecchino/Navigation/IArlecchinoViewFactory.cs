@@ -5,7 +5,7 @@ namespace Arlecchino.Navigation;
 
 /// <summary>
 /// Builds views for routes. Register one with <c>AddViewFactory&lt;T&gt;()</c> to serve a whole
-/// family of routes at once — a plugin directory, or routes carrying an id in the name.
+/// family of routes at once — a plugin directory, or routes carrying an ID in the name.
 /// </summary>
 public interface IArlecchinoViewFactory
 {
@@ -16,6 +16,6 @@ public interface IArlecchinoViewFactory
     /// </param>
     /// <param name="route">The route being shown.</param>
     /// <param name="view">The view, when this factory owns the route.</param>
-    /// <returns><c>false</c> for routes you do not own, so the next factory gets a turn.</returns>
+    /// <returns><c>false</c> for a route you do not own, so the next factory gets a turn.</returns>
     bool TryCreate(IServiceProvider services, ViewRoute route, [NotNullWhen(true)] out IArlecchinoView? view);
 }

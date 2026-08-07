@@ -7,11 +7,11 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Widgets.Pictures;
 
 /// <summary>
-/// An image drawn in cells. Each cell carries two pixels — the upper half block is painted in the
-/// colour of the pixel above and its background in the colour of the pixel below — so a cell, which
-/// is about twice as tall as it is wide, comes out roughly square per pixel.
+/// An image drawn in cells. Each cell carries two pixels: the upper half block is painted in the color of the
+/// pixel above and its background in the color of the pixel below. A cell is about twice as tall as it is
+/// wide, so that comes out roughly square per pixel.
 ///
-/// That is the default because it needs nothing of the terminal but the colour it already draws in:
+/// That is the default because it needs nothing of the terminal but the color it already draws in:
 /// no protocol, no state left behind, nothing to clean up when the picture goes away. Where the
 /// terminal speaks a graphics protocol, <see cref="Protocol"/> sends the pixels themselves instead and
 /// the picture is as sharp as the screen allows.
@@ -82,8 +82,8 @@ public sealed class Picture : IArlecchinoWidget
 
     /// <summary>
     /// Forgets the picture, leaving the region to whatever draws next. What the terminal was handed as
-    /// pixels is undrawn on the next frame — see the undraw that goes with
-    /// <see cref="Surface.Passthrough"/> — so this needs no more than forgetting them.
+    /// pixels is undrawn on the next frame — see how <see cref="Surface.Passthrough"/> takes a payload
+    /// back — so this needs no more than forgetting them.
     /// </summary>
     public void Clear()
     {
@@ -94,8 +94,8 @@ public sealed class Picture : IArlecchinoWidget
     }
 
     /// <summary>
-    /// Draws the picture as large as it goes inside the region without stretching it, centred, and
-    /// returns an empty region: a picture fills what it is given, so hand it the pane it belongs in.
+    /// Draws the picture as large as it goes inside the region without stretching it, centered, and
+    /// returns an empty region: a picture fills what it is given, so hand over the pane it belongs in.
     /// </summary>
     /// <param name="region">Where to draw.</param>
     /// <returns>An empty region.</returns>
@@ -151,7 +151,7 @@ public sealed class Picture : IArlecchinoWidget
     /// code and holds only its own state.
     ///
     /// Only the one in use is ever built, and it is kept until the protocol changes — which is what
-    /// makes the caches inside it worth having. A picture that is never drawn builds nothing at all, and
+    /// makes the caches inside it worth having. A picture that goes undrawn builds nothing at all, and
     /// a picture drawn in cells never takes a kitty image number it would not use.
     /// </summary>
     /// <param name="protocol">Which protocol the terminal and the application settled on.</param>

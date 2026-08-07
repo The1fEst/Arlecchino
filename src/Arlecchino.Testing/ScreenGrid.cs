@@ -10,10 +10,10 @@ namespace Arlecchino.Testing;
 /// this obeys them — a cursor jump moves the cursor, a style sticks to the cells that follow, a wide
 /// symbol takes two columns.
 ///
-/// That difference is the point. Frames are written as the difference from the last one, so what
-/// reaches the terminal is a handful of jumps and runs which say nothing on their own about what is
-/// on screen afterwards. Applying them here answers that, and makes the invariant worth asserting:
-/// a screen built from diffs is the screen a whole repaint would have drawn.
+/// That difference is the point. Frames are written as the difference from the last one, so what reaches the
+/// terminal is a handful of jumps and runs which say nothing on their own about what the screen holds
+/// afterward. Applying them here answers that, and makes the invariant worth asserting: a screen built from
+/// diffs is the screen a whole repaint would have drawn.
 /// </summary>
 public sealed class ScreenGrid
 {
@@ -47,10 +47,9 @@ public sealed class ScreenGrid
     public int CursorRow => _row;
 
     /// <summary>
-    /// The column the cursor sits on, counted from the left. A symbol written into the last column
-    /// while wrapping is on leaves it one past the right edge, waiting to wrap: the next symbol goes
-    /// to the row below, and a terminal asked where its cursor is answers the same way — tmux and kitty
-    /// both do.
+    /// The column the cursor sits on, counted from the left. A symbol written into the last column while
+    /// wrapping is on leaves the cursor one past the right edge, waiting to wrap. The next symbol goes to the
+    /// row below, and a terminal asked where its cursor is answers the same way — tmux and kitty both do.
     ///
     /// With wrapping off they stop agreeing: the same symbol leaves the cursor in the last column for
     /// tmux and one past it for kitty. Nothing visible turns on it, since with nowhere to wrap to the
@@ -125,7 +124,7 @@ public sealed class ScreenGrid
 
     /// <summary>
     /// The style sequence in force on a cell, empty where the style was reset. Compare it against
-    /// <see cref="TermColor.Ansi"/> to assert that something was drawn in the colour it should be.
+    /// <see cref="TermColor.Ansi"/> to assert that something was drawn in the color it should be.
     /// </summary>
     /// <param name="row">Row, counted from the top.</param>
     /// <param name="column">Column, counted from the left.</param>
@@ -152,7 +151,7 @@ public sealed class ScreenGrid
 
     /// <summary>
     /// Whether another screen holds the same symbols in the same styles. Text alone is the readable
-    /// half of a frame, so a screen that matches on <see cref="ToString"/> can still differ in colour.
+    /// half of a frame, so a screen that matches on <see cref="ToString"/> can still differ in color.
     /// </summary>
     /// <param name="other">The screen to compare against.</param>
     /// <returns><c>true</c> when both the symbols and the styles agree.</returns>
@@ -473,17 +472,16 @@ public sealed class ScreenGrid
     }
 
     /// <summary>
-    /// Makes room for a symbol about to be written. A symbol that runs past the right edge moves to
-    /// the next row; with wrapping off there is nowhere to move it to, so the cursor stays in the last
-    /// column and the symbol is dropped rather than pushed inwards — which is what makes a frame drawn
-    /// past its own width show up as a defect rather than as a row that quietly grew.
+    /// Makes room for a symbol about to be written. A symbol that runs past the right edge moves to the next
+    /// row. With wrapping off there is nowhere to move it to, so the cursor stays in the last column and the
+    /// symbol is dropped rather than pushed inwards. That is what makes a frame drawn past its own width show
+    /// up as a defect rather than as a row that quietly grew.
     ///
-    /// Terminals do not agree about that last case, and there is nothing to be right about: a wide
-    /// symbol written into the last column is dropped by tmux and shifted a column inwards by kitty, so
-    /// whichever this does contradicts one of them. It is dropped here because a frame never asks for
-    /// it — the surface refuses a wide symbol the right edge would split, and writes a blank instead —
-    /// so the only way to reach this is by hand, and a symbol that vanishes is easier to notice than one
-    /// that moved.
+    /// Terminals do not agree about that last case, and there is nothing to be right about. A wide symbol
+    /// written into the last column is dropped by tmux and shifted a column inwards by kitty, so whichever
+    /// this does will contradict one of them. It is dropped here because a frame never asks for it: the surface
+    /// refuses a wide symbol the right edge would split and writes a blank instead. So the only way to reach
+    /// this is by hand, and a symbol that vanishes is easier to notice than one that moved.
     /// </summary>
     /// <param name="width">Columns the symbol takes.</param>
     /// <returns><c>false</c> when there is nowhere to put it.</returns>

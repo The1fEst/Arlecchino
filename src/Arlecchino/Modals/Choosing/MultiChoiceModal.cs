@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Choosing;
 
@@ -50,7 +51,7 @@ public sealed class MultiChoiceModal : OptionListModal
     public override void Draw(ModalFrame frame) => frame.Lists.Several(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Choices.Several(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Choices.Several(this, key);
 
     /// <inheritdoc/>
     protected override void Take(ModalFrame frame, string picked) => Toggle(picked);

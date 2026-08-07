@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Asking;
 
@@ -11,7 +12,7 @@ public sealed class TextModal : Modal, ITextEntryModal
     private string _text = "";
     private int _caret;
 
-    /// <summary>What has been typed so far. Assigning it puts the caret at the end.</summary>
+    /// <summary>Whatever has been typed so far. Assigning it puts the caret at the end.</summary>
     public string Text
     {
         get => _text;
@@ -62,5 +63,5 @@ public sealed class TextModal : Modal, ITextEntryModal
         frame.Paint.Entry(this, Title, frame.Strings.ModalTextHints());
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Fields.Text(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Fields.Text(this, key);
 }

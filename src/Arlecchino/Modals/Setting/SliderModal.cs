@@ -9,11 +9,11 @@ namespace Arlecchino.Modals.Setting;
 
 /// <summary>
 /// A value inside a range, adjusted by arrows or by dragging the track. There is nothing to type, so
-/// the value is always valid and the dialog never reports an error.
+/// the value is always valid, and the dialog never reports an error.
 /// </summary>
 public sealed class SliderModal : NumericModal, IBoundedModal
 {
-    /// <summary>Where the handle currently sits.</summary>
+    /// <summary>Where the handle sits.</summary>
     public decimal Value { get; set; }
 
     /// <summary>Value at the left end of the track.</summary>
@@ -52,7 +52,7 @@ public sealed class SliderModal : NumericModal, IBoundedModal
     public override void Draw(ModalFrame frame) => frame.Values.Slider(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Steps.Slider(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Steps.Slider(this, key);
 
     /// <inheritdoc/>
     public override void HandleMouse(ModalFrame frame, MouseEvent mouse) =>

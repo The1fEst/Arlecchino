@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Xunit;
 using Arlecchino.Modals.Asking;
 
@@ -239,7 +240,7 @@ public sealed class TextModalTests
         using var app = new TestApplication();
 
         app.State.RequestText("Name", "one two", null, static _ => { });
-        app.Press(ConsoleKey.LeftArrow, control: true);
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Control);
 
         Assert.Equal(4, ((TextModal)app.State.Modal!).Caret);
     }
@@ -251,7 +252,7 @@ public sealed class TextModalTests
 
         app.State.RequestText("Name", "one two", null, static _ => { });
         app.Press(ConsoleKey.Home);
-        app.Press(ConsoleKey.RightArrow, control: true);
+        app.Press(ConsoleKey.RightArrow, KeyModifiers.Control);
 
         Assert.Equal(3, ((TextModal)app.State.Modal!).Caret);
     }
@@ -262,7 +263,7 @@ public sealed class TextModalTests
         using var app = new TestApplication();
 
         app.State.RequestText("Name", "one two", null, static _ => { });
-        app.Press(ConsoleKey.Backspace, control: true);
+        app.Press(ConsoleKey.Backspace, KeyModifiers.Control);
 
         Assert.Equal("one ", ((TextModal)app.State.Modal!).Text);
     }
@@ -274,7 +275,7 @@ public sealed class TextModalTests
 
         app.State.RequestText("Name", "one two", null, static _ => { });
         app.Press(ConsoleKey.LeftArrow);
-        app.Press(ConsoleKey.U, control: true);
+        app.Press(ConsoleKey.U, KeyModifiers.Control);
 
         var modal = (TextModal)app.State.Modal!;
         Assert.Equal("o", modal.Text);
@@ -408,7 +409,7 @@ public sealed class TextModalTests
         using var app = new TestApplication();
 
         app.State.RequestNumber("Count", 0m, 0m, 10m, static _ => { });
-        app.Press(ConsoleKey.U, control: true);
+        app.Press(ConsoleKey.U, KeyModifiers.Control);
         app.Type("99");
         app.Press(ConsoleKey.Enter);
 

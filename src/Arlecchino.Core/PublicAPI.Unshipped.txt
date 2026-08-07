@@ -1,1 +1,53 @@
 #nullable enable
+*REMOVED*Arlecchino.IArlecchinoTerminal.ReadKey() -> System.ConsoleKeyInfo
+*REMOVED*Arlecchino.IArlecchinoTerminal.Unread(System.ConsoleKeyInfo key) -> void
+*REMOVED*Arlecchino.Input.KeyBinding.AlsoModifiers.get -> System.ConsoleModifiers
+*REMOVED*Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out System.ConsoleModifiers Modifiers, out System.ConsoleKey AlsoKey, out System.ConsoleModifiers AlsoModifiers) -> void
+*REMOVED*Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, System.ConsoleModifiers Modifiers = System.ConsoleModifiers.None, System.ConsoleKey AlsoKey = System.ConsoleKey.None, System.ConsoleModifiers AlsoModifiers = System.ConsoleModifiers.None) -> void
+*REMOVED*Arlecchino.Input.KeyBinding.Matches(System.ConsoleKeyInfo pressed) -> bool
+*REMOVED*Arlecchino.Input.KeyBinding.Modifiers.get -> System.ConsoleModifiers
+*REMOVED*Arlecchino.Input.KeyText.Resolve(System.ConsoleKeyInfo key) -> char?
+*REMOVED*Arlecchino.Input.MouseEvent.Deconstruct(out Arlecchino.Input.MouseAction Action, out Arlecchino.Input.MouseButton Button, out int Row, out int Column, out System.ConsoleModifiers Modifiers) -> void
+*REMOVED*Arlecchino.Input.MouseEvent.Modifiers.get -> System.ConsoleModifiers
+*REMOVED*Arlecchino.Input.MouseEvent.MouseEvent(Arlecchino.Input.MouseAction Action, Arlecchino.Input.MouseButton Button, int Row, int Column, System.ConsoleModifiers Modifiers) -> void
+*REMOVED*Arlecchino.SystemTerminal.ReadKey() -> System.ConsoleKeyInfo
+*REMOVED*Arlecchino.SystemTerminal.Unread(System.ConsoleKeyInfo key) -> void
+Arlecchino.IArlecchinoTerminal.ReadKey() -> Arlecchino.Input.KeyPress
+Arlecchino.IArlecchinoTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
+Arlecchino.Input.KeyBinding.AlsoModifiers.get -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyBinding.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers, out System.ConsoleKey AlsoKey, out Arlecchino.Input.KeyModifiers AlsoModifiers) -> void
+Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None, System.ConsoleKey AlsoKey = System.ConsoleKey.None, Arlecchino.Input.KeyModifiers AlsoModifiers = Arlecchino.Input.KeyModifiers.None) -> void
+Arlecchino.Input.KeyBinding.Matches(Arlecchino.Input.KeyPress pressed) -> bool
+Arlecchino.Input.KeyBinding.Modifiers.get -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyBinding.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyBinding
+Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyModifiers.Alt = 1 -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyModifiers.Control = 4 -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyModifiers.None = 0 -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyModifiers.Shift = 2 -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyModifiers.Super = 8 -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyPress
+Arlecchino.Input.KeyPress.Character.get -> char
+Arlecchino.Input.KeyPress.Character.init -> void
+Arlecchino.Input.KeyPress.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers, out char Character) -> void
+Arlecchino.Input.KeyPress.Equals(Arlecchino.Input.KeyPress other) -> bool
+Arlecchino.Input.KeyPress.IsNothing.get -> bool
+Arlecchino.Input.KeyPress.Key.get -> System.ConsoleKey
+Arlecchino.Input.KeyPress.Key.init -> void
+Arlecchino.Input.KeyPress.KeyPress() -> void
+Arlecchino.Input.KeyPress.KeyPress(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None, char Character = '\0') -> void
+Arlecchino.Input.KeyPress.KeyPress(char character) -> void
+Arlecchino.Input.KeyPress.Modifiers.get -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.KeyPress.Modifiers.init -> void
+Arlecchino.Input.KeyText.Resolve(Arlecchino.Input.KeyPress key) -> char?
+Arlecchino.Input.MouseEvent.Deconstruct(out Arlecchino.Input.MouseAction Action, out Arlecchino.Input.MouseButton Button, out int Row, out int Column, out Arlecchino.Input.KeyModifiers Modifiers) -> void
+Arlecchino.Input.MouseEvent.Modifiers.get -> Arlecchino.Input.KeyModifiers
+Arlecchino.Input.MouseEvent.MouseEvent(Arlecchino.Input.MouseAction Action, Arlecchino.Input.MouseButton Button, int Row, int Column, Arlecchino.Input.KeyModifiers Modifiers) -> void
+Arlecchino.SystemTerminal.ReadKey() -> Arlecchino.Input.KeyPress
+Arlecchino.SystemTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
+override Arlecchino.Input.KeyPress.GetHashCode() -> int
+static Arlecchino.Input.KeyPress.From(System.ConsoleKeyInfo key) -> Arlecchino.Input.KeyPress
+static Arlecchino.Input.KeyPress.operator !=(Arlecchino.Input.KeyPress left, Arlecchino.Input.KeyPress right) -> bool
+static Arlecchino.Input.KeyPress.operator ==(Arlecchino.Input.KeyPress left, Arlecchino.Input.KeyPress right) -> bool
+~override Arlecchino.Input.KeyPress.Equals(object obj) -> bool
+~override Arlecchino.Input.KeyPress.ToString() -> string

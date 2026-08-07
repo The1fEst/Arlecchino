@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -61,11 +62,11 @@ public sealed class NavigationTests
         app.Press(ConsoleKey.O);
         Assert.True(app.Navigator.CanGoBack);
 
-        app.Press(ConsoleKey.LeftArrow, alt: true);
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Alt);
         Assert.Equal(ViewKind.Probe, app.Navigator.CurrentRoute);
         Assert.True(app.Navigator.CanGoForward);
 
-        app.Press(ConsoleKey.RightArrow, alt: true);
+        app.Press(ConsoleKey.RightArrow, KeyModifiers.Alt);
         Assert.Equal(ViewKind.Other, app.Navigator.CurrentRoute);
     }
 
@@ -171,7 +172,7 @@ public sealed class NavigationTests
 
         public void Draw() { }
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     public sealed class NavigatingView : IArlecchinoView
@@ -187,7 +188,7 @@ public sealed class NavigationTests
 
         public void Draw() => _surface.AppendLine($"navigating {_navigator.CurrentRoute.Name}", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     public sealed class EagerView : IArlecchinoView
@@ -196,6 +197,6 @@ public sealed class NavigationTests
 
         public void Draw() { }
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 }

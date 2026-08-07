@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 
 namespace Arlecchino.Commands;
@@ -26,7 +26,7 @@ public class CommandRegistry
     /// <param name="pressed">The key that was pressed.</param>
     /// <param name="command">The command, when one claims the key.</param>
     /// <returns><c>true</c> when a command claimed the key.</returns>
-    public bool TryFind(ConsoleKeyInfo pressed, [NotNullWhen(true)] out IArlecchinoCommand? command)
+    public bool TryFind(KeyPress pressed, [NotNullWhen(true)] out IArlecchinoCommand? command)
     {
         foreach (var candidate in Commands)
         {
@@ -46,6 +46,6 @@ public class CommandRegistry
     /// <summary>Runs the command a key belongs to, if any.</summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns>The route the command returned, or <see cref="ViewRoute.None"/>.</returns>
-    public ViewRoute Send(ConsoleKeyInfo pressed) =>
+    public ViewRoute Send(KeyPress pressed) =>
         TryFind(pressed, out var command) ? command.Execute() : ViewRoute.None;
 }

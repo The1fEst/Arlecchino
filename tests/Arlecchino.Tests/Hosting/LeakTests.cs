@@ -2,6 +2,7 @@ using System;
 using Arlecchino.Atoms;
 using Arlecchino.Atoms.Local;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -118,7 +119,7 @@ public sealed class LeakTests
 
         public void Draw() => _surface.AppendLine("watching", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     public sealed class DraftingView : IArlecchinoView
@@ -133,7 +134,7 @@ public sealed class LeakTests
 
         public void Draw() => _surface.AppendLine("drafting", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 
     public sealed class TickingView : IArlecchinoView
@@ -150,6 +151,6 @@ public sealed class LeakTests
 
         public void Draw() => _surface.AppendLine("ticking", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
     }
 }

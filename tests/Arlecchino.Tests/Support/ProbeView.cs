@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -17,7 +18,7 @@ public sealed class ProbeView : IArlecchinoView
 
     public void Draw() => _surface.AppendLine("probe", Theme.Default);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) =>
+    public ViewRoute Handle(KeyPress key) =>
         key.Key == ConsoleKey.O ? ViewKind.Other : ViewRoute.None;
 
     public (string Key, string Description)[] Hints() => [("o", "other")];
@@ -34,5 +35,5 @@ public sealed class OtherView : IArlecchinoView
 
     public void Draw() => _surface.AppendLine("other", Theme.Default);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 }

@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.State;
@@ -8,9 +7,9 @@ using Arlecchino.Modals.Asking;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// The field of many lines. It differs from the one of one line in the two things that follow from
-/// having rows: the caret moves up and down as well as along, and Enter is a new line rather than the
-/// answer — which is why submitting it takes a key of its own.
+/// The field of many lines. It differs from the field of one line in the two things that follow from having
+/// rows: the caret moves up and down as well as along, and Enter is a new line rather than the answer. That
+/// is why submitting it takes a key of its own.
 /// </summary>
 internal sealed class TextAreaKeys
 {
@@ -39,7 +38,7 @@ internal sealed class TextAreaKeys
     /// <summary>Reads a key.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
-    public void Handle(TextAreaModal modal, ConsoleKeyInfo key)
+    public void Handle(TextAreaModal modal, KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {
@@ -88,7 +87,7 @@ internal sealed class TextAreaKeys
         modal.OnSubmit(text);
     }
 
-    private bool Moved(TextAreaModal modal, ConsoleKeyInfo key)
+    private bool Moved(TextAreaModal modal, KeyPress key)
     {
         if (_keymap.MoveLeft.Matches(key))
         {
@@ -149,7 +148,7 @@ internal sealed class TextAreaKeys
         return true;
     }
 
-    private bool Edited(TextAreaModal modal, ConsoleKeyInfo key)
+    private bool Edited(TextAreaModal modal, KeyPress key)
     {
         if (_keymap.Confirm.Matches(key))
         {

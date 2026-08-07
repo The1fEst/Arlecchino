@@ -19,13 +19,8 @@ internal sealed class WindowsInputTranslator
 
     private uint _heldButtons;
 
-    public static ConsoleKeyInfo ToKeyInfo(ushort virtualKeyCode, ushort character, uint controlKeyState) =>
-        new(
-            (char)character,
-            (ConsoleKey)virtualKeyCode,
-            (controlKeyState & ShiftPressed) != 0,
-            (controlKeyState & (LeftAltPressed | RightAltPressed)) != 0,
-            (controlKeyState & (LeftControlPressed | RightControlPressed)) != 0);
+    public static KeyPress ToKeyPress(ushort virtualKeyCode, ushort character, uint controlKeyState) =>
+        new((ConsoleKey)virtualKeyCode, ToModifiers(controlKeyState), (char)character);
 
     public bool TryTranslateMouse(int row,
         int column,
@@ -87,23 +82,23 @@ internal sealed class WindowsInputTranslator
         _ => MouseButton.None,
     };
 
-    private static ConsoleModifiers ToModifiers(uint state)
+    private static KeyModifiers ToModifiers(uint state)
     {
-        var modifiers = default(ConsoleModifiers);
+        var modifiers = default(KeyModifiers);
 
         if ((state & ShiftPressed) != 0)
         {
-            modifiers |= ConsoleModifiers.Shift;
+            modifiers |= KeyModifiers.Shift;
         }
 
         if ((state & (LeftAltPressed | RightAltPressed)) != 0)
         {
-            modifiers |= ConsoleModifiers.Alt;
+            modifiers |= KeyModifiers.Alt;
         }
 
         if ((state & (LeftControlPressed | RightControlPressed)) != 0)
         {
-            modifiers |= ConsoleModifiers.Control;
+            modifiers |= KeyModifiers.Control;
         }
 
         return modifiers;

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -117,5 +118,5 @@ public sealed class BreakingView : IArlecchinoView
         throw new InvalidOperationException(DrawFailure);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => throw new InvalidOperationException(HandleFailure);
+    public ViewRoute Handle(KeyPress key) => throw new InvalidOperationException(HandleFailure);
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Arlecchino.Diagnostics;
+using Arlecchino.Input;
 using Arlecchino.Tests.Views;
 using Xunit;
 
@@ -20,10 +21,10 @@ public sealed class LogOverlayTests
 
         Assert.DoesNotContain("hello from the log", app.Frame(), StringComparison.Ordinal);
 
-        app.Press(ConsoleKey.L, control: true);
+        app.Press(ConsoleKey.L, KeyModifiers.Control);
         Assert.Contains("hello from the log", app.Frame(), StringComparison.Ordinal);
 
-        app.Press(ConsoleKey.L, control: true);
+        app.Press(ConsoleKey.L, KeyModifiers.Control);
         Assert.DoesNotContain("hello from the log", app.Frame(), StringComparison.Ordinal);
     }
 
@@ -35,7 +36,7 @@ public sealed class LogOverlayTests
         app.Navigator.Apply(ViewKind.Breaking);
         app.Frame();
 
-        app.Press(ConsoleKey.L, control: true);
+        app.Press(ConsoleKey.L, KeyModifiers.Control);
         Assert.Contains("fail", app.Frame(), StringComparison.Ordinal);
     }
 
@@ -49,7 +50,7 @@ public sealed class LogOverlayTests
             Log(app, LogLevel.Information, $"line {i}");
         }
 
-        app.Press(ConsoleKey.L, control: true);
+        app.Press(ConsoleKey.L, KeyModifiers.Control);
         Assert.Contains("line 59", app.Frame(), StringComparison.Ordinal);
 
         for (var press = 0; press < 30; press++)
@@ -69,7 +70,7 @@ public sealed class LogOverlayTests
         using var app = new TestApplication();
         Log(app, LogLevel.Warning, "something odd");
 
-        app.Press(ConsoleKey.L, control: true);
+        app.Press(ConsoleKey.L, KeyModifiers.Control);
         app.Press(ConsoleKey.Backspace);
 
         Assert.Empty(app.Services.GetRequiredService<LogBuffer>().Snapshot());

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -109,7 +110,7 @@ public sealed class ScopedView : IArlecchinoView, IDisposable
 
     public void Draw() => _surface.AppendLine("scoped", Theme.Default);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
     public void Dispose() => DisposedBeforeProbe = !Probe.IsDisposed;
 }

@@ -5,14 +5,14 @@ namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
 /// The palette in use, reachable from anywhere that draws. Views pick a role here rather than a
-/// colour, so swapping <see cref="Palette"/> restyles the whole application, chrome included.
+/// color, so swapping <see cref="Palette"/> restyles the whole application, chrome included.
 /// </summary>
 public static class Theme
 {
     private static readonly string SwappingPalette = FrameMembers.Of(typeof(Theme), nameof(Palette));
 
     /// <summary>
-    /// The colours behind the roles. Assigned from <c>ArlecchinoOptions</c> when the container resolves
+    /// The colors behind the roles. Assigned from <c>ArlecchinoOptions</c> when the container resolves
     /// them; set it directly when drawing without a host.
     ///
     /// This is process-wide on purpose — it is what lets a view write <c>Theme.Header</c> with no

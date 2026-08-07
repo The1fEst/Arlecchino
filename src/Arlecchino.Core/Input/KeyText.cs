@@ -4,8 +4,8 @@ namespace Arlecchino.Input;
 
 /// <summary>
 /// Turns a key press into the character it should type. Take it as a constructor parameter instead
-/// of reading <c>ConsoleKeyInfo.KeyChar</c> yourself — that is what keeps filters and shortcuts
-/// working on a non-latin layout.
+/// of reading <c>KeyPress.Character</c> yourself — that is what keeps filters and shortcuts working
+/// on a non-latin layout.
 /// </summary>
 public sealed class KeyText
 {
@@ -38,19 +38,19 @@ public sealed class KeyText
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>The character to insert, or <c>null</c>.</returns>
-    public char? Resolve(ConsoleKeyInfo key)
+    public char? Resolve(KeyPress key)
     {
         if (_mode == TextInputMode.ByPosition)
         {
             return ResolveByPhysicalKey(key);
         }
 
-        return key.KeyChar != '\0' && !char.IsControl(key.KeyChar) ? key.KeyChar : ResolveByPhysicalKey(key);
+        return key.Character != '\0' && !char.IsControl(key.Character) ? key.Character : ResolveByPhysicalKey(key);
     }
 
-    private static char? ResolveByPhysicalKey(ConsoleKeyInfo key)
+    private static char? ResolveByPhysicalKey(KeyPress key)
     {
-        var shift = key.Modifiers.HasFlag(ConsoleModifiers.Shift);
+        var shift = key.Modifiers.HasFlag(KeyModifiers.Shift);
 
         if (key.Key is >= ConsoleKey.A and <= ConsoleKey.Z)
         {

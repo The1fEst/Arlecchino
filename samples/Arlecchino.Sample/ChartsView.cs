@@ -115,7 +115,7 @@ public sealed class ChartsView : IArlecchinoView
 
     public void Draw() => _layout.Draw(_surface.Content);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) =>
+    public ViewRoute Handle(KeyPress key) =>
         key.Key == ConsoleKey.Escape ? ViewKind.Default : ViewRoute.None;
 
     public ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;

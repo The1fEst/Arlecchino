@@ -89,7 +89,7 @@ public sealed class WidgetsView : IArlecchinoView
         _status.Draw(footer.Rows(2, 1));
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         switch (key.Key)
         {

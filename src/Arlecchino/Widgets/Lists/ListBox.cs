@@ -34,11 +34,11 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     /// <summary>Turns an item into its row of text. Longer text is truncated by column, not by character.</summary>
     public required Func<T, string> Render { get; init; }
 
-    /// <summary>Colours an item. Ignored for the selected row, which has to stand out.</summary>
+    /// <summary>Colors an item. Ignored for the selected row, which has to stand out.</summary>
     public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
-    /// Draws a row itself, for a list whose rows are not one colour: a file name beside a size beside
+    /// Draws a row itself, for a list whose rows are not one color: a file name beside a size beside
     /// a date, each in its own. Given one row of the list to fill and told whether the cursor is on it;
     /// <see cref="Render"/> and <see cref="ItemStyle"/> are not consulted when this is set, and what is
     /// left unwritten keeps whatever was behind it.
@@ -65,7 +65,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
 
     /// <summary>
     /// Draws the rows around the selection and remembers where they landed, which is what lets clicks
-    /// and wheel events be resolved afterwards. The list fills whatever it is given, so nothing is left
+    /// and wheel events be resolved afterward. The list fills whatever it is given, so nothing is left
     /// underneath it.
     /// </summary>
     /// <param name="region">Where to draw.</param>
@@ -121,7 +121,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     /// <summary>Moves the selection or confirms it.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What became of the key, including a route when confirming navigates.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key)
+    public FocusResult Handle(KeyPress key)
     {
         if (_keymap.MoveUp.Matches(key))
         {

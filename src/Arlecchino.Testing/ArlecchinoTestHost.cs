@@ -14,8 +14,8 @@ namespace Arlecchino.Testing;
 
 /// <summary>
 /// A whole application wired up for a test: real services, a terminal in memory, and no loop running
-/// in the background. Frames are drawn when asked for rather than on a timer, so a test presses keys
-/// and then looks at what would be on screen, with nothing to wait for and nothing to race against.
+/// in the background. Frames are drawn when asked for rather than on a timer, so a test presses keys and
+/// then looks at what the screen would be showing, with nothing to wait for and nothing to race against.
 /// </summary>
 public sealed class ArlecchinoTestHost : IDisposable
 {
@@ -23,9 +23,9 @@ public sealed class ArlecchinoTestHost : IDisposable
 
     /// <summary>
     /// Builds the application. The minimum size is dropped to one cell, so a test can work in a window
-    /// far smaller than a real one without hitting the too-small notice. Colour is fixed at
+    /// far smaller than a real one without hitting the too-small notice. Color is fixed at
     /// <see cref="ColorSupport.TrueColor"/> so that frames do not change with the environment the test
-    /// runs in — assign <see cref="TerminalCapabilities.Color"/> afterwards to test another level.
+    /// runs in — assign <see cref="TerminalCapabilities.Color"/> afterward to test another level.
     /// </summary>
     /// <param name="width">Columns of the fake terminal.</param>
     /// <param name="height">Rows of the fake terminal.</param>
@@ -63,9 +63,9 @@ public sealed class ArlecchinoTestHost : IDisposable
     public FakeTerminal Terminal { get; }
 
     /// <summary>
-    /// What is on screen after every frame drawn so far. <see cref="FrameLines"/> reads the last frame
-    /// as it was written, which is the whole picture only while frames are written whole; this is the
-    /// picture itself, diffed frames and all.
+    /// What the screen holds after every frame drawn so far. <see cref="FrameLines"/> reads the last frame as
+    /// it was written, which is the whole picture only while frames are written whole; this is the picture
+    /// itself, diffed frames and all.
     /// </summary>
     public ScreenGrid Screen => Terminal.Screen;
 
@@ -90,13 +90,11 @@ public sealed class ArlecchinoTestHost : IDisposable
     /// <summary>Undo history. It is resolved as the host is built, so edits are recorded from the start.</summary>
     public AtomHistory History => _provider.GetRequiredService<AtomHistory>();
 
-    /// <summary>Presses a key, routed exactly as a real one would be.</summary>
+    /// <summary>Presses a key, routed exactly as a real key press is.</summary>
     /// <param name="key">The key.</param>
-    /// <param name="shift">Whether Shift was held.</param>
-    /// <param name="alt">Whether Alt was held.</param>
-    /// <param name="control">Whether Ctrl was held.</param>
-    public void Press(ConsoleKey key, bool shift = false, bool alt = false, bool control = false) =>
-        _provider.GetRequiredService<InputRouter>().ProcessKey(new('\0', key, shift, alt, control));
+    /// <param name="modifiers">What was held with it.</param>
+    public void Press(ConsoleKey key, KeyModifiers modifiers = default) =>
+        _provider.GetRequiredService<InputRouter>().ProcessKey(new(key, modifiers));
 
     /// <summary>
     /// Types text one character at a time. The presses carry a character but no key, which is what a
@@ -108,17 +106,17 @@ public sealed class ArlecchinoTestHost : IDisposable
         var router = _provider.GetRequiredService<InputRouter>();
         foreach (var character in text)
         {
-            router.ProcessKey(new(character, default, false, false, false));
+            router.ProcessKey(new(character));
         }
     }
 
     /// <summary>
     /// Routes a key exactly as the terminal reported it, character and all. <see cref="Press"/> and
-    /// <see cref="Type"/> cover what a test writes by hand; this is for one played back from a
-    /// <see cref="SessionTape"/>, where the character and the key both matter.
+    /// <see cref="Type"/> cover what a test writes by hand. This one is for a key played back from
+    /// a <see cref="SessionTape"/>, where the character and the key both matter.
     /// </summary>
     /// <param name="key">The key as the terminal reported it.</param>
-    public void Send(ConsoleKeyInfo key) => _provider.GetRequiredService<InputRouter>().ProcessKey(key);
+    public void Send(KeyPress key) => _provider.GetRequiredService<InputRouter>().ProcessKey(key);
 
     /// <summary>Routes a mouse event exactly as the terminal reported it.</summary>
     /// <param name="mouse">The event.</param>
@@ -146,7 +144,7 @@ public sealed class ArlecchinoTestHost : IDisposable
                 new(down ? MouseAction.ScrolledDown : MouseAction.ScrolledUp, MouseButton.None, row, column, default));
 
     /// <summary>
-    /// Feeds raw characters through the reader that recognises escape sequences. This is the way to
+    /// Feeds raw characters through the reader that recognizes escape sequences. This is the way to
     /// test what a real terminal sends for arrows, function keys and mouse reports.
     /// </summary>
     /// <param name="sequence">The characters, escapes included.</param>
@@ -167,7 +165,7 @@ public sealed class ArlecchinoTestHost : IDisposable
 
     /// <summary>
     /// Moves the clock forward and runs whatever fell due, exactly as the frame loop would. The frame is
-    /// not drawn by this — ask for one afterwards.
+    /// not drawn by this — ask for one afterward.
     /// </summary>
     /// <param name="amount">How far to move the clock.</param>
     public void Advance(TimeSpan amount)
@@ -177,12 +175,12 @@ public sealed class ArlecchinoTestHost : IDisposable
     }
 
     /// <summary>
-    /// Draws a frame the way a running application does — as the difference from the last one — and
-    /// returns what is on screen afterwards, styling and all stripped away.
+    /// Draws a frame the way a running application does — as the difference from the last one — and returns
+    /// what the screen holds afterward, styling and all stripped away.
     ///
-    /// The frame written and the screen returned are not the same thing, and that is the point: an
-    /// idle frame writes nothing at all, and a frame that changed one cell writes one cell. Reading
-    /// the screen is what lets a test assert on the whole picture regardless.
+    /// The frame written, and the screen returned differ, and that is the point: an idle frame writes nothing
+    /// at all, and a frame that changed one cell writes one cell. Reading the screen is what lets a test
+    /// assert on the whole picture regardless.
     /// </summary>
     /// <returns>The screen.</returns>
     public string Frame()
@@ -194,7 +192,7 @@ public sealed class ArlecchinoTestHost : IDisposable
         return string.Join("\r\n", Terminal.Screen.Lines());
     }
 
-    /// <summary>Draws a frame and returns the rows on screen afterwards.</summary>
+    /// <summary>Draws a frame and returns the rows on screen afterward.</summary>
     /// <returns>One string per row.</returns>
     public string[] FrameLines()
     {
@@ -203,7 +201,7 @@ public sealed class ArlecchinoTestHost : IDisposable
     }
 
     /// <summary>
-    /// Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed
+    /// Draws a frame whole and returns the color sequences in it, in order. Whole rather than diffed
     /// on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences
     /// in it are the ones that changed rather than the ones the frame is drawn in.
     /// </summary>

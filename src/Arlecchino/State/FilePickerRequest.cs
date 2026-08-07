@@ -17,7 +17,7 @@ public sealed record FilePickerPlace(string Name, string Path, string Icon = "")
 /// <param name="Title">Heading shown above the listing.</param>
 /// <param name="PickFolder">Whether a folder is being chosen rather than a file.</param>
 /// <param name="InitialPath">Where browsing starts.</param>
-/// <param name="ReturnView">The view to return to, whether or not anything was picked.</param>
+/// <param name="ReturnView">The view to return to, whether anything was picked.</param>
 /// <param name="OnPicked">Called with the full path that was chosen.</param>
 public sealed record FilePickerRequest(
     string Title,

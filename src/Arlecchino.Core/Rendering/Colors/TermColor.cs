@@ -4,23 +4,23 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// A style built from the sixteen-colour palette. This is what the roles on <see cref="Theme"/> are
-/// made of and what chrome should use, because those colours follow the terminal's own theme.
+/// A style built from the sixteen-color palette. This is what the roles on <see cref="Theme"/> are
+/// made of and what chrome should use, because those colors follow the terminal's own theme.
 /// </summary>
 public sealed class TermColor : IArlecchinoColor
 {
     private string? _ansi;
     private ColorSupport _ansiSupport;
 
-    /// <summary>Colour of the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
+    /// <summary>Color of the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
     public TerminalColor Foreground { get; init; } = TerminalColor.Default;
 
-    /// <summary>Colour behind the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
+    /// <summary>Color behind the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
     public TerminalColor Background { get; init; } = TerminalColor.Default;
 
     /// <summary>
-    /// An exact colour for the glyphs, used where the terminal can do 24-bit. Elsewhere
-    /// <see cref="Foreground"/> is drawn instead, so a palette written in brand colours still says
+    /// An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere,
+    /// <see cref="Foreground"/> is drawn instead, so a palette written in brand colors still says
     /// what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the
     /// author chose rather than the nearest one arithmetic found.
     /// </summary>
@@ -34,7 +34,7 @@ public sealed class TermColor : IArlecchinoColor
 
     /// <summary>
     /// The escape sequence for this style, built once and rebuilt only if
-    /// <see cref="TerminalCapabilities.Color"/> changes. Empty when colour is turned off.
+    /// <see cref="TerminalCapabilities.Color"/> changes. Empty when color is turned off.
     /// </summary>
     public string Ansi
     {

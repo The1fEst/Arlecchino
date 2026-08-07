@@ -15,36 +15,36 @@ public sealed class KeymapTests
     [Fact]
     public void BindingMatchesOnlyTheExactModifiers()
     {
-        var binding = new KeyBinding(ConsoleKey.S, ConsoleModifiers.Control);
+        var binding = new KeyBinding(ConsoleKey.S, KeyModifiers.Control);
 
-        Assert.True(binding.Matches(new('\0', ConsoleKey.S, false, false, true)));
-        Assert.False(binding.Matches(new('\0', ConsoleKey.S, false, false, false)));
-        Assert.False(binding.Matches(new('\0', ConsoleKey.S, true, false, true)));
+        Assert.True(binding.Matches(new(ConsoleKey.S, KeyModifiers.Control)));
+        Assert.False(binding.Matches(new(ConsoleKey.S)));
+        Assert.False(binding.Matches(new(ConsoleKey.S, KeyModifiers.Control | KeyModifiers.Shift)));
     }
 
     [Fact]
     public void BindingReadsAsTheKeyItIs()
     {
-        Assert.Equal("Ctrl+S", new KeyBinding(ConsoleKey.S, ConsoleModifiers.Control).ToString());
-        Assert.Equal("Alt+←", new KeyBinding(ConsoleKey.LeftArrow, ConsoleModifiers.Alt).ToString());
+        Assert.Equal("Ctrl+S", new KeyBinding(ConsoleKey.S, KeyModifiers.Control).ToString());
+        Assert.Equal("Alt+←", new KeyBinding(ConsoleKey.LeftArrow, KeyModifiers.Alt).ToString());
         Assert.Equal("Esc", new KeyBinding(ConsoleKey.Escape).ToString());
         Assert.Equal("Ctrl+Alt+Shift+F5",
             new KeyBinding(ConsoleKey.F5,
-                ConsoleModifiers.Control | ConsoleModifiers.Alt | ConsoleModifiers.Shift).ToString());
+                KeyModifiers.Control | KeyModifiers.Alt | KeyModifiers.Shift).ToString());
     }
 
     [Fact]
     public void RemappedCancelIsUsedByModals()
     {
         using var app = new TestApplication(configure: static builder =>
-            builder.UseKeymap(new() { Cancel = new(ConsoleKey.Q, ConsoleModifiers.Control) }));
+            builder.UseKeymap(new() { Cancel = new(ConsoleKey.Q, KeyModifiers.Control) }));
 
         app.State.RequestText("Name", "x", null, static _ => { });
 
         app.Press(ConsoleKey.Escape);
         Assert.NotNull(app.State.Modal);
 
-        app.Press(ConsoleKey.Q, control: true);
+        app.Press(ConsoleKey.Q, KeyModifiers.Control);
         Assert.Null(app.State.Modal);
     }
 
@@ -55,7 +55,7 @@ public sealed class KeymapTests
             builder.UseKeymap(new()
             {
                 Back = new(ConsoleKey.Backspace),
-                Forward = new(ConsoleKey.Backspace, ConsoleModifiers.Shift),
+                Forward = new(ConsoleKey.Backspace, KeyModifiers.Shift),
             }));
 
         app.Press(ConsoleKey.O);
@@ -64,7 +64,7 @@ public sealed class KeymapTests
         app.Press(ConsoleKey.Backspace);
         Assert.Equal(ViewKind.Probe, app.Navigator.CurrentRoute);
 
-        app.Press(ConsoleKey.Backspace, shift: true);
+        app.Press(ConsoleKey.Backspace, KeyModifiers.Shift);
         Assert.Equal(ViewKind.Other, app.Navigator.CurrentRoute);
     }
 
@@ -91,7 +91,7 @@ public sealed class KeymapTests
         app.Press(ConsoleKey.S);
         Assert.Equal("", app.State.Output);
 
-        app.Press(ConsoleKey.S, control: true);
+        app.Press(ConsoleKey.S, KeyModifiers.Control);
         Assert.Equal("saved", app.State.Output);
     }
 
@@ -100,7 +100,7 @@ public sealed class KeymapTests
     {
         using var app = new TestApplication(configure: static builder => builder.AddCommand<SaveCommand>());
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
 
         Assert.Contains("Ctrl+S", app.Frame(), StringComparison.Ordinal);
     }
@@ -129,7 +129,7 @@ public sealed class SaveCommand : IArlecchinoCommand
         _state = state;
     }
 
-    public KeyBinding Binding => new(ConsoleKey.S, ConsoleModifiers.Control);
+    public KeyBinding Binding => new(ConsoleKey.S, KeyModifiers.Control);
 
     public string Icon => "▪";
 

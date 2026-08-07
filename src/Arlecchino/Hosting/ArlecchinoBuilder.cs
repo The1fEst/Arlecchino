@@ -206,7 +206,7 @@ public sealed class ArlecchinoBuilder
     /// <param name="lifetime">How long it stays in the list; omit to keep the default.</param>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseNotifications(
-        ConsoleKeyInfo? key = null,
+        KeyPress? key = null,
         TimeSpan? timeout = null,
         TimeSpan? lifetime = null)
     {
@@ -214,7 +214,7 @@ public sealed class ArlecchinoBuilder
 
         KeyBinding binding = key is { } chosen
             ? new(chosen.Key, chosen.Modifiers)
-            : new(ConsoleKey.N, ConsoleModifiers.Control);
+            : new(ConsoleKey.N, KeyModifiers.Control);
 
         _options.Keymap = _options.Keymap with { Notifications = binding };
 
@@ -251,8 +251,8 @@ public sealed class ArlecchinoBuilder
         return this;
     }
 
-    /// <summary>Replaces the colours. What actually reaches the screen still depends on what the terminal supports.</summary>
-    /// <param name="palette">The colours to use.</param>
+    /// <summary>Replaces the colors. What actually reaches the screen still depends on what the terminal supports.</summary>
+    /// <param name="palette">The colors to use.</param>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseTheme(ThemePalette palette)
     {
@@ -261,7 +261,7 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Replaces the wording the framework itself shows. This is the only way it is localised: nothing
+    /// Replaces the wording the framework itself shows. This is the only way it is localized: nothing
     /// is looked up from resources.
     /// </summary>
     /// <param name="strings">The wording to use.</param>
@@ -307,7 +307,7 @@ public sealed class ArlecchinoBuilder
 
     /// <summary>
     /// Stops the application from taking over the terminal when the host starts. Everything stays
-    /// registered, so a test can drive the loop itself frame by frame.
+    /// registered. A test can then drive the loop itself, frame by frame.
     /// </summary>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder WithoutHostedService()

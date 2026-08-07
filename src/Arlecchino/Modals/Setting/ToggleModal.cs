@@ -24,7 +24,7 @@ public sealed class ToggleModal : Modal
     public override void Draw(ModalFrame frame) => frame.Values.Toggle(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    public override void Handle(ModalFrame frame, KeyPress key)
     {
         ArgumentNullException.ThrowIfNull(frame);
 

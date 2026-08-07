@@ -12,10 +12,10 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Widgets.Lists;
 
 /// <summary>One column of a table: its heading, what it shows and how it behaves.</summary>
-/// <typeparam name="T">The type of row the column reads from.</typeparam>
+/// <typeparam name="T">The kind of row the column reads from.</typeparam>
 public sealed class TableColumn<T>
 {
-    /// <summary>The heading, as a delegate so it can be localised.</summary>
+    /// <summary>The heading, as a delegate so it can be localized.</summary>
     public required Func<string> Header { get; init; }
 
     /// <summary>Reads the cell for one row.</summary>
@@ -67,7 +67,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     /// <summary>What confirming a row does. Returning a route navigates.</summary>
     public Func<T, ViewRoute>? OnActivate { get; init; }
 
-    /// <summary>Colours a whole row. Ignored for the selected one.</summary>
+    /// <summary>Colors a whole row. Ignored for the selected one.</summary>
     public Func<T, IArlecchinoColor>? ItemStyle
     {
         get => _rows.ItemStyle;
@@ -147,7 +147,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     /// <summary>Moves the selection or confirms it. Sorting is not bound to a key; call <see cref="SortBy"/>.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What became of the key.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key) => _rows.Handle(key);
+    public FocusResult Handle(KeyPress key) => _rows.Handle(key);
 
     /// <summary>Scrolls and selects. Clicks on the heading are not routed here.</summary>
     /// <param name="mouse">The event that arrived.</param>

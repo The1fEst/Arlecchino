@@ -131,7 +131,7 @@ public sealed class ArlecchinoStrings
     public Func<string> ModalTimeHints { get; set; } =
         static () => "←→ — field   ↑↓ — change   digits — type   Enter — confirm   Esc — cancel";
 
-    /// <summary>Footer of the colour picker.</summary>
+    /// <summary>Footer of the color picker.</summary>
     public Func<string> ModalColorHints { get; set; } =
         static () => "↑↓ — channel   ←→ — adjust   Enter — pick   Esc — cancel";
 
@@ -304,7 +304,7 @@ public sealed class ArlecchinoStrings
         /// <summary>Legend entry for going to the parent folder.</summary>
         public Func<string> HintUp { get; set; } = static () => "up";
 
-        /// <summary>Legend entry for switching to the places sidebar.</summary>
+        /// <summary>Legend entry for switching to the sidebar of places.</summary>
         public Func<string> HintPlaces { get; set; } = static () => "places";
 
         /// <summary>Legend entry for opening a folder while picking folders.</summary>
@@ -316,7 +316,7 @@ public sealed class ArlecchinoStrings
         /// <summary>Legend entry for filtering by typing.</summary>
         public Func<string> HintFilter { get; set; } = static () => "filter";
 
-        /// <summary>Legend entry for picking the folder that is currently open.</summary>
+        /// <summary>Legend entry for picking the folder that is open.</summary>
         public Func<string> HintPickCurrentFolder { get; set; } = static () => "pick this folder";
 
         /// <summary>Legend entry for leaving without picking anything.</summary>

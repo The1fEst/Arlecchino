@@ -10,7 +10,7 @@ namespace Arlecchino.Rendering.Text;
 /// where two of them meet the shared cell becomes the glyph that joins them — <c>┬</c>, <c>├</c>,
 /// <c>┼</c> — instead of one line drawn over the other.
 ///
-/// <see cref="SurfaceRegion.Border"/> draws a box that knows nothing of its neighbours, which is
+/// <see cref="SurfaceRegion.Border"/> draws a box that knows nothing of its neighbors, which is
 /// right for a box standing on its own and wrong for panes that touch: two of those side by side put
 /// two verticals where the eye expects one. Recording them here instead costs one object per frame
 /// and gives the drawing of a window manager.
@@ -76,7 +76,7 @@ public sealed class Joinery
         return new(region.Surface, region.Left + 1, region.Top + 1, region.Width - 2, region.Height - 2);
     }
 
-    /// <summary>Records a rule across a region, for a divider that should join the box around it.</summary>
+    /// <summary>Records a rule across a region, for a divider that should join the surrounding box.</summary>
     /// <param name="region">The region to cross.</param>
     /// <param name="row">Which of its rows, counted from its top.</param>
     /// <param name="style">How it is drawn; the style given to <see cref="Draw"/> when omitted.</param>
@@ -91,7 +91,7 @@ public sealed class Joinery
         Vertical(region.Left + column, region.Top, region.Bottom - 1, style);
 
     /// <summary>
-    /// Paints everything recorded, resolving each cell into the glyph its neighbours ask for, and
+    /// Paints everything recorded, resolving each cell into the glyph its neighbors ask for, and
     /// then writes the titles over the top edges they belong to. Anything falling outside the region
     /// is left undrawn rather than clamped into it.
     /// </summary>

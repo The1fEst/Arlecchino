@@ -95,7 +95,7 @@ public sealed class PaneTree
     /// </code>
     ///
     /// What comes back is an ordinary <see cref="FocusRing"/>, so anything focusable that lives
-    /// outside the tree is added to it afterwards, and lands at the end of the walk.
+    /// outside the tree is added to it afterward, and lands at the end of the walk.
     /// </summary>
     /// <param name="keymap">Where the keys that move the focus come from.</param>
     /// <returns>A ring holding the panes that take the focus.</returns>
@@ -125,10 +125,9 @@ public sealed class PaneTree
     }
 
     /// <summary>
-    /// A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the
-    /// box, and the box is drawn <c>Theme.Active</c> while the widget holds the focus and
-    /// <c>Theme.Info</c> while it does not — so a screen of panes shows where the cursor is without
-    /// the view saying anything about it.
+    /// A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box.
+    /// The box itself is drawn <c>Theme.Active</c> while the widget holds the focus and <c>Theme.Info</c> while
+    /// it does not, so a screen of panes shows where the cursor is without the view saying anything about it.
     /// </summary>
     /// <param name="widget">What goes in the pane.</param>
     /// <param name="title">
@@ -293,7 +292,7 @@ public sealed class PaneTree
     /// <summary>
     /// Pulls every boxed pane onto the edge of the boxed pane before it, so that two of them touching
     /// share one line rather than drawing two side by side. Only panes in a box take part: one without
-    /// would lose a column of what it draws to a neighbour's border.
+    /// would lose a column of what it draws to a neighbor's border.
     /// </summary>
     /// <param name="placed">Where each pane landed, in the order the tree lays them out.</param>
     private static void Share(List<(PaneTree Pane, SurfaceRegion Region)> placed)

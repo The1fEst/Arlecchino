@@ -159,7 +159,7 @@ public sealed class WidgetContractTests
 
         Assert.True(badge.IsFocused);
         Assert.Same(badge, ring.Current);
-        Assert.Equal(FocusResult.Handled, ring.Current!.Handle(new('\r', ConsoleKey.Enter, false, false, false)));
+        Assert.Equal(FocusResult.Handled, ring.Current!.Handle(new(ConsoleKey.Enter, default, '\r')));
     }
 
     private sealed class OneRowWidget : IArlecchinoWidget
@@ -190,7 +190,7 @@ public sealed class WidgetContractTests
             return region.Rows(1, region.Height - 1);
         }
 
-        public FocusResult Handle(ConsoleKeyInfo key) =>
+        public FocusResult Handle(KeyPress key) =>
             _keymap.Confirm.Matches(key) ? FocusResult.Handled : FocusResult.Ignored;
 
         public FocusResult HandleMouse(MouseEvent mouse) =>

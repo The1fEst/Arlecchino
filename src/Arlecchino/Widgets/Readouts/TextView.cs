@@ -41,7 +41,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
     /// <summary>The text shown. Line breaks are kept; long lines wrap on spaces.</summary>
     public string Text { get; set; } = "";
 
-    /// <summary>Colour of the text. The theme's default when left alone.</summary>
+    /// <summary>Color of the text. The theme's default when left alone.</summary>
     public IArlecchinoColor? Style { get; set; }
 
     /// <summary>Whether a scroll bar is drawn when the text does not fit.</summary>
@@ -90,7 +90,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
     /// <summary>Scrolls the text.</summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>Whether the view took it.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key) => _pane.Handle(key);
+    public FocusResult Handle(KeyPress key) => _pane.Handle(key);
 
     /// <summary>Scrolls with the wheel while the pointer is over the text.</summary>
     /// <param name="mouse">The event that arrived.</param>

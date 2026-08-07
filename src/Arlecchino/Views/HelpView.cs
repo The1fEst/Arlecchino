@@ -57,9 +57,9 @@ internal sealed class HelpView : IArlecchinoView
     private sealed record Row(string Text, bool IsHeading);
 
     /// <summary>
-    /// Draws the screen. The keys that work everywhere and the keys of the screen this was opened
-    /// from stand side by side when there is width for it, with the application's commands in a band
-    /// underneath — two lists that are read against each other, not one list to be scrolled through.
+    /// Draws the screen. The keys that work everywhere and the keys of the screen this was opened from stand
+    /// side by side when there is width for it, with the application's commands in a band underneath. They are
+    /// two lists to be read against each other, not one list to be scrolled through.
     /// </summary>
     public void Draw()
     {
@@ -77,7 +77,7 @@ internal sealed class HelpView : IArlecchinoView
         _pane.Draw(rest);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (!_keymap.Cancel.Matches(key) && !_keymap.Help.Matches(key))
         {

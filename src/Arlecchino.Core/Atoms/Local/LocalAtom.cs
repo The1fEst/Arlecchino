@@ -8,13 +8,13 @@ namespace Arlecchino.Atoms.Local;
 /// user did not author and would not expect to travel back through. It notifies and repaints exactly
 /// as a <see cref="TrackedAtom{T}"/> does.
 /// </summary>
-/// <typeparam name="T">Type of the value held.</typeparam>
+/// <typeparam name="T">The kind of value held.</typeparam>
 public sealed class LocalAtom<T> : Atom<T>
 {
     /// <summary>Creates an atom holding a starting value, outside the undo history.</summary>
     /// <param name="initial">The value to start with.</param>
     /// <param name="comparer">
-    /// How to decide that a write changed nothing; the default comparer for <typeparamref name="T"/>
+    /// How to decide that writing to it changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
     public LocalAtom(T initial, IEqualityComparer<T>? comparer = null)

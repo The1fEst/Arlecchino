@@ -140,12 +140,12 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
-        var cyrillicQ = new ConsoleKeyInfo('й', ConsoleKey.Q, false, false, false);
+        var cyrillicQ = new KeyPress(ConsoleKey.Q, default, 'й');
 
         Assert.Equal('q', byPosition.Resolve(cyrillicQ));
         Assert.Equal('й', native.Resolve(cyrillicQ));
-        Assert.Equal('Q', byPosition.Resolve(new('Й', ConsoleKey.Q, true, false, false)));
-        Assert.Null(byPosition.Resolve(new('\0', ConsoleKey.F5, false, false, false)));
+        Assert.Equal('Q', byPosition.Resolve(new(ConsoleKey.Q, KeyModifiers.Shift, 'Й')));
+        Assert.Null(byPosition.Resolve(new(ConsoleKey.F5)));
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
-        var moved = new ConsoleKeyInfo('a', ConsoleKey.Q, false, false, false);
+        var moved = new KeyPress(ConsoleKey.Q, default, 'a');
 
         Assert.Equal('q', byPosition.Resolve(moved));
         Assert.Equal('a', native.Resolve(moved));
@@ -164,7 +164,7 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
-        var unmapped = new ConsoleKeyInfo('€', ConsoleKey.Oem8, false, false, false);
+        var unmapped = new KeyPress(ConsoleKey.Oem8, default, '€');
 
         Assert.Null(byPosition.Resolve(unmapped));
         Assert.Equal('€', native.Resolve(unmapped));
@@ -175,11 +175,11 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
 
-        Assert.Equal(' ', byPosition.Resolve(new('\0', ConsoleKey.Spacebar, false, false, false)));
-        Assert.Equal('7', byPosition.Resolve(new('\0', ConsoleKey.D7, false, false, false)));
-        Assert.Equal('&', byPosition.Resolve(new('\0', ConsoleKey.D7, true, false, false)));
-        Assert.Equal('3', byPosition.Resolve(new('\0', ConsoleKey.NumPad3, false, false, false)));
-        Assert.Equal(';', byPosition.Resolve(new('\0', ConsoleKey.Oem1, false, false, false)));
-        Assert.Equal('?', byPosition.Resolve(new('\0', ConsoleKey.Oem2, true, false, false)));
+        Assert.Equal(' ', byPosition.Resolve(new(ConsoleKey.Spacebar)));
+        Assert.Equal('7', byPosition.Resolve(new(ConsoleKey.D7)));
+        Assert.Equal('&', byPosition.Resolve(new(ConsoleKey.D7, KeyModifiers.Shift)));
+        Assert.Equal('3', byPosition.Resolve(new(ConsoleKey.NumPad3)));
+        Assert.Equal(';', byPosition.Resolve(new(ConsoleKey.Oem1)));
+        Assert.Equal('?', byPosition.Resolve(new(ConsoleKey.Oem2, KeyModifiers.Shift)));
     }
 }

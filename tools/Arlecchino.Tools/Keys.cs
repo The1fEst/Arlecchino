@@ -160,14 +160,14 @@ internal static class Keys
     /// <param name="folder">Where the listener writes.</param>
     /// <param name="presses">The keys to press.</param>
     /// <returns>The presses the console reported for each key.</returns>
-    private static Dictionary<string, ConsoleKeyInfo[]> Handed(string folder, IEnumerable<Press> presses)
+    private static Dictionary<string, KeyPress[]> Handed(string folder, IEnumerable<Press> presses)
     {
         var heard = Path.Combine(folder, "heard");
 
         Open(Self(), "keys", "--listen", heard);
         Await(() => File.Exists(heard), "the listener never started");
 
-        var handed = new Dictionary<string, ConsoleKeyInfo[]>(StringComparer.Ordinal);
+        var handed = new Dictionary<string, KeyPress[]>(StringComparer.Ordinal);
 
         foreach (var press in presses)
         {
@@ -183,18 +183,16 @@ internal static class Keys
         return handed;
     }
 
-    private static ConsoleKeyInfo[] Parsed(string lines) =>
+    private static KeyPress[] Parsed(string lines) =>
     [
         .. lines
             .Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(static line => line.Split('\t'))
             .Where(static parts => parts.Length == 3)
-            .Select(static parts => new ConsoleKeyInfo(
-                (char)int.Parse(parts[1], CultureInfo.InvariantCulture),
+            .Select(static parts => new KeyPress(
                 (ConsoleKey)int.Parse(parts[0], CultureInfo.InvariantCulture),
-                ((ConsoleModifiers)int.Parse(parts[2], CultureInfo.InvariantCulture) & ConsoleModifiers.Shift) != 0,
-                ((ConsoleModifiers)int.Parse(parts[2], CultureInfo.InvariantCulture) & ConsoleModifiers.Alt) != 0,
-                ((ConsoleModifiers)int.Parse(parts[2], CultureInfo.InvariantCulture) & ConsoleModifiers.Control) != 0)),
+                (KeyModifiers)int.Parse(parts[2], CultureInfo.InvariantCulture),
+                (char)int.Parse(parts[1], CultureInfo.InvariantCulture))),
     ];
 
     /// <summary>Presses one key and reads whatever the pane wrote down because of it.</summary>
@@ -391,7 +389,7 @@ internal static class Keys
         yield return new("DC", ConsoleKey.Delete);
         yield return new("BSpace", ConsoleKey.Backspace);
         yield return new("Tab", ConsoleKey.Tab);
-        yield return new("BTab", ConsoleKey.Tab, ConsoleModifiers.Shift);
+        yield return new("BTab", ConsoleKey.Tab, KeyModifiers.Shift);
         yield return new("Enter", ConsoleKey.Enter);
         yield return new("Escape", ConsoleKey.Escape);
 
@@ -400,22 +398,22 @@ internal static class Keys
             yield return new($"F{number}", ConsoleKey.F1 + number - 1);
         }
 
-        yield return new("S-Up", ConsoleKey.UpArrow, ConsoleModifiers.Shift);
-        yield return new("C-Up", ConsoleKey.UpArrow, ConsoleModifiers.Control);
-        yield return new("M-Up", ConsoleKey.UpArrow, ConsoleModifiers.Alt);
-        yield return new("C-Left", ConsoleKey.LeftArrow, ConsoleModifiers.Control);
-        yield return new("C-Right", ConsoleKey.RightArrow, ConsoleModifiers.Control);
-        yield return new("C-Home", ConsoleKey.Home, ConsoleModifiers.Control);
-        yield return new("C-End", ConsoleKey.End, ConsoleModifiers.Control);
-        yield return new("S-F1", ConsoleKey.F1, ConsoleModifiers.Shift);
+        yield return new("S-Up", ConsoleKey.UpArrow, KeyModifiers.Shift);
+        yield return new("C-Up", ConsoleKey.UpArrow, KeyModifiers.Control);
+        yield return new("M-Up", ConsoleKey.UpArrow, KeyModifiers.Alt);
+        yield return new("C-Left", ConsoleKey.LeftArrow, KeyModifiers.Control);
+        yield return new("C-Right", ConsoleKey.RightArrow, KeyModifiers.Control);
+        yield return new("C-Home", ConsoleKey.Home, KeyModifiers.Control);
+        yield return new("C-End", ConsoleKey.End, KeyModifiers.Control);
+        yield return new("S-F1", ConsoleKey.F1, KeyModifiers.Shift);
 
-        yield return new("M-Escape", ConsoleKey.Escape, ConsoleModifiers.Alt, '\0', true);
+        yield return new("M-Escape", ConsoleKey.Escape, KeyModifiers.Alt, '\0', true);
 
         yield return new("a", ConsoleKey.A, default, 'a');
-        yield return new("Z", ConsoleKey.Z, ConsoleModifiers.Shift, 'Z');
+        yield return new("Z", ConsoleKey.Z, KeyModifiers.Shift, 'Z');
         yield return new("Space", ConsoleKey.Spacebar, default, ' ');
-        yield return new("C-a", ConsoleKey.A, ConsoleModifiers.Control);
-        yield return new("M-a", ConsoleKey.A, ConsoleModifiers.Alt, 'a', true);
+        yield return new("C-a", ConsoleKey.A, KeyModifiers.Control);
+        yield return new("M-a", ConsoleKey.A, KeyModifiers.Alt, 'a', true);
     }
 
     /// <summary>A key to press, and the key an application should be told about when it is.</summary>
@@ -431,7 +429,7 @@ internal static class Keys
     private sealed record Press(
         string Send,
         ConsoleKey Key,
-        ConsoleModifiers Modifiers = default,
+        KeyModifiers Modifiers = default,
         char Character = '\0',
         bool Folded = false)
     {
@@ -455,7 +453,7 @@ internal static class Keys
                 return $"expected {wanted}";
             }
 
-            if (Character != '\0' && got.KeyChar != Character)
+            if (Character != '\0' && got.Character != Character)
             {
                 return $"expected {wanted}";
             }
@@ -463,7 +461,7 @@ internal static class Keys
             return got.Modifiers == Modifiers ? "" : $"expected {wanted}";
         }
 
-        private static string Suffix(ConsoleModifiers modifiers) => modifiers == default ? "" : $"+{modifiers}";
+        private static string Suffix(KeyModifiers modifiers) => modifiers == default ? "" : $"+{modifiers}";
     }
 
     /// <summary>What the reader made of some presses.</summary>
@@ -471,7 +469,7 @@ internal static class Keys
     /// <param name="Pastes">The blocks of pasted text it reported.</param>
     /// <param name="Mice">The mouse events it reported, spelled out.</param>
     private sealed record Heard(
-        IReadOnlyList<ConsoleKeyInfo> Keys,
+        IReadOnlyList<KeyPress> Keys,
         IReadOnlyList<string> Pastes,
         IReadOnlyList<string> Mice)
     {
@@ -487,8 +485,8 @@ internal static class Keys
             return string.Join(", ", parts) is var text && text.Length > 0 ? text : "nothing";
         }
 
-        private static string Spell(ConsoleKeyInfo key) =>
-            key.Key != default ? key.Key.ToString() : $"'{key.KeyChar}'";
+        private static string Spell(KeyPress key) =>
+            key.Key != default ? key.Key.ToString() : $"'{key.Character}'";
     }
 
     /// <summary>
@@ -520,7 +518,7 @@ internal static class Keys
             });
         }
 
-        internal Heard Read(IEnumerable<ConsoleKeyInfo> handed)
+        internal Heard Read(IEnumerable<KeyPress> handed)
         {
             _recorder.Forget();
 
@@ -548,7 +546,7 @@ internal static class Keys
 
     private sealed class Recorder : IArlecchinoView
     {
-        internal List<ConsoleKeyInfo> Keys { get; } = [];
+        internal List<KeyPress> Keys { get; } = [];
 
         internal List<string> Pastes { get; } = [];
 
@@ -565,7 +563,7 @@ internal static class Keys
         {
         }
 
-        public ViewRoute Handle(ConsoleKeyInfo key)
+        public ViewRoute Handle(KeyPress key)
         {
             Keys.Add(key);
 

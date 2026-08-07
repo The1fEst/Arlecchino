@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Telling;
 
@@ -12,14 +13,14 @@ public sealed class MessageModal : Modal
     /// <summary>The message, drawn under the title. Long text wraps to the width of the box.</summary>
     public required string Text { get; init; }
 
-    /// <summary>Called once it is dismissed, for a screen that wants to carry on afterwards.</summary>
+    /// <summary>Called once it is dismissed, for a screen that wants to carry on afterward.</summary>
     public Action? OnClosed { get; init; }
 
     /// <inheritdoc/>
     public override void Draw(ModalFrame frame) => frame.Tells.Message(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    public override void Handle(ModalFrame frame, KeyPress key)
     {
         ArgumentNullException.ThrowIfNull(frame);
 

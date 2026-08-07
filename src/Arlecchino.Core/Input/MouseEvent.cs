@@ -1,5 +1,3 @@
-using System;
-
 namespace Arlecchino.Input;
 
 /// <summary>What the mouse did.</summary>
@@ -52,7 +50,7 @@ public readonly record struct MouseEvent(
     MouseButton Button,
     int Row,
     int Column,
-    ConsoleModifiers Modifiers)
+    KeyModifiers Modifiers)
 {
     /// <summary>Whether this is the left button going down — the usual "click" test.</summary>
     public bool IsLeftClick => Action == MouseAction.Pressed && Button == MouseButton.Left;

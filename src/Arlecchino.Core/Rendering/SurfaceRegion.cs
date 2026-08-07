@@ -7,7 +7,7 @@ namespace Arlecchino.Rendering;
 
 /// <summary>
 /// A rectangle on a <see cref="Surface"/> with its own coordinates and its own clipping: writing
-/// outside it is dropped rather than spilled onto a neighbour. Split a frame into regions instead of
+/// outside it is dropped rather than spilled onto a neighbor. Split a frame into regions instead of
 /// counting columns by hand, and the same geometry answers "was this click inside".
 /// </summary>
 /// <param name="Surface">The surface drawn into.</param>

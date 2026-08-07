@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -11,9 +10,9 @@ namespace Arlecchino.Commands;
 /// <summary>
 /// The list of everything a key would do, opened by one key of its own.
 ///
-/// It is the only dialog the framework opens without being asked to, and the only one whose keys are
-/// every other key: pressing one runs what it is bound to, whether that is the view's or the
-/// application's, and pressing anything unbound says so rather than doing nothing.
+/// It is the only dialog the framework opens unasked, and the only one whose keys are every other key.
+/// Pressing one runs what it is bound to, whether that is the view's or the application's, and pressing
+/// anything unbound says so rather than doing nothing.
 /// </summary>
 internal sealed class CommandPalette
 {
@@ -46,7 +45,7 @@ internal sealed class CommandPalette
     /// <summary>Whether a key is the one that opens it, which it is not when there is nothing to list.</summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when the palette should open.</returns>
-    public bool Opens(ConsoleKeyInfo key) =>
+    public bool Opens(KeyPress key) =>
         _commands.Commands.Count > 0 && _keyText.Resolve(key) == _options.CommandPaletteKey;
 
     /// <summary>Opens it.</summary>
@@ -67,7 +66,7 @@ internal sealed class CommandPalette
     /// what the keys are, and a reminder that stays up after it has been acted on is in the way.
     /// </summary>
     /// <param name="key">The key that arrived.</param>
-    public void Handle(ConsoleKeyInfo key)
+    public void Handle(KeyPress key)
     {
         _state.CloseModal();
 
@@ -151,7 +150,7 @@ internal sealed class CommandPalette
     /// <summary>How to name a key that turned out to be bound to nothing.</summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns>The character it typed, or the binding it would have been.</returns>
-    private static string Shown(ConsoleKeyInfo key) => char.IsControl(key.KeyChar) || key.KeyChar == '\0'
+    private static string Shown(KeyPress key) => char.IsControl(key.Character) || key.Character == '\0'
         ? new KeyBinding(key.Key, key.Modifiers).ToString()
-        : key.KeyChar.ToString();
+        : key.Character.ToString();
 }

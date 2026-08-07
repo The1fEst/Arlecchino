@@ -8,9 +8,9 @@ namespace Arlecchino.Modals.Reading;
 /// <summary>
 /// What to say when what has been typed will not do.
 ///
-/// A complaint is worked out on every keystroke but only shown once the field has already said
-/// something — nothing is reported before the first attempt to submit, so a field never complains
-/// about being half-typed, and a field that is complaining stops the moment it has no reason to.
+/// A complaint is worked out on every keystroke but only shown once the field has already said something.
+/// Nothing is reported before the first attempt to submit, so a field never complains about being half-typed,
+/// and a field that is complaining stops the moment it has no reason to.
 /// </summary>
 internal static class Complaints
 {

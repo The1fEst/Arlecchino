@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Choosing;
 
@@ -12,7 +13,7 @@ public sealed class ChoiceModal : OptionListModal
     public override void Draw(ModalFrame frame) => frame.Lists.One(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Choices.One(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Choices.One(this, key);
 
     /// <inheritdoc/>
     protected override void Take(ModalFrame frame, string picked)

@@ -15,6 +15,8 @@ internal sealed class EscapeSequenceParser
     private const int ShiftFlag = 4;
     private const int AltFlag = 8;
     private const int ControlFlag = 16;
+    private const int PrivateUseFirst = 0xE000;
+    private const int PrivateUseLast = 0xF8FF;
 
     /// <summary>Reads an SGR mouse report, the <c>&lt;flags;column;rowM</c> form.</summary>
     /// <param name="sequence">Body of the sequence, without the leading escape and bracket.</param>
@@ -81,12 +83,17 @@ internal sealed class EscapeSequenceParser
 
     /// <summary>
     /// Reads a cursor or function key sequence, including the <c>1;5C</c> form that carries
-    /// modifiers.
+    /// modifiers and the <c>106;9u</c> form a terminal falls back to for a key the older shapes cannot
+    /// spell — which is every key held with Command.
     /// </summary>
     /// <param name="sequence">Body of the sequence, without the leading escape and bracket.</param>
-    /// <param name="key">The key it stands for.</param>
-    /// <returns><c>true</c> when the sequence was a known key.</returns>
-    public static bool TryParseKey(string sequence, out ConsoleKeyInfo key)
+    /// <param name="key">
+    /// The key it stands for, or nothing for a sequence that was a key press but not one that can be
+    /// named here. Nothing is still an answer: the bytes were understood, so they must not be replayed
+    /// into the application as text.
+    /// </param>
+    /// <returns><c>true</c> when the sequence was a key press.</returns>
+    public static bool TryParseKey(string sequence, out KeyPress key)
     {
         key = default;
 
@@ -99,6 +106,16 @@ internal sealed class EscapeSequenceParser
         var body = sequence[..^1];
         var parameters = SplitParameters(body);
         var modifiers = parameters.Count > 1 ? ModifiersOfParameter(parameters[1]) : default;
+
+        if (IsRelease(body))
+        {
+            return true;
+        }
+
+        if (final == 'u')
+        {
+            return TryParseUnicodeKey(parameters, modifiers, out key);
+        }
 
         var consoleKey = final switch
         {
@@ -124,16 +141,67 @@ internal sealed class EscapeSequenceParser
 
         if (final == 'Z')
         {
-            modifiers |= ConsoleModifiers.Shift;
+            modifiers |= KeyModifiers.Shift;
         }
 
-        key = new('\0',
-            consoleKey,
-            modifiers.HasFlag(ConsoleModifiers.Shift),
-            modifiers.HasFlag(ConsoleModifiers.Alt),
-            modifiers.HasFlag(ConsoleModifiers.Control));
+        key = new(consoleKey, modifiers);
         return true;
     }
+
+    /// <summary>
+    /// Reads the <c>CSI code ; modifiers u</c> form, where the key is named by the character it would
+    /// have typed. A terminal reaches for it when the older shapes have nowhere to put what happened —
+    /// there is no legacy spelling for a letter held with Command, so <c>Cmd+J</c> arrives here or not
+    /// at all.
+    /// </summary>
+    /// <param name="parameters">The numbers in front of the final byte.</param>
+    /// <param name="modifiers">What was held, already read off the second number.</param>
+    /// <param name="key">The key, or nothing for a code with no name here.</param>
+    /// <returns><c>true</c>, since the shape itself says a key was pressed.</returns>
+    private static bool TryParseUnicodeKey(List<int> parameters, KeyModifiers modifiers, out KeyPress key)
+    {
+        key = default;
+
+        if (parameters.Count == 0 || parameters[0] <= 0)
+        {
+            return true;
+        }
+
+        var code = parameters[0];
+        var named = KeyOfCode(code);
+
+        if (named == default && !IsTypeable(code))
+        {
+            return true;
+        }
+
+        var character = IsTypeable(code) && !char.IsControl((char)code) ? (char)code : '\0';
+        key = new(named, modifiers, character);
+        return true;
+    }
+
+    /// <summary>
+    /// Whether the code stands for a character at all. A terminal names the keys with nothing to type —
+    /// the keypad, the media keys, the modifiers themselves — with codes out of the private use area,
+    /// which is a range no keyboard types and no field should be handed.
+    /// </summary>
+    /// <param name="code">The number in front of the final byte.</param>
+    /// <returns><c>true</c> when the code is a character.</returns>
+    private static bool IsTypeable(int code) =>
+        code <= char.MaxValue && code is < PrivateUseFirst or > PrivateUseLast;
+
+    private static ConsoleKey KeyOfCode(int code) => code switch
+    {
+        >= 'a' and <= 'z' => ConsoleKey.A + (code - 'a'),
+        >= 'A' and <= 'Z' => ConsoleKey.A + (code - 'A'),
+        >= '0' and <= '9' => ConsoleKey.D0 + (code - '0'),
+        ' ' => ConsoleKey.Spacebar,
+        '\t' => ConsoleKey.Tab,
+        '\r' or '\n' => ConsoleKey.Enter,
+        '\e' => ConsoleKey.Escape,
+        8 or 127 => ConsoleKey.Backspace,
+        _ => default,
+    };
 
     private static ConsoleKey KeyOfNumber(int number) => number switch
     {
@@ -158,12 +226,19 @@ internal sealed class EscapeSequenceParser
         _ => default,
     };
 
+    /// <summary>
+    /// The numbers in front of the final byte. A number may carry extra parts of its own after a colon
+    /// — the key a shifted press would have typed, or whether the key went down or came back up — and
+    /// only the first part is the number itself.
+    /// </summary>
+    /// <param name="body">The sequence without its final byte.</param>
+    /// <returns>One number per parameter, zero for anything unreadable.</returns>
     private static List<int> SplitParameters(string body)
     {
         var parameters = new List<int>();
         foreach (var part in body.Split(';'))
         {
-            parameters.Add(int.TryParse(part, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+            parameters.Add(int.TryParse(Head(part), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
                 ? value
                 : 0);
         }
@@ -171,46 +246,79 @@ internal sealed class EscapeSequenceParser
         return parameters;
     }
 
-    private static ConsoleModifiers ModifiersOfParameter(int parameter)
+    /// <summary>
+    /// Whether the sequence says a key came back up rather than went down. Only terminals asked for
+    /// release events send them, and nothing here asks — but a key that arrived twice would act twice,
+    /// so the answer is worth reading rather than assuming.
+    /// </summary>
+    /// <param name="body">The sequence without its final byte.</param>
+    /// <returns><c>true</c> when this is a release.</returns>
+    private static bool IsRelease(string body)
+    {
+        var parts = body.Split(';');
+
+        if (parts.Length < 2)
+        {
+            return false;
+        }
+
+        var colon = parts[1].IndexOf(':', StringComparison.Ordinal);
+
+        return colon >= 0 && parts[1][(colon + 1)..] == "3";
+    }
+
+    private static string Head(string part)
+    {
+        var colon = part.IndexOf(':', StringComparison.Ordinal);
+
+        return colon < 0 ? part : part[..colon];
+    }
+
+    private static KeyModifiers ModifiersOfParameter(int parameter)
     {
         var bits = Math.Max(0, parameter - 1);
-        var modifiers = default(ConsoleModifiers);
+        var modifiers = default(KeyModifiers);
 
         if ((bits & 1) != 0)
         {
-            modifiers |= ConsoleModifiers.Shift;
+            modifiers |= KeyModifiers.Shift;
         }
 
         if ((bits & 2) != 0)
         {
-            modifiers |= ConsoleModifiers.Alt;
+            modifiers |= KeyModifiers.Alt;
         }
 
         if ((bits & 4) != 0)
         {
-            modifiers |= ConsoleModifiers.Control;
+            modifiers |= KeyModifiers.Control;
+        }
+
+        if ((bits & 8) != 0)
+        {
+            modifiers |= KeyModifiers.Super;
         }
 
         return modifiers;
     }
 
-    private static ConsoleModifiers ModifiersOf(int flags)
+    private static KeyModifiers ModifiersOf(int flags)
     {
-        var modifiers = default(ConsoleModifiers);
+        var modifiers = default(KeyModifiers);
 
         if ((flags & ShiftFlag) != 0)
         {
-            modifiers |= ConsoleModifiers.Shift;
+            modifiers |= KeyModifiers.Shift;
         }
 
         if ((flags & AltFlag) != 0)
         {
-            modifiers |= ConsoleModifiers.Alt;
+            modifiers |= KeyModifiers.Alt;
         }
 
         if ((flags & ControlFlag) != 0)
         {
-            modifiers |= ConsoleModifiers.Control;
+            modifiers |= KeyModifiers.Control;
         }
 
         return modifiers;

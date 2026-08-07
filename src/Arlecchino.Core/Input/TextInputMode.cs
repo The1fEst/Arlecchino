@@ -6,9 +6,9 @@ namespace Arlecchino.Input;
 public enum TextInputMode : byte
 {
     /// <summary>
-    /// The character is taken from where the key sits on the keyboard rather than from what the
-    /// layout makes of it, so a filter or a shortcut reads the same on a Cyrillic or a Greek layout
-    /// as it does on a US one — at the cost of not being able to type that language at all.
+    /// The character is taken from where the key sits on the keyboard rather than from what the layout makes
+    /// of it. So a filter or a shortcut reads the same on a Cyrillic or a Greek layout as it does on a US one,
+    /// at the cost of not being able to type that language at all.
     /// </summary>
     ByPosition,
 

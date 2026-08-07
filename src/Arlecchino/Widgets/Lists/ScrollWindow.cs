@@ -13,14 +13,14 @@ public readonly record struct ScrollWindow(int First, int Count)
     /// <summary>Index of the last item shown. Reads as one before <see cref="First"/> when nothing fits.</summary>
     public int Last => First + Count - 1;
 
-    /// <summary>Whether an item is on screen, which is what decides if it needs drawing.</summary>
+    /// <summary>Whether an item is in view, which is what decides if it needs drawing.</summary>
     /// <param name="index">Index in the full list.</param>
     /// <returns><c>true</c> when the item falls inside the window.</returns>
     public bool Contains(int index) => index >= First && index < First + Count;
 
     /// <summary>
-    /// Places the window so the selection sits in the middle, sliding it back at the ends of the list
-    /// so the rows are always filled rather than trailing off into blanks.
+    /// Places the window with the selection in the middle, sliding it back at the ends of the list, so the
+    /// rows are always filled rather than trailing off into blanks.
     /// </summary>
     /// <param name="selected">Index that has to stay visible.</param>
     /// <param name="itemCount">Length of the full list.</param>

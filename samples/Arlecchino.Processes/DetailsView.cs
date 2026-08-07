@@ -2,6 +2,7 @@ using System.Globalization;
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Processes.Views;
 using Arlecchino.Rendering;
@@ -56,7 +57,7 @@ public sealed class DetailsView : IArlecchinoView
         }
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
     public IReadOnlyList<ViewCommand> Commands() =>
     [

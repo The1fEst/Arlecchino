@@ -106,7 +106,7 @@ public sealed class ProcessesView : IArlecchinoView
         _spinner.Draw(header.SplitLeft(header.Width - 1).Right);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => _table.Handle(key).Route;
+    public ViewRoute Handle(KeyPress key) => _table.Handle(key).Route;
 
     public ViewRoute HandleMouse(MouseEvent mouse) => _table.HandleMouse(mouse).Route;
 

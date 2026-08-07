@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.State;
@@ -43,8 +44,7 @@ public sealed class TestApplication : IDisposable
 
     public AtomHistory History => _host.History;
 
-    public void Press(ConsoleKey key, bool shift = false, bool alt = false, bool control = false) =>
-        _host.Press(key, shift, alt, control);
+    public void Press(ConsoleKey key, KeyModifiers modifiers = default) => _host.Press(key, modifiers);
 
     public void Type(string text) => _host.Type(text);
 

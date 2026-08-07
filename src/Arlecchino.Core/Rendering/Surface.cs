@@ -71,7 +71,7 @@ public partial class Surface
 
     /// <summary>
     /// The room a layout has left for the view, set for as long as the view is being drawn and put
-    /// back afterwards. Nothing outside the drawing of one frame ever sees it set.
+    /// back afterward. Nothing outside the drawing of one frame ever sees it set.
     /// </summary>
     internal SurfaceRegion? Body
     {
@@ -82,9 +82,9 @@ public partial class Surface
     private int FreeLines => Math.Max(0, _height - _lines);
 
     /// <summary>
-    /// What the frame just built put in a cell. The testing package reads it to hold the terminal's
-    /// screen against the frame that was composed: a diff that dropped a cell and a cell that never
-    /// had anything in it look the same on screen, and only the frame itself tells them apart.
+    /// What the frame just built put in a cell. The testing package reads it to hold the terminal's screen
+    /// against the frame that was composed. A diff that dropped a cell and a cell that never had anything in
+    /// it read alike on the terminal, and only the frame itself tells them apart.
     /// </summary>
     /// <param name="row">Row in frame coordinates.</param>
     /// <param name="column">Column in frame coordinates.</param>
@@ -113,7 +113,7 @@ public partial class Surface
     /// Confines every write to a rectangle until the returned scope is disposed, whatever coordinates
     /// the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an
     /// offset that reaches outside the pane, and the parts that fall outside are dropped instead of
-    /// landing on a neighbour.
+    /// landing on a neighbor.
     ///
     /// Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
     /// </summary>
@@ -227,26 +227,26 @@ public partial class Surface
     /// payload last time is repainted before it lands.
     ///
     /// Repainting the cells is not enough to remove it, though, which is what <paramref name="undraw"/>
-    /// is for. A payload that was handed over last frame and is not handed over this one — the widget
-    /// moved, or shrank, or is not on screen at all any more — has its undraw written at the place it used
-    /// to be, and written **first**, before a single cell of the new frame. An undraw paints over what it
-    /// removes, so whatever the frame draws lands on top of it; the other way round it would erase the
-    /// frame instead of the picture. A frame that undraws anything is written whole rather than diffed,
-    /// since the cells the undraw painted over have to be put back whether they changed or not.
+    /// is for. Say a payload was handed over last frame and is not handed over this one, because the widget
+    /// moved, or shrank, or the screen no longer shows it at all. Its undraw is written at the place it used
+    /// to be, and written **first**, before a single cell of the new frame. Undrawing paints over what it
+    /// removes, so whatever the frame draws lands on top of it; the other way round it would
+    /// erase the frame instead of the picture. A frame that undraws anything is written whole rather than
+    /// diffed, since the cells painted over have to be put back whether they changed or not.
     ///
     /// Whoever hands over pixels says how to take them back, because only they know: kitty deletes an
     /// image by number, a sixel has to be painted over.
     ///
-    /// Nothing is re-sent while it stays the same. A frame is only composed when something asked for
-    /// one, so a picture that has not changed costs nothing between frames — but a payload measured
-    /// in kilobytes is still worth handing over only when it has to be.
+    /// A payload is re-sent only once it changes. A frame is only composed when something asked for one, so a
+    /// picture that has stayed the same costs nothing between frames — and one measured in kilobytes is worth
+    /// handing over only when it has to be.
     /// </summary>
     /// <param name="row">Row of the cell it starts at, counted from the top of the frame.</param>
     /// <param name="column">Column of that cell.</param>
     /// <param name="payload">The bytes to write, escapes and all.</param>
     /// <param name="undraw">
     /// What removes it again, written where the payload was. Empty when nothing can: a sixel on a
-    /// terminal that will not say what colour is behind its text has to be left where it is.
+    /// terminal that will not say what color is behind its text has to be left where it is.
     /// </param>
     public void Passthrough(int row, int column, string payload, string undraw = "")
     {
@@ -262,7 +262,7 @@ public partial class Surface
     /// <summary>
     /// Writes what removes the payloads this frame no longer hands over, before a single cell goes out.
     /// The order is the whole point: an undraw paints over what it removes, so anything the frame draws
-    /// afterwards is drawn on top of it. Written the other way round it erases the frame instead of the
+    /// afterward is drawn on top of it. Written the other way round it erases the frame instead of the
     /// picture.
     /// </summary>
     /// <returns><c>true</c> when something was undrawn, so the frame is written whole rather than diffed.</returns>

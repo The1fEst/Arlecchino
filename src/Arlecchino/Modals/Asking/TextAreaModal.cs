@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Input;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Text;
 
@@ -143,7 +144,7 @@ public sealed class TextAreaModal : Modal
     }
 
     /// <summary>
-    /// Deletes the symbol after the caret, pulling the next line up when the caret is at the end of a
+    /// Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a
     /// line.
     /// </summary>
     public void DeleteForward()
@@ -217,5 +218,5 @@ public sealed class TextAreaModal : Modal
     public override void Draw(ModalFrame frame) => frame.Paint.Area(this);
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => frame.Areas.Handle(this, key);
+    public override void Handle(ModalFrame frame, KeyPress key) => frame.Areas.Handle(this, key);
 }

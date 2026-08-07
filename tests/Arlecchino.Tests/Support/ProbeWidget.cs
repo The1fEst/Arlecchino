@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -31,7 +30,7 @@ public sealed class ProbeWidget : IArlecchinoInteractiveWidget
         return region.Rows(1, region.Height - 1);
     }
 
-    public FocusResult Handle(ConsoleKeyInfo key) =>
+    public FocusResult Handle(KeyPress key) =>
         _keymap.Confirm.Matches(key) ? FocusResult.Handled : FocusResult.Ignored;
 
     public FocusResult HandleMouse(MouseEvent mouse) =>

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Tests.Views;
 using Xunit;
@@ -49,7 +50,7 @@ public sealed class ReentrancyTests
 
         public void Draw() { }
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
         private sealed class Nested : IDisposable
         {

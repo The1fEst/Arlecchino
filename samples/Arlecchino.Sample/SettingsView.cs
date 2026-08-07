@@ -83,14 +83,14 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         _form.Draw(content.Rows(3, content.Height - 3));
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         switch (key.Key)
         {
-            case ConsoleKey.Z when key.Modifiers.HasFlag(ConsoleModifiers.Control):
+            case ConsoleKey.Z when key.Modifiers.HasFlag(KeyModifiers.Control):
                 _state.Output = _history.Undo() ? "undo" : "nothing to undo";
                 return ViewRoute.None;
-            case ConsoleKey.Y when key.Modifiers.HasFlag(ConsoleModifiers.Control):
+            case ConsoleKey.Y when key.Modifiers.HasFlag(KeyModifiers.Control):
                 _state.Output = _history.Redo() ? "redo" : "nothing to redo";
                 return ViewRoute.None;
             case ConsoleKey.Escape:

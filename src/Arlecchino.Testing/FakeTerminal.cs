@@ -15,8 +15,8 @@ namespace Arlecchino.Testing;
 /// </summary>
 public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 {
-    private readonly ConcurrentQueue<ConsoleKeyInfo> _keys = new();
-    private readonly ConcurrentQueue<ConsoleKeyInfo> _unread = new();
+    private readonly ConcurrentQueue<KeyPress> _keys = new();
+    private readonly ConcurrentQueue<KeyPress> _unread = new();
     private readonly ConcurrentQueue<MouseEvent> _mouse = new();
     private readonly StringBuilder _written = new();
     private int _width;
@@ -55,7 +55,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     }
 
     /// <summary>
-    /// What is on screen, rather than what was written to get it there. Frames are written as the
+    /// What the screen holds, rather than what was written to get it there. Frames are written as the
     /// difference from the last one, so <see cref="Written"/> holds cursor jumps and short runs;
     /// this holds the picture they add up to, and survives <see cref="Clear"/> the way a real screen
     /// survives forgetting what you typed.
@@ -85,17 +85,17 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 
     /// <summary>Queues a key press to be read.</summary>
     /// <param name="key">The key press.</param>
-    public void Enqueue(ConsoleKeyInfo key) => _keys.Enqueue(key);
+    public void Enqueue(KeyPress key) => _keys.Enqueue(key);
 
     /// <summary>
-    /// Queues text one character at a time, as a terminal reports it, naming the key where a console
-    /// names it. Whole escape sequences can be fed in as a plain string: the runtime recognises some
-    /// itself and hands the rest over a character at a time, and this is that second shape — the one
-    /// the reader has to make sense of on its own.
+    /// Queues text one character at a time, as a terminal reports it, naming the key where a console names it.
+    /// Whole escape sequences can be fed in as a plain string. The runtime recognizes some itself and hands
+    /// the rest over a character at a time, and this is that second shape: the one the reader has to make
+    /// sense of on its own.
     ///
-    /// The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a
-    /// letter, a digit and a control chord all arrive carrying their key, because that is what
-    /// <see cref="Console.ReadKey(bool)"/> hands an application; a fake that handed over the bare character
+    /// The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter,
+    /// a digit and a control chord all arrive carrying their key, because that is what
+    /// <see cref="Console.ReadKey(bool)"/> hands an application. A fake that handed over the bare character
     /// would have every test agreeing with a shape no terminal produces.
     ///
     /// One thing it deliberately does not do is fold an escape and the letter after it into one press
@@ -120,18 +120,18 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     /// </summary>
     /// <param name="character">The character that arrived.</param>
     /// <returns>The press.</returns>
-    private static ConsoleKeyInfo Named(char character) => character switch
+    private static KeyPress Named(char character) => character switch
     {
-        '\e' => new(character, ConsoleKey.Escape, false, false, false),
-        '\r' or '\n' => new(character, ConsoleKey.Enter, false, false, false),
-        '\t' => new(character, ConsoleKey.Tab, false, false, false),
-        '\b' or '' => new(character, ConsoleKey.Backspace, false, false, false),
-        ' ' => new(character, ConsoleKey.Spacebar, false, false, false),
-        >= 'a' and <= 'z' => new(character, ConsoleKey.A + (character - 'a'), false, false, false),
-        >= 'A' and <= 'Z' => new(character, ConsoleKey.A + (character - 'A'), true, false, false),
-        >= '0' and <= '9' => new(character, ConsoleKey.D0 + (character - '0'), false, false, false),
-        >= '' and <= '' => new(character, ConsoleKey.A + (character - ''), false, false, true),
-        _ => new(character, default, false, false, false),
+        '\e' => new(ConsoleKey.Escape, default, character),
+        '\r' or '\n' => new(ConsoleKey.Enter, default, character),
+        '\t' => new(ConsoleKey.Tab, default, character),
+        '\b' or '' => new(ConsoleKey.Backspace, default, character),
+        ' ' => new(ConsoleKey.Spacebar, default, character),
+        >= 'a' and <= 'z' => new(ConsoleKey.A + (character - 'a'), default, character),
+        >= 'A' and <= 'Z' => new(ConsoleKey.A + (character - 'A'), KeyModifiers.Shift, character),
+        >= '0' and <= '9' => new(ConsoleKey.D0 + (character - '0'), default, character),
+        >= '' and <= '' => new(ConsoleKey.A + (character -''), KeyModifiers.Control, character),
+        _ => new(character),
     };
 
     /// <summary>Collects output instead of showing it, and applies it to <see cref="Screen"/>.</summary>
@@ -144,12 +144,12 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 
     /// <summary>Takes the next queued key, or nothing when the queue has run dry.</summary>
     /// <returns>The key press.</returns>
-    public ConsoleKeyInfo ReadKey() => _unread.TryDequeue(out var back) ? back
+    public KeyPress ReadKey() => _unread.TryDequeue(out var back) ? back
         : _keys.TryDequeue(out var key) ? key : default;
 
-    /// <summary>Puts a key back so the next read returns it.</summary>
+    /// <summary>Puts a key back, so the next read returns it.</summary>
     /// <param name="key">The key to put back.</param>
-    public void Unread(ConsoleKeyInfo key) => _unread.Enqueue(key);
+    public void Unread(KeyPress key) => _unread.Enqueue(key);
 
     /// <summary>
     /// Queues a mouse event to be read, the way a console that reports the mouse outside the key
@@ -190,11 +190,10 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public void Clear() => _written.Clear();
 
     /// <summary>
-    /// Holds the screen against the frame that was just composed. Every frame but the first is written
-    /// as the difference from the one before, so a cell the difference failed to send stays on screen as
-    /// whatever used to be there — a stale symbol no assertion would think to look for, since a test
-    /// only ever asks what is on screen. Comparing the two says outright that the differences added up
-    /// to the picture.
+    /// Holds the screen against the frame that was just composed. Every frame but the first is written as the
+    /// difference from the one before, so a cell the difference failed to send keeps whatever used to be
+    /// there. That is a stale symbol no assertion would think to look for, since a test only ever asks what
+    /// the screen holds. Comparing the two says outright that the differences added up to the picture.
     ///
     /// It runs on every frame any test builds rather than in a test of its own, because the frames worth
     /// checking are the ones real views and widgets produce, and those only exist while a test is

@@ -1,6 +1,7 @@
 using System;
 using Arlecchino.Atoms.Local;
 using Arlecchino.Forms;
+using Arlecchino.Input;
 using Arlecchino.Modals.Telling;
 using Arlecchino.Navigation;
 using Arlecchino.Commands;
@@ -88,8 +89,8 @@ public sealed class BoundaryTests
             Fields = [new() { Label = static () => "Name", Value = () => value.Value, IsEnabled = static () => false }],
         };
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\r', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.Enter, default, '\r'));
 
         Assert.NotNull(app.Frame());
     }
@@ -100,8 +101,8 @@ public sealed class BoundaryTests
         using var app = new TestApplication();
         var form = new Form(app.State, app.Options) { Fields = [] };
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\r', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.Enter, default, '\r'));
 
         var terminal = new FakeTerminal(40, 10);
         var surface = new Surface(terminal);
@@ -168,7 +169,7 @@ public sealed class BoundaryTests
 
         public void Draw() => _surface.AppendLine("clashing", Theme.Default);
 
-        public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+        public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
         public IReadOnlyList<ViewCommand> Commands() =>
         [

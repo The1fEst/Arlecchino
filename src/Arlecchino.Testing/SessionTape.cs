@@ -13,10 +13,10 @@ namespace Arlecchino.Testing;
 /// than from the clock on the wall.
 ///
 /// What it is for is writing a test as the session it describes, rather than as a dozen calls with the
-/// assertions lost among them. What it is deliberately not for is recording a running application:
-/// the framework has a password modal and a paste step, so a tape captured from a real session would
-/// hold whatever the user typed into them, and a file like that must not be something an application
-/// writes on their behalf.
+/// assertions lost among them. What it is deliberately not for is recording a running application. The
+/// framework has a password modal and a paste step, so a tape captured from a real session would hold
+/// whatever the user typed into them. A file like that must not be something an application writes on their
+/// behalf.
 ///
 /// <code>
 /// var frames = new SessionTape()
@@ -88,12 +88,10 @@ public sealed class SessionTape
 
     /// <summary>Writes down a key press as the terminal would report it.</summary>
     /// <param name="key">The key.</param>
-    /// <param name="shift">Whether Shift was held.</param>
-    /// <param name="alt">Whether Alt was held.</param>
-    /// <param name="control">Whether Ctrl was held.</param>
+    /// <param name="modifiers">What was held with it.</param>
     /// <returns>The tape, so steps chain.</returns>
-    public SessionTape Key(ConsoleKey key, bool shift = false, bool alt = false, bool control = false) =>
-        Add(Step.OfKey(Waited(), new('\0', key, shift, alt, control)));
+    public SessionTape Key(ConsoleKey key, KeyModifiers modifiers = default) =>
+        Add(Step.OfKey(Waited(), new(key, modifiers)));
 
     /// <summary>Writes down text typed one character at a time.</summary>
     /// <param name="text">What was typed.</param>
@@ -104,7 +102,7 @@ public sealed class SessionTape
 
         foreach (var character in text)
         {
-            Add(Step.OfKey(Waited(), new(character, default, false, false, false)));
+            Add(Step.OfKey(Waited(), new(character)));
         }
 
         return this;
@@ -156,7 +154,7 @@ public sealed class SessionTape
     /// </summary>
     /// <param name="key">The key.</param>
     /// <returns>The tape, so steps chain.</returns>
-    public SessionTape RecordKey(ConsoleKeyInfo key) => Add(Step.OfKey(Waited(), key));
+    public SessionTape RecordKey(KeyPress key) => Add(Step.OfKey(Waited(), key));
 
     /// <summary>Writes down a mouse event exactly as a terminal reports one.</summary>
     /// <param name="mouse">The event.</param>
@@ -253,11 +251,11 @@ public sealed class SessionTape
     private readonly record struct Step(
         TimeSpan After,
         StepKind Kind,
-        ConsoleKeyInfo Key,
+        KeyPress Key,
         MouseEvent Mouse,
         string Text)
     {
-        public static Step OfKey(TimeSpan after, ConsoleKeyInfo key) => new(after, StepKind.Key, key, default, "");
+        public static Step OfKey(TimeSpan after, KeyPress key) => new(after, StepKind.Key, key, default, "");
 
         public static Step OfMouse(TimeSpan after, MouseEvent mouse) =>
             new(after, StepKind.Mouse, default, mouse, "");
@@ -278,11 +276,9 @@ public sealed class SessionTape
                 "key" => OfKey(
                     after,
                     new(
-                        (char)int.Parse(parts[2], CultureInfo.InvariantCulture),
                         Enum.Parse<ConsoleKey>(parts[3]),
-                        bool.Parse(parts[4]),
-                        bool.Parse(parts[5]),
-                        bool.Parse(parts[6]))),
+                        (KeyModifiers)int.Parse(parts[4], CultureInfo.InvariantCulture),
+                        (char)int.Parse(parts[2], CultureInfo.InvariantCulture))),
                 "mouse" => OfMouse(
                     after,
                     new(
@@ -290,7 +286,7 @@ public sealed class SessionTape
                         Enum.Parse<MouseButton>(parts[3]),
                         int.Parse(parts[4], CultureInfo.InvariantCulture),
                         int.Parse(parts[5], CultureInfo.InvariantCulture),
-                        Enum.Parse<ConsoleModifiers>(parts[6]))),
+                        (KeyModifiers)int.Parse(parts[6], CultureInfo.InvariantCulture))),
                 "paste" => OfPaste(after, line[(line.IndexOf(" paste ", StringComparison.Ordinal) + 7)..]),
                 "frame" => OfFrame(after),
                 "wait" => OfWait(after),
@@ -308,11 +304,9 @@ public sealed class SessionTape
                     ' ',
                     after,
                     "key",
-                    ((int)Key.KeyChar).ToString(CultureInfo.InvariantCulture),
+                    ((int)Key.Character).ToString(CultureInfo.InvariantCulture),
                     Key.Key,
-                    Key.Modifiers.HasFlag(ConsoleModifiers.Shift),
-                    Key.Modifiers.HasFlag(ConsoleModifiers.Alt),
-                    Key.Modifiers.HasFlag(ConsoleModifiers.Control)),
+                    ((int)Key.Modifiers).ToString(CultureInfo.InvariantCulture)),
                 StepKind.Mouse => string.Join(
                     ' ',
                     after,
@@ -321,7 +315,7 @@ public sealed class SessionTape
                     Mouse.Button,
                     Mouse.Row.ToString(CultureInfo.InvariantCulture),
                     Mouse.Column.ToString(CultureInfo.InvariantCulture),
-                    Mouse.Modifiers),
+                    ((int)Mouse.Modifiers).ToString(CultureInfo.InvariantCulture)),
                 StepKind.Paste => $"{after} paste {Text}",
                 StepKind.Frame => $"{after} frame",
                 _ => $"{after} wait",

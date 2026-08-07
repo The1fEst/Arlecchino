@@ -572,7 +572,7 @@ public sealed class PaneTreeTests
 
         public SurfaceRegion Draw(SurfaceRegion region) => region;
 
-        public FocusResult Handle(ConsoleKeyInfo key) => FocusResult.Ignored;
+        public FocusResult Handle(KeyPress key) => FocusResult.Ignored;
 
         public FocusResult HandleMouse(MouseEvent mouse) => FocusResult.Ignored;
     }

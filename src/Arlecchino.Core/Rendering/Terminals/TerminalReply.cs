@@ -11,9 +11,9 @@ namespace Arlecchino.Rendering.Terminals;
 /// where it closes rather than by the look of any one character. Whatever falls outside every sequence
 /// was typed, and belongs back in the application's hands.
 ///
-/// One character is excused. On Windows the console layer can eat the kitty query's reply and leave its
-/// last character behind, so a lone backslash arriving before the terminal has said anything is the tail
-/// of a sequence that was never seen, not a key somebody pressed.
+/// One character is excused. On Windows the console layer can eat the kitty query's reply and leave its last
+/// character behind. A lone backslash arriving before the terminal has said anything is therefore the tail of
+/// a sequence that was never seen, not a key somebody pressed.
 /// </summary>
 internal static class TerminalReply
 {

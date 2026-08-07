@@ -202,7 +202,7 @@ internal sealed class FilePickerView : IArlecchinoView
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>Where to go, or <see cref="ViewRoute.None"/> to stay put.</returns>
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         if (_keymap.Cancel.Matches(key))
         {
@@ -221,7 +221,7 @@ internal sealed class FilePickerView : IArlecchinoView
     /// <returns>An empty list.</returns>
     public (string Key, string Description)[] Hints() => [];
 
-    private FocusResult HandleSidebar(ConsoleKeyInfo key)
+    private FocusResult HandleSidebar(KeyPress key)
     {
         if (_keymap.MoveUp.Matches(key))
         {
@@ -248,7 +248,7 @@ internal sealed class FilePickerView : IArlecchinoView
         return FocusResult.Handled;
     }
 
-    private FocusResult HandleList(ConsoleKeyInfo key)
+    private FocusResult HandleList(KeyPress key)
     {
         var entries = GetMatchingEntries();
 

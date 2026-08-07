@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
 using Xunit;
 
@@ -34,7 +35,7 @@ public sealed class TextAreaModalTests
 
         app.Press(ConsoleKey.Enter);
         app.Type("two");
-        app.Press(ConsoleKey.Enter, control: true);
+        app.Press(ConsoleKey.Enter, KeyModifiers.Control);
 
         Assert.Null(app.State.Modal);
         Assert.Equal("one\ntwo", submitted);
@@ -117,7 +118,7 @@ public sealed class TextAreaModalTests
             text => submitted = text,
             static text => text.Length < 10 ? "at least ten characters" : null);
 
-        app.Press(ConsoleKey.Enter, control: true);
+        app.Press(ConsoleKey.Enter, KeyModifiers.Control);
 
         Assert.NotNull(app.State.Modal);
         Assert.Equal("", submitted);
@@ -155,11 +156,11 @@ public sealed class TextAreaModalTests
 
         app.State.RequestTextArea("Notes", "one\ntwo", static _ => { });
 
-        app.Press(ConsoleKey.Insert, control: true);
+        app.Press(ConsoleKey.Insert, KeyModifiers.Control);
         Assert.Contains("one\ntwo", app.Terminal.Copied, StringComparison.Ordinal);
 
         app.State.RequestTextArea("Notes", "third", static _ => { });
-        app.Press(ConsoleKey.C, shift: true, control: true);
+        app.Press(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
         Assert.Contains("third", app.Terminal.Copied, StringComparison.Ordinal);
     }
@@ -170,7 +171,7 @@ public sealed class TextAreaModalTests
         using var app = new TestApplication();
 
         app.State.RequestTextArea("Notes", "kept", static _ => { });
-        app.Press(ConsoleKey.C, shift: true, control: true);
+        app.Press(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
         Assert.NotNull(app.State.Modal);
         Assert.Equal("kept", ((TextAreaModal)app.State.Modal!).Text);

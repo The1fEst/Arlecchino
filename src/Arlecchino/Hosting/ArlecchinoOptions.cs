@@ -75,18 +75,18 @@ public sealed class ArlecchinoOptions
     /// <summary>Keys the framework itself reacts to.</summary>
     public ArlecchinoKeymap Keymap { get; set; } = new();
 
-    /// <summary>Colours behind the roles. Installed into <see cref="Theme"/> on resolve.</summary>
+    /// <summary>Colors behind the roles. Installed into <see cref="Theme"/> on resolve.</summary>
     public ThemePalette Theme { get; set; } = new();
 
     /// <summary>
     /// What graphs are drawn with. Installed into <see cref="Glyphs.Graph"/> on resolve, and settable
-    /// afterwards, so an application can offer the choice in its own settings.
+    /// afterward, so an application can offer the choice in its own settings.
     /// </summary>
     public GraphSymbols GraphSymbols { get; set; } = GraphSymbols.Braille;
 
     /// <summary>
     /// How pictures reach the terminal. Installed into <see cref="Glyphs.Picture"/> on resolve, and
-    /// settable afterwards. <see cref="ImageProtocol.Auto"/> by default, which asks the
+    /// settable afterward. <see cref="ImageProtocol.Auto"/> by default, which asks the
     /// terminal rather than guessing; name a protocol to decide it yourself.
     /// </summary>
     public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Auto;

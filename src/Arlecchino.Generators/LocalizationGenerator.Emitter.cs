@@ -154,11 +154,11 @@ public sealed partial class LocalizationGenerator
     /// <summary>
     /// Writes the factories that name a key from the localization.
     ///
-    /// The framework cannot offer these itself. <c>ViewCommand</c> takes a <c>Func&lt;string&gt;</c>
-    /// because a name is read every frame, so that changing language changes the screen — and it
-    /// cannot take a <c>LocString</c> because there is no such type until an application is compiled:
-    /// the enum is written here, out of that application's own file, with that application's own
-    /// names in it. What can be shipped is the code that writes them, which is this.
+    /// The framework cannot offer these itself. <c>ViewCommand</c> takes a <c>Func&lt;string&gt;</c> because a
+    /// name is read every frame, so that changing language changes the screen. And it cannot take a
+    /// <c>LocString</c> because there is no such type until an application is compiled: the enum is written
+    /// here, out of that application's own file, with that application's own names in it. What can be shipped
+    /// is the code that writes them, which is this.
     /// </summary>
     /// <param name="source">Where the source is being built.</param>
     private static void Bindings(StringBuilder source)

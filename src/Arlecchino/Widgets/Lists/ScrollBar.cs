@@ -5,7 +5,7 @@ using Arlecchino.Rendering.Colors;
 namespace Arlecchino.Widgets.Lists;
 
 /// <summary>
-/// The bar down the side of a list that shows how much of it is on screen and where. Drawn only when
+/// The bar down the side of a list that shows how much of it is in view and where. Drawn only when
 /// there is more than fits, so a short list keeps its full width.
 /// </summary>
 public static class ScrollBar
@@ -19,7 +19,7 @@ public static class ScrollBar
     /// </summary>
     /// <param name="total">How many items there are.</param>
     /// <param name="rows">How many rows they are drawn into.</param>
-    /// <returns><c>true</c> when some of the list is off screen.</returns>
+    /// <returns><c>true</c> when some of the list is out of view.</returns>
     public static bool IsNeeded(int total, int rows) => rows > 0 && total > rows;
 
     /// <summary>
@@ -30,7 +30,7 @@ public static class ScrollBar
     /// <param name="region">Where the rows were drawn; the last column is used.</param>
     /// <param name="first">Index of the first item on screen.</param>
     /// <param name="total">How many items there are.</param>
-    /// <param name="style">Colour of the thumb. Defaults to the theme's active colour.</param>
+    /// <param name="style">Color of the thumb. Defaults to the theme's active color.</param>
     public static void Draw(SurfaceRegion region, int first, int total, IArlecchinoColor? style = null)
     {
         var rows = region.Height;

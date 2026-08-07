@@ -25,17 +25,17 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void KeyCarriesCharacterKeyAndModifiers()
     {
-        var key = WindowsInputTranslator.ToKeyInfo((ushort)ConsoleKey.A, 'a', ControlHeld | ShiftHeld);
+        var key = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.A, 'a', ControlHeld | ShiftHeld);
 
-        Assert.Equal('a', key.KeyChar);
+        Assert.Equal('a', key.Character);
         Assert.Equal(ConsoleKey.A, key.Key);
-        Assert.Equal(ConsoleModifiers.Control | ConsoleModifiers.Shift, key.Modifiers);
+        Assert.Equal(KeyModifiers.Control | KeyModifiers.Shift, key.Modifiers);
     }
 
     [Fact]
     public void KeyWithoutModifiersCarriesNone()
     {
-        var key = WindowsInputTranslator.ToKeyInfo((ushort)ConsoleKey.Enter, '\r', 0);
+        var key = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Enter, '\r', 0);
 
         Assert.Equal(ConsoleKey.Enter, key.Key);
         Assert.Equal(default, key.Modifiers);
@@ -137,6 +137,6 @@ public sealed class WindowsInputTranslatorTests
     {
         Assert.True(_translator.TryTranslateMouse(0, 0, Left, AltHeld | ShiftHeld, 0, out var mouse));
 
-        Assert.Equal(ConsoleModifiers.Alt | ConsoleModifiers.Shift, mouse.Modifiers);
+        Assert.Equal(KeyModifiers.Alt | KeyModifiers.Shift, mouse.Modifiers);
     }
 }

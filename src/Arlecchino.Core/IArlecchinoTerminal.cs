@@ -1,4 +1,3 @@
-using System;
 using Arlecchino.Input;
 
 namespace Arlecchino;
@@ -31,7 +30,7 @@ public interface IArlecchinoTerminal
 
     /// <summary>Takes the next key, blocking until one arrives.</summary>
     /// <returns>The key that was pressed.</returns>
-    ConsoleKeyInfo ReadKey();
+    KeyPress ReadKey();
 
     /// <summary>
     /// Puts a key back, so the next <see cref="ReadKey"/> returns it and <see cref="KeyAvailable"/>
@@ -40,7 +39,7 @@ public interface IArlecchinoTerminal
     /// belongs to whoever pressed it.
     /// </summary>
     /// <param name="key">The key to put back.</param>
-    void Unread(ConsoleKeyInfo key);
+    void Unread(KeyPress key);
 
     /// <summary>Takes the next mouse event. Only call it while <see cref="MouseAvailable"/> is true.</summary>
     /// <returns>What the mouse did, in frame cells.</returns>

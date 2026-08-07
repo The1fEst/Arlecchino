@@ -42,7 +42,7 @@ public sealed class LogBuffer
     public int Count => _entries.Count;
 
     /// <summary>
-    /// The lines held, oldest first, as they were at this moment. A copy, because anything may be
+    /// The lines held, the oldest first, as they were at this moment. A copy, because anything may be
     /// logging while the overlay draws.
     /// </summary>
     /// <returns>The lines.</returns>

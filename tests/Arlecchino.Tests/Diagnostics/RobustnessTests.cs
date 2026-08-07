@@ -147,6 +147,6 @@ public sealed class RobustnessTests
     {
         var binding = new KeyBinding(default);
 
-        Assert.False(binding.Matches(new('a', ConsoleKey.A, false, false, false)));
+        Assert.False(binding.Matches(new(ConsoleKey.A, default, 'a')));
     }
 }

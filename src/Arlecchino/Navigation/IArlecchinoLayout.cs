@@ -7,13 +7,13 @@ namespace Arlecchino.Navigation;
 /// <summary>
 ///     The frame every view is drawn inside: a band along the top, a bar along the bottom, whatever a
 ///     screen of this application always has around it.
-///     It is one object for the whole application rather than one per screen, so what it holds outlives
-///     the view — a row of tabs keeps its scroll position when a screen is left and come back to, which
-///     is the whole reason a header is worth having in one place instead of drawn again by every view.
-///     <see cref="Draw" /> is handed the room there is and a delegate that draws the view. Where that
-///     delegate is called is where the view goes, and how much it is given is what the view thinks its
-///     screen is — a view asks the <see cref="Surface" /> for its content and gets the region the layout
-///     left it, so no view has to know it is inside one.
+///     It is one object for the whole application rather than one per screen, so what it holds outlives the
+///     view. A row of tabs keeps its scroll position when a screen is left and come back to, which is the whole
+///     reason a header is worth having in one place instead of drawn again by every view.
+///     <see cref="Draw" /> is handed the room there is and a delegate that draws the view. Where that delegate
+///     is called is where the view goes, and how much it is given is what the view thinks its screen is. A view
+///     asks the <see cref="Surface" /> for its content and gets the region the layout left it, so no view has
+///     to know it is inside one.
 /// </summary>
 public interface IArlecchinoLayout
 {

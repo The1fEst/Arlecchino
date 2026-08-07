@@ -78,9 +78,9 @@ public sealed class EmptyAndZeroInputTests
         var surface = new Surface(terminal);
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = [] };
 
-        list.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        list.Handle(new('\0', ConsoleKey.End, false, false, false));
-        list.Handle(new('\r', ConsoleKey.Enter, false, false, false));
+        list.Handle(new(ConsoleKey.DownArrow));
+        list.Handle(new(ConsoleKey.End));
+        list.Handle(new(ConsoleKey.Enter, default, '\r'));
 
         surface.StartFrame();
         list.Draw(surface.Frame);
@@ -194,7 +194,7 @@ public sealed class EmptyAndZeroInputTests
             Render = static item => item,
         };
 
-        tree.Handle(new('\0', ConsoleKey.RightArrow, false, false, false));
+        tree.Handle(new(ConsoleKey.RightArrow));
 
         surface.StartFrame();
         tree.Draw(surface.Frame);

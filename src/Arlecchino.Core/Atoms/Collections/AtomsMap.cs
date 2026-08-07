@@ -9,15 +9,15 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A map held as one piece of application state — what is known about each server, the settings read
-/// so far, a count per kind. Every change goes through the same path a plain atom's write does: it is
-/// checked against the drawing thread, it notifies what reads the map, it marks the frame stale, and
-/// it records an undo step when the map is undoable.
+/// A map held as one piece of application state — what is known about each server, the settings read so far,
+/// a count per kind. Every change takes the same path a plain atom's write takes: it is checked against the
+/// drawing thread, it notifies what reads the map, it marks the frame stale, and it records an undo step when
+/// the map is undoable.
 ///
-/// It is to <c>Atom&lt;Dictionary&lt;TKey, TValue&gt;&gt;</c> what <see cref="AtomsList{T}"/> is to an
-/// atom around a list, and for the same reason: writing into the dictionary inside an atom never
-/// reaches <c>Atom.Value</c>, so nothing is notified and no frame is asked for, and writing the same
-/// instance back is taken for a change of nothing because a dictionary is compared by reference.
+/// It stands to <c>Atom&lt;Dictionary&lt;TKey, TValue&gt;&gt;</c> as <see cref="AtomsList{T}"/> stands to an
+/// atom around a list, and for the same reason. Writing into the dictionary inside an atom never reaches
+/// <c>Atom.Value</c>, so nothing is notified, and no frame is asked for; writing the same instance back is
+/// taken for a change of nothing, because a dictionary is compared by reference.
 ///
 /// It holds a dictionary but is not one: there is no <c>IDictionary</c> to write through, because the
 /// members below are the only way in and that is what keeps every change on the frame's path.
@@ -41,8 +41,8 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// <param name="initial">What it starts with; empty when omitted. It is copied, not held.</param>
     /// <param name="comparer">
     /// How keys are compared; the default comparer for <typeparamref name="TKey"/> is used when
-    /// omitted. Values are compared with their own default comparer, which is what decides that a
-    /// write changed nothing.
+    /// omitted. Values are compared with their own default comparer, which is what decides that
+    /// writing to one changed nothing.
     /// </param>
     protected AtomsMap(IReadOnlyDictionary<TKey, TValue>? initial = null, IEqualityComparer<TKey>? comparer = null)
     {
@@ -89,7 +89,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
     /// <summary>
     /// The value kept against a key. Reading a key the map does not hold throws, as a dictionary does;
-    /// writing puts the entry there whether or not it was there before, and writing an equal value
+    /// writing puts the entry there whether it was there before, and writing an equal value
     /// changes nothing and notifies nobody.
     /// </summary>
     /// <param name="key">Which entry.</param>
@@ -146,7 +146,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// <summary>
     /// Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the
     /// cases where a second entry under one key means something has gone wrong. Use the indexer to put
-    /// one in whether or not it is there already.
+    /// one in whether it is there already.
     /// </summary>
     /// <param name="key">What to keep it under.</param>
     /// <param name="value">What to keep.</param>

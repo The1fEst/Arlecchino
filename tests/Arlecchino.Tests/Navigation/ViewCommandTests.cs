@@ -106,7 +106,7 @@ public sealed class ViewCommandTests
         using var app = new TestApplication(configure: static builder => builder.AddCommand<ProbeCommand>());
 
         app.Navigator.Apply(ViewKind.Commanding);
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
 
         var frame = app.Frame();
 
@@ -122,7 +122,7 @@ public sealed class ViewCommandTests
         app.Navigator.Apply(ViewKind.Commanding);
         CommandingView.Ran.Clear();
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
         app.Press(ConsoleKey.B);
 
         Assert.Equal(["build"], CommandingView.Ran);
@@ -201,11 +201,11 @@ public sealed class CommandingView : IArlecchinoView
                 return ViewRoute.None;
             },
         },
-        ViewCommand.For(new KeyBinding(ConsoleKey.Escape, ConsoleModifiers.Alt), static () => "stop",
+        ViewCommand.For(new KeyBinding(ConsoleKey.Escape, KeyModifiers.Alt), static () => "stop",
             static () => Ran.Add("stop")),
     ];
 
-    public ViewRoute Handle(ConsoleKeyInfo key)
+    public ViewRoute Handle(KeyPress key)
     {
         Ran.Add($"handled {key.Key}");
         return ViewRoute.None;

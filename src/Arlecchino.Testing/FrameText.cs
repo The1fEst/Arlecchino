@@ -20,7 +20,7 @@ public static partial class FrameText
     /// <returns>One string per row.</returns>
     public static string[] Lines(string text) => WithoutStyles(text).Split("\r\n");
 
-    /// <summary>The colour sequences in order, for asserting that something was drawn as a warning.</summary>
+    /// <summary>The color sequences in order, for asserting that something was drawn as a warning.</summary>
     /// <param name="text">The frame.</param>
     /// <returns>The sequences as they appeared.</returns>
     public static List<string> StylesIn(string text)
@@ -35,7 +35,7 @@ public static partial class FrameText
     }
 
     /// <summary>
-    /// The cursor moves in order. Since only what changed is redrawn, counting these is how a test
+    /// The cursor moves in order. Since only what changed is redrawn, counting them is how a test
     /// shows that a frame touched a few cells rather than the whole screen.
     /// </summary>
     /// <param name="text">The frame.</param>
@@ -70,7 +70,7 @@ public static partial class FrameText
     [GeneratedRegex(@"\x1b\[[0-9;?]*[a-zA-Z]")]
     public static partial Regex AnsiSequence();
 
-    /// <summary>Matches a colour or attribute sequence.</summary>
+    /// <summary>Matches a color or attribute sequence.</summary>
     /// <returns>The expression.</returns>
     [GeneratedRegex(@"\x1b\[[0-9;]*m")]
     public static partial Regex StyleSequence();

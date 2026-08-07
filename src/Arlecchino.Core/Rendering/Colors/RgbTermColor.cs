@@ -4,19 +4,19 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// A style built from exact colours. Use it where the colour itself is the point — a swatch, a
+/// A style built from exact colors. Use it where the color itself is the point — a swatch, a
 /// chart, syntax highlighting — and keep chrome on <see cref="Theme"/>, which follows the terminal
-/// theme. Falls back to the nearest palette colour when the terminal cannot do 24-bit.
+/// theme. Falls back to the nearest palette color when the terminal cannot do 24-bit.
 /// </summary>
 public sealed class RgbTermColor : IArlecchinoColor
 {
     private string? _ansi;
     private ColorSupport _ansiSupport;
 
-    /// <summary>Colour of the glyphs, or <c>null</c> to leave the foreground alone.</summary>
+    /// <summary>Color of the glyphs, or <c>null</c> to leave the foreground alone.</summary>
     public Rgb? Foreground { get; init; }
 
-    /// <summary>Colour behind the glyphs, or <c>null</c> to leave the background alone.</summary>
+    /// <summary>Color behind the glyphs, or <c>null</c> to leave the background alone.</summary>
     public Rgb? Background { get; init; }
 
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
@@ -24,7 +24,7 @@ public sealed class RgbTermColor : IArlecchinoColor
 
     /// <summary>
     /// The escape sequence for this style: 24-bit where the terminal supports it, the nearest
-    /// palette colour where it does not, and empty when colour is off.
+    /// palette color where it does not, and empty when color is off.
     /// </summary>
     public string Ansi
     {

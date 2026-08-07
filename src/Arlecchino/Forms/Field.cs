@@ -269,8 +269,8 @@ public sealed class Field
     };
 
     /// <summary>
-    /// A colour, shown as its hex code and picked on three sliders. Reopening the dialog can shift the
-    /// colour by one unit, since it is edited as hue, saturation and lightness.
+    /// A color, shown as its hex code and picked on three sliders. Reopening the dialog can shift the
+    /// color by one unit, since it is edited as hue, saturation and lightness.
     /// </summary>
     /// <param name="label">What the field is called.</param>
     /// <param name="value">The atom to read and write.</param>

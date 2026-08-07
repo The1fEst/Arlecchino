@@ -92,7 +92,7 @@ public sealed class MouseTests
         Assert.Equal(MouseAction.ScrolledDown, down.Action);
 
         Assert.True(EscapeSequenceParser.TryParseMouse("<16;3;3M", out var withControl));
-        Assert.Equal(ConsoleModifiers.Control, withControl.Modifiers);
+        Assert.Equal(KeyModifiers.Control, withControl.Modifiers);
 
         Assert.True(EscapeSequenceParser.TryParseMouse("<32;3;3M", out var dragged));
         Assert.Equal(MouseAction.Moved, dragged.Action);
@@ -120,11 +120,11 @@ public sealed class MouseTests
 
         Assert.True(EscapeSequenceParser.TryParseKey("1;5C", out var controlRight));
         Assert.Equal(ConsoleKey.RightArrow, controlRight.Key);
-        Assert.Equal(ConsoleModifiers.Control, controlRight.Modifiers);
+        Assert.Equal(KeyModifiers.Control, controlRight.Modifiers);
 
         Assert.True(EscapeSequenceParser.TryParseKey("Z", out var shiftTab));
         Assert.Equal(ConsoleKey.Tab, shiftTab.Key);
-        Assert.Equal(ConsoleModifiers.Shift, shiftTab.Modifiers);
+        Assert.Equal(KeyModifiers.Shift, shiftTab.Modifiers);
     }
 
     [Fact]
@@ -223,7 +223,7 @@ public sealed class MouseView : IArlecchinoView
 
     public void Draw() => _surface.AppendLine("mouse", Theme.Default);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
     public ViewRoute HandleMouse(MouseEvent mouse)
     {

@@ -12,7 +12,7 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Widgets.Lists;
 
 /// <summary>
-/// One node of a tree. Children are settable so a branch can be filled in when it is first opened
+/// One node of a tree. Children are settable, so a branch can be filled in when it is first opened
 /// rather than up front.
 /// </summary>
 /// <typeparam name="T">What the node holds.</typeparam>
@@ -62,7 +62,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// <summary>Turns a value into its label. The marker and the indent are added around it.</summary>
     public required Func<T, string> Render { get; init; }
 
-    /// <summary>Colours a node. Ignored for the selected one.</summary>
+    /// <summary>Colors a node. Ignored for the selected one.</summary>
     public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
@@ -156,7 +156,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>What became of the key, including a route when a leaf was activated.</returns>
-    public FocusResult Handle(ConsoleKeyInfo key)
+    public FocusResult Handle(KeyPress key)
     {
         Flatten();
 

@@ -77,7 +77,7 @@ public sealed class HostedInputTests
         using var stopping = new CancellationTokenSource();
         await service.StartAsync(stopping.Token);
 
-        terminal.Enqueue(new('o', ConsoleKey.O, false, false, false));
+        terminal.Enqueue(new(ConsoleKey.O, default, 'o'));
 
         var route = await WaitFor(() => navigator.CurrentRoute, current => current == ViewKind.Other);
 

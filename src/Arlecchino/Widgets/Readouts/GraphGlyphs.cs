@@ -3,10 +3,10 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Widgets.Readouts;
 
 /// <summary>
-/// One set of characters a graph can be drawn with, and everything that follows from the choice: how
-/// many samples share a cell, how many levels of height a cell can show, and which character shows a
-/// given pair of levels. A chart asks for a character rather than working out which kind it wants, so
-/// each set carries only its own table and only its own arithmetic.
+/// One set of characters a graph can be drawn with, and everything that follows from the choice. That is how
+/// many samples share a cell, how many levels of height a cell can show, and which character shows a given
+/// pair of levels. A chart asks for a character rather than working out which kind it wants, so each set
+/// carries only its own table and its own arithmetic.
 /// </summary>
 internal abstract class GraphGlyphs
 {

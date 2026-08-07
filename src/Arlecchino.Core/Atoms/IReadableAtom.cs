@@ -6,7 +6,7 @@ namespace Arlecchino.Atoms;
 /// Something that holds a value and tells interested parties when it changes. Implemented by
 /// <see cref="Atom{T}"/> and <see cref="Computed{T}"/>.
 /// </summary>
-/// <typeparam name="T">Type of the value held.</typeparam>
+/// <typeparam name="T">The kind of value held.</typeparam>
 public interface IReadableAtom<out T>
 {
     /// <summary>

@@ -9,7 +9,7 @@ namespace Arlecchino.Navigation;
 /// How long the screen is on. Take it in a view's constructor to tie background work, subscriptions
 /// and anything else disposable to the screen: it is scoped, so navigating away cancels the token and
 /// releases everything registered here. Without it a load that outlives its screen keeps running and
-/// hands its result to a view nobody can see any more.
+/// hands its result to a view nobody can see anymore.
 /// </summary>
 public sealed class ViewLifetime : IDisposable
 {
@@ -26,7 +26,7 @@ public sealed class ViewLifetime : IDisposable
 
     /// <summary>
     /// Cancelled when the screen goes away. Pass it into work you start yourself so it stops with the
-    /// screen rather than with the application. It stays readable afterwards, so background work that
+    /// screen rather than with the application. It stays readable afterward, so background work that
     /// comes back late can still see that the screen has gone.
     /// </summary>
     public CancellationToken Closing { get; }

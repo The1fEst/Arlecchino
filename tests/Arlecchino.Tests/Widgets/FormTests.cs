@@ -65,10 +65,10 @@ public sealed class FormTests
 
         Assert.Equal(0, form.Selected);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
         Assert.Equal(1, form.Selected);
 
-        form.Handle(new('\0', ConsoleKey.UpArrow, false, false, false));
+        form.Handle(new(ConsoleKey.UpArrow));
         Assert.Equal(0, form.Selected);
     }
 
@@ -79,7 +79,7 @@ public sealed class FormTests
         var name = new TrackedAtom<string>("");
         var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
-        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.Enter));
 
         Assert.IsType<TextModal>(app.State.Modal);
 
@@ -96,8 +96,8 @@ public sealed class FormTests
         var flag = new TrackedAtom<bool>(true);
         var form = CreateForm(app, new TrackedAtom<string>(""), flag);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.Enter));
 
         Assert.IsType<ToggleModal>(app.State.Modal);
 
@@ -114,7 +114,7 @@ public sealed class FormTests
         var name = new TrackedAtom<string>("filled");
         var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
-        form.Handle(new('\0', ConsoleKey.Backspace, false, false, false));
+        form.Handle(new(ConsoleKey.Backspace));
 
         Assert.Equal("", name.Value);
     }
@@ -125,10 +125,10 @@ public sealed class FormTests
         using var app = new TestApplication();
         var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false), () => ViewKind.Other);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.DownArrow));
 
-        Assert.Equal(ViewKind.Other, form.Handle(new('\0', ConsoleKey.Enter, false, false, false)).Route);
+        Assert.Equal(ViewKind.Other, form.Handle(new(ConsoleKey.Enter)).Route);
     }
 
     [Fact]
@@ -146,9 +146,9 @@ public sealed class FormTests
             },
             static () => false);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
-        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.DownArrow));
+        form.Handle(new(ConsoleKey.Enter));
 
         Assert.False(ran);
     }
@@ -180,7 +180,7 @@ public sealed class FormTests
 
         var form = CreateForm(app, name, new TrackedAtom<bool>(false));
 
-        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.Enter));
         app.Type("after");
         app.Press(ConsoleKey.Enter);
 
@@ -205,7 +205,7 @@ public sealed class FormTests
 
         Assert.Contains("help for first", Show(app, form), StringComparison.Ordinal);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
         Assert.Contains("help for second", app.Frame(), StringComparison.Ordinal);
     }
 
@@ -246,7 +246,7 @@ public sealed class FormTests
 
         Assert.Contains("help for first", withHelp[firstRow + 1], StringComparison.Ordinal);
 
-        form.Handle(new('\0', ConsoleKey.DownArrow, false, false, false));
+        form.Handle(new(ConsoleKey.DownArrow));
 
         var withoutHelp = app.Frame().Split("\r\n");
         var secondRow = IndexOfLineContaining(withoutHelp, "Second");
@@ -278,7 +278,7 @@ public sealed class FormTests
             Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],
         };
 
-        var result = form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        var result = form.Handle(new(ConsoleKey.Enter));
 
         Assert.Equal(Routes.FilePicker, result.Route);
         Assert.NotNull(app.State.FilePicker);
@@ -340,6 +340,6 @@ public sealed class FormTests
     {
         var form = new Form(app.State, app.Options) { Fields = [field] };
 
-        form.Handle(new('\0', ConsoleKey.Enter, false, false, false));
+        form.Handle(new(ConsoleKey.Enter));
     }
 }

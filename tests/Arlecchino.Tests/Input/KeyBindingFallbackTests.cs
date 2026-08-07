@@ -8,7 +8,7 @@ namespace Arlecchino.Tests.Input;
 
 public sealed class KeyBindingFallbackTests
 {
-    private static ConsoleKeyInfo CharacterOnly(char character) => new(character, default, false, false, false);
+    private static KeyPress CharacterOnly(char character) => new(character);
 
     [Fact]
     public void LettersMatchWhenTheTerminalReportsNoVirtualKey()
@@ -33,10 +33,10 @@ public sealed class KeyBindingFallbackTests
     [Fact]
     public void ModifiersAreStillCompared()
     {
-        var binding = new KeyBinding(ConsoleKey.S, ConsoleModifiers.Control);
+        var binding = new KeyBinding(ConsoleKey.S, KeyModifiers.Control);
 
         Assert.False(binding.Matches(CharacterOnly('s')));
-        Assert.True(binding.Matches(new('s', default, false, false, true)));
+        Assert.True(binding.Matches(new(default, KeyModifiers.Control, 's')));
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public sealed class KeyBindingFallbackTests
     {
         using var app = new TestApplication(configure: static builder => builder.AddCommand<ProbeCommand>());
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
         app.Type("p");
 
         Assert.Equal("probe command", app.State.Output);

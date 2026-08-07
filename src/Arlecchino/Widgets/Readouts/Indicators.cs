@@ -31,7 +31,7 @@ public sealed class ProgressBar : IArlecchinoWidget
         ? Math.Clamp((Value - Minimum) / (Maximum - Minimum), 0m, 1m)
         : 0m;
 
-    /// <summary>Colour of the filled part. The theme's active colour when left alone.</summary>
+    /// <summary>Color of the filled part. The theme's active color when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
@@ -82,12 +82,12 @@ public sealed class Spinner : IArlecchinoWidget
     /// <summary>Moves to the next frame, wrapping at the end.</summary>
     public void Advance() => _frame = (_frame + 1) % Frames.Length;
 
-    /// <summary>Colour to draw in. The theme's informational colour when left alone.</summary>
+    /// <summary>Color to draw in. The theme's informational color when left alone.</summary>
     public IArlecchinoColor? Style { get; init; }
 
     /// <summary>
     /// Draws the current frame in the first cell of the region and returns the rows below it. One cell
-    /// is all a spinner needs, so hand it the cell it belongs in — <c>region.Rows(0, 1)</c>, a column
+    /// is all a spinner needs, so hand over the cell it belongs in — <c>region.Rows(0, 1)</c>, a column
     /// split, or whatever the layout gives.
     /// </summary>
     /// <param name="region">Where to draw; the top-left cell is used.</param>

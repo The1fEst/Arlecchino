@@ -21,7 +21,7 @@ public interface IArlecchinoView
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>A route to navigate to, or <see cref="ViewRoute.None"/> to stay.</returns>
-    ViewRoute Handle(ConsoleKeyInfo key);
+    ViewRoute Handle(KeyPress key);
 
     /// <summary>
     /// Handles a mouse event in frame coordinates. Only views that care about the mouse implement

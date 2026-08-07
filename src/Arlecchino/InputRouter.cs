@@ -45,7 +45,7 @@ public class InputRouter
     /// <param name="options">Settings gathered at startup.</param>
     /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
-    /// <param name="frame">What a dialog is handed while it is on screen.</param>
+    /// <param name="frame">What a dialog is handed while the screen shows it.</param>
     /// <param name="logger">Where handler failures are reported.</param>
     /// <param name="layout">The frame around every view, which sees a click before the view does.</param>
     internal InputRouter(
@@ -76,9 +76,9 @@ public class InputRouter
         _palette = new(state, navigator, commands, options, keyText);
     }
 
-    /// <summary>Routes one key press and asks for a frame, whether or not anything took it.</summary>
+    /// <summary>Routes one key press and asks for a frame, whether anything took it.</summary>
     /// <param name="key">The key that was pressed.</param>
-    public void ProcessKey(ConsoleKeyInfo key)
+    public void ProcessKey(KeyPress key)
     {
         try
         {
@@ -127,7 +127,7 @@ public class InputRouter
         }
     }
 
-    private void Route(ConsoleKeyInfo key)
+    private void Route(KeyPress key)
     {
         if (_state.Modal is { } modal)
         {
@@ -196,15 +196,15 @@ public class InputRouter
     /// everywhere is only reached with a modifier held, so an unmodified letter always belongs to the
     /// view.
     ///
-    /// A command that says it is not available takes nothing. It used to swallow its key anyway, which
-    /// made <c>IsEnabled</c> mean two different things — greyed out on the key screen, and a key that
-    /// silently does nothing — and left a view unable to give the same key a second meaning for the
-    /// times its command is off. Skipped here, the key carries on to the commands available everywhere
-    /// and then to the view, exactly as if nothing had claimed it.
+    /// A command that says it is not available takes nothing. It used to swallow its key anyway, which made
+    /// <c>IsEnabled</c> mean two different things: grayed out on the key screen, and a key that silently does
+    /// nothing. It also left a view unable to give the same key a second meaning for the times its command is
+    /// off. Skipped here, the key carries on to the commands available everywhere and then to the view, exactly
+    /// as if nothing had claimed it.
     /// </summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when something was bound to it and willing to run.</returns>
-    private bool RanCommand(ConsoleKeyInfo key)
+    private bool RanCommand(KeyPress key)
     {
         foreach (var viewCommand in _navigator.CurrentCommands)
         {

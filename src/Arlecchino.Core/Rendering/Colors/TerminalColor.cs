@@ -1,12 +1,12 @@
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// The sixteen ANSI colours plus the terminal's own default. Exact shades belong to the terminal
-/// theme, which is why chrome should pick a role from <see cref="Theme"/> rather than a colour here.
+/// The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal
+/// theme, which is why chrome should pick a role from <see cref="Theme"/> rather than a color here.
 /// </summary>
 public enum TerminalColor : byte
 {
-    /// <summary>Whatever the terminal uses when no colour is set.</summary>
+    /// <summary>Whatever the terminal uses when no color is set.</summary>
     Default,
 
     /// <summary>Black.</summary>
@@ -33,7 +33,7 @@ public enum TerminalColor : byte
     /// <summary>White.</summary>
     White,
 
-    /// <summary>Bright black, usually rendered as grey.</summary>
+    /// <summary>Bright black, usually rendered as gray.</summary>
     BrightBlack,
 
     /// <summary>Bright red.</summary>

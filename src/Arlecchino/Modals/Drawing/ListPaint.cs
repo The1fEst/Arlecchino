@@ -12,9 +12,9 @@ namespace Arlecchino.Modals.Drawing;
 /// <summary>
 /// The dialogs that are a list: pick one, pick several, or the palette of every key.
 ///
-/// A list is drawn as its own box rather than through the shared one, because the row of what has
-/// been typed to narrow it sits above a rule of its own — and because the rows have to be reported
-/// back to the dialog so that a click can land on one.
+/// A list is drawn as its own box rather than through the shared one. The row of what has been typed to
+/// narrow it sits above a rule of its own, and the rows have to be reported back to the dialog so that a
+/// click can land on one.
 /// </summary>
 internal sealed class ListPaint
 {

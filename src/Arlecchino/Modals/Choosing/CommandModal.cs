@@ -23,7 +23,7 @@ public sealed class CommandModal : Modal
     public SurfaceRegion Rows { get; set; }
 
     /// <summary>What a key press means. Set by whoever opened the palette.</summary>
-    public Action<ConsoleKeyInfo>? OnKey { get; init; }
+    public Action<KeyPress>? OnKey { get; init; }
 
     /// <summary>What a click on a row means. Set by whoever opened the palette.</summary>
     public Action<int>? OnRow { get; init; }
@@ -37,7 +37,7 @@ public sealed class CommandModal : Modal
     }
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key) => OnKey?.Invoke(key);
+    public override void Handle(ModalFrame frame, KeyPress key) => OnKey?.Invoke(key);
 
     /// <inheritdoc/>
     public override void HandleMouse(ModalFrame frame, MouseEvent mouse)

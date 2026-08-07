@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Arlecchino.Input;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 
@@ -14,7 +15,7 @@ namespace Arlecchino.Rendering.Terminals;
 /// <param name="Kitty">Whether the kitty graphics query was answered.</param>
 /// <param name="CellWidth">Pixels across a cell, or nought.</param>
 /// <param name="CellHeight">Pixels down a cell, or nought.</param>
-/// <param name="Background">The colour behind the text, or <c>null</c> when it did not say.</param>
+/// <param name="Background">The color behind the text, or <c>null</c> when it did not say.</param>
 internal readonly record struct TerminalAnswers(
     bool Sixel,
     bool Kitty,
@@ -36,14 +37,14 @@ internal readonly record struct TerminalAnswers(
 /// answer in order.
 ///
 /// A terminal that answers nothing costs the deadline and leaves every setting as it was, which is the
-/// behaviour an application already had to live with. Whatever was read is then handed straight back,
+/// behavior an application already had to live with. Whatever was read is then handed straight back,
 /// because without the fence there is no telling an answer from a keystroke.
 ///
 /// With the fence, there is: answers are escape sequences, so what was read outside every sequence was
 /// typed while the terminal was being asked, and <see cref="TerminalReply"/> picks it out to be handed
-/// back. Judging the whole read by its shape does not work — on Windows the console layer eats the kitty
-/// query's reply and leaves the last character of it behind, so the first thing a terminal says can be a
-/// lone backslash, and treating that as something a person typed threw away every answer behind it.
+/// back. Judging the whole read by its shape does not work. On Windows the console layer eats the kitty
+/// query's reply and leaves the last character of it behind, so the first thing a terminal says can be a lone
+/// backslash. Treating that as something a person typed threw away every answer behind it.
 /// </summary>
 public static class TerminalProbe
 {
@@ -104,7 +105,7 @@ public static class TerminalProbe
         var heard = new StringBuilder();
         var until = DateTime.UtcNow + within;
 
-        var read = new List<ConsoleKeyInfo>();
+        var read = new List<KeyPress>();
         var fenced = false;
 
         while (DateTime.UtcNow < until)
@@ -123,7 +124,7 @@ public static class TerminalProbe
             var key = terminal.ReadKey();
 
             read.Add(key);
-            heard.Append(key.KeyChar);
+            heard.Append(key.Character);
 
             fenced = fenced || Fenced(heard);
         }
@@ -160,12 +161,12 @@ public static class TerminalProbe
     }
 
     /// <summary>
-    /// Reads the answer to <c>OSC 11</c>, which is the colour behind the text written as
+    /// Reads the answer to <c>OSC 11</c>, which is the color behind the text written as
     /// <c>rgb:</c> and three hex groups. Terminals differ on how many digits a group has — two and four
     /// are both common — so each is scaled from however many it turned out to be.
     /// </summary>
     /// <param name="heard">Everything the terminal said.</param>
-    /// <returns>The colour, or <c>null</c> when it did not say.</returns>
+    /// <returns>The color, or <c>null</c> when it did not say.</returns>
     private static Rgb? Background(string heard)
     {
         var at = heard.IndexOf("]11;rgb:", StringComparison.Ordinal);

@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Setting;
 
@@ -12,7 +13,7 @@ public abstract class SegmentedModal : Modal
 {
     private string _typedDigits = "";
 
-    /// <summary>Which segment the arrows and digits currently act on.</summary>
+    /// <summary>Which segment the arrows and digits act on.</summary>
     public int Segment { get; private set; }
 
     /// <summary>How many segments the value is made of.</summary>
@@ -25,7 +26,7 @@ public abstract class SegmentedModal : Modal
     /// <returns>A fresh array the caller may modify.</returns>
     public abstract string[] SegmentTexts();
 
-    /// <summary>Steps the active segment, carrying into the neighbours as that value type requires.</summary>
+    /// <summary>Steps the active segment, carrying into the neighbors as that value type requires.</summary>
     /// <param name="delta">How far to step; negative goes down.</param>
     public abstract void Add(int delta);
 
@@ -109,7 +110,7 @@ public abstract class SegmentedModal : Modal
     protected abstract void Submit();
 
     /// <inheritdoc/>
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    public override void Handle(ModalFrame frame, KeyPress key)
     {
         ArgumentNullException.ThrowIfNull(frame);
 

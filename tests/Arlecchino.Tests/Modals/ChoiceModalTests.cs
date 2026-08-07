@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Input;
 using Xunit;
 using Arlecchino.Modals.Choosing;
 
@@ -131,14 +132,14 @@ public sealed class ChoiceModalTests
     {
         using var app = new TestApplication(configure: static builder => builder.AddCommand<ProbeCommand>());
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
         Assert.IsType<CommandModal>(app.State.Modal);
 
         app.Press(ConsoleKey.Z);
         Assert.Null(app.State.Modal);
         Assert.Contains(app.Options.Strings.CommandUnknown("Z"), app.State.Output, StringComparison.Ordinal);
 
-        app.Press(ConsoleKey.Oem1, shift: true);
+        app.Press(ConsoleKey.Oem1, KeyModifiers.Shift);
         app.Press(ConsoleKey.P);
         Assert.Equal("probe command", app.State.Output);
     }

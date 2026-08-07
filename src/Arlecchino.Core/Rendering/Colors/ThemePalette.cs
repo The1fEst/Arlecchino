@@ -1,9 +1,9 @@
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// The colours behind the roles in <see cref="Theme"/>. Every role has a default, so a palette that
+/// The colors behind the roles in <see cref="Theme"/>. Every role has a default, so a palette that
 /// overrides two of them is a valid palette — and what it does not override is the framework's own
-/// colours, described on <see cref="Arlecchino"/>.
+/// colors, described on <see cref="Arlecchino"/>.
 /// </summary>
 public sealed class ThemePalette
 {
@@ -15,20 +15,20 @@ public sealed class ThemePalette
     private static readonly Rgb Amber = new(0xD0, 0x8A, 0x2C);
 
     /// <summary>
-    /// The framework's own colours — the crimson, bone and ink of the harlequin mask. The background
-    /// stays whatever the terminal has, so it sits on a light theme as readily as a dark one; only the
+    /// The framework's own colors — the crimson, bone and ink of the harlequin mask. The background
+    /// stays whatever the terminal has, so it sits on a light theme as readily as on a dark theme; only the
     /// two cursor rows paint behind their text, because a selection has to be visible.
     ///
-    /// Each entry carries an exact colour and a palette colour behind it, so a terminal without 24-bit
+    /// Each entry carries an exact color and a palette color behind it, so a terminal without 24-bit
     /// draws the nearest thing the author picked rather than the nearest thing arithmetic found.
     ///
     /// This is what a palette starts from, so <c>new ThemePalette()</c> is already it; the property is
-    /// here to name it, and <see cref="Basic"/> is the way back to the sixteen plain colours.
+    /// here to name it, and <see cref="Basic"/> is the way back to the sixteen plain colors.
     /// </summary>
     public static ThemePalette Arlecchino { get; } = new();
 
     /// <summary>
-    /// The terminal's own sixteen colours, with nothing exact behind them: magenta titles, blue column
+    /// The terminal's own sixteen colors, with nothing exact behind them: magenta titles, blue column
     /// headers, cyan borders, a green cursor row. This was the default before 2.0, and
     /// <c>UseTheme(ThemePalette.Basic)</c> is how an application that liked it keeps it.
     /// </summary>
@@ -87,7 +87,7 @@ public sealed class ThemePalette
         ExactBackground = Bone,
     };
 
-    /// <summary>The cursor row of an unfocused pane. Bone on the hairline grey.</summary>
+    /// <summary>The cursor row of an unfocused pane. Bone on the hairline gray.</summary>
     public TermColor Selected { get; init; } = new()
     {
         Foreground = TerminalColor.White,
