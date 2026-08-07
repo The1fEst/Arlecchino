@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoColor
-sidebar_label: IArlecchinoColor
+title: "IArlecchinoColor"
+sidebar_label: "IArlecchinoColor"
 ---
 
 # IArlecchinoColor interface
@@ -19,7 +19,7 @@ public interface IArlecchinoColor
 
 | Member | Summary |
 |---|---|
-| [`Ansi`](#ansi) | The escape sequence that switches the terminal to this style, or an empty string when colour is turned off. Implementations are expected to build it once and cache it. |
+| [`Ansi`](#ansi) | The escape sequence that switches the terminal to this style, or an empty string when color is turned off. Implementations are expected to build it once and cache it. |
 
 ## Properties in detail
 
@@ -29,7 +29,7 @@ public interface IArlecchinoColor
 public string Ansi { get; }
 ```
 
-The escape sequence that switches the terminal to this style, or an empty string when colour is turned off. Implementations are expected to build it once and cache it.
+The escape sequence that switches the terminal to this style, or an empty string when color is turned off. Implementations are expected to build it once and cache it.
 
 **Type** `string`
 

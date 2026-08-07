@@ -1,6 +1,6 @@
 ---
-title: AtomsSet&lt;T&gt;
-sidebar_label: AtomsSet&lt;T&gt;
+title: "AtomsSet<T>"
+sidebar_label: "AtomsSet<T>"
 ---
 
 # AtomsSet&lt;T&gt; class

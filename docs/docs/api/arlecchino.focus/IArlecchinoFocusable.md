@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoFocusable
-sidebar_label: IArlecchinoFocusable
+title: "IArlecchinoFocusable"
+sidebar_label: "IArlecchinoFocusable"
 ---
 
 # IArlecchinoFocusable interface
@@ -25,7 +25,7 @@ public interface IArlecchinoFocusable
 
 | Member | Summary |
 |---|---|
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Handles a key while this element has the focus. |
+| [`Handle(KeyPress)`](#handle-keypress) | Handles a key while this element has the focus. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Handles a mouse event wherever it landed. Claiming one also moves the focus here, so a click selects the pane it hit. |
 
 ## Properties in detail
@@ -42,10 +42,10 @@ Set by the ring. Draw the element differently while it is false.
 
 ## Methods in detail
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Handles a key while this element has the focus.
@@ -54,7 +54,7 @@ Handles a key while this element has the focus.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What was done with it.
 

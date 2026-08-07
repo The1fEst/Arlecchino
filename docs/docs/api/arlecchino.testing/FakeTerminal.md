@@ -1,6 +1,6 @@
 ---
-title: FakeTerminal
-sidebar_label: FakeTerminal
+title: "FakeTerminal"
+sidebar_label: "FakeTerminal"
 ---
 
 # FakeTerminal class
@@ -46,14 +46,14 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 | [`DisablePaste()`](#disablepaste) | Records that bracketed paste was turned off. |
 | [`EnableMouse()`](#enablemouse) | Records that the mouse was asked for. |
 | [`EnablePaste()`](#enablepaste) | Records that bracketed paste was asked for. |
-| [`Enqueue(ConsoleKeyInfo)`](#enqueue-consolekeyinfo) | Queues a key press to be read. |
+| [`Enqueue(KeyPress)`](#enqueue-keypress) | Queues a key press to be read. |
 | [`EnqueueMouse(MouseEvent)`](#enqueuemouse-mouseevent) | Queues a mouse event to be read, the way a console that reports the mouse outside the key stream delivers one. |
-| [`EnqueueText(string)`](#enqueuetext-string) | Queues text one character at a time, as a terminal reports it, naming the key where a console names it. Whole escape sequences can be fed in as a plain string: the runtime recognises some itself and hands the rest over a character at a time, and this is that second shape — the one the reader has to make sense of on its own. The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter, a digit and a control chord all arrive carrying their key, because that is what `ReadKey` hands an application; a fake that handed over the bare character would have every test agreeing with a shape no terminal produces. One thing it deliberately does not do is fold an escape and the letter after it into one press with Alt held. A console may well do that, but the other reading — two presses in quick succession — is what a terminal sends and what the reader is built to time out on, and that is the harder case to get right. |
+| [`EnqueueText(string)`](#enqueuetext-string) | Queues text one character at a time, as a terminal reports it, naming the key where a console names it. Whole escape sequences can be fed in as a plain string: the runtime recognizes some itself and hands the rest over a character at a time, and this is that second shape — the one the reader has to make sense of on its own. The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter, a digit and a control chord all arrive carrying their key, because that is what `ReadKey` hands an application; a fake that handed over the bare character would have every test agreeing with a shape no terminal produces. One thing it deliberately does not do is fold an escape and the letter after it into one press with Alt held. A console may well do that, but the other reading — two presses in quick succession — is what a terminal sends and what the reader is built to time out on, and that is the harder case to get right. |
 | [`EnterFullScreen()`](#enterfullscreen) | Records that the screen was taken over. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Records that the screen was given back, which is what a test checks after a crash. |
 | [`ReadKey()`](#readkey) | Takes the next queued key, or nothing when the queue has run dry. |
 | [`ReadMouse()`](#readmouse) | Takes the next queued mouse event, or nothing when the queue has run dry. |
-| [`Unread(ConsoleKeyInfo)`](#unread-consolekeyinfo) | Puts a key back so the next read returns it. |
+| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back so the next read returns it. |
 | [`Write(string)`](#write-string) | Collects output instead of showing it, and applies it to [`FakeTerminal.Screen`](../arlecchino.testing/FakeTerminal.md#screen). |
 
 ## Constructors in detail
@@ -231,10 +231,10 @@ public void EnablePaste();
 
 Records that bracketed paste was asked for.
 
-### `Enqueue(ConsoleKeyInfo)` {#enqueue-consolekeyinfo}
+### `Enqueue(KeyPress)` {#enqueue-keypress}
 
 ```csharp
-public void Enqueue(ConsoleKeyInfo key);
+public void Enqueue(KeyPress key);
 ```
 
 Queues a key press to be read.
@@ -243,7 +243,7 @@ Queues a key press to be read.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key press. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key press. |
 
 ### `EnqueueMouse(MouseEvent)` {#enqueuemouse-mouseevent}
 
@@ -265,7 +265,7 @@ Queues a mouse event to be read, the way a console that reports the mouse outsid
 public void EnqueueText(string text);
 ```
 
-Queues text one character at a time, as a terminal reports it, naming the key where a console names it. Whole escape sequences can be fed in as a plain string: the runtime recognises some itself and hands the rest over a character at a time, and this is that second shape — the one the reader has to make sense of on its own. The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter, a digit and a control chord all arrive carrying their key, because that is what `ReadKey` hands an application; a fake that handed over the bare character would have every test agreeing with a shape no terminal produces. One thing it deliberately does not do is fold an escape and the letter after it into one press with Alt held. A console may well do that, but the other reading — two presses in quick succession — is what a terminal sends and what the reader is built to time out on, and that is the harder case to get right.
+Queues text one character at a time, as a terminal reports it, naming the key where a console names it. Whole escape sequences can be fed in as a plain string: the runtime recognizes some itself and hands the rest over a character at a time, and this is that second shape — the one the reader has to make sense of on its own. The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter, a digit and a control chord all arrive carrying their key, because that is what `ReadKey` hands an application; a fake that handed over the bare character would have every test agreeing with a shape no terminal produces. One thing it deliberately does not do is fold an escape and the letter after it into one press with Alt held. A console may well do that, but the other reading — two presses in quick succession — is what a terminal sends and what the reader is built to time out on, and that is the harder case to get right.
 
 **Parameters**
 
@@ -292,12 +292,12 @@ Records that the screen was given back, which is what a test checks after a cras
 ### `ReadKey()` {#readkey}
 
 ```csharp
-public ConsoleKeyInfo ReadKey();
+public KeyPress ReadKey();
 ```
 
 Takes the next queued key, or nothing when the queue has run dry.
 
-**Returns** `ConsoleKeyInfo` — The key press.
+**Returns** [`KeyPress`](../arlecchino.input/KeyPress.md) — The key press.
 
 ### `ReadMouse()` {#readmouse}
 
@@ -309,10 +309,10 @@ Takes the next queued mouse event, or nothing when the queue has run dry.
 
 **Returns** [`MouseEvent`](../arlecchino.input/MouseEvent.md) — The event.
 
-### `Unread(ConsoleKeyInfo)` {#unread-consolekeyinfo}
+### `Unread(KeyPress)` {#unread-keypress}
 
 ```csharp
-public void Unread(ConsoleKeyInfo key);
+public void Unread(KeyPress key);
 ```
 
 Puts a key back so the next read returns it.
@@ -321,7 +321,7 @@ Puts a key back so the next read returns it.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key to put back. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key to put back. |
 
 ### `Write(string)` {#write-string}
 

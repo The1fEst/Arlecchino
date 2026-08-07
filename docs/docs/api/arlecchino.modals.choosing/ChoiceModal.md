@@ -1,6 +1,6 @@
 ---
-title: ChoiceModal
-sidebar_label: ChoiceModal
+title: "ChoiceModal"
+sidebar_label: "ChoiceModal"
 ---
 
 # ChoiceModal class
@@ -32,7 +32,7 @@ public sealed class ChoiceModal : OptionListModal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`Take(ModalFrame, string)`](#take-modalframe-string) |  |
 
 ## Constructors in detail
@@ -75,10 +75,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -86,7 +86,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `Take(ModalFrame, string)` {#take-modalframe-string}
 

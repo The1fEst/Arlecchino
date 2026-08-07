@@ -1,13 +1,13 @@
 ---
-title: TerminalColor
-sidebar_label: TerminalColor
+title: "TerminalColor"
+sidebar_label: "TerminalColor"
 ---
 
 # TerminalColor enum
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-The sixteen ANSI colours plus the terminal's own default. Exact shades belong to the terminal theme, which is why chrome should pick a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a colour here.
+The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal theme, which is why chrome should pick a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a color here.
 
 ```csharp
 public enum TerminalColor : byte
@@ -17,7 +17,7 @@ public enum TerminalColor : byte
 
 | Name | Value | Summary |
 |---|---:|---|
-| `Default` | `0` | Whatever the terminal uses when no colour is set. |
+| `Default` | `0` | Whatever the terminal uses when no color is set. |
 | `Black` | `1` | Black. |
 | `Red` | `2` | Red. |
 | `Green` | `3` | Green. |
@@ -26,7 +26,7 @@ public enum TerminalColor : byte
 | `Magenta` | `6` | Magenta. |
 | `Cyan` | `7` | Cyan. |
 | `White` | `8` | White. |
-| `BrightBlack` | `9` | Bright black, usually rendered as grey. |
+| `BrightBlack` | `9` | Bright black, usually rendered as gray. |
 | `BrightRed` | `10` | Bright red. |
 | `BrightGreen` | `11` | Bright green. |
 | `BrightYellow` | `12` | Bright yellow. |

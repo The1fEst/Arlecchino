@@ -1,6 +1,6 @@
 ---
-title: FrameText
-sidebar_label: FrameText
+title: "FrameText"
+sidebar_label: "FrameText"
 ---
 
 # FrameText class
@@ -23,7 +23,7 @@ public static class FrameText
 | [`CursorJumpsIn(string)`](#cursorjumpsin-string) | The cursor moves in order. Since only what changed is redrawn, counting these is how a test shows that a frame touched a few cells rather than the whole screen. |
 | [`Lines(string)`](#lines-string) | The frame as plain rows. |
 | [`StyleSequence()`](#stylesequence) |  |
-| [`StylesIn(string)`](#stylesin-string) | The colour sequences in order, for asserting that something was drawn as a warning. |
+| [`StylesIn(string)`](#stylesin-string) | The color sequences in order, for asserting that something was drawn as a warning. |
 | [`WithoutStyles(string)`](#withoutstyles-string) | Strips every escape sequence, leaving what the user would actually read. |
 
 ## Methods in detail
@@ -150,7 +150,7 @@ Explanation:
 public static List<string> StylesIn(string text);
 ```
 
-The colour sequences in order, for asserting that something was drawn as a warning.
+The color sequences in order, for asserting that something was drawn as a warning.
 
 **Parameters**
 

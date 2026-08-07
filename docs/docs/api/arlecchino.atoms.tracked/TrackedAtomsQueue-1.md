@@ -1,6 +1,6 @@
 ---
-title: TrackedAtomsQueue&lt;T&gt;
-sidebar_label: TrackedAtomsQueue&lt;T&gt;
+title: "TrackedAtomsQueue<T>"
+sidebar_label: "TrackedAtomsQueue<T>"
 ---
 
 # TrackedAtomsQueue&lt;T&gt; class

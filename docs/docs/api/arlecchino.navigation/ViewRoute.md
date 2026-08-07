@@ -1,6 +1,6 @@
 ---
-title: ViewRoute
-sidebar_label: ViewRoute
+title: "ViewRoute"
+sidebar_label: "ViewRoute"
 ---
 
 # ViewRoute struct

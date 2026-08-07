@@ -1,6 +1,6 @@
 ---
-title: FilePickerRequest
-sidebar_label: FilePickerRequest
+title: "FilePickerRequest"
+sidebar_label: "FilePickerRequest"
 ---
 
 # FilePickerRequest class

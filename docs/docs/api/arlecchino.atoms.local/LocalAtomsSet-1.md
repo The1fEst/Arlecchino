@@ -1,6 +1,6 @@
 ---
-title: LocalAtomsSet&lt;T&gt;
-sidebar_label: LocalAtomsSet&lt;T&gt;
+title: "LocalAtomsSet<T>"
+sidebar_label: "LocalAtomsSet<T>"
 ---
 
 # LocalAtomsSet&lt;T&gt; class

@@ -1,6 +1,6 @@
 ---
-title: IAffixedModal
-sidebar_label: IAffixedModal
+title: "IAffixedModal"
+sidebar_label: "IAffixedModal"
 ---
 
 # IAffixedModal interface

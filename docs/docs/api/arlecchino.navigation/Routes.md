@@ -1,6 +1,6 @@
 ---
-title: Routes
-sidebar_label: Routes
+title: "Routes"
+sidebar_label: "Routes"
 ---
 
 # Routes class

@@ -1,6 +1,6 @@
 ---
-title: BarChart&lt;T&gt;
-sidebar_label: BarChart&lt;T&gt;
+title: "BarChart<T>"
+sidebar_label: "BarChart<T>"
 ---
 
 # BarChart&lt;T&gt; class
@@ -26,7 +26,7 @@ public sealed class BarChart<T> : IArlecchinoWidget
 | Member | Summary |
 |---|---|
 | [`Caption`](#caption) | Builds the readout drawn after each bar, given that bar's value. The readouts share one column, as wide as the longest of them, so the numbers line up under one another. |
-| [`ItemStyle`](#itemstyle) | Colours one bar, for charts where a row means something — over budget, offline, picked. |
+| [`ItemStyle`](#itemstyle) | Colors one bar, for charts where a row means something — over budget, offline, picked. |
 | [`Items`](#items) | What to chart, one bar per row. Replacing it between frames is a normal thing to do. |
 | [`LabelWidth`](#labelwidth) | Columns kept for the labels. The widest label when left alone, up to a third of the region so a long name cannot squeeze the bars out of the pane. |
 | [`Maximum`](#maximum) | The value at which a bar is full. The largest of the items when left alone; pin it to compare one frame against the next, or to keep a percentage chart honest when nothing has reached 100 yet. |
@@ -71,7 +71,7 @@ Builds the readout drawn after each bar, given that bar's value. The readouts sh
 public Func<T, IArlecchinoColor> ItemStyle { get; set; }
 ```
 
-Colours one bar, for charts where a row means something — over budget, offline, picked.
+Colors one bar, for charts where a row means something — over budget, offline, picked.
 
 **Type** `Func<T, TResult>`&lt;`T`, [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)&gt;
 

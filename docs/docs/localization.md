@@ -92,7 +92,7 @@ public IReadOnlyList<ViewCommand> Commands() =>
 [
     Bind.To(new(ConsoleKey.F5), LocString.Copy, _files.Copy),
     Bind.Going(new(ConsoleKey.F3), LocString.View, _files.Read),
-    Bind.When(new(ConsoleKey.Escape, ConsoleModifiers.Alt), LocString.Stop,
+    Bind.When(new(ConsoleKey.Escape, KeyModifiers.Alt), LocString.Stop,
         () => _work.IsBusy, _work.Cancel),
 ];
 ```

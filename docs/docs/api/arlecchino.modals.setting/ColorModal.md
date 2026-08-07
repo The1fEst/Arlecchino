@@ -1,13 +1,13 @@
 ---
-title: ColorModal
-sidebar_label: ColorModal
+title: "ColorModal"
+sidebar_label: "ColorModal"
 ---
 
 # ColorModal class
 
 **Namespace:** `Arlecchino.Modals.Setting` &middot; **Assembly:** `Arlecchino`
 
-A colour picked on three sliders. Hue, saturation and lightness are edited rather than the raw channels because they are what people reach for; the result is converted to [`Rgb`](../arlecchino.rendering.colors/Rgb.md) on the way out. Both directions round to whole units, so feeding a colour back in can shift it by one.
+A color picked on three sliders. Hue, saturation and lightness are edited rather than the raw channels because they are what people reach for; the result is converted to [`Rgb`](../arlecchino.rendering.colors/Rgb.md) on the way out. Both directions round to whole units, so feeding a color back in can shift it by one.
 
 ```csharp
 public sealed class ColorModal : Modal
@@ -30,13 +30,13 @@ public sealed class ColorModal : Modal
 | [`ChannelRows`](#channelrows) | Where each slider's row was drawn last frame, used to turn a click into a channel. |
 | [`ChannelTracks`](#channeltracks) | Where each slider's track was drawn last frame, used to turn a click into a value. |
 | [`ChannelValue`](#channelvalue) | Value of the slider the arrows currently move. |
-| [`Hue`](#hue) | Position on the colour wheel, from `0` to `359`. It wraps rather than stopping. |
+| [`Hue`](#hue) | Position on the color wheel, from `0` to `359`. It wraps rather than stopping. |
 | [`LargeStep`](#largestep) | How far the page keys move the active slider. |
-| [`Lightness`](#lightness) | Distance from black towards white, in percent. Fifty is the pure colour. |
-| [`OnPicked`](#onpicked) | Called with the colour that was confirmed. |
-| [`Saturation`](#saturation) | Distance from grey, in percent. |
+| [`Lightness`](#lightness) | Distance from black towards white, in percent. Fifty is the pure color. |
+| [`OnPicked`](#onpicked) | Called with the color that was confirmed. |
+| [`Saturation`](#saturation) | Distance from gray, in percent. |
 | [`Step`](#step) | How far the arrow keys move the active slider. |
-| [`Value`](#value) | The three sliders resolved into a colour, as drawn in the swatch. |
+| [`Value`](#value) | The three sliders resolved into a color, as drawn in the swatch. |
 
 ## Methods
 
@@ -44,14 +44,14 @@ public sealed class ColorModal : Modal
 |---|---|
 | [`Add(int)`](#add-int) | Moves the active slider. Hue wraps around the wheel; the other two stop at their ends. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) |  |
 | [`MaximumOf(ColorChannel)`](#maximumof-colorchannel) | Upper end of a slider, since hue counts degrees and the others count percent. |
 | [`MoveChannel(int)`](#movechannel-int) | Moves between the sliders, stopping at the first and the last. |
 | [`MoveToMaximum()`](#movetomaximum) | Jumps the active slider to its right end. |
 | [`MoveToMinimum()`](#movetominimum) | Jumps the active slider to its left end. |
 | [`SetChannelFromFraction(ColorChannel, decimal)`](#setchannelfromfraction-colorchannel-decimal) | Places a slider's handle at a position along its track. |
-| [`SetValue(Rgb)`](#setvalue-rgb) | Loads a colour into the three sliders, which is how an existing value is edited. |
+| [`SetValue(Rgb)`](#setvalue-rgb) | Loads a color into the three sliders, which is how an existing value is edited. |
 | [`ValueOf(ColorChannel)`](#valueof-colorchannel) | Value of a slider, for drawing all three at once. |
 
 ## Constructors in detail
@@ -126,7 +126,7 @@ Value of the slider the arrows currently move.
 public int Hue { get; set; }
 ```
 
-Position on the colour wheel, from `0` to `359`. It wraps rather than stopping.
+Position on the color wheel, from `0` to `359`. It wraps rather than stopping.
 
 **Type** `int`
 
@@ -146,7 +146,7 @@ How far the page keys move the active slider.
 public int Lightness { get; set; }
 ```
 
-Distance from black towards white, in percent. Fifty is the pure colour.
+Distance from black towards white, in percent. Fifty is the pure color.
 
 **Type** `int`
 
@@ -156,7 +156,7 @@ Distance from black towards white, in percent. Fifty is the pure colour.
 public Action<Rgb> OnPicked { get; init; }
 ```
 
-Called with the colour that was confirmed.
+Called with the color that was confirmed.
 
 **Type** `Action<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
 
@@ -166,7 +166,7 @@ Called with the colour that was confirmed.
 public int Saturation { get; set; }
 ```
 
-Distance from grey, in percent.
+Distance from gray, in percent.
 
 **Type** `int`
 
@@ -186,7 +186,7 @@ How far the arrow keys move the active slider.
 public Rgb Value { get; }
 ```
 
-The three sliders resolved into a colour, as drawn in the swatch.
+The three sliders resolved into a color, as drawn in the swatch.
 
 **Type** [`Rgb`](../arlecchino.rendering.colors/Rgb.md)
 
@@ -218,10 +218,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -229,7 +229,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `HandleMouse(ModalFrame, MouseEvent)` {#handlemouse-modalframe-mouseevent}
 
@@ -311,13 +311,13 @@ Places a slider's handle at a position along its track.
 public void SetValue(Rgb color);
 ```
 
-Loads a colour into the three sliders, which is how an existing value is edited.
+Loads a color into the three sliders, which is how an existing value is edited.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The colour to start from. |
+| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color to start from. |
 
 ### `ValueOf(ColorChannel)` {#valueof-colorchannel}
 

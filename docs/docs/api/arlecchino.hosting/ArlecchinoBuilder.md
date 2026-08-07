@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoBuilder
-sidebar_label: ArlecchinoBuilder
+title: "ArlecchinoBuilder"
+sidebar_label: "ArlecchinoBuilder"
 ---
 
 # ArlecchinoBuilder class
@@ -37,11 +37,11 @@ public sealed class ArlecchinoBuilder
 | [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default. |
 | [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own: a band along the top, a bar along the bottom, whatever a screen here always has around it. One instance serves the whole application, so what the frame holds outlives the view — a row of tabs keeps its place when a screen is left and come back to. A view that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout` and is drawn without it. |
 | [`UseMouse()`](#usemouse) | Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs. |
-| [`UseNotifications(Nullable<ConsoleKeyInfo>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-consolekeyinfo-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
-| [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localised: nothing is looked up from resources. |
+| [`UseNotifications(Nullable<KeyPress>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-keypress-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
+| [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localized: nothing is looked up from resources. |
 | [`UseTerminal<TTerminal>()`](#useterminal-tterminal) | Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them. |
 | [`UseTextInput(TextInputMode)`](#usetextinput-textinputmode) | Chooses how typed characters are read. This is a trade-off rather than a preference: reading the terminal's own characters accepts any language but can misread keys on some terminals. |
-| [`UseTheme(ThemePalette)`](#usetheme-themepalette) | Replaces the colours. What actually reaches the screen still depends on what the terminal supports. |
+| [`UseTheme(ThemePalette)`](#usetheme-themepalette) | Replaces the colors. What actually reaches the screen still depends on what the terminal supports. |
 | [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts. Everything stays registered, so a test can drive the loop itself frame by frame. |
 | [`WithoutNotifications()`](#withoutnotifications) | Leaves the output row off, so nothing the application says is drawn on the frame. |
 
@@ -230,11 +230,11 @@ Turns the mouse on. It stays off by default because the terminal then stops hand
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
-### `UseNotifications(Nullable<ConsoleKeyInfo>, Nullable<TimeSpan>, Nullable<TimeSpan>)` {#usenotifications-nullable-consolekeyinfo-nullable-timespan-nullable-timespan}
+### `UseNotifications(Nullable<KeyPress>, Nullable<TimeSpan>, Nullable<TimeSpan>)` {#usenotifications-nullable-keypress-nullable-timespan-nullable-timespan}
 
 ```csharp
 public ArlecchinoBuilder UseNotifications(
-    Nullable<ConsoleKeyInfo> key,
+    Nullable<KeyPress> key,
     Nullable<TimeSpan> timeout,
     Nullable<TimeSpan> lifetime);
 ```
@@ -245,7 +245,7 @@ Turns the output row on and says how long a message lives. The row shows the new
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `Nullable<T>`&lt;`ConsoleKeyInfo`&gt; | Key that opens the notifications screen, modifiers and all. Omit it for `Ctrl+N`. |
+| `key` | `Nullable<T>`&lt;[`KeyPress`](../arlecchino.input/KeyPress.md)&gt; | Key that opens the notifications screen, modifiers and all. Omit it for `Ctrl+N`. |
 | `timeout` | `Nullable<T>`&lt;`TimeSpan`&gt; | How long a message holds the output row; omit to keep the default. |
 | `lifetime` | `Nullable<T>`&lt;`TimeSpan`&gt; | How long it stays in the list; omit to keep the default. |
 
@@ -257,7 +257,7 @@ Turns the output row on and says how long a message lives. The row shows the new
 public ArlecchinoBuilder UseStrings(ArlecchinoStrings strings);
 ```
 
-Replaces the wording the framework itself shows. This is the only way it is localised: nothing is looked up from resources.
+Replaces the wording the framework itself shows. This is the only way it is localized: nothing is looked up from resources.
 
 **Parameters**
 
@@ -299,13 +299,13 @@ Chooses how typed characters are read. This is a trade-off rather than a prefere
 public ArlecchinoBuilder UseTheme(ThemePalette palette);
 ```
 
-Replaces the colours. What actually reaches the screen still depends on what the terminal supports.
+Replaces the colors. What actually reaches the screen still depends on what the terminal supports.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `palette` | [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md) | The colours to use. |
+| `palette` | [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md) | The colors to use. |
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

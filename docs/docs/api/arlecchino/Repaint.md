@@ -1,6 +1,6 @@
 ---
-title: Repaint
-sidebar_label: Repaint
+title: "Repaint"
+sidebar_label: "Repaint"
 ---
 
 # Repaint class

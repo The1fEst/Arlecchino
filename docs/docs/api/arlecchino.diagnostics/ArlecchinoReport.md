@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoReport
-sidebar_label: ArlecchinoReport
+title: "ArlecchinoReport"
+sidebar_label: "ArlecchinoReport"
 ---
 
 # ArlecchinoReport class

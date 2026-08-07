@@ -1,6 +1,6 @@
 ---
-title: CommandModal
-sidebar_label: CommandModal
+title: "CommandModal"
+sidebar_label: "CommandModal"
 ---
 
 # CommandModal class
@@ -35,7 +35,7 @@ public sealed class CommandModal : Modal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) |  |
 
 ## Constructors in detail
@@ -67,12 +67,12 @@ The key and label of every command available in this context.
 ### `OnKey` {#onkey}
 
 ```csharp
-public Action<ConsoleKeyInfo>? OnKey { get; init; }
+public Action<KeyPress>? OnKey { get; init; }
 ```
 
 What a key press means. Set by whoever opened the palette.
 
-**Type** `Action<T>`&lt;`ConsoleKeyInfo`&gt;
+**Type** `Action<T>`&lt;[`KeyPress`](../arlecchino.input/KeyPress.md)&gt;
 
 ### `OnRow` {#onrow}
 
@@ -108,10 +108,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -119,7 +119,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `HandleMouse(ModalFrame, MouseEvent)` {#handlemouse-modalframe-mouseevent}
 

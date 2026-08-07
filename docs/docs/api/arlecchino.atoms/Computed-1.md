@@ -1,6 +1,6 @@
 ---
-title: Computed&lt;T&gt;
-sidebar_label: Computed&lt;T&gt;
+title: "Computed<T>"
+sidebar_label: "Computed<T>"
 ---
 
 # Computed&lt;T&gt; class

@@ -1,6 +1,6 @@
 ---
-title: IAtomEdit
-sidebar_label: IAtomEdit
+title: "IAtomEdit"
+sidebar_label: "IAtomEdit"
 ---
 
 # IAtomEdit interface

@@ -1,6 +1,6 @@
 ---
-title: Form
-sidebar_label: Form
+title: "Form"
+sidebar_label: "Form"
 ---
 
 # Form class
@@ -35,7 +35,7 @@ public sealed class Form : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the fields with their labels aligned, scrolled so the selection stays in view, and returns the rows below the last one written. Buttons are left out of the alignment, since they have no value to line up against. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves through the fields, opens one, or clears it. For a view that is nothing but a form; views that mix a form with other panes hand it to the focus ring instead. |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves through the fields, opens one, or clears it. For a view that is nothing but a form; views that mix a form with other panes hand it to the focus ring instead. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel and selects with a click. Clicking the already selected field opens it, so a double click reads as select-then-edit. |
 | [`Hints()`](#hints) | What the form does with keys, worded and bound as the application configured it, ready to be shown in the hint line. |
 
@@ -122,10 +122,10 @@ Draws the fields with their labels aligned, scrolled so the selection stays in v
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — The region below the fields, which is empty when they filled it.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Moves through the fields, opens one, or clears it. For a view that is nothing but a form; views that mix a form with other panes hand it to the focus ring instead.
@@ -134,7 +134,7 @@ Moves through the fields, opens one, or clears it. For a view that is nothing bu
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What was done with it, and where to go.
 

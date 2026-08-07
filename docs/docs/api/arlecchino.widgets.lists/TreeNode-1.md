@@ -1,6 +1,6 @@
 ---
-title: TreeNode&lt;T&gt;
-sidebar_label: TreeNode&lt;T&gt;
+title: "TreeNode<T>"
+sidebar_label: "TreeNode<T>"
 ---
 
 # TreeNode&lt;T&gt; class

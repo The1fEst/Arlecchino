@@ -1,6 +1,6 @@
 ---
-title: Screen
-sidebar_label: Screen
+title: "Screen"
+sidebar_label: "Screen"
 ---
 
 # Screen class

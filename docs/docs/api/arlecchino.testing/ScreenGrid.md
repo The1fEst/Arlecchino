@@ -1,6 +1,6 @@
 ---
-title: ScreenGrid
-sidebar_label: ScreenGrid
+title: "ScreenGrid"
+sidebar_label: "ScreenGrid"
 ---
 
 # ScreenGrid class
@@ -37,9 +37,9 @@ public sealed class ScreenGrid
 | [`CellAt(int, int)`](#cellat-int-int) | The symbol standing on a cell, or an empty string for the second half of a wide one. |
 | [`Line(int)`](#line-int) | One row as it reads, padded out to the full width. |
 | [`Lines()`](#lines) | Every row as it reads. |
-| [`Matches(ScreenGrid)`](#matches-screengrid) | Whether another screen holds the same symbols in the same styles. Text alone is the readable half of a frame, so a screen that matches on [`ScreenGrid.ToString`](../arlecchino.testing/ScreenGrid.md#tostring) can still differ in colour. |
+| [`Matches(ScreenGrid)`](#matches-screengrid) | Whether another screen holds the same symbols in the same styles. Text alone is the readable half of a frame, so a screen that matches on [`ScreenGrid.ToString`](../arlecchino.testing/ScreenGrid.md#tostring) can still differ in color. |
 | [`Resize(int, int)`](#resize-int-int) | Resizes the screen, keeping what fits and dropping the rest, the way a terminal does. The cursor is pulled back inside. |
-| [`StyleAt(int, int)`](#styleat-int-int) | The style sequence in force on a cell, empty where the style was reset. Compare it against [`TermColor.Ansi`](../arlecchino.rendering.colors/TermColor.md#ansi) to assert that something was drawn in the colour it should be. |
+| [`StyleAt(int, int)`](#styleat-int-int) | The style sequence in force on a cell, empty where the style was reset. Compare it against [`TermColor.Ansi`](../arlecchino.rendering.colors/TermColor.md#ansi) to assert that something was drawn in the color it should be. |
 | [`ToString()`](#tostring) | The whole screen as text, rows separated by line feeds. |
 
 ## Constructors in detail
@@ -176,7 +176,7 @@ Every row as it reads.
 public bool Matches(ScreenGrid other);
 ```
 
-Whether another screen holds the same symbols in the same styles. Text alone is the readable half of a frame, so a screen that matches on [`ScreenGrid.ToString`](../arlecchino.testing/ScreenGrid.md#tostring) can still differ in colour.
+Whether another screen holds the same symbols in the same styles. Text alone is the readable half of a frame, so a screen that matches on [`ScreenGrid.ToString`](../arlecchino.testing/ScreenGrid.md#tostring) can still differ in color.
 
 **Parameters**
 
@@ -207,7 +207,7 @@ Resizes the screen, keeping what fits and dropping the rest, the way a terminal 
 public string StyleAt(int row, int column);
 ```
 
-The style sequence in force on a cell, empty where the style was reset. Compare it against [`TermColor.Ansi`](../arlecchino.rendering.colors/TermColor.md#ansi) to assert that something was drawn in the colour it should be.
+The style sequence in force on a cell, empty where the style was reset. Compare it against [`TermColor.Ansi`](../arlecchino.rendering.colors/TermColor.md#ansi) to assert that something was drawn in the color it should be.
 
 **Parameters**
 

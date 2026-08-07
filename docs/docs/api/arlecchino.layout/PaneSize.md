@@ -1,6 +1,6 @@
 ---
-title: PaneSize
-sidebar_label: PaneSize
+title: "PaneSize"
+sidebar_label: "PaneSize"
 ---
 
 # PaneSize struct

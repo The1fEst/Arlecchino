@@ -324,7 +324,7 @@ public sealed class ConfirmModal : Modal
         Box = box;
     }
 
-    public override void Handle(ModalFrame frame, ConsoleKeyInfo key)
+    public override void Handle(ModalFrame frame, KeyPress key)
     {
         if (key.Key is not (ConsoleKey.Y or ConsoleKey.N))
         {

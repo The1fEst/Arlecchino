@@ -1,6 +1,6 @@
 ---
-title: GraphSymbols
-sidebar_label: GraphSymbols
+title: "GraphSymbols"
+sidebar_label: "GraphSymbols"
 ---
 
 # GraphSymbols enum

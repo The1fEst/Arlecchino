@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoCommand
-sidebar_label: IArlecchinoCommand
+title: "IArlecchinoCommand"
+sidebar_label: "IArlecchinoCommand"
 ---
 
 # IArlecchinoCommand interface

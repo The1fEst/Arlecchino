@@ -1,6 +1,6 @@
 ---
-title: ActiveView
-sidebar_label: ActiveView
+title: "ActiveView"
+sidebar_label: "ActiveView"
 ---
 
 # ActiveView class

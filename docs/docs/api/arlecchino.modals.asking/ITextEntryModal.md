@@ -1,6 +1,6 @@
 ---
-title: ITextEntryModal
-sidebar_label: ITextEntryModal
+title: "ITextEntryModal"
+sidebar_label: "ITextEntryModal"
 ---
 
 # ITextEntryModal interface

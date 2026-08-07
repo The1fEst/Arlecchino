@@ -1,6 +1,6 @@
 ---
-title: SystemTerminal
-sidebar_label: SystemTerminal
+title: "SystemTerminal"
+sidebar_label: "SystemTerminal"
 ---
 
 # SystemTerminal class
@@ -19,7 +19,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 
 | Member | Summary |
 |---|---|
-| [`SystemTerminal()`](#systemterminal) | Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md). |
+| [`SystemTerminal()`](#systemterminal) | Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops color to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md). |
 
 ## Properties
 
@@ -43,7 +43,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and makes the cursor visible again. |
 | [`ReadKey()`](#readkey) | Takes the next key without echoing it. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
-| [`Unread(ConsoleKeyInfo)`](#unread-consolekeyinfo) | Puts a key back so the next read returns it. |
+| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back so the next read returns it. |
 | [`Write(string)`](#write-string) | Writes a composed frame. |
 
 ## Constructors in detail
@@ -54,7 +54,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 public SystemTerminal();
 ```
 
-Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops colour to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md).
+Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform allows them. A console that refuses them drops color to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md).
 
 ## Properties in detail
 
@@ -165,12 +165,12 @@ Returns to the normal screen and makes the cursor visible again.
 ### `ReadKey()` {#readkey}
 
 ```csharp
-public ConsoleKeyInfo ReadKey();
+public KeyPress ReadKey();
 ```
 
 Takes the next key without echoing it.
 
-**Returns** `ConsoleKeyInfo` — The key that was pressed.
+**Returns** [`KeyPress`](../arlecchino.input/KeyPress.md) — The key that was pressed.
 
 ### `ReadMouse()` {#readmouse}
 
@@ -188,10 +188,10 @@ Takes the next mouse event read from the console's event queue.
 |---|---|
 | `InvalidOperationException` | The mouse is not being read on this platform. |
 
-### `Unread(ConsoleKeyInfo)` {#unread-consolekeyinfo}
+### `Unread(KeyPress)` {#unread-keypress}
 
 ```csharp
-public void Unread(ConsoleKeyInfo key);
+public void Unread(KeyPress key);
 ```
 
 Puts a key back so the next read returns it.
@@ -200,7 +200,7 @@ Puts a key back so the next read returns it.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key to put back. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key to put back. |
 
 ### `Write(string)` {#write-string}
 

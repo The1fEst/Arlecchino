@@ -1,6 +1,6 @@
 ---
-title: KeyBinding
-sidebar_label: KeyBinding
+title: "KeyBinding"
+sidebar_label: "KeyBinding"
 ---
 
 # KeyBinding struct
@@ -19,7 +19,7 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 
 | Member | Summary |
 |---|---|
-| [`KeyBinding(ConsoleKey, ConsoleModifiers, ConsoleKey, ConsoleModifiers)`](#keybinding-consolekey-consolemodifiers-consolekey-consolemodifiers) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. |
+| [`KeyBinding(ConsoleKey, KeyModifiers, ConsoleKey, KeyModifiers)`](#keybinding-consolekey-keymodifiers-consolekey-keymodifiers) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. |
 
 ## Properties
 
@@ -35,20 +35,21 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(out ConsoleKey, out ConsoleModifiers, out ConsoleKey, out ConsoleModifiers)`](#deconstruct-out-consolekey-out-consolemodifiers-out-consolekey-out-consolemodifiers) |  |
-| [`Matches(ConsoleKeyInfo)`](#matches-consolekeyinfo) | Whether a key press is this binding, either of its combinations. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed. |
+| [`Deconstruct(out ConsoleKey, out KeyModifiers, out ConsoleKey, out KeyModifiers)`](#deconstruct-out-consolekey-out-keymodifiers-out-consolekey-out-keymodifiers) |  |
+| [`Matches(KeyPress)`](#matches-keypress) | Whether a key press is this binding, either of its combinations. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed. |
+| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The same binding with one modifier put in place of another, wherever it appears. This is how an application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing accented characters, so `Alt` never arrives and `Super` is what that keyboard has spare. |
 | [`ToString()`](#tostring) | How the binding is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. The palette and the hints box display this, so a rebound key relabels itself everywhere. |
 
 ## Constructors in detail
 
-### `KeyBinding(ConsoleKey, ConsoleModifiers, ConsoleKey, ConsoleModifiers)` {#keybinding-consolekey-consolemodifiers-consolekey-consolemodifiers}
+### `KeyBinding(ConsoleKey, KeyModifiers, ConsoleKey, KeyModifiers)` {#keybinding-consolekey-keymodifiers-consolekey-keymodifiers}
 
 ```csharp
 public KeyBinding(
     ConsoleKey Key,
-    ConsoleModifiers Modifiers = None,
+    KeyModifiers Modifiers = None,
     ConsoleKey AlsoKey = None,
-    ConsoleModifiers AlsoModifiers = None);
+    KeyModifiers AlsoModifiers = None);
 ```
 
 A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable.
@@ -58,9 +59,9 @@ A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fire
 | Name | Type | Description |
 |---|---|---|
 | `Key` | `ConsoleKey` | The key itself. |
-| `Modifiers` | `ConsoleModifiers` | Modifiers that must be held, exactly. |
+| `Modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | Modifiers that must be held, exactly. |
 | `AlsoKey` | `ConsoleKey` | A second key that triggers the same thing, for actions the platforms disagree about — copying is `Ctrl+Insert` in one habit and `Ctrl+Shift+C` in another. |
-| `AlsoModifiers` | `ConsoleModifiers` | Modifiers for that second key. |
+| `AlsoModifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | Modifiers for that second key. |
 
 ## Properties in detail
 
@@ -77,12 +78,12 @@ A second key that triggers the same thing, for actions the platforms disagree ab
 ### `AlsoModifiers` {#alsomodifiers}
 
 ```csharp
-public ConsoleModifiers AlsoModifiers { get; init; }
+public KeyModifiers AlsoModifiers { get; init; }
 ```
 
 Modifiers for that second key.
 
-**Type** `ConsoleModifiers`
+**Type** [`KeyModifiers`](../arlecchino.input/KeyModifiers.md)
 
 ### `IsNone` {#isnone}
 
@@ -107,23 +108,23 @@ The key itself.
 ### `Modifiers` {#modifiers}
 
 ```csharp
-public ConsoleModifiers Modifiers { get; init; }
+public KeyModifiers Modifiers { get; init; }
 ```
 
 Modifiers that must be held, exactly.
 
-**Type** `ConsoleModifiers`
+**Type** [`KeyModifiers`](../arlecchino.input/KeyModifiers.md)
 
 ## Methods in detail
 
-### `Deconstruct(out ConsoleKey, out ConsoleModifiers, out ConsoleKey, out ConsoleModifiers)` {#deconstruct-out-consolekey-out-consolemodifiers-out-consolekey-out-consolemodifiers}
+### `Deconstruct(out ConsoleKey, out KeyModifiers, out ConsoleKey, out KeyModifiers)` {#deconstruct-out-consolekey-out-keymodifiers-out-consolekey-out-keymodifiers}
 
 ```csharp
 public void Deconstruct(
     out ConsoleKey Key,
-    out ConsoleModifiers Modifiers,
+    out KeyModifiers Modifiers,
     out ConsoleKey AlsoKey,
-    out ConsoleModifiers AlsoModifiers);
+    out KeyModifiers AlsoModifiers);
 ```
 
 **Parameters**
@@ -131,14 +132,14 @@ public void Deconstruct(
 | Name | Type | Description |
 |---|---|---|
 | `Key` | `ConsoleKey` |  |
-| `Modifiers` | `ConsoleModifiers` |  |
+| `Modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) |  |
 | `AlsoKey` | `ConsoleKey` |  |
-| `AlsoModifiers` | `ConsoleModifiers` |  |
+| `AlsoModifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) |  |
 
-### `Matches(ConsoleKeyInfo)` {#matches-consolekeyinfo}
+### `Matches(KeyPress)` {#matches-keypress}
 
 ```csharp
-public bool Matches(ConsoleKeyInfo pressed);
+public bool Matches(KeyPress pressed);
 ```
 
 Whether a key press is this binding, either of its combinations. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed.
@@ -147,9 +148,26 @@ Whether a key press is this binding, either of its combinations. Terminals that 
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | `ConsoleKeyInfo` | The key that was pressed. |
+| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `bool` — `true` when the press should trigger this binding.
+
+### `Replacing(KeyModifiers, KeyModifiers)` {#replacing-keymodifiers-keymodifiers}
+
+```csharp
+public KeyBinding Replacing(KeyModifiers from, KeyModifiers to);
+```
+
+The same binding with one modifier put in place of another, wherever it appears. This is how an application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing accented characters, so `Alt` never arrives and `Super` is what that keyboard has spare.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `from` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | The modifier to take out. |
+| `to` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | The modifier to put in its place. |
+
+**Returns** [`KeyBinding`](../arlecchino.input/KeyBinding.md) — The rewritten binding, or this one when the modifier is not in it.
 
 ### `ToString()` {#tostring}
 

@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoKeymap
-sidebar_label: ArlecchinoKeymap
+title: "ArlecchinoKeymap"
+sidebar_label: "ArlecchinoKeymap"
 ---
 
 # ArlecchinoKeymap class
@@ -25,7 +25,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 
 | Member | Summary |
 |---|---|
-| [`Back`](#back) | Goes back in the history. `Alt+←` by default. |
+| [`Back`](#back) | Goes back in the history. `Cmd+←` on a Mac, `Alt+←` elsewhere. |
 | [`Cancel`](#cancel) | Dismisses a dialog or leaves a screen. `Esc` by default. |
 | [`Confirm`](#confirm) | Accepts a dialog, opens a field, activates a row. `Enter` by default. |
 | [`Copy`](#copy) | Copies what is being edited to the clipboard. Two combinations, because the habits differ: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone — that is how the user stops the application. |
@@ -34,7 +34,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`EraseToStart`](#erasetostart) | Deletes everything before the caret. `Ctrl+U` by default, as in a shell. |
 | [`EraseWord`](#eraseword) | Deletes the word before the caret. `Ctrl+Backspace` by default. |
 | [`First`](#first) | Goes to the start of a list or the minimum of a range. `Home` by default. |
-| [`Forward`](#forward) | Retraces a step back. `Alt+→` by default. |
+| [`Forward`](#forward) | Retraces a step back. `Cmd+→` on a Mac, `Alt+→` elsewhere. |
 | [`Help`](#help) | Opens the screen listing every key. `F1` by default. |
 | [`JumpDown`](#jumpdown) | A large step down, or a page of rows. `PgDn` by default. |
 | [`JumpUp`](#jumpup) | A large step up, or a page of rows. `PgUp` by default. |
@@ -53,6 +53,12 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`WordLeft`](#wordleft) | Moves the caret to the previous word. `Ctrl+←` by default. |
 | [`WordRight`](#wordright) | Moves the caret past the next word. `Ctrl+→` by default. |
 
+## Methods
+
+| Member | Summary |
+|---|---|
+| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The whole map with one modifier put in place of another. A keyboard that cannot send a modifier makes every key built on it unreachable, and rewriting thirty bindings by hand to say so is how an application ends up with twenty-eight of them rewritten. A Mac terminal is the case this was written for: Option is spoken for by the characters it types, so `Alt` never arrives and Command is what that keyboard has going spare. |
+
 ## Constructors in detail
 
 ### `ArlecchinoKeymap()` {#arlecchinokeymap}
@@ -69,7 +75,7 @@ public ArlecchinoKeymap();
 public KeyBinding Back { get; init; }
 ```
 
-Goes back in the history. `Alt+←` by default.
+Goes back in the history. `Cmd+←` on a Mac, `Alt+←` elsewhere.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -159,7 +165,7 @@ Goes to the start of a list or the minimum of a range. `Home` by default.
 public KeyBinding Forward { get; init; }
 ```
 
-Retraces a step back. `Alt+→` by default.
+Retraces a step back. `Cmd+→` on a Mac, `Alt+→` elsewhere.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -332,4 +338,23 @@ public KeyBinding WordRight { get; init; }
 Moves the caret past the next word. `Ctrl+→` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+## Methods in detail
+
+### `Replacing(KeyModifiers, KeyModifiers)` {#replacing-keymodifiers-keymodifiers}
+
+```csharp
+public ArlecchinoKeymap Replacing(KeyModifiers from, KeyModifiers to);
+```
+
+The whole map with one modifier put in place of another. A keyboard that cannot send a modifier makes every key built on it unreachable, and rewriting thirty bindings by hand to say so is how an application ends up with twenty-eight of them rewritten. A Mac terminal is the case this was written for: Option is spoken for by the characters it types, so `Alt` never arrives and Command is what that keyboard has going spare.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `from` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | The modifier to take out. |
+| `to` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | The modifier to put in its place. |
+
+**Returns** [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) — A new map, with every binding rewritten.
 

@@ -1,6 +1,6 @@
 ---
-title: ProgressBar
-sidebar_label: ProgressBar
+title: "ProgressBar"
+sidebar_label: "ProgressBar"
 ---
 
 # ProgressBar class
@@ -29,7 +29,7 @@ public sealed class ProgressBar : IArlecchinoWidget
 | [`Fraction`](#fraction) | How full the bar is, from `0` to `1`. An empty range reads as `0`. |
 | [`Maximum`](#maximum) | Value at which the bar is full. |
 | [`Minimum`](#minimum) | Value at which the bar is empty. |
-| [`Style`](#style) | Colour of the filled part. The theme's active colour when left alone. |
+| [`Style`](#style) | Color of the filled part. The theme's active color when left alone. |
 | [`Value`](#value) | How far along it is now. |
 
 ## Methods
@@ -94,7 +94,7 @@ Value at which the bar is empty.
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour of the filled part. The theme's active colour when left alone.
+Color of the filled part. The theme's active color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 

@@ -177,7 +177,7 @@ public sealed class TasksView : IArlecchinoView
         _layout.Draw(_surface.Content);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => _list.Handle(key).Route;
+    public ViewRoute Handle(KeyPress key) => _list.Handle(key).Route;
 
     public ViewRoute HandleMouse(MouseEvent mouse) => _list.HandleMouse(mouse).Route;
 

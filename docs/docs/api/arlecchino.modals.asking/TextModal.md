@@ -1,6 +1,6 @@
 ---
-title: TextModal
-sidebar_label: TextModal
+title: "TextModal"
+sidebar_label: "TextModal"
 ---
 
 # TextModal class
@@ -42,7 +42,7 @@ public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal
 |---|---|
 | [`AcceptsCharacter(char)`](#acceptscharacter-char) | Accepts anything that can be typed. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 
 ## Constructors in detail
 
@@ -180,10 +180,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -191,5 +191,5 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 

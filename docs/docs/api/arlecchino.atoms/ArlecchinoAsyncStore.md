@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoAsyncStore
-sidebar_label: ArlecchinoAsyncStore
+title: "ArlecchinoAsyncStore"
+sidebar_label: "ArlecchinoAsyncStore"
 ---
 
 # ArlecchinoAsyncStore class

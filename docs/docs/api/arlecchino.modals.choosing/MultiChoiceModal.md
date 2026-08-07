@@ -1,6 +1,6 @@
 ---
-title: MultiChoiceModal
-sidebar_label: MultiChoiceModal
+title: "MultiChoiceModal"
+sidebar_label: "MultiChoiceModal"
 ---
 
 # MultiChoiceModal class
@@ -33,7 +33,7 @@ public sealed class MultiChoiceModal : OptionListModal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`IsSelected(string)`](#isselected-string) | Whether an option is marked. |
 | [`SelectedInOptionOrder()`](#selectedinoptionorder) | What is marked, in the order of the options rather than the order it was clicked in, so the result does not depend on how the user got there. |
 | [`Take(ModalFrame, string)`](#take-modalframe-string) |  |
@@ -89,10 +89,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -100,7 +100,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `IsSelected(string)` {#isselected-string}
 

@@ -1,6 +1,6 @@
 ---
-title: TerminalInputReader
-sidebar_label: TerminalInputReader
+title: "TerminalInputReader"
+sidebar_label: "TerminalInputReader"
 ---
 
 # TerminalInputReader class
@@ -23,7 +23,7 @@ public sealed class TerminalInputReader
 
 | Member | Summary |
 |---|---|
-| [`Read(ConsoleKeyInfo)`](#read-consolekeyinfo) | Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind. |
+| [`Read(KeyPress)`](#read-keypress) | Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind. |
 | [`ReadPending()`](#readpending) | Reads everything waiting and returns, without blocking for more. Mouse events are drained too, since a terminal that reports them outside the key stream would otherwise pile them up. |
 
 ## Constructors in detail
@@ -49,10 +49,10 @@ Creates the reader. Everything it reads is routed as it is read, which is what a
 
 ## Methods in detail
 
-### `Read(ConsoleKeyInfo)` {#read-consolekeyinfo}
+### `Read(KeyPress)` {#read-keypress}
 
 ```csharp
-public void Read(ConsoleKeyInfo key);
+public void Read(KeyPress key);
 ```
 
 Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind.
@@ -61,7 +61,7 @@ Handles one key press, reading further keys itself when it looks like the start 
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was read. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was read. |
 
 ### `ReadPending()` {#readpending}
 

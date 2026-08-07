@@ -1,6 +1,6 @@
 ---
-title: TrackedAtom&lt;T&gt;
-sidebar_label: TrackedAtom&lt;T&gt;
+title: "TrackedAtom<T>"
+sidebar_label: "TrackedAtom<T>"
 ---
 
 # TrackedAtom&lt;T&gt; class

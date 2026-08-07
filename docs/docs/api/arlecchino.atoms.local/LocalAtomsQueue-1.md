@@ -1,6 +1,6 @@
 ---
-title: LocalAtomsQueue&lt;T&gt;
-sidebar_label: LocalAtomsQueue&lt;T&gt;
+title: "LocalAtomsQueue<T>"
+sidebar_label: "LocalAtomsQueue<T>"
 ---
 
 # LocalAtomsQueue&lt;T&gt; class

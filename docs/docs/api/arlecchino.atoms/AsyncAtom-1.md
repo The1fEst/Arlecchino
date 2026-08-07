@@ -1,6 +1,6 @@
 ---
-title: AsyncAtom&lt;T&gt;
-sidebar_label: AsyncAtom&lt;T&gt;
+title: "AsyncAtom<T>"
+sidebar_label: "AsyncAtom<T>"
 ---
 
 # AsyncAtom&lt;T&gt; class

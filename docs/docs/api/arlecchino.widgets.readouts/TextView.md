@@ -1,6 +1,6 @@
 ---
-title: TextView
-sidebar_label: TextView
+title: "TextView"
+sidebar_label: "TextView"
 ---
 
 # TextView class
@@ -29,7 +29,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget, IArlecchinoWidget, 
 | [`LineCount`](#linecount) | How many lines the text takes once wrapped to the last width it was drawn at. |
 | [`Offset`](#offset) | First wrapped line shown. |
 | [`ShowScrollBar`](#showscrollbar) | Whether a scroll bar is drawn when the text does not fit. |
-| [`Style`](#style) | Colour of the text. The theme's default when left alone. |
+| [`Style`](#style) | Color of the text. The theme's default when left alone. |
 | [`Text`](#text) | The text shown. Line breaks are kept; long lines wrap on spaces. |
 
 ## Methods
@@ -37,7 +37,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget, IArlecchinoWidget, 
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Wraps the text to the region and draws the part that fits. The view fills whatever it is given, so nothing is left underneath it. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Scrolls the text. |
+| [`Handle(KeyPress)`](#handle-keypress) | Scrolls the text. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel while the pointer is over the text. |
 
 ## Constructors in detail
@@ -104,7 +104,7 @@ Whether a scroll bar is drawn when the text does not fit.
 public IArlecchinoColor? Style { get; set; }
 ```
 
-Colour of the text. The theme's default when left alone.
+Color of the text. The theme's default when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 
@@ -136,10 +136,10 @@ Wraps the text to the region and draws the part that fits. The view fills whatev
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — An empty region: the view uses every row it is handed.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Scrolls the text.
@@ -148,7 +148,7 @@ Scrolls the text.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — Whether the view took it.
 

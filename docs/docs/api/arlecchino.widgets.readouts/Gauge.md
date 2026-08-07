@@ -1,13 +1,13 @@
 ---
-title: Gauge
-sidebar_label: Gauge
+title: "Gauge"
+sidebar_label: "Gauge"
 ---
 
 # Gauge class
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-One value against a range that means something, drawn as a bar whose colour changes as it crosses the bands it was given: the fill turns amber where the load is worth watching and red where it is not, and each part keeps the colour of the band it lies in, so the tail of the bar shows how long it has been past the line. A [`ProgressBar`](../arlecchino.widgets.readouts/ProgressBar.md) answers "how far along", and this answers "how bad is it now" — the difference being the bands, and a range that need not start at zero.
+One value against a range that means something, drawn as a bar whose color changes as it crosses the bands it was given: the fill turns amber where the load is worth watching and red where it is not, and each part keeps the color of the band it lies in, so the tail of the bar shows how long it has been past the line. A [`ProgressBar`](../arlecchino.widgets.readouts/ProgressBar.md) answers "how far along", and this answers "how bad is it now" — the difference being the bands, and a range that need not start at zero.
 
 ```csharp
 public sealed class Gauge : IArlecchinoWidget
@@ -25,12 +25,12 @@ public sealed class Gauge : IArlecchinoWidget
 
 | Member | Summary |
 |---|---|
-| [`Bands`](#bands) | The bands the track is coloured by, in ascending order of [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from). Without them the whole fill takes [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style), which makes the gauge a bar with a range. |
+| [`Bands`](#bands) | The bands the track is colored by, in ascending order of [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from). Without them the whole fill takes [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style), which makes the gauge a bar with a range. |
 | [`Caption`](#caption) | Builds the text drawn after the gauge, given the value. |
 | [`Fraction`](#fraction) | How full the gauge is, from `0` to `1`. An empty range reads as `0`. |
 | [`Maximum`](#maximum) | Value at which the gauge reads full. |
 | [`Minimum`](#minimum) | Value at which the gauge reads empty. |
-| [`Style`](#style) | Colour of the fill outside every band. The theme's active colour when left alone. |
+| [`Style`](#style) | Color of the fill outside every band. The theme's active color when left alone. |
 | [`Value`](#value) | What it reads now. Anything outside the range draws as an empty or a full gauge. |
 
 ## Methods
@@ -38,7 +38,7 @@ public sealed class Gauge : IArlecchinoWidget
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the gauge across the first row of the region, leaving room for the caption when there is one, and returns the rows below it. |
-| [`StyleAt(decimal)`](#styleat-decimal) | How a value of the range is drawn: the style of the last band at or below it, and [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style) when it is under every band. Useful for colouring a label the same way the gauge under it is coloured. |
+| [`StyleAt(decimal)`](#styleat-decimal) | How a value of the range is drawn: the style of the last band at or below it, and [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style) when it is under every band. Useful for coloring a label the same way the gauge under it is colored. |
 
 ## Constructors in detail
 
@@ -56,7 +56,7 @@ public Gauge();
 public IReadOnlyList<GaugeBand> Bands { get; init; }
 ```
 
-The bands the track is coloured by, in ascending order of [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from). Without them the whole fill takes [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style), which makes the gauge a bar with a range.
+The bands the track is colored by, in ascending order of [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from). Without them the whole fill takes [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style), which makes the gauge a bar with a range.
 
 **Type** `IReadOnlyList<T>`&lt;[`GaugeBand`](../arlecchino.widgets.readouts/GaugeBand.md)&gt;
 
@@ -106,7 +106,7 @@ Value at which the gauge reads empty.
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour of the fill outside every band. The theme's active colour when left alone.
+Color of the fill outside every band. The theme's active color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 
@@ -144,7 +144,7 @@ Draws the gauge across the first row of the region, leaving room for the caption
 public IArlecchinoColor StyleAt(decimal value);
 ```
 
-How a value of the range is drawn: the style of the last band at or below it, and [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style) when it is under every band. Useful for colouring a label the same way the gauge under it is coloured.
+How a value of the range is drawn: the style of the last band at or below it, and [`Gauge.Style`](../arlecchino.widgets.readouts/Gauge.md#style) when it is under every band. Useful for coloring a label the same way the gauge under it is colored.
 
 **Parameters**
 

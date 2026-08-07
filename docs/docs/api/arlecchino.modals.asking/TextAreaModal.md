@@ -1,6 +1,6 @@
 ---
-title: TextAreaModal
-sidebar_label: TextAreaModal
+title: "TextAreaModal"
+sidebar_label: "TextAreaModal"
 ---
 
 # TextAreaModal class
@@ -44,7 +44,7 @@ public sealed class TextAreaModal : Modal
 | [`DeleteForward()`](#deleteforward) | Deletes the symbol after the caret, pulling the next line up when the caret is at the end of a line. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
 | [`Erase()`](#erase) | Deletes the symbol before the caret, joining this line onto the one above when the caret is at the start of a line. |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`Insert(char)`](#insert-char) | Inserts a character where the caret is. |
 | [`InsertText(string)`](#inserttext-string) | Inserts text where the caret is, starting a new line for every newline in it. |
 | [`MoveCaret(int, int)`](#movecaret-int-int) | Puts the caret at a row and a position inside it, clamped to what exists. |
@@ -209,10 +209,10 @@ public void Erase();
 
 Deletes the symbol before the caret, joining this line onto the one above when the caret is at the start of a line.
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -220,7 +220,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `Insert(char)` {#insert-char}
 

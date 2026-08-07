@@ -1,6 +1,6 @@
 ---
-title: Modal
-sidebar_label: Modal
+title: "Modal"
+sidebar_label: "Modal"
 ---
 
 # Modal class
@@ -33,7 +33,7 @@ public abstract class Modal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) | Draws it. |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) | Reads one key, which reaches no one else while this dialog is on top. |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) | Reads one key, which reaches no one else while this dialog is on top. |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | Reads one mouse event. Dialogs that cannot be clicked leave it alone. |
 
 ## Constructors in detail
@@ -88,10 +88,10 @@ Draws it.
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | Where to draw, and the words to draw in. |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public abstract void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public abstract void Handle(ModalFrame frame, KeyPress key);
 ```
 
 Reads one key, which reaches no one else while this dialog is on top.
@@ -101,7 +101,7 @@ Reads one key, which reaches no one else while this dialog is on top.
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | The keys to obey, and how to close. |
-| `key` | `ConsoleKeyInfo` | The key that arrived. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that arrived. |
 
 ### `HandleMouse(ModalFrame, MouseEvent)` {#handlemouse-modalframe-mouseevent}
 

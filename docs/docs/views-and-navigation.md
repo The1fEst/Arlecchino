@@ -12,7 +12,7 @@ description: IArlecchinoView, ViewRoute, the navigator, history and view registr
 public interface IArlecchinoView
 {
     void Draw();
-    ViewRoute Handle(ConsoleKeyInfo key);
+    ViewRoute Handle(KeyPress key);
     ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;
     ViewRoute HandlePaste(string text) => ViewRoute.None;
     IReadOnlyList<ViewCommand> Commands() => [];
@@ -75,8 +75,9 @@ route and both ways to register it.
 | `CanGoBack` / `CanGoForward` | Whether the stacks hold anything |
 | `Draw()` / `Handle(key)` | Called by the frame loop and the input router |
 
-`Alt+←` and `Alt+→` are handled by the navigator itself and never reach the view. Every other key goes
-to `IArlecchinoView.Handle`, and the route it returns is passed to `Apply`.
+The [history keys](keyboard.md#the-keymap) — `Cmd+←` and `Cmd+→` on a Mac, `Alt+←` and `Alt+→`
+elsewhere — are handled by the navigator itself and never reach the view. Every other key goes to
+`IArlecchinoView.Handle`, and the route it returns is passed to `Apply`.
 
 Navigation is all-or-nothing. The new screen is built before anything is given up, so a view whose
 constructor throws — a store that was never registered is the usual reason — leaves the route, the
@@ -170,7 +171,7 @@ _panes = new FocusRing(options.Keymap);
 _panes.Add(_list);        // first one added starts focused
 _panes.Add(_sidebar);
 
-public ViewRoute Handle(ConsoleKeyInfo key) => _panes.Handle(key);
+public ViewRoute Handle(KeyPress key) => _panes.Handle(key);
 public ViewRoute HandleMouse(MouseEvent mouse) => _panes.HandleMouse(mouse);
 ```
 

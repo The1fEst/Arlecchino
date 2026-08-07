@@ -1,13 +1,13 @@
 ---
-title: Piece
-sidebar_label: Piece
+title: "Piece"
+sidebar_label: "Piece"
 ---
 
 # Piece struct
 
 **Namespace:** `Arlecchino.Modals` &middot; **Assembly:** `Arlecchino`
 
-One run of a line inside a dialog, with the colour it is written in.
+One run of a line inside a dialog, with the color it is written in.
 
 ```csharp
 public readonly struct Piece : IEquatable<Piece>
@@ -19,7 +19,7 @@ public readonly struct Piece : IEquatable<Piece>
 
 | Member | Summary |
 |---|---|
-| [`Piece(string, IArlecchinoColor)`](#piece-string-iarlecchinocolor) | One run of a line inside a dialog, with the colour it is written in. |
+| [`Piece(string, IArlecchinoColor)`](#piece-string-iarlecchinocolor) | One run of a line inside a dialog, with the color it is written in. |
 
 ## Properties
 
@@ -42,7 +42,7 @@ public readonly struct Piece : IEquatable<Piece>
 public Piece(string Text, IArlecchinoColor Style);
 ```
 
-One run of a line inside a dialog, with the colour it is written in.
+One run of a line inside a dialog, with the color it is written in.
 
 **Parameters**
 

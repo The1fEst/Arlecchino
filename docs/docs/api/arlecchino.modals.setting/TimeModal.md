@@ -1,6 +1,6 @@
 ---
-title: TimeModal
-sidebar_label: TimeModal
+title: "TimeModal"
+sidebar_label: "TimeModal"
 ---
 
 # TimeModal class

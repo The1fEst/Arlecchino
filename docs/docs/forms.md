@@ -41,7 +41,7 @@ public SettingsView(
 }
 
 public void Draw() => _form.Draw(_surface.Content);
-public ViewRoute Handle(ConsoleKeyInfo key) => _form.Handle(key).Route;
+public ViewRoute Handle(KeyPress key) => _form.Handle(key).Route;
 public ViewRoute HandleMouse(MouseEvent mouse) => _form.HandleMouse(mouse).Route;
 ```
 

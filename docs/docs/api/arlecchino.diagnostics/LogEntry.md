@@ -1,6 +1,6 @@
 ---
-title: LogEntry
-sidebar_label: LogEntry
+title: "LogEntry"
+sidebar_label: "LogEntry"
 ---
 
 # LogEntry class

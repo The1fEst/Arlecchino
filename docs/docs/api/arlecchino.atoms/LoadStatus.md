@@ -1,6 +1,6 @@
 ---
-title: LoadStatus
-sidebar_label: LoadStatus
+title: "LoadStatus"
+sidebar_label: "LoadStatus"
 ---
 
 # LoadStatus enum

@@ -1,6 +1,6 @@
 ---
-title: CommandRegistry
-sidebar_label: CommandRegistry
+title: "CommandRegistry"
+sidebar_label: "CommandRegistry"
 ---
 
 # CommandRegistry class
@@ -29,8 +29,8 @@ public class CommandRegistry
 
 | Member | Summary |
 |---|---|
-| [`Send(ConsoleKeyInfo)`](#send-consolekeyinfo) | Runs the command a key belongs to, if any. |
-| [`TryFind(ConsoleKeyInfo, out IArlecchinoCommand)`](#tryfind-consolekeyinfo-out-iarlecchinocommand) | Finds the command a key press belongs to. |
+| [`Send(KeyPress)`](#send-keypress) | Runs the command a key belongs to, if any. |
+| [`TryFind(KeyPress, out IArlecchinoCommand)`](#tryfind-keypress-out-iarlecchinocommand) | Finds the command a key press belongs to. |
 
 ## Constructors in detail
 
@@ -62,10 +62,10 @@ The registered commands, in registration order.
 
 ## Methods in detail
 
-### `Send(ConsoleKeyInfo)` {#send-consolekeyinfo}
+### `Send(KeyPress)` {#send-keypress}
 
 ```csharp
-public ViewRoute Send(ConsoleKeyInfo pressed);
+public ViewRoute Send(KeyPress pressed);
 ```
 
 Runs the command a key belongs to, if any.
@@ -74,14 +74,14 @@ Runs the command a key belongs to, if any.
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | `ConsoleKeyInfo` | The key that was pressed. |
+| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the command returned, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
 
-### `TryFind(ConsoleKeyInfo, out IArlecchinoCommand)` {#tryfind-consolekeyinfo-out-iarlecchinocommand}
+### `TryFind(KeyPress, out IArlecchinoCommand)` {#tryfind-keypress-out-iarlecchinocommand}
 
 ```csharp
-public bool TryFind(ConsoleKeyInfo pressed, out IArlecchinoCommand? command);
+public bool TryFind(KeyPress pressed, out IArlecchinoCommand? command);
 ```
 
 Finds the command a key press belongs to.
@@ -90,7 +90,7 @@ Finds the command a key press belongs to.
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | `ConsoleKeyInfo` | The key that was pressed. |
+| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 | `command` | [`IArlecchinoCommand`](../arlecchino.commands/IArlecchinoCommand.md) | The command, when one claims the key. |
 
 **Returns** `bool` — `true` when a command claimed the key.

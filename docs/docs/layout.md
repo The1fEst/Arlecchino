@@ -157,7 +157,7 @@ public sealed class PanesView : IArlecchinoView
 
     public void Draw() => _layout.Draw(_surface.Content);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
+    public ViewRoute Handle(KeyPress key) => _focus.Handle(key);
 }
 ```
 
@@ -284,7 +284,7 @@ list to keep in step by hand:
 ```csharp
 _focus = _layout.AsFocusRing(options.Keymap);
 
-public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key);
+public ViewRoute Handle(KeyPress key) => _focus.Handle(key);
 public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
 ```
 

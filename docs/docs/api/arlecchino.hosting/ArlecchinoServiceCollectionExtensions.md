@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoServiceCollectionExtensions
-sidebar_label: ArlecchinoServiceCollectionExtensions
+title: "ArlecchinoServiceCollectionExtensions"
+sidebar_label: "ArlecchinoServiceCollectionExtensions"
 ---
 
 # ArlecchinoServiceCollectionExtensions class

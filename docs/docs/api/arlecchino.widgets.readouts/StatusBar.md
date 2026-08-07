@@ -1,6 +1,6 @@
 ---
-title: StatusBar
-sidebar_label: StatusBar
+title: "StatusBar"
+sidebar_label: "StatusBar"
 ---
 
 # StatusBar class
@@ -27,7 +27,7 @@ public sealed class StatusBar : IArlecchinoWidget
 |---|---|
 | [`Left`](#left) | Items shown from the left edge. Empty results are skipped, separators and all. |
 | [`Right`](#right) | Items shown from the right edge. |
-| [`Style`](#style) | Colour to draw in. The muted theme colour when left alone. |
+| [`Style`](#style) | Color to draw in. The muted theme color when left alone. |
 
 ## Methods
 
@@ -71,7 +71,7 @@ Items shown from the right edge.
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour to draw in. The muted theme colour when left alone.
+Color to draw in. The muted theme color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 

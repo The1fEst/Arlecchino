@@ -1,6 +1,6 @@
 ---
-title: Field
-sidebar_label: Field
+title: "Field"
+sidebar_label: "Field"
 ---
 
 # Field class
@@ -37,7 +37,7 @@ public sealed class Field
 |---|---|
 | [`Action(Func<string>, Func<ViewRoute>, Func<bool>, Func<string>)`](#action-func-string-func-viewroute-func-bool-func-string) | A button rather than a value, for the things a form does once it has been filled in. |
 | [`Choice(Func<string>, IReadOnlyList<string>, Atom<string>, Func<string>)`](#choice-func-string-ireadonlylist-string-atom-string-func-string) | One option out of a list, chosen in a filterable dialog. |
-| [`Color(Func<string>, Atom<Rgb>, Func<string>)`](#color-func-string-atom-rgb-func-string) | A colour, shown as its hex code and picked on three sliders. Reopening the dialog can shift the colour by one unit, since it is edited as hue, saturation and lightness. |
+| [`Color(Func<string>, Atom<Rgb>, Func<string>)`](#color-func-string-atom-rgb-func-string) | A color, shown as its hex code and picked on three sliders. Reopening the dialog can shift the color by one unit, since it is edited as hue, saturation and lightness. |
 | [`Date(Func<string>, Atom<DateOnly>, Func<DateOnly, string>, Func<string>)`](#date-func-string-atom-dateonly-func-dateonly-string-func-string) | A calendar date. There is no empty date, so the field cannot be cleared. |
 | [`MultiChoice(Func<string>, IReadOnlyList<string>, Atom<IReadOnlyList<string>>, Func<IReadOnlyList<string>, string>, Func<string>)`](#multichoice-func-string-ireadonlylist-string-atom-ireadonlylist-string-func-ireadonlylist-string-string-func-string) | Any number of options out of a list. |
 | [`Number(Func<string>, Atom<decimal>, decimal, decimal, Func<string>)`](#number-func-string-atom-decimal-decimal-decimal-func-string) | A number that can be typed or stepped. Clearing it puts the value back to the lowest allowed. |
@@ -189,7 +189,7 @@ One option out of a list, chosen in a filterable dialog.
 public static Field Color(Func<string> label, Atom<Rgb> value, Func<string>? help = null);
 ```
 
-A colour, shown as its hex code and picked on three sliders. Reopening the dialog can shift the colour by one unit, since it is edited as hue, saturation and lightness.
+A color, shown as its hex code and picked on three sliders. Reopening the dialog can shift the color by one unit, since it is edited as hue, saturation and lightness.
 
 **Parameters**
 

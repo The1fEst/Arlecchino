@@ -1,6 +1,6 @@
 ---
-title: AtomsList&lt;T&gt;
-sidebar_label: AtomsList&lt;T&gt;
+title: "AtomsList<T>"
+sidebar_label: "AtomsList<T>"
 ---
 
 # AtomsList&lt;T&gt; class

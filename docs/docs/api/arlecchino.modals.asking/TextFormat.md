@@ -1,6 +1,6 @@
 ---
-title: TextFormat
-sidebar_label: TextFormat
+title: "TextFormat"
+sidebar_label: "TextFormat"
 ---
 
 # TextFormat enum

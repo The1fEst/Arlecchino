@@ -1,13 +1,13 @@
 ---
-title: KeyText
-sidebar_label: KeyText
+title: "KeyText"
+sidebar_label: "KeyText"
 ---
 
 # KeyText class
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino.Core`
 
-Turns a key press into the character it should type. Take it as a constructor parameter instead of reading `ConsoleKeyInfo.KeyChar` yourself — that is what keeps filters and shortcuts working on a non-latin layout.
+Turns a key press into the character it should type. Take it as a constructor parameter instead of reading `KeyPress.Character` yourself — that is what keeps filters and shortcuts working on a non-latin layout.
 
 ```csharp
 public sealed class KeyText
@@ -32,7 +32,7 @@ public sealed class KeyText
 | Member | Summary |
 |---|---|
 | [`For(TextInputMode)`](#for-textinputmode) | Returns the shared resolver for a mode. |
-| [`Resolve(ConsoleKeyInfo)`](#resolve-consolekeyinfo) | The character a key press should type, or `null` for keys that type nothing — function keys, arrows, and unmapped combinations. |
+| [`Resolve(KeyPress)`](#resolve-keypress) | The character a key press should type, or `null` for keys that type nothing — function keys, arrows, and unmapped combinations. |
 
 ## Constructors in detail
 
@@ -100,10 +100,10 @@ Returns the shared resolver for a mode.
 
 **Returns** [`KeyText`](../arlecchino.input/KeyText.md) — The matching resolver.
 
-### `Resolve(ConsoleKeyInfo)` {#resolve-consolekeyinfo}
+### `Resolve(KeyPress)` {#resolve-keypress}
 
 ```csharp
-public Nullable<char> Resolve(ConsoleKeyInfo key);
+public Nullable<char> Resolve(KeyPress key);
 ```
 
 The character a key press should type, or `null` for keys that type nothing — function keys, arrows, and unmapped combinations.
@@ -112,7 +112,7 @@ The character a key press should type, or `null` for keys that type nothing — 
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `Nullable<T>`&lt;`char`&gt; — The character to insert, or `null`.
 

@@ -1,6 +1,6 @@
 ---
-title: MouseAction
-sidebar_label: MouseAction
+title: "MouseAction"
+sidebar_label: "MouseAction"
 ---
 
 # MouseAction enum

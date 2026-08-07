@@ -1,6 +1,6 @@
 ---
-title: SessionTape
-sidebar_label: SessionTape
+title: "SessionTape"
+sidebar_label: "SessionTape"
 ---
 
 # SessionTape class
@@ -46,11 +46,11 @@ public sealed class SessionTape
 | Member | Summary |
 |---|---|
 | [`Click(int, int, MouseButton)`](#click-int-int-mousebutton) | Writes down a click. |
-| [`Key(ConsoleKey, bool, bool, bool)`](#key-consolekey-bool-bool-bool) | Writes down a key press as the terminal would report it. |
+| [`Key(ConsoleKey, KeyModifiers)`](#key-consolekey-keymodifiers) | Writes down a key press as the terminal would report it. |
 | [`Paste(string)`](#paste-string) | Writes down a paste. |
 | [`Play(ArlecchinoTestHost)`](#play-arlecchinotesthost) | Plays the tape into a host, waiting what it waited and doing what it did, and hands back a frame for every mark on it. |
 | [`Read(string)`](#read-string) | Reads a tape back from what [`SessionTape.ToString`](../arlecchino.testing/SessionTape.md#tostring) wrote. |
-| [`RecordKey(ConsoleKeyInfo)`](#recordkey-consolekeyinfo) | Writes down a key exactly as a terminal reports one — character and key together — for a test that drives the tape from events it built itself rather than from the members above. |
+| [`RecordKey(KeyPress)`](#recordkey-keypress) | Writes down a key exactly as a terminal reports one — character and key together — for a test that drives the tape from events it built itself rather than from the members above. |
 | [`RecordMouse(MouseEvent)`](#recordmouse-mouseevent) | Writes down a mouse event exactly as a terminal reports one. |
 | [`Scroll(int, int, bool)`](#scroll-int-int-bool) | Writes down a turn of the wheel. |
 | [`Shot()`](#shot) | Marks that a frame is worth looking at here. Playing the tape hands one back for every mark, so a tape says not only what happened but where to look. |
@@ -114,10 +114,10 @@ Writes down a click.
 
 **Returns** [`SessionTape`](../arlecchino.testing/SessionTape.md) — The tape, so steps chain.
 
-### `Key(ConsoleKey, bool, bool, bool)` {#key-consolekey-bool-bool-bool}
+### `Key(ConsoleKey, KeyModifiers)` {#key-consolekey-keymodifiers}
 
 ```csharp
-public SessionTape Key(ConsoleKey key, bool shift = false, bool alt = false, bool control = false);
+public SessionTape Key(ConsoleKey key, KeyModifiers modifiers = None);
 ```
 
 Writes down a key press as the terminal would report it.
@@ -127,9 +127,7 @@ Writes down a key press as the terminal would report it.
 | Name | Type | Description |
 |---|---|---|
 | `key` | `ConsoleKey` | The key. |
-| `shift` | `bool` | Whether Shift was held. |
-| `alt` | `bool` | Whether Alt was held. |
-| `control` | `bool` | Whether Ctrl was held. |
+| `modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | What was held with it. |
 
 **Returns** [`SessionTape`](../arlecchino.testing/SessionTape.md) — The tape, so steps chain.
 
@@ -181,10 +179,10 @@ Reads a tape back from what [`SessionTape.ToString`](../arlecchino.testing/Sessi
 
 **Returns** [`SessionTape`](../arlecchino.testing/SessionTape.md) — The tape.
 
-### `RecordKey(ConsoleKeyInfo)` {#recordkey-consolekeyinfo}
+### `RecordKey(KeyPress)` {#recordkey-keypress}
 
 ```csharp
-public SessionTape RecordKey(ConsoleKeyInfo key);
+public SessionTape RecordKey(KeyPress key);
 ```
 
 Writes down a key exactly as a terminal reports one — character and key together — for a test that drives the tape from events it built itself rather than from the members above.
@@ -193,7 +191,7 @@ Writes down a key exactly as a terminal reports one — character and key togeth
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key. |
 
 **Returns** [`SessionTape`](../arlecchino.testing/SessionTape.md) — The tape, so steps chain.
 

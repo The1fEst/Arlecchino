@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoWidget
-sidebar_label: IArlecchinoWidget
+title: "IArlecchinoWidget"
+sidebar_label: "IArlecchinoWidget"
 ---
 
 # IArlecchinoWidget interface
@@ -19,7 +19,7 @@ public interface IArlecchinoWidget
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the widget and answers what is left of the region underneath it, so the caller can stack the next thing without knowing how tall this one is. Called once per frame with the region it may paint; anything written outside is clipped rather than spilled onto a neighbour. A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that occupies a known number of rows returns the rest, which is what makes `var rest = header.Draw(surface.Content);` replace a hand-counted `SplitTop`. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the widget and answers what is left of the region underneath it, so the caller can stack the next thing without knowing how tall this one is. Called once per frame with the region it may paint; anything written outside is clipped rather than spilled onto a neighbor. A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that occupies a known number of rows returns the rest, which is what makes `var rest = header.Draw(surface.Content);` replace a hand-counted `SplitTop`. |
 
 ## Methods in detail
 
@@ -29,7 +29,7 @@ public interface IArlecchinoWidget
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the widget and answers what is left of the region underneath it, so the caller can stack the next thing without knowing how tall this one is. Called once per frame with the region it may paint; anything written outside is clipped rather than spilled onto a neighbour. A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that occupies a known number of rows returns the rest, which is what makes `var rest = header.Draw(surface.Content);` replace a hand-counted `SplitTop`.
+Draws the widget and answers what is left of the region underneath it, so the caller can stack the next thing without knowing how tall this one is. Called once per frame with the region it may paint; anything written outside is clipped rather than spilled onto a neighbor. A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that occupies a known number of rows returns the rest, which is what makes `var rest = header.Draw(surface.Content);` replace a hand-counted `SplitTop`.
 
 **Parameters**
 

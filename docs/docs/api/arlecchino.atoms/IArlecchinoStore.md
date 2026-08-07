@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoStore
-sidebar_label: IArlecchinoStore
+title: "IArlecchinoStore"
+sidebar_label: "IArlecchinoStore"
 ---
 
 # IArlecchinoStore interface

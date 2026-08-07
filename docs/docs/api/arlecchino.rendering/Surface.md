@@ -1,6 +1,6 @@
 ---
-title: Surface
-sidebar_label: Surface
+title: "Surface"
+sidebar_label: "Surface"
 ---
 
 # Surface class
@@ -36,7 +36,7 @@ public class Surface
 |---|---|
 | [`AppendLine(string, IArlecchinoColor, Align, Margin)`](#appendline-string-iarlecchinocolor-align-margin) | Writes one line at the flow cursor and moves it down. Stops silently once the frame is full, so a view never has to bound its own output. |
 | [`Build()`](#build) | Sends the composed frame to the terminal, writing only what changed since the last one — an idle frame writes nothing at all. The first frame, a resize and a fixed size send everything. |
-| [`Clip(SurfaceRegion)`](#clip-surfaceregion) | Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbour. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection. |
+| [`Clip(SurfaceRegion)`](#clip-surfaceregion) | Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbor. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection. |
 | [`FillLine()`](#fillline) | Draws a rule across the content width at the flow cursor. |
 | [`FillLineAt(int, IArlecchinoColor)`](#filllineat-int-iarlecchinocolor) | Draws a rule across the content width on a given row. |
 | [`ForgetPreviousFrame()`](#forgetpreviousframe) | Drops the memory of the last frame, so the next [`Surface.Build`](../arlecchino.rendering/Surface.md#build) sends the whole screen instead of the difference. Use it after something else wrote to the terminal. |
@@ -161,7 +161,7 @@ Sends the composed frame to the terminal, writing only what changed since the la
 public IDisposable Clip(SurfaceRegion region);
 ```
 
-Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbour. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
+Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbor. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
 
 **Parameters**
 
@@ -227,7 +227,7 @@ Hands the terminal something the cell grid cannot express — an image in one of
 | `row` | `int` | Row of the cell it starts at, counted from the top of the frame. |
 | `column` | `int` | Column of that cell. |
 | `payload` | `string` | The bytes to write, escapes and all. |
-| `undraw` | `string` | What removes it again, written where the payload was. Empty when nothing can: a sixel on a terminal that will not say what colour is behind its text has to be left where it is. |
+| `undraw` | `string` | What removes it again, written where the payload was. Empty when nothing can: a sixel on a terminal that will not say what color is behind its text has to be left where it is. |
 
 ### `SetFixedSize(int, int)` {#setfixedsize-int-int}
 

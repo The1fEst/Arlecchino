@@ -113,7 +113,7 @@ public sealed class Badge : IArlecchinoInteractiveWidget
         return region.Rows(BorderedRows, region.Height - BorderedRows);
     }
 
-    public FocusResult Handle(ConsoleKeyInfo key) =>
+    public FocusResult Handle(KeyPress key) =>
         _keymap.Confirm.Matches(key) && OnActivate is not null
             ? FocusResult.Navigate(OnActivate())
             : FocusResult.Ignored;

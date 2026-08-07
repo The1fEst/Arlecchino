@@ -1,6 +1,6 @@
 ---
-title: NumericModal
-sidebar_label: NumericModal
+title: "NumericModal"
+sidebar_label: "NumericModal"
 ---
 
 # NumericModal class

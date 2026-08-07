@@ -1,6 +1,6 @@
 ---
-title: Table&lt;T&gt;
-sidebar_label: Table&lt;T&gt;
+title: "Table<T>"
+sidebar_label: "Table<T>"
 ---
 
 # Table&lt;T&gt; class
@@ -27,7 +27,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, 
 |---|---|
 | [`Columns`](#columns) | The columns, left to right. |
 | [`IsFocused`](#isfocused) | Whether the table has focus, which decides how strongly the selection is drawn. |
-| [`ItemStyle`](#itemstyle) | Colours a whole row. Ignored for the selected one. |
+| [`ItemStyle`](#itemstyle) | Colors a whole row. Ignored for the selected one. |
 | [`OnActivate`](#onactivate) | What confirming a row does. Returning a route navigates. |
 | [`Rows`](#rows) | What to show. Assigning re-applies the current sort. |
 | [`Selected`](#selected) | Index of the selected row within the sorted order, not within what was assigned. |
@@ -40,7 +40,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, 
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Works out the column widths for the space available, then draws the heading on the first row and the rows below it. The table fills whatever it is given, so nothing is left underneath it. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves the selection or confirms it. Sorting is not bound to a key; call [`Table.SortBy`](../arlecchino.widgets.lists/Table-1.md#sortby-int). |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves the selection or confirms it. Sorting is not bound to a key; call [`Table.SortBy`](../arlecchino.widgets.lists/Table-1.md#sortby-int). |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls and selects. Clicks on the heading are not routed here. |
 | [`SortBy(int)`](#sortby-int) | Sorts by a column, or flips the direction when it is already the one being sorted by. Columns without a comparison, and indexes outside the table, are ignored. |
 
@@ -94,7 +94,7 @@ Whether the table has focus, which decides how strongly the selection is drawn.
 public Func<T, IArlecchinoColor> ItemStyle { get; init; }
 ```
 
-Colours a whole row. Ignored for the selected one.
+Colors a whole row. Ignored for the selected one.
 
 **Type** `Func<T, TResult>`&lt;`T`, [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)&gt;
 
@@ -176,10 +176,10 @@ Works out the column widths for the space available, then draws the heading on t
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — An empty region: the table uses every row it is handed.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Moves the selection or confirms it. Sorting is not bound to a key; call [`Table.SortBy`](../arlecchino.widgets.lists/Table-1.md#sortby-int).
@@ -188,7 +188,7 @@ Moves the selection or confirms it. Sorting is not bound to a key; call [`Table.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What became of the key.
 

@@ -1,6 +1,6 @@
 ---
-title: Notification
-sidebar_label: Notification
+title: "Notification"
+sidebar_label: "Notification"
 ---
 
 # Notification class

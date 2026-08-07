@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoStrings
-sidebar_label: ArlecchinoStrings
+title: "ArlecchinoStrings"
+sidebar_label: "ArlecchinoStrings"
 ---
 
 # ArlecchinoStrings class
@@ -48,7 +48,7 @@ public sealed class ArlecchinoStrings
 | [`LogHints`](#loghints) | The key line under the log overlay. |
 | [`LogTitle`](#logtitle) | Title of the log overlay, with how many lines are held. |
 | [`ModalChoiceHints`](#modalchoicehints) | Footer of a single-choice list. |
-| [`ModalColorHints`](#modalcolorhints) | Footer of the colour picker. |
+| [`ModalColorHints`](#modalcolorhints) | Footer of the color picker. |
 | [`ModalCommandHints`](#modalcommandhints) | Footer of the command palette. |
 | [`ModalDateHints`](#modaldatehints) | Footer of a date field. |
 | [`ModalMessageHints`](#modalmessagehints) | The key line under a dialog that only has something to say. |
@@ -345,7 +345,7 @@ Footer of a single-choice list.
 public Func<string> ModalColorHints { get; set; }
 ```
 
-Footer of the colour picker.
+Footer of the color picker.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

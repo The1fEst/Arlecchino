@@ -1,6 +1,6 @@
 ---
-title: FocusResult
-sidebar_label: FocusResult
+title: "FocusResult"
+sidebar_label: "FocusResult"
 ---
 
 # FocusResult struct

@@ -1,6 +1,6 @@
 ---
-title: FilePickerPlace
-sidebar_label: FilePickerPlace
+title: "FilePickerPlace"
+sidebar_label: "FilePickerPlace"
 ---
 
 # FilePickerPlace class

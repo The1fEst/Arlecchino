@@ -1,6 +1,6 @@
 ---
-title: TableColumn&lt;T&gt;
-sidebar_label: TableColumn&lt;T&gt;
+title: "TableColumn<T>"
+sidebar_label: "TableColumn<T>"
 ---
 
 # TableColumn&lt;T&gt; class
@@ -25,7 +25,7 @@ public sealed class TableColumn<T>
 |---|---|
 | [`AlignRight`](#alignright) | Whether the cell hugs the right edge, which is what numbers want. |
 | [`Cell`](#cell) | Reads the cell for one row. |
-| [`Header`](#header) | The heading, as a delegate so it can be localised. |
+| [`Header`](#header) | The heading, as a delegate so it can be localized. |
 | [`Sort`](#sort) | How to order rows by this column. Without it the column cannot be sorted at all, which is how a column of free-form text opts out. |
 | [`Width`](#width) | Fixed width in columns. Leave at zero to share out whatever the fixed columns leave over. |
 
@@ -71,7 +71,7 @@ Reads the cell for one row.
 public Func<string> Header { get; init; }
 ```
 
-The heading, as a delegate so it can be localised.
+The heading, as a delegate so it can be localized.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

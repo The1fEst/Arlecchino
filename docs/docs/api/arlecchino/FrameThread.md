@@ -1,6 +1,6 @@
 ---
-title: FrameThread
-sidebar_label: FrameThread
+title: "FrameThread"
+sidebar_label: "FrameThread"
 ---
 
 # FrameThread class

@@ -1,6 +1,6 @@
 ---
-title: TextInputMode
-sidebar_label: TextInputMode
+title: "TextInputMode"
+sidebar_label: "TextInputMode"
 ---
 
 # TextInputMode enum

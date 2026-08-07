@@ -1,6 +1,6 @@
 ---
-title: FilePickerStrings
-sidebar_label: FilePickerStrings
+title: "FilePickerStrings"
+sidebar_label: "FilePickerStrings"
 ---
 
 # FilePickerStrings class

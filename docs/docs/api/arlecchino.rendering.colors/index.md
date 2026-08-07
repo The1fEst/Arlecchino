@@ -10,16 +10,16 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`RgbTermColor`](RgbTermColor.md) | A style built from exact colours. Use it where the colour itself is the point — a swatch, a chart, syntax highlighting — and keep chrome on [`Theme`](../arlecchino.rendering.colors/Theme.md), which follows the terminal theme. Falls back to the nearest palette colour when the terminal cannot do 24-bit. |
-| [`TermColor`](TermColor.md) | A style built from the sixteen-colour palette. This is what the roles on [`Theme`](../arlecchino.rendering.colors/Theme.md) are made of and what chrome should use, because those colours follow the terminal's own theme. |
-| [`Theme`](Theme.md) | The palette in use, reachable from anywhere that draws. Views pick a role here rather than a colour, so swapping [`Theme.Palette`](../arlecchino.rendering.colors/Theme.md#palette) restyles the whole application, chrome included. |
-| [`ThemePalette`](ThemePalette.md) | The colours behind the roles in [`Theme`](../arlecchino.rendering.colors/Theme.md). Every role has a default, so a palette that overrides two of them is a valid palette — and what it does not override is the framework's own colours, described on [`ThemePalette.Arlecchino`](../arlecchino.rendering.colors/ThemePalette.md#arlecchino). |
+| [`RgbTermColor`](RgbTermColor.md) | A style built from exact colors. Use it where the color itself is the point — a swatch, a chart, syntax highlighting — and keep chrome on [`Theme`](../arlecchino.rendering.colors/Theme.md), which follows the terminal theme. Falls back to the nearest palette color when the terminal cannot do 24-bit. |
+| [`TermColor`](TermColor.md) | A style built from the sixteen-color palette. This is what the roles on [`Theme`](../arlecchino.rendering.colors/Theme.md) are made of and what chrome should use, because those colors follow the terminal's own theme. |
+| [`Theme`](Theme.md) | The palette in use, reachable from anywhere that draws. Views pick a role here rather than a color, so swapping [`Theme.Palette`](../arlecchino.rendering.colors/Theme.md#palette) restyles the whole application, chrome included. |
+| [`ThemePalette`](ThemePalette.md) | The colors behind the roles in [`Theme`](../arlecchino.rendering.colors/Theme.md). Every role has a default, so a palette that overrides two of them is a valid palette — and what it does not override is the framework's own colors, described on [`ThemePalette.Arlecchino`](../arlecchino.rendering.colors/ThemePalette.md#arlecchino). |
 
 ## Structs
 
 | Type | Summary |
 |---|---|
-| [`Rgb`](Rgb.md) | A 24-bit colour. Shown exactly only where the terminal supports true colour; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
+| [`Rgb`](Rgb.md) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
 
 ## Interfaces
 
@@ -31,7 +31,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`ColorSupport`](ColorSupport.md) | How much colour the terminal can show. Detected once at startup by [`TerminalCapabilities.DetectColor`](../arlecchino.rendering.terminals/TerminalCapabilities.md#detectcolor) and used by every style when it builds its escape sequence. |
-| [`TerminalColor`](TerminalColor.md) | The sixteen ANSI colours plus the terminal's own default. Exact shades belong to the terminal theme, which is why chrome should pick a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a colour here. |
-| [`TextStyle`](TextStyle.md) | Text attributes a style carries on top of its colours. Combine them with `\|`; a terminal that does not support one simply ignores it. |
+| [`ColorSupport`](ColorSupport.md) | How much color the terminal can show. Detected once at startup by [`TerminalCapabilities.DetectColor`](../arlecchino.rendering.terminals/TerminalCapabilities.md#detectcolor) and used by every style when it builds its escape sequence. |
+| [`TerminalColor`](TerminalColor.md) | The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal theme, which is why chrome should pick a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a color here. |
+| [`TextStyle`](TextStyle.md) | Text attributes a style carries on top of its colors. Combine them with `\|`; a terminal that does not support one simply ignores it. |
 

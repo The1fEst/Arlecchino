@@ -1,7 +1,7 @@
 ---
 title: Keyboard
 sidebar_label: Keyboard
-description: How a key travels from the terminal to a view, the keymap every framework key lives in, the keys screen, keyboard layouts, and paste and copy.
+description: How a key travels from the terminal to a view, the keymap every framework key lives in, the modifiers a terminal can report, the keys screen, keyboard layouts, and paste and copy.
 ---
 
 # Keyboard
@@ -16,7 +16,7 @@ The router resolves a key in this order:
 
 1. **An open modal.** The key goes to the modal and nothing else sees it.
 2. **The command-palette key** (`:` by default), when at least one command is registered.
-3. **History keys** — `Alt+←` / `Alt+→`.
+3. **History keys** — `Cmd+←` / `Cmd+→` on a Mac, `Alt+←` / `Alt+→` elsewhere.
 4. **Commands of the current view** — see [Commands](commands.md#commands-of-a-view).
 5. **Application commands with a modifier.**
 6. **`IArlecchinoView.Handle`** — everything else: typing, arrows, list filters.
@@ -24,16 +24,50 @@ The router resolves a key in this order:
 So a view never has to check for the palette key or guard against typing into a modal, and a key that
 belongs to a command never reaches `Handle`.
 
+## What a press carries
+
+A press reaches a view as a `KeyPress`: the key, the modifiers held with it, and the character it
+typed.
+
+```csharp
+public ViewRoute Handle(KeyPress key)
+{
+    return key.Key == ConsoleKey.Escape ? ViewKind.Default : ViewRoute.None;
+}
+```
+
+| Member | What it holds |
+|---|---|
+| `Key` | The key itself, or `default` when the terminal named no key and sent only a character |
+| `Modifiers` | `KeyModifiers` — `Shift`, `Alt`, `Control`, `Super`, in any combination |
+| `Character` | What it typed, or `'\0'` for keys that type nothing |
+
+## Modifiers
+
+`KeyModifiers.Super` is the key next to the space bar: Command on a Mac, the Windows key elsewhere.
+It is bindable like the other three, but which of the four ever arrives is decided by the terminal
+rather than by the operating system, and that is worth knowing before a key is bound to one:
+
+| Modifier | Who reports it |
+|---|---|
+| `Shift`, `Control` | Everywhere |
+| `Alt` | Everywhere except a Mac terminal that has not been told to send it. Option is spoken for by the characters it types — `å`, `∂`, `ƒ` — so `Alt` never reaches the application until the terminal is set to send one (`macos_option_as_alt yes` and its equivalents) |
+| `Super` | Terminals that report the modifier at all: it arrives as one more bit in the same field as the rest. A Mac terminal that keeps Command for its own menus never sends it |
+
+The two gaps do not overlap, which is why the framework's own history keys are bound to both and why
+`Replacing` below exists.
+
 ## KeyBinding
 
 `KeyBinding` matches the key *and* the exact modifiers, so `Ctrl+S` never fires on a bare `S`:
 
 ```csharp
-new KeyBinding(ConsoleKey.S, ConsoleModifiers.Control)
+new KeyBinding(ConsoleKey.S, KeyModifiers.Control)
 ```
 
 Its `ToString()` is what the palette, the hints box and the file-picker legend display — `Ctrl+S`,
-`Alt+←`, `Esc` — so a remapped key relabels itself everywhere it is shown.
+`Alt+←`, `Esc` — so a remapped key relabels itself everywhere it is shown. `Super` is named after the
+key cap the machine has: `Cmd+←` on a Mac, `Win+←` elsewhere.
 
 A binding can carry a second combination for actions the platforms disagree about. That is what
 `AlsoKey` and `AlsoModifiers` are for, and why `Copy` answers to both `Ctrl+Insert` and `Ctrl+Shift+C`.
@@ -46,7 +80,7 @@ in the router:
 
 | Action | Default | Used by |
 |---|---|---|
-| `Back` / `Forward` | `Alt+←` / `Alt+→` | History |
+| `Back` / `Forward` | `Cmd+←` / `Cmd+→` on a Mac, `Alt+←` / `Alt+→` elsewhere — both work either way | History |
 | `Confirm` / `Cancel` | `Enter` / `Esc` | Every modal, the file picker |
 | `NextField` / `PreviousField` | `Tab` / `Shift+Tab` | [Focus rings](focus.md), segments, colour channels, picker panes |
 | `MoveUp` / `MoveDown` / `MoveLeft` / `MoveRight` | arrows | Lists, sliders, number steps, segments |
@@ -70,8 +104,30 @@ builder.Services
     .UseKeymap(new ArlecchinoKeymap
     {
         Back = new KeyBinding(ConsoleKey.Backspace),
-        Cancel = new KeyBinding(ConsoleKey.Q, ConsoleModifiers.Control),
+        Cancel = new KeyBinding(ConsoleKey.Q, KeyModifiers.Control),
     });
+```
+
+`Back` and `Forward` are the two the machine underneath has an opinion about. Both are bound to
+Command *and* Alt out of the box, with the one that machine is likelier to send named first — so the
+hints box reads `Cmd+←` on a Mac and `Alt+←` everywhere else, and either modifier walks the history on
+either. Nothing else in the table moved: the rest is on Control, which every terminal sends.
+
+### Moving a modifier
+
+An application whose users cannot press a modifier can move the whole map off it in one line rather
+than restating thirty bindings:
+
+```csharp
+.UseKeymap(new ArlecchinoKeymap().Replacing(KeyModifiers.Alt, KeyModifiers.Super))
+```
+
+`Replacing` rewrites every binding that holds the first modifier — both combinations of it — and
+leaves the rest alone. `KeyBinding.Replacing` does the same for one binding, which is what a
+[view command](commands.md) built on `Alt` wants:
+
+```csharp
+ViewCommand.For(_binding.Replacing(KeyModifiers.Alt, KeyModifiers.Super), "reload", Reload)
 ```
 
 The command-palette key stays a character (`options.CommandPaletteKey`) rather than a binding: it is
@@ -100,7 +156,7 @@ list, so the descriptions can be translated or the order changed without touchin
 ## Keyboard layouts
 
 Text input — modal fields, list filters, the palette key — goes through `KeyText`, which turns a
-`ConsoleKeyInfo` into a character.
+`KeyPress` into a character.
 
 | Mode | Behaviour |
 |---|---|
@@ -118,8 +174,8 @@ cannot be typed at all.
 :::tip
 
 `KeyText` is registered as a singleton. A view that reads typed characters itself should take it as a
-constructor parameter rather than reading `ConsoleKeyInfo.KeyChar` — that is what keeps filters
-working on a non-latin layout.
+constructor parameter rather than reading `KeyPress.Character` — that is what keeps filters working on
+a non-latin layout.
 
 :::
 

@@ -1,6 +1,6 @@
 ---
-title: NumberModal
-sidebar_label: NumberModal
+title: "NumberModal"
+sidebar_label: "NumberModal"
 ---
 
 # NumberModal class
@@ -42,7 +42,7 @@ public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, 
 | [`AcceptsCharacter(char)`](#acceptscharacter-char) | Whether a character belongs in a number here: digits always, a separator only when decimals are allowed, a minus only when the range goes below zero. |
 | [`Add(decimal)`](#add-decimal) | Steps the value and rewrites the text with it. Text that does not parse is treated as zero, so stepping always leaves a valid number behind. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`TryGetValue(out decimal)`](#trygetvalue-out-decimal) | Reads what has been typed as a number. Both `.` and `,` are accepted. |
 
 ## Constructors in detail
@@ -185,10 +185,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -196,7 +196,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `TryGetValue(out decimal)` {#trygetvalue-out-decimal}
 

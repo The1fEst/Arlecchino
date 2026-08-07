@@ -1,6 +1,6 @@
 ---
-title: Tree&lt;T&gt;
-sidebar_label: Tree&lt;T&gt;
+title: "Tree<T>"
+sidebar_label: "Tree<T>"
 ---
 
 # Tree&lt;T&gt; class
@@ -26,7 +26,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, I
 | Member | Summary |
 |---|---|
 | [`IsFocused`](#isfocused) | Whether the tree has focus, which decides how strongly the selection is drawn. |
-| [`ItemStyle`](#itemstyle) | Colours a node. Ignored for the selected one. |
+| [`ItemStyle`](#itemstyle) | Colors a node. Ignored for the selected one. |
 | [`OnActivate`](#onactivate) | What confirming a leaf does. Branches toggle instead, so this is never called for a node that has children. |
 | [`OnExpanding`](#onexpanding) | Called just before a branch opens, which is where its children can be filled in. It runs on the UI thread, so anything slow belongs in an [`AsyncAtom`](../arlecchino.atoms/AsyncAtom-1.md) instead. |
 | [`Render`](#render) | Turns a value into its label. The marker and the indent are added around it. |
@@ -41,7 +41,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, I
 | [`CollapseAll()`](#collapseall) | Closes every branch, leaving only the roots showing. |
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the rows that are showing around the selection and remembers where they landed, which is what lets a click tell a marker from a label. The tree fills whatever it is given, so nothing is left underneath it. |
 | [`ExpandAll()`](#expandall) | Opens every branch. Branches are opened directly, so anything relying on the expand callback to fill in its children will still look empty. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves through the rows and opens or closes branches. The horizontal arrows behave the way they do in a file manager: right opens a closed branch or steps into it, left closes an open one or jumps to the parent. |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves through the rows and opens or closes branches. The horizontal arrows behave the way they do in a file manager: right opens a closed branch or steps into it, left closes an open one or jumps to the parent. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel and selects with a click. Clicking the marker toggles the branch, while clicking the label of the already selected row activates it. |
 
 ## Constructors in detail
@@ -84,7 +84,7 @@ Whether the tree has focus, which decides how strongly the selection is drawn.
 public Func<T, IArlecchinoColor> ItemStyle { get; set; }
 ```
 
-Colours a node. Ignored for the selected one.
+Colors a node. Ignored for the selected one.
 
 **Type** `Func<T, TResult>`&lt;`T`, [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)&gt;
 
@@ -182,10 +182,10 @@ public void ExpandAll();
 
 Opens every branch. Branches are opened directly, so anything relying on the expand callback to fill in its children will still look empty.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Moves through the rows and opens or closes branches. The horizontal arrows behave the way they do in a file manager: right opens a closed branch or steps into it, left closes an open one or jumps to the parent.
@@ -194,7 +194,7 @@ Moves through the rows and opens or closes branches. The horizontal arrows behav
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What became of the key, including a route when a leaf was activated.
 

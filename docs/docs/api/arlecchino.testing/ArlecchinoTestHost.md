@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoTestHost
-sidebar_label: ArlecchinoTestHost
+title: "ArlecchinoTestHost"
+sidebar_label: "ArlecchinoTestHost"
 ---
 
 # ArlecchinoTestHost class
@@ -19,7 +19,7 @@ public sealed class ArlecchinoTestHost : IDisposable
 
 | Member | Summary |
 |---|---|
-| [`ArlecchinoTestHost(int, int, Action<ArlecchinoBuilder>)`](#arlecchinotesthost-int-int-action-arlecchinobuilder) | Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level. |
+| [`ArlecchinoTestHost(int, int, Action<ArlecchinoBuilder>)`](#arlecchinotesthost-int-int-action-arlecchinobuilder) | Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Color is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level. |
 
 ## Properties
 
@@ -48,13 +48,13 @@ public sealed class ArlecchinoTestHost : IDisposable
 | [`FrameContains(string)`](#framecontains-string) | Whether a frame holds some text anywhere. Text split across rows will not be found. |
 | [`FrameLineContaining(string)`](#framelinecontaining-string) | The first row holding some text, which is how a test reads what was drawn beside a label. |
 | [`FrameLines()`](#framelines) | Draws a frame and returns the rows on screen afterwards. |
-| [`Press(ConsoleKey, bool, bool, bool)`](#press-consolekey-bool-bool-bool) | Presses a key, routed exactly as a real one would be. |
-| [`ReadFromTerminal(string)`](#readfromterminal-string) | Feeds raw characters through the reader that recognises escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports. |
+| [`Press(ConsoleKey, KeyModifiers)`](#press-consolekey-keymodifiers) | Presses a key, routed exactly as a real one would be. |
+| [`ReadFromTerminal(string)`](#readfromterminal-string) | Feeds raw characters through the reader that recognizes escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports. |
 | [`Scroll(int, int, bool)`](#scroll-int-int-bool) | Turns the wheel over a cell. |
-| [`Send(ConsoleKeyInfo)`](#send-consolekeyinfo) | Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-bool-bool-bool) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter. |
+| [`Send(KeyPress)`](#send-keypress) | Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-keymodifiers) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter. |
 | [`Send(MouseEvent)`](#send-mouseevent) | Routes a mouse event exactly as the terminal reported it. |
 | [`SendPaste(string)`](#sendpaste-string) | Pastes a block of text, as bracketed paste delivers it. |
-| [`Styles()`](#styles) | Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in. |
+| [`Styles()`](#styles) | Draws a frame whole and returns the color sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in. |
 | [`Type(string)`](#type-string) | Types text one character at a time. The presses carry a character but no key, which is what a terminal reports for ordinary typing. |
 
 ## Constructors in detail
@@ -68,7 +68,7 @@ public ArlecchinoTestHost(
     Action<ArlecchinoBuilder>? configure = null);
 ```
 
-Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Colour is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level.
+Builds the application. The minimum size is dropped to one cell, so a test can work in a window far smaller than a real one without hitting the too-small notice. Color is fixed at [`ColorSupport.TrueColor`](../arlecchino.rendering.colors/ColorSupport.md) so that frames do not change with the environment the test runs in — assign [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) afterwards to test another level.
 
 **Parameters**
 
@@ -280,10 +280,10 @@ Draws a frame and returns the rows on screen afterwards.
 
 **Returns** `string`\[\] — One string per row.
 
-### `Press(ConsoleKey, bool, bool, bool)` {#press-consolekey-bool-bool-bool}
+### `Press(ConsoleKey, KeyModifiers)` {#press-consolekey-keymodifiers}
 
 ```csharp
-public void Press(ConsoleKey key, bool shift = false, bool alt = false, bool control = false);
+public void Press(ConsoleKey key, KeyModifiers modifiers = None);
 ```
 
 Presses a key, routed exactly as a real one would be.
@@ -293,9 +293,7 @@ Presses a key, routed exactly as a real one would be.
 | Name | Type | Description |
 |---|---|---|
 | `key` | `ConsoleKey` | The key. |
-| `shift` | `bool` | Whether Shift was held. |
-| `alt` | `bool` | Whether Alt was held. |
-| `control` | `bool` | Whether Ctrl was held. |
+| `modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | What was held with it. |
 
 ### `ReadFromTerminal(string)` {#readfromterminal-string}
 
@@ -303,7 +301,7 @@ Presses a key, routed exactly as a real one would be.
 public void ReadFromTerminal(string sequence);
 ```
 
-Feeds raw characters through the reader that recognises escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports.
+Feeds raw characters through the reader that recognizes escape sequences. This is the way to test what a real terminal sends for arrows, function keys and mouse reports.
 
 **Parameters**
 
@@ -327,19 +325,19 @@ Turns the wheel over a cell.
 | `column` | `int` | Column the pointer is over. |
 | `down` | `bool` | Whether the wheel turned down. |
 
-### `Send(ConsoleKeyInfo)` {#send-consolekeyinfo}
+### `Send(KeyPress)` {#send-keypress}
 
 ```csharp
-public void Send(ConsoleKeyInfo key);
+public void Send(KeyPress key);
 ```
 
-Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-bool-bool-bool) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter.
+Routes a key exactly as the terminal reported it, character and all. [`ArlecchinoTestHost.Press`](../arlecchino.testing/ArlecchinoTestHost.md#press-consolekey-keymodifiers) and [`ArlecchinoTestHost.Type`](../arlecchino.testing/ArlecchinoTestHost.md#type-string) cover what a test writes by hand; this is for one played back from a [`SessionTape`](../arlecchino.testing/SessionTape.md), where the character and the key both matter.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key as the terminal reported it. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key as the terminal reported it. |
 
 ### `Send(MouseEvent)` {#send-mouseevent}
 
@@ -375,7 +373,7 @@ Pastes a block of text, as bracketed paste delivers it.
 public IReadOnlyList<string> Styles();
 ```
 
-Draws a frame whole and returns the colour sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in.
+Draws a frame whole and returns the color sequences in it, in order. Whole rather than diffed on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences in it are the ones that changed rather than the ones the frame is drawn in.
 
 **Returns** `IReadOnlyList<T>`&lt;`string`&gt; — The sequences as they appeared.
 

@@ -21,5 +21,5 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`NotificationLevel`](NotificationLevel.md) | How loud a notification is, which decides how it is coloured. |
+| [`NotificationLevel`](NotificationLevel.md) | How loud a notification is, which decides how it is colored. |
 

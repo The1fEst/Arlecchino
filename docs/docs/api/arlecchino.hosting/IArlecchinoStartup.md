@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoStartup
-sidebar_label: IArlecchinoStartup
+title: "IArlecchinoStartup"
+sidebar_label: "IArlecchinoStartup"
 ---
 
 # IArlecchinoStartup interface

@@ -1,6 +1,6 @@
 ---
-title: IReadableAtom&lt;T&gt;
-sidebar_label: IReadableAtom&lt;T&gt;
+title: "IReadableAtom<T>"
+sidebar_label: "IReadableAtom<T>"
 ---
 
 # IReadableAtom&lt;T&gt; interface

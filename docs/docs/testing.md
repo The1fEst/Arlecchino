@@ -32,7 +32,7 @@ It builds the container exactly as `AddArlecchino` would, minus the hosted servi
 
 | Member | Use |
 |---|---|
-| `Press(key, shift, alt, control)` | Presses a key, routed exactly as a real one would be |
+| `Press(key, modifiers)` | Presses a key, routed exactly as a real one would be — `Press(ConsoleKey.C, KeyModifiers.Super)` |
 | `Type(text)` | Types characters one at a time, carrying a character but no key — what a terminal reports for ordinary typing |
 | `Click(row, column, button)` | Clicks a cell, in the terminal's own coordinates |
 | `Scroll(row, column, down)` | Turns the wheel over a cell |

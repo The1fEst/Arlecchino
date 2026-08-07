@@ -1,6 +1,6 @@
 ---
-title: AtomsQueue&lt;T&gt;
-sidebar_label: AtomsQueue&lt;T&gt;
+title: "AtomsQueue<T>"
+sidebar_label: "AtomsQueue<T>"
 ---
 
 # AtomsQueue&lt;T&gt; class

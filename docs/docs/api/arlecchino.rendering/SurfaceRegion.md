@@ -1,13 +1,13 @@
 ---
-title: SurfaceRegion
-sidebar_label: SurfaceRegion
+title: "SurfaceRegion"
+sidebar_label: "SurfaceRegion"
 ---
 
 # SurfaceRegion struct
 
 **Namespace:** `Arlecchino.Rendering` &middot; **Assembly:** `Arlecchino.Core`
 
-A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbour. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside".
+A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbor. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside".
 
 ```csharp
 public readonly struct SurfaceRegion : IEquatable<SurfaceRegion>
@@ -19,7 +19,7 @@ public readonly struct SurfaceRegion : IEquatable<SurfaceRegion>
 
 | Member | Summary |
 |---|---|
-| [`SurfaceRegion(Surface, int, int, int, int)`](#surfaceregion-surface-int-int-int-int) | A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbour. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside". |
+| [`SurfaceRegion(Surface, int, int, int, int)`](#surfaceregion-surface-int-int-int-int) | A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbor. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside". |
 
 ## Properties
 
@@ -60,7 +60,7 @@ public readonly struct SurfaceRegion : IEquatable<SurfaceRegion>
 public SurfaceRegion(Surface Surface, int Left, int Top, int Width, int Height);
 ```
 
-A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbour. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside".
+A rectangle on a [`SurfaceRegion.Surface`](../arlecchino.rendering/SurfaceRegion.md#surface) with its own coordinates and its own clipping: writing outside it is dropped rather than spilled onto a neighbor. Split a frame into regions instead of counting columns by hand, and the same geometry answers "was this click inside".
 
 **Parameters**
 

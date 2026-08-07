@@ -1,6 +1,6 @@
 ---
-title: ViewResolver
-sidebar_label: ViewResolver
+title: "ViewResolver"
+sidebar_label: "ViewResolver"
 ---
 
 # ViewResolver class

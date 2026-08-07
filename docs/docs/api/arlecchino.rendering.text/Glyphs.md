@@ -1,6 +1,6 @@
 ---
-title: Glyphs
-sidebar_label: Glyphs
+title: "Glyphs"
+sidebar_label: "Glyphs"
 ---
 
 # Glyphs class

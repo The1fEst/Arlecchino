@@ -1,6 +1,6 @@
 ---
-title: TestClock
-sidebar_label: TestClock
+title: "TestClock"
+sidebar_label: "TestClock"
 ---
 
 # TestClock class

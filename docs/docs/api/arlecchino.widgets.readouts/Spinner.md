@@ -1,6 +1,6 @@
 ---
-title: Spinner
-sidebar_label: Spinner
+title: "Spinner"
+sidebar_label: "Spinner"
 ---
 
 # Spinner class
@@ -27,7 +27,7 @@ public sealed class Spinner : IArlecchinoWidget
 |---|---|
 | [`Current`](#current) | The frame to draw right now. |
 | [`Frames`](#frames) | The frames cycled through. Braille dots by default, which most terminals render in one cell. |
-| [`Style`](#style) | Colour to draw in. The theme's informational colour when left alone. |
+| [`Style`](#style) | Color to draw in. The theme's informational color when left alone. |
 
 ## Methods
 
@@ -72,7 +72,7 @@ The frames cycled through. Braille dots by default, which most terminals render 
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour to draw in. The theme's informational colour when left alone.
+Color to draw in. The theme's informational color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 

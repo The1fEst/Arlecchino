@@ -1,6 +1,6 @@
 ---
-title: Navigator
-sidebar_label: Navigator
+title: "Navigator"
+sidebar_label: "Navigator"
 ---
 
 # Navigator class
@@ -32,7 +32,7 @@ public class Navigator
 | [`Back()`](#back) | Goes back one step in the history. |
 | [`Draw()`](#draw) | Draws the current screen. Called once per frame. |
 | [`Forward()`](#forward) | Retraces a step that was gone back from. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Passes a key to the current screen and applies the route it returns. |
+| [`Handle(KeyPress)`](#handle-keypress) | Passes a key to the current screen and applies the route it returns. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Passes a mouse event to the current screen and applies the route it returns. |
 | [`HandlePaste(string)`](#handlepaste-string) | Passes pasted text to the current screen and applies the route it returns. |
 | [`Reload()`](#reload) | Builds the current screen again from scratch, losing its per-screen state. |
@@ -143,10 +143,10 @@ Retraces a step that was gone back from.
 
 **Returns** `bool` — `false` when there was nothing to retrace.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public void Handle(ConsoleKeyInfo key);
+public void Handle(KeyPress key);
 ```
 
 Passes a key to the current screen and applies the route it returns.
@@ -155,7 +155,7 @@ Passes a key to the current screen and applies the route it returns.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 ### `HandleMouse(MouseEvent)` {#handlemouse-mouseevent}
 

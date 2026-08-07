@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoLayout
-sidebar_label: IArlecchinoLayout
+title: "IArlecchinoLayout"
+sidebar_label: "IArlecchinoLayout"
 ---
 
 # IArlecchinoLayout interface

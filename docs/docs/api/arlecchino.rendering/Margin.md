@@ -1,6 +1,6 @@
 ---
-title: Margin
-sidebar_label: Margin
+title: "Margin"
+sidebar_label: "Margin"
 ---
 
 # Margin struct

@@ -1,13 +1,13 @@
 ---
-title: TextEditing
-sidebar_label: TextEditing
+title: "TextEditing"
+sidebar_label: "TextEditing"
 ---
 
 # TextEditing class
 
 **Namespace:** `Arlecchino.Modals.Asking` &middot; **Assembly:** `Arlecchino`
 
-Editing a line of text: where the caret goes and what each edit does to it. Kept apart from the fields themselves so the text field, the number field and anything added later behave identically, and so the behaviour can be tested without a terminal. Editing never touches the validation message — that is the router's job, which re-checks the field and clears the message only once the input is actually valid.
+Editing a line of text: where the caret goes and what each edit does to it. Kept apart from the fields themselves so the text field, the number field and anything added later behave identically, and so the behavior can be tested without a terminal. Editing never touches the validation message — that is the router's job, which re-checks the field and clears the message only once the input is actually valid.
 
 ```csharp
 public static class TextEditing

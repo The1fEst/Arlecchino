@@ -1,6 +1,6 @@
 ---
-title: LocalAtom&lt;T&gt;
-sidebar_label: LocalAtom&lt;T&gt;
+title: "LocalAtom<T>"
+sidebar_label: "LocalAtom<T>"
 ---
 
 # LocalAtom&lt;T&gt; class

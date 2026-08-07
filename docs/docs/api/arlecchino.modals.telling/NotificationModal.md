@@ -1,6 +1,6 @@
 ---
-title: NotificationModal
-sidebar_label: NotificationModal
+title: "NotificationModal"
+sidebar_label: "NotificationModal"
 ---
 
 # NotificationModal class
@@ -36,7 +36,7 @@ public sealed class NotificationModal : Modal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) | The arrows walk its actions, confirming runs the one selected and cancelling only closes. The dialog is closed before the action runs, so an action is free to open one of its own. |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) | The arrows walk its actions, confirming runs the one selected and cancelling only closes. The dialog is closed before the action runs, so an action is free to open one of its own. |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) |  |
 | [`Move(int)`](#move-int) | Moves the selection along the actions, stopping at both ends. |
 | [`Run()`](#run) | Runs the selected action, if there is one. |
@@ -121,10 +121,10 @@ public override void Draw(ModalFrame frame);
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 The arrows walk its actions, confirming runs the one selected and cancelling only closes. The dialog is closed before the action runs, so an action is free to open one of its own.
@@ -134,7 +134,7 @@ The arrows walk its actions, confirming runs the one selected and cancelling onl
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | How to close. |
-| `key` | `ConsoleKeyInfo` | The key that arrived. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that arrived. |
 
 ### `HandleMouse(ModalFrame, MouseEvent)` {#handlemouse-modalframe-mouseevent}
 

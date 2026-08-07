@@ -1,6 +1,6 @@
 ---
-title: ViewLifetime
-sidebar_label: ViewLifetime
+title: "ViewLifetime"
+sidebar_label: "ViewLifetime"
 ---
 
 # ViewLifetime class

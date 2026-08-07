@@ -1,6 +1,6 @@
 ---
-title: ViewCommand
-sidebar_label: ViewCommand
+title: "ViewCommand"
+sidebar_label: "ViewCommand"
 ---
 
 # ViewCommand class

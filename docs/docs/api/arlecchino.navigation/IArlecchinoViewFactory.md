@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoViewFactory
-sidebar_label: IArlecchinoViewFactory
+title: "IArlecchinoViewFactory"
+sidebar_label: "IArlecchinoViewFactory"
 ---
 
 # IArlecchinoViewFactory interface

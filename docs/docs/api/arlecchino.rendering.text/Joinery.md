@@ -1,13 +1,13 @@
 ---
-title: Joinery
-sidebar_label: Joinery
+title: "Joinery"
+sidebar_label: "Joinery"
 ---
 
 # Joinery class
 
 **Namespace:** `Arlecchino.Rendering.Text` &middot; **Assembly:** `Arlecchino.Core`
 
-Lines that know about one another. Boxes and rules are recorded first and painted at the end, so where two of them meet the shared cell becomes the glyph that joins them — `┬`, `├`, `┼` — instead of one line drawn over the other. [`SurfaceRegion.Border`](../arlecchino.rendering/SurfaceRegion.md#border-iarlecchinocolor-string) draws a box that knows nothing of its neighbours, which is right for a box standing on its own and wrong for panes that touch: two of those side by side put two verticals where the eye expects one. Recording them here instead costs one object per frame and gives the drawing of a window manager.
+Lines that know about one another. Boxes and rules are recorded first and painted at the end, so where two of them meet the shared cell becomes the glyph that joins them — `┬`, `├`, `┼` — instead of one line drawn over the other. [`SurfaceRegion.Border`](../arlecchino.rendering/SurfaceRegion.md#border-iarlecchinocolor-string) draws a box that knows nothing of its neighbors, which is right for a box standing on its own and wrong for panes that touch: two of those side by side put two verticals where the eye expects one. Recording them here instead costs one object per frame and gives the drawing of a window manager.
 
 ```csharp
 var joinery = new Joinery();
@@ -44,7 +44,7 @@ public sealed class Joinery
 | [`Across(SurfaceRegion, int, IArlecchinoColor)`](#across-surfaceregion-int-iarlecchinocolor) | Records a rule across a region, for a divider that should join the box around it. |
 | [`Box(SurfaceRegion, IArlecchinoColor, string)`](#box-surfaceregion-iarlecchinocolor-string) | Records the four edges of a region and hands back the room inside them, the way [`SurfaceRegion.Border`](../arlecchino.rendering/SurfaceRegion.md#border-iarlecchinocolor-string) does. |
 | [`Down(SurfaceRegion, int, IArlecchinoColor)`](#down-surfaceregion-int-iarlecchinocolor) | Records a rule down a region. |
-| [`Draw(SurfaceRegion, IArlecchinoColor)`](#draw-surfaceregion-iarlecchinocolor) | Paints everything recorded, resolving each cell into the glyph its neighbours ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it. |
+| [`Draw(SurfaceRegion, IArlecchinoColor)`](#draw-surfaceregion-iarlecchinocolor) | Paints everything recorded, resolving each cell into the glyph its neighbors ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it. |
 
 ## Constructors in detail
 
@@ -124,7 +124,7 @@ Records a rule down a region.
 public void Draw(SurfaceRegion into, IArlecchinoColor style);
 ```
 
-Paints everything recorded, resolving each cell into the glyph its neighbours ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it.
+Paints everything recorded, resolving each cell into the glyph its neighbors ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it.
 
 **Parameters**
 

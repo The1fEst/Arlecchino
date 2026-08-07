@@ -1,6 +1,6 @@
 ---
-title: TextWidth
-sidebar_label: TextWidth
+title: "TextWidth"
+sidebar_label: "TextWidth"
 ---
 
 # TextWidth class

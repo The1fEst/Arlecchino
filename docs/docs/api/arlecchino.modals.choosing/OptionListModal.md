@@ -1,6 +1,6 @@
 ---
-title: OptionListModal
-sidebar_label: OptionListModal
+title: "OptionListModal"
+sidebar_label: "OptionListModal"
 ---
 
 # OptionListModal class

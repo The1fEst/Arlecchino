@@ -1,6 +1,6 @@
 ---
-title: FocusRing
-sidebar_label: FocusRing
+title: "FocusRing"
+sidebar_label: "FocusRing"
 ---
 
 # FocusRing class
@@ -35,7 +35,7 @@ public sealed class FocusRing
 | [`Focus(IArlecchinoFocusable)`](#focus-iarlecchinofocusable) | Moves the focus to a particular element, if it belongs to this ring. |
 | [`FocusNext()`](#focusnext) | Moves the focus to the next element, wrapping around at the end. |
 | [`FocusPrevious()`](#focusprevious) | Moves the focus to the previous element, wrapping around at the start. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves the focus on the field keys, and otherwise hands the key to the focused element. |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves the focus on the field keys, and otherwise hands the key to the focused element. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Offers the event to each element and moves the focus to whichever one claims it, so a click both selects a pane and acts inside it. |
 
 ## Constructors in detail
@@ -132,10 +132,10 @@ public void FocusPrevious();
 
 Moves the focus to the previous element, wrapping around at the start.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public ViewRoute Handle(ConsoleKeyInfo key);
+public ViewRoute Handle(KeyPress key);
 ```
 
 Moves the focus on the field keys, and otherwise hands the key to the focused element.
@@ -144,7 +144,7 @@ Moves the focus on the field keys, and otherwise hands the key to the focused el
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the element asked for, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
 

@@ -1,6 +1,6 @@
 ---
-title: AtomsStack&lt;T&gt;
-sidebar_label: AtomsStack&lt;T&gt;
+title: "AtomsStack<T>"
+sidebar_label: "AtomsStack<T>"
 ---
 
 # AtomsStack&lt;T&gt; class

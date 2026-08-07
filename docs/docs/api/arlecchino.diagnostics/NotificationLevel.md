@@ -1,13 +1,13 @@
 ---
-title: NotificationLevel
-sidebar_label: NotificationLevel
+title: "NotificationLevel"
+sidebar_label: "NotificationLevel"
 ---
 
 # NotificationLevel enum
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-How loud a notification is, which decides how it is coloured.
+How loud a notification is, which decides how it is colored.
 
 ```csharp
 public enum NotificationLevel

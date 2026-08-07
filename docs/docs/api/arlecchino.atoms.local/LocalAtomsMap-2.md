@@ -1,6 +1,6 @@
 ---
-title: LocalAtomsMap&lt;TKey, TValue&gt;
-sidebar_label: LocalAtomsMap&lt;TKey, TValue&gt;
+title: "LocalAtomsMap<TKey, TValue>"
+sidebar_label: "LocalAtomsMap<TKey, TValue>"
 ---
 
 # LocalAtomsMap&lt;TKey, TValue&gt; class

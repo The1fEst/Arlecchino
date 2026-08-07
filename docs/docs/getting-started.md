@@ -67,7 +67,7 @@ public class DefaultView : IArlecchinoView
         _surface.AppendLine("hello", Theme.Header, Align.Center);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) =>
+    public ViewRoute Handle(KeyPress key) =>
         key.Key == ConsoleKey.A ? ViewKind.About : ViewRoute.None;
 
     public (string Key, string Description)[] Hints() => [("a", "about")];

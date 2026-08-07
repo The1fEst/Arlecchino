@@ -1,6 +1,6 @@
 ---
-title: AtomHistory
-sidebar_label: AtomHistory
+title: "AtomHistory"
+sidebar_label: "AtomHistory"
 ---
 
 # AtomHistory class

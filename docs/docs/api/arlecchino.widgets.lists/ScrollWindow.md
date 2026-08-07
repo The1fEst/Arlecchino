@@ -1,6 +1,6 @@
 ---
-title: ScrollWindow
-sidebar_label: ScrollWindow
+title: "ScrollWindow"
+sidebar_label: "ScrollWindow"
 ---
 
 # ScrollWindow struct

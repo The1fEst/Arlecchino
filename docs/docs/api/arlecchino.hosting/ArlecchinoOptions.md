@@ -1,6 +1,6 @@
 ---
-title: ArlecchinoOptions
-sidebar_label: ArlecchinoOptions
+title: "ArlecchinoOptions"
+sidebar_label: "ArlecchinoOptions"
 ---
 
 # ArlecchinoOptions class
@@ -46,7 +46,7 @@ public sealed class ArlecchinoOptions
 | [`TargetFramesPerSecond`](#targetframespersecond) | How often the loop may draw. Frames are only composed when something asked for one. |
 | [`TerminalAnswer`](#terminalanswer) | How long to wait for the terminal to finish answering. See [`ArlecchinoOptions.AskTerminal`](../arlecchino.hosting/ArlecchinoOptions.md#askterminal). |
 | [`TextInput`](#textinput) | How a key press becomes a character on a non-latin layout. Whatever the terminal reports is taken by default, so any language can be typed without the application asking for it; [`ArlecchinoBuilder.UseKeysByPosition`](../arlecchino.hosting/ArlecchinoBuilder.md#usekeysbyposition) trades that for keys that always read the same. |
-| [`Theme`](#theme) | Colours behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve. |
+| [`Theme`](#theme) | Colors behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve. |
 | [`UseAlternateScreen`](#usealternatescreen) | Whether to run on the alternate screen, which leaves the user's scrollback untouched on exit. |
 | [`VerticalPadding`](#verticalpadding) | Rows kept free above and below the content area. |
 
@@ -296,7 +296,7 @@ How a key press becomes a character on a non-latin layout. Whatever the terminal
 public ThemePalette Theme { get; set; }
 ```
 
-Colours behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve.
+Colors behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve.
 
 **Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
 

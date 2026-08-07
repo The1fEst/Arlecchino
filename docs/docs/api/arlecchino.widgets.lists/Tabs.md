@@ -1,6 +1,6 @@
 ---
-title: Tabs
-sidebar_label: Tabs
+title: "Tabs"
+sidebar_label: "Tabs"
 ---
 
 # Tabs class
@@ -35,7 +35,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the labels side by side and remembers where each starts, which is what lets a click be resolved to a tab. Returns the rows below the strip, which is where the current tab's content belongs. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Switches tabs with the horizontal arrows, leaving everything else alone. |
+| [`Handle(KeyPress)`](#handle-keypress) | Switches tabs with the horizontal arrows, leaving everything else alone. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Switches to the tab that was clicked. A click in the gap between labels lands on the tab to its left, so the strip has no dead columns. |
 | [`Select(int)`](#select-int) | Switches tabs, ignoring indexes outside the strip and moves that change nothing. |
 
@@ -121,10 +121,10 @@ Draws the labels side by side and remembers where each starts, which is what let
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — The region below the strip.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Switches tabs with the horizontal arrows, leaving everything else alone.
@@ -133,7 +133,7 @@ Switches tabs with the horizontal arrows, leaving everything else alone.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What became of the key.
 

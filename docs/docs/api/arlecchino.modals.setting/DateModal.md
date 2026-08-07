@@ -1,6 +1,6 @@
 ---
-title: DateModal
-sidebar_label: DateModal
+title: "DateModal"
+sidebar_label: "DateModal"
 ---
 
 # DateModal class

@@ -1,6 +1,6 @@
 ---
-title: ScrollBar
-sidebar_label: ScrollBar
+title: "ScrollBar"
+sidebar_label: "ScrollBar"
 ---
 
 # ScrollBar class
@@ -37,7 +37,7 @@ Draws the bar down the last column of a region. The thumb is at least one cell t
 | `region` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) | Where the rows were drawn; the last column is used. |
 | `first` | `int` | Index of the first item on screen. |
 | `total` | `int` | How many items there are. |
-| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Colour of the thumb. Defaults to the theme's active colour. |
+| `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | Color of the thumb. Defaults to the theme's active color. |
 
 ### `IsNeeded(int, int)` {#isneeded-int-int}
 

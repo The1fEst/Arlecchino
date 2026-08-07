@@ -1,6 +1,6 @@
 ---
-title: SegmentedModal
-sidebar_label: SegmentedModal
+title: "SegmentedModal"
+sidebar_label: "SegmentedModal"
 ---
 
 # SegmentedModal class
@@ -34,12 +34,12 @@ public abstract class SegmentedModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Add(int)`](#add-int) | Steps the active segment, carrying into the neighbours as that value type requires. |
+| [`Add(int)`](#add-int) | Steps the active segment, carrying into the neighbors as that value type requires. |
 | [`ApplyTypedValue(int, int)`](#applytypedvalue-int-int) | Stores what was typed into a segment, keeping the whole value legal. |
 | [`ClearTypedDigits()`](#cleartypeddigits) | Throws away a partly typed segment, restoring what was stored. |
 | [`CommitTypedDigits()`](#committypeddigits) | Applies a partly typed segment, padding it with leading zeroes. Called before anything that reads the value, so confirming the dialog keeps what was typed. |
 | [`EditedSegmentTexts()`](#editedsegmenttexts) | What to draw: the stored value, but with half-typed digits shown in place of the segment being edited so typing is visible before it takes effect. |
-| [`Handle(ModalFrame, ConsoleKeyInfo)`](#handle-modalframe-consolekeyinfo) |  |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`MoveSegment(int)`](#movesegment-int) | Moves between segments, stopping at the ends. Anything half-typed is applied first. |
 | [`SegmentLength(int)`](#segmentlength-int) | How many digits a segment holds, which is also when typing moves on to the next one. |
 | [`SegmentTexts()`](#segmenttexts) | The stored value as one padded string per segment. |
@@ -100,7 +100,7 @@ What is drawn between the segments.
 public abstract void Add(int delta);
 ```
 
-Steps the active segment, carrying into the neighbours as that value type requires.
+Steps the active segment, carrying into the neighbors as that value type requires.
 
 **Parameters**
 
@@ -149,10 +149,10 @@ What to draw: the stored value, but with half-typed digits shown in place of the
 
 **Returns** `string`\[\] — One string per segment.
 
-### `Handle(ModalFrame, ConsoleKeyInfo)` {#handle-modalframe-consolekeyinfo}
+### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
 ```csharp
-public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
+public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
 **Parameters**
@@ -160,7 +160,7 @@ public override void Handle(ModalFrame frame, ConsoleKeyInfo key);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `key` | `ConsoleKeyInfo` |  |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
 ### `MoveSegment(int)` {#movesegment-int}
 

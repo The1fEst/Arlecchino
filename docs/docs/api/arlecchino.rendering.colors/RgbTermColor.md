@@ -1,13 +1,13 @@
 ---
-title: RgbTermColor
-sidebar_label: RgbTermColor
+title: "RgbTermColor"
+sidebar_label: "RgbTermColor"
 ---
 
 # RgbTermColor class
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-A style built from exact colours. Use it where the colour itself is the point — a swatch, a chart, syntax highlighting — and keep chrome on [`Theme`](../arlecchino.rendering.colors/Theme.md), which follows the terminal theme. Falls back to the nearest palette colour when the terminal cannot do 24-bit.
+A style built from exact colors. Use it where the color itself is the point — a swatch, a chart, syntax highlighting — and keep chrome on [`Theme`](../arlecchino.rendering.colors/Theme.md), which follows the terminal theme. Falls back to the nearest palette color when the terminal cannot do 24-bit.
 
 ```csharp
 public sealed class RgbTermColor : IArlecchinoColor
@@ -25,9 +25,9 @@ public sealed class RgbTermColor : IArlecchinoColor
 
 | Member | Summary |
 |---|---|
-| [`Ansi`](#ansi) | The escape sequence for this style: 24-bit where the terminal supports it, the nearest palette colour where it does not, and empty when colour is off. |
-| [`Background`](#background) | Colour behind the glyphs, or `null` to leave the background alone. |
-| [`Foreground`](#foreground) | Colour of the glyphs, or `null` to leave the foreground alone. |
+| [`Ansi`](#ansi) | The escape sequence for this style: 24-bit where the terminal supports it, the nearest palette color where it does not, and empty when color is off. |
+| [`Background`](#background) | Color behind the glyphs, or `null` to leave the background alone. |
+| [`Foreground`](#foreground) | Color of the glyphs, or `null` to leave the foreground alone. |
 | [`Style`](#style) | Bold, italic, underline and dim, in any combination. |
 
 ## Methods
@@ -52,7 +52,7 @@ public RgbTermColor();
 public string Ansi { get; }
 ```
 
-The escape sequence for this style: 24-bit where the terminal supports it, the nearest palette colour where it does not, and empty when colour is off.
+The escape sequence for this style: 24-bit where the terminal supports it, the nearest palette color where it does not, and empty when color is off.
 
 **Type** `string`
 
@@ -62,7 +62,7 @@ The escape sequence for this style: 24-bit where the terminal supports it, the n
 public Nullable<Rgb> Background { get; init; }
 ```
 
-Colour behind the glyphs, or `null` to leave the background alone.
+Color behind the glyphs, or `null` to leave the background alone.
 
 **Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
 
@@ -72,7 +72,7 @@ Colour behind the glyphs, or `null` to leave the background alone.
 public Nullable<Rgb> Foreground { get; init; }
 ```
 
-Colour of the glyphs, or `null` to leave the foreground alone.
+Color of the glyphs, or `null` to leave the foreground alone.
 
 **Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
 

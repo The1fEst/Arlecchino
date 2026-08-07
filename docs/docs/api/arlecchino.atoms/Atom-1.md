@@ -1,6 +1,6 @@
 ---
-title: Atom&lt;T&gt;
-sidebar_label: Atom&lt;T&gt;
+title: "Atom<T>"
+sidebar_label: "Atom<T>"
 ---
 
 # Atom&lt;T&gt; class

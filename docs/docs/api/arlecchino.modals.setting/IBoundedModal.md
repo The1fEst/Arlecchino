@@ -1,6 +1,6 @@
 ---
-title: IBoundedModal
-sidebar_label: IBoundedModal
+title: "IBoundedModal"
+sidebar_label: "IBoundedModal"
 ---
 
 # IBoundedModal interface

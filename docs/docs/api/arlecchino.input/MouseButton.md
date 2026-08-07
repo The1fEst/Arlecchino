@@ -1,6 +1,6 @@
 ---
-title: MouseButton
-sidebar_label: MouseButton
+title: "MouseButton"
+sidebar_label: "MouseButton"
 ---
 
 # MouseButton enum

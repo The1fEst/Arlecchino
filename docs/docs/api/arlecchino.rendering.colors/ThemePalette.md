@@ -1,13 +1,13 @@
 ---
-title: ThemePalette
-sidebar_label: ThemePalette
+title: "ThemePalette"
+sidebar_label: "ThemePalette"
 ---
 
 # ThemePalette class
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-The colours behind the roles in [`Theme`](../arlecchino.rendering.colors/Theme.md). Every role has a default, so a palette that overrides two of them is a valid palette — and what it does not override is the framework's own colours, described on [`ThemePalette.Arlecchino`](../arlecchino.rendering.colors/ThemePalette.md#arlecchino).
+The colors behind the roles in [`Theme`](../arlecchino.rendering.colors/Theme.md). Every role has a default, so a palette that overrides two of them is a valid palette — and what it does not override is the framework's own colors, described on [`ThemePalette.Arlecchino`](../arlecchino.rendering.colors/ThemePalette.md#arlecchino).
 
 ```csharp
 public sealed class ThemePalette
@@ -26,15 +26,15 @@ public sealed class ThemePalette
 | [`Accent`](#accent) | Text that stands out without being alarming. Bone. |
 | [`Active`](#active) | Something switched on or available. Crimson. |
 | [`ActiveSelected`](#activeselected) | The cursor row of the focused pane. Ink on ash, so it is never read as a failure. |
-| [`Arlecchino`](#arlecchino) | The framework's own colours — the crimson, bone and ink of the harlequin mask. The background stays whatever the terminal has, so it sits on a light theme as readily as a dark one; only the two cursor rows paint behind their text, because a selection has to be visible. Each entry carries an exact colour and a palette colour behind it, so a terminal without 24-bit draws the nearest thing the author picked rather than the nearest thing arithmetic found. This is what a palette starts from, so `new ThemePalette()` is already it; the property is here to name it, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colours. |
-| [`Basic`](#basic) | The terminal's own sixteen colours, with nothing exact behind them: magenta titles, blue column headers, cyan borders, a green cursor row. This was the default before 2.0, and `UseTheme(ThemePalette.Basic)` is how an application that liked it keeps it. |
+| [`Arlecchino`](#arlecchino) | The framework's own colors — the crimson, bone and ink of the harlequin mask. The background stays whatever the terminal has, so it sits on a light theme as readily as a dark one; only the two cursor rows paint behind their text, because a selection has to be visible. Each entry carries an exact color and a palette color behind it, so a terminal without 24-bit draws the nearest thing the author picked rather than the nearest thing arithmetic found. This is what a palette starts from, so `new ThemePalette()` is already it; the property is here to name it, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colors. |
+| [`Basic`](#basic) | The terminal's own sixteen colors, with nothing exact behind them: magenta titles, blue column headers, cyan borders, a green cursor row. This was the default before 2.0, and `UseTheme(ThemePalette.Basic)` is how an application that liked it keeps it. |
 | [`Default`](#default) | Ordinary text. The terminal's own foreground and background. |
 | [`Error`](#error) | Failures and validation messages. Bone on crimson. |
 | [`Header`](#header) | Screen titles. Bold crimson. |
 | [`Info`](#info) | Borders and structural lines. Ash. |
 | [`Input`](#input) | The editable part of a text field. Ink on bone. |
 | [`Muted`](#muted) | Secondary text such as hints and footers. Ash. |
-| [`Selected`](#selected) | The cursor row of an unfocused pane. Bone on the hairline grey. |
+| [`Selected`](#selected) | The cursor row of an unfocused pane. Bone on the hairline gray. |
 | [`TableHeader`](#tableheader) | Column headers. Bold bone. |
 | [`Warning`](#warning) | Something worth noticing. Ink on amber. |
 
@@ -84,7 +84,7 @@ The cursor row of the focused pane. Ink on ash, so it is never read as a failure
 public static ThemePalette Arlecchino { get; }
 ```
 
-The framework's own colours — the crimson, bone and ink of the harlequin mask. The background stays whatever the terminal has, so it sits on a light theme as readily as a dark one; only the two cursor rows paint behind their text, because a selection has to be visible. Each entry carries an exact colour and a palette colour behind it, so a terminal without 24-bit draws the nearest thing the author picked rather than the nearest thing arithmetic found. This is what a palette starts from, so `new ThemePalette()` is already it; the property is here to name it, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colours.
+The framework's own colors — the crimson, bone and ink of the harlequin mask. The background stays whatever the terminal has, so it sits on a light theme as readily as a dark one; only the two cursor rows paint behind their text, because a selection has to be visible. Each entry carries an exact color and a palette color behind it, so a terminal without 24-bit draws the nearest thing the author picked rather than the nearest thing arithmetic found. This is what a palette starts from, so `new ThemePalette()` is already it; the property is here to name it, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colors.
 
 **Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
 
@@ -94,7 +94,7 @@ The framework's own colours — the crimson, bone and ink of the harlequin mask.
 public static ThemePalette Basic { get; }
 ```
 
-The terminal's own sixteen colours, with nothing exact behind them: magenta titles, blue column headers, cyan borders, a green cursor row. This was the default before 2.0, and `UseTheme(ThemePalette.Basic)` is how an application that liked it keeps it.
+The terminal's own sixteen colors, with nothing exact behind them: magenta titles, blue column headers, cyan borders, a green cursor row. This was the default before 2.0, and `UseTheme(ThemePalette.Basic)` is how an application that liked it keeps it.
 
 **Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
 
@@ -164,7 +164,7 @@ Secondary text such as hints and footers. Ash.
 public TermColor Selected { get; init; }
 ```
 
-The cursor row of an unfocused pane. Bone on the hairline grey.
+The cursor row of an unfocused pane. Bone on the hairline gray.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 

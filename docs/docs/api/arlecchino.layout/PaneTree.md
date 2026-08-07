@@ -1,6 +1,6 @@
 ---
-title: PaneTree
-sidebar_label: PaneTree
+title: "PaneTree"
+sidebar_label: "PaneTree"
 ---
 
 # PaneTree class

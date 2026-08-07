@@ -1,6 +1,6 @@
 ---
-title: LogBuffer
-sidebar_label: LogBuffer
+title: "LogBuffer"
+sidebar_label: "LogBuffer"
 ---
 
 # LogBuffer class

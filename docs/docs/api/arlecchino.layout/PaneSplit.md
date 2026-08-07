@@ -1,6 +1,6 @@
 ---
-title: PaneSplit
-sidebar_label: PaneSplit
+title: "PaneSplit"
+sidebar_label: "PaneSplit"
 ---
 
 # PaneSplit enum

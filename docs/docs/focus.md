@@ -29,7 +29,7 @@ public sealed class PackagesView : IArlecchinoView
         _focus.Add(_table);
     }
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => _focus.Handle(key).Route;
+    public ViewRoute Handle(KeyPress key) => _focus.Handle(key).Route;
 
     public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse).Route;
 }
@@ -55,7 +55,7 @@ application's `NextField` and `PreviousField` — `Tab` and `Shift+Tab` unless t
 public interface IArlecchinoFocusable
 {
     bool IsFocused { get; set; }
-    FocusResult Handle(ConsoleKeyInfo key);
+    FocusResult Handle(KeyPress key);
     FocusResult HandleMouse(MouseEvent mouse);
 }
 ```

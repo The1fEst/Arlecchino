@@ -1,6 +1,6 @@
 ---
-title: NotificationAction
-sidebar_label: NotificationAction
+title: "NotificationAction"
+sidebar_label: "NotificationAction"
 ---
 
 # NotificationAction class

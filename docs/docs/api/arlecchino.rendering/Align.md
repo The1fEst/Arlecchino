@@ -1,6 +1,6 @@
 ---
-title: Align
-sidebar_label: Align
+title: "Align"
+sidebar_label: "Align"
 ---
 
 # Align enum
@@ -19,9 +19,9 @@ public enum Align : byte
 | Name | Value | Summary |
 |---|---:|---|
 | `Left` | `1` | Against the left edge of the content area. |
-| `Center` | `2` | Centred horizontally in the content area. |
+| `Center` | `2` | Centered horizontally in the content area. |
 | `Right` | `4` | Against the right edge of the content area. |
-| `Top` | `8` | Against the top edge. Only block and region calls honour the vertical flags. |
-| `Middle` | `16` | Centred vertically. |
+| `Top` | `8` | Against the top edge. Only block and region calls honor the vertical flags. |
+| `Middle` | `16` | Centered vertically. |
 | `Bottom` | `32` | Against the bottom edge. |
 

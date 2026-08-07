@@ -41,7 +41,7 @@ container, so they can take any service — application state, the navigator, `A
 
 :::note[A plain letter does not fire globally]
 
-A binding that carries a modifier — `new(ConsoleKey.S, ConsoleModifiers.Control)` — fires before the
+A binding that carries a modifier — `new(ConsoleKey.S, KeyModifiers.Control)` — fires before the
 key reaches the view. A plain letter does not: it would swallow typing. It stays reachable through the
 palette and through whatever the view does with it.
 
@@ -58,7 +58,7 @@ public IReadOnlyList<ViewCommand> Commands() =>
     ViewCommand.Navigating(ConsoleKey.S, () => Loc(LocString.Settings), () => ViewKind.Settings),
     new()
     {
-        Binding = new KeyBinding(ConsoleKey.D, ConsoleModifiers.Control),
+        Binding = new KeyBinding(ConsoleKey.D, KeyModifiers.Control),
         Label = () => Loc(LocString.Delete),
         IsEnabled = () => _selected is not null,
         Run = () => Delete(),

@@ -1,6 +1,6 @@
 ---
-title: ListBox&lt;T&gt;
-sidebar_label: ListBox&lt;T&gt;
+title: "ListBox<T>"
+sidebar_label: "ListBox<T>"
 ---
 
 # ListBox&lt;T&gt; class
@@ -29,10 +29,10 @@ public sealed class ListBox<T> :
 | Member | Summary |
 |---|---|
 | [`IsFocused`](#isfocused) | Whether the list has focus, which decides how strongly the selection is drawn. |
-| [`ItemStyle`](#itemstyle) | Colours an item. Ignored for the selected row, which has to stand out. |
+| [`ItemStyle`](#itemstyle) | Colors an item. Ignored for the selected row, which has to stand out. |
 | [`Items`](#items) | What to show. Replacing this pulls the selection back into range on the next frame. |
 | [`OnActivate`](#onactivate) | What confirming an item does. Returning a route navigates; without this the list simply reports the key as handled. |
-| [`PaintRow`](#paintrow) | Draws a row itself, for a list whose rows are not one colour: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it. |
+| [`PaintRow`](#paintrow) | Draws a row itself, for a list whose rows are not one color: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it. |
 | [`Render`](#render) | Turns an item into its row of text. Longer text is truncated by column, not by character. |
 | [`Selected`](#selected) | Index of the selected row. |
 | [`SelectedItem`](#selecteditem) | The selected item, or the type's default when the list is empty. |
@@ -42,7 +42,7 @@ public sealed class ListBox<T> :
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the rows around the selection and remembers where they landed, which is what lets clicks and wheel events be resolved afterwards. The list fills whatever it is given, so nothing is left underneath it. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves the selection or confirms it. |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves the selection or confirms it. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel and selects with a click. Clicking the already selected row confirms it, so a double click reads as select-then-activate without the widget timing anything. |
 
 ## Constructors in detail
@@ -85,7 +85,7 @@ Whether the list has focus, which decides how strongly the selection is drawn.
 public Func<T, IArlecchinoColor> ItemStyle { get; set; }
 ```
 
-Colours an item. Ignored for the selected row, which has to stand out.
+Colors an item. Ignored for the selected row, which has to stand out.
 
 **Type** `Func<T, TResult>`&lt;`T`, [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)&gt;
 
@@ -115,7 +115,7 @@ What confirming an item does. Returning a route navigates; without this the list
 public Action<SurfaceRegion, T, bool> PaintRow { get; init; }
 ```
 
-Draws a row itself, for a list whose rows are not one colour: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it.
+Draws a row itself, for a list whose rows are not one color: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it.
 
 **Type** `Action<T1, T2, T3>`&lt;[`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md), `T`, `bool`&gt;
 
@@ -167,10 +167,10 @@ Draws the rows around the selection and remembers where they landed, which is wh
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — An empty region: the list uses every row it is handed.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Moves the selection or confirms it.
@@ -179,7 +179,7 @@ Moves the selection or confirms it.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — What became of the key, including a route when confirming navigates.
 

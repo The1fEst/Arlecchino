@@ -1,6 +1,6 @@
 ---
-title: IArlecchinoInteractiveWidget
-sidebar_label: IArlecchinoInteractiveWidget
+title: "IArlecchinoInteractiveWidget"
+sidebar_label: "IArlecchinoInteractiveWidget"
 ---
 
 # IArlecchinoInteractiveWidget interface

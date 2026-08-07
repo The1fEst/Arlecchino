@@ -188,15 +188,23 @@ internal sealed class ApiDocs
     /// The public API baseline carries the exact signature the analyzer holds the package to, nullable
     /// annotations included, which is more than metadata alone can say. Keyed by the same signature
     /// with the annotations stripped, it decorates what reflection produced.
+    ///
+    /// Both halves of the baseline are read. What is shipped is what the last release promised; what is
+    /// unshipped is what the assemblies being read right now actually carry, and between two releases
+    /// that is where every member that moved lives. A member listed as removed is skipped: it is a
+    /// note about the last release rather than something the assembly still has.
     /// </summary>
     private static Dictionary<string, string> Shipped(string repo)
     {
         var declarations = new Dictionary<string, string>(StringComparer.Ordinal);
         var ambiguous = new HashSet<string>(StringComparer.Ordinal);
 
-        foreach (var project in Projects)
+        foreach (var file in Projects.SelectMany(project => new[]
+                 {
+                     Path.Combine(repo, "src", project, "PublicAPI.Shipped.txt"),
+                     Path.Combine(repo, "src", project, "PublicAPI.Unshipped.txt"),
+                 }))
         {
-            var file = Path.Combine(repo, "src", project, "PublicAPI.Shipped.txt");
             if (!File.Exists(file))
             {
                 continue;
@@ -205,7 +213,9 @@ internal sealed class ApiDocs
             foreach (var line in File.ReadLines(file))
             {
                 var declaration = line.Trim();
-                if (declaration.Length == 0 || declaration.StartsWith('#'))
+                if (declaration.Length == 0 ||
+                    declaration.StartsWith('#') ||
+                    declaration.StartsWith("*REMOVED*", StringComparison.Ordinal))
                 {
                     continue;
                 }
@@ -268,6 +278,16 @@ internal sealed class ApiDocs
     private static string Slug(string ns) => ns.ToLowerInvariant();
 
     private static string PageFile(Type type) => type.Name.Replace('`', '-');
+
+    /// <summary>
+    /// A name as the front matter has to carry it. The page body is Markdown, where a bare
+    /// <c>Tree&lt;T&gt;</c> would be read as a tag and has to be escaped; the front matter is YAML,
+    /// which is read before any of that and hands the sidebar whatever it finds — so an escaped name
+    /// there is shown to the reader with the ampersands still in it.
+    /// </summary>
+    /// <param name="name">The name of the type.</param>
+    /// <returns>The name as a YAML string.</returns>
+    private static string Quoted(string name) => $"\"{name.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
 
     private void Write()
     {
@@ -402,8 +422,8 @@ internal sealed class ApiDocs
         var title = name.Replace("<", "&lt;").Replace(">", "&gt;");
 
         page.AppendLine("---");
-        page.AppendLine($"title: {title}");
-        page.AppendLine($"sidebar_label: {title}");
+        page.AppendLine($"title: {Quoted(name)}");
+        page.AppendLine($"sidebar_label: {Quoted(name)}");
         page.AppendLine("---");
         page.AppendLine();
         page.AppendLine($"# {title} {Noun(type)}");

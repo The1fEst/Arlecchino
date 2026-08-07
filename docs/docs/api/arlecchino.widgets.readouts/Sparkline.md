@@ -1,6 +1,6 @@
 ---
-title: Sparkline
-sidebar_label: Sparkline
+title: "Sparkline"
+sidebar_label: "Sparkline"
 ---
 
 # Sparkline class
@@ -28,7 +28,7 @@ public sealed class Sparkline : IArlecchinoWidget
 | [`Caption`](#caption) | Builds the readout drawn after the line, given the newest value. Supplied as a delegate so the wording and units stay with the application rather than the widget. |
 | [`Maximum`](#maximum) | The value the tallest block stands for. The largest of the drawn values when left alone. |
 | [`Minimum`](#minimum) | The value the lowest block stands for. The smallest of the drawn values when left alone, which makes the line fill the row and answer "how does it move"; pinning it answers "how big is it" instead, and keeps the line still when the numbers barely change. |
-| [`Style`](#style) | Colour of the line. The theme's active colour when left alone. |
+| [`Style`](#style) | Color of the line. The theme's active color when left alone. |
 | [`Values`](#values) | The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
 
 ## Methods
@@ -83,7 +83,7 @@ The value the lowest block stands for. The smallest of the drawn values when lef
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour of the line. The theme's active colour when left alone.
+Color of the line. The theme's active color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 

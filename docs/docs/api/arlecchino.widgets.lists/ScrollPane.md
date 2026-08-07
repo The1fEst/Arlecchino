@@ -1,6 +1,6 @@
 ---
-title: ScrollPane
-sidebar_label: ScrollPane
+title: "ScrollPane"
+sidebar_label: "ScrollPane"
 ---
 
 # ScrollPane class
@@ -39,7 +39,7 @@ public sealed class ScrollPane :
 | Member | Summary |
 |---|---|
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the visible slice of the content, and the scroll bar when one is needed. The pane is a window onto content taller than itself, so nothing is ever left underneath it. |
-| [`Handle(ConsoleKeyInfo)`](#handle-consolekeyinfo) | Moves the window a row, a page, or to either end. |
+| [`Handle(KeyPress)`](#handle-keypress) | Moves the window a row, a page, or to either end. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel while the pointer is over the pane. |
 
 ## Constructors in detail
@@ -134,10 +134,10 @@ Draws the visible slice of the content, and the scroll bar when one is needed. T
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — An empty region: the pane uses every row it is handed.
 
-### `Handle(ConsoleKeyInfo)` {#handle-consolekeyinfo}
+### `Handle(KeyPress)` {#handle-keypress}
 
 ```csharp
-public FocusResult Handle(ConsoleKeyInfo key);
+public FocusResult Handle(KeyPress key);
 ```
 
 Moves the window a row, a page, or to either end.
@@ -146,7 +146,7 @@ Moves the window a row, a page, or to either end.
 
 | Name | Type | Description |
 |---|---|---|
-| `key` | `ConsoleKeyInfo` | The key that was pressed. |
+| `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`FocusResult`](../arlecchino.focus/FocusResult.md) — Whether the pane took it.
 

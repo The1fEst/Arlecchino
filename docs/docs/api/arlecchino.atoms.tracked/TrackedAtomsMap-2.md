@@ -1,6 +1,6 @@
 ---
-title: TrackedAtomsMap&lt;TKey, TValue&gt;
-sidebar_label: TrackedAtomsMap&lt;TKey, TValue&gt;
+title: "TrackedAtomsMap<TKey, TValue>"
+sidebar_label: "TrackedAtomsMap<TKey, TValue>"
 ---
 
 # TrackedAtomsMap&lt;TKey, TValue&gt; class

@@ -1,13 +1,13 @@
 ---
-title: AreaChart
-sidebar_label: AreaChart
+title: "AreaChart"
+sidebar_label: "AreaChart"
 ---
 
 # AreaChart class
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-A series drawn as a filled area over as many rows as it is given — the shape a system monitor shows. Where [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) fits a row and reads at a glance, this one fills a pane and is meant to be looked at: the newest value is at the right, the fill climbs with the value, and the colour comes from how high it climbed rather than from anything the view works out. A series with no spread at all — every number the same — draws as the lowest level along the bottom rather than as nothing, the way a [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) does. The resolution is in the characters. A cell carries two samples side by side and several levels of height, so a chart eight rows tall has thirty-two levels between empty and full and holds twice the history a row of blocks would — see [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md) for what each set costs in font support.
+A series drawn as a filled area over as many rows as it is given — the shape a system monitor shows. Where [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) fits a row and reads at a glance, this one fills a pane and is meant to be looked at: the newest value is at the right, the fill climbs with the value, and the color comes from how high it climbed rather than from anything the view works out. A series with no spread at all — every number the same — draws as the lowest level along the bottom rather than as nothing, the way a [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) does. The resolution is in the characters. A cell carries two samples side by side and several levels of height, so a chart eight rows tall has thirty-two levels between empty and full and holds twice the history a row of blocks would — see [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md) for what each set costs in font support.
 
 ```csharp
 public sealed class AreaChart : IArlecchinoWidget
@@ -25,11 +25,11 @@ public sealed class AreaChart : IArlecchinoWidget
 
 | Member | Summary |
 |---|---|
-| [`Bands`](#bands) | Where the colour changes as the fill climbs, in the same units as the values and in ascending order. A terminal with truecolor blends between them, one without takes the nearest, and a chart given none is drawn in [`AreaChart.Style`](../arlecchino.widgets.readouts/AreaChart.md#style) throughout. |
+| [`Bands`](#bands) | Where the color changes as the fill climbs, in the same units as the values and in ascending order. A terminal with truecolor blends between them, one without takes the nearest, and a chart given none is drawn in [`AreaChart.Style`](../arlecchino.widgets.readouts/AreaChart.md#style) throughout. |
 | [`Invert`](#invert) | Draws it hanging from the top rather than standing on the bottom, for the second half of a mirrored pair — what comes in above, what goes out below. |
 | [`Maximum`](#maximum) | The value a full chart stands for. The largest of the drawn values when left alone. |
 | [`Minimum`](#minimum) | The value an empty chart stands for. The smallest of the drawn values when left alone. |
-| [`Style`](#style) | Colour of the fill outside every band. The theme's active colour when left alone. |
+| [`Style`](#style) | Color of the fill outside every band. The theme's active color when left alone. |
 | [`Symbols`](#symbols) | What to draw with. The application's own setting — [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) — when left alone, so one chart can differ without every other one being told. |
 | [`Values`](#values) | The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
 
@@ -55,7 +55,7 @@ public AreaChart();
 public IReadOnlyList<GaugeBand> Bands { get; init; }
 ```
 
-Where the colour changes as the fill climbs, in the same units as the values and in ascending order. A terminal with truecolor blends between them, one without takes the nearest, and a chart given none is drawn in [`AreaChart.Style`](../arlecchino.widgets.readouts/AreaChart.md#style) throughout.
+Where the color changes as the fill climbs, in the same units as the values and in ascending order. A terminal with truecolor blends between them, one without takes the nearest, and a chart given none is drawn in [`AreaChart.Style`](../arlecchino.widgets.readouts/AreaChart.md#style) throughout.
 
 **Type** `IReadOnlyList<T>`&lt;[`GaugeBand`](../arlecchino.widgets.readouts/GaugeBand.md)&gt;
 
@@ -95,7 +95,7 @@ The value an empty chart stands for. The smallest of the drawn values when left 
 public IArlecchinoColor? Style { get; init; }
 ```
 
-Colour of the fill outside every band. The theme's active colour when left alone.
+Color of the fill outside every band. The theme's active color when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 

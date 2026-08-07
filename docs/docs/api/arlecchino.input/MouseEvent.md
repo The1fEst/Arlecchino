@@ -1,6 +1,6 @@
 ---
-title: MouseEvent
-sidebar_label: MouseEvent
+title: "MouseEvent"
+sidebar_label: "MouseEvent"
 ---
 
 # MouseEvent struct
@@ -19,7 +19,7 @@ public readonly struct MouseEvent : IEquatable<MouseEvent>
 
 | Member | Summary |
 |---|---|
-| [`MouseEvent(MouseAction, MouseButton, int, int, ConsoleModifiers)`](#mouseevent-mouseaction-mousebutton-int-int-consolemodifiers) | A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers. |
+| [`MouseEvent(MouseAction, MouseButton, int, int, KeyModifiers)`](#mouseevent-mouseaction-mousebutton-int-int-keymodifiers) | A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers. |
 
 ## Properties
 
@@ -37,11 +37,11 @@ public readonly struct MouseEvent : IEquatable<MouseEvent>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(out MouseAction, out MouseButton, out int, out int, out ConsoleModifiers)`](#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-consolemodifiers) |  |
+| [`Deconstruct(out MouseAction, out MouseButton, out int, out int, out KeyModifiers)`](#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-keymodifiers) |  |
 
 ## Constructors in detail
 
-### `MouseEvent(MouseAction, MouseButton, int, int, ConsoleModifiers)` {#mouseevent-mouseaction-mousebutton-int-int-consolemodifiers}
+### `MouseEvent(MouseAction, MouseButton, int, int, KeyModifiers)` {#mouseevent-mouseaction-mousebutton-int-int-keymodifiers}
 
 ```csharp
 public MouseEvent(
@@ -49,7 +49,7 @@ public MouseEvent(
     MouseButton Button,
     int Row,
     int Column,
-    ConsoleModifiers Modifiers);
+    KeyModifiers Modifiers);
 ```
 
 A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers.
@@ -62,7 +62,7 @@ A mouse report from the terminal. Coordinates are frame cells — the same ones 
 | `Button` | [`MouseButton`](../arlecchino.input/MouseButton.md) | Which button, or [`MouseButton.None`](../arlecchino.input/MouseButton.md) for the wheel. |
 | `Row` | `int` | Zero-based row in the frame. |
 | `Column` | `int` | Zero-based column in the frame. |
-| `Modifiers` | `ConsoleModifiers` | Modifiers held at the time. |
+| `Modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | Modifiers held at the time. |
 
 ## Properties in detail
 
@@ -119,12 +119,12 @@ Whether this is a wheel event in either direction.
 ### `Modifiers` {#modifiers}
 
 ```csharp
-public ConsoleModifiers Modifiers { get; init; }
+public KeyModifiers Modifiers { get; init; }
 ```
 
 Modifiers held at the time.
 
-**Type** `ConsoleModifiers`
+**Type** [`KeyModifiers`](../arlecchino.input/KeyModifiers.md)
 
 ### `Row` {#row}
 
@@ -138,7 +138,7 @@ Zero-based row in the frame.
 
 ## Methods in detail
 
-### `Deconstruct(out MouseAction, out MouseButton, out int, out int, out ConsoleModifiers)` {#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-consolemodifiers}
+### `Deconstruct(out MouseAction, out MouseButton, out int, out int, out KeyModifiers)` {#deconstruct-out-mouseaction-out-mousebutton-out-int-out-int-out-keymodifiers}
 
 ```csharp
 public void Deconstruct(
@@ -146,7 +146,7 @@ public void Deconstruct(
     out MouseButton Button,
     out int Row,
     out int Column,
-    out ConsoleModifiers Modifiers);
+    out KeyModifiers Modifiers);
 ```
 
 **Parameters**
@@ -157,5 +157,5 @@ public void Deconstruct(
 | `Button` | [`MouseButton`](../arlecchino.input/MouseButton.md) |  |
 | `Row` | `int` |  |
 | `Column` | `int` |  |
-| `Modifiers` | `ConsoleModifiers` |  |
+| `Modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) |  |
 

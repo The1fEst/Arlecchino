@@ -1,13 +1,13 @@
 ---
-title: GaugeBand
-sidebar_label: GaugeBand
+title: "GaugeBand"
+sidebar_label: "GaugeBand"
 ---
 
 # GaugeBand struct
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the colour of everything below it.
+Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the color of everything below it.
 
 ```csharp
 public readonly struct GaugeBand : IEquatable<GaugeBand>
@@ -19,7 +19,7 @@ public readonly struct GaugeBand : IEquatable<GaugeBand>
 
 | Member | Summary |
 |---|---|
-| [`GaugeBand(decimal, IArlecchinoColor)`](#gaugeband-decimal-iarlecchinocolor) | Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the colour of everything below it. |
+| [`GaugeBand(decimal, IArlecchinoColor)`](#gaugeband-decimal-iarlecchinocolor) | Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the color of everything below it. |
 
 ## Properties
 
@@ -42,7 +42,7 @@ public readonly struct GaugeBand : IEquatable<GaugeBand>
 public GaugeBand(decimal From, IArlecchinoColor Style);
 ```
 
-Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the colour of everything below it.
+Where a band of a [`Gauge`](../arlecchino.widgets.readouts/Gauge.md) starts and how it is drawn. A band runs from [`GaugeBand.From`](../arlecchino.widgets.readouts/GaugeBand.md#from) up to the start of the next one, so the bands are given in order and the first of them decides the color of everything below it.
 
 **Parameters**
 
