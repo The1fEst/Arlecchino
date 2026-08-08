@@ -55,20 +55,20 @@ internal sealed class CommandKeys
             return true;
         }
 
-        if (key.Modifiers != default && _commands.TryFind(key, out var application))
+        if (key.Modifiers == default || !_commands.TryFind(key, out var application))
         {
-            _navigator.Apply(application.Execute());
-
-            return true;
+            return Opened(key);
         }
 
-        return Opened(key);
+        _navigator.Apply(application.Execute());
+
+        return true;
     }
 
     /// <summary>
-    /// Finishes the chord that was started. The key is taken whether or not it lands on something: a
-    /// person halfway through a chord meant the chord, and letting a stray second key act on its own
-    /// would run whatever it is bound to instead.
+    /// Finishes the chord that was started. The key is taken even when it lands on nothing: a person
+    /// halfway through a chord meant the chord, and letting a stray second key act on its own would run
+    /// whatever it is bound to instead.
     /// </summary>
     /// <param name="key">The key that arrived after the leader.</param>
     public void Finish(KeyPress key)
@@ -143,22 +143,26 @@ internal sealed class CommandKeys
     {
         foreach (var command in _navigator.CurrentCommands)
         {
-            if (command.Binding.Opens(key) && command.IsEnabled())
+            if (!command.Binding.Opens(key) || !command.IsEnabled())
             {
-                _leader = key;
-
-                return true;
+                continue;
             }
+
+            _leader = key;
+
+            return true;
         }
 
         foreach (var command in _commands.Commands)
         {
-            if (command.Binding.Opens(key))
+            if (!command.Binding.Opens(key))
             {
-                _leader = key;
-
-                return true;
+                continue;
             }
+
+            _leader = key;
+
+            return true;
         }
 
         return false;

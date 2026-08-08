@@ -27,7 +27,6 @@ public class InputRouter
     private readonly Navigator _navigator;
     private readonly IArlecchinoTerminal _terminal;
     private readonly LogOverlay _log;
-    private readonly CommandRegistry _commands;
     private readonly ArlecchinoOptions _options;
     private readonly ArlecchinoKeymap _keymap;
     private readonly Repaint _repaint;
@@ -42,7 +41,7 @@ public class InputRouter
     /// <param name="navigator">Supplies the current view and applies routes.</param>
     /// <param name="terminal">Reached for the clipboard when a field is copied.</param>
     /// <param name="log">Shown, hidden and scrolled from here.</param>
-    /// <param name="commands">Commands available everywhere and per view.</param>
+    /// <param name="commands">Commands available everywhere, which the palette lists.</param>
     /// <param name="options">Settings gathered at startup.</param>
     /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
@@ -70,7 +69,6 @@ public class InputRouter
         _navigator = navigator;
         _terminal = terminal;
         _log = log;
-        _commands = commands;
         _options = options;
         _keymap = options.Keymap;
         _repaint = repaint;
