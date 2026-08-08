@@ -47,7 +47,7 @@ public sealed class DefaultView : IArlecchinoView
 
     public void Draw() => _badge.Draw(_surface.Content);
 
-    public ViewRoute Handle(ConsoleKeyInfo key) => ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => ViewRoute.None;
 
     public IReadOnlyList<ViewCommand> Commands() =>
         [ViewCommand.For(ConsoleKey.R, static () => "reload", static () => { })];
