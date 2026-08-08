@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using Arlecchino.Rendering.Terminals;
 using Xunit;
 using Arlecchino.Tests.Support;
@@ -63,24 +62,28 @@ public sealed class SystemTerminalTests : IDisposable
         Assert.Equal("frame", output.Written);
     }
 
+    /// <summary>
+    /// The keyboard is asked for as the screen is taken over, and handed back when it is given up. Without
+    /// the request a terminal reports bytes, and a byte cannot tell <c>Ctrl+Enter</c> from <c>Enter</c>.
+    /// </summary>
     [Fact]
-    public void FullScreenSwitchesBuffersAndHidesTheCursor()
+    public void FullScreenSwitchesBuffersHidesTheCursorAndAsksForTheKeyboard()
     {
         using var output = new ConsoleOutputScope();
 
         _terminal.EnterFullScreen();
 
-        Assert.Equal(Expected("\e[?1049h\e[?25l"), output.Written);
+        Assert.Equal(Expected("\e[?1049h\e[?25l\e[>1u"), output.Written);
     }
 
     [Fact]
-    public void LeavingFullScreenSwitchesBackAndShowsTheCursor()
+    public void LeavingFullScreenSwitchesBackShowsTheCursorAndGivesTheKeyboardBack()
     {
         using var output = new ConsoleOutputScope();
 
         _terminal.LeaveFullScreen();
 
-        Assert.StartsWith(Expected("\e[?1049l\e[?25h"), output.Written);
+        Assert.StartsWith(Expected("\e[<u\e[?1049l\e[?25h"), output.Written);
     }
 
     [Fact]
@@ -133,7 +136,7 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.CopyToClipboard("привет");
 
-        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("привет"));
+        var encoded = Convert.ToBase64String("привет"u8);
         Assert.Equal(Expected($"\e]52;c;{encoded}\a"), output.Written);
     }
 

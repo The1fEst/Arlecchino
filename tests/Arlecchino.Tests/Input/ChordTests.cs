@@ -14,6 +14,26 @@ namespace Arlecchino.Tests.Input;
 /// </summary>
 public sealed class ChordTests
 {
+    /// <summary>
+    /// The keys a byte cannot tell apart, once the terminal has been asked to name them instead:
+    /// <c>Ctrl+Enter</c> against <c>Enter</c>, and the three letters whose control codes are Tab,
+    /// Backspace and Enter. Bound without the request, every one of them is a key that never arrives.
+    /// </summary>
+    [Theory]
+    [InlineData("13;5u", ConsoleKey.Enter)]
+    [InlineData("105;5u", ConsoleKey.I)]
+    [InlineData("104;5u", ConsoleKey.H)]
+    [InlineData("109;5u", ConsoleKey.M)]
+    [InlineData("106;5u", ConsoleKey.J)]
+    public void AKeyHeldWithControlIsToldApartFromItsControlCode(string sequence, ConsoleKey expected)
+    {
+        Assert.True(EscapeSequenceParser.TryParseKey(sequence, out var key));
+
+        Assert.Equal(expected, key.Key);
+        Assert.Equal(KeyModifiers.Control, key.Modifiers);
+        Assert.True(new KeyBinding(expected, KeyModifiers.Control).Matches(key));
+    }
+
     [Fact]
     public void AChordIsNeitherOfItsHalvesOnItsOwn()
     {

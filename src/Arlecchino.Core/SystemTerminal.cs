@@ -99,21 +99,31 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     public MouseEvent ReadMouse() =>
         _windowsInput?.ReadMouse() ?? throw new InvalidOperationException("No mouse events are being read.");
 
-    /// <summary>Switches to the alternate screen and hides the cursor.</summary>
+    /// <summary>
+    /// Switches to the alternate screen, hides the cursor, and asks the terminal to say which key was
+    /// pressed rather than which byte it stands for.
+    ///
+    /// That last one is what makes <c>Ctrl+Enter</c> a key at all. Left to the bytes, it is <c>0x0D</c>,
+    /// the same as Enter — as <c>Ctrl+I</c> is Tab, <c>Ctrl+H</c> is Backspace and <c>Ctrl+M</c> is Enter
+    /// again — so an application binding any of them is binding a key that never arrives. Terminals that
+    /// speak the keyboard protocol report those as <c>CSI code ; modifiers u</c> instead, which is a shape
+    /// the reader already understands. The ones that do not know the request ignore it and nothing
+    /// changes, so there is no need to ask first.
+    /// </summary>
     public void EnterFullScreen()
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1049h\e[?25l");
+            Console.Out.Write("\e[?1049h\e[?25l\e[>1u");
         }
     }
 
-    /// <summary>Returns to the normal screen and makes the cursor visible again.</summary>
+    /// <summary>Returns to the normal screen, makes the cursor visible, and hands the keyboard back.</summary>
     public void LeaveFullScreen()
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1049l\e[?25h");
+            Console.Out.Write("\e[<u\e[?1049l\e[?25h");
         }
 
         try
