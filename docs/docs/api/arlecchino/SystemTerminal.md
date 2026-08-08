@@ -39,7 +39,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | [`DisablePaste()`](#disablepaste) | Turns bracketed paste off again. |
 | [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection. |
 | [`EnablePaste()`](#enablepaste) | Turns on bracketed paste. Terminals that do not know the mode ignore it. |
-| [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. |
+| [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. The keyboard protocol is not asked for, though it is what would make `Ctrl+Enter` a key at all. Asking moves the function keys from `SS3 P` to `CSI P`, and the escape sequences are read by `Console.ReadKey` before this library sees a byte of them — which reads `CSI P` as F4, `CSI Q` as F5 and `CSI S` as F7. Measured, not deduced: kitty on a Mac, where the terminal's own description is inside the application bundle rather than in the system database, so the runtime falls back to one that spells those keys differently. Trading four working function keys for one new combination is not a trade. Reading the bytes ourselves would settle it, and until then the protocol stays unasked for. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and makes the cursor visible again. |
 | [`ReadKey()`](#readkey) | Takes the next key without echoing it. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
@@ -152,7 +152,7 @@ Turns on bracketed paste. Terminals that do not know the mode ignore it.
 public void EnterFullScreen();
 ```
 
-Switches to the alternate screen and hides the cursor.
+Switches to the alternate screen and hides the cursor. The keyboard protocol is not asked for, though it is what would make `Ctrl+Enter` a key at all. Asking moves the function keys from `SS3 P` to `CSI P`, and the escape sequences are read by `Console.ReadKey` before this library sees a byte of them — which reads `CSI P` as F4, `CSI Q` as F5 and `CSI S` as F7. Measured, not deduced: kitty on a Mac, where the terminal's own description is inside the application bundle rather than in the system database, so the runtime falls back to one that spells those keys differently. Trading four working function keys for one new combination is not a trade. Reading the bytes ourselves would settle it, and until then the protocol stays unasked for.
 
 ### `LeaveFullScreen()` {#leavefullscreen}
 

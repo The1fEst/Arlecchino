@@ -17,8 +17,9 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`KeyBinding`](KeyBinding.md) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. |
+| [`KeyBinding`](KeyBinding.md) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. A binding starts as the one combination it is named after and is added to from there: [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) for the combinations a platform disagrees about, and [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers) for a second keystroke, which turns the binding into a chord. |
 | [`KeyPress`](KeyPress.md) | One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead. |
+| [`KeyStroke`](KeyStroke.md) | One key and the modifiers held with it — the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these, plus the alternatives that mean the same, plus the key that finishes it when the binding is a chord. |
 | [`MouseEvent`](MouseEvent.md) | A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers. |
 
 ## Enums

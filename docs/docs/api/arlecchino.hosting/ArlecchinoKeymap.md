@@ -25,7 +25,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 
 | Member | Summary |
 |---|---|
-| [`Back`](#back) | Goes back in the history. `Cmd+←` on a Mac, `Alt+←` elsewhere. |
+| [`Back`](#back) | Goes back in the history. `Alt+←` by default. |
 | [`Cancel`](#cancel) | Dismisses a dialog or leaves a screen. `Esc` by default. |
 | [`Confirm`](#confirm) | Accepts a dialog, opens a field, activates a row. `Enter` by default. |
 | [`Copy`](#copy) | Copies what is being edited to the clipboard. Two combinations, because the habits differ: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone — that is how the user stops the application. |
@@ -34,7 +34,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`EraseToStart`](#erasetostart) | Deletes everything before the caret. `Ctrl+U` by default, as in a shell. |
 | [`EraseWord`](#eraseword) | Deletes the word before the caret. `Ctrl+Backspace` by default. |
 | [`First`](#first) | Goes to the start of a list or the minimum of a range. `Home` by default. |
-| [`Forward`](#forward) | Retraces a step back. `Cmd+→` on a Mac, `Alt+→` elsewhere. |
+| [`Forward`](#forward) | Retraces a step back. `Alt+→` by default. |
 | [`Help`](#help) | Opens the screen listing every key. `F1` by default. |
 | [`JumpDown`](#jumpdown) | A long stride downward, or a page of rows. `PgDn` by default. |
 | [`JumpUp`](#jumpup) | A long stride upward, or a page of rows. `PgUp` by default. |
@@ -75,7 +75,7 @@ public ArlecchinoKeymap();
 public KeyBinding Back { get; init; }
 ```
 
-Goes back in the history. `Cmd+←` on a Mac, `Alt+←` elsewhere.
+Goes back in the history. `Alt+←` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -165,7 +165,7 @@ Goes to the start of a list or the minimum of a range. `Home` by default.
 public KeyBinding Forward { get; init; }
 ```
 
-Retraces a step back. `Cmd+→` on a Mac, `Alt+→` elsewhere.
+Retraces a step back. `Alt+→` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
