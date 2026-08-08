@@ -18,6 +18,10 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     /// <summary>
     /// Whether a key press is this stroke. Terminals that report no virtual key are still handled:
     /// letters, digits and the common control keys are then matched by the character typed.
+    ///
+    /// Some keys answer to two names, one where they sit on the keyboard and one on the keypad, and the
+    /// runtime hands back whichever it likes: a slash arrives as <c>Divide</c> even when it was pressed
+    /// next to the shift. A binding written on either name answers to both.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press is this combination.</returns>
@@ -28,8 +32,28 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
             return false;
         }
 
-        return pressed.Key == Key || (pressed.Key == default && MatchesCharacter(pressed.Character));
+        return pressed.Key == Key ||
+            Twinned(pressed.Key) == Twinned(Key) ||
+            (pressed.Key == default && MatchesCharacter(pressed.Character));
     }
+
+    /// <summary>
+    /// The one name for a key that has two. A slash typed next to the shift is handed back as the keypad's
+    /// divide, and the two type the same character, so nothing here wants to tell them apart.
+    ///
+    /// Only where the character is the same. The keypad's plus and the key that carries the equals sign are
+    /// two keys, not one — <c>+</c> and <c>=</c> are not the same thing to type — and folding them together
+    /// would make a binding on one answer to the other.
+    /// </summary>
+    /// <param name="key">Either name.</param>
+    /// <returns>The name both are read as.</returns>
+    private static ConsoleKey Twinned(ConsoleKey key) => key switch
+    {
+        ConsoleKey.Divide => ConsoleKey.Oem2,
+        ConsoleKey.Subtract => ConsoleKey.OemMinus,
+        ConsoleKey.Decimal => ConsoleKey.OemPeriod,
+        _ => key,
+    };
 
     /// <summary>The same stroke with one modifier put in place of another.</summary>
     /// <param name="from">The modifier to take out.</param>
@@ -114,7 +138,14 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     /// </summary>
     private static string SuperName => OperatingSystem.IsMacOS() ? "Cmd+" : "Win+";
 
-    private static string NameOf(ConsoleKey key) => key switch
+    /// <summary>
+    /// What to write on the key. The punctuation is named after the character it types rather than after
+    /// the name the runtime gives it: nobody reading a key screen knows what <c>Oem2</c> is, and the whole
+    /// point of the screen is to be read.
+    /// </summary>
+    /// <param name="key">The key to name.</param>
+    /// <returns>What to call it.</returns>
+    private static string NameOf(ConsoleKey key) => Twinned(key) switch
     {
         ConsoleKey.UpArrow => "↑",
         ConsoleKey.DownArrow => "↓",
@@ -124,6 +155,19 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
         ConsoleKey.Escape => "Esc",
         ConsoleKey.PageUp => "PgUp",
         ConsoleKey.PageDown => "PgDn",
+        ConsoleKey.Oem1 => ";",
+        ConsoleKey.Oem2 => "/",
+        ConsoleKey.Oem3 => "`",
+        ConsoleKey.Oem4 => "[",
+        ConsoleKey.Oem5 => "\\",
+        ConsoleKey.Oem6 => "]",
+        ConsoleKey.Oem7 => "'",
+        ConsoleKey.OemComma => ",",
+        ConsoleKey.OemPeriod => ".",
+        ConsoleKey.OemMinus => "-",
+        ConsoleKey.OemPlus => "=",
+        ConsoleKey.Add => "+",
+        ConsoleKey.Multiply => "*",
         _ => key.ToString(),
     };
 }

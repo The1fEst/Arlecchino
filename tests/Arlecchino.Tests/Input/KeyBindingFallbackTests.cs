@@ -32,6 +32,38 @@ public sealed class KeyBindingFallbackTests
         Assert.False(new KeyBinding(ConsoleKey.Oem2).Matches(CharacterOnly('\\')));
     }
 
+    /// <summary>
+    /// What a terminal really hands back for the punctuation, read off one rather than written from the
+    /// documentation: a slash, a minus and a full stop arrive under the keypad's names even when they were
+    /// pressed along the keyboard, so a binding written on either name has to answer to both.
+    ///
+    /// Only where the character is the same. The keypad's plus and the key carrying the equals sign type
+    /// different things, so they stay two keys.
+    /// </summary>
+    [Theory]
+    [InlineData(ConsoleKey.Oem2, ConsoleKey.Divide, '/')]
+    [InlineData(ConsoleKey.OemMinus, ConsoleKey.Subtract, '-')]
+    [InlineData(ConsoleKey.OemPeriod, ConsoleKey.Decimal, '.')]
+    public void AKeyWithTwoNamesAnswersToEither(ConsoleKey written, ConsoleKey pressed, char types)
+    {
+        Assert.True(new KeyBinding(written).Matches(new(pressed, default, types)));
+        Assert.True(new KeyBinding(pressed).Matches(new(written, default, types)));
+
+        Assert.Equal(types.ToString(), new KeyBinding(written).ToString());
+        Assert.Equal(types.ToString(), new KeyBinding(pressed).ToString());
+    }
+
+    /// <summary>The pair that types two different characters stays two keys.</summary>
+    [Fact]
+    public void ThePlusAndTheEqualsAreNotTheSameKey()
+    {
+        Assert.False(new KeyBinding(ConsoleKey.OemPlus).Matches(new(ConsoleKey.Add, default, '+')));
+
+        Assert.Equal("=", new KeyBinding(ConsoleKey.OemPlus).ToString());
+        Assert.Equal("+", new KeyBinding(ConsoleKey.Add).ToString());
+        Assert.Equal("*", new KeyBinding(ConsoleKey.Multiply).ToString());
+    }
+
     [Fact]
     public void ModifiersAreStillCompared()
     {
