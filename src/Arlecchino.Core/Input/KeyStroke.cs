@@ -40,6 +40,13 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
             ? this with { Modifiers = (Modifiers & ~from) | to }
             : this;
 
+    /// <summary>
+    /// What a key would have typed, for the terminals that send the character and no virtual key. The
+    /// punctuation is the US layout the <c>Oem</c> names already assume — a keyboard that puts those
+    /// characters elsewhere reports the key itself, which is matched before this is asked.
+    /// </summary>
+    /// <param name="character">The character that arrived.</param>
+    /// <returns><c>true</c> when this key is the one that types it.</returns>
     private bool MatchesCharacter(char character) => Key switch
     {
         >= ConsoleKey.A and <= ConsoleKey.Z =>
@@ -50,6 +57,17 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
         ConsoleKey.Escape => character == '\e',
         ConsoleKey.Tab => character == '\t',
         ConsoleKey.Backspace => character is '\b' or (char)127,
+        ConsoleKey.Oem1 => character is ';' or ':',
+        ConsoleKey.Oem2 => character is '/' or '?',
+        ConsoleKey.Oem3 => character is '`' or '~',
+        ConsoleKey.Oem4 => character is '[' or '{',
+        ConsoleKey.Oem5 => character is '\\' or '|',
+        ConsoleKey.Oem6 => character is ']' or '}',
+        ConsoleKey.Oem7 => character is '\'' or '"',
+        ConsoleKey.OemComma => character is ',' or '<',
+        ConsoleKey.OemPeriod => character is '.' or '>',
+        ConsoleKey.OemMinus => character is '-' or '_',
+        ConsoleKey.OemPlus => character is '=' or '+',
         _ => false,
     };
 

@@ -27,6 +27,9 @@ public sealed class KeyBindingFallbackTests
         Assert.True(new KeyBinding(ConsoleKey.Escape).Matches(CharacterOnly('\e')));
         Assert.True(new KeyBinding(ConsoleKey.Tab).Matches(CharacterOnly('\t')));
         Assert.True(new KeyBinding(ConsoleKey.Spacebar).Matches(CharacterOnly(' ')));
+        Assert.True(new KeyBinding(ConsoleKey.Oem2).Matches(CharacterOnly('/')));
+        Assert.True(new KeyBinding(ConsoleKey.Oem5).Matches(CharacterOnly('\\')));
+        Assert.False(new KeyBinding(ConsoleKey.Oem2).Matches(CharacterOnly('\\')));
     }
 
     [Fact]
