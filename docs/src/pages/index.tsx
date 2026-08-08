@@ -202,9 +202,10 @@ function Screenshot(): ReactNode {
       <div className="container">
         <h2>What it looks like</h2>
         <p>
-          <Link to="/docs/showcase">Arlecchino.Commander</Link> is a Midnight Commander built on the
-          framework: two panels over local disks, SFTP and FTP, every modal, work that runs in the
-          background and reports itself, the command palette and the keys screen.
+          <Link to="/docs/showcase">Arlecchino.Commander</Link> is a file manager built on the
+          framework: two panels over local disks, SFTP and FTP, tabs, leader keys, a command line
+          under the panels, a walk that searches names and the text inside files, copies that run in
+          the background and report themselves, and a palette that reaches all of it by name.
         </p>
         <img
           src="https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/panels.png"

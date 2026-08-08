@@ -11,8 +11,9 @@ public API and nothing else. Two ship beside the framework; the largest has a re
 
 ## Arlecchino.Commander
 
-A Midnight Commander, and the largest of the three. Two panels, the function keys where they have
-always been, and the same panel over a local disk, an SFTP server or an FTP one. It lives in
+A file manager, and the largest of the three. Two panels over a local disk, an SFTP server or an FTP
+one, with tabs, leader keys and a command line of its own; the function keys stay where they have
+always been, but little else stops there. It lives in
 [its own repository](https://github.com/The1fEst/Arlecchino.Commander) and takes the framework from
 NuGet, the way an application of yours would.
 

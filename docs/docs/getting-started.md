@@ -123,9 +123,9 @@ being written down twice. It renders headlessly too — `--frame processes 110x2
 `--frame details 90x18`.
 
 [`Arlecchino.Commander`](https://github.com/The1fEst/Arlecchino.Commander) is the largest of the
-three, and the one with a repository of its own: a Midnight Commander with two panels, the function
-keys where they have always been, and the same panel over a local disk, an SFTP server or an FTP one.
-It takes the framework from NuGet, the way an application of yours would.
+three, and the one with a repository of its own: a file manager with two panels over a local disk, an
+SFTP server or an FTP one, with tabs, leader keys and a command line of its own. It takes the
+framework from NuGet, the way an application of yours would.
 
 ```
 dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
