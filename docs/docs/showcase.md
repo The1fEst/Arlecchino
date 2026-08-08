@@ -20,21 +20,21 @@ NuGet, the way an application of yours would.
 dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
 ```
 
-![Two panels over a local disk](/img/screenshots/panels.png)
+![Two panels over a local disk](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/panels.png)
 
 Each panel is a [widget](widgets.md) of its own over one folder. `Space` marks a row, and what is
 marked is counted at the foot of the panel:
 
-![Three files marked, counted at the foot of the panel](/img/screenshots/marks.png)
+![Three files marked, counted at the foot of the panel](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/marks.png)
 
 Either panel sorts by name, size or date, narrows down to a filter, and reads a file without leaving
 the panels:
 
-![The right panel sorted by size](/img/screenshots/sorted.png)
+![The right panel sorted by size](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/sorted.png)
 
-![The panel filtered by name](/img/screenshots/filter.png)
+![The panel filtered by name](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/filter.png)
 
-![A file read without leaving the panels](/img/screenshots/viewer.png)
+![A file read without leaving the panels](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/viewer.png)
 
 | Part | What it shows | Uses |
 |---|---|---|
@@ -47,24 +47,24 @@ the panels:
 
 `F9` opens the menu, and what can be done to what is marked is one list under it:
 
-![The menu, opened by F9](/img/screenshots/menu.png)
+![The menu, opened by F9](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/menu.png)
 
-![What can be done to what is marked](/img/screenshots/file-menu.png)
+![What can be done to what is marked](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/file-menu.png)
 
 Copying and deleting ask first, with the negative answer selected, so a stray `Enter` cancels:
 
-![Copying asks where to](/img/screenshots/copy.png)
+![Copying asks where to](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/copy.png)
 
-![Deleting asks first, with no selected](/img/screenshots/delete.png)
+![Deleting asks first, with no selected](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/delete.png)
 
 Work of any size runs in the background with a bar and `Alt+Esc` to stop it, and reports itself as a
 [notification](state.md#notifications) that opens in full and turns into what came of it:
 
-![A copy running in the background, with a bar and Alt+Esc to stop](/img/screenshots/progress.png)
+![A copy running in the background, with a bar and Alt+Esc to stop](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/progress.png)
 
-![The same copy opened in full, with Stop offered](/img/screenshots/notification.png)
+![The same copy opened in full, with Stop offered](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/notification.png)
 
-![The same entry once the copy is over](/img/screenshots/done.png)
+![The same entry once the copy is over](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/done.png)
 
 Each tab holds two panels of its own, so a second pair of folders is a tab away rather than a place to
 navigate back to. The band along the top says what each one is connected to and answers to the mouse —
@@ -76,11 +76,11 @@ stubs that name nothing, and scrolling alone hides tabs that two fewer letters w
 A panel connects by a `Host` entry from `~/.ssh/config`, browses the server as it browses a disk, and
 the same credentials run a command on it:
 
-![Hosts read from ~/.ssh/config](/img/screenshots/hosts.png)
+![Hosts read from ~/.ssh/config](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/hosts.png)
 
-![A panel browsing a server over SFTP](/img/screenshots/server.png)
+![A panel browsing a server over SFTP](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/server.png)
 
-![A command run on that server](/img/screenshots/ssh.png)
+![A command run on that server](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/ssh.png)
 
 It runs **without the output line**, so the bottom row belongs to the screen's own
 [status bar](status-bar.md), and every screen renders headlessly — `--frame 132x26`, with `--keys` to
@@ -129,9 +129,9 @@ is three lines of wiring in an application of your own — see
 
 The command palette and the keys screen are the framework's own, and appear in every one of them:
 
-![The command palette](/img/screenshots/palette.png)
+![The command palette](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/palette.png)
 
-![The keys screen](/img/screenshots/help.png)
+![The keys screen](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/help.png)
 
 ## Built something?
 

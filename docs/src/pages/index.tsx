@@ -88,7 +88,7 @@ const features: Feature[] = [
     title: 'Modals, a palette and a picker',
     body: (
       <>
-        Text, password, number, slider, toggle, choice, multi-choice, date, time and colour modals
+        Text, password, number, slider, toggle, choice, multi-choice, date, time and color modals
         come with the framework, along with a command palette and a file picker.
       </>
     ),
@@ -207,7 +207,7 @@ function Screenshot(): ReactNode {
           background and reports itself, the command palette and the keys screen.
         </p>
         <img
-          src={useBaseUrl('img/screenshots/panels.png')}
+          src="https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/screenshots/panels.png"
           alt="Two panels over a local disk"
         />
       </div>
