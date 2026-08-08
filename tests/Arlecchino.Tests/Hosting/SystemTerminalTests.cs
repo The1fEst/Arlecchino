@@ -63,27 +63,27 @@ public sealed class SystemTerminalTests : IDisposable
     }
 
     /// <summary>
-    /// The keyboard is asked for as the screen is taken over, and handed back when it is given up. Without
-    /// the request a terminal reports bytes, and a byte cannot tell <c>Ctrl+Enter</c> from <c>Enter</c>.
+    /// The keyboard protocol is not among what is asked for. It moves the function keys to a shape
+    /// <c>Console.ReadKey</c> reads as the wrong key, and that call sees the bytes first.
     /// </summary>
     [Fact]
-    public void FullScreenSwitchesBuffersHidesTheCursorAndAsksForTheKeyboard()
+    public void FullScreenSwitchesBuffersAndHidesTheCursor()
     {
         using var output = new ConsoleOutputScope();
 
         _terminal.EnterFullScreen();
 
-        Assert.Equal(Expected("\e[?1049h\e[?25l\e[>1u"), output.Written);
+        Assert.Equal(Expected("\e[?1049h\e[?25l"), output.Written);
     }
 
     [Fact]
-    public void LeavingFullScreenSwitchesBackShowsTheCursorAndGivesTheKeyboardBack()
+    public void LeavingFullScreenSwitchesBackAndShowsTheCursor()
     {
         using var output = new ConsoleOutputScope();
 
         _terminal.LeaveFullScreen();
 
-        Assert.StartsWith(Expected("\e[<u\e[?1049l\e[?25h"), output.Written);
+        Assert.StartsWith(Expected("\e[?1049l\e[?25h"), output.Written);
     }
 
     [Fact]

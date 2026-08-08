@@ -100,30 +100,31 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
         _windowsInput?.ReadMouse() ?? throw new InvalidOperationException("No mouse events are being read.");
 
     /// <summary>
-    /// Switches to the alternate screen, hides the cursor, and asks the terminal to say which key was
-    /// pressed rather than which byte it stands for.
+    /// Switches to the alternate screen and hides the cursor.
     ///
-    /// That last one is what makes <c>Ctrl+Enter</c> a key at all. Left to the bytes, it is <c>0x0D</c>,
-    /// the same as Enter — as <c>Ctrl+I</c> is Tab, <c>Ctrl+H</c> is Backspace and <c>Ctrl+M</c> is Enter
-    /// again — so an application binding any of them is binding a key that never arrives. Terminals that
-    /// speak the keyboard protocol report those as <c>CSI code ; modifiers u</c> instead, which is a shape
-    /// the reader already understands. The ones that do not know the request ignore it and nothing
-    /// changes, so there is no need to ask first.
+    /// The keyboard protocol is not asked for, though it is what would make <c>Ctrl+Enter</c> a key at
+    /// all. Asking moves the function keys from <c>SS3 P</c> to <c>CSI P</c>, and the escape sequences
+    /// are read by <c>Console.ReadKey</c> before this library sees a byte of them — which reads
+    /// <c>CSI P</c> as F4, <c>CSI Q</c> as F5 and <c>CSI S</c> as F7. Measured, not deduced: kitty on a
+    /// Mac, where the terminal's own description is inside the application bundle rather than in the
+    /// system database, so the runtime falls back to one that spells those keys differently. Trading
+    /// four working function keys for one new combination is not a trade. Reading the bytes ourselves
+    /// would settle it, and until then the protocol stays unasked for.
     /// </summary>
     public void EnterFullScreen()
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1049h\e[?25l\e[>1u");
+            Console.Out.Write("\e[?1049h\e[?25l");
         }
     }
 
-    /// <summary>Returns to the normal screen, makes the cursor visible, and hands the keyboard back.</summary>
+    /// <summary>Returns to the normal screen and makes the cursor visible again.</summary>
     public void LeaveFullScreen()
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[<u\e[?1049l\e[?25h");
+            Console.Out.Write("\e[?1049l\e[?25h");
         }
 
         try
