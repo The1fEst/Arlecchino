@@ -15,6 +15,24 @@ namespace Arlecchino.Tests.Input;
 public sealed class ChordTests
 {
     /// <summary>
+    /// The function keys as a terminal speaking the protocol really sends them, read off kitty rather than
+    /// written from the specification. The first four keep a legacy shape, and F3 does not: <c>CSI R</c> is
+    /// how a terminal answers where its cursor is, so F3 is sent as <c>CSI 13~</c> instead.
+    /// </summary>
+    [Theory]
+    [InlineData("P", ConsoleKey.F1)]
+    [InlineData("Q", ConsoleKey.F2)]
+    [InlineData("13~", ConsoleKey.F3)]
+    [InlineData("S", ConsoleKey.F4)]
+    public void AFunctionKeyIsReadFromTheShapeTheProtocolSendsIt(string sequence, ConsoleKey expected)
+    {
+        Assert.True(EscapeSequenceParser.TryParseKey(sequence, out var key));
+
+        Assert.Equal(expected, key.Key);
+        Assert.Equal(KeyModifiers.None, key.Modifiers);
+    }
+
+    /// <summary>
     /// The keys a byte cannot tell apart, once the terminal has been asked to name them instead:
     /// <c>Ctrl+Enter</c> against <c>Enter</c>, and the three letters whose control codes are Tab,
     /// Backspace and Enter. Bound without the request, every one of them is a key that never arrives.
