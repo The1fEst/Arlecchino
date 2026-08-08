@@ -116,15 +116,66 @@ internal sealed partial class WindowsConsoleInput
         switch (record.EventType)
         {
             case KeyEventType when record.Key.KeyDown != 0:
-                _keys.Enqueue(WindowsInputTranslator.ToKeyPress(record.Key.VirtualKeyCode,
-                    record.Key.UnicodeChar,
-                    record.Key.ControlKeyState));
+                Take(Pressed(record.Key));
                 return true;
             case MouseEventType:
                 Translate(record.Mouse);
                 return true;
             default:
                 return true;
+        }
+    }
+
+    private static KeyPress Pressed(KeyEventRecord key) =>
+        WindowsInputTranslator.ToKeyPress(key.VirtualKeyCode, key.UnicodeChar, key.ControlKeyState);
+
+    /// <summary>
+    /// Takes one key press, and with it whatever is already waiting behind it. The console reports a
+    /// paste as the keys that would have typed it, so a run that arrived together is read as one and
+    /// handed on wrapped in the markers a terminal elsewhere would have sent.
+    /// </summary>
+    /// <param name="first">The press that was just read.</param>
+    private void Take(KeyPress first)
+    {
+        var run = new List<KeyPress> { first };
+        var commanding = default(KeyPress?);
+
+        while (WindowsPaste.Types(first) &&
+               GetNumberOfConsoleInputEvents(_input, out var waiting) &&
+               waiting > 0 &&
+               ReadConsoleInput(_input, out var record, 1, out var read) &&
+               read > 0)
+        {
+            if (record.EventType == MouseEventType)
+            {
+                Translate(record.Mouse);
+                continue;
+            }
+
+            if (record.EventType != KeyEventType || record.Key.KeyDown == 0)
+            {
+                continue;
+            }
+
+            var next = Pressed(record.Key);
+
+            if (!WindowsPaste.Types(next))
+            {
+                commanding = next;
+                break;
+            }
+
+            run.Add(next);
+        }
+
+        foreach (var key in WindowsPaste.Reads(run) ? WindowsPaste.Wrapped(run) : run)
+        {
+            _keys.Enqueue(key);
+        }
+
+        if (commanding is { } pressed)
+        {
+            _keys.Enqueue(pressed);
         }
     }
 

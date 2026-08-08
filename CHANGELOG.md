@@ -105,6 +105,13 @@ fails on, and what it is replaced with is spelled the same way.
 - **A cursor key held with Command is no longer indistinguishable from the bare key.** `Cmd+←` arrives
   as `ESC[1;9D`, and the ninth bit was being dropped on the floor, leaving the press to read as a plain
   `←` and move the cursor.
+- **A paste into a Windows console no longer runs what was pasted.** A terminal elsewhere wraps pasted
+  text in `ESC[200~` and `ESC[201~`, so the newline at the end of a pasted command is text; the console
+  reports the paste as the keys that would have typed it, and that last newline arrived as `Enter`. A
+  run of characters already waiting together is now read as a paste and wrapped in those same markers,
+  so it reaches the application as pasted text. A newline in the run settles it, and without one it
+  takes four characters — two keys that landed in the same read are still typing, and a run of one
+  character is a held key repeating.
 - **A key Windows types with Shift now reads the way it reads everywhere else.** The console reports
   Shift alongside the character it typed, so `:` arrived as `Oem1` with Shift held while every other
   platform sends a colon and no modifier at all — and anything written against that, a binding on the
