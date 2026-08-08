@@ -105,6 +105,12 @@ fails on, and what it is replaced with is spelled the same way.
 - **A cursor key held with Command is no longer indistinguishable from the bare key.** `Cmd+←` arrives
   as `ESC[1;9D`, and the ninth bit was being dropped on the floor, leaving the press to read as a plain
   `←` and move the cursor.
+- **A key Windows types with Shift now reads the way it reads everywhere else.** The console reports
+  Shift alongside the character it typed, so `:` arrived as `Oem1` with Shift held while every other
+  platform sends a colon and no modifier at all — and anything written against that, a binding on the
+  character or a screen that answers to one, did nothing on Windows. Shift is now dropped where it did
+  nothing but type the character the event already carries. Shift on a key that types nothing — a
+  function key, Tab, Insert — is a modifier in its own right and is kept.
 - **Keys pressed while the terminal is being asked what it can do no longer disappear.** The probe
   hands back what it read only when the terminal said nothing at all, so anything typed in the moment
   before an answer arrived was filed as part of that answer and lost. It is now told apart by where it

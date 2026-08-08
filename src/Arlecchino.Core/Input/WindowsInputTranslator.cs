@@ -19,8 +19,29 @@ internal sealed class WindowsInputTranslator
 
     private uint _heldButtons;
 
+    /// <summary>
+    /// Reads one key event from the console. Shift is dropped where it did nothing but type the
+    /// character the event already carries. A terminal elsewhere sends <c>:</c> and <c>J</c> with no
+    /// modifier at all, so a binding written against that answered to the colon on one platform and to
+    /// nothing on this one. Shift on a key that types nothing — a function key, Tab, Insert — is a
+    /// modifier in its own right and stays.
+    /// </summary>
+    /// <param name="virtualKeyCode">The virtual key the console reported.</param>
+    /// <param name="character">The character that key typed, or zero.</param>
+    /// <param name="controlKeyState">The modifier flags the console reported.</param>
+    /// <returns>The key press, as the rest of the library reads one.</returns>
     public static KeyPress ToKeyPress(ushort virtualKeyCode, ushort character, uint controlKeyState) =>
-        new((ConsoleKey)virtualKeyCode, ToModifiers(controlKeyState), (char)character);
+        new((ConsoleKey)virtualKeyCode, Held(character, controlKeyState), (char)character);
+
+    private static KeyModifiers Held(ushort character, uint controlKeyState)
+    {
+        var modifiers = ToModifiers(controlKeyState);
+        var typed = (char)character;
+
+        return modifiers == KeyModifiers.Shift && typed != '\0' && !char.IsControl(typed)
+            ? KeyModifiers.None
+            : modifiers;
+    }
 
     public bool TryTranslateMouse(int row,
         int column,

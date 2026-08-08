@@ -33,6 +33,32 @@ public sealed class WindowsInputTranslatorTests
     }
 
     [Fact]
+    public void ShiftThatOnlyTypedTheCharacterIsNotHeld()
+    {
+        var colon = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Oem1, ':', ShiftHeld);
+
+        Assert.Equal(':', colon.Character);
+        Assert.Equal(ConsoleKey.Oem1, colon.Key);
+        Assert.Equal(KeyModifiers.None, colon.Modifiers);
+
+        var capital = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.J, 'J', ShiftHeld);
+
+        Assert.Equal(KeyModifiers.None, capital.Modifiers);
+    }
+
+    [Fact]
+    public void ShiftOnAKeyThatTypesNothingIsHeld()
+    {
+        var function = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.F6, '\0', ShiftHeld);
+
+        Assert.Equal(KeyModifiers.Shift, function.Modifiers);
+
+        var tab = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Tab, '\t', ShiftHeld);
+
+        Assert.Equal(KeyModifiers.Shift, tab.Modifiers);
+    }
+
+    [Fact]
     public void KeyWithoutModifiersCarriesNone()
     {
         var key = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Enter, '\r', 0);
