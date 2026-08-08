@@ -79,7 +79,7 @@ inside it.
 ## While a modal is open
 
 The wheel scrolls a list or choice modal; other events are swallowed rather than reaching the view
-behind it. The modals that have clickable parts — the slider track, the toggle chips, the colour
+behind it. The modals that have clickable parts — the slider track, the toggle chips, the color
 channels, the palette rows — publish the [regions](layout.md#regions) they were drawn into as they are
 drawn, which is what makes them clickable at all.
 

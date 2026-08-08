@@ -20,7 +20,7 @@ public static class FrameText
 | [`AnsiSequence()`](#ansisequence) |  |
 | [`BoxWidth(string)`](#boxwidth-string) | How wide a box is on one row, measured between its border characters. Useful for checking that a dialog grew to fit its content. |
 | [`CursorJump()`](#cursorjump) |  |
-| [`CursorJumpsIn(string)`](#cursorjumpsin-string) | The cursor moves in order. Since only what changed is redrawn, counting these is how a test shows that a frame touched a few cells rather than the whole screen. |
+| [`CursorJumpsIn(string)`](#cursorjumpsin-string) | The cursor moves in order. Since only what changed is redrawn, counting them is how a test shows that a frame touched a few cells rather than the whole screen. |
 | [`Lines(string)`](#lines-string) | The frame as plain rows. |
 | [`StyleSequence()`](#stylesequence) |  |
 | [`StylesIn(string)`](#stylesin-string) | The color sequences in order, for asserting that something was drawn as a warning. |
@@ -96,7 +96,7 @@ Explanation:
 public static List<string> CursorJumpsIn(string text);
 ```
 
-The cursor moves in order. Since only what changed is redrawn, counting these is how a test shows that a frame touched a few cells rather than the whole screen.
+The cursor moves in order. Since only what changed is redrawn, counting them is how a test shows that a frame touched a few cells rather than the whole screen.
 
 **Parameters**
 

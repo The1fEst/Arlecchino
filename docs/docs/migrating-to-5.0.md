@@ -8,7 +8,7 @@ description: One type replaces another everywhere a key is handled, why it had t
 
 One break, and it is a wide one: a key press is now `KeyPress` rather than `ConsoleKeyInfo`. The
 compiler names every place, the fix is the same in each, and there is nothing subtle to watch for
-afterwards.
+afterward.
 
 | What changed | What to do |
 |---|---|

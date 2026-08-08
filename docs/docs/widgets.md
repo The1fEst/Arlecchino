@@ -43,13 +43,13 @@ _list.Draw(below);
 A widget that fills whatever it is given — a list, a pane, a tree — returns an empty region. One that
 owns a known number of rows returns the rest, which is what replaces a hand-counted `SplitTop`.
 
-## No coordinates, no text, no colour arguments
+## No coordinates, no text, no color arguments
 
 A widget holds no coordinates of its own — it paints the region it is handed, so the same one works in
 a pane, in a column or across the whole frame.
 
 None of them holds user-visible text of their own: labels are `Func<string>` supplied by the
-application, which is what keeps [localization](localization.md) working. Colour is a `Style` or
+application, which is what keeps [localization](localization.md) working. Color is a `Style` or
 `ItemStyle` property rather than an argument to `Draw`, so the call is the same for every widget.
 
 An interactive one adds what [`IArlecchinoFocusable`](focus.md) asks for — `IsFocused`, `Handle`,
@@ -132,10 +132,10 @@ public sealed class Badge : IArlecchinoInteractiveWidget
 
 | Convention | Why |
 |---|---|
-| Remember the region you were given in `Draw` | It is what resolves a click afterwards — `Contains` and `ToLocal` work in frame coordinates |
+| Remember the region you were given in `Draw` | It is what resolves a click afterward — `Contains` and `ToLocal` work in frame coordinates |
 | Take keys from `ArlecchinoKeymap`, never `ConsoleKey` directly | A rebound key relabels and reroutes itself everywhere |
 | Measure with [`TextWidth`](text.md), not `string.Length` | A cell holds a grapheme cluster; CJK and emoji are two columns wide |
-| Colour with roles from [`Theme`](theming.md) | Swapping the palette restyles the widget with everything else |
+| Color with roles from [`Theme`](theming.md) | Swapping the palette restyles the widget with everything else |
 | Take user-visible text as `Func<string>` | The application may translate it and switch language at runtime — see [Localization](localization.md) |
 
 [`ScrollWindow.Around`](scrolling.md#scrollwindow) and [`ScrollBar`](scrolling.md#scrollbar) are public

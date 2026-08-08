@@ -7,7 +7,7 @@ sidebar_label: "IArlecchinoViewFactory"
 
 **Namespace:** `Arlecchino.Navigation` &middot; **Assembly:** `Arlecchino`
 
-Builds views for routes. Register one with `AddViewFactory<T>()` to serve a whole family of routes at once — a plugin directory, or routes carrying an id in the name.
+Builds views for routes. Register one with `AddViewFactory<T>()` to serve a whole family of routes at once — a plugin directory, or routes carrying an ID in the name.
 
 ```csharp
 public interface IArlecchinoViewFactory
@@ -37,5 +37,5 @@ Creates the view for a route.
 | `route` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | The route being shown. |
 | `view` | [`IArlecchinoView`](../arlecchino.navigation/IArlecchinoView.md) | The view, when this factory owns the route. |
 
-**Returns** `bool` — `false` for routes you do not own, so the next factory gets a turn.
+**Returns** `bool` — `false` for a route you do not own, so the next factory gets a turn.
 

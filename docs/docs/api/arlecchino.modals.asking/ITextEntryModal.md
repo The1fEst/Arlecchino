@@ -23,7 +23,7 @@ public interface ITextEntryModal : IAffixedModal
 | [`Caret`](#caret) | Where the caret sits, counted in characters from the start of the text. Values outside the text are pulled back in, so a caret can never point past the end. |
 | [`Masked`](#masked) | Whether to draw dots instead of the text. The value itself stays as typed. |
 | [`Message`](#message) | Validation message shown under the field, cleared by typing. |
-| [`Text`](#text) | What has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything. |
+| [`Text`](#text) | Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything. |
 
 ## Methods
 
@@ -69,7 +69,7 @@ Validation message shown under the field, cleared by typing.
 public string Text { get; set; }
 ```
 
-What has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything.
+Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything.
 
 **Type** `string`
 

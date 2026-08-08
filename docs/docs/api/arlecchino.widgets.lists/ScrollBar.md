@@ -7,7 +7,7 @@ sidebar_label: "ScrollBar"
 
 **Namespace:** `Arlecchino.Widgets.Lists` &middot; **Assembly:** `Arlecchino`
 
-The bar down the side of a list that shows how much of it is on screen and where. Drawn only when there is more than fits, so a short list keeps its full width.
+The bar down the side of a list that shows how much of it is in view and where. Drawn only when there is more than fits, so a short list keeps its full width.
 
 ```csharp
 public static class ScrollBar
@@ -54,5 +54,5 @@ Whether a list of this length needs a bar at all, which is also whether a column
 | `total` | `int` | How many items there are. |
 | `rows` | `int` | How many rows they are drawn into. |
 
-**Returns** `bool` — `true` when some of the list is off screen.
+**Returns** `bool` — `true` when some of the list is out of view.
 

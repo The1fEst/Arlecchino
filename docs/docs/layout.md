@@ -20,9 +20,9 @@ regions itself keeps working exactly as before.
 
 Flow calls advance an internal cursor line by line. They are the default way to write a view.
 
-| Call | Behaviour |
+| Call | Behavior |
 |---|---|
-| `AppendLine(text, style, align, margin)` | One line at the cursor, honouring `Align.Left/Center/Right` inside the content width and all four margins |
+| `AppendLine(text, style, align, margin)` | One line at the cursor, honoring `Align.Left/Center/Right` inside the content width and all four margins |
 | `WriteTableRow(cells, widths, style, prefix)` | A line of padded columns; a positive width right-aligns the cell, a negative one left-aligns it |
 | `FillLine()` | A rule across the content width |
 | `SkipLine()` | Leaves a blank line |
@@ -47,7 +47,7 @@ flow of its own.
 Absolute calls address rows directly and ignore the flow cursor — this is what the file picker and the
 modal boxes are drawn with.
 
-| Call | Behaviour |
+| Call | Behavior |
 |---|---|
 | `WriteAt(row, column, text, style)` | Writes at an exact cell, clipping to the frame |
 | `WriteLineAt(row, text, style)` | Restyles the whole row, then writes the text at `HorizontalPadding` |
@@ -60,7 +60,7 @@ places it as a unit, aligned horizontally (`Left`/`Center`/`Right`) and vertical
 ## Align and Margin
 
 `Align` is a `[Flags]` enum, so the two axes combine. `Align.Right | Align.Bottom` is how the hints
-box is anchored to a corner. Only the block and region calls honour the vertical flags; a flow line
+box is anchored to a corner. Only the block and region calls honor the vertical flags; a flow line
 has already decided which row it is on.
 
 `Margin` is `(Left, Top, Right, Bottom)`. On a flow call the top and bottom margins are blank lines
@@ -75,7 +75,7 @@ new Margin(1)            // the same on every side
 
 Absolute coordinates get unwieldy the moment a view has panes. A `SurfaceRegion` is a rectangle on the
 surface with its own coordinate system and its own clipping — writing outside it is dropped, not
-spilled onto a neighbour:
+spilled onto a neighbor:
 
 ```csharp
 var frame = _surface.Frame.Inset(new Margin(2, 1, 3, 2));
@@ -293,13 +293,13 @@ left out. Rearranging the tree rearranges the tab order with it, which is the po
 drift apart, because there is only one of them.
 
 What comes back is an ordinary ring, so anything focusable that lives outside the tree is added to it
-afterwards and lands at the end of the walk.
+afterward and lands at the end of the walk.
 
 ### Writing line after line inside a pane
 
 Flow calls belong to the **frame**, not to a region. Reaching for `region.Surface.AppendLine(...)`
 inside a pane therefore writes at the top of the screen and paints straight over the pane's border and
-its neighbours — the region is not involved at all:
+its neighbors — the region is not involved at all:
 
 ```
 PLAYERS             ╮╭ right ───────────╮     ← the flow cursor is the frame's
@@ -359,8 +359,8 @@ their own — the tree records its boxes in a [`Joinery`](#borders-that-join) an
 ```
 
 A pane without a box keeps the room it was given — it would lose a column of what it draws to a
-neighbour's border — and a tree with a gap is drawn as it always was. The pane holding the focus wins
-the colour of the edges it shares, so `Tab` still moves a highlight around the screen.
+neighbor's border — and a tree with a gap is drawn as it always was. The pane holding the focus wins
+the color of the edges it shares, so `Tab` still moves a highlight around the screen.
 
 A region too small for what it holds does not overflow. Each split is clamped to the space that
 exists, so the first half takes what it can and the panes that did not fit are handed **empty**
@@ -393,7 +393,7 @@ rather than a hunt through `Draw`.
 
 ## Borders that join
 
-`region.Border(...)` draws a box that knows nothing about its neighbours. That is right for a box
+`region.Border(...)` draws a box that knows nothing about its neighbors. That is right for a box
 standing on its own and wrong for panes that touch: two of them side by side put two verticals where
 the eye expects one.
 
@@ -434,7 +434,7 @@ record it last.
 
 A region clips writes to its own bounds, which is enough while the coordinates belong to it. Scrolling
 breaks that: the content is drawn shifted, so it reaches outside the window on purpose and must not
-land on a neighbour. `Surface.Clip` confines every write to a rectangle until the scope is disposed,
+land on a neighbor. `Surface.Clip` confines every write to a rectangle until the scope is disposed,
 whatever coordinates the writing code uses:
 
 ```csharp

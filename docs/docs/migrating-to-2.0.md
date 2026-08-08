@@ -14,7 +14,7 @@ framework's palette needs a rename and a delete; one that does none of those has
 |---|---|
 | `IArlecchinoWidget.Place` is now `Draw`, and the old `void Draw` is gone | Rename `Place` to `Draw` at both ends and return the region left over |
 | `UiDispatcher` is gone; posting is `FrameThread.Post` | Delete the field and the constructor parameter, call the static |
-| The framework's own colours are the default palette | Nothing, or `UseTheme(ThemePalette.Basic)` to keep the old sixteen |
+| The framework's own colors are the default palette | Nothing, or `UseTheme(ThemePalette.Basic)` to keep the old sixteen |
 
 ## Widgets draw and say what is left
 
@@ -122,9 +122,9 @@ Resolving `UiDispatcher` from the container fails now, since nothing registers i
 
 ## The default palette is the framework's own
 
-`new ThemePalette()` is the harlequin mask in colours — crimson titles, bone text, ash borders, an ink
+`new ThemePalette()` is the harlequin mask in colors — crimson titles, bone text, ash borders, an ink
 cursor row — instead of the terminal's plain sixteen. An application that never called `UseTheme` gets
-new colours without changing a line, which is the visual half of this release.
+new colors without changing a line, which is the visual half of this release.
 
 Two ways back, depending on what you want:
 
@@ -134,9 +134,9 @@ builder.UseTheme(new ThemePalette { Header = ... });      // your own, on top of
 ```
 
 `ThemePalette.Basic` is exactly what `new ThemePalette()` used to be: bright magenta titles, bright
-blue column headers, cyan borders, black on green for the cursor row, and no exact colours behind any
+blue column headers, cyan borders, black on green for the cursor row, and no exact colors behind any
 of them. A palette of your own is still partial — what it does not override now comes from the
-framework's colours rather than the terminal's. See [Theming](theming.md).
+framework's colors rather than the terminal's. See [Theming](theming.md).
 
 `UseTheme(ThemePalette.Arlecchino)` written against `1.x` still compiles and still means the same
 thing; it is only redundant now.
@@ -147,7 +147,7 @@ thing; it is only redundant now.
    `void Draw` a `SurfaceRegion` to return.
 2. Delete `UiDispatcher` fields, constructor parameters and registrations; call `FrameThread.Post`.
 3. Drop the dispatcher argument from `new AsyncAtom<T>(...)` and `new ViewLifetime(...)`.
-4. Decide about colour: nothing to do to take the new palette, `UseTheme(ThemePalette.Basic)` to keep
+4. Decide about color: nothing to do to take the new palette, `UseTheme(ThemePalette.Basic)` to keep
    the old one.
 5. Delete `#pragma warning disable ARL0001` and any `NoWarn` carrying it.
 

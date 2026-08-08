@@ -66,11 +66,11 @@ progress.Draw(region.Rows(0, 1));
 | `Value` | Where it is |
 | `Minimum` / `Maximum` | Default to `0` and `100` |
 | `Caption` | Turns the value into the text beside the bar |
-| `Style` | Colours it |
+| `Style` | Colors it |
 
 The bar fills the region width minus the caption, so the caption never pushes it off the edge.
 
-For a bar measured against a range that need not start at zero, and coloured by the bands it crosses,
+For a bar measured against a range that need not start at zero, and colored by the bands it crosses,
 see [`Gauge`](charts.md#gauge).
 
 ## Spinner

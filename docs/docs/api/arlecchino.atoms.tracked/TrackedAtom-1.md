@@ -43,7 +43,7 @@ Creates an undoable atom holding a starting value.
 | Name | Type | Description |
 |---|---|---|
 | `initial` | `T` | The value to start with. |
-| `comparer` | `IEqualityComparer<T>`&lt;`T`&gt; | How to decide that a write changed nothing; the default comparer for `T` is used when omitted. |
+| `comparer` | `IEqualityComparer<T>`&lt;`T`&gt; | How to decide that writing to it changed nothing; the default comparer for `T` is used when omitted. |
 
 ## Properties in detail
 

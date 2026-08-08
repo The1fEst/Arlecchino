@@ -21,7 +21,7 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 | Member | Meaning |
 |---|---|
 | `Text` | What to show |
-| `Style` | Colours it |
+| `Style` | Colors it |
 | `Offset` | The first wrapped line shown |
 | `LineCount` | How many rows it takes once wrapped |
 | `IsFocused` | Set by the [focus ring](focus.md) |

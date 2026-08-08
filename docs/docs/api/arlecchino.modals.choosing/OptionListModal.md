@@ -26,9 +26,9 @@ public abstract class OptionListModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Filter`](#filter) | What has been typed to narrow the list. Editing it resets the cursor to the top. |
+| [`Filter`](#filter) | Whatever has been typed to narrow the list. Editing it resets the cursor to the top. |
 | [`FirstVisible`](#firstvisible) | Index of the first option drawn, since a long list only shows a window of it. |
-| [`Index`](#index) | Cursor position within the options that currently match. |
+| [`Index`](#index) | Cursor position within the options that match. |
 | [`Options`](#options) | Everything that can be chosen from. |
 | [`Rows`](#rows) | Where the rows were drawn last frame, used to turn a click into a row. |
 
@@ -36,7 +36,7 @@ public abstract class OptionListModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | The wheel walks the list, and a click picks the row it landed on — but only takes it when that row was already the one under the cursor, so a click never confirms something the eye had not settled on yet. |
+| [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row was already the one under the cursor, so a click never confirms something the eye had not settled on yet. |
 | [`MatchingOptions()`](#matchingoptions) | The options that pass the filter, in their original order. |
 | [`Take(ModalFrame, string)`](#take-modalframe-string) | Acts on the row that was picked, which is what tells one kind of list from the other. |
 
@@ -62,7 +62,7 @@ public OptionListModal();
 public string Filter { get; set; }
 ```
 
-What has been typed to narrow the list. Editing it resets the cursor to the top.
+Whatever has been typed to narrow the list. Editing it resets the cursor to the top.
 
 **Type** `string`
 
@@ -82,7 +82,7 @@ Index of the first option drawn, since a long list only shows a window of it.
 public int Index { get; set; }
 ```
 
-Cursor position within the options that currently match.
+Cursor position within the options that match.
 
 **Type** `int`
 
@@ -114,7 +114,7 @@ Where the rows were drawn last frame, used to turn a click into a row.
 public override void HandleMouse(ModalFrame frame, MouseEvent mouse);
 ```
 
-The wheel walks the list, and a click picks the row it landed on — but only takes it when that row was already the one under the cursor, so a click never confirms something the eye had not settled on yet.
+The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row was already the one under the cursor, so a click never confirms something the eye had not settled on yet.
 
 **Parameters**
 

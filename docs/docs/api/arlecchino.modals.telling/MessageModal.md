@@ -25,7 +25,7 @@ public sealed class MessageModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`OnClosed`](#onclosed) | Called once it is dismissed, for a screen that wants to carry on afterwards. |
+| [`OnClosed`](#onclosed) | Called once it is dismissed, for a screen that wants to carry on afterward. |
 | [`Text`](#text) | The message, drawn under the title. Long text wraps to the width of the box. |
 
 ## Methods
@@ -57,7 +57,7 @@ public MessageModal();
 public Action? OnClosed { get; init; }
 ```
 
-Called once it is dismissed, for a screen that wants to carry on afterwards.
+Called once it is dismissed, for a screen that wants to carry on afterward.
 
 **Type** `Action`
 

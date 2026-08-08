@@ -44,7 +44,7 @@ does not have.
 | [Rendering](rendering.md) | `Surface`: what a frame costs, geometry, headless rendering |
 | [Layout](layout.md) | The flow cursor, absolute calls, regions and clipping |
 | [Text and width](text.md) | Why measurement is in columns, and the `TextWidth` calls that do it |
-| [Colours](colours.md) | `TermColor`, `RgbTermColor`, and what the terminal can actually show |
+| [Colors](colors.md) | `TermColor`, `RgbTermColor`, and what the terminal can actually show |
 | [Theming](theming.md) | `Theme`, `ThemePalette`, and the framework's own palette |
 
 ## Input
@@ -97,7 +97,7 @@ does not have.
 | Page | What it covers |
 |---|---|
 | [What's new in 4.0](whats-new-in-4.0.md) | Every string gets a name, a dialog draws itself, namespaces follow their folders |
-| [Migrating to 4.0](migrating-to-4.0.md) | The `using` lines a `3.x` application needs, and one quiet behaviour change |
+| [Migrating to 4.0](migrating-to-4.0.md) | The `using` lines a `3.x` application needs, and one quiet behavior change |
 | [What's new in 3.0](whats-new-in-3.0.md) | Pictures, a terminal that is asked what it can do, panes that share a line |
 | [Migrating to 3.0](migrating-to-3.0.md) | The five members `2.x` lost, all of them about typing |
 | [What's new in 2.0](whats-new-in-2.0.md) | The three breaking changes, and what came with them |
@@ -118,9 +118,9 @@ namespaces rather than folders nobody outside the repository can see:
 
 | Namespace | Divided into |
 |---|---|
-| `Arlecchino.Modals` | `.Asking` (text, number), `.Choosing` (choice, palette), `.Setting` (slider, toggle, colour, date, time), `.Telling` (message, notification) |
+| `Arlecchino.Modals` | `.Asking` (text, number), `.Choosing` (choice, palette), `.Setting` (slider, toggle, color, date, time), `.Telling` (message, notification) |
 | `Arlecchino.Widgets` | `.Lists` (list, table, tree, tabs, scrolling), `.Pictures`, `.Readouts` (charts, indicators, status bar, text view) |
-| `Arlecchino.Rendering` | `.Colors` (theme, palette, colour types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
+| `Arlecchino.Rendering` | `.Colors` (theme, palette, color types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
 | `Arlecchino.Atoms` | `.Local`, `.Tracked`, `.Collections` |
 
 What each of them keeps is the vocabulary every file reaches for anyway: `Modal` and `ModalFrame`,

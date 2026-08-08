@@ -54,7 +54,7 @@ it puts in the container are singletons:
 | `BracketedPaste` | `true` | Pasted text arrives as one block instead of a burst of keys |
 | `EscapeTimeout` | `25 ms` | How long the reader waits for the rest of an escape sequence |
 | `Keymap` | `new ArlecchinoKeymap()` | Keys the framework itself reacts to |
-| `Theme` | `ThemePalette.Arlecchino` | Colour roles |
+| `Theme` | `ThemePalette.Arlecchino` | Color roles |
 | `GraphSymbols` | `Braille` | Which characters charts are drawn with |
 | `ImageProtocol` | `Auto` | How a `Picture` reaches the terminal |
 | `AskTerminal` | `true` | Ask the terminal what it can draw before the first frame |
@@ -86,7 +86,7 @@ it puts in the container are singletons:
 | `UseNotifications(key, timeout, lifetime)` | Turns the output row on, sets both timeouts and the key that opens the notifications screen |
 | `WithoutNotifications()` | Leaves the output row off |
 | `UseMouse()` | Turns on mouse reporting |
-| `UseTheme(palette)` | Replaces the colour palette |
+| `UseTheme(palette)` | Replaces the color palette |
 | `UseStrings(strings)` | Replaces user-visible text |
 | `UseTerminal<T>()` | Replaces `IArlecchinoTerminal` |
 | `WithoutHostedService()` | Drops the render loop, leaving the services |
@@ -112,7 +112,7 @@ Register with `.AddStartup<ChooseStartView>()`. Every startup runs when the host
 registration order, each one applied to the navigator.
 
 Every [`ArlecchinoAsyncStore`](stores.md#a-store-that-loads-itself) is started at the same moment,
-with the token cancelled when the host stops — started, not awaited: the first frame is drawn while
+with the token canceled when the host stops — started, not awaited: the first frame is drawn while
 they load, and each store says where it got to.
 
 ## The two loops

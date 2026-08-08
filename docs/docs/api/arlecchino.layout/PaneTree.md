@@ -41,7 +41,7 @@ public sealed class PaneTree
 
 | Member | Summary |
 |---|---|
-| [`AsFocusRing(ArlecchinoKeymap)`](#asfocusring-arlecchinokeymap) | Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in the order the branches lay them out — left before right, top before bottom. `Tab` then walks the screen the way it looks, and there is no second list to keep in step with the first.  ```csharp _focus = _layout.AsFocusRing(options.Keymap);  ```  What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterwards, and lands at the end of the walk. |
+| [`AsFocusRing(ArlecchinoKeymap)`](#asfocusring-arlecchinokeymap) | Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in the order the branches lay them out — left before right, top before bottom. `Tab` then walks the screen the way it looks, and there is no second list to keep in step with the first.  ```csharp _focus = _layout.AsFocusRing(options.Keymap);  ```  What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk. |
 | [`Branch(PaneTree, PaneTree)`](#branch-panetree-panetree) | A branch that decides everything itself: it cuts along the longer side of whatever region it is given and halves it. The longer side is measured in what the eye sees rather than in cells — a cell is about twice as tall as it is wide, so 80×24 is a wide region and gets two columns. Because the side is measured per frame, such a branch can turn from columns into rows when the terminal is resized. That is what makes it right for panes of equal standing, and wrong for chrome, which should be pinned with a [`PaneSplit`](../arlecchino.layout/PaneSplit.md) of its own. |
 | [`Branch(PaneSplit, PaneTree, PaneTree)`](#branch-panesplit-panetree-panetree) | A branch that cuts the way it is told and halves the space. |
 | [`Branch(PaneSize, PaneTree, PaneTree)`](#branch-panesize-panetree-panetree) | A branch of a given size that still cuts along the longer side, for a split that is uneven but has no reason to prefer an axis. |
@@ -49,7 +49,7 @@ public sealed class PaneTree
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws every pane where the branches put it. This is the whole of a view's `Draw` when the screen is a tree. |
 | [`Gaps(int, int)`](#gaps-int-int) | Sets the spacing of the whole layout, rather than of one branch, so a screen is loosened or tightened in one place. The names are the ones a tiling window manager uses. |
 | [`Leaf(IArlecchinoWidget)`](#leaf-iarlecchinowidget) | A pane holding a widget, drawn into whatever region the tree gives it. |
-| [`Leaf(IArlecchinoWidget, Func<string>)`](#leaf-iarlecchinowidget-func-string) | A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box, and the box is drawn `Theme.Active` while the widget holds the focus and `Theme.Info` while it does not — so a screen of panes shows where the cursor is without the view saying anything about it. |
+| [`Leaf(IArlecchinoWidget, Func<string>)`](#leaf-iarlecchinowidget-func-string) | A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box. The box itself is drawn `Theme.Active` while the widget holds the focus and `Theme.Info` while it does not, so a screen of panes shows where the cursor is without the view saying anything about it. |
 | [`Leaf(Action<SurfaceRegion>)`](#leaf-action-surfaceregion) | A pane the view draws itself, for the parts of a screen that are not a widget — a title, a box, a row of readouts. |
 | [`Leaf(Action<SurfaceRegion>, Func<string>)`](#leaf-action-surfaceregion-func-string) | A pane the view draws itself, in a box with a title. |
 | [`Leaf()`](#leaf) | A pane that draws nothing, for space deliberately left blank. |
@@ -101,7 +101,7 @@ _focus = _layout.AsFocusRing(options.Keymap);
 
 ```
 
-What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterwards, and lands at the end of the walk.
+What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk.
 
 **Parameters**
 
@@ -236,7 +236,7 @@ A pane holding a widget, drawn into whatever region the tree gives it.
 public static PaneTree Leaf(IArlecchinoWidget widget, Func<string> title);
 ```
 
-A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box, and the box is drawn `Theme.Active` while the widget holds the focus and `Theme.Info` while it does not — so a screen of panes shows where the cursor is without the view saying anything about it.
+A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box. The box itself is drawn `Theme.Active` while the widget holds the focus and `Theme.Info` while it does not, so a screen of panes shows where the cursor is without the view saying anything about it.
 
 **Parameters**
 

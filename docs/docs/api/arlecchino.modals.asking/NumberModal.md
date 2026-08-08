@@ -32,7 +32,7 @@ public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, 
 | [`Message`](#message) | Validation message shown under the field. |
 | [`Minimum`](#minimum) | Lowest value allowed. A negative bound is also what allows a minus sign to be typed. |
 | [`OnSubmit`](#onsubmit) | Called with the accepted number. |
-| [`Text`](#text) | What has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number. |
+| [`Text`](#text) | Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number. |
 | [`Validate`](#validate) | Your own check, run after parsing and bounds. Return a message to keep the dialog open. |
 
 ## Methods
@@ -127,7 +127,7 @@ Called with the accepted number.
 public string Text { get; set; }
 ```
 
-What has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number.
+Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number.
 
 **Type** `string`
 

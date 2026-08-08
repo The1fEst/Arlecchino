@@ -27,7 +27,7 @@ OSC 52 is the reason a copy works over SSH: the sequence carries the text to wha
 terminal, so it lands on the clipboard of the machine the user is sitting at. Terminals may refuse it
 and none acknowledge it, so there is nothing to report back.
 
-When [colour support](colours.md#what-the-terminal-can-actually-do) is `None`, no style sequence is
+When [color support](colors.md#what-the-terminal-can-actually-do) is `None`, no style sequence is
 emitted at all — not even the per-line reset — and the alternate screen is left alone. An application
 in that state prints plain text instead of spraying escape codes at a console that cannot read them.
 
@@ -40,7 +40,7 @@ together with whatever follows it. `TerminalInputReader` is what does that:
 2. Mouse reports go to the escape-sequence parser inside the package and come back as
    [`MouseEvent`](mouse.md).
 3. Cursor and function keys it decodes itself.
-4. Anything it does not recognise is replayed key by key — which is what makes a plain `Escape` work
+4. Anything it does not recognize is replayed key by key — which is what makes a plain `Escape` work
    even though it starts the same way.
 
 | Member | Meaning |
@@ -90,7 +90,7 @@ and `.UseTerminal<T>()` is how a third goes in — a remote session, a recording
 ## Windows
 
 `SystemTerminal` turns on `ENABLE_VIRTUAL_TERMINAL_PROCESSING` as it starts. If the console refuses —
-an old `conhost` — colour drops to `None`, the alternate screen is not entered, and the application
+an old `conhost` — color drops to `None`, the alternate screen is not entered, and the application
 degrades to plain text.
 
 Turning on virtual-terminal *input* is a different flag, and enabling it stops `Console.ReadKey` from

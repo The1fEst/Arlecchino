@@ -65,7 +65,7 @@ expects `┬`. The tree now records its boxes and paints them together — see
 [Layout](layout.md).
 
 **The terminal is asked what it can do.** Before the first frame the framework asks the terminal
-whether it speaks the kitty graphics protocol or sixel, how large a cell is, and what colour is
+whether it speaks the kitty graphics protocol or sixel, how large a cell is, and what color is
 behind the text. It costs `TerminalAnswer` — 120 ms by default — only when the terminal says nothing
 at all, and nothing a person typed is swallowed. Turn it off with `AskTerminal = false` if you would
 rather decide yourself.

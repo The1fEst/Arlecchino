@@ -1,7 +1,7 @@
 ---
 title: Modals
 sidebar_label: Modals
-description: Every dialog that ships — text, password, number, slider, toggle, choice, multi-choice, date, time, colour, message and multi-line — plus stacking, validation and the mouse.
+description: Every dialog that ships — text, password, number, slider, toggle, choice, multi-choice, date, time, color, message and multi-line — plus stacking, validation and the mouse.
 ---
 
 # Modals
@@ -35,7 +35,7 @@ their own modals, and `file` is the [file picker](file-picker.md).
 
 ## The shape they share
 
-Shared behaviour lives in interfaces rather than being repeated per type:
+Shared behavior lives in interfaces rather than being repeated per type:
 
 | Interface | Members | Implemented by |
 |---|---|---|
@@ -100,7 +100,7 @@ after the new value.
 
 ### Password, email and link
 
-Three flavours of the same modal:
+Three flavors of the same modal:
 
 ```csharp
 _state.RequestPassword("Passphrase", value => Unlock(value));
@@ -180,7 +180,7 @@ _state.RequestChoice("Theme", ["dark", "light"], picked => Apply(picked), curren
 shortens the filter; the selection resets to the top on every edit. `current` decides which option
 starts selected. An empty result set renders as `nothing matches` and `Enter` does nothing.
 
-The list scrolls when it does not fit: up to 12 rows, fewer on a short terminal, centred on the
+The list scrolls when it does not fit: up to 12 rows, fewer on a short terminal, centered on the
 selection.
 
 ### Multi-choice
@@ -198,7 +198,7 @@ row under the cursor, `Enter` confirms and hands back the marked options **in th
 not in the order they were marked. Filtering works as in a choice modal, and marks survive a filter
 change.
 
-## Dates, times and colours
+## Dates, times and colors
 
 ```csharp
 _state.RequestDate("Release date", DateOnly.FromDateTime(DateTime.Today), value => SetDate(value));
@@ -217,22 +217,22 @@ whatever is typed and submits, `Esc` cancels.
 
 Both derive from `SegmentedModal`. A fixed-width field of your own — a version number, an id — needs
 `SegmentCount`, `Separator`, `SegmentTexts()`, `SegmentLength` and `ApplyTypedValue`, and gets the
-cursor, typing and rendering behaviour for free.
+cursor, typing and rendering behavior for free.
 
 :::
 
-### Colour
+### Color
 
 ```csharp
 _state.RequestColor("Accent color", new Rgb(63, 169, 245), value => SetAccent(value.Hex));
 ```
 
-A swatch of the current colour with its hex code, and under it three sliders — hue `0..359`, saturation
+A swatch of the current color with its hex code, and under it three sliders — hue `0..359`, saturation
 and lightness `0..100`. `↑↓` (or `Tab`) pick the channel, `←→` adjust by `Step`, `PgUp` `PgDn` by
 `LargeStep`, `Home` `End` go to the ends of the channel, hue wraps around. `Enter` hands back an `Rgb`.
 
-The swatch is drawn with a 24-bit ANSI colour, so it shows the actual colour rather than the nearest of
-the sixteen — see [Colours](colours.md). Channels are integers, so a colour that arrives from `Rgb` and
+The swatch is drawn with a 24-bit ANSI color, so it shows the actual color rather than the nearest of
+the sixteen — see [Colors](colors.md). Channels are integers, so a color that arrives from `Rgb` and
 comes back out may shift by a unit or two through the HSL round trip.
 
 ## Message and confirmation
@@ -383,7 +383,7 @@ Once [mouse reporting](mouse.md) is on, the modals answer it themselves:
 | Multi-choice | Selects the row; a second click marks or unmarks it | Moves the selection |
 | Slider | Jumps to the position on the track, dragging keeps updating | — |
 | Toggle | Picks the chip under the cursor | — |
-| Colour | Selects the channel and sets it from the position on its track | — |
+| Color | Selects the channel and sets it from the position on its track | — |
 | Command palette | Runs the command on that row | — |
 
 Clicks outside the box change nothing — a modal is not dismissed by clicking away, because a stray

@@ -47,7 +47,7 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
 | [`Failed`](#failed) | Whether the load threw. What it threw is in [`ArlecchinoAsyncStore.Error`](../arlecchino.atoms/ArlecchinoAsyncStore.md#error). |
 | [`IsLoaded`](#isloaded) | Whether the load finished and the atoms hold what it fetched. |
 | [`IsLoading`](#isloading) | Whether the load is still running. |
-| [`Ready`](#ready) | Completes when the store is loaded, faults with whatever [`ArlecchinoAsyncStore.LoadAsync`](../arlecchino.atoms/ArlecchinoAsyncStore.md#loadasync-cancellationtoken) threw, and is cancelled when the application stopped before the load finished. This is the one to await outside a view; a view reads [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status) instead, because it draws every frame rather than waiting. |
+| [`Ready`](#ready) | Completes when the store is loaded, faults with whatever [`ArlecchinoAsyncStore.LoadAsync`](../arlecchino.atoms/ArlecchinoAsyncStore.md#loadasync-cancellationtoken) threw, and is canceled when the application stopped before the load finished. This is the one to await outside a view; a view reads [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status) instead, because it draws every frame rather than waiting. |
 | [`Status`](#status) | How the load is going, as an atom, so a view that reads it redraws when it changes. |
 
 ## Methods
@@ -114,7 +114,7 @@ Whether the load is still running.
 public Task Ready { get; }
 ```
 
-Completes when the store is loaded, faults with whatever [`ArlecchinoAsyncStore.LoadAsync`](../arlecchino.atoms/ArlecchinoAsyncStore.md#loadasync-cancellationtoken) threw, and is cancelled when the application stopped before the load finished. This is the one to await outside a view; a view reads [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status) instead, because it draws every frame rather than waiting.
+Completes when the store is loaded, faults with whatever [`ArlecchinoAsyncStore.LoadAsync`](../arlecchino.atoms/ArlecchinoAsyncStore.md#loadasync-cancellationtoken) threw, and is canceled when the application stopped before the load finished. This is the one to await outside a view; a view reads [`ArlecchinoAsyncStore.Status`](../arlecchino.atoms/ArlecchinoAsyncStore.md#status) instead, because it draws every frame rather than waiting.
 
 **Type** `Task`
 
@@ -142,7 +142,7 @@ Fetches what the store needs. It runs off the drawing thread, so what it loads r
 
 | Name | Type | Description |
 |---|---|---|
-| `token` | `CancellationToken` | Cancelled when the application is shutting down. |
+| `token` | `CancellationToken` | Canceled when the application is shutting down. |
 
 **Returns** `Task` — A task that completes when the store is ready.
 

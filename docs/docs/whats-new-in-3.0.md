@@ -13,7 +13,7 @@ need an edit, and the
 
 ## Pictures
 
-`Picture` draws an image. By default it needs nothing of the terminal beyond the colour it already
+`Picture` draws an image. By default it needs nothing of the terminal beyond the color it already
 draws in: a cell carries two pixels, the upper half block painted as the one above and its background
 as the one below.
 
@@ -37,7 +37,7 @@ behind — kitty deletes by number, sixel paints over, cells need nothing. See
 ## The terminal is asked what it can do
 
 Once, before the first frame, and it decides more than pictures: which graphics protocols the
-terminal speaks, how many pixels a cell is, and what colour is behind the text.
+terminal speaks, how many pixels a cell is, and what color is behind the text.
 
 The arrangement that makes it safe is the order. The questions end with the one every terminal
 answers — primary device attributes — so the reply to it is the signal that no other reply is coming.
@@ -116,7 +116,7 @@ only on an event, and the clock comes from a provider. See [Testing](testing.md)
 - A picture could vanish from a frame that was written whole — writing every cell is what removes the
   pixels over it in some terminals, so every payload goes out again when the frame does.
 - A picture drawn in cells was written out again every frame, however still it was: it built its
-  colours afresh and the frame diff tells cells apart by reference.
+  colors afresh and the frame diff tells cells apart by reference.
 - Undrawing a sixel could paint up to five rows below it, because bands are six rows whatever the
   picture's height.
 - The probe assumed answers came back in the order they were asked for; nothing in any specification

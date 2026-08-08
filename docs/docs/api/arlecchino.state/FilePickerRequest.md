@@ -30,7 +30,7 @@ public sealed class FilePickerRequest : IEquatable<FilePickerRequest>
 | [`OnPicked`](#onpicked) | Called with the full path that was chosen. |
 | [`PickFolder`](#pickfolder) | Whether a folder is being chosen rather than a file. |
 | [`Places`](#places) | Shortcuts offered in the sidebar. |
-| [`ReturnView`](#returnview) | The view to return to, whether or not anything was picked. |
+| [`ReturnView`](#returnview) | The view to return to, whether anything was picked. |
 | [`Title`](#title) | Heading shown above the listing. |
 
 ## Methods
@@ -61,7 +61,7 @@ Everything the file picker needs for one round of picking. Unlike the modals, th
 | `Title` | `string` | Heading shown above the listing. |
 | `PickFolder` | `bool` | Whether a folder is being chosen rather than a file. |
 | `InitialPath` | `string` | Where browsing starts. |
-| `ReturnView` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | The view to return to, whether or not anything was picked. |
+| `ReturnView` | [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) | The view to return to, whether anything was picked. |
 | `OnPicked` | `Action<T>`&lt;`string`&gt; | Called with the full path that was chosen. |
 
 ## Properties in detail
@@ -122,7 +122,7 @@ Shortcuts offered in the sidebar.
 public ViewRoute ReturnView { get; init; }
 ```
 
-The view to return to, whether or not anything was picked.
+The view to return to, whether anything was picked.
 
 **Type** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md)
 

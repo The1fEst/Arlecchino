@@ -33,8 +33,8 @@ public readonly struct ScrollWindow : IEquatable<ScrollWindow>
 
 | Member | Summary |
 |---|---|
-| [`Around(int, int, int)`](#around-int-int-int) | Places the window so the selection sits in the middle, sliding it back at the ends of the list so the rows are always filled rather than trailing off into blanks. |
-| [`Contains(int)`](#contains-int) | Whether an item is on screen, which is what decides if it needs drawing. |
+| [`Around(int, int, int)`](#around-int-int-int) | Places the window with the selection in the middle, sliding it back at the ends of the list, so the rows are always filled rather than trailing off into blanks. |
+| [`Contains(int)`](#contains-int) | Whether an item is in view, which is what decides if it needs drawing. |
 | [`Deconstruct(out int, out int)`](#deconstruct-out-int-out-int) |  |
 
 ## Constructors in detail
@@ -94,7 +94,7 @@ Index of the last item shown. Reads as one before [`ScrollWindow.First`](../arle
 public static ScrollWindow Around(int selected, int itemCount, int rows);
 ```
 
-Places the window so the selection sits in the middle, sliding it back at the ends of the list so the rows are always filled rather than trailing off into blanks.
+Places the window with the selection in the middle, sliding it back at the ends of the list, so the rows are always filled rather than trailing off into blanks.
 
 **Parameters**
 
@@ -112,7 +112,7 @@ Places the window so the selection sits in the middle, sliding it back at the en
 public bool Contains(int index);
 ```
 
-Whether an item is on screen, which is what decides if it needs drawing.
+Whether an item is in view, which is what decides if it needs drawing.
 
 **Parameters**
 

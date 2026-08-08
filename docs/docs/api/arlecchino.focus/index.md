@@ -11,7 +11,7 @@ sidebar_position: 0
 | Type | Summary |
 |---|---|
 | [`FocusRing`](FocusRing.md) | The cycle of focusable elements inside one view: `Tab` and `Shift+Tab` move between them, everything else goes to the one that holds the focus. |
-| [`FocusablePane`](FocusablePane.md) | Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in objects — that is how the file picker holds its list and its places sidebar. |
+| [`FocusablePane`](FocusablePane.md) | Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in objects. That is how the file picker holds its list and the sidebar of places. |
 
 ## Structs
 

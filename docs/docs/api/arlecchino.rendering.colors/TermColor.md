@@ -28,7 +28,7 @@ public sealed class TermColor : IArlecchinoColor
 | [`Ansi`](#ansi) | The escape sequence for this style, built once and rebuilt only if [`TerminalCapabilities.Color`](../arlecchino.rendering.terminals/TerminalCapabilities.md#color) changes. Empty when color is turned off. |
 | [`Background`](#background) | Color behind the glyphs. [`TerminalColor.Default`](../arlecchino.rendering.colors/TerminalColor.md) leaves it to the terminal. |
 | [`ExactBackground`](#exactbackground) | The same for what is behind the glyphs, falling back to [`TermColor.Background`](../arlecchino.rendering.colors/TermColor.md#background). |
-| [`ExactForeground`](#exactforeground) | An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere [`TermColor.Foreground`](../arlecchino.rendering.colors/TermColor.md#foreground) is drawn instead, so a palette written in brand colors still says what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the author chose rather than the nearest one arithmetic found. |
+| [`ExactForeground`](#exactforeground) | An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere, [`TermColor.Foreground`](../arlecchino.rendering.colors/TermColor.md#foreground) is drawn instead, so a palette written in brand colors still says what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the author chose rather than the nearest one arithmetic found. |
 | [`Foreground`](#foreground) | Color of the glyphs. [`TerminalColor.Default`](../arlecchino.rendering.colors/TerminalColor.md) leaves it to the terminal. |
 | [`Style`](#style) | Bold, italic, underline and dim, in any combination. |
 
@@ -84,7 +84,7 @@ The same for what is behind the glyphs, falling back to [`TermColor.Background`]
 public Nullable<Rgb> ExactForeground { get; init; }
 ```
 
-An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere [`TermColor.Foreground`](../arlecchino.rendering.colors/TermColor.md#foreground) is drawn instead, so a palette written in brand colors still says what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the author chose rather than the nearest one arithmetic found.
+An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere, [`TermColor.Foreground`](../arlecchino.rendering.colors/TermColor.md#foreground) is drawn instead, so a palette written in brand colors still says what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the author chose rather than the nearest one arithmetic found.
 
 **Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
 

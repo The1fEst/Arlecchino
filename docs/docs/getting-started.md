@@ -79,7 +79,7 @@ route it returns navigates. `Hints` fills the box in the bottom-right corner. `H
 `HandlePaste` and `Commands` have defaults, so a view implements only what it uses. Details in
 [Views and navigation](views-and-navigation.md) and [Rendering](rendering.md).
 
-The colours live in `Arlecchino.Rendering.Colors` and the surface in `Arlecchino.Rendering`; since
+The colors live in `Arlecchino.Rendering.Colors` and the surface in `Arlecchino.Rendering`; since
 `4.0` those are two namespaces rather than one, and it is the commonest thing to be missing a `using`
 for — see [Migrating to 4.0](migrating-to-4.0.md#namespaces-follow-their-folders).
 

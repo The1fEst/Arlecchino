@@ -76,7 +76,7 @@ is a solid column of rows rather than a column with gaps in it.
 | `Field.Number`, `Field.Slider` | [Number and slider modals](modals.md#numbers) |
 | `Field.Toggle` | [Toggle modal](modals.md#toggle) |
 | `Field.Choice`, `Field.MultiChoice` | [Choice and multi-choice modals](modals.md#choice) |
-| `Field.Date`, `Field.Time`, `Field.Color` | [Segment editors and the colour picker](modals.md#dates-times-and-colours) |
+| `Field.Date`, `Field.Time`, `Field.Color` | [Segment editors and the color picker](modals.md#dates-times-and-colors) |
 | `Field.Path`, `Field.PathFrom` | The [file picker](file-picker.md); returns its route so the view navigates |
 | `Field.Action` | Nothing — runs your delegate and returns a route |
 

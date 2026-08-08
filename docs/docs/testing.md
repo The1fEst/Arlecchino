@@ -36,7 +36,7 @@ It builds the container exactly as `AddArlecchino` would, minus the hosted servi
 | `Type(text)` | Types characters one at a time, carrying a character but no key — what a terminal reports for ordinary typing |
 | `Click(row, column, button)` | Clicks a cell, in the terminal's own coordinates |
 | `Scroll(row, column, down)` | Turns the wheel over a cell |
-| `ReadFromTerminal(sequence)` | Feeds raw characters through the reader that recognises escape sequences — the way to test what a real terminal sends for arrows, function keys and mouse reports |
+| `ReadFromTerminal(sequence)` | Feeds raw characters through the reader that recognizes escape sequences — the way to test what a real terminal sends for arrows, function keys and mouse reports |
 | `DrainInput()` | Routes whatever the reader queued; `ReadFromTerminal` and `Frame` do it for you |
 | `Advance(span)` | Moves the clock forward and runs whatever fell due, exactly as the frame loop would |
 
@@ -44,12 +44,12 @@ It builds the container exactly as `AddArlecchino` would, minus the hosted servi
 
 | Member | Use |
 |---|---|
-| `Frame()` | Draws a frame and returns **what is on screen** afterwards, styling stripped |
+| `Frame()` | Draws a frame and returns **what is on screen** afterward, styling stripped |
 | `FrameLines()` | The same, as rows |
 | `Screen` | The screen itself, as a [`ScreenGrid`](#screengrid) — cells, styles and the cursor |
 | `FrameContains(text)` | Whether a frame holds some text anywhere — text split across rows will not be found |
 | `FrameLineContaining(text)` | The first row holding some text, which is how a test reads what was drawn beside a label |
-| `Styles()` | The colour sequences in the frame, in order |
+| `Styles()` | The color sequences in the frame, in order |
 
 :::note[What a frame writes and what it leaves are not the same thing]
 
@@ -59,7 +59,7 @@ way — the path a running application takes — and then returns the **screen**
 the whole picture however little of it was written.
 
 `Styles()` is the exception: it draws a whole frame on purpose, because a diffed frame only restates
-the colours of the cells it rewrote.
+the colors of the cells it rewrote.
 
 :::
 
@@ -69,9 +69,9 @@ the colours of the cells it rewrote.
 are all exposed, for a test that wants to open a dialog, force a route, resize mid-test or assert that
 something actually asked for a frame.
 
-:::note[Colour is pinned]
+:::note[Color is pinned]
 
-Colour is pinned to `ColorSupport.TrueColor` as the host is built, so a build agent that sets
+Color is pinned to `ColorSupport.TrueColor` as the host is built, so a build agent that sets
 `NO_COLOR` does not quietly strip the styling a test asserts on. Set `TerminalCapabilities.Color`
 after building to test another level — and remember it is
 [process-wide](theming.md#swapping-the-palette).
@@ -130,7 +130,7 @@ app.Advance(TimeSpan.FromSeconds(6));
 Assert.DoesNotContain("saved", app.Frame());
 ```
 
-`Advance` does not draw. Ask for a frame afterwards.
+`Advance` does not draw. Ask for a frame afterward.
 
 ## FakeTerminal
 
@@ -165,7 +165,7 @@ The helper behind the frame assertions, public for tests that do their own:
 |---|---|
 | `WithoutStyles(text)` | Strips the escape sequences |
 | `Lines(text)` | Splits a frame into rows |
-| `StylesIn(text)` | The colour sequences, in order |
+| `StylesIn(text)` | The color sequences, in order |
 | `CursorJumpsIn(text)` | The cursor moves, for asserting on the differential write |
 | `BoxWidth(lines)` | Checks that a box is rectangular |
 
@@ -221,7 +221,7 @@ captured that way would hold whatever a person typed into them.
 | Did navigation go where it should? | `app.Navigator.CurrentRoute` |
 | Did a modal open with the right title? | `app.State.Modal` |
 | Was the value undoable? | `app.History.Undo()` then read the store |
-| Did a colour survive? | `app.Styles()` |
+| Did a color survive? | `app.Styles()` |
 | Did a resize reflow the layout? | `app.Terminal.Width = …` |
 
 ## Testing the framework itself
@@ -242,7 +242,7 @@ under test: the routes they produce are used by the navigation tests.
 the edge of a row or the width of a symbol would be held by both, cancel out, and leave every test
 green with the picture wrong. The repository settles that from outside: frames are played into a real
 `tmux` pane and the screen it ends up with is compared against the screen `ScreenGrid` ended up with —
-symbols, the colour of every cell, and where the cursor was left — and keys are pressed in a pane so
+symbols, the color of every cell, and where the cursor was left — and keys are pressed in a pane so
 the bytes a terminal really sends are the ones the reader is asked to make sense of. Both found real
 defects; `CONTRIBUTING.md` says how to run them.
 
@@ -254,7 +254,7 @@ one of them — so where that is the case, the code says which and why nothing t
 
 The real terminal is tested by replacing `Console.Out` and asserting on the bytes that come out of
 it — the alternate screen, bracketed paste, mouse reporting, `OSC 52` copying — because those
-sequences are the whole behaviour, and a fake terminal never emits them. The parts that only exist on
+sequences are the whole behavior, and a fake terminal never emits them. The parts that only exist on
 one platform are asserted per platform: away from Windows the mouse is asked for with escape
 sequences, on Windows nothing reaches the output at all, since the console is read record by record
 instead.

@@ -7,7 +7,7 @@ sidebar_label: "AsyncAtom<T>"
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino`
 
-A value produced by background work, with its progress exposed as state so the view can draw a spinner or an error without knowing anything about the task. Results are handed back on the UI thread, and a new load cancels the one before it, so a slow reply can never overwrite a newer one. Nothing here is recorded in history, because loading is not something the user undoes.
+A value produced by background work, with its progress exposed as state, so the view can draw a spinner or an error without knowing anything about the task. Results are handed back on the UI thread, and a new load cancels the one before it, so a slow reply can never overwrite a newer one. Nothing here is recorded in history, because loading is not something the user undoes.
 
 ```csharp
 public sealed class AsyncAtom<T> : IReadableAtom<T>
@@ -34,8 +34,8 @@ public sealed class AsyncAtom<T> : IReadableAtom<T>
 
 | Member | Summary |
 |---|---|
-| [`Cancel()`](#cancel) | Abandons the running load. Whatever was loaded before stays put — the user asked to stop waiting, not to lose what is on screen — but the state stops reporting itself as loading, so a spinner bound to it does not spin forever. |
-| [`Load(Func<CancellationToken, Task<T>>)`](#load-func-cancellationtoken-task-t) | Starts work in the background, cancelling whatever was already running. Returns at once; the result, or the failure, arrives later on the UI thread. |
+| [`Cancel()`](#cancel) | Abandons the running load. Whatever was loaded before stays put — the user asked to stop waiting, not to lose what the screen shows — but the state stops reporting itself as loading, so a spinner bound to it does not spin forever. |
+| [`Load(Func<CancellationToken, Task<T>>)`](#load-func-cancellationtoken-task-t) | Starts work in the background, canceling whatever was already running. Returns at once; the result, or the failure, arrives later on the UI thread. |
 | [`Subscribe(Action)`](#subscribe-action) | Watches for a new value. Progress changes on their own do not notify. |
 | [`SubscribeToStatus(Action)`](#subscribetostatus-action) | Watches progress, which is what a spinner or an error line needs. |
 
@@ -105,7 +105,7 @@ The last loaded value. It stays put while a new load runs, so the view keeps its
 public void Cancel();
 ```
 
-Abandons the running load. Whatever was loaded before stays put — the user asked to stop waiting, not to lose what is on screen — but the state stops reporting itself as loading, so a spinner bound to it does not spin forever.
+Abandons the running load. Whatever was loaded before stays put — the user asked to stop waiting, not to lose what the screen shows — but the state stops reporting itself as loading, so a spinner bound to it does not spin forever.
 
 ### `Load(Func<CancellationToken, Task<T>>)` {#load-func-cancellationtoken-task-t}
 
@@ -113,13 +113,13 @@ Abandons the running load. Whatever was loaded before stays put — the user ask
 public void Load(Func<CancellationToken, Task<T>> load);
 ```
 
-Starts work in the background, cancelling whatever was already running. Returns at once; the result, or the failure, arrives later on the UI thread.
+Starts work in the background, canceling whatever was already running. Returns at once; the result, or the failure, arrives later on the UI thread.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `load` | `Func<T, TResult>`&lt;`CancellationToken`, `Task<TResult>`&lt;`T`&gt;&gt; | The work to run, given a token that is cancelled when a newer load starts. |
+| `load` | `Func<T, TResult>`&lt;`CancellationToken`, `Task<TResult>`&lt;`T`&gt;&gt; | The work to run, given a token that is canceled when a newer load starts. |
 
 ### `Subscribe(Action)` {#subscribe-action}
 

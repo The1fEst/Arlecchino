@@ -25,14 +25,14 @@ public sealed class ColorModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Channel`](#channel) | Which of the three sliders the arrows currently move. |
-| [`ChannelMaximum`](#channelmaximum) | Upper end of the slider the arrows currently move. |
+| [`Channel`](#channel) | Which of the three sliders the arrows move. |
+| [`ChannelMaximum`](#channelmaximum) | Upper end of the slider the arrows move. |
 | [`ChannelRows`](#channelrows) | Where each slider's row was drawn last frame, used to turn a click into a channel. |
 | [`ChannelTracks`](#channeltracks) | Where each slider's track was drawn last frame, used to turn a click into a value. |
-| [`ChannelValue`](#channelvalue) | Value of the slider the arrows currently move. |
+| [`ChannelValue`](#channelvalue) | Value of the slider the arrows move. |
 | [`Hue`](#hue) | Position on the color wheel, from `0` to `359`. It wraps rather than stopping. |
 | [`LargeStep`](#largestep) | How far the page keys move the active slider. |
-| [`Lightness`](#lightness) | Distance from black towards white, in percent. Fifty is the pure color. |
+| [`Lightness`](#lightness) | Distance from black toward white, in percent. Fifty is the pure color. |
 | [`OnPicked`](#onpicked) | Called with the color that was confirmed. |
 | [`Saturation`](#saturation) | Distance from gray, in percent. |
 | [`Step`](#step) | How far the arrow keys move the active slider. |
@@ -42,7 +42,7 @@ public sealed class ColorModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Add(int)`](#add-int) | Moves the active slider. Hue wraps around the wheel; the other two stop at their ends. |
+| [`Add(int)`](#add-int) | Moves the active slider. Hue wraps around the wheel; the other two halt at their ends. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
 | [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) |  |
@@ -76,7 +76,7 @@ public ColorModal();
 public ColorChannel Channel { get; set; }
 ```
 
-Which of the three sliders the arrows currently move.
+Which of the three sliders the arrows move.
 
 **Type** [`ColorChannel`](../arlecchino.modals.setting/ColorChannel.md)
 
@@ -86,7 +86,7 @@ Which of the three sliders the arrows currently move.
 public int ChannelMaximum { get; }
 ```
 
-Upper end of the slider the arrows currently move.
+Upper end of the slider the arrows move.
 
 **Type** `int`
 
@@ -116,7 +116,7 @@ Where each slider's track was drawn last frame, used to turn a click into a valu
 public int ChannelValue { get; }
 ```
 
-Value of the slider the arrows currently move.
+Value of the slider the arrows move.
 
 **Type** `int`
 
@@ -146,7 +146,7 @@ How far the page keys move the active slider.
 public int Lightness { get; set; }
 ```
 
-Distance from black towards white, in percent. Fifty is the pure color.
+Distance from black toward white, in percent. Fifty is the pure color.
 
 **Type** `int`
 
@@ -198,7 +198,7 @@ The three sliders resolved into a color, as drawn in the swatch.
 public void Add(int delta);
 ```
 
-Moves the active slider. Hue wraps around the wheel; the other two stop at their ends.
+Moves the active slider. Hue wraps around the wheel; the other two halt at their ends.
 
 **Parameters**
 

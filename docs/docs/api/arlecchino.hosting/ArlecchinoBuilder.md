@@ -42,7 +42,7 @@ public sealed class ArlecchinoBuilder
 | [`UseTerminal<TTerminal>()`](#useterminal-tterminal) | Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them. |
 | [`UseTextInput(TextInputMode)`](#usetextinput-textinputmode) | Chooses how typed characters are read. This is a trade-off rather than a preference: reading the terminal's own characters accepts any language but can misread keys on some terminals. |
 | [`UseTheme(ThemePalette)`](#usetheme-themepalette) | Replaces the colors. What actually reaches the screen still depends on what the terminal supports. |
-| [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts. Everything stays registered, so a test can drive the loop itself frame by frame. |
+| [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts. Everything stays registered. A test can then drive the loop itself, frame by frame. |
 | [`WithoutNotifications()`](#withoutnotifications) | Leaves the output row off, so nothing the application says is drawn on the frame. |
 
 ## Properties in detail
@@ -315,7 +315,7 @@ Replaces the colors. What actually reaches the screen still depends on what the 
 public ArlecchinoBuilder WithoutHostedService();
 ```
 
-Stops the application from taking over the terminal when the host starts. Everything stays registered, so a test can drive the loop itself frame by frame.
+Stops the application from taking over the terminal when the host starts. Everything stays registered. A test can then drive the loop itself, frame by frame.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

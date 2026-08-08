@@ -7,7 +7,7 @@ sidebar_label: "SliderModal"
 
 **Namespace:** `Arlecchino.Modals.Setting` &middot; **Assembly:** `Arlecchino`
 
-A value inside a range, adjusted by arrows or by dragging the track. There is nothing to type, so the value is always valid and the dialog never reports an error.
+A value inside a range, adjusted by arrows or by dragging the track. There is nothing to type, so the value is always valid, and the dialog never reports an error.
 
 ```csharp
 public sealed class SliderModal : NumericModal, IAffixedModal, IBoundedModal
@@ -31,7 +31,7 @@ public sealed class SliderModal : NumericModal, IAffixedModal, IBoundedModal
 | [`Minimum`](#minimum) | Value at the left end of the track. |
 | [`OnSubmit`](#onsubmit) | Called with the value the handle was left at. |
 | [`Track`](#track) | Where the track was drawn last frame, used to turn a click into a value. |
-| [`Value`](#value) | Where the handle currently sits. |
+| [`Value`](#value) | Where the handle sits. |
 
 ## Methods
 
@@ -117,7 +117,7 @@ Where the track was drawn last frame, used to turn a click into a value.
 public decimal Value { get; set; }
 ```
 
-Where the handle currently sits.
+Where the handle sits.
 
 **Type** `decimal`
 

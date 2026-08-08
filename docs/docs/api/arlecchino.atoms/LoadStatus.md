@@ -19,6 +19,6 @@ public enum LoadStatus : byte
 |---|---:|---|
 | `Idle` | `0` | Nothing has been loaded yet. |
 | `Loading` | `1` | A load is running. |
-| `Loaded` | `2` | The last load finished and its result is in place. |
+| `Loaded` | `2` | The last load finished, and its result is in place. |
 | `Failed` | `3` | The last load threw; see the error. |
 

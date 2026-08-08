@@ -82,7 +82,7 @@ in the router:
 |---|---|---|
 | `Back` / `Forward` | `Cmd+←` / `Cmd+→` on a Mac, `Alt+←` / `Alt+→` elsewhere — both work either way | History |
 | `Confirm` / `Cancel` | `Enter` / `Esc` | Every modal, the file picker |
-| `NextField` / `PreviousField` | `Tab` / `Shift+Tab` | [Focus rings](focus.md), segments, colour channels, picker panes |
+| `NextField` / `PreviousField` | `Tab` / `Shift+Tab` | [Focus rings](focus.md), segments, color channels, picker panes |
 | `MoveUp` / `MoveDown` / `MoveLeft` / `MoveRight` | arrows | Lists, sliders, number steps, segments |
 | `JumpUp` / `JumpDown` | `PgUp` / `PgDn` | Large steps and page moves |
 | `First` / `Last` | `Home` / `End` | Ends of a slider, channel or list |
@@ -149,7 +149,7 @@ The middle section is the one worth knowing about: a view's `Commands()` are the
 there, so they are the ones somebody pressing `F1` is usually looking for. A screen that registers
 none gets no section at all rather than an empty heading.
 
-The wording is localisable like everything else: `HelpKeys` on
+The wording is localizable like everything else: `HelpKeys` on
 [`ArlecchinoStrings`](localization.md) is a delegate that receives the keymap and returns the pairs to
 list, so the descriptions can be translated or the order changed without touching the screen.
 
@@ -158,7 +158,7 @@ list, so the descriptions can be translated or the order changed without touchin
 Text input — modal fields, list filters, the palette key — goes through `KeyText`, which turns a
 `KeyPress` into a character.
 
-| Mode | Behaviour |
+| Mode | Behavior |
 |---|---|
 | `TextInputMode.Native` (default) | Any non-control character is taken as typed, so a layout that is not Latin works without being asked for |
 | `TextInputMode.ByPosition` | Every character comes from where its key sits on the keyboard rather than from what the layout makes of it, so the key left of `S` types `a` whether the layout says `a`, `ф` or `α` |

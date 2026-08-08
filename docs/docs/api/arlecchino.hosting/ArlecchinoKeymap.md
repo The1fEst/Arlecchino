@@ -36,8 +36,8 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`First`](#first) | Goes to the start of a list or the minimum of a range. `Home` by default. |
 | [`Forward`](#forward) | Retraces a step back. `Cmd+→` on a Mac, `Alt+→` elsewhere. |
 | [`Help`](#help) | Opens the screen listing every key. `F1` by default. |
-| [`JumpDown`](#jumpdown) | A large step down, or a page of rows. `PgDn` by default. |
-| [`JumpUp`](#jumpup) | A large step up, or a page of rows. `PgUp` by default. |
+| [`JumpDown`](#jumpdown) | A long stride downward, or a page of rows. `PgDn` by default. |
+| [`JumpUp`](#jumpup) | A long stride upward, or a page of rows. `PgUp` by default. |
 | [`Last`](#last) | Goes to the end of a list or the maximum of a range. `End` by default. |
 | [`Mark`](#mark) | Marks a row or flips a toggle. `Space` by default. |
 | [`MoveDown`](#movedown) | Moves the cursor down, or steps a number down. `↓` by default. |
@@ -46,7 +46,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`MoveUp`](#moveup) | Moves the cursor up, or steps a number up. `↑` by default. |
 | [`NextField`](#nextfield) | Moves to the next pane, segment or channel. `Tab` by default. |
 | [`Notifications`](#notifications) | Opens the screen listing what the application has said lately. |
-| [`PickCurrentFolder`](#pickcurrentfolder) | Picks the folder currently open in the file picker. `Ctrl+Enter` by default. |
+| [`PickCurrentFolder`](#pickcurrentfolder) | Picks the folder open in the file picker. `Ctrl+Enter` by default. |
 | [`PreviousField`](#previousfield) | Moves to the previous one. `Shift+Tab` by default. |
 | [`Submit`](#submit) | Accepts a dialog where `Enter` means something else — the multi-line text area, where it starts a new line. `Ctrl+Enter` by default. |
 | [`ToggleLog`](#togglelog) | Shows or hides the log overlay. `Ctrl+L` by default. |
@@ -185,7 +185,7 @@ Opens the screen listing every key. `F1` by default.
 public KeyBinding JumpDown { get; init; }
 ```
 
-A large step down, or a page of rows. `PgDn` by default.
+A long stride downward, or a page of rows. `PgDn` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -195,7 +195,7 @@ A large step down, or a page of rows. `PgDn` by default.
 public KeyBinding JumpUp { get; init; }
 ```
 
-A large step up, or a page of rows. `PgUp` by default.
+A long stride upward, or a page of rows. `PgUp` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -285,7 +285,7 @@ Opens the screen listing what the application has said lately.
 public KeyBinding PickCurrentFolder { get; init; }
 ```
 
-Picks the folder currently open in the file picker. `Ctrl+Enter` by default.
+Picks the folder open in the file picker. `Ctrl+Enter` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 

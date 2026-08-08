@@ -8,7 +8,7 @@ description: IArlecchinoCommand and ViewCommand, the command palette, the confli
 
 A key a view or an application reacts to belongs in a command, not in a `switch`. That is what makes
 it visible to the palette, to the hints box, to the [keys screen](keyboard.md#the-keys-screen) and to
-the conflict check — and what lets it be relabelled and rebound without touching the screen.
+the conflict check — and what lets it be relabeled and rebound without touching the screen.
 
 ## An application command
 
@@ -70,7 +70,7 @@ public IReadOnlyList<ViewCommand> Commands() =>
 |---|---|
 | `Binding` | The key |
 | `Label` | A delegate, so the text follows the current [language](localization.md) |
-| `IsEnabled` | Optional; a disabled command is greyed in the palette and lets its key through |
+| `IsEnabled` | Optional; a disabled command is grayed in the palette and lets its key through |
 | `Run` | Returns a route, so a command can navigate |
 | `ViewCommand.For(key, label, action)` | Wraps an `Action` for a command that stays put |
 | `ViewCommand.Navigating(key, label, route)` | Wraps a command whose whole job is to navigate |

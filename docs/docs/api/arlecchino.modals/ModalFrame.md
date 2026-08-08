@@ -7,7 +7,7 @@ sidebar_label: "ModalFrame"
 
 **Namespace:** `Arlecchino.Modals` &middot; **Assembly:** `Arlecchino`
 
-Everything a dialog needs from the application for as long as it is on screen: where to draw, the words to draw in, the keys to obey, and how to close. A dialog is a value — an application writes `new TextModal { … }` and hands it over — so it cannot be given services when it is built. It is given them when it is asked to do something, which is what lets [`Modal.Draw`](../arlecchino.modals/Modal.md#draw-modalframe) and [`Modal.Handle`](../arlecchino.modals/Modal.md#handle-modalframe-keypress) live on the dialog itself rather than in a switch somewhere that has to know every kind there will ever be.
+Everything a dialog needs from the application for as long as the screen shows it: where to draw, the words to draw in, the keys to obey, and how to close. A dialog is a value — an application writes `new TextModal { … }` and hands it over — so it cannot be given services when it is built. It is given them when it is asked to do something, which is what lets [`Modal.Draw`](../arlecchino.modals/Modal.md#draw-modalframe) and [`Modal.Handle`](../arlecchino.modals/Modal.md#handle-modalframe-keypress) live on the dialog itself rather than in a switch somewhere that has to know every kind there will ever be.
 
 ```csharp
 public sealed class ModalFrame

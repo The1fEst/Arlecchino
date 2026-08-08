@@ -7,7 +7,7 @@ sidebar_label: "FocusablePane"
 
 **Namespace:** `Arlecchino.Focus` &middot; **Assembly:** `Arlecchino`
 
-Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in objects — that is how the file picker holds its list and its places sidebar.
+Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in objects. That is how the file picker holds its list and the sidebar of places.
 
 ```csharp
 public sealed class FocusablePane : IArlecchinoFocusable
@@ -25,7 +25,7 @@ public sealed class FocusablePane : IArlecchinoFocusable
 
 | Member | Summary |
 |---|---|
-| [`IsFocused`](#isfocused) | Whether this element currently holds the focus. |
+| [`IsFocused`](#isfocused) | Whether this element holds the focus. |
 
 ## Methods
 
@@ -61,7 +61,7 @@ Creates the element.
 public bool IsFocused { get; set; }
 ```
 
-Whether this element currently holds the focus.
+Whether this element holds the focus.
 
 **Type** `bool`
 

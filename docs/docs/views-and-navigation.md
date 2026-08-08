@@ -65,7 +65,7 @@ route and both ways to register it.
 
 `Navigator` is a singleton holding the current view, a back stack and a forward stack.
 
-| Member | Behaviour |
+| Member | Behavior |
 |---|---|
 | `Apply(route)` | Navigates. Ignores `ViewRoute.None` and the current route; pushes the previous route onto the back stack and clears the forward stack |
 | `Back()` / `Forward()` | Walk the history, return `false` when the stack is empty |

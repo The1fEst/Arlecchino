@@ -17,8 +17,8 @@ public static class TerminalCapabilities
 
 | Member | Summary |
 |---|---|
-| [`Background`](#background) | The color behind the text, as the terminal reported it, or `null` when it did not say. It is here because undrawing a sixel means painting over it, and painting needs a color: sixel writes pixels into the screen rather than into a registry of images, so there is nothing to delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint. |
-| [`CellSizeKnown`](#cellsizeknown) | Whether [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) and [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) came from the terminal rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a picture that will land exactly from one that will land approximately — and it is the only way to tell a terminal that reported ten by twenty from one that said nothing. |
+| [`Background`](#background) | The color behind the text, as the terminal reported it, or `null` when it did not say. It is here because undrawing a sixel means painting over it, and painting needs a color. Sixel writes pixels into the screen rather than into a registry of images, so there is nothing to delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint. |
+| [`CellSizeKnown`](#cellsizeknown) | Whether [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) and [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) came from the terminal rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a picture that will land exactly from one that will land approximately. It is also the only way to tell a terminal that reported ten by twenty from one that said nothing. |
 | [`Color`](#color) | How much color styles may emit. Detected on first use; a terminal that refuses virtual terminal mode lowers it to [`ColorSupport.None`](../arlecchino.rendering.colors/ColorSupport.md) at startup. Process-wide, like [`Theme.Palette`](../arlecchino.rendering.colors/Theme.md#palette): one terminal per process is the assumption the framework makes, and tests that change this share it with everything else running. |
 | [`Kitty`](#kitty) | Whether the terminal answered the kitty graphics query. Set by [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan); assign it to answer for a terminal that will not. |
 | [`Sixel`](#sixel) | Whether the terminal said it speaks sixel. Set by [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan); assign it to answer for a terminal that will not, and read it to decide what to offer in a settings screen. |
@@ -40,7 +40,7 @@ public static class TerminalCapabilities
 public static Nullable<Rgb> Background { get; set; }
 ```
 
-The color behind the text, as the terminal reported it, or `null` when it did not say. It is here because undrawing a sixel means painting over it, and painting needs a color: sixel writes pixels into the screen rather than into a registry of images, so there is nothing to delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint.
+The color behind the text, as the terminal reported it, or `null` when it did not say. It is here because undrawing a sixel means painting over it, and painting needs a color. Sixel writes pixels into the screen rather than into a registry of images, so there is nothing to delete by name the way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint.
 
 **Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
 
@@ -50,7 +50,7 @@ The color behind the text, as the terminal reported it, or `null` when it did no
 public static bool CellSizeKnown { get; set; }
 ```
 
-Whether [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) and [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) came from the terminal rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a picture that will land exactly from one that will land approximately — and it is the only way to tell a terminal that reported ten by twenty from one that said nothing.
+Whether [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) and [`Glyphs.CellHeight`](../arlecchino.rendering.text/Glyphs.md#cellheight) came from the terminal rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a picture that will land exactly from one that will land approximately. It is also the only way to tell a terminal that reported ten by twenty from one that said nothing.
 
 **Type** `bool`
 
@@ -117,7 +117,7 @@ The same decision made from explicit values, which is what makes it testable. `N
 | `colorTerm` | `string` | Value of `COLORTERM`. |
 | `windowsTerminalSession` | `string` | Value of `WT_SESSION`. |
 
-**Returns** [`ColorSupport`](../arlecchino.rendering.colors/ColorSupport.md) — The level of color support those values imply.
+**Returns** [`ColorSupport`](../arlecchino.rendering.colors/ColorSupport.md) — How much color those values imply the terminal supports.
 
 ### `NearestPaletteColor(Rgb)` {#nearestpalettecolor-rgb}
 

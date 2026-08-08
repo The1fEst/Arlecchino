@@ -24,12 +24,12 @@ _mods.Load(async token => await _service.LoadAsync(token));
 | `Status` | `Idle`, `Loading`, `Loaded`, `Failed` — an `IReadableAtom<LoadStatus>` |
 | `IsLoading` | Shorthand for the status being `Loading` |
 | `Error` | The exception of the last failure, as a readable atom |
-| `Load(load)` | Starts a load, cancelling the one in flight |
+| `Load(load)` | Starts a load, canceling the one in flight |
 | `Cancel()` | Cancels without starting another |
 | `Subscribe(listener)` | Notified when the value changes |
 | `SubscribeToStatus(listener)` | Notified when the status changes |
 
-A failed load is kept as `Failed` + `Error` rather than thrown at the render loop. Cancelling keeps the
+A failed load is kept as `Failed` + `Error` rather than thrown at the render loop. Canceling keeps the
 last value but drops the status back to `Idle`, so a spinner bound to it stops.
 
 ## Drawing one
@@ -83,7 +83,7 @@ public sealed class ModsView : IArlecchinoView
 
 | Member | Does |
 |---|---|
-| `Loading<T>(initial)` | An `AsyncAtom<T>` that is cancelled when the screen goes away |
+| `Loading<T>(initial)` | An `AsyncAtom<T>` that is canceled when the screen goes away |
 | `Track(resource)` | Disposes a subscription, timer or handle with the screen; returns it back |
 | `OnClose(action)` | Runs something as the screen goes |
 | `Closing` | The token to pass into work you start yourself; readable after the screen has gone |

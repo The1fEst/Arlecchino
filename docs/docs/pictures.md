@@ -7,7 +7,7 @@ description: Picture — an image drawn in cells, or sent to the terminal as pix
 # Pictures
 
 `Picture` draws an image. It needs nothing of the terminal by default — each cell carries two pixels,
-the upper half block painted in the colour of the pixel above and its background in the colour of the
+the upper half block painted in the color of the pixel above and its background in the color of the
 one below, so a cell that is about twice as tall as it is wide comes out roughly square per pixel.
 Where the terminal speaks a graphics protocol it sends the pixels themselves instead, and the picture
 is as sharp as the screen allows.
@@ -41,7 +41,7 @@ if (raster is not null)
 ```
 
 [Arlecchino Commander](https://github.com/The1fEst/Arlecchino.Commander/blob/master/src/Arlecchino.Commander/Files/Png.cs)
-has that `Png` — grey, palette, truecolour and either with alpha, written so that anything it cannot
+has that `Png` — gray, palette, truecolor and either with alpha, written so that anything it cannot
 read comes back as `null` rather than throwing, which is what a viewer opening arbitrary files needs.
 Copy it, or write your own against the
 [specification](https://www.w3.org/TR/png/); the whole of the work is walking the chunks, inflating
@@ -99,24 +99,24 @@ was.
 | Does it speak sixel? | `TerminalCapabilities.Sixel` |
 | Does it speak the kitty protocol? | `TerminalCapabilities.Kitty` |
 | How large is a cell, in pixels? | `Glyphs.CellWidth`, `Glyphs.CellHeight`, and `TerminalCapabilities.CellSizeKnown` |
-| What colour is behind the text? | `TerminalCapabilities.Background` |
+| What color is behind the text? | `TerminalCapabilities.Background` |
 
 Sixel is measured in pixels rather than cells, so the cell size is what decides how large a sixel
 picture is drawn. When the terminal will not say, `CellWidth` and `CellHeight` from the options are
 used instead — ten by twenty, which is close enough for most terminals to look right.
 
-:::note[Why the background colour is asked for]
+:::note[Why the background color is asked for]
 
 Sixel writes pixels into the screen rather than into a registry of images, so a sixel is gone only
-once something is drawn over it. Undrawing one means painting a rectangle in the colour behind the
-text, and a guessed colour would leave a rectangle anyone can see. A terminal that never said is left
+once something is drawn over it. Undrawing one means painting a rectangle in the color behind the
+text, and a guessed color would leave a rectangle anyone can see. A terminal that never said is left
 with the picture where it is, which is the lesser of the two.
 
 :::
 
 ## Fitting
 
-A picture is drawn as large as it goes inside the region without stretching, centred, and returns an
+A picture is drawn as large as it goes inside the region without stretching, centered, and returns an
 empty region — it fills what it is given, so hand it the pane it belongs in.
 
 `Background` says what to draw behind it where the region is wider or taller than the picture fits;

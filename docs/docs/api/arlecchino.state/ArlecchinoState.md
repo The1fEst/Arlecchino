@@ -25,9 +25,9 @@ public class ArlecchinoState
 |---|---|
 | [`FilePicker`](#filepicker) | What the file picker should show. Fill it in, then navigate to `Routes.FilePicker`; it is cleared when the picker finishes either way. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is. |
 | [`Modal`](#modal) | The dialog on top, or `null` when none is open. It takes every key while it is there. Assigning replaces whatever was open, however deep it was stacked; use [`ArlecchinoState.PushModal`](../arlecchino.state/ArlecchinoState.md#pushmodal-modal) to open one over another instead. Opened on the drawing thread: a dialog that appeared halfway through a frame would be drawn into a surface that has already been measured without it. Hand it over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else. |
-| [`Modals`](#modals) | Every open dialog, bottom first. Drawing goes through this so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down: a widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath. |
+| [`Modals`](#modals) | Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath. |
 | [`Notifications`](#notifications) | What the application has said lately, and the screen behind the output row. |
-| [`Output`](#output) | The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterwards on the notifications screen. An empty string clears the row at once. |
+| [`Output`](#output) | The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterward on the notifications screen. An empty string clears the row at once. |
 | [`PickerLastFolder`](#pickerlastfolder) | Folder the picker ended in. Pass it as the next starting path to resume where the user left off. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is. |
 
 ## Methods
@@ -35,7 +35,7 @@ public class ArlecchinoState
 | Member | Summary |
 |---|---|
 | [`CloseAllModals()`](#closeallmodals) | Closes every open dialog at once, however deep they are stacked. |
-| [`CloseModal()`](#closemodal) | Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and cancelling already do this, so it is only needed to dismiss one from the outside. |
+| [`CloseModal()`](#closemodal) | Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and canceling already do this, so it is only needed to dismiss one from the outside. |
 | [`Invalidate()`](#invalidate) | Asks for a repaint. Needed only for changes the framework cannot see — a field mutated from outside, or data that arrived on a timer. |
 | [`PushModal(Modal)`](#pushmodal-modal) | Opens a dialog over whatever is already open, which is how a callback asks a follow-up question without losing what the user was in the middle of. Closing it uncovers the one underneath. |
 | [`RequestChoice(string, IReadOnlyList<string>, Action<string>, string)`](#requestchoice-string-ireadonlylist-string-action-string-string) | Asks for one option out of a list that can be filtered by typing. |
@@ -68,7 +68,7 @@ Creates the state.
 
 | Name | Type | Description |
 |---|---|---|
-| `repaint` | [`Repaint`](../arlecchino/Repaint.md) | Signal raised whenever any of this changes. |
+| `repaint` | [`Repaint`](../arlecchino/Repaint.md) | Signal raised whenever anything here changes. |
 | `notifications` | [`Notifications`](../arlecchino.diagnostics/Notifications.md) | Holds the output row and the notifications screen behind it. |
 
 ## Properties in detail
@@ -111,7 +111,7 @@ The dialog on top, or `null` when none is open. It takes every key while it is t
 public IReadOnlyList<Modal> Modals { get; }
 ```
 
-Every open dialog, bottom first. Drawing goes through this so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down: a widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath.
+Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath.
 
 **Type** `IReadOnlyList<T>`&lt;[`Modal`](../arlecchino.modals/Modal.md)&gt;
 
@@ -131,7 +131,7 @@ What the application has said lately, and the screen behind the output row.
 public string Output { get; set; }
 ```
 
-The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterwards on the notifications screen. An empty string clears the row at once.
+The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterward on the notifications screen. An empty string clears the row at once.
 
 **Type** `string`
 
@@ -173,7 +173,7 @@ Closes every open dialog at once, however deep they are stacked.
 public void CloseModal();
 ```
 
-Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and cancelling already do this, so it is only needed to dismiss one from the outside.
+Closes the dialog on top, uncovering whatever it was opened over. Submitting, picking and canceling already do this, so it is only needed to dismiss one from the outside.
 
 **Exceptions**
 

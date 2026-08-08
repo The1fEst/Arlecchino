@@ -44,7 +44,7 @@ until `Notifications.Capacity` (200) newer ones have pushed it out, so an applic
 loop cannot grow the list without limit.
 
 The list is a screen of its own: `Ctrl+N`, or a click on the output row, opens `Routes.Notifications` —
-newest first, `Information` / `Warning` / `Failure` coloured by role, `Backspace` clears it, `Esc` goes
+newest first, `Information` / `Warning` / `Failure` colored by role, `Backspace` clears it, `Esc` goes
 back.
 
 ```csharp

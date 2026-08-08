@@ -71,15 +71,15 @@ the escape sequences rather than a test double, and what came out:
 | Where | What it showed |
 |---|---|
 | Windows Terminal, Windows 11 | Day-to-day use — this is where the framework is developed |
-| Arch on WSL2, `TERM=xterm-256color` | Alternate screen, SGR mouse reporting and bracketed paste all requested; colour stays inside the sixteen ANSI entries |
-| The same with `COLORTERM=truecolor` | 24-bit sequences (`48;2;…`) where a screen actually asks for an exact colour |
-| The same with `NO_COLOR=1` or `TERM=dumb` | Not one colour sequence emitted, and the frame still drawn — the notice, the layout and the box drawing are all intact |
+| Arch on WSL2, `TERM=xterm-256color` | Alternate screen, SGR mouse reporting and bracketed paste all requested; color stays inside the sixteen ANSI entries |
+| The same with `COLORTERM=truecolor` | 24-bit sequences (`48;2;…`) where a screen actually asks for an exact color |
+| The same with `NO_COLOR=1` or `TERM=dumb` | Not one color sequence emitted, and the frame still drawn — the notice, the layout and the box drawing are all intact |
 | tmux, 100×30 | Frames, keys (`F1` opens the keys screen, `End` scrolls it) and the alternate screen all survive the multiplexer |
 | macOS 26 on arm64, over ssh | The same sequences and a 120×34 frame; the only place the framework has run on Arm |
 | Ubuntu and Windows on CI | The suite on both target frameworks, and a natively compiled binary that has to draw a frame |
 
 What has **not** been tried, in case one of them is your terminal: the old Windows console host
-without virtual terminal support (the path that drops colour entirely exists and is tested, but no
+without virtual terminal support (the path that drops color entirely exists and is tested, but no
 real conhost has run it), Terminal.app, PuTTY, and kitty, alacritty or WezTerm. Mouse reporting has
 not been exercised inside a multiplexer either. If something misbehaves there,
 [an issue](https://github.com/The1fEst/Arlecchino/issues) with the terminal and `TERM` is useful.

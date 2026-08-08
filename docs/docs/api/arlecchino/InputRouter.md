@@ -17,7 +17,7 @@ public class InputRouter
 
 | Member | Summary |
 |---|---|
-| [`ProcessKey(KeyPress)`](#processkey-keypress) | Routes one key press and asks for a frame, whether or not anything took it. |
+| [`ProcessKey(KeyPress)`](#processkey-keypress) | Routes one key press and asks for a frame, whether anything took it. |
 | [`ProcessMouse(MouseEvent)`](#processmouse-mouseevent) | Routes one mouse event and asks for a frame. |
 | [`ProcessPaste(string)`](#processpaste-string) | Routes a block of pasted text and asks for a frame. It goes wherever typing would, but as one edit rather than one per character. |
 
@@ -29,7 +29,7 @@ public class InputRouter
 public void ProcessKey(KeyPress key);
 ```
 
-Routes one key press and asks for a frame, whether or not anything took it.
+Routes one key press and asks for a frame, whether anything took it.
 
 **Parameters**
 

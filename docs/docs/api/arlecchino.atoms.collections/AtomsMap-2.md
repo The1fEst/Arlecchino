@@ -7,7 +7,7 @@ sidebar_label: "AtomsMap<TKey, TValue>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A map held as one piece of application state — what is known about each server, the settings read so far, a count per kind. Every change goes through the same path a plain atom's write does: it is checked against the drawing thread, it notifies what reads the map, it marks the frame stale, and it records an undo step when the map is undoable. It is to `Atom<Dictionary<TKey, TValue>>` what [`AtomsList`](../arlecchino.atoms.collections/AtomsList-1.md) is to an atom around a list, and for the same reason: writing into the dictionary inside an atom never reaches `Atom.Value`, so nothing is notified and no frame is asked for, and writing the same instance back is taken for a change of nothing because a dictionary is compared by reference. It holds a dictionary but is not one: there is no `IDictionary` to write through, because the members below are the only way in and that is what keeps every change on the frame's path. Whether changes can be undone is decided by the type created — [`TrackedAtomsMap`](../arlecchino.atoms.tracked/TrackedAtomsMap-2.md) or [`LocalAtomsMap`](../arlecchino.atoms.local/LocalAtomsMap-2.md) — exactly as it is for atoms and lists.
+A map held as one piece of application state — what is known about each server, the settings read so far, a count per kind. Every change takes the same path a plain atom's write takes: it is checked against the drawing thread, it notifies what reads the map, it marks the frame stale, and it records an undo step when the map is undoable. It stands to `Atom<Dictionary<TKey, TValue>>` as [`AtomsList`](../arlecchino.atoms.collections/AtomsList-1.md) stands to an atom around a list, and for the same reason. Writing into the dictionary inside an atom never reaches `Atom.Value`, so nothing is notified, and no frame is asked for; writing the same instance back is taken for a change of nothing, because a dictionary is compared by reference. It holds a dictionary but is not one: there is no `IDictionary` to write through, because the members below are the only way in and that is what keeps every change on the frame's path. Whether changes can be undone is decided by the type created — [`TrackedAtomsMap`](../arlecchino.atoms.tracked/TrackedAtomsMap-2.md) or [`LocalAtomsMap`](../arlecchino.atoms.local/LocalAtomsMap-2.md) — exactly as it is for atoms and lists.
 
 ```csharp
 public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
@@ -26,7 +26,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 | Member | Summary |
 |---|---|
 | [`Count`](#count) | How many entries there are. |
-| [`Item`](#item) | The value kept against a key. Reading a key the map does not hold throws, as a dictionary does; writing puts the entry there whether or not it was there before, and writing an equal value changes nothing and notifies nobody. |
+| [`Item`](#item) | The value kept against a key. Reading a key the map does not hold throws, as a dictionary does; writing puts the entry there whether it was there before, and writing an equal value changes nothing and notifies nobody. |
 | [`RecordsHistory`](#recordshistory) | Whether changes of this map enter the undo history. |
 | [`Value`](#value) | What the map holds now: a live view rather than a copy, so something handed this once reads whatever is in it on every later frame. It is read-only all the way down, so every change goes through the members below and is seen by the frame and by the history. |
 
@@ -34,7 +34,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
 | Member | Summary |
 |---|---|
-| [`Add(TKey, TValue)`](#add-tkey-tvalue) | Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the cases where a second entry under one key means something has gone wrong. Use the indexer to put one in whether or not it is there already. |
+| [`Add(TKey, TValue)`](#add-tkey-tvalue) | Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the cases where a second entry under one key means something has gone wrong. Use the indexer to put one in whether it is there already. |
 | [`Clear()`](#clear) | Takes everything out. An empty map changes nothing. |
 | [`ContainsKey(TKey)`](#containskey-tkey) | Whether the map holds an entry under a key. |
 | [`GetEnumerator()`](#getenumerator) | Walks the entries, so `foreach` over the map itself reads the way it does over a dictionary. It is not an `IEnumerable` — the enumerator is all a `foreach` asks for, and stopping there is what keeps the members above the only way to change anything. Reach for [`AtomsMap.Value`](../arlecchino.atoms.collections/AtomsMap-2.md#value) where a sequence is what is wanted, LINQ included. |
@@ -60,7 +60,7 @@ Creates the map.
 | Name | Type | Description |
 |---|---|---|
 | `initial` | `IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt; | What it starts with; empty when omitted. It is copied, not held. |
-| `comparer` | `IEqualityComparer<T>`&lt;`TKey`&gt; | How keys are compared; the default comparer for `TKey` is used when omitted. Values are compared with their own default comparer, which is what decides that a write changed nothing. |
+| `comparer` | `IEqualityComparer<T>`&lt;`TKey`&gt; | How keys are compared; the default comparer for `TKey` is used when omitted. Values are compared with their own default comparer, which is what decides that writing to one changed nothing. |
 
 ## Properties in detail
 
@@ -80,7 +80,7 @@ How many entries there are.
 public TValue this[TKey key] { get; set; }
 ```
 
-The value kept against a key. Reading a key the map does not hold throws, as a dictionary does; writing puts the entry there whether or not it was there before, and writing an equal value changes nothing and notifies nobody.
+The value kept against a key. Reading a key the map does not hold throws, as a dictionary does; writing puts the entry there whether it was there before, and writing an equal value changes nothing and notifies nobody.
 
 **Parameters**
 
@@ -118,7 +118,7 @@ What the map holds now: a live view rather than a copy, so something handed this
 public void Add(TKey key, TValue value);
 ```
 
-Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the cases where a second entry under one key means something has gone wrong. Use the indexer to put one in whether or not it is there already.
+Puts an entry in, and throws when the key is already there — the dictionary's own rule, for the cases where a second entry under one key means something has gone wrong. Use the indexer to put one in whether it is there already.
 
 **Parameters**
 

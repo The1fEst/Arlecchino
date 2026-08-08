@@ -29,9 +29,9 @@ public sealed class ArlecchinoOptions
 | [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be. Installed into [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth) on resolve. Only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) reads it, because sixel is measured in pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an application corrects when it knows the font. |
 | [`CommandPaletteKey`](#commandpalettekey) | Character that opens the command palette. A character rather than a binding, so it survives a layout where the key sits elsewhere. |
 | [`EscapeTimeout`](#escapetimeout) | How long to wait for the rest of an escape sequence before deciding there is none. Arrows and function keys arrive as several characters, and over a slow link they do not always arrive together; this is also the delay a lone `Esc` costs, so keep it short. |
-| [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings. |
+| [`GraphSymbols`](#graphsymbols) | What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterward, so an application can offer the choice in its own settings. |
 | [`HorizontalPadding`](#horizontalpadding) | Cells kept free on the left and right of the content area. |
-| [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself. |
+| [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterward. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself. |
 | [`InputPollInterval`](#inputpollinterval) | How long the input loop sleeps when no key is waiting. |
 | [`Keymap`](#keymap) | Keys the framework itself reacts to. |
 | [`MinimumHeight`](#minimumheight) | Below this height the view is replaced by a "make the window bigger" notice. |
@@ -126,7 +126,7 @@ How long to wait for the rest of an escape sequence before deciding there is non
 public GraphSymbols GraphSymbols { get; set; }
 ```
 
-What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterwards, so an application can offer the choice in its own settings.
+What graphs are drawn with. Installed into [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) on resolve, and settable afterward, so an application can offer the choice in its own settings.
 
 **Type** [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md)
 
@@ -146,7 +146,7 @@ Cells kept free on the left and right of the content area.
 public ImageProtocol ImageProtocol { get; set; }
 ```
 
-How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterwards. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself.
+How pictures reach the terminal. Installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve, and settable afterward. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which asks the terminal rather than guessing; name a protocol to decide it yourself.
 
 **Type** [`ImageProtocol`](../arlecchino.rendering.terminals/ImageProtocol.md)
 

@@ -28,7 +28,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 | [`IsFocused`](#isfocused) | Whether the strip has focus, which decides how strongly the current tab is drawn. |
 | [`OnSelected`](#onselected) | Called when the selection actually changes, not on every attempt to move. |
 | [`Selected`](#selected) | Index of the current tab. |
-| [`Titles`](#titles) | The labels, as delegates so a tab can show a count or a marker that changes. |
+| [`Titles`](#titles) | The labels, as delegates, so a tab can show a count or a marker that changes. |
 
 ## Methods
 
@@ -99,7 +99,7 @@ Index of the current tab.
 public IReadOnlyList<Func<string>> Titles { get; init; }
 ```
 
-The labels, as delegates so a tab can show a count or a marker that changes.
+The labels, as delegates, so a tab can show a count or a marker that changes.
 
 **Type** `IReadOnlyList<T>`&lt;`Func<TResult>`&lt;`string`&gt;&gt;
 

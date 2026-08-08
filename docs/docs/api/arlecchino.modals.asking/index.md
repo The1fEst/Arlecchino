@@ -27,5 +27,5 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`TextFormat`](TextFormat.md) | A built-in check a text field runs before your own validator, so common mistakes are caught with a translated message instead of a hand-written regex. |
+| [`TextFormat`](TextFormat.md) | A built-in check a text field runs before your own validator, so common mistakes are caught with a translated message instead of a handwritten regex. |
 

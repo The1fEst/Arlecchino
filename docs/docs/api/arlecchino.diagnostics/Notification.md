@@ -7,7 +7,7 @@ sidebar_label: "Notification"
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading in full fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened.
+One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading at length fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened.
 
 ```csharp
 public sealed class Notification : IEquatable<Notification>
@@ -19,7 +19,7 @@ public sealed class Notification : IEquatable<Notification>
 
 | Member | Summary |
 |---|---|
-| [`Notification(DateTimeOffset, NotificationLevel, string)`](#notification-datetimeoffset-notificationlevel-string) | One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading in full fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened. |
+| [`Notification(DateTimeOffset, NotificationLevel, string)`](#notification-datetimeoffset-notificationlevel-string) | One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading at length fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened. |
 
 ## Properties
 
@@ -54,7 +54,7 @@ public sealed class Notification : IEquatable<Notification>
 public Notification(DateTimeOffset Time, NotificationLevel Level, string Text);
 ```
 
-One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading in full fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened.
+One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.Progress`](../arlecchino.diagnostics/Notification.md#progress), and something worth reading at length fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened.
 
 **Parameters**
 

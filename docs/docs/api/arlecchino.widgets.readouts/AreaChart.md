@@ -7,7 +7,7 @@ sidebar_label: "AreaChart"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-A series drawn as a filled area over as many rows as it is given — the shape a system monitor shows. Where [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) fits a row and reads at a glance, this one fills a pane and is meant to be looked at: the newest value is at the right, the fill climbs with the value, and the color comes from how high it climbed rather than from anything the view works out. A series with no spread at all — every number the same — draws as the lowest level along the bottom rather than as nothing, the way a [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) does. The resolution is in the characters. A cell carries two samples side by side and several levels of height, so a chart eight rows tall has thirty-two levels between empty and full and holds twice the history a row of blocks would — see [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md) for what each set costs in font support.
+A series drawn as a filled area over as many rows as it is given — the shape a system monitor shows. Where [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) fits a row and reads at a glance, this one fills a pane and is meant to be looked at. The newest value is at the right, the fill climbs with the value, and the color comes from how high it climbed rather than from anything the view works out. A series with no spread at all — every number the same — draws as the lowest level along the bottom rather than as nothing, the way a [`Sparkline`](../arlecchino.widgets.readouts/Sparkline.md) does. The resolution is in the characters. A cell carries two samples side by side and several levels of height, so a chart eight rows tall has thirty-two levels between empty and full and holds twice the history a row of blocks would. See [`GraphSymbols`](../arlecchino.rendering.text/GraphSymbols.md) for what each set costs in font support.
 
 ```csharp
 public sealed class AreaChart : IArlecchinoWidget
@@ -31,13 +31,13 @@ public sealed class AreaChart : IArlecchinoWidget
 | [`Minimum`](#minimum) | The value an empty chart stands for. The smallest of the drawn values when left alone. |
 | [`Style`](#style) | Color of the fill outside every band. The theme's active color when left alone. |
 | [`Symbols`](#symbols) | What to draw with. The application's own setting — [`Glyphs.Graph`](../arlecchino.rendering.text/Glyphs.md#graph) — when left alone, so one chart can differ without every other one being told. |
-| [`Values`](#values) | The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
+| [`Values`](#values) | The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the chart over every row of the region and returns what is left, which is nothing: a chart fills what it is given, so hand it the pane it belongs in. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the chart over every row of the region and returns what is left, which is nothing. A chart fills what it is given, so hand over the pane it belongs in. |
 
 ## Constructors in detail
 
@@ -115,7 +115,7 @@ What to draw with. The application's own setting — [`Glyphs.Graph`](../arlecch
 public IReadOnlyList<decimal> Values { get; set; }
 ```
 
-The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over.
+The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over.
 
 **Type** `IReadOnlyList<T>`&lt;`decimal`&gt;
 
@@ -127,7 +127,7 @@ The numbers to draw, oldest first. Nothing is copied, so a ring buffer the appli
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the chart over every row of the region and returns what is left, which is nothing: a chart fills what it is given, so hand it the pane it belongs in.
+Draws the chart over every row of the region and returns what is left, which is nothing. A chart fills what it is given, so hand over the pane it belongs in.
 
 **Parameters**
 

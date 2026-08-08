@@ -33,7 +33,7 @@ public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal
 | [`OnSubmit`](#onsubmit) | Called with the accepted text. |
 | [`Prefix`](#prefix) | Drawn before the field. |
 | [`Suffix`](#suffix) | Drawn after the field. |
-| [`Text`](#text) | What has been typed so far. Assigning it puts the caret at the end. |
+| [`Text`](#text) | Whatever has been typed so far. Assigning it puts the caret at the end. |
 | [`Validate`](#validate) | Your own check, run after the format one. Return a message to keep the dialog open. |
 
 ## Methods
@@ -136,7 +136,7 @@ Drawn after the field.
 public string Text { get; set; }
 ```
 
-What has been typed so far. Assigning it puts the caret at the end.
+Whatever has been typed so far. Assigning it puts the caret at the end.
 
 **Type** `string`
 

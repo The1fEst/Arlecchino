@@ -22,7 +22,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Drawing',
-      items: ['rendering', 'layout', 'text', 'colours', 'theming'],
+      items: ['rendering', 'layout', 'text', 'colors', 'theming'],
     },
     {
       type: 'category',

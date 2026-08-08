@@ -222,7 +222,7 @@ is worked out per frame, so resizing the terminal reflows it — see [Layout](la
 
 `ListBox` keeps the selection and the scrolling; it never copies what you give it, so assigning
 `Items` on every frame is the ordinary thing to do. `Render` turns one item into its row, `ItemStyle`
-colours it — done items go grey, and the selected row is drawn by the widget itself.
+colors it — done items go gray, and the selected row is drawn by the widget itself.
 
 Keys reach it through `Handle`, which is why the arrows, `PgUp`, `Home` and the wheel work without
 being written down anywhere.
@@ -251,7 +251,7 @@ _state.RequestConfirmation($"Delete {item.Text}?", () => _tasks.Remove(_list.Sel
 ```
 
 `RequestConfirmation` starts on the negative answer, so a stray `Enter` cancels rather than deletes.
-Every other kind — a password, a number, a slider, a date, a colour, a choice — is a call of the same
+Every other kind — a password, a number, a slider, a date, a color, a choice — is a call of the same
 shape; see [Modals](modals.md).
 
 ## Starting it
@@ -390,7 +390,7 @@ namespace Todo
 `DrawOnce` composes a single frame to stdout as ANSI text. `NoLifetime` stands in for the one the host
 would have registered: nothing here is going to ask the application to stop.
 
-A process started without a console of its own is told there is no colour, which is right for a log and
+A process started without a console of its own is told there is no color, which is right for a log and
 wrong for a picture — that is what the first line of `Frame` overrides.
 
 ```bash

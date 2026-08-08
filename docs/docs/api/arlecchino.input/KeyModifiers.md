@@ -7,7 +7,7 @@ sidebar_label: "KeyModifiers"
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino.Core`
 
-Modifiers held with a key. The three the console knows about keep the values `ConsoleModifiers` gives them, so the two agree bit for bit; [`KeyModifiers.Super`](../arlecchino.input/KeyModifiers.md) is the one the console has no room for — Command on a Mac, the Windows key elsewhere.
+Modifiers held with a key. The three the console knows about keep the values `ConsoleModifiers` gives them, so the two agree bit by bit; [`KeyModifiers.Super`](../arlecchino.input/KeyModifiers.md) is the one the console has no room for — Command on a Mac, the Windows key elsewhere.
 
 ```csharp
 [Flags]

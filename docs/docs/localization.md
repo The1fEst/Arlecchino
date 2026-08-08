@@ -182,7 +182,7 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 `HintOpenFolder`, `HintOpenFolderOrPickFile`, `HintFilter`, `HintPickCurrentFolder`, `HintCancel`,
 and three formatters:
 
-| Formatter | Default behaviour |
+| Formatter | Default behavior |
 |---|---|
 | `KindOf(extension)` | Maps an extension to a human name — `ZIP archive`, `Source file`, `PDF document`, falling back to `XYZ file` |
 | `DateModified(value)` | `Today at 9:41`, `Yesterday at 9:41`, otherwise `7 Jul 2026 at 9:41` |

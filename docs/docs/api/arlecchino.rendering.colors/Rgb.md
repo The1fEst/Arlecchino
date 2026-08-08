@@ -128,9 +128,9 @@ Builds a color from hue, saturation and lightness — the form the color modal e
 
 | Name | Type | Description |
 |---|---|---|
-| `hue` | `int` | Degrees around the wheel; values outside 0..359 wrap. |
-| `saturation` | `int` | Percent, clamped to 0..100. |
-| `lightness` | `int` | Percent, clamped to 0..100. |
+| `hue` | `int` | Degrees around the wheel; values outside `0..359` wrap. |
+| `saturation` | `int` | Percent, clamped to `0..100`. |
+| `lightness` | `int` | Percent, clamped to `0..100`. |
 
 **Returns** [`Rgb`](../arlecchino.rendering.colors/Rgb.md) — The matching color.
 

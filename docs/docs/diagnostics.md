@@ -24,7 +24,7 @@ which keeps the last lines in a `LogBuffer` in memory, and `Ctrl+L` — the `Tog
 ╰─────────────────────────────────────────────────────╯
 ```
 
-Warnings and errors are coloured by [role](theming.md#roles), the newest line is at the bottom, and
+Warnings and errors are colored by [role](theming.md#roles), the newest line is at the bottom, and
 `↑`/`↓` scroll back through the buffer while `End` pins it to the newest again. Only those keys are
 taken while the overlay is open, so the screen underneath keeps working — it is something to read, not
 a mode to get stuck in.
@@ -84,7 +84,7 @@ _state.Notifications.Notify("could not reach the server", NotificationLevel.Fail
 | `Clear()` | Throws everything away, the output row included — except work still running |
 | `Capacity` | How many are kept; 200 by default |
 
-`NotificationLevel` is `Information`, `Warning` or `Failure`, and decides the colour. `Ctrl+N`, or a
+`NotificationLevel` is `Information`, `Warning` or `Failure`, and decides the color. `Ctrl+N`, or a
 click on the output row, opens `Routes.Notifications`: newest first, `Enter` opens the entry in full,
 `Backspace` clears, `Esc` goes back.
 
@@ -190,7 +190,7 @@ platform: Microsoft Windows 10.0.26200 (X64)
 implementation: SystemTerminal
 size: 120×34
 frame: 116×32
-colour: TrueColor
+color: TrueColor
 TERM: xterm-256color
 COLORTERM: unset
 NO_COLOR: unset

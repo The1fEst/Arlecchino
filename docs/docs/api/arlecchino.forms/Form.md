@@ -34,7 +34,7 @@ public sealed class Form : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the fields with their labels aligned, scrolled so the selection stays in view, and returns the rows below the last one written. Buttons are left out of the alignment, since they have no value to line up against. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the fields with their labels aligned, scrolled, so the selection stays in view, and returns the rows below the last one written. Buttons are left out of the alignment, since they have no value to line up against. |
 | [`Handle(KeyPress)`](#handle-keypress) | Moves through the fields, opens one, or clears it. For a view that is nothing but a form; views that mix a form with other panes hand it to the focus ring instead. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel and selects with a click. Clicking the already selected field opens it, so a double click reads as select-then-edit. |
 | [`Hints()`](#hints) | What the form does with keys, worded and bound as the application configured it, ready to be shown in the hint line. |
@@ -112,7 +112,7 @@ Index of the selected field.
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the fields with their labels aligned, scrolled so the selection stays in view, and returns the rows below the last one written. Buttons are left out of the alignment, since they have no value to line up against.
+Draws the fields with their labels aligned, scrolled, so the selection stays in view, and returns the rows below the last one written. Buttons are left out of the alignment, since they have no value to line up against.
 
 **Parameters**
 

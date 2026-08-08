@@ -28,7 +28,7 @@ can be taken back:
 
 Everything that consumes an atom — `Field.*`, `Computed<T>`, a view's constructor — takes `Atom<T>`,
 so the two are interchangeable at the call site. Whether an edit is undoable is decided once, where
-the state is declared, rather than by a flag set somewhere else afterwards.
+the state is declared, rather than by a flag set somewhere else afterward.
 
 | Member | Meaning |
 |---|---|

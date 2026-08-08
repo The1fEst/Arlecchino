@@ -34,7 +34,7 @@ public sealed class Spinner : IArlecchinoWidget
 | Member | Summary |
 |---|---|
 | [`Advance()`](#advance) | Moves to the next frame, wrapping at the end. |
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the current frame in the first cell of the region and returns the rows below it. One cell is all a spinner needs, so hand it the cell it belongs in — `region.Rows(0, 1)`, a column split, or whatever the layout gives. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the current frame in the first cell of the region and returns the rows below it. One cell is all a spinner needs, so hand over the cell it belongs in — `region.Rows(0, 1)`, a column split, or whatever the layout gives. |
 
 ## Constructors in detail
 
@@ -92,7 +92,7 @@ Moves to the next frame, wrapping at the end.
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the current frame in the first cell of the region and returns the rows below it. One cell is all a spinner needs, so hand it the cell it belongs in — `region.Rows(0, 1)`, a column split, or whatever the layout gives.
+Draws the current frame in the first cell of the region and returns the rows below it. One cell is all a spinner needs, so hand over the cell it belongs in — `region.Rows(0, 1)`, a column split, or whatever the layout gives.
 
 **Parameters**
 

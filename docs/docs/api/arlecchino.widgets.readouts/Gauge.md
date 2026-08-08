@@ -7,7 +7,7 @@ sidebar_label: "Gauge"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-One value against a range that means something, drawn as a bar whose color changes as it crosses the bands it was given: the fill turns amber where the load is worth watching and red where it is not, and each part keeps the color of the band it lies in, so the tail of the bar shows how long it has been past the line. A [`ProgressBar`](../arlecchino.widgets.readouts/ProgressBar.md) answers "how far along", and this answers "how bad is it now" — the difference being the bands, and a range that need not start at zero.
+One value against a range that means something, drawn as a bar whose color changes as it crosses the bands it was given. The fill turns amber where the load is worth watching and red where it is not. Each part keeps the color of the band it lies in, so the tail of the bar shows how long it has been past the line. A [`ProgressBar`](../arlecchino.widgets.readouts/ProgressBar.md) answers "how far along", and this answers "how bad is it now" — the difference being the bands, and a range that need not start at zero.
 
 ```csharp
 public sealed class Gauge : IArlecchinoWidget

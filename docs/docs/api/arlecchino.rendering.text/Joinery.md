@@ -41,7 +41,7 @@ public sealed class Joinery
 
 | Member | Summary |
 |---|---|
-| [`Across(SurfaceRegion, int, IArlecchinoColor)`](#across-surfaceregion-int-iarlecchinocolor) | Records a rule across a region, for a divider that should join the box around it. |
+| [`Across(SurfaceRegion, int, IArlecchinoColor)`](#across-surfaceregion-int-iarlecchinocolor) | Records a rule across a region, for a divider that should join the surrounding box. |
 | [`Box(SurfaceRegion, IArlecchinoColor, string)`](#box-surfaceregion-iarlecchinocolor-string) | Records the four edges of a region and hands back the room inside them, the way [`SurfaceRegion.Border`](../arlecchino.rendering/SurfaceRegion.md#border-iarlecchinocolor-string) does. |
 | [`Down(SurfaceRegion, int, IArlecchinoColor)`](#down-surfaceregion-int-iarlecchinocolor) | Records a rule down a region. |
 | [`Draw(SurfaceRegion, IArlecchinoColor)`](#draw-surfaceregion-iarlecchinocolor) | Paints everything recorded, resolving each cell into the glyph its neighbors ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it. |
@@ -74,7 +74,7 @@ How many cells carry a line so far. Nothing has reached the surface yet.
 public void Across(SurfaceRegion region, int row, IArlecchinoColor? style = null);
 ```
 
-Records a rule across a region, for a divider that should join the box around it.
+Records a rule across a region, for a divider that should join the surrounding box.
 
 **Parameters**
 

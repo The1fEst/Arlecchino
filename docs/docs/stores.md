@@ -122,7 +122,7 @@ public sealed class SettingsStore : ArlecchinoAsyncStore
 Reading the file is the application's own code — the framework has nothing to do with disks, formats
 or paths. What it gives is the rest: no `BackgroundService` to write, no `TaskCompletionSource` to
 hand around, and the token is the application's, so a load still running when the user quits is
-cancelled rather than left behind.
+canceled rather than left behind.
 
 A file that is not there yet is not an error here, and neither is an empty one: both checks return
 early and the atoms stay on the defaults they were declared with — which is what the screen then
@@ -165,7 +165,7 @@ Code that is not a view — a worker, a command that must not run early — awai
 await _settings.Ready;
 ```
 
-`Ready` faults with whatever `LoadAsync` threw and is cancelled when the application stopped before
+`Ready` faults with whatever `LoadAsync` threw and is canceled when the application stopped before
 the load finished, so awaiting it tells you what happened rather than hanging. A store that throws
 turns its status to failed, is logged, and leaves the application running on whatever its atoms
 already hold — which is why atoms are declared with sensible defaults.

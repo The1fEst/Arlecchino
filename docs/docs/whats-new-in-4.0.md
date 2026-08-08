@@ -146,13 +146,13 @@ stays up for the hour. See [Diagnostics](diagnostics.md#showing-more-than-the-ne
 
 ## A disabled command no longer eats its key
 
-`ViewCommand.IsEnabled` meant two things at once: greyed out on the key screen, and a key that silently
+`ViewCommand.IsEnabled` meant two things at once: grayed out on the key screen, and a key that silently
 does nothing. The second one left a view unable to give the key a second meaning for exactly the times
 its command is off — `Esc` bound to "stop what is running" made `Esc` do nothing at all whenever
 nothing was running.
 
 An unavailable command is now skipped, and the key carries on to the commands available everywhere and
-then to the view's own `Handle`, as if nothing had claimed it. This one is a behaviour change rather
+then to the view's own `Handle`, as if nothing had claimed it. This one is a behavior change rather
 than a compile error; see [Migrating to 4.0](migrating-to-4.0.md#a-disabled-command-lets-its-key-through).
 
 ## Namespaces follow their folders

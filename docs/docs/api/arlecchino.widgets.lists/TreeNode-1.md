@@ -7,7 +7,7 @@ sidebar_label: "TreeNode<T>"
 
 **Namespace:** `Arlecchino.Widgets.Lists` &middot; **Assembly:** `Arlecchino`
 
-One node of a tree. Children are settable so a branch can be filled in when it is first opened rather than up front.
+One node of a tree. Children are settable, so a branch can be filled in when it is first opened rather than up front.
 
 ```csharp
 public sealed class TreeNode<T>

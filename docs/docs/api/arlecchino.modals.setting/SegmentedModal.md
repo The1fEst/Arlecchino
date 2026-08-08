@@ -26,7 +26,7 @@ public abstract class SegmentedModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Segment`](#segment) | Which segment the arrows and digits currently act on. |
+| [`Segment`](#segment) | Which segment the arrows and digits act on. |
 | [`SegmentCount`](#segmentcount) | How many segments the value is made of. |
 | [`Separator`](#separator) | What is drawn between the segments. |
 
@@ -68,7 +68,7 @@ public SegmentedModal();
 public int Segment { get; }
 ```
 
-Which segment the arrows and digits currently act on.
+Which segment the arrows and digits act on.
 
 **Type** `int`
 

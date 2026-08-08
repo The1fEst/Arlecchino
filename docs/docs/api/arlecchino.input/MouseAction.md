@@ -21,5 +21,5 @@ public enum MouseAction : byte
 | `Released` | `1` | A button came back up. |
 | `Moved` | `2` | The pointer moved with a button held — a drag. |
 | `ScrolledUp` | `3` | The wheel turned away from the user. |
-| `ScrolledDown` | `4` | The wheel turned towards the user. |
+| `ScrolledDown` | `4` | The wheel turned toward the user. |
 

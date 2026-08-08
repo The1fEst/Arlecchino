@@ -18,14 +18,14 @@ sidebar_position: 0
 | Type | Summary |
 |---|---|
 | [`KeyBinding`](KeyBinding.md) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. |
-| [`KeyPress`](KeyPress.md) | One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier: that type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal that reports Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead. |
+| [`KeyPress`](KeyPress.md) | One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead. |
 | [`MouseEvent`](MouseEvent.md) | A mouse report from the terminal. Coordinates are frame cells — the same ones [`Surface.WriteAt`](../arlecchino.rendering/Surface.md#writeat-int-int-string-iarlecchinocolor) and [`SurfaceRegion.Contains`](../arlecchino.rendering/SurfaceRegion.md#contains-int-int) use, so hit-testing is comparing numbers. |
 
 ## Enums
 
 | Type | Summary |
 |---|---|
-| [`KeyModifiers`](KeyModifiers.md) | Modifiers held with a key. The three the console knows about keep the values `ConsoleModifiers` gives them, so the two agree bit for bit; [`KeyModifiers.Super`](../arlecchino.input/KeyModifiers.md) is the one the console has no room for — Command on a Mac, the Windows key elsewhere. |
+| [`KeyModifiers`](KeyModifiers.md) | Modifiers held with a key. The three the console knows about keep the values `ConsoleModifiers` gives them, so the two agree bit by bit; [`KeyModifiers.Super`](../arlecchino.input/KeyModifiers.md) is the one the console has no room for — Command on a Mac, the Windows key elsewhere. |
 | [`MouseAction`](MouseAction.md) | What the mouse did. |
 | [`MouseButton`](MouseButton.md) | Which button an event belongs to. |
 | [`TextInputMode`](TextInputMode.md) | How a key press becomes a character, which decides what happens on a non-latin layout. |

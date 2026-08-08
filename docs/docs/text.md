@@ -75,12 +75,12 @@ rather than half-drawn.
 
 ## Styles
 
-`TextStyle` is a `[Flags]` enum carried by every [style](colours.md):
+`TextStyle` is a `[Flags]` enum carried by every [style](colors.md):
 
 | Flag | Note |
 |---|---|
 | `None` | No attributes |
-| `Bold` | Some terminals render it as a brighter colour instead |
+| `Bold` | Some terminals render it as a brighter color instead |
 | `Italic` | The least widely supported of the four |
 | `Underline` | |
 | `Dim` | The opposite of `Bold` |

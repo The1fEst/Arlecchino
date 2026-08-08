@@ -41,7 +41,7 @@ public sealed class TextAreaModal : Modal
 | Member | Summary |
 |---|---|
 | [`Break()`](#break) | Splits the current line at the caret, which is what `Enter` does here. |
-| [`DeleteForward()`](#deleteforward) | Deletes the symbol after the caret, pulling the next line up when the caret is at the end of a line. |
+| [`DeleteForward()`](#deleteforward) | Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a line. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
 | [`Erase()`](#erase) | Deletes the symbol before the caret, joining this line onto the one above when the caret is at the start of a line. |
 | [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
@@ -187,7 +187,7 @@ Splits the current line at the caret, which is what `Enter` does here.
 public void DeleteForward();
 ```
 
-Deletes the symbol after the caret, pulling the next line up when the caret is at the end of a line.
+Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a line.
 
 ### `Draw(ModalFrame)` {#draw-modalframe}
 

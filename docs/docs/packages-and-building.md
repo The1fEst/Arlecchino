@@ -261,18 +261,18 @@ compared with, since a major is where the surface is allowed to move. Every vers
 compared with the release before it, which is the number `tools/ship.cs` advances — a baseline left
 behind on an old release still passes, but it says nothing about everything added since. Packing a
 version whose baseline is missing from NuGet fails with `NU1102` rather than passing quietly, which
-is the behaviour worth having: a validation that silently does nothing is worse than none.
+is the behavior worth having: a validation that silently does nothing is worse than none.
 
 ## Continuous integration
 
 `.github/workflows/build.yml` runs on every push to `master`/`main` and on pull requests that change
-something other than documentation — on Windows and Linux, because console behaviour differs between
+something other than documentation — on Windows and Linux, because console behavior differs between
 them. The Windows leg uploads the packages as a build artifact.
 
 | Step | Catches |
 |---|---|
 | Build in `Release` with warnings as errors | Everything the compiler and the Roslyn style rules see |
-| The test suite, on both target frameworks | Behaviour |
+| The test suite, on both target frameworks | Behavior |
 | Coverage, with a floor under it (Linux leg) | Code that arrived without tests. The run fails below 85% of lines or 66% of branches, and the figures per assembly are written to the run summary |
 | Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
 | The sample published with `PublishAot` and run (Linux leg) | What `IsAotCompatible` only warns about. The native binary has to draw a frame, so a registration the trimmer removed or a type built by reflection fails the run rather than the user's `publish` |
@@ -336,7 +336,7 @@ that is the point of it.
 | `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
-| `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, colour conversion |
+| `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, color conversion |
 | `docs` | This documentation |
 | `artifacts/packages` | Local package feed produced by `tools\pack.cmd` |
 

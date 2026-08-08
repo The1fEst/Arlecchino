@@ -37,13 +37,13 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal itself, encoded as base64. This is the only way to reach the clipboard of the machine the user is actually at when the application runs over a remote session; terminals that have it switched off silently drop it. |
 | [`DisableMouse()`](#disablemouse) | Stops mouse reporting and gives the console back the mode it had. |
 | [`DisablePaste()`](#disablepaste) | Turns bracketed paste off again. |
-| [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel. Elsewhere that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection. |
+| [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection. |
 | [`EnablePaste()`](#enablepaste) | Turns on bracketed paste. Terminals that do not know the mode ignore it. |
 | [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and makes the cursor visible again. |
 | [`ReadKey()`](#readkey) | Takes the next key without echoing it. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
-| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back so the next read returns it. |
+| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next read returns it. |
 | [`Write(string)`](#write-string) | Writes a composed frame. |
 
 ## Constructors in detail
@@ -136,7 +136,7 @@ Turns bracketed paste off again.
 public void EnableMouse();
 ```
 
-Starts reporting presses, releases, drags and the wheel. Elsewhere that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection.
+Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection.
 
 ### `EnablePaste()` {#enablepaste}
 
@@ -194,7 +194,7 @@ Takes the next mouse event read from the console's event queue.
 public void Unread(KeyPress key);
 ```
 
-Puts a key back so the next read returns it.
+Puts a key back, so the next read returns it.
 
 **Parameters**
 

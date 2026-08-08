@@ -172,7 +172,7 @@ naming the route. It is a symptom of a change that skipped `Post`, not something
 ## Work on a clock
 
 `Ticker` is a service in the container. Schedule an action and it runs between frames, on the drawing
-thread, with a repaint asked for afterwards:
+thread, with a repaint asked for afterward:
 
 ```csharp
 public sealed class ClockView : IArlecchinoView
@@ -202,7 +202,7 @@ Both schedules return the handle that cancels them. Hand it to
 [`ViewLifetime.Track`](views-and-navigation.md) and the work stops when the screen goes away.
 
 Missed time is not made up for: an action runs at most once per pass, so a loop that was held up — a
-window restored from being minimised, a long operation, a debugger — resumes with a single run rather
+window restored from being minimized, a long operation, a debugger — resumes with a single run rather
 than firing everything it slept through.
 
 `Ticker` takes its time from `TimeProvider`, which is why the [test host](testing.md) can move the

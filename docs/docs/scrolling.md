@@ -52,7 +52,7 @@ pointer is over the pane.
 
 The content is drawn at an offset that reaches **outside** the pane on purpose.
 [`Surface.Clip`](layout.md#clipping-a-whole-stretch-of-drawing) is what stops the parts that fall
-outside from landing on a neighbour:
+outside from landing on a neighbor:
 
 ```csharp
 using (region.Surface.Clip(region))

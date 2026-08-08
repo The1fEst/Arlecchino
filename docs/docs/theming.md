@@ -7,7 +7,7 @@ description: Theme and ThemePalette — the twelve roles a view draws with, the 
 # Theming
 
 Every drawing call takes an `IArlecchinoColor`. `Theme` is the static accessor views read from, and
-`ThemePalette` is the object behind it. Views should pick a **role**, not a colour: swapping the
+`ThemePalette` is the object behind it. Views should pick a **role**, not a color: swapping the
 palette then restyles the whole application, chrome included.
 
 ## Roles
@@ -48,15 +48,15 @@ directly also works when there is no container at all.
 
 `Theme.Palette` and `TerminalCapabilities.Color` are process-wide **on purpose**: that is what lets a
 view write `Theme.Header` with nothing passed to it. The price is that one process hosts one look —
-two hosts side by side share the palette and the colour level, and the last one built wins. A test
+two hosts side by side share the palette and the color level, and the last one built wins. A test
 that changes either of them shares the change with whatever else is running, which is why the
-[test host](testing.md) pins the colour level as it builds.
+[test host](testing.md) pins the color level as it builds.
 
 :::
 
 ## The framework's own palette
 
-The defaults are the harlequin mask in colours — crimson `#C9382B`, bone `#EDE6D9`, ink `#141317` and
+The defaults are the harlequin mask in colors — crimson `#C9382B`, bone `#EDE6D9`, ink `#141317` and
 the hairline `#2E2B33` of the brand assets. An application gets them without asking;
 `ThemePalette.Arlecchino` is the same thing under a name, for saying so out loud:
 
@@ -68,24 +68,24 @@ builder.Services
 
 The background is left to the terminal everywhere except the two cursor rows, which have to paint
 behind their text to be a selection at all. That is what makes it sit on a light terminal as readily
-as on a dark one — it colours the writing, not the screen.
+as on a dark one — it colors the writing, not the screen.
 
-Every entry names an exact colour *and* a palette colour, so a terminal without 24-bit shows the
-fallback its author picked rather than whatever the nearest-colour arithmetic lands on. Crimson falls
+Every entry names an exact color *and* a palette color, so a terminal without 24-bit shows the
+fallback its author picked rather than whatever the nearest-color arithmetic lands on. Crimson falls
 back to `BrightRed`, bone to `BrightWhite`, the hairline to `BrightBlack`. How that is expressed is on
-[Colours](colours.md).
+[Colors](colors.md).
 
 Crimson is spent on one thing at a time: titles, `Active`, and `Error`. The cursor row is deliberately
 **not** crimson — a selection that looks like a failure is a screen you have to read twice:
 
-| Role | Colour | Reads as |
+| Role | Color | Reads as |
 |---|---|---|
 | `ActiveSelected` | ink on ash `#8A8189` | Where the cursor is |
 | `Selected` | bone on hairline `#2E2B33` | Where it was, in the pane without focus |
 | `Warning` | ink on amber `#D08A2C` | Worth noticing — deprecated, drifted |
 | `Error` | bone on crimson `#C9382B` | Something is wrong |
 
-## The sixteen plain colours
+## The sixteen plain colors
 
 What was the default before 2.0 is still there as `ThemePalette.Basic` — magenta titles, blue column
 headers, cyan borders, a green cursor row, and nothing exact behind any of them:
@@ -100,7 +100,7 @@ That is the whole of the way back. See [Migrating to 2.0](migrating-to-2.0.md).
 
 Start from the defaults and override what matters. Two rules keep a palette usable:
 
-- **Say both colours.** An `Exact` colour with a palette colour behind it degrades the way you chose.
+- **Say both colors.** An `Exact` color with a palette color behind it degrades the way you chose.
 - **Keep the background out of it** except where a row has to read as selected. A palette that paints
   the screen fights every terminal it did not expect.
 

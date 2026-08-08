@@ -17,7 +17,7 @@ public class Screen
 
 | Member | Summary |
 |---|---|
-| [`DrawOnce()`](#drawonce) | Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes this usable outside the loop — in tests, or after something else has written to the terminal. |
+| [`DrawOnce()`](#drawonce) | Draws one full frame, forgetting what the screen held first. Redrawing everything is what makes this usable outside the loop — in tests, or after something else has written to the terminal. |
 | [`RedrawEverything()`](#redraweverything) | Asks for the next frame to be drawn from scratch rather than as a difference. Safe from any thread, and needed whenever something outside the framework has written over the screen — coming back from a suspended process, for one. |
 | [`Run(CancellationToken)`](#run-cancellationtoken) | Draws until stopped, at the configured rate. A frame is only built when something asked for one or the terminal changed size, so an idle application costs nothing. |
 
@@ -29,7 +29,7 @@ public class Screen
 public void DrawOnce();
 ```
 
-Draws one full frame, forgetting what was on screen first. Redrawing everything is what makes this usable outside the loop — in tests, or after something else has written to the terminal.
+Draws one full frame, forgetting what the screen held first. Redrawing everything is what makes this usable outside the loop — in tests, or after something else has written to the terminal.
 
 ### `RedrawEverything()` {#redraweverything}
 
@@ -51,7 +51,7 @@ Draws until stopped, at the configured rate. A frame is only built when somethin
 
 | Name | Type | Description |
 |---|---|---|
-| `stoppingToken` | `CancellationToken` | Cancelled when the application is shutting down. |
+| `stoppingToken` | `CancellationToken` | Canceled when the application is shutting down. |
 
 **Returns** `Task` — A task that completes once drawing has stopped.
 

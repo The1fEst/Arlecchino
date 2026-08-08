@@ -1,13 +1,13 @@
 ---
 title: Migrating to 4.0
 sidebar_label: Migrating to 4.0
-description: The usings a namespace split needs, the one behaviour change worth reading, and what 4.0 adds that costs nothing.
+description: The usings a namespace split needs, the one behavior change worth reading, and what 4.0 adds that costs nothing.
 ---
 
 # Migrating to 4.0
 
-One break and one behaviour change. The break is namespaces, which the compiler points at and a `using`
-fixes; the behaviour change is quiet and worth two minutes of reading. Everything else 4.0 added — the
+One break and one behavior change. The break is namespaces, which the compiler points at and a `using`
+fixes; the behavior change is quiet and worth two minutes of reading. Everything else 4.0 added — the
 localization generator, layouts, dialogs of your own, `PaintRow`, `Notifications.Recent` — is new
 surface an existing application gets without asking.
 
@@ -60,7 +60,7 @@ once.
 
 ## A disabled command lets its key through
 
-`ViewCommand.IsEnabled` used to mean two things at once: greyed out on the key screen, and a key that
+`ViewCommand.IsEnabled` used to mean two things at once: grayed out on the key screen, and a key that
 silently does nothing. The second meaning left a view unable to give the key another job for exactly
 the times its command is off.
 

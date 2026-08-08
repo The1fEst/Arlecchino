@@ -7,7 +7,7 @@ sidebar_label: "SessionTape"
 
 **Namespace:** `Arlecchino.Testing` &middot; **Assembly:** `Arlecchino.Testing`
 
-A session written down: every event that goes in, how long the application waits for it, and where a frame is worth looking at. Playing a tape draws the same frames every time, because a screen here is a function of state, state only changes on an event, and the time comes from a provider rather than from the clock on the wall. What it is for is writing a test as the session it describes, rather than as a dozen calls with the assertions lost among them. What it is deliberately not for is recording a running application: the framework has a password modal and a paste step, so a tape captured from a real session would hold whatever the user typed into them, and a file like that must not be something an application writes on their behalf.
+A session written down: every event that goes in, how long the application waits for it, and where a frame is worth looking at. Playing a tape draws the same frames every time, because a screen here is a function of state, state only changes on an event, and the time comes from a provider rather than from the clock on the wall. What it is for is writing a test as the session it describes, rather than as a dozen calls with the assertions lost among them. What it is deliberately not for is recording a running application. The framework has a password modal and a paste step, so a tape captured from a real session would hold whatever the user typed into them. A file like that must not be something an application writes on their behalf.
 
 ```csharp
 var frames = new SessionTape()

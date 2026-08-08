@@ -35,7 +35,7 @@ _downloads.Draw(region.Rows(0, 1));
 | `Values` | The series, oldest first. Held, not copied |
 | `Minimum` / `Maximum` | What the lowest and tallest block stand for. The drawn values themselves when left alone |
 | `Caption` | Turns the newest value into the text after the line |
-| `Style` | Colours the line |
+| `Style` | Colors the line |
 
 The newest value is the rightmost, and only the last of them fit the row, so a wider terminal shows
 **more history** rather than a wider drawing of the same history. Nothing is copied out of `Values`,
@@ -81,8 +81,8 @@ _cpu.Draw(region);
 | `Values` | The series, oldest first. Held, not copied |
 | `Minimum` / `Maximum` | What empty and full stand for. The drawn values themselves when left alone |
 | `Symbols` | What to draw with; the application's own setting when left alone |
-| `Bands` | Where the colour changes as the fill climbs, in the same units as the values |
-| `Style` | Colours the fill where no band covers it |
+| `Bands` | Where the color changes as the fill climbs, in the same units as the values |
+| `Style` | Colors the fill where no band covers it |
 | `Invert` | Hangs it from the top, for the second half of a mirrored pair |
 
 The resolution is in the characters: a cell carries **two samples side by side** and several levels of
@@ -90,9 +90,9 @@ height, so a chart eight rows tall has thirty-two levels between empty and full 
 history a row of blocks would. The newest value is at the right, and a series with no spread at all
 draws as the lowest level along the bottom rather than as nothing.
 
-Colour comes from how high the fill climbed rather than from anything the view works out. A terminal
-with truecolor blends between the bands, a 256-colour one quantises that blend, and one with no
-colour draws the shape alone.
+Color comes from how high the fill climbed rather than from anything the view works out. A terminal
+with truecolor blends between the bands, a 256-color one quantizes that blend, and one with no
+color draws the shape alone.
 
 ### Which symbols
 
@@ -157,7 +157,7 @@ cdn-fallback ██░░░░░░░░░░░░░░░░░░░░�
 | `Items` | What to chart, one bar per row |
 | `Maximum` | The value at which a bar is full. The largest item when left alone |
 | `Caption` | Turns a value into the readout after its bar |
-| `ItemStyle` | Colours one bar |
+| `ItemStyle` | Colors one bar |
 | `LabelWidth` | Columns kept for labels. The widest label when left alone, up to a third of the region |
 
 Bars are measured against the largest item, so a chart of things that are all small still fills the
@@ -174,7 +174,7 @@ things than rows — or, more usually, chart the top few and list the rest.
 
 ## Gauge
 
-One value against a range that means something, coloured by the bands it crosses:
+One value against a range that means something, colored by the bands it crosses:
 
 ```csharp
 private readonly Gauge _disk = new()
@@ -191,18 +191,18 @@ _disk.Draw(region.Rows(0, 1));
 |---|---|
 | `Value` | What it reads now. Outside the range it draws empty or full |
 | `Minimum` / `Maximum` | The ends of the range. Default to `0` and `100` |
-| `Bands` | Where the colours change, in ascending order |
+| `Bands` | Where the colors change, in ascending order |
 | `Caption` | Turns the value into the text after the track |
-| `Style` | Colours the fill outside every band |
+| `Style` | Colors the fill outside every band |
 | `Fraction` | How full it is, `0` to `1` |
 | `StyleAt(value)` | The style that value is drawn in |
 
 A `GaugeBand` is a value and a style, and it runs up to the start of the next band, so the list is
-given in ascending order and the first band decides the colour of everything below it. Each part of
-the fill keeps the colour of the band it lies in, so the tail of the bar shows how far past the line
-the value has gone — and the caption takes the colour of the band the value itself is in.
+given in ascending order and the first band decides the color of everything below it. Each part of
+the fill keeps the color of the band it lies in, so the tail of the bar shows how far past the line
+the value has gone — and the caption takes the color of the band the value itself is in.
 
-`StyleAt` is the same lookup the fill uses, which is how a label beside the gauge is coloured to match
+`StyleAt` is the same lookup the fill uses, which is how a label beside the gauge is colored to match
 it:
 
 ```csharp

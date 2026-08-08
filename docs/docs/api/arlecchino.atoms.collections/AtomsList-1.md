@@ -7,7 +7,7 @@ sidebar_label: "AtomsList<T>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A list held as one piece of application state. Every change goes through the same path a plain atom's write does — it is checked against the drawing thread, it notifies what reads the list, it marks the frame stale, and it records an undo step when the list is undoable. This is what an `Atom<List<T>>` cannot be. Adding to a list held in an ordinary atom never reaches `Atom.Value`, so nothing is notified and no frame is asked for; writing the same instance back does not help either, because an atom compares by the default comparer and a list is compared by reference, so the write is taken for a change of nothing and dropped. Hold an `Atom<IReadOnlyList<T>>` and replace it wholesale, or hold this and change it in place. Which of the two to reach for is a question of size and rate: replacing a list of a few settings on a keystroke costs nothing, while a log appended to line by line copies the whole of itself on every line. Whether edits can be undone is decided by the type created — [`TrackedAtomsList`](../arlecchino.atoms.tracked/TrackedAtomsList-1.md) or [`LocalAtomsList`](../arlecchino.atoms.local/LocalAtomsList-1.md) — exactly as it is for atoms.
+A list held as one piece of application state. Every change takes the same path a plain atom's write takes: it is checked against the drawing thread, it notifies what reads the list, it marks the frame stale, and it records an undo step when the list is undoable. This is what an `Atom<List<T>>` cannot be. Adding to a list held in an ordinary atom never reaches `Atom.Value`, so nothing is notified, and no frame is asked for. Writing the same instance back does not help either: an atom compares by the default comparer and a list is compared by reference, so writing it is taken for a change of nothing and dropped. Hold an `Atom<IReadOnlyList<T>>` and replace it wholesale, or hold this and change it in place. Which of the two to reach for is a question of size and rate. Replacing a list of a few settings on a keystroke costs nothing, while a log appended to line by line copies the whole of itself on every line. Whether edits can be undone is decided by the type created — [`TrackedAtomsList`](../arlecchino.atoms.tracked/TrackedAtomsList-1.md) or [`LocalAtomsList`](../arlecchino.atoms.local/LocalAtomsList-1.md) — exactly as it is for atoms.
 
 ```csharp
 public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
@@ -42,10 +42,10 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 | [`Insert(int, T)`](#insert-int-t) | Puts an item at a position, moving the rest along. |
 | [`Remove(T)`](#remove-t) | Takes out the first item equal to this one, and does nothing when there is none. |
 | [`RemoveAt(int)`](#removeat-int) | Takes out the item at a position. |
-| [`RemoveRange(int, int)`](#removerange-int-int) | Takes out several items in a row at once. One notification, one frame and one undo step for the lot — which is what trimming a list that has grown too long needs, since doing it one item at a time would notify once per item and come back the same way. |
+| [`RemoveRange(int, int)`](#removerange-int-int) | Takes out several items in a row at once, with one notification, one frame and one undo step for the lot. That is what trimming a list that has grown too long needs: doing it one item at a time would notify once per item and come back the same way. |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the case the list is not edited but reloaded — a query answered, a folder read again, a filter applied. Contents equal to what is already there change nothing. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
-| [`Touch()`](#touch) | Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute and no frame would be asked for. Prefer replacing the item where you can — an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it. |
+| [`Touch()`](#touch) | Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute, and no frame would be asked for. Prefer replacing the item where you can, since an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it. |
 
 ## Constructors in detail
 
@@ -62,7 +62,7 @@ Creates the list.
 | Name | Type | Description |
 |---|---|---|
 | `initial` | `IReadOnlyList<T>`&lt;`T`&gt; | What it starts with; empty when omitted. It is copied, not held. |
-| `comparer` | `IEqualityComparer<T>`&lt;`T`&gt; | How [`AtomsList.Remove`](../arlecchino.atoms.collections/AtomsList-1.md#remove-t) finds an item and how a write to the indexer decides it changed nothing; the default comparer for `T` is used when omitted. |
+| `comparer` | `IEqualityComparer<T>`&lt;`T`&gt; | How [`AtomsList.Remove`](../arlecchino.atoms.collections/AtomsList-1.md#remove-t) finds an item, and how writing to the indexer decides it changed nothing; the default comparer for `T` is used when omitted. |
 
 ## Properties in detail
 
@@ -225,7 +225,7 @@ Takes out the item at a position.
 public void RemoveRange(int index, int count);
 ```
 
-Takes out several items in a row at once. One notification, one frame and one undo step for the lot — which is what trimming a list that has grown too long needs, since doing it one item at a time would notify once per item and come back the same way.
+Takes out several items in a row at once, with one notification, one frame and one undo step for the lot. That is what trimming a list that has grown too long needs: doing it one item at a time would notify once per item and come back the same way.
 
 **Parameters**
 
@@ -270,7 +270,7 @@ Calls back whenever the contents change.
 public void Touch();
 ```
 
-Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute and no frame would be asked for. Prefer replacing the item where you can — an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it.
+Says that an item already in the list changed inside itself, so everything watching the list hears about it. For a list of mutable things, which the list cannot see into: writing a property of an item is not a change to the list, so nothing would recompute, and no frame would be asked for. Prefer replacing the item where you can, since an immutable item is one less thing to remember. This is for the case where the item's identity has to survive the change, because something else is holding it.
 
 **Exceptions**
 

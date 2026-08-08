@@ -41,7 +41,7 @@ public sealed class ListBox<T> :
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the rows around the selection and remembers where they landed, which is what lets clicks and wheel events be resolved afterwards. The list fills whatever it is given, so nothing is left underneath it. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the rows around the selection and remembers where they landed, which is what lets clicks and wheel events be resolved afterward. The list fills whatever it is given, so nothing is left underneath it. |
 | [`Handle(KeyPress)`](#handle-keypress) | Moves the selection or confirms it. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Scrolls with the wheel and selects with a click. Clicking the already selected row confirms it, so a double click reads as select-then-activate without the widget timing anything. |
 
@@ -157,7 +157,7 @@ The selected item, or the type's default when the list is empty.
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the rows around the selection and remembers where they landed, which is what lets clicks and wheel events be resolved afterwards. The list fills whatever it is given, so nothing is left underneath it.
+Draws the rows around the selection and remembers where they landed, which is what lets clicks and wheel events be resolved afterward. The list fills whatever it is given, so nothing is left underneath it.
 
 **Parameters**
 

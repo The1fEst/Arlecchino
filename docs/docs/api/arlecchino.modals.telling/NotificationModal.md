@@ -7,7 +7,7 @@ sidebar_label: "NotificationModal"
 
 **Namespace:** `Arlecchino.Modals.Telling` &middot; **Assembly:** `Arlecchino`
 
-One notification, read in full. The output row and the notifications screen have one line each to give a message, which is not enough for the errors a copy collected or the output of a command — opening the entry shows the whole of it, and offers whatever the entry said could be done about it. The notifications screen opens this itself, so an application only fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions) when it raises the entry.
+One notification, read in full. The output row and the notifications screen have one line each to give a message, which is not enough for the errors a copy collected or the output of a command. Opening the entry shows the whole of it, and offers whatever the entry said could be done about it. The notifications screen opens this itself, so an application only fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions) when it raises the entry.
 
 ```csharp
 public sealed class NotificationModal : Modal
@@ -26,7 +26,7 @@ public sealed class NotificationModal : Modal
 | Member | Summary |
 |---|---|
 | [`Actions`](#actions) | What can be done about it. Empty for a message that is only to be read. |
-| [`Chips`](#chips) | Where each action was drawn last frame, filled in by the renderer so a click can be resolved to the action under it. |
+| [`Chips`](#chips) | Where each action was drawn last frame, filled in by the renderer, so a click can be resolved to the action under it. |
 | [`Entry`](#entry) | The entry being read. |
 | [`Index`](#index) | Which action is selected, moved with the left and right keys. |
 | [`Text`](#text) | The whole text, wrapped by the renderer to the width of the box. |
@@ -36,7 +36,7 @@ public sealed class NotificationModal : Modal
 | Member | Summary |
 |---|---|
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) | The arrows walk its actions, confirming runs the one selected and cancelling only closes. The dialog is closed before the action runs, so an action is free to open one of its own. |
+| [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) | The arrows walk its actions, confirming runs the one selected and canceling only closes. The dialog is closed before the action runs, so an action is free to open one of its own. |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) |  |
 | [`Move(int)`](#move-int) | Moves the selection along the actions, stopping at both ends. |
 | [`Run()`](#run) | Runs the selected action, if there is one. |
@@ -73,7 +73,7 @@ What can be done about it. Empty for a message that is only to be read.
 public IReadOnlyList<SurfaceRegion> Chips { get; set; }
 ```
 
-Where each action was drawn last frame, filled in by the renderer so a click can be resolved to the action under it.
+Where each action was drawn last frame, filled in by the renderer, so a click can be resolved to the action under it.
 
 **Type** `IReadOnlyList<T>`&lt;[`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md)&gt;
 
@@ -127,7 +127,7 @@ public override void Draw(ModalFrame frame);
 public override void Handle(ModalFrame frame, KeyPress key);
 ```
 
-The arrows walk its actions, confirming runs the one selected and cancelling only closes. The dialog is closed before the action runs, so an action is free to open one of its own.
+The arrows walk its actions, confirming runs the one selected and canceling only closes. The dialog is closed before the action runs, so an action is free to open one of its own.
 
 **Parameters**
 

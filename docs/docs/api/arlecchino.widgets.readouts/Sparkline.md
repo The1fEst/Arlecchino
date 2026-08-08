@@ -7,7 +7,7 @@ sidebar_label: "Sparkline"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about what the numbers are — no axis, no scale, no grid — which is what lets it sit in a status bar, a table cell or a corner of a pane and still be read at a glance: the shape of the line is the point. The newest value is the rightmost, and only the last of them fit the row, so a widening terminal shows more history rather than a wider drawing of the same history.
+A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about what the numbers are: no axis, no scale, no grid. That is what lets it sit in a status bar, a table cell or a corner of a pane and still be read at a glance, since the shape of the line is the point. The newest value is the rightmost, and only the last of them fit the row, so a widening terminal shows more history rather than a wider drawing of the same history.
 
 ```csharp
 public sealed class Sparkline : IArlecchinoWidget
@@ -29,7 +29,7 @@ public sealed class Sparkline : IArlecchinoWidget
 | [`Maximum`](#maximum) | The value the tallest block stands for. The largest of the drawn values when left alone. |
 | [`Minimum`](#minimum) | The value the lowest block stands for. The smallest of the drawn values when left alone, which makes the line fill the row and answer "how does it move"; pinning it answers "how big is it" instead, and keeps the line still when the numbers barely change. |
 | [`Style`](#style) | Color of the line. The theme's active color when left alone. |
-| [`Values`](#values) | The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
+| [`Values`](#values) | The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
 
 ## Methods
 
@@ -93,7 +93,7 @@ Color of the line. The theme's active color when left alone.
 public IReadOnlyList<decimal> Values { get; set; }
 ```
 
-The numbers to draw, oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over.
+The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over.
 
 **Type** `IReadOnlyList<T>`&lt;`decimal`&gt;
 

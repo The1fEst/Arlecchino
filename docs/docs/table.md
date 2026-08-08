@@ -65,7 +65,7 @@ from the [`ListBox`](lists.md) inside, so everything on that page applies here.
 ## A worked example
 
 Each panel of [`Arlecchino.Commander`](https://github.com/The1fEst/Arlecchino.Commander) is a sortable
-table of one folder, coloured by what each row is — a folder, a marked file, a hidden one:
+table of one folder, colored by what each row is — a folder, a marked file, a hidden one:
 
 ```bash
 dotnet run --project src/Arlecchino.Commander -- --frame 132x26 --left . --right src

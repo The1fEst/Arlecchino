@@ -38,8 +38,8 @@ public sealed class FilePickerStrings
 | [`HintOpen`](#hintopen) | Legend entry for entering the folder under the cursor. |
 | [`HintOpenFolder`](#hintopenfolder) | Legend entry for opening a folder while picking folders. |
 | [`HintOpenFolderOrPickFile`](#hintopenfolderorpickfile) | Legend entry for the key that opens a folder or picks a file. |
-| [`HintPickCurrentFolder`](#hintpickcurrentfolder) | Legend entry for picking the folder that is currently open. |
-| [`HintPlaces`](#hintplaces) | Legend entry for switching to the places sidebar. |
+| [`HintPickCurrentFolder`](#hintpickcurrentfolder) | Legend entry for picking the folder that is open. |
+| [`HintPlaces`](#hintplaces) | Legend entry for switching to the sidebar of places. |
 | [`HintUp`](#hintup) | Legend entry for going to the parent folder. |
 | [`ItemCount`](#itemcount) | How many entries the current folder shows, on the status row. |
 | [`KindFolder`](#kindfolder) | Kind shown for a directory. |
@@ -216,7 +216,7 @@ Legend entry for the key that opens a folder or picks a file.
 public Func<string> HintPickCurrentFolder { get; set; }
 ```
 
-Legend entry for picking the folder that is currently open.
+Legend entry for picking the folder that is open.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 
@@ -226,7 +226,7 @@ Legend entry for picking the folder that is currently open.
 public Func<string> HintPlaces { get; set; }
 ```
 
-Legend entry for switching to the places sidebar.
+Legend entry for switching to the sidebar of places.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

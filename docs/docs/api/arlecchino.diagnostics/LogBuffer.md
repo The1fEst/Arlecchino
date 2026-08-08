@@ -32,7 +32,7 @@ public sealed class LogBuffer
 |---|---|
 | [`Add(LogEntry)`](#add-logentry) | Records a line, dropping the oldest when the buffer is full. Safe from any thread. |
 | [`Clear()`](#clear) | Throws away every line held. |
-| [`Snapshot()`](#snapshot) | The lines held, oldest first, as they were at this moment. A copy, because anything may be logging while the overlay draws. |
+| [`Snapshot()`](#snapshot) | The lines held, the oldest first, as they were at this moment. A copy, because anything may be logging while the overlay draws. |
 
 ## Constructors in detail
 
@@ -102,7 +102,7 @@ Throws away every line held.
 public IReadOnlyList<LogEntry> Snapshot();
 ```
 
-The lines held, oldest first, as they were at this moment. A copy, because anything may be logging while the overlay draws.
+The lines held, the oldest first, as they were at this moment. A copy, because anything may be logging while the overlay draws.
 
 **Returns** `IReadOnlyList<T>`&lt;[`LogEntry`](../arlecchino.diagnostics/LogEntry.md)&gt; — The lines.
 
