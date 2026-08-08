@@ -31,7 +31,8 @@ internal static class Ship
             Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- ship <version>");
             Console.WriteLine();
             Console.WriteLine("Prepares a release: sets the version, moves the recorded public API from");
-            Console.WriteLine("Unshipped to Shipped, and points package validation at the release before it.");
+            Console.WriteLine("Unshipped to Shipped, points package validation at the release before it,");
+            Console.WriteLine("and throws away the breaks written down against the baseline it left.");
             Console.WriteLine("Run it, read the diff, commit, tag.");
 
             return 1;
@@ -40,7 +41,7 @@ internal static class Ship
         var version = args[0];
         var props = Path.Combine(Program.Root(), "Directory.Build.props");
         var text = await File.ReadAllTextAsync(props);
-        var current = Regex.Match(text, @"<Version>([^<]+)</Version>").Groups[1].Value;
+        var current = Regex.Match(text, "<Version>([^<]+)</Version>").Groups[1].Value;
 
         if (current.Length == 0)
         {
@@ -55,11 +56,11 @@ internal static class Ship
         }
         else
         {
-            text = Regex.Replace(text, @"<Version>[^<]+</Version>", $"<Version>{version}</Version>");
+            text = Regex.Replace(text, "<Version>[^<]+</Version>", $"<Version>{version}</Version>");
             Console.WriteLine($"version {current} -> {version}");
         }
 
-        var baseline = Regex.Match(text, @"<PackageValidationBaselineVersion[^>]*>([^<]+)<").Groups[1].Value;
+        var baseline = Regex.Match(text, "<PackageValidationBaselineVersion[^>]*>([^<]+)<").Groups[1].Value;
 
         if (baseline == current)
         {
@@ -69,10 +70,12 @@ internal static class Ship
         {
             text = Regex.Replace(
                 text,
-                @"(<PackageValidationBaselineVersion[^>]*>)[^<]+(</PackageValidationBaselineVersion>)",
+                "(<PackageValidationBaselineVersion[^>]*>)[^<]+(</PackageValidationBaselineVersion>)",
                 $"${{1}}{current}${{2}}");
 
             Console.WriteLine($"baseline {baseline} -> {current}");
+
+            Unsuppressed();
         }
         else
         {
@@ -87,6 +90,28 @@ internal static class Ship
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Throws away the breaks that were written down against the release before this one. A suppression
+    /// says "this was broken on purpose, between those two versions"; once the baseline moves, the two
+    /// versions it named are gone and what is left would hide the next break rather than the last one.
+    /// </summary>
+    private static void Unsuppressed()
+    {
+        foreach (var package in Packages)
+        {
+            var written = Path.Combine(Program.Root(), "src", package, "CompatibilitySuppressions.xml");
+
+            if (!File.Exists(written))
+            {
+                continue;
+            }
+
+            File.Delete(written);
+
+            Console.WriteLine($"{package}: the breaks written down against the old baseline are gone");
+        }
     }
 
     private static void Record(string package)
