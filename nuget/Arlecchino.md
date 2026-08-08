@@ -10,7 +10,7 @@ A terminal UI framework for .NET where a view is a plain class built by
 `Microsoft.Extensions.DependencyInjection` and the routes between views are written by a source
 generator, so nothing is registered by hand.
 
-![Folders marked, a copy running with its progress opened in full, and the keys screen](https://raw.githubusercontent.com/The1fEst/Arlecchino/master/assets/demo.gif)
+![Folders marked, a copy running with its progress opened in full, and the keys screen](https://raw.githubusercontent.com/The1fEst/Arlecchino.Commander/master/assets/demo.png)
 
 Above: [Arlecchino.Commander](https://github.com/The1fEst/Arlecchino.Commander), an application built
 on the framework. The dialog, the notification and the keys screen are the framework's own. Sixteen
