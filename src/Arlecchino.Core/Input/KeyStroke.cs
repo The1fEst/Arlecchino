@@ -33,16 +33,16 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
         }
 
         return pressed.Key == Key ||
-            Twinned(pressed.Key) == Twinned(Key) ||
-            (pressed.Key == default && MatchesCharacter(pressed.Character));
+               Twinned(pressed.Key) == Twinned(Key) ||
+               (pressed.Key == default && MatchesCharacter(pressed.Character));
     }
 
     /// <summary>
     /// The one name for a key that has two. A slash typed next to the shift is handed back as the keypad's
     /// divide, and the two type the same character, so nothing here wants to tell them apart.
     ///
-    /// Only where the character is the same. The keypad's plus and the key that carries the equals sign are
-    /// two keys, not one — <c>+</c> and <c>=</c> are not the same thing to type — and folding them together
+    /// Only where the character is the same. The keypad's plus and the key that carries the equals sign
+    /// stay two keys, since <c>+</c> and <c>=</c> are different things to type, and folding them together
     /// would make a binding on one answer to the other.
     /// </summary>
     /// <param name="key">Either name.</param>
