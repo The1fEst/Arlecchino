@@ -1,1 +1,2 @@
 #nullable enable
+Arlecchino.Layout.PaneTree.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute

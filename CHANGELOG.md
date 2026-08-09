@@ -56,6 +56,19 @@ fails on, and what it is replaced with is spelled the same way.
   its own runs nothing. An application that turned the hints box off still gets this one: turning it
   off says something about the keys of a screen, not about a key half pressed.
 
+- **A click goes to the pane it landed in.** A tree already works out which pane owns which cells in
+  order to draw them, and the same knowledge tells a click where to go. A view stops offering the
+  event to every widget on the screen in turn, and stops asking each one to guess whether the point
+  was its own:
+
+  ```csharp
+  public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);
+  ```
+
+  The pane that claims the click takes the focus with it, for a tree that built its ring with
+  `AsFocusRing`. A click in the gap between panes, in the surrounding space, or before the first frame
+  was drawn belongs to no pane and is left alone.
+
 ### Changed
 
 - **A key press is `KeyPress` rather than `ConsoleKeyInfo`.** The console type stores Shift, Alt and

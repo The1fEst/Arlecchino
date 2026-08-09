@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
+using Arlecchino.Input;
+using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
@@ -55,6 +57,9 @@ public sealed class PaneTree
     private readonly PaneSize _size;
     private readonly PaneSplit? _split;
 
+    private SurfaceRegion _area;
+    private FocusRing? _ring;
+
     private PaneTree(Action<SurfaceRegion> content, IArlecchinoWidget? widget, Func<string>? title = null)
     {
         _content = content;
@@ -96,6 +101,9 @@ public sealed class PaneTree
     ///
     /// What comes back is an ordinary <see cref="FocusRing"/>, so anything focusable that lives
     /// outside the tree is added to it afterward, and lands at the end of the walk.
+    ///
+    /// The tree keeps the ring it built, which is what lets <see cref="HandleMouse"/> move the focus
+    /// to the pane that was clicked.
     /// </summary>
     /// <param name="keymap">Where the keys that move the focus come from.</param>
     /// <returns>A ring holding the panes that take the focus.</returns>
@@ -110,6 +118,8 @@ public sealed class PaneTree
                 ring.Add(focusable);
             }
         }
+
+        _ring = ring;
 
         return ring;
     }
@@ -242,6 +252,25 @@ public sealed class PaneTree
     }
 
     /// <summary>
+    /// Sends a mouse event to the pane it landed in, and moves the focus there when that pane claims
+    /// it. The tree already works out which pane owns which cells in order to draw them, so the same
+    /// knowledge tells a click where to go. The event walks down the branches that contain the point
+    /// and reaches one pane, instead of being offered to every widget on the screen in turn. This is
+    /// the whole of a view's <c>HandleMouse</c> when the screen is a tree:
+    ///
+    /// <code>
+    /// public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);
+    /// </code>
+    ///
+    /// A click in the gap between panes, in the surrounding space, or before the first frame was
+    /// drawn belongs to no pane and is left alone. The focus follows the click only for a tree that
+    /// built its ring with <see cref="AsFocusRing"/>; without one the pane still sees the event.
+    /// </summary>
+    /// <param name="mouse">The event, in frame coordinates.</param>
+    /// <returns>The route the pane asked for, or <see cref="ViewRoute.None"/>.</returns>
+    public ViewRoute HandleMouse(MouseEvent mouse) => Claim(mouse, _ring).Route;
+
+    /// <summary>
     /// Draws every pane where the branches put it. This is the whole of a view's <c>Draw</c> when the
     /// screen is a tree.
     /// </summary>
@@ -290,6 +319,43 @@ public sealed class PaneTree
     private bool IsFocused => _widget is IArlecchinoFocusable { IsFocused: true };
 
     /// <summary>
+    /// Offers the event to the pane that owns the point, walking down only the branches that contain
+    /// it. A branch hands it to its first half and then to its second, and the leaf that holds a
+    /// focusable widget is the one that answers.
+    /// </summary>
+    /// <param name="mouse">The event, in frame coordinates.</param>
+    /// <param name="ring">The ring to move the focus in, or <c>null</c> when the tree has none.</param>
+    /// <returns>What the pane did with it.</returns>
+    private FocusResult Claim(MouseEvent mouse, FocusRing? ring)
+    {
+        if (_area.IsEmpty || !_area.Contains(mouse.Row, mouse.Column))
+        {
+            return FocusResult.Ignored;
+        }
+
+        if (_first is not null && _second is not null)
+        {
+            var inFirst = _first.Claim(mouse, ring);
+
+            return inFirst.WasHandled ? inFirst : _second.Claim(mouse, ring);
+        }
+
+        if (_widget is not IArlecchinoFocusable focusable)
+        {
+            return FocusResult.Ignored;
+        }
+
+        var result = focusable.HandleMouse(mouse);
+
+        if (result.WasHandled)
+        {
+            ring?.Focus(focusable);
+        }
+
+        return result;
+    }
+
+    /// <summary>
     /// Pulls every boxed pane onto the edge of the boxed pane before it, so that two of them touching
     /// share one line rather than drawing two side by side. Only panes in a box take part: one without
     /// would lose a column of what it draws to a neighbor's border.
@@ -327,6 +393,7 @@ public sealed class PaneTree
             }
 
             placed[index] = (pane, region);
+            pane._area = region;
         }
     }
 
@@ -358,6 +425,8 @@ public sealed class PaneTree
 
     private void Place(SurfaceRegion region, int gap, List<(PaneTree Pane, SurfaceRegion Region)> placed)
     {
+        _area = region;
+
         if (_content is not null)
         {
             placed.Add((this, region));
