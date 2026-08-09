@@ -28,29 +28,35 @@ public sealed record NotificationAction(Func<string> Label, Action Run);
 
 /// <summary>
 /// One thing the application said, and when it said it. A plain message needs no more than the three
-/// values it is built with; something still running fills in <see cref="Progress"/>, and something
+/// values it is built with; something still running fills in <see cref="ProgressText"/>, and something
 /// worth reading at length fills in <see cref="Detail"/> and <see cref="Actions"/>, which the
 /// notifications screen offers when the entry is opened.
 /// </summary>
-/// <param name="Time">When it was raised.</param>
-/// <param name="Level">How loud it is.</param>
-/// <param name="Text">What it says in one line.</param>
-public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, string Text)
+public sealed class Notification
 {
-    private NotificationLevel? _ended;
+    /// <summary>Raises an entry, which is as much as a plain message ever needs.</summary>
+    /// <param name="since">When it was raised.</param>
+    /// <param name="level">How loud it is.</param>
+    /// <param name="text">What it says in one line.</param>
+    public Notification(DateTimeOffset since, NotificationLevel level, string text)
+    {
+        Level = level;
+        Since = since;
+        Text = text;
+    }
 
     /// <summary>
     /// The line to show while something is still running, read every frame. Left alone for anything
     /// that is already over, which is most notifications.
     /// </summary>
-    public Func<string>? Progress { get; init; }
+    public Func<string>? ProgressText { get; init; }
 
     /// <summary>
     /// How far along the work is, from <c>0</c> to <c>1</c>, read every frame beside
-    /// <see cref="Progress"/>. A bar is drawn for it wherever the entry is shown; work whose size is
+    /// <see cref="ProgressText"/>. A bar is drawn for it wherever the entry is shown; work whose size is
     /// not known answers <c>null</c> and gets the text alone.
     /// </summary>
-    public Func<double?>? Share { get; init; }
+    public Func<double?>? Progress { get; init; }
 
     /// <summary>
     /// The whole story, shown when the entry is opened: the errors a copy collected, the output of a
@@ -59,25 +65,38 @@ public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, 
     public Func<string>? Detail { get; set; }
 
     /// <summary>
+    /// How loud it is now: what it was raised as, or what it turned out to be once the work it reports
+    /// ended — a copy that starts as a plain message and finds three files locked says so.
+    /// </summary>
+    public NotificationLevel Level { get; private set; }
+
+    /// <summary>
+    /// What it was raised saying, kept as it was written. <see cref="Line"/> is the line to draw,
+    /// which is this one only while nothing newer has been said.
+    /// </summary>
+    public string Text { get; }
+
+    /// <summary>
+    /// When the entry last had something new to say — raised, or ended. Work that ran for an hour is
+    /// not stale the moment it finishes, so the timeouts are counted from here rather than from the
+    /// moment it was raised.
+    /// </summary>
+    public DateTimeOffset Since { get; private set; }
+
+    /// <summary>
     /// What can be done about it, offered when the entry is opened. Work that has ended clears these,
     /// since stopping something that is over is not an offer worth making.
     /// </summary>
     public IReadOnlyList<NotificationAction> Actions { get; set; } = [];
 
     /// <summary>What came of the work, once it ended. Set through <see cref="Notifications.Settle"/>.</summary>
-    public string? Ended { get; private set; }
+    public string? EndedText { get; private set; }
 
     /// <summary>Whether the work this entry reports is still going.</summary>
-    public bool IsRunning => Ended is null && Progress is not null;
-
-    /// <summary>
-    /// How loud it is now: what it was raised as, or what it turned out to be once the work it reports
-    /// ended — a copy that starts as a plain message and finds three files locked says so.
-    /// </summary>
-    public NotificationLevel Loudness => _ended ?? Level;
+    public bool IsRunning => string.IsNullOrWhiteSpace(EndedText) && ProgressText is not null;
 
     /// <summary>The single line to draw: what came of it, what is happening now, or what was said.</summary>
-    public string Line => Ended ?? Progress?.Invoke() ?? Text;
+    public string Line => EndedText ?? ProgressText?.Invoke() ?? Text;
 
     /// <summary>
     /// Records what the work came to. The entry itself stays where it is, which is what lets a line
@@ -88,18 +107,11 @@ public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, 
     /// <param name="when">The moment it ended, from which its timeouts are counted.</param>
     internal void Complete(string text, NotificationLevel level, DateTimeOffset when)
     {
-        Ended = text;
-        _ended = level;
+        EndedText = text;
+        Level = level;
         Actions = [];
         Since = when;
     }
-
-    /// <summary>
-    /// When the entry last had something new to say — raised, or ended. Work that ran for an hour is
-    /// not stale the moment it finishes, so the timeouts are counted from here rather than from
-    /// <see cref="Time"/>.
-    /// </summary>
-    public DateTimeOffset Since { get; private set; } = Time;
 
     /// <summary>The full text to read: <see cref="Detail"/> when there is one, the line otherwise.</summary>
     /// <returns>What to show in the dialog.</returns>
@@ -107,8 +119,7 @@ public sealed record Notification(DateTimeOffset Time, NotificationLevel Level, 
 
     /// <summary>How full a bar for this entry should be, or <c>null</c> when there is nothing to draw.</summary>
     /// <returns>A fraction between <c>0</c> and <c>1</c>.</returns>
-    public double? Filled() =>
-        IsRunning && Share?.Invoke() is { } share ? Math.Clamp(share, 0, 1) : null;
+    public double? Filled() => IsRunning && Progress?.Invoke() is { } progress ? Math.Clamp(progress, 0, 1) : null;
 }
 
 /// <summary>

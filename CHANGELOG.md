@@ -89,6 +89,26 @@ fails on, and what it is replaced with is spelled the same way.
 
 ### Changed
 
+- **A notification is a class, and its members are named after what they hold.** The type was a
+  positional record, which is why the value that changes when work ends had to live beside the one it
+  shadows: `Level` was fixed at the moment of raising, so what the entry turned out to be was read from
+  a second property, `Loudness`. A class settles both into one `Level` a caller reads and the framework
+  writes. `Time` goes the same way, into the `Since` that was already keeping the moment the timeouts
+  are counted from. What is left is renamed for what it is: `Progress` was the line of text and `Share`
+  the fraction, so the text is `ProgressText` and the fraction is `Progress`; `Ended` is `EndedText`,
+  beside the `Line` it stands in for.
+
+  ```csharp
+  state.Notifications.Raise(new(DateTimeOffset.Now, NotificationLevel.Information, "copying")
+  {
+      ProgressText = () => $"copied {done} of {all}",
+      Progress = () => (double)done / all,
+  });
+  ```
+
+  Being a record was never used for what a record is for: entries are held by reference and settled in
+  place, so value equality, `with` and `Deconstruct` had nothing to do. They are gone with it.
+
 - **A key press is `KeyPress` rather than `ConsoleKeyInfo`.** The console type stores Shift, Alt and
   Control as three booleans and has nowhere to put a fourth modifier, so a terminal reporting Command
   could only be misread or dropped. Everything a view is handed goes through the new type instead:

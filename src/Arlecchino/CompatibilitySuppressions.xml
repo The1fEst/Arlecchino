@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <!-- https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
@@ -18,6 +17,97 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.{Clone}$</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.Deconstruct(System.DateTimeOffset@,Arlecchino.Diagnostics.NotificationLevel@,System.String@)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Ended</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Loudness</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Progress</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Share</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Time</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.op_Equality(Arlecchino.Diagnostics.Notification,Arlecchino.Diagnostics.Notification)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.op_Inequality(Arlecchino.Diagnostics.Notification,Arlecchino.Diagnostics.Notification)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Level(Arlecchino.Diagnostics.NotificationLevel)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Share(System.Func{System.Nullable{System.Double}})</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Text(System.String)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Time(System.DateTimeOffset)</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Arlecchino.Focus.FocusablePane.#ctor(System.Func{System.ConsoleKeyInfo,Arlecchino.Focus.FocusResult},System.Func{Arlecchino.Input.MouseEvent,Arlecchino.Focus.FocusResult})</Target>
     <Left>lib/net10.0/Arlecchino.dll</Left>
     <Right>lib/net10.0/Arlecchino.dll</Right>
@@ -158,6 +248,97 @@
   </Suppression>
   <Suppression>
     <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.{Clone}$</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.Deconstruct(System.DateTimeOffset@,Arlecchino.Diagnostics.NotificationLevel@,System.String@)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Ended</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Loudness</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Progress</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Share</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.get_Time</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.op_Equality(Arlecchino.Diagnostics.Notification,Arlecchino.Diagnostics.Notification)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.op_Inequality(Arlecchino.Diagnostics.Notification,Arlecchino.Diagnostics.Notification)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Level(Arlecchino.Diagnostics.NotificationLevel)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Share(System.Func{System.Nullable{System.Double}})</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Text(System.String)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Arlecchino.Diagnostics.Notification.set_Time(System.DateTimeOffset)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
     <Target>M:Arlecchino.Focus.FocusablePane.#ctor(System.Func{System.ConsoleKeyInfo,Arlecchino.Focus.FocusResult},System.Func{Arlecchino.Input.MouseEvent,Arlecchino.Focus.FocusResult})</Target>
     <Left>lib/net8.0/Arlecchino.dll</Left>
     <Right>lib/net8.0/Arlecchino.dll</Right>
@@ -320,6 +501,20 @@
   <Suppression>
     <DiagnosticId>CP0006</DiagnosticId>
     <Target>M:Arlecchino.Navigation.IArlecchinoView.Handle(Arlecchino.Input.KeyPress)</Target>
+    <Left>lib/net8.0/Arlecchino.dll</Left>
+    <Right>lib/net8.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0008</DiagnosticId>
+    <Target>T:Arlecchino.Diagnostics.Notification</Target>
+    <Left>lib/net10.0/Arlecchino.dll</Left>
+    <Right>lib/net10.0/Arlecchino.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0008</DiagnosticId>
+    <Target>T:Arlecchino.Diagnostics.Notification</Target>
     <Left>lib/net8.0/Arlecchino.dll</Left>
     <Right>lib/net8.0/Arlecchino.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>

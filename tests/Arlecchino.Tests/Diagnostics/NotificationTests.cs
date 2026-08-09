@@ -210,8 +210,8 @@ public sealed class NotificationTests
         using var app = new TestApplication();
         var entry = app.State.Notifications.Raise(new(DateTimeOffset.UtcNow, NotificationLevel.Information, "copying")
         {
-            Progress = static () => "copying",
-            Share = static () => 0.5,
+            ProgressText = static () => "copying",
+            Progress = static () => 0.5,
         });
 
         app.Navigator.Apply(Routes.Notifications);
@@ -238,7 +238,7 @@ public sealed class NotificationTests
 
         Assert.Contains("Copied 9 files", app.Frame(), StringComparison.Ordinal);
         Assert.False(entry.IsRunning);
-        Assert.Equal(NotificationLevel.Warning, entry.Loudness);
+        Assert.Equal(NotificationLevel.Warning, entry.Level);
         Assert.Empty(entry.Actions);
     }
 
@@ -330,7 +330,7 @@ public sealed class NotificationTests
     }
 
     private static Notification Running(Func<string> progress) =>
-        new(DateTimeOffset.UtcNow, NotificationLevel.Information, "working") { Progress = progress };
+        new(DateTimeOffset.UtcNow, NotificationLevel.Information, "working") { ProgressText = progress };
 
     [Fact]
     public void RaisingFromAnotherThreadIsCaughtRatherThanTolerated()

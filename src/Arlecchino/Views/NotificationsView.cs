@@ -46,7 +46,7 @@ internal sealed class NotificationsView : IArlecchinoView
         {
             Render = Describe,
             OnActivate = Open,
-            ItemStyle = static entry => entry.Loudness switch
+            ItemStyle = static entry => entry.Level switch
             {
                 NotificationLevel.Failure => Theme.Error,
                 NotificationLevel.Warning => Theme.Warning,
@@ -151,7 +151,7 @@ internal sealed class NotificationsView : IArlecchinoView
     /// <returns>The row.</returns>
     private static string Describe(Notification entry)
     {
-        var stamp = entry.Time.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        var stamp = entry.Since.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
         if (entry.Filled() is not { } share)
         {
