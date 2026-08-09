@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
+using Arlecchino.Focus;
 using Arlecchino.Input;
 
 namespace Arlecchino.Navigation;
@@ -52,6 +53,14 @@ public interface IArlecchinoView
     /// </summary>
     /// <returns>Pairs of key and description.</returns>
     (string Key, string Description)[] Hints() => [];
+
+    /// <summary>
+    /// What holds the focus inside this screen, normally the <see cref="FocusRing"/> the view built.
+    /// Answering with it puts the keys of the focused widget at the top of the hints box, and keeps
+    /// them in step as <c>Tab</c> moves. A screen of unlike panes stops listing one pane's keys while
+    /// the cursor is in another.
+    /// </summary>
+    IArlecchinoFocusable? Focus => null;
 
     /// <summary>
     /// Whether the <see cref="IArlecchinoLayout"/> is drawn around this screen, when the application

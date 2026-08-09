@@ -62,8 +62,9 @@ public class Navigator
     internal IReadOnlyList<ViewCommand> PreviousCommands { get; private set; } = [];
 
     /// <summary>
-    /// What the hints box should show: whatever the screen returned, or its commands when it
-    /// returned nothing.
+    /// What the hints box should show: the keys of whatever holds the focus, then whatever the screen
+    /// returned, or its commands when it returned nothing. A key the focused element claims wins, so
+    /// the same key is not listed twice under two labels while the cursor is in a pane that binds it.
     /// </summary>
     public (string Key, string Description)[] CurrentHints
     {
@@ -77,7 +78,10 @@ public class Navigator
             }
 
             var hints = _active.View.Hints();
-            return hints.Length > 0 ? hints : HintsOf(_active.View.Commands());
+            var screen = hints.Length > 0 ? hints : HintsOf(_active.View.Commands());
+            var focused = _active.View.Focus?.Hints() ?? [];
+
+            return focused.Length == 0 ? screen : Merged(focused, screen);
         }
     }
 
@@ -91,6 +95,31 @@ public class Navigator
         }
 
         return hints;
+    }
+
+    /// <summary>
+    /// Puts the hints of the focused element in front of the hints of the screen, leaving out the
+    /// ones the screen states again under a key the element already claimed.
+    /// </summary>
+    /// <param name="focused">What the focused element answers to.</param>
+    /// <param name="screen">What the screen answers to.</param>
+    /// <returns>The hints to draw, in the order they should be read.</returns>
+    private static (string Key, string Description)[] Merged(
+        (string Key, string Description)[] focused,
+        (string Key, string Description)[] screen)
+    {
+        var merged = new List<(string Key, string Description)>(focused.Length + screen.Length);
+        merged.AddRange(focused);
+
+        foreach (var hint in screen)
+        {
+            if (!Array.Exists(focused, taken => taken.Key == hint.Key))
+            {
+                merged.Add(hint);
+            }
+        }
+
+        return [.. merged];
     }
 
     /// <summary>Whether there is somewhere to go back to.</summary>

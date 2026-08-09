@@ -69,6 +69,24 @@ fails on, and what it is replaced with is spelled the same way.
   `AsFocusRing`. A click in the gap between panes, in the surrounding space, or before the first frame
   was drawn belongs to no pane and is left alone.
 
+- **A ring inside a ring.** `FocusRing` is an `IArlecchinoFocusable` itself, so one goes inside
+  another: add a ring to a ring and `Tab` walks into it, through what it holds and out the far side,
+  without the view saying anything about it. A nested ring remembers where it was left, so coming back
+  to it from either side lands where the cursor was rather than at the top. `MoveFocus` is what a
+  widget made of several fields answers to take a step of its own; leaving it alone says the step was
+  not taken, and the ring around it moves on as it always has.
+
+- **The hints box follows the focus.** A screen of unlike panes listed the same keys wherever the
+  cursor stood. An element now states its own keys through `IArlecchinoFocusable.Hints`, and a view
+  points at whatever holds the focus:
+
+  ```csharp
+  public IArlecchinoFocusable Focus => _ring;
+  ```
+
+  The keys of the focused element come first and the keys of the screen after them, minus any the
+  element already claimed, so one key is not listed twice under two labels.
+
 ### Changed
 
 - **A key press is `KeyPress` rather than `ConsoleKeyInfo`.** The console type stores Shift, Alt and

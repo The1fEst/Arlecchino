@@ -1,2 +1,12 @@
 #nullable enable
+Arlecchino.Focus.FocusDirection
+Arlecchino.Focus.FocusDirection.Next = 0 -> Arlecchino.Focus.FocusDirection
+Arlecchino.Focus.FocusDirection.Previous = 1 -> Arlecchino.Focus.FocusDirection
+Arlecchino.Focus.FocusRing.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Focus.FocusRing.IsFocused.get -> bool
+Arlecchino.Focus.FocusRing.IsFocused.set -> void
+Arlecchino.Focus.FocusRing.MoveFocus(Arlecchino.Focus.FocusDirection direction) -> bool
+Arlecchino.Focus.IArlecchinoFocusable.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Focus.IArlecchinoFocusable.MoveFocus(Arlecchino.Focus.FocusDirection direction) -> bool
 Arlecchino.Layout.PaneTree.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Navigation.IArlecchinoView.Focus.get -> Arlecchino.Focus.IArlecchinoFocusable?

@@ -110,6 +110,122 @@ public sealed class FocusTests
     }
 
     [Fact]
+    public void TabWalksIntoANestedRingThroughItAndOutTheFarSide()
+    {
+        var outer = new FocusRing(new());
+        var inner = new FocusRing(new());
+        var first = new FocusablePane(static _ => FocusResult.Handled);
+        var second = new FocusablePane(static _ => FocusResult.Handled);
+        var third = new FocusablePane(static _ => FocusResult.Handled);
+
+        inner.Add(second);
+        inner.Add(third);
+        outer.Add(first);
+        outer.Add(inner);
+
+        Assert.True(first.IsFocused);
+        Assert.False(second.IsFocused);
+
+        outer.Handle(new(ConsoleKey.Tab));
+        Assert.True(second.IsFocused);
+
+        outer.Handle(new(ConsoleKey.Tab));
+        Assert.False(second.IsFocused);
+        Assert.True(third.IsFocused);
+
+        outer.Handle(new(ConsoleKey.Tab));
+        Assert.True(first.IsFocused);
+        Assert.False(third.IsFocused);
+    }
+
+    [Fact]
+    public void ANestedRingIsComeBackToWhereItWasLeft()
+    {
+        var outer = new FocusRing(new());
+        var inner = new FocusRing(new());
+        var first = new FocusablePane(static _ => FocusResult.Handled);
+        var second = new FocusablePane(static _ => FocusResult.Handled);
+        var third = new FocusablePane(static _ => FocusResult.Handled);
+
+        inner.Add(second);
+        inner.Add(third);
+        outer.Add(first);
+        outer.Add(inner);
+
+        outer.Handle(new(ConsoleKey.Tab));
+        outer.Handle(new(ConsoleKey.Tab));
+        outer.Handle(new(ConsoleKey.Tab));
+
+        outer.Handle(new(ConsoleKey.Tab, KeyModifiers.Shift));
+
+        Assert.True(third.IsFocused);
+        Assert.False(second.IsFocused);
+    }
+
+    [Fact]
+    public void KeysReachTheWidgetInsideANestedRing()
+    {
+        var log = new List<string>();
+        var outer = new FocusRing(new());
+        var inner = new FocusRing(new());
+
+        outer.Add(new FocusablePane(key =>
+        {
+            log.Add($"outer:{key.Key}");
+            return FocusResult.Handled;
+        }));
+
+        inner.Add(new FocusablePane(key =>
+        {
+            log.Add($"inner:{key.Key}");
+            return FocusResult.Handled;
+        }));
+
+        outer.Add(inner);
+
+        outer.Handle(new(ConsoleKey.A));
+        outer.Handle(new(ConsoleKey.Tab));
+        outer.Handle(new(ConsoleKey.B));
+
+        Assert.Equal(["outer:A", "inner:B"], log);
+    }
+
+    [Fact]
+    public void AClickInsideANestedRingMovesTheFocusThere()
+    {
+        var outer = new FocusRing(new());
+        var inner = new FocusRing(new());
+        var claiming = new FocusablePane(static _ => FocusResult.Handled, static _ => FocusResult.Handled);
+
+        outer.Add(new FocusablePane(static _ => FocusResult.Handled, static _ => FocusResult.Ignored));
+        inner.Add(new FocusablePane(static _ => FocusResult.Handled, static _ => FocusResult.Ignored));
+        inner.Add(claiming);
+        outer.Add(inner);
+
+        outer.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 1, 1, default));
+
+        Assert.True(inner.IsFocused);
+        Assert.True(claiming.IsFocused);
+    }
+
+    [Fact]
+    public void HintsAreAskedOfWhateverHoldsTheFocusDownTheChain()
+    {
+        var outer = new FocusRing(new());
+        var inner = new FocusRing(new());
+
+        outer.Add(new HintingPane([("a", "first")]));
+        inner.Add(new HintingPane([("b", "second")]));
+        outer.Add(inner);
+
+        Assert.Equal([("a", "first")], outer.Hints());
+
+        outer.Handle(new(ConsoleKey.Tab));
+
+        Assert.Equal([("b", "second")], outer.Hints());
+    }
+
+    [Fact]
     public void FormIsAFocusableAndDimsWhenItIsNot()
     {
         using var app = new TestApplication();
@@ -149,5 +265,21 @@ public sealed class FocusTests
 
         app.Press(ConsoleKey.Tab);
         Assert.Equal(listFocused, app.RawStyles());
+    }
+
+    private sealed class HintingPane : IArlecchinoFocusable
+    {
+        private readonly (string Key, string Description)[] _hints;
+
+        public HintingPane((string Key, string Description)[] hints)
+        {
+            _hints = hints;
+        }
+
+        public bool IsFocused { get; set; }
+
+        public FocusResult Handle(KeyPress key) => FocusResult.Ignored;
+
+        public (string Key, string Description)[] Hints() => _hints;
     }
 }
