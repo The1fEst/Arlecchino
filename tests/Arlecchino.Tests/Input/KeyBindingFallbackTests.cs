@@ -34,8 +34,8 @@ public sealed class KeyBindingFallbackTests
 
     /// <summary>
     /// What a terminal really hands back for the punctuation, read off one rather than written from the
-    /// documentation: a slash, a minus and a full stop arrive under the keypad's names even when they were
-    /// pressed along the keyboard, so a binding written on either name has to answer to both.
+    /// documentation. A slash, a minus and a full stop arrive under the keypad's names even when they
+    /// were pressed along the keyboard, so a binding written on either name has to answer to both.
     ///
     /// Only where the character is the same. The keypad's plus and the key carrying the equals sign type
     /// different things, so they stay two keys.
@@ -77,6 +77,47 @@ public sealed class KeyBindingFallbackTests
     public void ArrowsAreNotGuessedFromCharacters()
     {
         Assert.False(new KeyBinding(ConsoleKey.UpArrow).Matches(CharacterOnly('A')));
+    }
+
+    /// <summary>
+    /// A binding on a character answers to that character however the keyboard produced it, and says so
+    /// on the key screen as the character itself. Punctuation has no dependable key to be named by: the
+    /// <c>Oem</c> names are a US keyboard, and half the punctuation has no name at all.
+    /// </summary>
+    [Fact]
+    public void ACharacterBindingAnswersToTheCharacter()
+    {
+        var binding = new KeyBinding('!');
+
+        Assert.True(binding.Matches(CharacterOnly('!')));
+        Assert.True(binding.Matches(new(ConsoleKey.D1, KeyModifiers.Shift, '!')));
+        Assert.False(binding.Matches(CharacterOnly('1')));
+        Assert.False(binding.Matches(new(default, KeyModifiers.Control, '!')));
+        Assert.Equal("!", binding.ToString());
+        Assert.False(binding.IsNone);
+    }
+
+    /// <summary>
+    /// A press that names a key and carries no character is still answered, where that key is the one
+    /// that types the character. A console reporting keys rather than text is what that press is.
+    /// </summary>
+    [Fact]
+    public void ACharacterBindingAnswersToTheKeyThatTypesIt()
+    {
+        Assert.True(new KeyBinding('/').Matches(new(ConsoleKey.Oem2)));
+        Assert.True(new KeyBinding(':').Matches(new(ConsoleKey.Oem1)));
+        Assert.False(new KeyBinding('/').Matches(new(ConsoleKey.Oem5)));
+    }
+
+    /// <summary>Two characters are two bindings, which is what stops one of them shadowing the other.</summary>
+    [Fact]
+    public void CharacterBindingsAreToldApart()
+    {
+        var setting = new KeyBinding('!');
+
+        Assert.NotEqual(setting, new(':'));
+        Assert.Equal(setting, new('!'));
+        Assert.NotEqual(setting, new(ConsoleKey.D1));
     }
 
     [Fact]

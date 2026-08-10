@@ -67,30 +67,22 @@ Arlecchino.Diagnostics.LogEntry.Message.init -> void
 Arlecchino.Diagnostics.LogEntry.Time.get -> System.DateTimeOffset
 Arlecchino.Diagnostics.LogEntry.Time.init -> void
 Arlecchino.Diagnostics.Notification
-Arlecchino.Diagnostics.Notification.<Clone>$() -> Arlecchino.Diagnostics.Notification!
 Arlecchino.Diagnostics.Notification.Actions.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.NotificationAction!>!
 Arlecchino.Diagnostics.Notification.Actions.set -> void
-Arlecchino.Diagnostics.Notification.Deconstruct(out System.DateTimeOffset Time, out Arlecchino.Diagnostics.NotificationLevel Level, out string! Text) -> void
 Arlecchino.Diagnostics.Notification.Detail.get -> System.Func<string!>?
 Arlecchino.Diagnostics.Notification.Detail.set -> void
-Arlecchino.Diagnostics.Notification.Ended.get -> string?
-Arlecchino.Diagnostics.Notification.Equals(Arlecchino.Diagnostics.Notification? other) -> bool
+Arlecchino.Diagnostics.Notification.EndedText.get -> string?
 Arlecchino.Diagnostics.Notification.Filled() -> double?
 Arlecchino.Diagnostics.Notification.IsRunning.get -> bool
 Arlecchino.Diagnostics.Notification.Level.get -> Arlecchino.Diagnostics.NotificationLevel
-Arlecchino.Diagnostics.Notification.Level.init -> void
 Arlecchino.Diagnostics.Notification.Line.get -> string!
-Arlecchino.Diagnostics.Notification.Loudness.get -> Arlecchino.Diagnostics.NotificationLevel
-Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset Time, Arlecchino.Diagnostics.NotificationLevel Level, string! Text) -> void
-Arlecchino.Diagnostics.Notification.Progress.get -> System.Func<string!>?
+Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset since, Arlecchino.Diagnostics.NotificationLevel level, string! text) -> void
+Arlecchino.Diagnostics.Notification.Progress.get -> System.Func<double?>?
 Arlecchino.Diagnostics.Notification.Progress.init -> void
-Arlecchino.Diagnostics.Notification.Share.get -> System.Func<double?>?
-Arlecchino.Diagnostics.Notification.Share.init -> void
+Arlecchino.Diagnostics.Notification.ProgressText.get -> System.Func<string!>?
+Arlecchino.Diagnostics.Notification.ProgressText.init -> void
 Arlecchino.Diagnostics.Notification.Since.get -> System.DateTimeOffset
 Arlecchino.Diagnostics.Notification.Text.get -> string!
-Arlecchino.Diagnostics.Notification.Text.init -> void
-Arlecchino.Diagnostics.Notification.Time.get -> System.DateTimeOffset
-Arlecchino.Diagnostics.Notification.Time.init -> void
 Arlecchino.Diagnostics.Notification.Whole() -> string!
 Arlecchino.Diagnostics.NotificationAction
 Arlecchino.Diagnostics.NotificationAction.<Clone>$() -> Arlecchino.Diagnostics.NotificationAction!
@@ -117,6 +109,9 @@ Arlecchino.Diagnostics.Notifications.Raise(Arlecchino.Diagnostics.Notification! 
 Arlecchino.Diagnostics.Notifications.Recent.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
 Arlecchino.Diagnostics.Notifications.Settle(Arlecchino.Diagnostics.Notification! entry, string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
 Arlecchino.Diagnostics.Notifications.Withdraw(Arlecchino.Diagnostics.Notification! entry) -> void
+Arlecchino.Focus.FocusDirection
+Arlecchino.Focus.FocusDirection.Next = 0 -> Arlecchino.Focus.FocusDirection
+Arlecchino.Focus.FocusDirection.Previous = 1 -> Arlecchino.Focus.FocusDirection
 Arlecchino.Focus.FocusResult
 Arlecchino.Focus.FocusResult.Deconstruct(out bool WasHandled, out Arlecchino.Navigation.ViewRoute Route) -> void
 Arlecchino.Focus.FocusResult.Equals(Arlecchino.Focus.FocusResult other) -> bool
@@ -135,8 +130,12 @@ Arlecchino.Focus.FocusRing.FocusPrevious() -> void
 Arlecchino.Focus.FocusRing.FocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Focus.FocusRing.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Focus.FocusRing.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Focus.FocusRing.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Focus.FocusRing.Index.get -> int
+Arlecchino.Focus.FocusRing.IsFocused.get -> bool
+Arlecchino.Focus.FocusRing.IsFocused.set -> void
 Arlecchino.Focus.FocusRing.Items.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Focus.IArlecchinoFocusable!>!
+Arlecchino.Focus.FocusRing.MoveFocus(Arlecchino.Focus.FocusDirection direction) -> bool
 Arlecchino.Focus.FocusablePane
 Arlecchino.Focus.FocusablePane.FocusablePane(System.Func<Arlecchino.Input.KeyPress, Arlecchino.Focus.FocusResult>! handle, System.Func<Arlecchino.Input.MouseEvent, Arlecchino.Focus.FocusResult>? handleMouse = null) -> void
 Arlecchino.Focus.FocusablePane.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
@@ -146,8 +145,10 @@ Arlecchino.Focus.FocusablePane.IsFocused.set -> void
 Arlecchino.Focus.IArlecchinoFocusable
 Arlecchino.Focus.IArlecchinoFocusable.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
 Arlecchino.Focus.IArlecchinoFocusable.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Focus.IArlecchinoFocusable.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.get -> bool
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.set -> void
+Arlecchino.Focus.IArlecchinoFocusable.MoveFocus(Arlecchino.Focus.FocusDirection direction) -> bool
 Arlecchino.Forms.Field
 Arlecchino.Forms.Field.Activate.get -> System.Func<Arlecchino.State.ArlecchinoState!, Arlecchino.Navigation.ViewRoute>?
 Arlecchino.Forms.Field.Activate.init -> void
@@ -506,6 +507,7 @@ Arlecchino.Layout.PaneTree.AsFocusRing(Arlecchino.Hosting.ArlecchinoKeymap! keym
 Arlecchino.Layout.PaneTree.Count.get -> int
 Arlecchino.Layout.PaneTree.Draw(Arlecchino.Rendering.SurfaceRegion region) -> void
 Arlecchino.Layout.PaneTree.Gaps(int inner, int outer = 0) -> Arlecchino.Layout.PaneTree!
+Arlecchino.Layout.PaneTree.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Layout.PaneTree.InnerGap.get -> int
 Arlecchino.Layout.PaneTree.OuterGap.get -> int
 Arlecchino.Modals.Asking.IAffixedModal
@@ -793,6 +795,7 @@ Arlecchino.Navigation.IArlecchinoLayout.HandleMouse(Arlecchino.Input.MouseEvent 
 Arlecchino.Navigation.IArlecchinoView
 Arlecchino.Navigation.IArlecchinoView.Commands() -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.ViewCommand!>!
 Arlecchino.Navigation.IArlecchinoView.Draw() -> void
+Arlecchino.Navigation.IArlecchinoView.Focus.get -> Arlecchino.Focus.IArlecchinoFocusable?
 Arlecchino.Navigation.IArlecchinoView.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.HandlePaste(string! text) -> Arlecchino.Navigation.ViewRoute
@@ -1179,9 +1182,6 @@ abstract Arlecchino.Modals.Setting.SegmentedModal.Submit() -> void
 override Arlecchino.Diagnostics.LogEntry.Equals(object? obj) -> bool
 override Arlecchino.Diagnostics.LogEntry.GetHashCode() -> int
 override Arlecchino.Diagnostics.LogEntry.ToString() -> string!
-override Arlecchino.Diagnostics.Notification.Equals(object? obj) -> bool
-override Arlecchino.Diagnostics.Notification.GetHashCode() -> int
-override Arlecchino.Diagnostics.Notification.ToString() -> string!
 override Arlecchino.Diagnostics.NotificationAction.Equals(object? obj) -> bool
 override Arlecchino.Diagnostics.NotificationAction.GetHashCode() -> int
 override Arlecchino.Diagnostics.NotificationAction.ToString() -> string!
@@ -1245,8 +1245,6 @@ static Arlecchino.Commands.ViewCommand.For(System.ConsoleKey key, System.Func<st
 static Arlecchino.Commands.ViewCommand.Navigating(System.ConsoleKey key, System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run) -> Arlecchino.Commands.ViewCommand!
 static Arlecchino.Diagnostics.LogEntry.operator !=(Arlecchino.Diagnostics.LogEntry? left, Arlecchino.Diagnostics.LogEntry? right) -> bool
 static Arlecchino.Diagnostics.LogEntry.operator ==(Arlecchino.Diagnostics.LogEntry? left, Arlecchino.Diagnostics.LogEntry? right) -> bool
-static Arlecchino.Diagnostics.Notification.operator !=(Arlecchino.Diagnostics.Notification? left, Arlecchino.Diagnostics.Notification? right) -> bool
-static Arlecchino.Diagnostics.Notification.operator ==(Arlecchino.Diagnostics.Notification? left, Arlecchino.Diagnostics.Notification? right) -> bool
 static Arlecchino.Diagnostics.NotificationAction.operator !=(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool
 static Arlecchino.Diagnostics.NotificationAction.operator ==(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool
 static Arlecchino.Focus.FocusResult.Handled.get -> Arlecchino.Focus.FocusResult

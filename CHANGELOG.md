@@ -9,52 +9,37 @@ bumped the minor, which is why the `0.x` entries below are full of them; from `1
 the public API means a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## 5.0.0
+## 6.0.0
 
-A release about the keyboard. A key press stops being the console's own type and becomes `KeyPress`, which
-has room for the modifier that type could not hold: Command, which a terminal does report and the console
-type could only misread. A binding stops being a list of positions and is built instead — alternatives
-added to it one at a time, and a second keystroke turning it into a chord, which is how an application
-reaches past the handful of combinations a terminal will actually hand on. The break is the type itself —
-a handler takes `KeyPress` and a binding matches one, so `ConsoleKeyInfo` in a signature is what a build
-fails on, and what it is replaced with is spelled the same way.
+A release about where the cursor is. A focus ring is focusable itself, so `Tab` walks into a widget
+made of parts and out the far side; the hints box lists the keys of whatever holds the focus rather
+than the same keys wherever the cursor stands; and a click reaches the pane it landed in instead of
+being offered to every widget in turn. The break is the notification, which stops being a positional
+record: the two properties that shadowed each other settle into one, and what is left is named after
+what it holds.
 
 ### Added
 
-- **Command, and a way to move a whole keymap onto it.** On a Mac terminal the Option key is spoken
-  for by the characters it types, so `Alt` never reaches the application and every binding built on it
-  is unreachable. The key that keyboard has going spare is Command, and terminals do report it — as one
-  more bit in the same modifier field as the rest. `KeyModifiers.Super` is that bit, bindable like any
-  other:
+- **The terminal can be lent to another program.** An editor, a pager or a shell cannot share a
+  terminal with a full-screen application, so `Handover` stops being one for as long as the other
+  program runs: the thread reading keys is parked, the modes are given back, the program is started
+  with all three streams its own, and the next frame is drawn whole over whatever it left behind.
 
   ```csharp
-  builder.UseKeymap(new ArlecchinoKeymap { Back = new(ConsoleKey.LeftArrow, KeyModifiers.Super) });
+  var code = handover.Run(new ProcessStartInfo("vim") { ArgumentList = { path } });
   ```
 
-  Rewriting thirty bindings by hand is how an application ends up with twenty-eight of them rewritten,
-  so the whole map moves at once:
+  `Give` does the same for work that is not a process. Both are called on the drawing thread and both
+  block it, which is the point: nothing is drawn while somebody else has the screen. The terminal comes
+  back however the work ended, so a program that could not be started is a message rather than a
+  terminal nobody can type in.
 
-  ```csharp
-  builder.UseKeymap(new ArlecchinoKeymap().Replacing(KeyModifiers.Alt, KeyModifiers.Super));
-  ```
-
-  A binding relabels itself for the machine it is running on: `Cmd+←` on a Mac, `Win+←` elsewhere.
-
-- **A binding of two keystrokes.** `ThenKey` finishes a binding with a second key, pressed after the
-  first is let go, and the pair is one command:
-
-  ```csharp
-  new KeyBinding(ConsoleKey.X, KeyModifiers.Control).ThenKey(ConsoleKey.T);
-  ```
-
-  This is how an application gets past the modifiers a terminal will give it. Option is spoken for by
-  the characters it types and Command belongs to the window, so what is left on a Mac are the letters
-  held with Control, and there are not thirty of those. A leader spends one of them and hands back the
-  alphabet behind it. While a leader is half typed, the hints box stops listing the keys that are out
-  of reach and lists what finishes the chord instead, so the second key is read rather than remembered.
-  `Opens` and `Closes` ask about the two halves; `Matches` answers `false` for a chord, so a leader on
-  its own runs nothing. An application that turned the hints box off still gets this one: turning it
-  off says something about the keys of a screen, not about a key half pressed.
+- **A key can be a character rather than a key.** `new KeyBinding('!')` answers wherever that character
+  can be typed, forgives the Shift held to type it, and writes itself on the key screen as `!`.
+  Punctuation had no dependable way to be named before: half of it has no `ConsoleKey`, the half that
+  does is named for a US keyboard, and consoles disagree about whether Shift is reported with it. A key
+  that could not be named could not be listed either, so the keys a person actually presses were missing
+  from the one screen that exists to list them.
 
 - **A click goes to the pane it landed in.** A tree already works out which pane owns which cells in
   order to draw them, and the same knowledge tells a click where to go. A view stops offering the
@@ -109,6 +94,71 @@ fails on, and what it is replaced with is spelled the same way.
   Being a record was never used for what a record is for: entries are held by reference and settled in
   place, so value equality, `with` and `Deconstruct` had nothing to do. They are gone with it.
 
+### Fixed
+
+- **A paste into a Windows console no longer runs what was pasted.** A terminal elsewhere wraps pasted
+  text in `ESC[200~` and `ESC[201~`, so the newline at the end of a pasted command is text; the console
+  reports the paste as the keys that would have typed it, and that last newline arrived as `Enter`. A
+  run of characters already waiting together is now read as a paste and wrapped in those same markers,
+  so it reaches the application as pasted text. A newline in the run settles it, and without one it
+  takes four characters — two keys that landed in the same read are still typing, and a run of one
+  character is a held key repeating.
+- **A key Windows types with Shift now reads the way it reads everywhere else.** The console reports
+  Shift alongside the character it typed, so `:` arrived as `Oem1` with Shift held while every other
+  platform sends a colon and no modifier at all — and anything written against that, a binding on the
+  character or a screen that answers to one, did nothing on Windows. Shift is now dropped where it did
+  nothing but type the character the event already carries. Shift on a key that types nothing — a
+  function key, Tab, Insert — is a modifier in its own right and is kept.
+
+## 5.0.0
+
+A release about the keyboard. A key press stops being the console's own type and becomes `KeyPress`, which
+has room for the modifier that type could not hold: Command, which a terminal does report and the console
+type could only misread. A binding stops being a list of positions and is built instead — alternatives
+added to it one at a time, and a second keystroke turning it into a chord, which is how an application
+reaches past the handful of combinations a terminal will actually hand on. The break is the type itself —
+a handler takes `KeyPress` and a binding matches one, so `ConsoleKeyInfo` in a signature is what a build
+fails on, and what it is replaced with is spelled the same way.
+
+### Added
+
+- **Command, and a way to move a whole keymap onto it.** On a Mac terminal the Option key is spoken
+  for by the characters it types, so `Alt` never reaches the application and every binding built on it
+  is unreachable. The key that keyboard has going spare is Command, and terminals do report it — as one
+  more bit in the same modifier field as the rest. `KeyModifiers.Super` is that bit, bindable like any
+  other:
+
+  ```csharp
+  builder.UseKeymap(new ArlecchinoKeymap { Back = new(ConsoleKey.LeftArrow, KeyModifiers.Super) });
+  ```
+
+  Rewriting thirty bindings by hand is how an application ends up with twenty-eight of them rewritten,
+  so the whole map moves at once:
+
+  ```csharp
+  builder.UseKeymap(new ArlecchinoKeymap().Replacing(KeyModifiers.Alt, KeyModifiers.Super));
+  ```
+
+  A binding relabels itself for the machine it is running on: `Cmd+←` on a Mac, `Win+←` elsewhere.
+
+- **A binding of two keystrokes.** `ThenKey` finishes a binding with a second key, pressed after the
+  first is let go, and the pair is one command:
+
+  ```csharp
+  new KeyBinding(ConsoleKey.X, KeyModifiers.Control).ThenKey(ConsoleKey.T);
+  ```
+
+  This is how an application gets past the modifiers a terminal will give it. Option is spoken for by
+  the characters it types and Command belongs to the window, so what is left on a Mac are the letters
+  held with Control, and there are not thirty of those. A leader spends one of them and hands back the
+  alphabet behind it. While a leader is half typed, the hints box stops listing the keys that are out
+  of reach and lists what finishes the chord instead, so the second key is read rather than remembered.
+  `Opens` and `Closes` ask about the two halves; `Matches` answers `false` for a chord, so a leader on
+  its own runs nothing. An application that turned the hints box off still gets this one: turning it
+  off says something about the keys of a screen, not about a key half pressed.
+
+### Changed
+
 - **A key press is `KeyPress` rather than `ConsoleKeyInfo`.** The console type stores Shift, Alt and
   Control as three booleans and has nowhere to put a fourth modifier, so a terminal reporting Command
   could only be misread or dropped. Everything a view is handed goes through the new type instead:
@@ -156,19 +206,6 @@ fails on, and what it is replaced with is spelled the same way.
 - **A cursor key held with Command is no longer indistinguishable from the bare key.** `Cmd+←` arrives
   as `ESC[1;9D`, and the ninth bit was being dropped on the floor, leaving the press to read as a plain
   `←` and move the cursor.
-- **A paste into a Windows console no longer runs what was pasted.** A terminal elsewhere wraps pasted
-  text in `ESC[200~` and `ESC[201~`, so the newline at the end of a pasted command is text; the console
-  reports the paste as the keys that would have typed it, and that last newline arrived as `Enter`. A
-  run of characters already waiting together is now read as a paste and wrapped in those same markers,
-  so it reaches the application as pasted text. A newline in the run settles it, and without one it
-  takes four characters — two keys that landed in the same read are still typing, and a run of one
-  character is a held key repeating.
-- **A key Windows types with Shift now reads the way it reads everywhere else.** The console reports
-  Shift alongside the character it typed, so `:` arrived as `Oem1` with Shift held while every other
-  platform sends a colon and no modifier at all — and anything written against that, a binding on the
-  character or a screen that answers to one, did nothing on Windows. Shift is now dropped where it did
-  nothing but type the character the event already carries. Shift on a key that types nothing — a
-  function key, Tab, Insert — is a modifier in its own right and is kept.
 - **Keys pressed while the terminal is being asked what it can do no longer disappear.** The probe
   hands back what it read only when the terminal said nothing at all, so anything typed in the moment
   before an answer arrived was filed as part of that answer and lost. It is now told apart by where it

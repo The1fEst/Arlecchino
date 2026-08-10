@@ -33,10 +33,11 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     private readonly ILogger<ArlecchinoHostedService> _logger;
     private readonly IArlecchinoStartup[] _startups;
     private readonly ArlecchinoAsyncStore[] _stores;
+    private readonly TerminalModes _modes;
+    private readonly Handover _handover;
 
     private readonly List<PosixSignalRegistration> _signals = [];
 
-    private int _terminalLeft;
     private int _restoring;
 
     private ConsoleCancelEventHandler? _cancelKeyHandler;
@@ -53,6 +54,8 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// <param name="logger">Where failures are reported, since the screen is not usable for that.</param>
     /// <param name="startups">Work to run before the first frame.</param>
     /// <param name="stores">Stores that load themselves; started as the application starts.</param>
+    /// <param name="modes">The terminal modes this application asked for, entered and left through one place.</param>
+    /// <param name="handover">Asked whether the terminal is ours to read, since another program may have it.</param>
     public ArlecchinoHostedService(
         IArlecchinoTerminal terminal,
         Screen screen,
@@ -63,8 +66,12 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         AtomHistory history,
         ILogger<ArlecchinoHostedService> logger,
         IEnumerable<IArlecchinoStartup> startups,
-        IEnumerable<ArlecchinoAsyncStore> stores)
+        IEnumerable<ArlecchinoAsyncStore> stores,
+        TerminalModes modes,
+        Handover handover)
     {
+        _modes = modes;
+        _handover = handover;
         _stores = [.. stores];
         _history = history;
         _terminal = terminal;
@@ -97,7 +104,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
             _navigator.Apply(startup.Start());
         }
 
-        EnterTerminalModes();
+        TakeTerminal();
         HookProcessSignals();
 
         try
@@ -119,57 +126,29 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     private void StoreFailed(Exception exception) =>
         Log.StoreFailed(_logger, exception);
 
-    private void EnterTerminalModes()
+    /// <summary>
+    /// Takes the terminal over and asks it what it can do. The question is put once, as the application
+    /// starts, because what a terminal is capable of does not change while it is running. Asking again
+    /// every time the modes are entered would put a query on the wire each time it is resumed.
+    /// </summary>
+    private void TakeTerminal()
     {
-        Interlocked.Exchange(ref _terminalLeft, 0);
+        _modes.Enter();
 
-        if (_options.UseAlternateScreen)
-        {
-            _terminal.EnterFullScreen();
-        }
-
-        if (_options.AskTerminal)
-        {
-            var answered = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
-
-            Log.TerminalAnswered(
-                _logger,
-                answered,
-                TerminalCapabilities.Sixel,
-                TerminalCapabilities.Kitty,
-                Glyphs.CellWidth,
-                Glyphs.CellHeight);
-        }
-
-        if (_options.MouseInput)
-        {
-            _terminal.EnableMouse();
-        }
-
-        if (_options.BracketedPaste)
-        {
-            _terminal.EnablePaste();
-        }
-    }
-
-    private void LeaveTerminalModes()
-    {
-        if (Interlocked.Exchange(ref _terminalLeft, 1) == 1)
+        if (!_options.AskTerminal)
         {
             return;
         }
 
-        if (_options.MouseInput)
-        {
-            _terminal.DisableMouse();
-        }
+        var answered = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
 
-        if (_options.BracketedPaste)
-        {
-            _terminal.DisablePaste();
-        }
-
-        _terminal.LeaveFullScreen();
+        Log.TerminalAnswered(
+            _logger,
+            answered,
+            TerminalCapabilities.Sixel,
+            TerminalCapabilities.Kitty,
+            Glyphs.CellWidth,
+            Glyphs.CellHeight);
     }
 
     private void HookProcessSignals()
@@ -196,19 +175,19 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// </summary>
     private void HookPosixSignals()
     {
-        Register(PosixSignal.SIGTERM, _ => LeaveTerminalModes());
+        Register(PosixSignal.SIGTERM, _ => _modes.Leave());
 
         if (OperatingSystem.IsWindows())
         {
             return;
         }
 
-        Register(PosixSignal.SIGHUP, _ => LeaveTerminalModes());
-        Register(PosixSignal.SIGTSTP, _ => LeaveTerminalModes());
+        Register(PosixSignal.SIGHUP, _ => _modes.Leave());
+        Register(PosixSignal.SIGTSTP, _ => _modes.Leave());
         Register(PosixSignal.SIGCONT,
             _ =>
             {
-                EnterTerminalModes();
+                _modes.Enter();
                 _screen.RedrawEverything();
             });
     }
@@ -264,14 +243,21 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         }
 
         _signals.Clear();
-        LeaveTerminalModes();
+        _modes.Leave();
     }
 
+    /// <summary>
+    /// Reads the terminal for as long as the application runs — unless another program has been handed
+    /// it, and then this thread waits instead. Keys read while an editor is on the screen are keys the
+    /// editor never receives, so the reader asks before every read rather than racing for them.
+    /// </summary>
+    /// <param name="stoppingToken">Canceled when the host is shutting down.</param>
+    /// <returns>A task that completes once reading has stopped.</returns>
     private async Task ReadInput(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (_terminal.KeyAvailable || _terminal.MouseAvailable)
+            if (_handover.MayRead() && (_terminal.KeyAvailable || _terminal.MouseAvailable))
             {
                 _input.ReadPending();
                 continue;

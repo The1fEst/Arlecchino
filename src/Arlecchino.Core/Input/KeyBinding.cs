@@ -29,12 +29,28 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     private KeyBinding(KeyStroke first, KeyStroke[]? alternatives, KeyStroke? second)
         : this(first.Key, first.Modifiers)
     {
+        Typed = first.Typed;
         _alternatives = alternatives;
         _second = second;
     }
 
+    /// <summary>
+    /// A binding on a character rather than on a key — the exclamation mark that opens a line, the colon
+    /// that opens another. Punctuation has no dependable key to be named by: half of it has no
+    /// <see cref="ConsoleKey"/>, the half that does is named for a US keyboard, and consoles disagree
+    /// about whether Shift is reported with it. Named by the character, it answers wherever that
+    /// character can be typed, and the key screen writes the character itself rather than a key nobody
+    /// has heard of.
+    /// </summary>
+    /// <param name="typed">The character to answer to.</param>
+    public KeyBinding(char typed)
+        : this(default(ConsoleKey)) => Typed = typed;
+
+    /// <summary>The character this binding answers to, or <c>'\0'</c> when it is a binding on a key.</summary>
+    public char Typed { get; }
+
     /// <summary>The combination the binding is named after, and the one it is written from.</summary>
-    public KeyStroke First => new(Key, Modifiers);
+    public KeyStroke First => Typed == '\0' ? new(Key, Modifiers) : new(Typed);
 
     /// <summary>
     /// The other combinations that trigger the same thing, in the order they were added. They are
@@ -50,7 +66,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     public KeyStroke? Second => _second;
 
     /// <summary>Whether this binding is unset and therefore matches nothing.</summary>
-    public bool IsNone => Key == default;
+    public bool IsNone => Key == default && Typed == '\0';
 
     /// <summary>
     /// Whether this takes two keystrokes rather than one. A chord is how an application reaches past the
@@ -156,7 +172,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <returns><c>true</c> when both are made of the same keystrokes.</returns>
     public bool Equals(KeyBinding other)
     {
-        if (Key != other.Key || Modifiers != other.Modifiers || _second != other._second)
+        if (Key != other.Key || Modifiers != other.Modifiers || Typed != other.Typed || _second != other._second)
         {
             return false;
         }
@@ -188,6 +204,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
 
         hash.Add(Key);
         hash.Add(Modifiers);
+        hash.Add(Typed);
         hash.Add(_second);
 
         foreach (var alternative in Alternatives)

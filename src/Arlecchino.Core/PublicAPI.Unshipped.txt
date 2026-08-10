@@ -1,1 +1,5 @@
 #nullable enable
+Arlecchino.Input.KeyBinding.KeyBinding(char typed) -> void
+Arlecchino.Input.KeyBinding.Typed.get -> char
+Arlecchino.Input.KeyStroke.KeyStroke(char typed) -> void
+Arlecchino.Input.KeyStroke.Typed.get -> char

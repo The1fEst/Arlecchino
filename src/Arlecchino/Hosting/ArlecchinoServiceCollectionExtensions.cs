@@ -124,6 +124,13 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<ILogger<InputRouter>>(),
             provider.GetRequiredService<CommandKeys>(),
             provider.GetService<IArlecchinoLayout>()));
+        services.AddSingleton(static provider => new TerminalModes(
+            provider.GetRequiredService<IArlecchinoTerminal>(),
+            provider.GetRequiredService<ArlecchinoOptions>()));
+        services.AddSingleton(static provider => new Handover(
+            provider.GetRequiredService<IArlecchinoTerminal>(),
+            provider.GetRequiredService<TerminalModes>(),
+            provider.GetRequiredService<Screen>()));
         services.AddSingleton<PendingInput>();
         services.AddSingleton(static provider => new TerminalInputReader(
             provider.GetRequiredService<IArlecchinoTerminal>(),

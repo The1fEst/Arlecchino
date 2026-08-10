@@ -12,8 +12,24 @@ namespace Arlecchino.Input;
 /// <param name="Modifiers">Modifiers that must be held, exactly.</param>
 public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers = default)
 {
+    /// <summary>
+    /// A stroke on a character rather than on a key. Whatever the keyboard has to do to produce an
+    /// exclamation mark, this is the stroke that answers to it.
+    ///
+    /// Punctuation is the one place where naming a key does not work. Half of it has no
+    /// <see cref="ConsoleKey"/> of its own, the half that does is named after a US keyboard, and the
+    /// shifted ones arrive with Shift held on one console and without it on another. A character is what
+    /// the person pressing it means, and it is the same character on every layout that can type it.
+    /// </summary>
+    /// <param name="typed">The character to answer to.</param>
+    public KeyStroke(char typed)
+        : this(default(ConsoleKey)) => Typed = typed;
+
+    /// <summary>The character this stroke answers to, or <c>'\0'</c> when it is a stroke on a key.</summary>
+    public char Typed { get; }
+
     /// <summary>Whether the stroke is unset and therefore stands for no key at all.</summary>
-    public bool IsNone => Key == default;
+    public bool IsNone => Key == default && Typed == '\0';
 
     /// <summary>
     /// Whether a key press is this stroke. Terminals that report no virtual key are still handled:
@@ -22,11 +38,24 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     /// Some keys answer to two names, one where they sit on the keyboard and one on the keypad, and the
     /// runtime hands back whichever it likes: a slash arrives as <c>Divide</c> even when it was pressed
     /// next to the shift. A binding written on either name answers to both.
+    ///
+    /// A stroke on a character asks what was typed, and forgives Shift: the shifted characters are typed
+    /// with it held, and a console that reports the modifier as well as the character would otherwise
+    /// never match one. A press that names a key and carries no character at all — which is what a
+    /// terminal that reports keys rather than text sends — is answered by asking whether that key is the
+    /// one that types this character.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press is this combination.</returns>
     public bool Matches(KeyPress pressed)
     {
+        if (Typed != '\0')
+        {
+            return (pressed.Modifiers & ~KeyModifiers.Shift) == KeyModifiers.None &&
+                   (pressed.Character == Typed ||
+                    (pressed.Character == '\0' && new KeyStroke(pressed.Key).MatchesCharacter(Typed)));
+        }
+
         if (pressed.Modifiers != Modifiers)
         {
             return false;
@@ -105,6 +134,11 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
         if (IsNone)
         {
             return "";
+        }
+
+        if (Typed != '\0')
+        {
+            return Typed.ToString();
         }
 
         var text = new StringBuilder();
