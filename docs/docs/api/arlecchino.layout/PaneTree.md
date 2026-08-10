@@ -41,13 +41,14 @@ public sealed class PaneTree
 
 | Member | Summary |
 |---|---|
-| [`AsFocusRing(ArlecchinoKeymap)`](#asfocusring-arlecchinokeymap) | Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in the order the branches lay them out — left before right, top before bottom. `Tab` then walks the screen the way it looks, and there is no second list to keep in step with the first.  ```csharp _focus = _layout.AsFocusRing(options.Keymap);  ```  What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk. |
+| [`AsFocusRing(ArlecchinoKeymap)`](#asfocusring-arlecchinokeymap) | Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in the order the branches lay them out — left before right, top before bottom. `Tab` then walks the screen the way it looks, and there is no second list to keep in step with the first.  ```csharp _focus = _layout.AsFocusRing(options.Keymap);  ```  What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk. The tree keeps the ring it built, which is what lets [`PaneTree.HandleMouse`](../arlecchino.layout/PaneTree.md#handlemouse-mouseevent) move the focus to the pane that was clicked. |
 | [`Branch(PaneTree, PaneTree)`](#branch-panetree-panetree) | A branch that decides everything itself: it cuts along the longer side of whatever region it is given and halves it. The longer side is measured in what the eye sees rather than in cells — a cell is about twice as tall as it is wide, so 80×24 is a wide region and gets two columns. Because the side is measured per frame, such a branch can turn from columns into rows when the terminal is resized. That is what makes it right for panes of equal standing, and wrong for chrome, which should be pinned with a [`PaneSplit`](../arlecchino.layout/PaneSplit.md) of its own. |
 | [`Branch(PaneSplit, PaneTree, PaneTree)`](#branch-panesplit-panetree-panetree) | A branch that cuts the way it is told and halves the space. |
 | [`Branch(PaneSize, PaneTree, PaneTree)`](#branch-panesize-panetree-panetree) | A branch of a given size that still cuts along the longer side, for a split that is uneven but has no reason to prefer an axis. |
 | [`Branch(PaneSplit, PaneSize, PaneTree, PaneTree)`](#branch-panesplit-panesize-panetree-panetree) | A branch that says both: the space is cut the given way and each half goes to a subtree, which is itself either a branch or a leaf. Three bands is therefore a branch inside a branch. |
 | [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws every pane where the branches put it. This is the whole of a view's `Draw` when the screen is a tree. |
 | [`Gaps(int, int)`](#gaps-int-int) | Sets the spacing of the whole layout, rather than of one branch, so a screen is loosened or tightened in one place. The names are the ones a tiling window manager uses. |
+| [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Sends a mouse event to the pane it landed in, and moves the focus there when that pane claims it. The tree already works out which pane owns which cells in order to draw them, so the same knowledge tells a click where to go. The event walks down the branches that contain the point and reaches one pane, instead of being offered to every widget on the screen in turn. This is the whole of a view's `HandleMouse` when the screen is a tree:  ```csharp public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);  ```  A click in the gap between panes, in the surrounding space, or before the first frame was drawn belongs to no pane and is left alone. The focus follows the click only for a tree that built its ring with [`PaneTree.AsFocusRing`](../arlecchino.layout/PaneTree.md#asfocusring-arlecchinokeymap); without one the pane still sees the event. |
 | [`Leaf(IArlecchinoWidget)`](#leaf-iarlecchinowidget) | A pane holding a widget, drawn into whatever region the tree gives it. |
 | [`Leaf(IArlecchinoWidget, Func<string>)`](#leaf-iarlecchinowidget-func-string) | A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box. The box itself is drawn `Theme.Active` while the widget holds the focus and `Theme.Info` while it does not, so a screen of panes shows where the cursor is without the view saying anything about it. |
 | [`Leaf(Action<SurfaceRegion>)`](#leaf-action-surfaceregion) | A pane the view draws itself, for the parts of a screen that are not a widget — a title, a box, a row of readouts. |
@@ -101,7 +102,7 @@ _focus = _layout.AsFocusRing(options.Keymap);
 
 ```
 
-What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk.
+What comes back is an ordinary [`FocusRing`](../arlecchino.focus/FocusRing.md), so anything focusable that lives outside the tree is added to it afterward, and lands at the end of the walk. The tree keeps the ring it built, which is what lets [`PaneTree.HandleMouse`](../arlecchino.layout/PaneTree.md#handlemouse-mouseevent) move the focus to the pane that was clicked.
 
 **Parameters**
 
@@ -213,6 +214,29 @@ Sets the spacing of the whole layout, rather than of one branch, so a screen is 
 | `outer` | `int` | Cells left empty around everything, inside the region handed to [`PaneTree.Draw`](../arlecchino.layout/PaneTree.md#draw-surfaceregion). |
 
 **Returns** [`PaneTree`](../arlecchino.layout/PaneTree.md) — The same tree, so the call finishes the expression that built it.
+
+### `HandleMouse(MouseEvent)` {#handlemouse-mouseevent}
+
+```csharp
+public ViewRoute HandleMouse(MouseEvent mouse);
+```
+
+Sends a mouse event to the pane it landed in, and moves the focus there when that pane claims it. The tree already works out which pane owns which cells in order to draw them, so the same knowledge tells a click where to go. The event walks down the branches that contain the point and reaches one pane, instead of being offered to every widget on the screen in turn. This is the whole of a view's `HandleMouse` when the screen is a tree:
+
+```csharp
+public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);
+
+```
+
+A click in the gap between panes, in the surrounding space, or before the first frame was drawn belongs to no pane and is left alone. The focus follows the click only for a tree that built its ring with [`PaneTree.AsFocusRing`](../arlecchino.layout/PaneTree.md#asfocusring-arlecchinokeymap); without one the pane still sees the event.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `mouse` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) | The event, in frame coordinates. |
+
+**Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the pane asked for, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
 
 ### `Leaf(IArlecchinoWidget)` {#leaf-iarlecchinowidget}
 

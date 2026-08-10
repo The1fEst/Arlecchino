@@ -20,7 +20,7 @@ place to look a member up.
 | [Arlecchino.Atoms.Tracked](arlecchino.atoms.tracked/index.md) | `Arlecchino.Core` | 6 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 7 |
-| [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 4 |
+| [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 5 |
 | [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 2 |
 | [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 10 |

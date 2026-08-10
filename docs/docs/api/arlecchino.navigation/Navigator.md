@@ -20,7 +20,7 @@ public class Navigator
 | [`CanGoBack`](#cangoback) | Whether there is somewhere to go back to. |
 | [`CanGoForward`](#cangoforward) | Whether a step back can be retraced. |
 | [`CurrentCommands`](#currentcommands) | Commands of the screen being shown, for the router and the palette. |
-| [`CurrentHints`](#currenthints) | What the hints box should show: whatever the screen returned, or its commands when it returned nothing. |
+| [`CurrentHints`](#currenthints) | What the hints box should show: the keys of whatever holds the focus, then whatever the screen returned, or its commands when it returned nothing. A key the focused element claims wins, so the same key is not listed twice under two labels while the cursor is in a pane that binds it. |
 | [`CurrentRoute`](#currentroute) | The route being shown. |
 | [`CurrentUsesLayout`](#currentuseslayout) | Whether the screen being shown wants the layout drawn around it. |
 
@@ -75,7 +75,7 @@ Commands of the screen being shown, for the router and the palette.
 public ValueTuple<string, string>[] CurrentHints { get; }
 ```
 
-What the hints box should show: whatever the screen returned, or its commands when it returned nothing.
+What the hints box should show: the keys of whatever holds the focus, then whatever the screen returned, or its commands when it returned nothing. A key the focused element claims wins, so the same key is not listed twice under two labels while the cursor is in a pane that binds it.
 
 **Type** `ValueTuple<T1, T2>`&lt;`string`, `string`&gt;\[\]
 

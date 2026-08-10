@@ -7,11 +7,13 @@ sidebar_label: "FocusRing"
 
 **Namespace:** `Arlecchino.Focus` &middot; **Assembly:** `Arlecchino`
 
-The cycle of focusable elements inside one view: `Tab` and `Shift+Tab` move between them, everything else goes to the one that holds the focus.
+The cycle of focusable elements inside one view: `Tab` and `Shift+Tab` move between them, everything else goes to the one that holds the focus. A ring is itself focusable, so one goes inside another: add a ring to a ring and `Tab` walks into it, through what it holds and out the far side, without the view saying anything about it. A nested ring remembers where it was left, so coming back to it from either side lands where the cursor was rather than at the top.
 
 ```csharp
-public sealed class FocusRing
+public sealed class FocusRing : IArlecchinoFocusable
 ```
+
+**Implements** [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md)
 
 ## Constructors
 
@@ -25,6 +27,7 @@ public sealed class FocusRing
 |---|---|
 | [`Current`](#current) | The focused element, or `null` when the ring is empty. |
 | [`Index`](#index) | Position of the focused element. |
+| [`IsFocused`](#isfocused) | Whether the ring itself holds the focus. A ring a view owns outright is focused from the start; one nested in another ring is told when the cursor arrives. It passes that on to whichever element it left the focus with, so nothing inside an unfocused ring draws as active. |
 | [`Items`](#items) | The elements, in the order they were added. |
 
 ## Methods
@@ -37,6 +40,8 @@ public sealed class FocusRing
 | [`FocusPrevious()`](#focusprevious) | Moves the focus to the previous element, wrapping around at the start. |
 | [`Handle(KeyPress)`](#handle-keypress) | Moves the focus on the field keys, and otherwise hands the key to the focused element. |
 | [`HandleMouse(MouseEvent)`](#handlemouse-mouseevent) | Offers the event to each element and moves the focus to whichever one claims it, so a click both selects a pane and acts inside it. |
+| [`Hints()`](#hints) | What the focused element wants the hints box to show, asked down the chain: a ring answers for the ring inside it, which answers for the widget inside that. |
+| [`MoveFocus(FocusDirection)`](#movefocus-focusdirection) | Moves the focus one element along without wrapping, for a ring nested in another one. At the last element going forward, or the first going back, the step is left to the ring outside, and this one keeps the place it was left at. |
 
 ## Constructors in detail
 
@@ -75,6 +80,16 @@ public int Index { get; }
 Position of the focused element.
 
 **Type** `int`
+
+### `IsFocused` {#isfocused}
+
+```csharp
+public bool IsFocused { get; set; }
+```
+
+Whether the ring itself holds the focus. A ring a view owns outright is focused from the start; one nested in another ring is told when the cursor arrives. It passes that on to whichever element it left the focus with, so nothing inside an unfocused ring draws as active.
+
+**Type** `bool`
 
 ### `Items` {#items}
 
@@ -163,4 +178,30 @@ Offers the event to each element and moves the focus to whichever one claims it,
 | `mouse` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) | The event, in frame coordinates. |
 
 **Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the element asked for, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
+
+### `Hints()` {#hints}
+
+```csharp
+public ValueTuple<string, string>[] Hints();
+```
+
+What the focused element wants the hints box to show, asked down the chain: a ring answers for the ring inside it, which answers for the widget inside that.
+
+**Returns** `ValueTuple<T1, T2>`&lt;`string`, `string`&gt;\[\] — The hints of the focused element, empty when there are none.
+
+### `MoveFocus(FocusDirection)` {#movefocus-focusdirection}
+
+```csharp
+public bool MoveFocus(FocusDirection direction);
+```
+
+Moves the focus one element along without wrapping, for a ring nested in another one. At the last element going forward, or the first going back, the step is left to the ring outside, and this one keeps the place it was left at.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `direction` | [`FocusDirection`](../arlecchino.focus/FocusDirection.md) | Which way the focus is going. |
+
+**Returns** `bool` — Whether the focus moved inside this ring.
 

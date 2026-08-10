@@ -17,6 +17,7 @@ public interface IArlecchinoView
 
 | Member | Summary |
 |---|---|
+| [`Focus`](#focus) | What holds the focus inside this screen, normally the [`FocusRing`](../arlecchino.focus/FocusRing.md) the view built. Answering with it puts the keys of the focused widget at the top of the hints box, and keeps them in step as `Tab` moves. A screen of unlike panes stops listing one pane's keys while the cursor is in another. |
 | [`UsesLayout`](#useslayout) | Whether the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) is drawn around this screen, when the application has one. Answer `false` for a screen that wants the whole terminal — a file being read, a picture, anything where the band along the top is in the way rather than in the frame. |
 
 ## Methods
@@ -31,6 +32,16 @@ public interface IArlecchinoView
 | [`Hints()`](#hints) | What the hints box shows. Leave it empty and the box is built from [`IArlecchinoView.Commands`](../arlecchino.navigation/IArlecchinoView.md#commands), so a rebound key relabels itself. |
 
 ## Properties in detail
+
+### `Focus` {#focus}
+
+```csharp
+public IArlecchinoFocusable? Focus { get; }
+```
+
+What holds the focus inside this screen, normally the [`FocusRing`](../arlecchino.focus/FocusRing.md) the view built. Answering with it puts the keys of the focused widget at the top of the hints box, and keeps them in step as `Tab` moves. A screen of unlike panes stops listing one pane's keys while the cursor is in another.
+
+**Type** [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md)
 
 ### `UsesLayout` {#useslayout}
 
