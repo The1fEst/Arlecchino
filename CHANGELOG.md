@@ -34,6 +34,21 @@ what it holds.
   back however the work ended, so a program that could not be started is a message rather than a
   terminal nobody can type in.
 
+- **An application can draw the keys itself.** `ArlecchinoOptions.Hints` replaces `ShowHints` with three
+  answers rather than two — `Always`, `WhileWaiting`, `Never` — and `CommandKeys` now says publicly
+  whether a chord is half typed and what would finish it. Together they let an application whose screens
+  have no borders draw that list in its own shape instead of taking the framework's box:
+
+  ```csharp
+  options.Hints = HintsShown.Never;
+  // ...
+  if (keys.IsWaiting) { DrawTheKeysMyOwnWay(keys.Hints()); }
+  ```
+
+  `Never` is a promise taken on rather than a box switched off: a leader with nothing on screen to say
+  what is behind it is a key nobody presses twice, which is why the box appeared for a chord even when
+  `ShowHints` was false.
+
 - **A key can be a character rather than a key.** `new KeyBinding('!')` answers wherever that character
   can be typed, forgives the Shift held to type it, and writes itself on the key screen as `!`.
   Punctuation had no dependable way to be named before: half of it has no `ConsoleKey`, the half that

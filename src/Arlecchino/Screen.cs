@@ -265,7 +265,8 @@ public class Screen
             DrawOutput();
         }
 
-        if (_options.ShowHints || _keys.IsWaiting)
+        if (_options.Hints is HintsShown.Always ||
+            (_options.Hints is HintsShown.WhileWaiting && _keys.IsWaiting))
         {
             DrawHints();
         }

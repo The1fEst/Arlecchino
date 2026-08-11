@@ -33,8 +33,8 @@ public sealed class ArlecchinoOptions
     /// </summary>
     public bool UseAlternateScreen { get; set; } = true;
 
-    /// <summary>Whether to draw the hints box in the bottom-right corner.</summary>
-    public bool ShowHints { get; set; } = true;
+    /// <summary>When to draw the box of keys in the bottom-right corner.</summary>
+    public HintsShown Hints { get; set; } = HintsShown.Always;
 
     /// <summary>Whether to keep the last row for <c>ArlecchinoState.Output</c>.</summary>
     public bool ShowOutputLine { get; set; } = true;

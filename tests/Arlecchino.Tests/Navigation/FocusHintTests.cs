@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Hosting;
 using Xunit;
 using Arlecchino.Tests.Support;
 using Arlecchino.Tests.Views;
@@ -42,7 +43,7 @@ public sealed class FocusHintTests
 
     private static TestApplication Open()
     {
-        var app = new TestApplication(120, 40, static builder => builder.Options.ShowHints = true);
+        var app = new TestApplication(120, 40, static builder => builder.Options.Hints = HintsShown.Always);
 
         app.Navigator.Apply(ViewKind.FocusHints);
 

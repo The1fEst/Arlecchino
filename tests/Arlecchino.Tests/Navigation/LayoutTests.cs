@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Commands;
+using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
@@ -132,7 +133,7 @@ public sealed class LayoutTests
     {
         return new(configure: static builder =>
         {
-            builder.Options.ShowHints = false;
+            builder.Options.Hints = HintsShown.WhileWaiting;
             builder.Options.ShowOutputLine = false;
 
             builder.UseMouse().UseLayout<FramedLayout>();

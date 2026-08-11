@@ -9,7 +9,7 @@ namespace Arlecchino.Commands;
 /// because the screen has to draw what a leader has behind it while the router waits for the key that
 /// finishes it, and both are asking the same question of the same commands.
 /// </summary>
-internal sealed class CommandKeys
+public sealed class CommandKeys
 {
     private readonly Navigator _navigator;
     private readonly CommandRegistry _commands;
@@ -19,7 +19,7 @@ internal sealed class CommandKeys
     /// <summary>Creates the lookup.</summary>
     /// <param name="navigator">Supplies the commands of the screen being shown.</param>
     /// <param name="commands">Commands available everywhere.</param>
-    public CommandKeys(Navigator navigator, CommandRegistry commands)
+    internal CommandKeys(Navigator navigator, CommandRegistry commands)
     {
         _navigator = navigator;
         _commands = commands;
@@ -41,7 +41,7 @@ internal sealed class CommandKeys
     /// </summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when something was bound to it and willing to run.</returns>
-    public bool Ran(KeyPress key)
+    internal bool Ran(KeyPress key)
     {
         foreach (var command in _navigator.CurrentCommands)
         {
@@ -71,7 +71,7 @@ internal sealed class CommandKeys
     /// whatever it is bound to instead.
     /// </summary>
     /// <param name="key">The key that arrived after the leader.</param>
-    public void Finish(KeyPress key)
+    internal void Finish(KeyPress key)
     {
         if (_leader is not { } leader)
         {

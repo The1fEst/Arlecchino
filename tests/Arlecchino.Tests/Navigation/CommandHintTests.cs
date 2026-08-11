@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Hosting;
 using Xunit;
 using Arlecchino.Tests.Support;
 
@@ -13,7 +14,7 @@ public sealed class CommandHintTests
             40,
             static builder =>
             {
-                builder.Options.ShowHints = true;
+                builder.Options.Hints = HintsShown.Always;
                 builder.AddCommand<ProbeCommand>();
             });
 
@@ -27,7 +28,7 @@ public sealed class CommandHintTests
     [Fact]
     public void ThereIsNoSuchHintWhenNothingIsRegistered()
     {
-        using var app = new TestApplication(120, 40, static builder => builder.Options.ShowHints = true);
+        using var app = new TestApplication(120, 40, static builder => builder.Options.Hints = HintsShown.Always);
 
         Assert.DoesNotContain(app.Options.Strings.HintCommands(), app.Frame(), StringComparison.Ordinal);
     }
@@ -39,7 +40,7 @@ public sealed class CommandHintTests
             40,
             static builder =>
             {
-                builder.Options.ShowHints = true;
+                builder.Options.Hints = HintsShown.Always;
                 builder.Options.CommandPaletteKey = '!';
                 builder.AddCommand<ProbeCommand>();
             });
@@ -57,7 +58,7 @@ public sealed class CommandHintTests
             40,
             static builder =>
             {
-                builder.Options.ShowHints = true;
+                builder.Options.Hints = HintsShown.Always;
                 builder.UseStrings(new() { HintCommands = static () => "«команды»" });
                 builder.AddCommand<ProbeCommand>();
             });
@@ -72,7 +73,7 @@ public sealed class CommandHintTests
             40,
             static builder =>
             {
-                builder.Options.ShowHints = true;
+                builder.Options.Hints = HintsShown.Always;
                 builder.AddCommand<ProbeCommand>();
             });
 

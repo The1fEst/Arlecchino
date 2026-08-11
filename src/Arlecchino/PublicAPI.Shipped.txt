@@ -293,8 +293,6 @@ Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.ShowHints.get -> bool
-Arlecchino.Hosting.ArlecchinoOptions.ShowHints.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.StartRoute.get -> Arlecchino.Navigation.ViewRoute

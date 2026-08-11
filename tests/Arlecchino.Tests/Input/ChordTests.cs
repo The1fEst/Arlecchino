@@ -1,5 +1,6 @@
 using System;
 using Arlecchino.Commands;
+using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.State;
@@ -208,7 +209,7 @@ public sealed class ChordTests
     {
         using var app = new TestApplication(configure: static builder =>
         {
-            builder.Options.ShowHints = false;
+            builder.Options.Hints = HintsShown.WhileWaiting;
             builder.AddCommand<TagCommand>();
         });
 
