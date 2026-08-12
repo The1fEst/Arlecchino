@@ -38,9 +38,8 @@ public sealed class ViewCommandTests
     }
 
     /// <summary>
-    /// A command that is off takes nothing: the key carries on to the view, which is free to give it
-    /// another meaning for exactly the times the command is unavailable. Swallowing it instead left a
-    /// key that silently did nothing, and no way for the view to find out it had been pressed.
+    /// A command that is off takes nothing, and its key carries on to the view. Swallowing it would leave a
+    /// key that silently does nothing.
     /// </summary>
     [Fact]
     public void ADisabledViewCommandLetsItsKeyThrough()
@@ -150,10 +149,8 @@ public sealed class ViewCommandTests
     }
 
     /// <summary>
-    /// Holding Alt puts an escape in front of the key, so <c>Alt+Esc</c> is two of them. The runtime
-    /// folds that prefix back for every other key but not for this one, which reached an application
-    /// as two plain Escapes and left the binding impossible to press. The bytes here are the ones a
-    /// real terminal sends, which is how the fault was found in the first place.
+    /// Holding Alt puts an escape in front of the key, so <c>Alt+Esc</c> is two of them, and the runtime does
+    /// not fold that pair back. The bytes here are the ones a real terminal sends.
     /// </summary>
     [Fact]
     public void AltEscapeArrivesAsOneKeyRatherThanTwoPlainEscapes()

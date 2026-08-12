@@ -187,6 +187,8 @@ resharper_member_can_be_private_global_highlighting = none
 resharper_property_can_be_made_init_only_global_highlighting = none
 resharper_unused_member_global_highlighting = none
 resharper_unused_method_return_value_global_highlighting = none
+resharper_unused_member_in_super_global_highlighting = none
+resharper_change_field_type_to_system_threading_lock_highlighting = none
 
 [benchmarks/**.cs]
 dotnet_diagnostic.ca1822.severity = none

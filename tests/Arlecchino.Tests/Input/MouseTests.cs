@@ -31,11 +31,8 @@ public sealed class MouseTests
 
 
     /// <summary>
-    /// A stretch of what a real terminal really sent, caught once from kitty with a hand on a mouse:
-    /// a click on a known cell, the wheel both ways, and a drag. Mouse reports are the one thing that
-    /// cannot be asked for — no amount of driving a terminal produces them, only a person does — so the
-    /// way to keep them honest is to hold on to a recording. Taken with
-    /// <c>tools/Arlecchino.Tools -- keys --decode</c>.
+    /// A stretch of what kitty really sent with a hand on a mouse: a click on a known cell, the wheel both
+    /// ways, and a drag. Mouse reports cannot be asked for, so they are held to a recording.
     /// </summary>
     [Fact]
     public void WhatARealMouseSentIsReadBackAsWhereItWasPointed()

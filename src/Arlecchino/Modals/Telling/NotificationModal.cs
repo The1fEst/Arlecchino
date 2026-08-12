@@ -7,12 +7,8 @@ using Arlecchino.Input;
 namespace Arlecchino.Modals.Telling;
 
 /// <summary>
-/// One notification, read in full. The output row and the notifications screen have one line each to give a
-/// message, which is not enough for the errors a copy collected or the output of a command. Opening the entry
-/// shows the whole of it, and offers whatever the entry said could be done about it.
-///
-/// The notifications screen opens this itself, so an application only fills in
-/// <see cref="Notification.Detail"/> and <see cref="Notification.Actions"/> when it raises the entry.
+/// One notification, read in full, with whatever the entry said could be done about it. The notifications
+/// screen opens it, so an application only fills in <see cref="Notification.Detail"/> and its actions.
 /// </summary>
 public sealed class NotificationModal : Modal
 {

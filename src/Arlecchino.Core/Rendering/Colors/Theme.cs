@@ -12,14 +12,8 @@ public static class Theme
     private static readonly string SwappingPalette = FrameMembers.Of(typeof(Theme), nameof(Palette));
 
     /// <summary>
-    /// The colors behind the roles. Assigned from <c>ArlecchinoOptions</c> when the container resolves
-    /// them; set it directly when drawing without a host.
-    ///
-    /// This is process-wide on purpose — it is what lets a view write <c>Theme.Header</c> with no
-    /// plumbing — so two hosts in one process share one palette, and the last one built wins.
-    ///
-    /// A frame reads it, so it is swapped on the drawing thread and asks for a frame by itself. Hand the
-    /// change over with <see cref="FrameThread.Post"/> from anywhere else.
+    /// The colors behind the roles, process-wide, so two hosts in one process share one palette. It is
+    /// swapped on the drawing thread and asks for a frame itself.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static ThemePalette Palette

@@ -7,9 +7,8 @@ using System.Text;
 namespace Arlecchino.Rendering.Text;
 
 /// <summary>
-/// Measures text the way a terminal shows it: in columns, not in <c>char</c> values. CJK and emoji
-/// take two columns, combining marks take none, and a surrogate pair is one symbol. Use these
-/// instead of <c>string.Length</c>, <c>PadRight</c> and slicing whenever the result lands on screen.
+/// Measures text the way a terminal shows it, in columns rather than in <c>char</c> values. Use these
+/// instead of <c>string.Length</c>, <c>PadRight</c> and slicing wherever the result lands on screen.
 /// </summary>
 public static class TextWidth
 {
@@ -268,9 +267,8 @@ public static class TextWidth
     }
 
     /// <summary>
-    /// Breaks text into lines that fit a column width, at spaces where there is one and mid-word only
-    /// when a single word is wider than the space. Line breaks already in the text are kept, so a
-    /// paragraph stays a paragraph.
+    /// Breaks text into lines that fit a column width, at spaces where there is one and mid-word only for a
+    /// word wider than the space. Line breaks already in the text are kept.
     /// </summary>
     /// <param name="text">The text to break up.</param>
     /// <param name="width">Columns available; anything below one is treated as one.</param>

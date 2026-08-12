@@ -7,14 +7,8 @@ using Arlecchino.Hosting;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// Turns what the terminal reports into keys and mouse events. Terminals send arrows, function keys
-/// and mouse reports as escape sequences, so an escape has to be read together with what follows it.
-/// Anything that turns out not to be a sequence is replayed key by key, which is what makes a plain
-/// Escape work even though it starts the same way.
-///
-/// The rest of a sequence does not always arrive with its escape — over ssh or a busy terminal it can
-/// land a few milliseconds later — so the reader waits a short while for it. That wait is also what a
-/// lone Escape costs, which is the trade every terminal editor makes.
+/// Turns what the terminal reports into keys and mouse events, reading an escape together with what follows
+/// it. Anything that turns out not to be a sequence is replayed key by key, after a short wait.
 /// </summary>
 public sealed class TerminalInputReader
 {
@@ -30,9 +24,8 @@ public sealed class TerminalInputReader
     private readonly StringBuilder _sequence = new();
 
     /// <summary>
-    /// Creates the reader. Everything it reads is routed as it is read, which is what a caller driving the
-    /// reader itself wants. Inside the framework it is built with a queue instead, so the thread reading the
-    /// terminal never touches what the frame loop is drawing.
+    /// Creates the reader, routing everything as it is read. Inside the framework it is built with a queue
+    /// instead, so the reading thread never touches what the frame loop draws.
     /// </summary>
     /// <param name="terminal">Where key presses come from.</param>
     /// <param name="router">Where the result is sent.</param>
@@ -106,12 +99,8 @@ public sealed class TerminalInputReader
     }
 
     /// <summary>
-    /// Handles one key press, reading further keys itself when it looks like the start of a sequence.
-    ///
-    /// An escape followed by another escape is <c>Alt+Escape</c>: holding Alt puts an escape in front
-    /// of the key, and the key here is itself an escape. The runtime folds that prefix back together
-    /// for every other key — <c>\ea</c> arrives as <c>Alt+A</c> — but not for this one, which reached
-    /// an application as two plain Escapes and left <c>Alt+Esc</c> impossible to bind.
+    /// Handles one key press, reading further keys itself where it looks like the start of a sequence. An
+    /// escape followed by another escape is <c>Alt+Escape</c>, which the runtime does not fold back together.
     /// </summary>
     /// <param name="key">The key that was read.</param>
     public void Read(KeyPress key)

@@ -8,11 +8,8 @@ using Arlecchino.State;
 namespace Arlecchino.Commands;
 
 /// <summary>
-/// The list of everything a key would do, opened by one key of its own.
-///
-/// It is the only dialog the framework opens unasked, and the only one whose keys are every other key.
-/// Pressing one runs what it is bound to, whether that is the view's or the application's, and pressing
-/// anything unbound says so rather than doing nothing.
+/// The list of everything a key would do, opened by one key of its own. Pressing a key runs what it is bound
+/// to, and pressing an unbound one says so rather than doing nothing.
 /// </summary>
 internal sealed class CommandPalette
 {

@@ -20,19 +20,12 @@ namespace Arlecchino.Hosting;
 public static class ArlecchinoServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers everything an application needs and returns the builder that describes it. The console
-    /// terminal is only registered if nothing else claimed the role, so a terminal registered
-    /// beforehand is left in place.
+    /// Registers everything an application needs and returns the builder that describes it. The look is
+    /// installed here, before any thread has claimed the drawing, and a terminal already registered stands.
     /// </summary>
     /// <param name="services">The container being built.</param>
     /// <param name="configure">Adjusts the settings before anything reads them.</param>
     /// <returns>The builder, for describing views, commands and the rest.</returns>
-    /// <remarks>
-    /// The look — <see cref="Theme.Palette"/> and <see cref="Glyphs"/> — is installed here rather than
-    /// when the container hands the options out. Those are read by a frame and so written on the drawing
-    /// thread, and a container resolves on whichever thread asked first; installing at registration
-    /// happens before anything has claimed a thread to draw on.
-    /// </remarks>
     public static ArlecchinoBuilder AddArlecchino(this IServiceCollection services, Action<ArlecchinoOptions>? configure = null)
     {
         var options = new ArlecchinoOptions();

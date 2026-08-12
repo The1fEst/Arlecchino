@@ -6,13 +6,8 @@ using Arlecchino.Rendering;
 namespace Arlecchino.Modals.Choosing;
 
 /// <summary>
-/// The list of what can be pressed right now. It is a reminder rather than a menu: the keys keep
-/// working while it is open, so a command runs from its own key instead of from a selection.
-///
-/// What a key or a row means is not this dialog's to know — the commands it lists belong to the view
-/// and to the application, and both are found through the container. Whoever opens it says what to do
-/// with a press, which is why the palette is opened by the framework rather than by an application
-/// writing <c>new CommandModal</c>.
+/// The list of what can be pressed right now. It is a reminder rather than a menu, since the keys keep
+/// working while it is open and whoever opened it says what a press does.
 /// </summary>
 public sealed class CommandModal : Modal
 {

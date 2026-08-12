@@ -46,13 +46,8 @@ public interface IArlecchinoFocusable
     FocusResult HandleMouse(MouseEvent mouse) => FocusResult.Ignored;
 
     /// <summary>
-    /// Moves the focus one step inside this element, for something that holds focusable parts of its
-    /// own — a <see cref="FocusRing"/> nested in another one, or a widget made of several fields.
-    /// Answering <c>false</c> hands the step back to the surrounding ring, which is what lets
-    /// <c>Tab</c> walk into a composite element, through its parts and out the far side.
-    ///
-    /// An element with nothing inside it leaves this alone: the default says the step was not taken,
-    /// and the ring moves to the next element as it always has.
+    /// Moves the focus one step inside this element, for something that holds focusable parts of its own.
+    /// Answering <c>false</c> hands the step back to the surrounding ring, as the default does.
     /// </summary>
     /// <param name="direction">Which way the focus is going.</param>
     /// <returns>Whether the focus moved inside this element.</returns>

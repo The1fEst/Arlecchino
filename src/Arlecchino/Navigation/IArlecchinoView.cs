@@ -7,9 +7,8 @@ using Arlecchino.Input;
 namespace Arlecchino.Navigation;
 
 /// <summary>
-/// A screen. Constructor parameters come from the container, and the instance lives as long as the
-/// route is shown — navigating away and back builds a new one, so per-screen state can live in
-/// fields. Implement <see cref="IDisposable"/> to be told when the screen goes away.
+/// A screen, built from the container and living as long as its route is shown. Implement
+/// <see cref="IDisposable"/> to be told when it goes away.
 /// </summary>
 public interface IArlecchinoView
 {
@@ -55,17 +54,14 @@ public interface IArlecchinoView
     (string Key, string Description)[] Hints() => [];
 
     /// <summary>
-    /// What holds the focus inside this screen, normally the <see cref="FocusRing"/> the view built.
-    /// Answering with it puts the keys of the focused widget at the top of the hints box, and keeps
-    /// them in step as <c>Tab</c> moves. A screen of unlike panes stops listing one pane's keys while
-    /// the cursor is in another.
+    /// What holds the focus inside this screen, normally the <see cref="FocusRing"/> the view built. It puts
+    /// the keys of the focused widget at the top of the hints box, and keeps them in step as <c>Tab</c> moves.
     /// </summary>
     IArlecchinoFocusable? Focus => null;
 
     /// <summary>
-    /// Whether the <see cref="IArlecchinoLayout"/> is drawn around this screen, when the application
-    /// has one. Answer <c>false</c> for a screen that wants the whole terminal — a file being read, a
-    /// picture, anything where the band along the top is in the way rather than in the frame.
+    /// Whether the <see cref="IArlecchinoLayout"/> is drawn around this screen, where the application has
+    /// one. Answer <c>false</c> for a screen that wants the whole terminal.
     /// </summary>
     bool UsesLayout => true;
 }

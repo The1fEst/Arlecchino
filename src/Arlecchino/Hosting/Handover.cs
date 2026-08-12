@@ -5,20 +5,8 @@ using System.Threading;
 namespace Arlecchino.Hosting;
 
 /// <summary>
-/// Lends the terminal to another program and takes it back afterward. An editor, a pager, a shell — a
-/// full-screen application of its own cannot share a terminal with this one, so the only way to run it
-/// is to stop being a terminal application for as long as it lasts.
-///
-/// Four things have to happen before the other program writes a byte, and they have to happen in this
-/// order. The thread reading keys is parked, or it would eat what is typed into whatever now owns the
-/// screen. The modes are given back, so the other program finds the terminal as its own shell would have
-/// left it. Only then does it run. And when it ends, whatever it left on the screen is thrown away and
-/// the next frame is drawn whole, because the surface only knows what it drew itself and would otherwise
-/// patch a picture that is no longer there.
-///
-/// It is called on the drawing thread, and it blocks that thread — which is the point. Nothing is drawn
-/// while somebody else has the screen, and a frame that slipped out in the middle would land on top of
-/// the other program.
+/// Lends the terminal to a full-screen program of its own — an editor, a pager, a shell — and takes it back
+/// afterward. It runs on the drawing thread and blocks it, so no frame lands on top of the other program.
 /// </summary>
 public sealed class Handover
 {
@@ -49,9 +37,8 @@ public sealed class Handover
     public bool IsAway => Volatile.Read(ref _away) == 1;
 
     /// <summary>
-    /// Runs a program with the terminal to itself and waits for it to end. What it writes goes straight
-    /// to the terminal and what is typed goes straight to it: none of the three streams is redirected,
-    /// since a program that is being given the screen is being given the keyboard with it.
+    /// Runs a program with the terminal to itself and waits for it to end. None of its three streams is
+    /// redirected, so what it writes and what is typed into it go straight to the terminal.
     /// </summary>
     /// <param name="start">The program and its arguments.</param>
     /// <returns>What it exited with.</returns>
@@ -81,15 +68,10 @@ public sealed class Handover
     }
 
     /// <summary>
-    /// Hands the terminal over for the length of a call and takes it back however that call ends. An
-    /// error thrown by the work reaches the caller with the screen already restored, so a program that
-    /// could not be started is a message on the output row rather than a terminal nobody can type in.
-    ///
-    /// What is taken back is what was in force to begin with. An application drawing inline rather than
-    /// on the alternate screen, or one running without the mouse, is handed back the terminal it had
-    /// rather than the one this would have asked for.
+    /// Hands the terminal over for the length of a call and takes it back however that call ends, error
+    /// included. What is taken back is the terminal that was in force to begin with.
     /// </summary>
-    /// <param name="work">What to do while the terminal is somebody else's.</param>
+    /// <param name="work">What to do while the terminal belongs to the other program.</param>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void Give(Action work)
     {
@@ -122,9 +104,8 @@ public sealed class Handover
     }
 
     /// <summary>
-    /// Whether the thread that reads the terminal may read it. Asked before every read: while the
-    /// terminal is somebody else's the reader parks instead, and saying so is what lets
-    /// <see cref="Give"/> know that nothing else is competing for the keyboard.
+    /// Whether the thread that reads the terminal may read it, asked before every read. Answering it is what
+    /// tells <see cref="Give"/> that nothing else is competing for the keyboard.
     /// </summary>
     /// <returns><c>true</c> when the terminal is ours to read.</returns>
     internal bool MayRead()
@@ -135,9 +116,8 @@ public sealed class Handover
     }
 
     /// <summary>
-    /// Waits until the reader has answered that it is not reading. There is a deadline on it because a
-    /// reader that never answers must not take the application with it: an application whose keys nobody
-    /// reads can still be quit, and an application stuck in here cannot.
+    /// Waits until the reader has answered that it is not reading, and gives up after a deadline. An
+    /// application whose keys go unread can still be quit; one stuck in here cannot.
     /// </summary>
     private void WaitForTheReader()
     {
@@ -150,9 +130,8 @@ public sealed class Handover
     }
 
     /// <summary>
-    /// Throws away what the terminal has waiting. Type-ahead meant for the program that just ended, and
-    /// whatever it left behind of its own — the reply to a query it made, half a mouse report — would
-    /// otherwise arrive here as keys nobody pressed.
+    /// Throws away what the terminal has waiting. Type-ahead meant for the program that just ended, or half a
+    /// reply it left behind, would otherwise arrive here as keys that were never pressed.
     /// </summary>
     private void Drop()
     {

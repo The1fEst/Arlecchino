@@ -35,9 +35,8 @@ public sealed class TableColumn<T>
 }
 
 /// <summary>
-/// Rows in aligned columns, with a heading and optional sorting. Selection and scrolling are a list
-/// box underneath, so a table behaves exactly like a list that happens to draw more per row. Sorting
-/// reorders a copy, leaving whatever was assigned to <see cref="Rows"/> untouched.
+/// Rows in aligned columns, with a heading and optional sorting, over a list box that does the selecting and
+/// the scrolling. Sorting reorders a copy, leaving <see cref="Rows"/> untouched.
 /// </summary>
 /// <typeparam name="T">What each row holds.</typeparam>
 public sealed class Table<T> : IArlecchinoInteractiveWidget
@@ -56,7 +55,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     {
         _rows = new(keymap)
         {
-            Render = row => RenderRow(row),
+            Render = RenderRow,
             OnActivate = row => OnActivate?.Invoke(row) ?? ViewRoute.None,
         };
     }

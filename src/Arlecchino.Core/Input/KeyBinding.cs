@@ -4,12 +4,8 @@ using System.Collections.Generic;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// A key plus the exact modifiers that must be held with it, so <c>Ctrl+S</c> never fires on a bare
-/// <c>S</c>. Every key the framework reacts to is one of these, which is what makes them rebindable.
-///
-/// A binding starts as the one combination it is named after and is added to from there:
-/// <see cref="AddAlternative"/> for the combinations a platform disagrees about, and
-/// <see cref="ThenKey"/> for a second keystroke, which turns the binding into a chord.
+/// A key plus the exact modifiers that must be held with it, so <c>Ctrl+S</c> never fires on a bare <c>S</c>.
+/// It is added to with <see cref="AddAlternative"/> and turned into a chord with <see cref="ThenKey"/>.
 /// </summary>
 /// <param name="Key">The key itself.</param>
 /// <param name="Modifiers">Modifiers that must be held, exactly.</param>
@@ -35,12 +31,8 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     }
 
     /// <summary>
-    /// A binding on a character rather than on a key — the exclamation mark that opens a line, the colon
-    /// that opens another. Punctuation has no dependable key to be named by: half of it has no
-    /// <see cref="ConsoleKey"/>, the half that does is named for a US keyboard, and consoles disagree
-    /// about whether Shift is reported with it. Named by the character, it answers wherever that
-    /// character can be typed, and the key screen writes the character itself rather than a key nobody
-    /// has heard of.
+    /// A binding on a character rather than on a key, which is the only dependable way to name punctuation.
+    /// It answers wherever that character can be typed, and the key screen writes the character itself.
     /// </summary>
     /// <param name="typed">The character to answer to.</param>
     public KeyBinding(char typed)
@@ -53,12 +45,8 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     public KeyStroke First => Typed == '\0' ? new(Key, Modifiers) : new(Typed);
 
     /// <summary>
-    /// The other combinations that trigger the same thing, in the order they were added. They are
-    /// matched but never written, since a binding is shown under one name.
-    ///
-    /// An alternative is one keystroke even where the binding is a chord, which is how a chord reaches
-    /// a keyboard the other way round: <c>Ctrl+G U</c> for the machine that has to spell it out, and
-    /// <c>Ctrl+PgUp</c> for the one with the key.
+    /// The other combinations that trigger the same thing, in the order they were added. They are matched but
+    /// never written, and each is a single press even where the binding itself is a chord.
     /// </summary>
     public IReadOnlyList<KeyStroke> Alternatives => _alternatives ?? [];
 
@@ -69,17 +57,15 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     public bool IsNone => Key == default && Typed == '\0';
 
     /// <summary>
-    /// Whether this takes two keystrokes rather than one. A chord is how an application reaches past the
-    /// modifiers a terminal will give it. A Mac terminal keeps Option for typing and its Command belongs to
-    /// the window, so what is left are the letters held with Control — and there are not thirty of those.
-    /// A leader spends one of them and hands back the whole alphabet behind it.
+    /// Whether this takes two keystrokes rather than one. A chord spends one combination on a leader and
+    /// hands back the whole alphabet behind it, which is how an application reaches past what a terminal
+    /// gives it.
     /// </summary>
     public bool IsChord => _second is not null;
 
     /// <summary>
-    /// The same binding, with one more combination that triggers it. Platforms disagree about some of
-    /// them — copying is <c>Ctrl+Insert</c> in one habit and <c>Ctrl+Shift+C</c> in another — and a
-    /// binding that carries both is right on either machine. Call it as often as there are habits.
+    /// The same binding, with one more combination that triggers it, for the habits platforms disagree
+    /// about. Call it as often as there are habits.
     /// </summary>
     /// <param name="key">The key of the added combination.</param>
     /// <param name="modifiers">Modifiers that must be held with it, exactly.</param>
@@ -88,12 +74,8 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
         new(First, [.. Alternatives, new(key, modifiers)], _second);
 
     /// <summary>
-    /// The same binding, finished by a second keystroke pressed after the first one is let go. The
-    /// leader is expected to say what the group is about — the operations behind one, the places behind
-    /// another — since what a person remembers is the grouping and not the letters.
-    ///
-    /// A binding gets one finishing key: calling this twice replaces it rather than growing a third
-    /// keystroke, because a chord longer than two is a sequence nobody recalls.
+    /// The same binding, finished by a second keystroke pressed after the first one is let go. A binding gets
+    /// one finishing key, so calling this twice replaces it rather than growing a third keystroke.
     /// </summary>
     /// <param name="key">The key that finishes the chord.</param>
     /// <param name="modifiers">Modifiers held with it, which is usually none.</param>
@@ -102,9 +84,8 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
         new(First, _alternatives, new(key, modifiers));
 
     /// <summary>
-    /// The same binding with one modifier put in place of another, wherever it appears. This is how an
-    /// application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing
-    /// accented characters, so <c>Alt</c> never arrives and <c>Super</c> is what that keyboard has spare.
+    /// The same binding with one modifier put in place of another, wherever it appears. It is how an
+    /// application moves off a modifier its users cannot press.
     /// </summary>
     /// <param name="from">The modifier to take out.</param>
     /// <param name="to">The modifier to put in its place.</param>
@@ -130,9 +111,9 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     }
 
     /// <summary>
-    /// Whether one key press is this whole binding. The combination it is named after counts only when
-    /// the binding is one keystroke — a chord is opened rather than matched — but an alternative counts
-    /// either way, since an alternative is always a single press.
+    /// Whether one key press is this whole binding. The combination it is named after counts only when the
+    /// binding is one keystroke, since a chord is opened rather than matched; an alternative counts either
+    /// way.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press should trigger this binding on its own.</returns>

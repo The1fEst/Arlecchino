@@ -9,9 +9,8 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Modals.Drawing;
 
 /// <summary>
-/// The dialogs that say something rather than ask it: a message to read and dismiss, and a
-/// notification opened in full. Both are text wrapped to half the screen, and the notification adds a
-/// bar when it reports how far along it is and a row of chips for whatever can be done about it.
+/// The dialogs that say something rather than ask it: a message to dismiss, and a notification opened in
+/// full. Both wrap to half the screen, and a notification adds its bar and its row of chips.
 /// </summary>
 internal sealed class TellPaint
 {
@@ -43,9 +42,8 @@ internal sealed class TellPaint
     }
 
     /// <summary>
-    /// A notification opened for reading: what it said, how far along it is when it reports that, and
-    /// its actions as a row of chips. Where each chip was drawn is handed back, so that clicking one
-    /// runs the same thing the arrows and Enter would.
+    /// A notification opened for reading: what it said, how far along it is, and its actions as a row of
+    /// chips. Where each chip was drawn is handed back, so a click runs what the arrows would.
     /// </summary>
     /// <param name="modal">The dialog.</param>
     public void Notification(NotificationModal modal)

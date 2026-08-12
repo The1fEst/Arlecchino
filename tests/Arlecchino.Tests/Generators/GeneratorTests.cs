@@ -253,7 +253,7 @@ public sealed class GeneratorTests
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            if (!assembly.IsDynamic && assembly.Location.Length > 0)
+            if (assembly is { IsDynamic: false, Location.Length: > 0 })
             {
                 yield return MetadataReference.CreateFromFile(assembly.Location);
             }
@@ -804,7 +804,7 @@ public sealed class GeneratorTests
         Assert.Contains("Label = () => Localization.Loc(name)", generated, StringComparison.Ordinal);
     }
 
-    /// <summary>A file that claims no language nobody asked for is an error rather than a silent miss.</summary>
+    /// <summary>A localization missing the default language is an error rather than a silent miss.</summary>
     [Fact]
     public void ALocalizationWithoutTheDefaultLanguageIsAnError()
     {

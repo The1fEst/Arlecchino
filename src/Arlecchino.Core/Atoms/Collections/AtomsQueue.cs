@@ -8,20 +8,11 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A queue held as one piece of application state — work waiting to be done, files still to copy, commands
-/// typed ahead. Things join at the back and leave from the front. Every change takes the same path a plain
-/// atom's write takes: it is checked against the drawing thread, it notifies what reads the queue, it marks
-/// the frame stale, and it records an undo step when the queue is undoable.
-///
-/// It is what a <c>ConcurrentQueue&lt;T&gt;</c> is not for: nothing here is thread-safe, because
-/// nothing needs to be. Background work hands its item over with <c>FrameThread.Post</c> and the
-/// queue is only ever touched by the thread that draws it, which is what lets a frame read it
-/// several times and see the same thing each time.
-///
-/// <see cref="Value"/> is the contents in order, front first, so a view draws the queue by walking
-/// it. Whether changes can be undone is decided by the type created —
-/// <see cref="TrackedAtomsQueue{T}"/> or <see cref="LocalAtomsQueue{T}"/>.
+/// A queue held as one piece of application state, joined at the back and left from the front. It is touched
+/// only by the drawing thread, so background work hands its item over with <c>FrameThread.Post</c>.
 /// </summary>
+/// <seealso cref="TrackedAtomsQueue{T}"/>
+/// <seealso cref="LocalAtomsQueue{T}"/>
 /// <typeparam name="T">What waits in the queue.</typeparam>
 public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
 {
@@ -43,9 +34,8 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
     protected abstract bool RecordsHistory { get; }
 
     /// <summary>
-    /// What is waiting now, front first: a live view rather than a copy, so a widget handed this once
-    /// draws whatever is in the queue on every later frame. It is read-only all the way down, so
-    /// every change goes through the members below.
+    /// What is waiting now, front first, as a live view rather than a copy. It is read-only all the way
+    /// down, so every change goes through the members below.
     /// </summary>
     public IReadOnlyList<T> Value
     {

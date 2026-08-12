@@ -5,8 +5,8 @@ using Arlecchino.Rendering;
 namespace Arlecchino.Modals;
 
 /// <summary>
-/// Following a click or a drag along a track. Pressing anywhere on it jumps the value there rather
-/// than nudging it, since a track that only nudges is a scroll bar nobody can aim.
+/// Following a click or a drag along a track. Pressing anywhere on it jumps the value there rather than
+/// nudging it, so the track can be aimed at.
 /// </summary>
 internal static class Tracking
 {

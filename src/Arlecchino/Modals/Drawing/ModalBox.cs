@@ -7,12 +7,8 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Modals.Drawing;
 
 /// <summary>
-/// The box every dialog is drawn in: bordered, centered, as wide as the widest line in it and no
-/// wider, with a rule above the row of hints along the bottom.
-///
-/// Each dialog decides what its lines say; none of them decides where the box goes or how wide it is. That is
-/// why they all look like the same application, even though a color picker and a question have nothing else
-/// in common.
+/// The box every dialog is drawn in: bordered, centered, as wide as the widest line in it, with a rule above
+/// the hints along the bottom. A dialog decides what its lines say and nothing about the box.
 /// </summary>
 internal sealed class ModalBox
 {

@@ -7,9 +7,8 @@ using Xunit;
 namespace Arlecchino.Tests.Input;
 
 /// <summary>
-/// What the cell grid cannot express — an image in a graphics protocol — is handed to the terminal
-/// verbatim. These are the claims the protocols will rest on: it lands where it was put, it goes out
-/// after the cells, and it is not sent again while it stays the same.
+/// The claims the graphics protocols rest on: a payload lands where it was put, goes out after the cells, and
+/// is not sent again while it stays the same.
 /// </summary>
 public sealed class PassthroughTests
 {

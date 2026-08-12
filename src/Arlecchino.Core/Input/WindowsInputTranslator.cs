@@ -20,11 +20,8 @@ internal sealed class WindowsInputTranslator
     private uint _heldButtons;
 
     /// <summary>
-    /// Reads one key event from the console. Shift is dropped where it did nothing but type the
-    /// character the event already carries. A terminal elsewhere sends <c>:</c> and <c>J</c> with no
-    /// modifier at all, so a binding written against that answered to the colon on one platform and to
-    /// nothing on this one. Shift on a key that types nothing — a function key, Tab, Insert — is a
-    /// modifier in its own right and stays.
+    /// Reads one key event from the console, dropping Shift where it did nothing but type the character the
+    /// event already carries. Shift on a key that types nothing stays, as the modifier it is.
     /// </summary>
     /// <param name="virtualKeyCode">The virtual key the console reported.</param>
     /// <param name="character">The character that key typed, or zero.</param>

@@ -5,19 +5,12 @@ using Arlecchino.Navigation;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.State;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Forms;
 
 /// <summary>
-/// One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything
-/// is read through delegates rather than stored, so a field always shows what the state holds now and
-/// follows the language the application is running in. The factories bind a field to an atom and pick
-/// the dialog that suits its type, which is the usual way to build one.
-///
-/// The atom they take is a <see cref="Atom{T}"/>, which is either a <see cref="TrackedAtom{T}"/> —
-/// so that editing the field can be undone — or a <see cref="LocalAtom{T}"/> when it should not be.
+/// One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything is read
+/// through delegates, so a field shows what the state holds now and follows the language it runs in.
 /// </summary>
 public sealed class Field
 {
@@ -37,8 +30,8 @@ public sealed class Field
     public Func<bool> IsEnabled { get; init; } = static () => true;
 
     /// <summary>
-    /// What confirming the field does, usually opening a dialog. Returning a route navigates; return
-    /// <see cref="ViewRoute.None"/> to stay put. Without this the field is read-only.
+    /// What confirming the field does, usually opening a dialog. Returning a route navigates and
+    /// <see cref="ViewRoute.None"/> stays put; without this the field is read-only.
     /// </summary>
     public Func<ArlecchinoState, ViewRoute>? Activate { get; init; }
 
@@ -289,8 +282,8 @@ public sealed class Field
     };
 
     /// <summary>
-    /// A path on disk. Unlike the other fields this leaves the form: the picker is a view of its own,
-    /// which is why it has to be told where to come back to.
+    /// A path on disk. It leaves the form, since the picker is a view of its own, and so it has to be told
+    /// where to come back to.
     /// </summary>
     /// <param name="label">What the field is called.</param>
     /// <param name="value">The atom to read and write.</param>
@@ -307,11 +300,8 @@ public sealed class Field
         Picker(label, value, returnView, pickFolder, help, start: null);
 
     /// <summary>
-    /// A path on disk that opens the picker somewhere in particular while the field is still empty —
-    /// a project folder, the last folder the user was in, wherever the answer is likely to be.
-    ///
-    /// It is a separate member rather than another argument to <see cref="Path"/> because adding one
-    /// to a method that already ships would break every application compiled against it.
+    /// A path on disk that opens the picker somewhere in particular while the field is still empty. It is a
+    /// member of its own, since another argument to <see cref="Path"/> would break what ships.
     /// </summary>
     /// <param name="label">What the field is called.</param>
     /// <param name="value">The atom to read and write.</param>

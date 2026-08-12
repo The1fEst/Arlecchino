@@ -6,9 +6,8 @@ using Xunit;
 namespace Arlecchino.Tests.Hosting;
 
 /// <summary>
-/// What the fake terminal hands over has to be the shape a real console hands over, or every test that
-/// feeds it agrees with something no terminal produces. These are the shapes, measured in a real pane:
-/// run <c>keys</c> from the tools to take the measurement again.
+/// The shapes a real console hands over, measured in a real pane, which the fake terminal has to match. Run
+/// <c>keys</c> from the tools to take the measurement again.
 /// </summary>
 public sealed class FakeTerminalTests
 {

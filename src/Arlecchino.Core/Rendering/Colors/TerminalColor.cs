@@ -1,8 +1,8 @@
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal
-/// theme, which is why chrome should pick a role from <see cref="Theme"/> rather than a color here.
+/// The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal theme, so
+/// chrome picks a role from <see cref="Theme"/> rather than a color here.
 /// </summary>
 public enum TerminalColor : byte
 {

@@ -5,14 +5,8 @@ using Arlecchino.Rendering.Colors;
 namespace Arlecchino.Rendering.Text;
 
 /// <summary>
-/// Lines that know about one another. Boxes and rules are recorded first and painted at the end, so
-/// where two of them meet the shared cell becomes the glyph that joins them — <c>┬</c>, <c>├</c>,
-/// <c>┼</c> — instead of one line drawn over the other.
-///
-/// <see cref="SurfaceRegion.Border"/> draws a box that knows nothing of its neighbors, which is
-/// right for a box standing on its own and wrong for panes that touch: two of those side by side put
-/// two verticals where the eye expects one. Recording them here instead costs one object per frame
-/// and gives the drawing of a window manager.
+/// Lines that know about one another. Boxes and rules are recorded first and painted at the end, so a cell
+/// two of them share becomes the glyph that joins them rather than one line drawn over the other.
 ///
 /// <code>
 /// var joinery = new Joinery();
@@ -22,9 +16,6 @@ namespace Arlecchino.Rendering.Text;
 ///
 /// joinery.Draw(surface.Content, Theme.Info);
 /// </code>
-///
-/// A cell takes the style of the last thing recorded over it, so the pane that holds the focus is
-/// recorded last and its edges win where they are shared.
 /// </summary>
 public sealed class Joinery
 {

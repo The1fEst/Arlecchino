@@ -8,9 +8,8 @@ namespace Arlecchino.Generators;
 public sealed partial class LocalizationGenerator
 {
     /// <summary>
-    /// Writes the enum of names and the function that resolves them. A string is a <c>switch</c> arm
-    /// rather than a dictionary entry: the set is closed at compile time, so there is nothing to look
-    /// up and nothing to allocate on a frame that draws a hundred of them.
+    /// Writes the enum of names and the function that resolves them. A string is a <c>switch</c> arm rather
+    /// than a dictionary entry, since the set is closed at compile time.
     /// </summary>
     /// <param name="where">The namespace to put it in.</param>
     /// <param name="standard">The default localization.</param>
@@ -156,13 +155,8 @@ public sealed partial class LocalizationGenerator
     }
 
     /// <summary>
-    /// Writes the factories that name a key from the localization.
-    ///
-    /// The framework cannot offer these itself. <c>ViewCommand</c> takes a <c>Func&lt;string&gt;</c> because a
-    /// name is read every frame, so that changing language changes the screen. And it cannot take a
-    /// <c>LocString</c> because there is no such type until an application is compiled: the enum is written
-    /// here, out of that application's own file, with that application's own names in it. What can be shipped
-    /// is the code that writes them, which is this.
+    /// Writes the factories that name a key from the localization. The framework cannot ship them itself,
+    /// since the enum they take is written here out of the application's own files.
     /// </summary>
     /// <param name="source">Where the source is being built.</param>
     private static void Bindings(StringBuilder source)

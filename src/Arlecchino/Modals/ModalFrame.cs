@@ -15,13 +15,8 @@ namespace Arlecchino.Modals;
 public readonly record struct Piece(string Text, IArlecchinoColor Style);
 
 /// <summary>
-/// Everything a dialog needs from the application for as long as the screen shows it: where to draw, the
-/// words to draw in, the keys to obey, and how to close.
-///
-/// A dialog is a value — an application writes <c>new TextModal { … }</c> and hands it over — so it
-/// cannot be given services when it is built. It is given them when it is asked to do something, which
-/// is what lets <see cref="Modal.Draw"/> and <see cref="Modal.Handle"/> live on the dialog itself
-/// rather than in a switch somewhere that has to know every kind there will ever be.
+/// Everything a dialog needs from the application: where to draw, the words to draw in, the keys to obey, and
+/// how to close. A dialog is a value, so it is given these when asked to act.
 /// </summary>
 public sealed class ModalFrame
 {
@@ -132,9 +127,8 @@ public sealed class ModalFrame
         _box.Centered(contentWidth, contentHeight);
 
     /// <summary>
-    /// Draws a titled box holding the lines given, with the hints under a rule. Every dialog the
-    /// framework brings is drawn through this, which is why a color picker and a question read as the
-    /// same application.
+    /// Draws a titled box holding the lines given, with the hints under a rule. Every dialog the framework
+    /// brings is drawn through this.
     /// </summary>
     /// <param name="title">What the dialog is called.</param>
     /// <param name="body">The lines, each a run of pieces.</param>

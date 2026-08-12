@@ -9,14 +9,8 @@ using System.Threading;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Runs a whole application in a real terminal and holds it to what a terminal application owes the
-/// person who started it: take the screen, draw on it, and give it back exactly as it was found.
-///
-/// Nothing else here can answer that. The fake terminal records taking the screen as a flag being set,
-/// which is true whether or not the sequence that does it was ever written, written correctly, or
-/// written back on the way out. A pane knows: tmux says whether the alternate screen is in force,
-/// whether the cursor is showing and whether the mouse was asked for, and the shell underneath is
-/// still there to be compared against afterwards.
+/// Runs a whole application in a real terminal and holds it to what such an application owes: take the
+/// screen, draw on it, and give it back as it was found. Only a real pane can answer that.
 /// </summary>
 internal static class Live
 {
@@ -200,9 +194,8 @@ internal static class Live
     }
 
     /// <summary>
-    /// Opens a pane running a shell rather than the application itself. The point of the exercise is
-    /// what the terminal looks like once the application has gone, and an application that owns the
-    /// pane takes the pane with it when it leaves.
+    /// Opens a pane running a shell rather than the application itself, since what is being measured is the
+    /// terminal the application leaves behind. A pane of its own would go with it.
     /// </summary>
     /// <param name="width">Columns.</param>
     /// <param name="height">Rows.</param>
@@ -256,9 +249,8 @@ internal static class Live
         at < told.Length && int.TryParse(told[at], CultureInfo.InvariantCulture, out var value) ? value : -1;
 
     /// <summary>
-    /// Waits for the terminal to say something is so, or gives up. Everything here happens at the pace
-    /// of a process starting and a frame being drawn, which on a busy machine is not the pace anything
-    /// here can guess at.
+    /// Waits for the terminal to say something is so, or gives up. What is waited for happens at the pace of
+    /// a process starting and a frame being drawn, which no fixed delay can guess at.
     /// </summary>
     /// <param name="said">What is being waited for.</param>
     /// <returns><c>true</c> when it became so.</returns>

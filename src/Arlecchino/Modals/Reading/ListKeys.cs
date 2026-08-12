@@ -7,11 +7,8 @@ using Arlecchino.Modals.Choosing;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// The dialogs that are a list to pick from, whether one thing is being picked or several.
-///
-/// Typing narrows the list rather than jumping to a letter. Jumping works on a list of five and nothing else,
-/// while narrowing works on a list of five and on a list of five hundred. A list that behaves one way at one
-/// size and another way at another is one nobody comes to trust.
+/// The keys of the dialogs that are a list to pick from, one thing or several. Typing narrows the list rather
+/// than jumping to a letter, which works the same at five rows and at five hundred.
 /// </summary>
 internal sealed class ListKeys
 {

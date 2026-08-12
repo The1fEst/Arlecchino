@@ -93,9 +93,8 @@ internal static class Ship
     }
 
     /// <summary>
-    /// Throws away the breaks that were written down against the release before this one. A suppression
-    /// says "this was broken on purpose, between those two versions"; once the baseline moves, the two
-    /// versions it named are gone and what is left would hide the next break rather than the last one.
+    /// Throws away the breaks that were written down against the release before this one. A suppression names
+    /// two versions, and once the baseline moves it would hide the next break rather than the last one.
     /// </summary>
     private static void Unsuppressed()
     {

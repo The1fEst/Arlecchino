@@ -1,19 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering.Colors;
-using Arlecchino.Rendering.Terminals;
 
 namespace Arlecchino.Widgets.Pictures;
 
 /// <summary>
-/// A picture resampled to a given size and brought down to a palette of at most so many colors —
-/// what a format with color registers, <see cref="ImageProtocol.Sixel"/> among them, needs before it
-/// can be written out.
-///
-/// The palette is the picture's own rather than a fixed cube. Colors are gathered into boxes and the widest box
-/// is split at its weighted median until there are as many boxes as colors allowed, which spends the registers
-/// where the picture actually has detail. Shrinking averages every source pixel a destination pixel covers
-/// instead of picking one of them, so a picture reduced to a pane keeps its edges.
+/// A picture resampled to a given size and brought down to a palette of its own, which is what a format with
+/// color registers needs. Shrinking averages the source pixels a destination pixel covers.
 /// </summary>
 internal sealed class IndexedImage
 {

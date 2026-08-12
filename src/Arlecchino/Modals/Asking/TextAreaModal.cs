@@ -7,12 +7,8 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Modals.Asking;
 
 /// <summary>
-/// Several lines of text, edited in place: a description, a commit message, a snippet of
-/// configuration. <c>Enter</c> starts a new line here rather than accepting the dialog, so confirming
-/// is a key of its own — the <c>Submit</c> binding.
-///
-/// The caret is a row and a position inside that row, and every move and edit goes by symbols rather
-/// than <c>char</c> values, so emoji and combining marks survive a backspace.
+/// Several lines of text, edited in place, where <c>Enter</c> starts a new line and the <c>Submit</c> binding
+/// confirms. Every move and edit goes by symbols, so emoji and combining marks survive a backspace.
 /// </summary>
 public sealed class TextAreaModal : Modal
 {

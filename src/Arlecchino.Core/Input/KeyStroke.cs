@@ -4,22 +4,16 @@ using System.Text;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// One key and the modifiers held with it — the smallest thing a binding can be made of. A
-/// <see cref="KeyBinding"/> is one of these, plus the alternatives that mean the same, plus the key
-/// that finishes it when the binding is a chord.
+/// One key and the modifiers held with it, which is the smallest thing a binding can be made of. A
+/// <see cref="KeyBinding"/> is one of these plus its alternatives and its finishing key.
 /// </summary>
 /// <param name="Key">The key itself.</param>
 /// <param name="Modifiers">Modifiers that must be held, exactly.</param>
 public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers = default)
 {
     /// <summary>
-    /// A stroke on a character rather than on a key. Whatever the keyboard has to do to produce an
-    /// exclamation mark, this is the stroke that answers to it.
-    ///
-    /// Punctuation is the one place where naming a key does not work. Half of it has no
-    /// <see cref="ConsoleKey"/> of its own, the half that does is named after a US keyboard, and the
-    /// shifted ones arrive with Shift held on one console and without it on another. A character is what
-    /// the person pressing it means, and it is the same character on every layout that can type it.
+    /// A stroke on a character rather than on a key, which is the only way to name punctuation. It answers
+    /// on every layout that can type that character, whatever the keyboard does to produce it.
     /// </summary>
     /// <param name="typed">The character to answer to.</param>
     public KeyStroke(char typed)
@@ -32,18 +26,8 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     public bool IsNone => Key == default && Typed == '\0';
 
     /// <summary>
-    /// Whether a key press is this stroke. Terminals that report no virtual key are still handled:
-    /// letters, digits and the common control keys are then matched by the character typed.
-    ///
-    /// Some keys answer to two names, one where they sit on the keyboard and one on the keypad, and the
-    /// runtime hands back whichever it likes: a slash arrives as <c>Divide</c> even when it was pressed
-    /// next to the shift. A binding written on either name answers to both.
-    ///
-    /// A stroke on a character asks what was typed, and forgives Shift: the shifted characters are typed
-    /// with it held, and a console that reports the modifier as well as the character would otherwise
-    /// never match one. A press that names a key and carries no character at all — which is what a
-    /// terminal that reports keys rather than text sends — is answered by asking whether that key is the
-    /// one that types this character.
+    /// Whether a key press is this stroke, by the key where one was reported and by the character otherwise.
+    /// A key that answers to two names matches under either, and a stroke on a character forgives Shift.
     /// </summary>
     /// <param name="pressed">The key that was pressed.</param>
     /// <returns><c>true</c> when the press is this combination.</returns>
@@ -67,12 +51,8 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     }
 
     /// <summary>
-    /// The one name for a key that has two. A slash typed next to the shift is handed back as the keypad's
-    /// divide, and the two type the same character, so nothing here wants to tell them apart.
-    ///
-    /// Only where the character is the same. The keypad's plus and the key that carries the equals sign
-    /// stay two keys, since <c>+</c> and <c>=</c> are different things to type, and folding them together
-    /// would make a binding on one answer to the other.
+    /// The one name for a key that has two, where both type the same character. Keys that type different
+    /// characters stay apart, so a binding on one never answers to the other.
     /// </summary>
     /// <param name="key">Either name.</param>
     /// <returns>The name both are read as.</returns>
@@ -95,8 +75,7 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
 
     /// <summary>
     /// What a key would have typed, for the terminals that send the character and no virtual key. The
-    /// punctuation is the US layout the <c>Oem</c> names already assume — a keyboard that puts those
-    /// characters elsewhere reports the key itself, which is matched before this is asked.
+    /// punctuation follows the US layout the <c>Oem</c> names already assume.
     /// </summary>
     /// <param name="character">The character that arrived.</param>
     /// <returns><c>true</c> when this key is the one that types it.</returns>
@@ -173,9 +152,8 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     private static string SuperName => OperatingSystem.IsMacOS() ? "Cmd+" : "Win+";
 
     /// <summary>
-    /// What to write on the key. The punctuation is named after the character it types rather than after
-    /// the name the runtime gives it: nobody reading a key screen knows what <c>Oem2</c> is, and the whole
-    /// point of the screen is to be read.
+    /// What to write on the key. Punctuation is named after the character it types rather than after the
+    /// runtime's own name for it, which a key screen would be unreadable with.
     /// </summary>
     /// <param name="key">The key to name.</param>
     /// <returns>What to call it.</returns>

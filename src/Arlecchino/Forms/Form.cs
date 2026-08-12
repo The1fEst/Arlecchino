@@ -9,16 +9,12 @@ using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 using Arlecchino.Widgets;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Forms;
 
 /// <summary>
-/// A column of fields with their values lined up, and a help line under the selected one. The form
-/// holds no values of its own: the fields read and write atoms, so it draws whatever the state says
-/// without any copying back and forth. Whether an edit made here can be undone is decided by the atom
-/// behind the field — <see cref="TrackedAtom{T}"/> or <see cref="LocalAtom{T}"/> — not by the form.
+/// A column of fields with their values lined up, and a help line under the selected one. It holds no values
+/// of its own, and the atom behind each field decides whether an edit can be undone.
 /// </summary>
 public sealed class Form : IArlecchinoInteractiveWidget
 {

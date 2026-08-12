@@ -10,8 +10,8 @@ namespace Arlecchino.Atoms;
 public interface IReadableAtom<out T>
 {
     /// <summary>
-    /// The current value. Reading it inside a <see cref="Computed{T}"/> also registers the
-    /// dependency, which is why derived values need no dependency list.
+    /// The current value. Reading it inside a <see cref="Computed{T}"/> registers the dependency, so derived
+    /// values need no dependency list.
     /// </summary>
     T Value { get; }
 

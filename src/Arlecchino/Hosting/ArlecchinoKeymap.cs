@@ -71,9 +71,8 @@ public sealed record ArlecchinoKeymap
     public KeyBinding WordRight { get; init; } = new(ConsoleKey.RightArrow, KeyModifiers.Control);
 
     /// <summary>
-    /// Copies what is being edited to the clipboard. Two combinations, because the habits differ:
-    /// <c>Ctrl+Insert</c> and <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone — that is how the
-    /// user stops the application.
+    /// Copies what is being edited to the clipboard, under both habits: <c>Ctrl+Insert</c> and
+    /// <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone, since it stops the application.
     /// </summary>
     public KeyBinding Copy { get; init; } = new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
         .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
@@ -100,11 +99,8 @@ public sealed record ArlecchinoKeymap
     public KeyBinding PickCurrentFolder { get; init; } = new(ConsoleKey.Enter, KeyModifiers.Control);
 
     /// <summary>
-    /// The whole map with one modifier put in place of another. A keyboard that cannot send a modifier
-    /// makes every key built on it unreachable, and rewriting thirty bindings by hand to say so is how
-    /// an application ends up with twenty-eight of them rewritten. A Mac terminal is the case this was
-    /// written for: Option is spoken for by the characters it types, so <c>Alt</c> never arrives and
-    /// Command is what that keyboard has going spare.
+    /// The whole map with one modifier put in place of another, for a keyboard that cannot send the one the
+    /// bindings were written on. Rewriting thirty bindings by hand leaves twenty-eight rewritten.
     /// </summary>
     /// <param name="from">The modifier to take out.</param>
     /// <param name="to">The modifier to put in its place.</param>

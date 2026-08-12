@@ -5,9 +5,8 @@ using Arlecchino.Atoms.Collections;
 namespace Arlecchino.Atoms.Local;
 
 /// <summary>
-/// A list the undo stack never sees: a log, search results, the rows a background scan found, the
-/// notifications on screen — contents the user did not author and would not expect to travel back
-/// through. It notifies and asks for a frame exactly as a <see cref="TrackedAtomsList{T}"/> does.
+/// A list the undo stack never sees, for contents the user did not author: a log, search results, the rows
+/// of a scan. It notifies and asks for a frame as a <see cref="TrackedAtomsList{T}"/> does.
 /// </summary>
 /// <typeparam name="T">What the list holds.</typeparam>
 public sealed class LocalAtomsList<T> : AtomsList<T>

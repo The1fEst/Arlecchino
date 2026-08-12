@@ -5,10 +5,8 @@ using System.IO;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Builds the three packages into the local feed under <c>artifacts/packages</c>. That feed is how an
-/// application is tried against a change before it is released: the framework is edited, packed here,
-/// and the application restores the new version instead of the one on nuget.org — skip the packing and
-/// it quietly keeps building against the old one.
+/// Builds the three packages into the local feed under <c>artifacts/packages</c>. An application restores
+/// from that feed, so a change left unpacked leaves it building against the released version.
 /// </summary>
 internal static class Pack
 {

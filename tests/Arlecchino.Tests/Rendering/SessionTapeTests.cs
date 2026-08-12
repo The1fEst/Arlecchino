@@ -9,9 +9,8 @@ using Arlecchino.Tests.Support;
 namespace Arlecchino.Tests.Rendering;
 
 /// <summary>
-/// A tape is only worth having if it plays the same way twice, so that is what these check first, and
-/// then that the text it writes down is the text it reads back — the two claims everything else about
-/// a tape rests on.
+/// The two claims a tape rests on: it plays the same way twice, and the text it writes down is the text it
+/// reads back.
 /// </summary>
 public sealed class SessionTapeTests
 {

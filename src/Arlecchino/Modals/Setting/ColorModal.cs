@@ -19,9 +19,8 @@ public enum ColorChannel : byte
 }
 
 /// <summary>
-/// A color picked on three sliders. Hue, saturation and lightness are edited rather than the raw
-/// channels because they are what people reach for; the result is converted to <see cref="Rgb"/> on
-/// the way out. Both directions round to whole units, so feeding a color back in can shift it by one.
+/// A color picked on three sliders: hue, saturation and lightness, converted to <see cref="Rgb"/> on the way
+/// out. Both directions round to whole units, so feeding a color back in can shift it by one.
 /// </summary>
 public sealed class ColorModal : Modal
 {

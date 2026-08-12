@@ -11,9 +11,8 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino;
 
 /// <summary>
-/// The real console. Registered by default and replaceable through <c>UseTerminal&lt;T&gt;()</c>.
-/// On Windows it turns on virtual terminal output at startup and turns off virtual terminal input,
-/// because that flag stops <c>Console.ReadKey</c> from delivering keys at all.
+/// The real console, registered by default and replaceable through <c>UseTerminal&lt;T&gt;()</c>. On Windows
+/// it turns virtual terminal output on and virtual terminal input off at startup.
 /// </summary>
 public sealed partial class SystemTerminal : IArlecchinoTerminal
 {
@@ -65,9 +64,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     public int Height => Console.IsOutputRedirected ? RedirectedHeight : Math.Max(1, Console.WindowHeight);
 
     /// <summary>
-    /// Whether a key is waiting. Always false when input is redirected. With the Windows mouse on, the
-    /// answer comes from the console's own event queue rather than from <c>Console</c>, because the two
-    /// cannot both consume it.
+    /// Whether a key is waiting, and always false when input is redirected. With the Windows mouse on, the
+    /// answer comes from the console's own event queue.
     /// </summary>
     public bool KeyAvailable => !_unread.IsEmpty ||
                                 (_windowsInput is { } input
@@ -100,16 +98,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
         _windowsInput?.ReadMouse() ?? throw new InvalidOperationException("No mouse events are being read.");
 
     /// <summary>
-    /// Switches to the alternate screen and hides the cursor.
-    ///
-    /// The keyboard protocol is not asked for, though it is what would make <c>Ctrl+Enter</c> a key at
-    /// all. Asking moves the function keys from <c>SS3 P</c> to <c>CSI P</c>, and the escape sequences
-    /// are read by <c>Console.ReadKey</c> before this library sees a byte of them — which reads
-    /// <c>CSI P</c> as F4, <c>CSI Q</c> as F5 and <c>CSI S</c> as F7. Measured, not deduced: kitty on a
-    /// Mac, where the terminal's own description is inside the application bundle rather than in the
-    /// system database, so the runtime falls back to one that spells those keys differently. Trading
-    /// four working function keys for one new combination is not a trade. Reading the bytes ourselves
-    /// would settle it, and until then the protocol stays unasked for.
+    /// Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for,
+    /// since asking it moves the function keys onto sequences the runtime reads as other keys.
     /// </summary>
     public void EnterFullScreen()
     {
@@ -135,10 +125,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
-    /// Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed
-    /// into the key stream; on Windows the console is read record by record instead, because the flag
-    /// that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while
-    /// this is on, since otherwise the console eats clicks as text selection.
+    /// Starts reporting presses, releases, drags and the wheel: as SGR reports in the key stream, or record
+    /// by record on Windows. Quick-edit mode is turned off while this is on.
     /// </summary>
     public void EnableMouse()
     {
@@ -194,9 +182,8 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
-    /// Copies through the terminal itself, encoded as base64. This is the only way to reach the
-    /// clipboard of the machine the user is actually at when the application runs over a remote
-    /// session; terminals that have it switched off silently drop it.
+    /// Copies through the terminal itself, encoded as base64, which is the only way to reach the local
+    /// clipboard over a remote session. Terminals with it switched off drop it silently.
     /// </summary>
     /// <param name="text">What to copy.</param>
     public void CopyToClipboard(string text)

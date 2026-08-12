@@ -19,10 +19,9 @@ using Microsoft.Extensions.Logging;
 namespace Arlecchino;
 
 /// <summary>
-///     Draws the frames: the current view first — inside the <see cref="IArlecchinoLayout" /> when the
-///     application registered one — then the output line, the hints and any dialog on top. A view that
-///     throws while drawing is reported on the output line instead of taking the application down, since
-///     a half-drawn frame is easier to recover from than a dead process.
+///     Draws the frames: the current view first, inside the <see cref="IArlecchinoLayout" /> when there is
+///     one, then the output line, the keys and any dialog on top. A view that throws is reported on the
+///     output line rather than taking the application down.
 /// </summary>
 public class Screen
 {
@@ -287,10 +286,8 @@ public class Screen
     }
 
     /// <summary>
-    ///     Draws the view, inside the layout when the application has one and the screen wants it. The layout
-    ///     decides where the view goes by where it calls back, and the surface holds that region for exactly as
-    ///     long as the view is drawing. A view asks for its content and is handed what it was left, which is
-    ///     what lets a layout be added without editing a single view.
+    ///     Draws the view, inside the layout when the application has one and the screen wants it. The
+    ///     layout says where the view goes by where it calls back, and the surface holds that region.
     /// </summary>
     private void DrawView()
     {
@@ -366,10 +363,8 @@ public class Screen
     }
 
     /// <summary>
-    /// What goes in the box. A chord that has been started replaces it outright, since every other key
-    /// on the screen is unreachable until the chord is finished and listing them would be a lie. It is
-    /// also the one thing an application that turned the box off still gets: a leader with nothing on
-    /// screen to say what is behind it is a key nobody can press twice.
+    /// What goes in the box. A chord that has been started replaces it outright, since every other key on
+    /// the screen is unreachable until that chord is finished.
     /// </summary>
     /// <returns>The keys to draw, and what each of them does.</returns>
     private List<(string Key, string Description)> Hints()

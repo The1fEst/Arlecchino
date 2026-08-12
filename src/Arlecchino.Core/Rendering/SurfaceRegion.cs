@@ -5,9 +5,8 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Rendering;
 
 /// <summary>
-/// A rectangle on a <see cref="Surface"/> with its own coordinates and its own clipping: writing
-/// outside it is dropped rather than spilled onto a neighbor. Split a frame into regions instead of
-/// counting columns by hand, and the same geometry answers "was this click inside".
+/// A rectangle on a <see cref="Surface"/> with its own coordinates and clipping, so writing outside it is
+/// dropped. The same geometry answers where a click landed.
 /// </summary>
 /// <param name="Surface">The surface drawn into.</param>
 /// <param name="Left">Frame column of the left edge.</param>
@@ -108,10 +107,8 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     }
 
     /// <summary>
-    /// A cursor that writes the next line of this region and remembers where the one after it goes,
-    /// for a pane filled from a loop. <see cref="Surface"/>'s own flow calls belong to the whole
-    /// frame, so inside a pane they write at the top of the screen and paint over its border; this
-    /// one stays where it was given.
+    /// A cursor that writes the next line of this region and remembers where the one after it goes. The flow
+    /// calls on <see cref="Surface"/> belong to the whole frame; this one stays inside the region.
     /// </summary>
     /// <returns>A flow starting at the first row of the region.</returns>
     public PaneFlow Flow() => new(this);

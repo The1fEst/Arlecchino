@@ -24,27 +24,8 @@ internal readonly record struct TerminalAnswers(
     Rgb? Background);
 
 /// <summary>
-/// Asks the terminal what it can do, once, before the application starts reading keys.
-///
-/// Everything here rests on one arrangement: the questions go out in an order that ends with the one
-/// every terminal answers — primary device attributes — so the reply to it is the signal that no other
-/// reply is coming. Without that fence there is nothing to wait for but a guess at how long a terminal
-/// takes to stay silent.
-///
-/// The fence stops the waiting, not the reading: once it has arrived, whatever is already buffered is
-/// taken too, and only a lull or a keystroke ends it. A terminal that answers out of the order it was
-/// asked would otherwise have its last answer cut off, and nothing in any specification says it must
-/// answer in order.
-///
-/// A terminal that answers nothing costs the deadline and leaves every setting as it was, which is the
-/// behavior an application already had to live with. Whatever was read is then handed straight back,
-/// because without the fence there is no telling an answer from a keystroke.
-///
-/// With the fence, there is: answers are escape sequences, so what was read outside every sequence was
-/// typed while the terminal was being asked, and <see cref="TerminalReply"/> picks it out to be handed
-/// back. Judging the whole read by its shape does not work. On Windows the console layer eats the kitty
-/// query's reply and leaves the last character of it behind, so the first thing a terminal says can be a lone
-/// backslash. Treating that as something a person typed threw away every answer behind it.
+/// Asks the terminal what it can do, once, before the application starts reading keys. The questions end
+/// with the one every terminal answers, so its reply is the signal that no other reply is coming.
 /// </summary>
 public static class TerminalProbe
 {
@@ -56,10 +37,8 @@ public static class TerminalProbe
 
     /// <summary>
     /// Asks, waits no longer than it is told, and installs what came back into
-    /// <see cref="TerminalCapabilities"/> and <see cref="Glyphs"/>. Anything the terminal did not answer
-    /// is left alone.
-    ///
-    /// Call it before the mouse and paste modes go on, so their reports cannot arrive among the answers.
+    /// <see cref="TerminalCapabilities"/> and <see cref="Glyphs"/>, leaving unanswered questions alone. Call
+    /// it before the mouse and paste modes go on.
     /// </summary>
     /// <param name="terminal">The terminal to ask.</param>
     /// <param name="within">How long to wait for the last answer before giving up.</param>
@@ -84,7 +63,7 @@ public static class TerminalProbe
 
     private static void Install(TerminalAnswers answers)
     {
-        var known = answers.CellWidth > 0 && answers.CellHeight > 0;
+        var known = answers is { CellWidth: > 0, CellHeight: > 0 };
 
         TerminalCapabilities.Sixel = answers.Sixel;
         TerminalCapabilities.Kitty = answers.Kitty;
@@ -161,9 +140,8 @@ public static class TerminalProbe
     }
 
     /// <summary>
-    /// Reads the answer to <c>OSC 11</c>, which is the color behind the text written as
-    /// <c>rgb:</c> and three hex groups. Terminals differ on how many digits a group has — two and four
-    /// are both common — so each is scaled from however many it turned out to be.
+    /// Reads the answer to <c>OSC 11</c>, the color behind the text, written as <c>rgb:</c> and three hex
+    /// groups. Each group is scaled from however many digits it turned out to have.
     /// </summary>
     /// <param name="heard">Everything the terminal said.</param>
     /// <returns>The color, or <c>null</c> when it did not say.</returns>

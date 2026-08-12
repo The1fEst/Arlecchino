@@ -23,9 +23,8 @@ public static class ScrollBar
     public static bool IsNeeded(int total, int rows) => rows > 0 && total > rows;
 
     /// <summary>
-    /// Draws the bar down the last column of a region. The thumb is at least one cell tall however long
-    /// the list is, and it only touches the ends when the list does, so "near the end" never looks the
-    /// same as "at the end".
+    /// Draws the bar down the last column of a region. The thumb is at least one cell tall and touches an end
+    /// only when the list does.
     /// </summary>
     /// <param name="region">Where the rows were drawn; the last column is used.</param>
     /// <param name="first">Index of the first item on screen.</param>

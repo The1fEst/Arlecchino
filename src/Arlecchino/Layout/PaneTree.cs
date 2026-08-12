@@ -12,15 +12,9 @@ using Arlecchino.Widgets;
 namespace Arlecchino.Layout;
 
 /// <summary>
-/// A screen described once, by binary space partitioning: every branch hands its region to two halves,
-/// and every leaf is what goes in that half. Where a chain of <see cref="SurfaceRegion.SplitLeft"/>
-/// and <see cref="SurfaceRegion.SplitTop"/> calls spreads the shape of a screen through the whole of
-/// <c>Draw</c>, a tree states it in one place — and the view then draws itself in a line.
-///
-/// Two members build it, so a tree reads as a tree: <see cref="Branch(PaneTree, PaneTree)"/> and
-/// <see cref="Leaf(IArlecchinoWidget)"/>. Only the two halves of a
-/// branch are ever required — say which way it cuts, or how much the first half takes, only where it
-/// matters:
+/// A screen described once, by binary space partitioning: every branch hands its region to two halves, and
+/// every leaf is what goes in that half. It is built from <see cref="Branch(PaneTree, PaneTree)"/> and
+/// <see cref="Leaf(IArlecchinoWidget)"/>.
 ///
 /// <code>
 /// _layout = Branch(Rows, 3,
@@ -34,13 +28,6 @@ namespace Arlecchino.Layout;
 ///
 /// public void Draw() => _layout.Draw(_surface.Content);
 /// </code>
-///
-/// A <c>using static</c> of this type and of <see cref="PaneSplit"/> is what lets it read that way.
-///
-/// The tree holds what it draws, so it is built where the widgets are — in the view's constructor —
-/// and lives as long as the view does. Sizes are worked out per frame, which is what lets one tree
-/// fit any terminal; a region too small for what it holds leaves the panes that did not fit empty
-/// rather than overlapping them.
 /// </summary>
 public sealed class PaneTree
 {
@@ -91,19 +78,8 @@ public sealed class PaneTree
     public int OuterGap { get; private set; }
 
     /// <summary>
-    /// Builds the focus ring of the screen from the tree: every widget of it that takes the focus, in
-    /// the order the branches lay them out — left before right, top before bottom. <c>Tab</c> then
-    /// walks the screen the way it looks, and there is no second list to keep in step with the first.
-    ///
-    /// <code>
-    /// _focus = _layout.AsFocusRing(options.Keymap);
-    /// </code>
-    ///
-    /// What comes back is an ordinary <see cref="FocusRing"/>, so anything focusable that lives
-    /// outside the tree is added to it afterward, and lands at the end of the walk.
-    ///
-    /// The tree keeps the ring it built, which is what lets <see cref="HandleMouse"/> move the focus
-    /// to the pane that was clicked.
+    /// Builds the focus ring of the screen from the tree, left before right and top before bottom. The tree
+    /// keeps the ring, so <see cref="HandleMouse"/> can move the focus to the pane that was clicked.
     /// </summary>
     /// <param name="keymap">Where the keys that move the focus come from.</param>
     /// <returns>A ring holding the panes that take the focus.</returns>
@@ -135,14 +111,12 @@ public sealed class PaneTree
     }
 
     /// <summary>
-    /// A pane holding a widget, in a box with a title. The widget is drawn in the room left inside the box.
-    /// The box itself is drawn <c>Theme.Active</c> while the widget holds the focus and <c>Theme.Info</c> while
-    /// it does not, so a screen of panes shows where the cursor is without the view saying anything about it.
+    /// A pane holding a widget, in a box with a title. The box is drawn <c>Theme.Active</c> while the widget
+    /// holds the focus and <c>Theme.Info</c> while it does not.
     /// </summary>
     /// <param name="widget">What goes in the pane.</param>
     /// <param name="title">
-    /// What to write in the top border. A delegate rather than a string, like every other piece of
-    /// user-visible text in the framework, so a translated application translates it too.
+    /// What to write in the top border, as a delegate so a translated application translates it too.
     /// </param>
     /// <returns>The leaf.</returns>
     public static PaneTree Leaf(IArlecchinoWidget widget, Func<string> title)
@@ -183,13 +157,8 @@ public sealed class PaneTree
     public static PaneTree Leaf() => new(static _ => { }, null);
 
     /// <summary>
-    /// A branch that decides everything itself: it cuts along the longer side of whatever region it is
-    /// given and halves it. The longer side is measured in what the eye sees rather than in cells —
-    /// a cell is about twice as tall as it is wide, so 80×24 is a wide region and gets two columns.
-    ///
-    /// Because the side is measured per frame, such a branch can turn from columns into rows when the
-    /// terminal is resized. That is what makes it right for panes of equal standing, and wrong for
-    /// chrome, which should be pinned with a <see cref="PaneSplit"/> of its own.
+    /// A branch that halves the longer side of whatever region it is given, measured as the eye sees it. It
+    /// can turn from columns into rows when the terminal is resized.
     /// </summary>
     /// <param name="first">The upper half, or the left one.</param>
     /// <param name="second">The lower half, or the right one.</param>
@@ -252,19 +221,12 @@ public sealed class PaneTree
     }
 
     /// <summary>
-    /// Sends a mouse event to the pane it landed in, and moves the focus there when that pane claims
-    /// it. The tree already works out which pane owns which cells in order to draw them, so the same
-    /// knowledge tells a click where to go. The event walks down the branches that contain the point
-    /// and reaches one pane, instead of being offered to every widget on the screen in turn. This is
-    /// the whole of a view's <c>HandleMouse</c> when the screen is a tree:
+    /// Sends a mouse event to the pane it landed in, and moves the focus there when that pane claims it. The
+    /// focus follows the click only for a tree that built its ring with <see cref="AsFocusRing"/>.
     ///
     /// <code>
     /// public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);
     /// </code>
-    ///
-    /// A click in the gap between panes, in the surrounding space, or before the first frame was
-    /// drawn belongs to no pane and is left alone. The focus follows the click only for a tree that
-    /// built its ring with <see cref="AsFocusRing"/>; without one the pane still sees the event.
     /// </summary>
     /// <param name="mouse">The event, in frame coordinates.</param>
     /// <returns>The route the pane asked for, or <see cref="ViewRoute.None"/>.</returns>
@@ -319,9 +281,8 @@ public sealed class PaneTree
     private bool IsFocused => _widget is IArlecchinoFocusable { IsFocused: true };
 
     /// <summary>
-    /// Offers the event to the pane that owns the point, walking down only the branches that contain
-    /// it. A branch hands it to its first half and then to its second, and the leaf that holds a
-    /// focusable widget is the one that answers.
+    /// Offers the event to the pane that owns the point, walking down only the branches that contain it. The
+    /// leaf holding a focusable widget is the one that answers.
     /// </summary>
     /// <param name="mouse">The event, in frame coordinates.</param>
     /// <param name="ring">The ring to move the focus in, or <c>null</c> when the tree has none.</param>
@@ -356,9 +317,8 @@ public sealed class PaneTree
     }
 
     /// <summary>
-    /// Pulls every boxed pane onto the edge of the boxed pane before it, so that two of them touching
-    /// share one line rather than drawing two side by side. Only panes in a box take part: one without
-    /// would lose a column of what it draws to a neighbor's border.
+    /// Pulls every boxed pane onto the edge of the boxed pane before it, so two of them touching share one
+    /// line. Only panes in a box take part, since one without would lose a column of what it draws.
     /// </summary>
     /// <param name="placed">Where each pane landed, in the order the tree lays them out.</param>
     private static void Share(List<(PaneTree Pane, SurfaceRegion Region)> placed)

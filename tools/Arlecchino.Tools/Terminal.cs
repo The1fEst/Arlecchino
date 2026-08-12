@@ -15,13 +15,8 @@ using Microsoft.Extensions.Logging;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// The three things an application says to a terminal that nothing else here can check, because in a
-/// test the terminal is a class that writes the answer down rather than one that answers.
-///
-/// Asking what the terminal can do rests on the reply to the last question arriving last; a fake that
-/// replies on demand cannot get that wrong. Copying rests on a sequence a terminal has to accept, and
-/// a fake accepts anything. Pasting rests on markers a terminal wraps the text in, and a fake wraps it
-/// the way the test expects. Each is run here against tmux, which does none of those favours.
+/// The three things an application says to a terminal that no test can check: asking what it can do,
+/// copying, and pasting. Each is run here against tmux, which grants none of the favors a fake grants.
 /// </summary>
 internal static class Terminal
 {
@@ -114,10 +109,8 @@ internal static class Terminal
     }
 
     /// <summary>
-    /// Asks what the terminal can do while somebody types. The answers matter less than the arrangement
-    /// around them: the questions end with the one every terminal answers, and until that reply arrives
-    /// nothing read can be assumed to be an answer rather than a keystroke. Type during the asking and
-    /// the characters must still arrive.
+    /// Asks what the terminal can do while keys are being typed into it. The questions end with the one every
+    /// terminal answers, and what is typed during the asking has to arrive whole.
     /// </summary>
     /// <param name="folder">Where the pane writes what it learned.</param>
     /// <returns>The complaint, or an empty string.</returns>
@@ -152,9 +145,8 @@ internal static class Terminal
     }
 
     /// <summary>
-    /// Copies, and asks tmux what it received. A terminal only takes a copy it can parse, and tmux keeps
-    /// what it took where it can be read back — which is the only way to know the sequence was framed
-    /// and encoded properly rather than merely written.
+    /// Copies, and asks tmux what it received. Reading back what a terminal took is the only way to know the
+    /// sequence was framed and encoded properly rather than merely written.
     /// </summary>
     /// <param name="folder">Where the pane writes.</param>
     /// <returns>The complaint, or an empty string.</returns>

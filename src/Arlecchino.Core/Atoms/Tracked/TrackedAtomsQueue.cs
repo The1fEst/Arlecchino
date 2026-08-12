@@ -4,9 +4,8 @@ using Arlecchino.Atoms.Collections;
 namespace Arlecchino.Atoms.Tracked;
 
 /// <summary>
-/// A queue whose changes go on the undo stack: the steps of a plan the user arranged, the batch they
-/// lined up. <see cref="AtomHistory"/> picks it up with nothing to register, and each call is one
-/// step — including one that puts several in at once.
+/// A queue whose changes go on the undo stack, picked up by <see cref="AtomHistory"/> with nothing to
+/// register. Each call is one step, including one that puts several in at once.
 /// </summary>
 /// <typeparam name="T">What waits in the queue.</typeparam>
 public sealed class TrackedAtomsQueue<T> : AtomsQueue<T>

@@ -7,13 +7,8 @@ using Arlecchino.Navigation;
 namespace Arlecchino.Focus;
 
 /// <summary>
-/// The cycle of focusable elements inside one view: <c>Tab</c> and <c>Shift+Tab</c> move between
-/// them, everything else goes to the one that holds the focus.
-///
-/// A ring is itself focusable, so one goes inside another: add a ring to a ring and <c>Tab</c> walks
-/// into it, through what it holds and out the far side, without the view saying anything about it. A
-/// nested ring remembers where it was left, so coming back to it from either side lands where the
-/// cursor was rather than at the top.
+/// The cycle of focusable elements inside one view: <c>Tab</c> and <c>Shift+Tab</c> move between them, and
+/// everything else goes to the one holding the focus. A ring is itself focusable, so rings nest.
 /// </summary>
 public sealed class FocusRing : IArlecchinoFocusable
 {
@@ -40,9 +35,8 @@ public sealed class FocusRing : IArlecchinoFocusable
     public IArlecchinoFocusable? Current => _items.Count == 0 ? null : _items[Math.Clamp(_index, 0, _items.Count - 1)];
 
     /// <summary>
-    /// Whether the ring itself holds the focus. A ring a view owns outright is focused from the
-    /// start; one nested in another ring is told when the cursor arrives. It passes that on to
-    /// whichever element it left the focus with, so nothing inside an unfocused ring draws as active.
+    /// Whether the ring itself holds the focus, which a view's own ring does from the start. It passes that
+    /// on to the element it left the focus with, so nothing inside an unfocused ring draws as active.
     /// </summary>
     public bool IsFocused
     {
@@ -114,9 +108,8 @@ public sealed class FocusRing : IArlecchinoFocusable
     public ViewRoute HandleMouse(MouseEvent mouse) => Claim(mouse).Route;
 
     /// <summary>
-    /// Moves the focus one element along without wrapping, for a ring nested in another one. At the
-    /// last element going forward, or the first going back, the step is left to the ring outside, and
-    /// this one keeps the place it was left at.
+    /// Moves the focus one element along without wrapping, for a ring nested in another one. At either end
+    /// the step is left to the ring outside, and this one keeps its place.
     /// </summary>
     /// <param name="direction">Which way the focus is going.</param>
     /// <returns>Whether the focus moved inside this ring.</returns>

@@ -66,9 +66,8 @@ public sealed class ArlecchinoOptions
     public bool BracketedPaste { get; set; } = true;
 
     /// <summary>
-    /// How long to wait for the rest of an escape sequence before deciding there is none. Arrows and
-    /// function keys arrive as several characters, and over a slow link they do not always arrive
-    /// together; this is also the delay a lone <c>Esc</c> costs, so keep it short.
+    /// How long to wait for the rest of an escape sequence before deciding there is none. It is also the
+    /// delay a lone <c>Esc</c> costs, so keep it short.
     /// </summary>
     public TimeSpan EscapeTimeout { get; set; } = TimeSpan.FromMilliseconds(25);
 
@@ -85,19 +84,14 @@ public sealed class ArlecchinoOptions
     public GraphSymbols GraphSymbols { get; set; } = GraphSymbols.Braille;
 
     /// <summary>
-    /// How pictures reach the terminal. Installed into <see cref="Glyphs.Picture"/> on resolve, and
-    /// settable afterward. <see cref="ImageProtocol.Auto"/> by default, which asks the
-    /// terminal rather than guessing; name a protocol to decide it yourself.
+    /// How pictures reach the terminal, installed into <see cref="Glyphs.Picture"/> on resolve and
+    /// settable afterward. <see cref="ImageProtocol.Auto"/> asks the terminal rather than guessing.
     /// </summary>
     public ImageProtocol ImageProtocol { get; set; } = ImageProtocol.Auto;
 
     /// <summary>
-    /// Whether to ask the terminal what it can do as the application starts — which graphics protocols
-    /// it speaks and how many pixels a cell is. Costs at most <see cref="TerminalAnswer"/> once, and only
-    /// on a terminal that stays silent; the answers usually arrive in a millisecond or two.
-    ///
-    /// Turn it off for a terminal that answers something strange, or to keep startup free of the wait.
-    /// <see cref="ImageProtocol.Auto"/> then has nothing to go on and settles for cells.
+    /// Whether to ask the terminal what it can do as the application starts. It costs at most
+    /// <see cref="TerminalAnswer"/>, and only on a terminal that stays silent.
     /// </summary>
     public bool AskTerminal { get; set; } = true;
 
@@ -105,15 +99,13 @@ public sealed class ArlecchinoOptions
     public TimeSpan TerminalAnswer { get; set; } = TimeSpan.FromMilliseconds(120);
 
     /// <summary>
-    /// How many pixels wide a cell is taken to be. Installed into <see cref="Glyphs.CellWidth"/> on
-    /// resolve. Only <see cref="ImageProtocol.Sixel"/> reads it, because sixel is measured in
-    /// pixels and knows nothing of cells; there is no asking the terminal yet, so this is the guess an
-    /// application corrects when it knows the font.
+    /// How many pixels wide a cell is taken to be, installed into <see cref="Glyphs.CellWidth"/> on
+    /// resolve. Only <see cref="ImageProtocol.Sixel"/> reads it, since sixel is measured in pixels.
     /// </summary>
     public int CellWidth { get; set; } = 10;
 
     /// <summary>
-    /// How many pixels tall a cell is taken to be. Installed into <see cref="Glyphs.CellHeight"/> on
+    /// How many pixels tall a cell is taken to be, installed into <see cref="Glyphs.CellHeight"/> on
     /// resolve. See <see cref="CellWidth"/>.
     /// </summary>
     public int CellHeight { get; set; } = 20;

@@ -27,10 +27,8 @@ public enum NotificationLevel
 public sealed record NotificationAction(Func<string> Label, Action Run);
 
 /// <summary>
-/// One thing the application said, and when it said it. A plain message needs no more than the three
-/// values it is built with; something still running fills in <see cref="ProgressText"/>, and something
-/// worth reading at length fills in <see cref="Detail"/> and <see cref="Actions"/>, which the
-/// notifications screen offers when the entry is opened.
+/// One thing the application said, and when it said it. Work still running fills in
+/// <see cref="ProgressText"/>, and anything longer fills in <see cref="Detail"/> and <see cref="Actions"/>.
 /// </summary>
 public sealed class Notification
 {
@@ -124,12 +122,7 @@ public sealed class Notification
 
 /// <summary>
 /// What the application has to say, and for how long. The newest line sits on the output row until it times
-/// out, so a message does not hold the screen for the rest of the session. It stays in the list for much
-/// longer, so opening the notifications screen still shows what went past while the user was looking
-/// elsewhere.
-///
-/// Both timeouts come from <see cref="ArlecchinoOptions"/>, and both are counted by the
-/// <see cref="Ticker"/> — nothing here runs on its own thread.
+/// out and stays in the list much longer, on two timeouts the <see cref="Ticker"/> counts.
 /// </summary>
 public sealed class Notifications
 {
@@ -182,14 +175,10 @@ public sealed class Notifications
     }
 
     /// <summary>
-    /// What is worth showing right now, the newest first: everything still running, and everything that
-    /// ended recently enough not to have timed out yet.
-    ///
-    /// <see cref="Current"/> answers the same question for one row at the bottom of the screen, which can only
-    /// hold the newest. An application that shows its work as a stack of cards rather than a line wants all of
-    /// them, and wants each one to stay up however long the work takes. That is why running work is here
-    /// whatever its age.
+    /// What is worth showing right now, the newest first: everything still running, whatever its age, and
+    /// everything that ended recently enough not to have timed out.
     /// </summary>
+    /// <seealso cref="Current"/>
     public IReadOnlyList<Notification> Recent
     {
         get
@@ -224,9 +213,8 @@ public sealed class Notifications
     }
 
     /// <summary>
-    /// Says something that carries more than a line — work still running, a report to read in full,
-    /// something to do about it. The entry is built by the caller, so it can be kept and taken back
-    /// with <see cref="Withdraw"/> once whatever it reports is over.
+    /// Says something that carries more than a line: work still running, a report to read in full, something
+    /// to do about it. The caller builds the entry, so it can take it back with <see cref="Withdraw"/>.
     /// </summary>
     /// <param name="entry">The notification to raise.</param>
     /// <returns>The same entry, so a caller can hold on to it in one expression.</returns>
@@ -247,9 +235,8 @@ public sealed class Notifications
     }
 
     /// <summary>
-    /// Turns a line that was reporting work into what came of that work, in place. The entry keeps its
-    /// spot in the list and its identity, so a dialog someone already has open changes under them
-    /// rather than going stale, and the entry starts aging like any other message.
+    /// Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot
+    /// and its identity, so an open dialog changes rather than going stale.
     /// </summary>
     /// <param name="entry">The entry that was reporting.</param>
     /// <param name="text">What came of the work.</param>
@@ -269,9 +256,8 @@ public sealed class Notifications
     public void Withdraw(Notification entry) => _entries.Remove(entry);
 
     /// <summary>
-    /// Throws away everything that has been said, the output row included — except work that is still
-    /// running, which keeps its line. A copy does not stop because its line was cleared, and a job
-    /// running with nothing on screen to show for it is worse than a list that would not empty.
+    /// Throws away everything that has been said, the output row included, except work that is still running.
+    /// Clearing a line does not stop the work behind it.
     /// </summary>
     public void Clear() => _entries.Reset(Kept(static entry => entry.IsRunning));
 

@@ -1,8 +1,8 @@
 namespace Arlecchino.Modals.Asking;
 
 /// <summary>
-/// A field that is typed into. Shared by the text field and the number field, which is why both
-/// behave the same way when it comes to editing and error messages.
+/// A field that is typed into, shared by the text field and the number field so both edit and complain
+/// alike.
 /// </summary>
 public interface ITextEntryModal : IAffixedModal
 {

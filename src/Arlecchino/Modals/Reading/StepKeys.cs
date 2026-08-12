@@ -6,9 +6,8 @@ using Arlecchino.Modals.Setting;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// The dialogs that hold a value with a step: a slider and a color. Both are the same gesture — go
-/// up, go down, go a long way, go to the end — so both answer to the same keys, and the field that
-/// asks for a number in words answers to them too.
+/// The keys of the dialogs that hold a value with a step: a slider, a color, a number in words. Going up,
+/// down and to the end is one gesture for all of them.
 /// </summary>
 internal sealed class StepKeys
 {

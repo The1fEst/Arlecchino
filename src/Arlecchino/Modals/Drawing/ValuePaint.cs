@@ -9,9 +9,8 @@ using Arlecchino.Modals.Setting;
 namespace Arlecchino.Modals.Drawing;
 
 /// <summary>
-/// The dialogs that show a value rather than ask for one in words: a slider, a yes-or-no, a date or a
-/// time, a color. Each says where its parts were drawn as it draws them, so that a click can be
-/// answered without anyone having to work out where the track must have gone.
+/// The dialogs that show a value rather than ask for one in words: a slider, a yes-or-no, a date, a color.
+/// Each says where its parts were drawn as it draws them, so a click can be answered.
 /// </summary>
 internal sealed class ValuePaint
 {

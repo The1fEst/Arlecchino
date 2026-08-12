@@ -13,19 +13,16 @@ using Arlecchino.Atoms;
 namespace Arlecchino.Testing;
 
 /// <summary>
-/// A whole application wired up for a test: real services, a terminal in memory, and no loop running
-/// in the background. Frames are drawn when asked for rather than on a timer, so a test presses keys and
-/// then looks at what the screen would be showing, with nothing to wait for and nothing to race against.
+/// A whole application wired up for a test: real services, a terminal in memory, and no loop in the
+/// background. Frames are drawn when asked for, so a test presses keys and then reads the screen.
 /// </summary>
 public sealed class ArlecchinoTestHost : IDisposable
 {
     private readonly ServiceProvider _provider;
 
     /// <summary>
-    /// Builds the application. The minimum size is dropped to one cell, so a test can work in a window
-    /// far smaller than a real one without hitting the too-small notice. Color is fixed at
-    /// <see cref="ColorSupport.TrueColor"/> so that frames do not change with the environment the test
-    /// runs in — assign <see cref="TerminalCapabilities.Color"/> afterward to test another level.
+    /// Builds the application, with the minimum size dropped to one cell and color fixed at
+    /// <see cref="ColorSupport.TrueColor"/>. Assign <see cref="TerminalCapabilities.Color"/> to change it.
     /// </summary>
     /// <param name="width">Columns of the fake terminal.</param>
     /// <param name="height">Rows of the fake terminal.</param>
@@ -111,9 +108,8 @@ public sealed class ArlecchinoTestHost : IDisposable
     }
 
     /// <summary>
-    /// Routes a key exactly as the terminal reported it, character and all. <see cref="Press"/> and
-    /// <see cref="Type"/> cover what a test writes by hand. This one is for a key played back from
-    /// a <see cref="SessionTape"/>, where the character and the key both matter.
+    /// Routes a key exactly as the terminal reported it, character and all, for a key played back from a
+    /// <see cref="SessionTape"/>. A test writing keys by hand reaches for <see cref="Press"/> instead.
     /// </summary>
     /// <param name="key">The key as the terminal reported it.</param>
     public void Send(KeyPress key) => _provider.GetRequiredService<InputRouter>().ProcessKey(key);
@@ -175,12 +171,8 @@ public sealed class ArlecchinoTestHost : IDisposable
     }
 
     /// <summary>
-    /// Draws a frame the way a running application does — as the difference from the last one — and returns
-    /// what the screen holds afterward, styling and all stripped away.
-    ///
-    /// The frame written, and the screen returned differ, and that is the point: an idle frame writes nothing
-    /// at all, and a frame that changed one cell writes one cell. Reading the screen is what lets a test
-    /// assert on the whole picture regardless.
+    /// Draws a frame as the difference from the last one, the way a running application does, and returns the
+    /// whole screen afterward with the styling stripped away.
     /// </summary>
     /// <returns>The screen.</returns>
     public string Frame()
@@ -201,9 +193,8 @@ public sealed class ArlecchinoTestHost : IDisposable
     }
 
     /// <summary>
-    /// Draws a frame whole and returns the color sequences in it, in order. Whole rather than diffed
-    /// on purpose: a diffed frame only restates the styles of the cells it rewrites, so the sequences
-    /// in it are the ones that changed rather than the ones the frame is drawn in.
+    /// Draws a frame whole and returns the color sequences in it, in order. A diffed frame would carry only
+    /// the styles of the cells it rewrote.
     /// </summary>
     /// <returns>The sequences as they appeared.</returns>
     public IReadOnlyList<string> Styles()

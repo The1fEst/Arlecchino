@@ -13,13 +13,8 @@ using Microsoft.Extensions.Logging;
 namespace Arlecchino;
 
 /// <summary>
-/// Decides who gets a key or a mouse event. The order is what keeps the application predictable: an
-/// open dialog takes everything, then the palette key, then the view's own commands, then commands
-/// available everywhere, and only then the view itself. A handler that throws is reported on the
-/// output line rather than allowed to stop the loop.
-///
-/// What a key means once a dialog has it is not decided here. This file is the order and nothing
-/// else, so that the order can be read at a sitting.
+/// Decides who gets a key or a mouse event, in order: an open dialog, the palette key, the view's commands,
+/// the commands available everywhere, then the view. A handler that throws is reported on the output line.
 /// </summary>
 public class InputRouter
 {
@@ -201,9 +196,8 @@ public class InputRouter
     }
 
     /// <summary>
-    /// Where a mouse event goes: the dialog on top if there is one, then the output row, then the
-    /// layout, then the view. The layout is asked before the view because what it draws is around the
-    /// view rather than under it — a click on the band along the top landed on the band.
+    /// Where a mouse event goes: the dialog on top, then the output row, then the layout, then the view. The
+    /// layout is asked first of those two, since what it draws is around the view rather than under it.
     /// </summary>
     /// <param name="mouse">The event that arrived.</param>
     private void RouteMouse(MouseEvent mouse)
@@ -250,9 +244,8 @@ public class InputRouter
     }
 
     /// <summary>
-    /// Pastes into a field of one line: the first line of what was pasted, and only the characters the
-    /// field will take. A field asking for a number does not become a field asking for anything because
-    /// something else was on the clipboard.
+    /// Pastes into a field of one line: the first line of what was pasted, and only the characters the field
+    /// will take. What was on the clipboard does not widen what a field accepts.
     /// </summary>
     /// <param name="modal">The field.</param>
     /// <param name="text">What was pasted.</param>

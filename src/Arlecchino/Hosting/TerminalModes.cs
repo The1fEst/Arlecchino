@@ -3,15 +3,8 @@ using System.Threading;
 namespace Arlecchino.Hosting;
 
 /// <summary>
-/// The modes an application puts a terminal into and has to take it back out of: the alternate screen,
-/// the mouse, bracketed paste. Two things ask for them. One is the service that runs the application for
-/// as long as the host lives, and the other is the handover that lends the terminal to another program
-/// for a while. They are written once here, and both of them call the same pair.
-///
-/// Leaving runs once however many times it is asked for. A terminal is given back from the loop
-/// finishing, from a signal, and from process exit, and each of them can be the first. Writing the
-/// leaving sequences twice would put a stray escape on the screen the shell is about to draw its prompt
-/// on.
+/// The modes an application puts a terminal into and has to take it back out of: the alternate screen, the
+/// mouse, bracketed paste. Leaving runs once however many times it is asked for.
 /// </summary>
 internal sealed class TerminalModes
 {

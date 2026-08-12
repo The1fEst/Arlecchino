@@ -3,13 +3,8 @@ using System;
 namespace Arlecchino.Layout;
 
 /// <summary>
-/// How much of a region a branch gives to its first half. It is a share of what there is, a fixed number of
-/// cells, or — for the toolbars and status bars that sit at the far edge — a fixed number of cells measured
-/// from the other end.
-///
-/// <b>The unit is the literal, not the number.</b> A <c>double</c> is a share and an <c>int</c> is a
-/// count of cells, and both convert on their own, so the call site says which it meant by whether it
-/// has a decimal point:
+/// How much of a region a branch gives to its first half: a share, a count of cells, or a count from the
+/// other end. The literal says which, since a <c>double</c> is a share and an <c>int</c> is a count.
 ///
 /// <code>
 /// Branch(Rows, 3, header, body);      // three rows
@@ -17,11 +12,11 @@ namespace Arlecchino.Layout;
 /// Branch(Columns, 3, side, main);     // three columns — a count follows the direction of the cut
 /// </code>
 ///
-/// The pair worth remembering is <c>1</c> and <c>1.0</c>: the first is one row, the second is all of
-/// them. A bare <c>0</c> is rejected by the compiler rather than guessed at — it fits both a
-/// <see cref="PaneSplit"/> and a size — so write <see cref="Fraction"/> or <see cref="Cells"/> when
-/// nothing is what you mean.
 /// </summary>
+/// <example>
+/// <c>1</c> is one row and <c>1.0</c> is all of them. A bare <c>0</c> is rejected by the compiler, so write
+/// <see cref="Fraction"/> or <see cref="Cells"/> where nothing is meant.
+/// </example>
 public readonly record struct PaneSize
 {
     private readonly double _value;

@@ -10,19 +10,8 @@ using Microsoft.CodeAnalysis.Text;
 namespace Arlecchino.Generators;
 
 /// <summary>
-/// Turns localization files into one enum of names and one function that resolves them.
-///
-/// The point is not translation — an application with one language wants this too. Text written in
-/// the place it is drawn gets written twice: the same sentence appears in a dialog and in the log
-/// that follows it, and the day one of them is reworded the two quietly disagree. A name that is
-/// checked at compile time cannot drift, and the file it resolves to is the one place to read the
-/// application's whole voice at once.
-///
-/// The files come from the project being built, as <c>AdditionalFiles</c> named <c>*.toml</c> under a
-/// folder the project names in <c>ArlecchinoLocalizationFolder</c>. The default file is the one whose
-/// language matches <c>ArlecchinoLocalizationLanguage</c>, which is <c>en</c> unless it is set; every
-/// other file is a translation, and a string it leaves out falls back to the default rather than
-/// leaving a hole on the screen.
+/// Turns localization files into one enum of names and one function that resolves them, so a name checked at
+/// compile time stands in for text written where it is drawn. A string a translation leaves out falls back.
 /// </summary>
 [Generator]
 public sealed partial class LocalizationGenerator : IIncrementalGenerator

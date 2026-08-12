@@ -33,10 +33,8 @@ public interface IArlecchinoTerminal
     KeyPress ReadKey();
 
     /// <summary>
-    /// Puts a key back, so the next <see cref="ReadKey"/> returns it and <see cref="KeyAvailable"/>
-    /// reports it as waiting. For code that had to read a key to find out it did not want it — asking
-    /// the terminal what it can do reads until an answer stops looking like one, and whatever ended it
-    /// belongs to whoever pressed it.
+    /// Puts a key back, so the next <see cref="ReadKey"/> returns it. It is for code that had to read a key
+    /// to find out it did not want it.
     /// </summary>
     /// <param name="key">The key to put back.</param>
     void Unread(KeyPress key);
@@ -67,9 +65,8 @@ public interface IArlecchinoTerminal
     void DisablePaste();
 
     /// <summary>
-    /// Puts text on the clipboard of whatever is showing the terminal, which is the machine the user
-    /// is sitting at even over a remote session. Terminals may refuse it, and none report back, so
-    /// there is no way to tell whether it worked.
+    /// Puts text on the clipboard of whatever is showing the terminal, which is the local machine even over a
+    /// remote session. Terminals may refuse it, and none report back.
     /// </summary>
     /// <param name="text">What to copy.</param>
     void CopyToClipboard(string text);

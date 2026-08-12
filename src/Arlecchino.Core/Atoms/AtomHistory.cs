@@ -6,13 +6,8 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms;
 
 /// <summary>
-/// Undo and redo over every <see cref="TrackedAtom{T}"/>. It collects from the moment it exists, so the
-/// hosted service resolves it at startup; a headless run has to create it before the edits it wants
-/// to undo.
-///
-/// The undo stack is bounded: a long-running application would otherwise hold on to every edit it has
-/// ever made, and each of those keeps the old value alive too. Steps past <see cref="Capacity"/> fall
-/// off the far end, which is the end nobody is going to reach.
+/// Undo and redo over every <see cref="TrackedAtom{T}"/>, collecting from the moment it exists. The stack is
+/// bounded, and steps past <see cref="Capacity"/> fall off the far end.
 /// </summary>
 public sealed class AtomHistory : IDisposable
 {
@@ -55,9 +50,8 @@ public sealed class AtomHistory : IDisposable
     public int Depth => _undoable.Count;
 
     /// <summary>
-    /// Collects everything written until the scope is disposed into a single undo step, so related
-    /// edits go back together. Groups nest: a group opened inside another joins it rather than
-    /// closing it early, so wrapping code that groups edits of its own still yields one step.
+    /// Collects everything written until the scope is disposed into a single undo step. A group opened
+    /// inside another joins it rather than closing it early.
     /// </summary>
     /// <returns>The scope to dispose when the group is complete.</returns>
     public IDisposable Group()

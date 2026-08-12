@@ -33,13 +33,12 @@ public sealed class KeyBindingFallbackTests
     }
 
     /// <summary>
-    /// What a terminal really hands back for the punctuation, read off one rather than written from the
-    /// documentation. A slash, a minus and a full stop arrive under the keypad's names even when they
-    /// were pressed along the keyboard, so a binding written on either name has to answer to both.
-    ///
-    /// Only where the character is the same. The keypad's plus and the key carrying the equals sign type
-    /// different things, so they stay two keys.
+    /// What a terminal really hands back for the punctuation: a slash, a minus and a full stop arrive under
+    /// the keypad's names, so a binding on either name answers to both.
     /// </summary>
+    /// <param name="written">The key the binding was written on.</param>
+    /// <param name="pressed">The key the terminal reported.</param>
+    /// <param name="types">The character both of them type.</param>
     [Theory]
     [InlineData(ConsoleKey.Oem2, ConsoleKey.Divide, '/')]
     [InlineData(ConsoleKey.OemMinus, ConsoleKey.Subtract, '-')]
@@ -80,9 +79,8 @@ public sealed class KeyBindingFallbackTests
     }
 
     /// <summary>
-    /// A binding on a character answers to that character however the keyboard produced it, and says so
-    /// on the key screen as the character itself. Punctuation has no dependable key to be named by: the
-    /// <c>Oem</c> names are a US keyboard, and half the punctuation has no name at all.
+    /// A binding on a character answers to that character however the keyboard produced it, and the key
+    /// screen writes the character itself.
     /// </summary>
     [Fact]
     public void ACharacterBindingAnswersToTheCharacter()

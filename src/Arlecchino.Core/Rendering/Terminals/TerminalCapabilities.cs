@@ -31,17 +31,14 @@ public static class TerminalCapabilities
     ];
 
     /// <summary>
-    /// How much color styles may emit. Detected on first use; a terminal that refuses virtual
-    /// terminal mode lowers it to <see cref="ColorSupport.None"/> at startup.
-    ///
-    /// Process-wide, like <see cref="Theme.Palette"/>: one terminal per process is the assumption the
-    /// framework makes, and tests that change this share it with everything else running.
+    /// How much color styles may emit, detected on first use. It is process-wide, like
+    /// <see cref="Theme.Palette"/>, since the framework assumes one terminal per process.
     /// </summary>
     public static ColorSupport Color { get; set; } = DetectColor();
 
     /// <summary>
-    /// Whether the terminal said it speaks sixel. Set by <see cref="TerminalProbe.Ask"/>; assign it to
-    /// answer for a terminal that will not, and read it to decide what to offer in a settings screen.
+    /// Whether the terminal said it speaks sixel, as set by <see cref="TerminalProbe.Ask"/>. Assign it to
+    /// answer for a terminal that will not.
     /// </summary>
     public static bool Sixel { get; set; }
 
@@ -53,29 +50,19 @@ public static class TerminalCapabilities
 
     /// <summary>
     /// Whether <see cref="Glyphs.CellWidth"/> and <see cref="Glyphs.CellHeight"/> came from the terminal
-    /// rather than from the standing guess. Sixel sizing rests on them, so this is how an application tells a
-    /// picture that will land exactly from one that will land approximately. It is also the only way to tell a
-    /// terminal that reported ten by twenty from one that said nothing.
+    /// rather than from the standing guess. Sixel sizing rests on them.
     /// </summary>
     public static bool CellSizeKnown { get; set; }
 
     /// <summary>
-    /// The color behind the text, as the terminal reported it, or <c>null</c> when it did not say.
-    ///
-    /// It is here because undrawing a sixel means painting over it, and painting needs a color. Sixel writes
-    /// pixels into the screen rather than into a registry of images, so there is nothing to delete by name the
-    /// way kitty allows. A guess would be worse than the leftover — a black rectangle on a light theme is a bug
-    /// anyone can see — so a picture leaves its pixels alone until the terminal has said what color to paint.
+    /// The color behind the text, as the terminal reported it, or <c>null</c> when it did not say. Undrawing
+    /// a sixel means painting over it, so a picture stays where it is until this is known.
     /// </summary>
     public static Rgb? Background { get; set; }
 
     /// <summary>
-    /// Turns <see cref="ImageProtocol.Auto"/> into the best of what the terminal admitted to, and hands
-    /// anything else back unchanged. Kitty first: it carries exact color and lets the terminal do the
-    /// scaling, where sixel takes a palette of 256 and a guess at the size of a cell.
-    ///
-    /// With nothing detected this answers <see cref="ImageProtocol.Blocks"/>, which is why a picture
-    /// still appears on a terminal that never replied.
+    /// Turns <see cref="ImageProtocol.Auto"/> into the best of what the terminal admitted to, kitty first,
+    /// and hands anything else back unchanged. With nothing detected it answers <see cref="ImageProtocol.Blocks"/>.
     /// </summary>
     /// <param name="protocol">What was asked for.</param>
     /// <returns>What to actually draw with.</returns>

@@ -4,11 +4,7 @@ using Arlecchino.Navigation;
 
 namespace Arlecchino.Commands;
 
-/// <summary>
-/// The keys that reach commands, and the half-typed chord in between two of them. Kept in one place
-/// because the screen has to draw what a leader has behind it while the router waits for the key that
-/// finishes it, and both are asking the same question of the same commands.
-/// </summary>
+/// <summary>The keys that reach commands, and the half-typed chord in between two of them.</summary>
 public sealed class CommandKeys
 {
     private readonly Navigator _navigator;
@@ -29,15 +25,8 @@ public sealed class CommandKeys
     public bool IsWaiting => _leader is not null;
 
     /// <summary>
-    /// The view's own commands first, then the ones available everywhere. A command available
-    /// everywhere is only reached with a modifier held, so an unmodified letter always belongs to the
-    /// view.
-    ///
-    /// A command that says it is not available takes nothing. It used to swallow its key anyway, which made
-    /// <c>IsEnabled</c> mean two different things: grayed out on the key screen, and a key that silently does
-    /// nothing. It also left a view unable to give the same key a second meaning for the times its command is
-    /// off. Skipped here, the key carries on to the commands available everywhere and then to the view, exactly
-    /// as if nothing had claimed it.
+    /// Runs what the key is bound to, the view's own commands first and the ones available everywhere
+    /// after them. A command that says it is unavailable is skipped rather than swallowing its key.
     /// </summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when something was bound to it and willing to run.</returns>
@@ -66,9 +55,8 @@ public sealed class CommandKeys
     }
 
     /// <summary>
-    /// Finishes the chord that was started. The key is taken even when it lands on nothing: a person
-    /// halfway through a chord meant the chord, and letting a stray second key act on its own would run
-    /// whatever it is bound to instead.
+    /// Finishes the chord that was started. The key is taken even when it lands on nothing, since
+    /// halfway through a chord it was meant for the chord.
     /// </summary>
     /// <param name="key">The key that arrived after the leader.</param>
     internal void Finish(KeyPress key)
@@ -106,9 +94,8 @@ public sealed class CommandKeys
     }
 
     /// <summary>
-    /// What the hints box shows while a chord is half typed: every key that finishes it, under the name
-    /// of the key alone. This is the whole point of grouping commands behind a leader — the second key
-    /// is looked up rather than remembered.
+    /// Every key that would finish the chord being typed, under the name of that key alone. This is what
+    /// a leader is grouped for: the second key is looked up rather than remembered.
     /// </summary>
     /// <returns>The keys behind the leader, or nothing when no chord is waiting.</returns>
     public (string Key, string Description)[] Hints()

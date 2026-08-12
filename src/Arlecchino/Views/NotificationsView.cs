@@ -14,9 +14,8 @@ using Arlecchino.Widgets.Lists;
 namespace Arlecchino.Views;
 
 /// <summary>
-/// What the application has said lately, the newest first. The output row only shows the last message and
-/// only for a few seconds, so this is where it is read afterward. Entries leave on their own once
-/// they are older than the configured lifetime — the screen shows what is still held, not a log.
+/// What the application has said lately, the newest first, for reading after the output row has cleared
+/// itself. Entries leave once they are older than the configured lifetime, so this is no log.
 /// </summary>
 internal sealed class NotificationsView : IArlecchinoView
 {
@@ -128,9 +127,11 @@ internal sealed class NotificationsView : IArlecchinoView
     }
 
     /// <summary>
-    /// Opens the entry that was confirmed, because one row is not enough for a report — the dialog
-    /// shows the whole of it and offers whatever the entry said could be done about it.
+    /// Opens the entry that was confirmed in a dialog, which shows the whole of what it says and offers
+    /// whatever it said could be done about it.
     /// </summary>
+    /// <param name="entry">The entry that was confirmed.</param>
+    /// <returns>The route the dialog asked for.</returns>
     private ViewRoute Open(Notification entry)
     {
         _state.Modal = new NotificationModal
@@ -143,9 +144,8 @@ internal sealed class NotificationsView : IArlecchinoView
     }
 
     /// <summary>
-    /// One row: the time it arrived, a small bar when the entry says how far along it is, and what it
-    /// has to say. The bar is drawn in the row rather than beside it, because a list draws each row in
-    /// one style and the row is what the list gives.
+    /// One row: the time it arrived, a small bar where the entry says how far along it is, and what it has to
+    /// say. The bar is drawn in the row rather than beside it.
     /// </summary>
     /// <param name="entry">The entry to describe.</param>
     /// <returns>The row.</returns>

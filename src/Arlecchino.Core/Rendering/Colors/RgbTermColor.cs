@@ -4,13 +4,11 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
-/// A style built from exact colors. Use it where the color itself is the point — a swatch, a
-/// chart, syntax highlighting — and keep chrome on <see cref="Theme"/>, which follows the terminal
-/// theme. Falls back to the nearest palette color when the terminal cannot do 24-bit.
+/// A style built from exact colors, for where the color itself is the point rather than a role in
+/// <see cref="Theme"/>. It falls back to the nearest palette color where the terminal cannot do 24-bit.
 /// </summary>
 public sealed class RgbTermColor : IArlecchinoColor
 {
-    private string? _ansi;
     private ColorSupport _ansiSupport;
 
     /// <summary>Color of the glyphs, or <c>null</c> to leave the foreground alone.</summary>
@@ -30,19 +28,20 @@ public sealed class RgbTermColor : IArlecchinoColor
     {
         get
         {
-            if (_ansi is not null && _ansiSupport == TerminalCapabilities.Color)
+            if (field is not null && _ansiSupport == TerminalCapabilities.Color)
             {
-                return _ansi;
+                return field;
             }
 
             _ansiSupport = TerminalCapabilities.Color;
-            _ansi = BuildAnsi(_ansiSupport);
+            field = BuildAnsi(_ansiSupport);
 
-            return _ansi;
+            return field;
         }
     }
 
-    /// <summary>Returns <see cref="Ansi"/>.</summary>
+    /// <summary>Writes the style as the sequence that puts it in force.</summary>
+    /// <returns><see cref="Ansi"/>.</returns>
     public override string ToString() => Ansi;
 
     private string BuildAnsi(ColorSupport support)

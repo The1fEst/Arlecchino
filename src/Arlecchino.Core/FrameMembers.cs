@@ -5,24 +5,8 @@ using Arlecchino.Atoms;
 namespace Arlecchino;
 
 /// <summary>
-/// What <see cref="FrameThread.Verify"/> is told it is checking — the names that end up in the message
-/// a thread gets when it writes what a frame draws. They are built here, so the wording stays one
-/// wording, and so that no call site invents a string of its own.
-///
-/// Nothing in here is spelled out: the type comes from <c>typeof</c> and the member from
-/// <c>nameof</c>, which is why a rename cannot leave a stale message behind. <see cref="Of{T}"/> takes
-/// the type as a parameter rather than reading it here because the members that are checked live in the
-/// <c>Arlecchino</c> package, which references this one and not the other way round.
-///
-/// The atom families take the atom rather than its type, and are named from the type it turns out to be. The
-/// check sits in the abstract base, where <c>typeof</c> would say <c>Atom`1</c> for every atom in the
-/// application instead of naming the one that was written to.
-///
-/// A name is built once and kept: the caller holds it in a <c>static readonly</c> where the member is
-/// fixed, or in a field beside the value where the name depends on what the type turned out to be.
-/// Nothing here caches on its own, because the argument to <see cref="FrameThread.Verify"/> is worked
-/// out before the check runs — so a name rebuilt every time would be paid for on every frame that is
-/// perfectly fine.
+/// The names <see cref="FrameThread.Verify"/> puts in the message a thread gets when it writes what a frame
+/// draws. Every one is built from <c>typeof</c> and <c>nameof</c>, so a rename leaves no stale wording.
 /// </summary>
 internal static class FrameMembers
 {

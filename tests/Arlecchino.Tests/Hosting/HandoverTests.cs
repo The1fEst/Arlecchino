@@ -87,9 +87,8 @@ public sealed class HandoverTests : IDisposable
     }
 
     /// <summary>
-    /// Type-ahead belongs to the program that has just ended, not to the screen coming back. Anything
-    /// waiting when the terminal is handed back is thrown away rather than replayed as keys nobody
-    /// pressed at this screen.
+    /// Type-ahead belongs to the program that has just ended, so anything waiting when the terminal comes
+    /// back is thrown away rather than replayed at this screen.
     /// </summary>
     [Fact]
     public void WhatWasWaitingWhenItEndedIsThrownAway()
@@ -100,8 +99,8 @@ public sealed class HandoverTests : IDisposable
     }
 
     /// <summary>
-    /// An error in the work is the caller's to answer for, but the terminal is not: it comes back before
-    /// the error does, or the message about it would be printed to a screen nobody can see.
+    /// An error in the work is the caller's to answer for, and the terminal comes back before the error does,
+    /// so the message about it lands on a screen that can be read.
     /// </summary>
     [Fact]
     public void TheTerminalComesBackEvenWhenTheWorkThrows()

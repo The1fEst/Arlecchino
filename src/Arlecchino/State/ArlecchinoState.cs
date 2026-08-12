@@ -12,17 +12,8 @@ using Arlecchino.Modals.Telling;
 namespace Arlecchino.State;
 
 /// <summary>
-/// State that outlives a single screen: the output line, the dialog that is open, and a pending file
-/// picker request. Derive from it to hang application state that every screen reads.
-///
-/// A frame reads all of it, so all of it is written on the drawing thread — the <c>Request…</c> methods
-/// included, since each of them opens a dialog. Anything arriving on a timer, a task or a socket hands
-/// the change over with <see cref="FrameThread.Post"/>, which runs it just before the next frame; only
-/// <see cref="Invalidate"/> may be called from anywhere.
-///
-/// The stack of dialogs is a <see cref="LocalAtomsList{T}"/>, so opening or closing one asks for a frame
-/// by itself. It is outside the undo history: stepping back through what was typed should not reopen a
-/// dialog that was answered.
+/// State that outlives a single screen: the output line, the dialogs that are open, and a pending file picker
+/// request. All of it is written on the drawing thread, and only <see cref="Invalidate"/> from anywhere.
 /// </summary>
 public class ArlecchinoState
 {
@@ -51,9 +42,8 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// The status line at the bottom of the frame. Writing to it raises a notification, so the line
-    /// clears itself after <c>ArlecchinoOptions.NotificationTimeout</c> and the message stays
-    /// readable afterward on the notifications screen. An empty string clears the row at once.
+    /// The status line at the bottom of the frame. Writing to it raises a notification, so the line clears
+    /// itself and the message stays on the notifications screen; an empty string clears it at once.
     /// </summary>
     public string Output
     {
@@ -69,13 +59,8 @@ public class ArlecchinoState
     public Notifications Notifications => _notifications;
 
     /// <summary>
-    /// The dialog on top, or <c>null</c> when none is open. It takes every key while it is there.
-    /// Assigning replaces whatever was open, however deep it was stacked; use <see cref="PushModal"/>
-    /// to open one over another instead.
-    ///
-    /// Opened on the drawing thread: a dialog that appeared halfway through a frame would be drawn
-    /// into a surface that has already been measured without it. Hand it over with
-    /// <see cref="FrameThread.Post"/> from anywhere else.
+    /// The dialog on top, or <c>null</c> when none is open, taking every key while it is there. Assigning
+    /// replaces the whole stack, where <see cref="PushModal"/> opens one over another.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public Modal? Modal
@@ -89,12 +74,8 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible
-    /// behind the top one.
-    ///
-    /// A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once
-    /// draws whatever is open on every later frame, and there is no cast that gets a caller back to the list
-    /// underneath.
+    /// Every open dialog, bottom first, as a live read-only view. Drawing goes through this, so the ones
+    /// underneath stay visible behind the top one.
     /// </summary>
     public IReadOnlyList<Modal> Modals => _modals.Value;
 
@@ -111,9 +92,8 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// What the file picker should show. Fill it in, then navigate to <c>Routes.FilePicker</c>; it
-    /// is cleared when the picker finishes either way. Written on the drawing thread, as
-    /// <see cref="Modal"/> is.
+    /// What the file picker should show: fill it in, then navigate to <c>Routes.FilePicker</c>. It is written
+    /// on the drawing thread and cleared however the picker finishes.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public FilePickerRequest? FilePicker
@@ -128,8 +108,8 @@ public class ArlecchinoState
     }
 
     /// <summary>
-    /// Folder the picker ended in. Pass it as the next starting path to resume where the user left
-    /// off. Written on the drawing thread, as <see cref="Modal"/> is.
+    /// Folder the picker ended in, to be passed as the next starting path. It is written on the drawing
+    /// thread, as <see cref="Modal"/> is.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public string PickerLastFolder

@@ -52,9 +52,8 @@ public abstract class OptionListModal : Modal
     protected abstract void Take(ModalFrame frame, string picked);
 
     /// <summary>
-    /// The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row
-    /// was already the one under the cursor, so a click never confirms something the eye had not settled on
-    /// yet.
+    /// The wheel walks the list, and a click picks the row it landed on. A row is taken only when it was
+    /// already the one under the cursor.
     /// </summary>
     /// <param name="frame">How to close.</param>
     /// <param name="mouse">The event that arrived.</param>

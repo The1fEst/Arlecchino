@@ -12,9 +12,8 @@ using Arlecchino.Widgets.Lists;
 namespace Arlecchino.Views;
 
 /// <summary>
-/// Every key at once: what the framework answers to everywhere, and the commands the application
-/// registered. The hints box has room for a handful of keys and the palette lists commands only, so
-/// this is the screen to send someone to when they ask what a key does.
+/// Every key at once: what the framework answers to everywhere, and the commands the application registered.
+/// The hints box has room for a handful and the palette lists commands only.
 /// </summary>
 internal sealed class HelpView : IArlecchinoView
 {
@@ -58,8 +57,7 @@ internal sealed class HelpView : IArlecchinoView
 
     /// <summary>
     /// Draws the screen. The keys that work everywhere and the keys of the screen this was opened from stand
-    /// side by side when there is width for it, with the application's commands in a band underneath. They are
-    /// two lists to be read against each other, not one list to be scrolled through.
+    /// side by side where there is width for it, with the application's commands underneath.
     /// </summary>
     public void Draw()
     {

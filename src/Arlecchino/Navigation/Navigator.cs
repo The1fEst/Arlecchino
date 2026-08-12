@@ -27,8 +27,7 @@ public class Navigator
 
     /// <summary>
     /// Creates the navigator on the configured start route. The screen itself is built the first time one is
-    /// needed rather than here, because a view is free to ask the container for the navigator. Building one
-    /// from this constructor would ask the container for a service it is still building.
+    /// needed, since a view asking the container for the navigator would find it half built.
     /// </summary>
     /// <param name="resolver">How routes become views.</param>
     /// <param name="options">Configured options, read for the start route.</param>
@@ -62,9 +61,8 @@ public class Navigator
     internal IReadOnlyList<ViewCommand> PreviousCommands { get; private set; } = [];
 
     /// <summary>
-    /// What the hints box should show: the keys of whatever holds the focus, then whatever the screen
-    /// returned, or its commands when it returned nothing. A key the focused element claims wins, so
-    /// the same key is not listed twice under two labels while the cursor is in a pane that binds it.
+    /// What the hints box should show: the keys of whatever holds the focus, then the screen's own hints or
+    /// its commands. A key the focused element claims wins, so nothing is listed twice.
     /// </summary>
     public (string Key, string Description)[] CurrentHints
     {
@@ -252,10 +250,8 @@ public class Navigator
     }
 
     /// <summary>
-    /// Builds the screen of the route that is current but has never been shown — the start route, or
-    /// one gone back to before it was ever built. Everything that reads or drives the current screen
-    /// goes through here first, so the view is built on the drawing thread rather than in a
-    /// constructor.
+    /// Builds the screen of the route that is current but has never been shown. Everything that reads or
+    /// drives the current screen comes through here, so a view is built on the drawing thread.
     /// </summary>
     private void Build()
     {

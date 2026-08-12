@@ -4,13 +4,8 @@ using Arlecchino.Rendering;
 namespace Arlecchino.Modals;
 
 /// <summary>
-/// A dialog waiting for an answer. Assign one to <c>ArlecchinoState.Modal</c> — while it is open it
-/// takes every key, draws over the view and suppresses the hints box.
-///
-/// A dialog draws itself and reads its own keys. The framework used to do both for it, from a switch over every
-/// kind it knew, which meant an application could not add a kind at all. A kind it wrote would match no branch,
-/// never be drawn, and swallow every key. Now the kinds the framework brings are nothing more than the first
-/// few subclasses, and one an application writes is the next.
+/// A dialog waiting for an answer, assigned to <c>ArlecchinoState.Modal</c>. It draws itself and reads its
+/// own keys, so a kind an application writes is another subclass and nothing more.
 /// </summary>
 public abstract class Modal
 {

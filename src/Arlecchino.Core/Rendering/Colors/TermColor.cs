@@ -9,7 +9,6 @@ namespace Arlecchino.Rendering.Colors;
 /// </summary>
 public sealed class TermColor : IArlecchinoColor
 {
-    private string? _ansi;
     private ColorSupport _ansiSupport;
 
     /// <summary>Color of the glyphs. <see cref="TerminalColor.Default"/> leaves it to the terminal.</summary>
@@ -19,10 +18,8 @@ public sealed class TermColor : IArlecchinoColor
     public TerminalColor Background { get; init; } = TerminalColor.Default;
 
     /// <summary>
-    /// An exact color for the glyphs, used where the terminal can do 24-bit. Elsewhere,
-    /// <see cref="Foreground"/> is drawn instead, so a palette written in brand colors still says
-    /// what it wants on a terminal with sixteen — set both, and the palette entry is the fallback the
-    /// author chose rather than the nearest one arithmetic found.
+    /// An exact color for the glyphs, used where the terminal can do 24-bit. Set <see cref="Foreground"/> as
+    /// well, and it becomes the chosen fallback rather than the nearest one arithmetic finds.
     /// </summary>
     public Rgb? ExactForeground { get; init; }
 
@@ -40,19 +37,20 @@ public sealed class TermColor : IArlecchinoColor
     {
         get
         {
-            if (_ansi is not null && _ansiSupport == TerminalCapabilities.Color)
+            if (field is not null && _ansiSupport == TerminalCapabilities.Color)
             {
-                return _ansi;
+                return field;
             }
 
             _ansiSupport = TerminalCapabilities.Color;
-            _ansi = _ansiSupport == ColorSupport.None ? "" : BuildAnsi();
+            field = _ansiSupport == ColorSupport.None ? "" : BuildAnsi();
 
-            return _ansi;
+            return field;
         }
     }
 
-    /// <summary>Returns <see cref="Ansi"/>, so a style can be appended to a string builder directly.</summary>
+    /// <summary>Writes the style as the sequence that puts it in force, so it can be appended directly.</summary>
+    /// <returns><see cref="Ansi"/>.</returns>
     public override string ToString() => Ansi;
 
     private string BuildAnsi()

@@ -4,16 +4,8 @@ using System.Collections.Generic;
 namespace Arlecchino.Rendering.Terminals;
 
 /// <summary>
-/// Which of the characters that came back from a probe belong to an answer, and which were typed by a
-/// person while it was waiting.
-///
-/// Every answer a terminal gives is an escape sequence, so the line is drawn where a sequence opens and
-/// where it closes rather than by the look of any one character. Whatever falls outside every sequence
-/// was typed, and belongs back in the application's hands.
-///
-/// One character is excused. On Windows the console layer can eat the kitty query's reply and leave its last
-/// character behind. A lone backslash arriving before the terminal has said anything is therefore the tail of
-/// a sequence that was never seen, not a key somebody pressed.
+/// Which of the characters that came back from a probe belong to an answer, and which were typed while it
+/// waited. Every answer is an escape sequence, so whatever falls outside one was typed.
 /// </summary>
 internal static class TerminalReply
 {
@@ -59,9 +51,8 @@ internal static class TerminalReply
     };
 
     /// <summary>
-    /// What an escape opened. A bracket opens a control sequence, which any character from <c>@</c> to
-    /// <c>~</c> closes; the four string openers run until a terminator; an <c>O</c> takes exactly one
-    /// character after it; anything else was a sequence two characters long and is already over.
+    /// What an escape opened: a control sequence, a string that runs to its terminator, a single character
+    /// after an <c>O</c>, or a two-character sequence that is already over.
     /// </summary>
     /// <param name="letter">What followed the escape.</param>
     /// <returns>What is being read now.</returns>

@@ -16,10 +16,8 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Hosting;
 
 /// <summary>
-/// Runs the application for as long as the host does: it takes over the terminal, drives drawing and
-/// input, and gives the terminal back afterward. Restoring is done on every way out — a normal stop,
-/// Ctrl+C, an unhandled error, even process exit — because a terminal left in full-screen mode with
-/// the mouse captured is unusable once the process is gone.
+/// Runs the application for as long as the host does: it takes the terminal over, drives drawing and input,
+/// and gives the terminal back on every way out, process exit included.
 /// </summary>
 internal sealed class ArlecchinoHostedService : BackgroundService
 {
@@ -128,8 +126,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
 
     /// <summary>
     /// Takes the terminal over and asks it what it can do. The question is put once, as the application
-    /// starts, because what a terminal is capable of does not change while it is running. Asking again
-    /// every time the modes are entered would put a query on the wire each time it is resumed.
+    /// starts, since what a terminal is capable of does not change while it runs.
     /// </summary>
     private void TakeTerminal()
     {
@@ -169,9 +166,8 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     }
 
     /// <summary>
-    /// The signals a terminal application has to answer itself. Being killed or suspended without
-    /// giving the screen back leaves the user staring at an alternate screen with no cursor and no
-    /// prompt, which no amount of process cleanup afterward can fix.
+    /// The signals a terminal application has to answer itself. Being killed or suspended without giving the
+    /// screen back leaves an alternate screen with no cursor and no prompt.
     /// </summary>
     private void HookPosixSignals()
     {
@@ -247,9 +243,8 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     }
 
     /// <summary>
-    /// Reads the terminal for as long as the application runs — unless another program has been handed
-    /// it, and then this thread waits instead. Keys read while an editor is on the screen are keys the
-    /// editor never receives, so the reader asks before every read rather than racing for them.
+    /// Reads the terminal for as long as the application runs, and waits while another program has it. The
+    /// reader asks before every read rather than racing that program for the keys.
     /// </summary>
     /// <param name="stoppingToken">Canceled when the host is shutting down.</param>
     /// <returns>A task that completes once reading has stopped.</returns>

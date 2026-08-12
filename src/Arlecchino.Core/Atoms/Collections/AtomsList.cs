@@ -7,21 +7,11 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A list held as one piece of application state. Every change takes the same path a plain atom's write
-/// takes: it is checked against the drawing thread, it notifies what reads the list, it marks the frame
-/// stale, and it records an undo step when the list is undoable.
-///
-/// This is what an <c>Atom&lt;List&lt;T&gt;&gt;</c> cannot be. Adding to a list held in an ordinary atom
-/// never reaches <c>Atom.Value</c>, so nothing is notified, and no frame is asked for. Writing the same
-/// instance back does not help either: an atom compares by the default comparer and a list is compared by
-/// reference, so writing it is taken for a change of nothing and dropped. Hold an
-/// <c>Atom&lt;IReadOnlyList&lt;T&gt;&gt;</c> and replace it wholesale, or hold this and change it in place.
-///
-/// Which of the two to reach for is a question of size and rate. Replacing a list of a few settings on a
-/// keystroke costs nothing, while a log appended to line by line copies the whole of itself on every line.
-/// Whether edits can be undone is decided by the type created —
-/// <see cref="TrackedAtomsList{T}"/> or <see cref="LocalAtomsList{T}"/> — exactly as it is for atoms.
+/// A list held as one piece of application state, changed in place. Every change notifies what reads the
+/// list, marks the frame stale and records an undo step.
 /// </summary>
+/// <seealso cref="TrackedAtomsList{T}"/>
+/// <seealso cref="LocalAtomsList{T}"/>
 /// <typeparam name="T">What the list holds.</typeparam>
 public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 {
@@ -49,10 +39,8 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     protected abstract bool RecordsHistory { get; }
 
     /// <summary>
-    /// What the list holds now: a live view rather than a copy, so a widget handed this once draws
-    /// whatever is in it on every later frame, and handing it out costs nothing. It is read-only all
-    /// the way down — there is no cast that gets a caller back to the list underneath — so every
-    /// change goes through the members below and is seen by the frame and by the history.
+    /// What the list holds now, as a live view rather than a copy. It is read-only all the way down, so
+    /// every change goes through the members below.
     /// </summary>
     public IReadOnlyList<T> Value
     {
@@ -73,7 +61,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         }
     }
 
-    /// <summary>The item at a position. Writing an equal item changes nothing and notifies nobody.</summary>
+    /// <summary>The item at a position. Writing an equal item changes nothing and notifies no one.</summary>
     /// <param name="index">Which one.</param>
     public T this[int index]
     {
@@ -174,8 +162,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
     /// <summary>
     /// Takes out several items in a row at once, with one notification, one frame and one undo step for the
-    /// lot. That is what trimming a list that has grown too long needs: doing it one item at a time would
-    /// notify once per item and come back the same way.
+    /// lot. Trimming a list one item at a time would come back the same way.
     /// </summary>
     /// <param name="index">Where to start.</param>
     /// <param name="count">How many to take out. Taking none changes nothing.</param>
@@ -209,12 +196,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
     /// <summary>
     /// Says that an item already in the list changed inside itself, so everything watching the list hears
-    /// about it. For a list of mutable things, which the list cannot see into: writing a property of an
-    /// item is not a change to the list, so nothing would recompute, and no frame would be asked for.
-    ///
-    /// Prefer replacing the item where you can, since an immutable item is one less thing to remember. This
-    /// is for the case where the item's identity has to survive the change, because something else is holding
-    /// it.
+    /// about it. Replace the item instead, unless its identity has to survive the change.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void Touch()
@@ -277,10 +259,8 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
     /// <summary>
-    /// Walks what the list holds, so <c>foreach</c> over the list itself reads the way it does over a
-    /// list. It is not an <c>IEnumerable&lt;T&gt;</c> — the enumerator is all a <c>foreach</c> asks
-    /// for, and stopping there is what keeps the members above the only way to change anything. Reach
-    /// for <see cref="Value"/> where a sequence is what is wanted, LINQ included.
+    /// Walks what the list holds, so <c>foreach</c> over the list itself reads the way it does over a list.
+    /// Reach for <see cref="Value"/> where a sequence is wanted, LINQ included.
     /// </summary>
     /// <returns>The enumerator, which throws when the list changes while it is being walked.</returns>
     public List<T>.Enumerator GetEnumerator()

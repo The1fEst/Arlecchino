@@ -115,14 +115,8 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Registers one widget as a singleton, resolved by its own type. An alternative to
-    /// <c>AddGeneratedWidgets()</c> for a widget the generator cannot see — one from another assembly —
-    /// rather than a layer on top of it; registering the same type both ways puts it in the container
-    /// twice.
-    ///
-    /// A singleton widget is shared by every screen that resolves it, state and focus included, so it
-    /// suits a panel the application has one of. A widget each screen needs its own copy of is built
-    /// in the view.
+    /// Registers one widget as a singleton, for a widget <c>AddGeneratedWidgets()</c> cannot see. It is
+    /// shared by every screen that resolves it, state and focus included.
     /// </summary>
     /// <typeparam name="TWidget">The widget type.</typeparam>
     /// <returns>The builder.</returns>
@@ -173,13 +167,8 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Takes every character from where its key sits on the keyboard rather than from what the layout
-    /// makes of it: the key left of <c>S</c> types <c>a</c> whether the layout says <c>a</c>,
-    /// <c>ф</c> or <c>α</c>. Shortcuts and filters then read the same everywhere, and the price is
-    /// that the application cannot be typed into in those languages at all.
-    ///
-    /// Without this, whatever the terminal reports is taken as typed, which is what an application
-    /// gets by default.
+    /// Takes every character from where its key sits rather than from what the layout makes of it, so
+    /// shortcuts read the same everywhere and those languages cannot be typed at all.
     /// </summary>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseKeysByPosition() => UseTextInput(TextInputMode.ByPosition);
@@ -240,9 +229,8 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Turns the mouse on. It stays off by default because the terminal then stops handling selection
-    /// itself, and copying text with the mouse no longer works the way the user expects. Windows reads
-    /// the console's event queue for this, which also means quick-edit selection is off while it runs.
+    /// Turns the mouse on, which stops the terminal from handling selection itself. It is off by default for
+    /// that reason.
     /// </summary>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder UseMouse()
@@ -273,12 +261,8 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Draws every view inside a frame of the application's own: a band along the top, a bar along the
-    /// bottom, whatever a screen here always has around it.
-    ///
-    /// One instance serves the whole application, so what the frame holds outlives the view — a row of
-    /// tabs keeps its place when a screen is left and come back to. A view that wants the whole
-    /// terminal answers <c>false</c> to <c>IArlecchinoView.UsesLayout</c> and is drawn without it.
+    /// Draws every view inside a frame of the application's own, from one instance that outlives the views. A
+    /// view answering <c>false</c> to <c>IArlecchinoView.UsesLayout</c> is drawn without it.
     /// </summary>
     /// <typeparam name="TLayout">The layout type, built from the container.</typeparam>
     /// <returns>The builder.</returns>
@@ -306,8 +290,8 @@ public sealed class ArlecchinoBuilder
     }
 
     /// <summary>
-    /// Stops the application from taking over the terminal when the host starts. Everything stays
-    /// registered. A test can then drive the loop itself, frame by frame.
+    /// Stops the application from taking over the terminal when the host starts, leaving everything
+    /// registered. A test can then drive the loop itself.
     /// </summary>
     /// <returns>The builder.</returns>
     public ArlecchinoBuilder WithoutHostedService()

@@ -6,10 +6,8 @@ using Arlecchino.Atoms.Local;
 namespace Arlecchino.Atoms;
 
 /// <summary>
-/// A store that has to fetch something before it holds the truth — settings read from disk, a session
-/// restored from a server, a catalogue that lives in a file. Derive from it, override
-/// <see cref="LoadAsync"/>, and the framework starts the load as the application starts and keeps the
-/// bookkeeping: no worker of its own, and no <c>TaskCompletionSource</c> written by hand.
+/// A store that has to fetch something before it holds the truth. Override <see cref="LoadAsync"/>, and the
+/// load is started as the application starts and its bookkeeping kept.
 ///
 /// <code>
 /// public sealed class SettingsStore : ArlecchinoAsyncStore
@@ -25,15 +23,9 @@ namespace Arlecchino.Atoms;
 ///     }
 /// }
 /// </code>
-///
-/// Reading the file is the application's own code — the framework has nothing to do with disks,
-/// formats or paths.
-///
-/// The first frame is drawn without waiting: a terminal that hangs black on a slow disk is worse than
-/// a screen that says it is loading. A view draws from <see cref="Status"/>, which is an atom and so
-/// redraws by itself; code that is not a view — a worker, a command that must not run early — awaits
-/// <see cref="Ready"/>.
 /// </summary>
+/// <seealso cref="Status"/>
+/// <seealso cref="Ready"/>
 public abstract class ArlecchinoAsyncStore : IArlecchinoStore
 {
     private readonly TaskCompletionSource _ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -51,10 +43,8 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
     }
 
     /// <summary>
-    /// Completes when the store is loaded, faults with whatever <see cref="LoadAsync"/> threw, and is
-    /// canceled when the application stopped before the load finished. This is the one to await
-    /// outside a view; a view reads <see cref="Status"/> instead, because it draws every frame rather
-    /// than waiting.
+    /// Completes when the store is loaded, faults with whatever <see cref="LoadAsync"/> threw, and cancels
+    /// when the application stopped first. A view reads <see cref="Status"/> instead of awaiting it.
     /// </summary>
     public Task Ready => _ready.Task;
 
@@ -74,12 +64,8 @@ public abstract class ArlecchinoAsyncStore : IArlecchinoStore
     public bool Failed => _status.Value == LoadStatus.Failed;
 
     /// <summary>
-    /// Fetches what the store needs. It runs off the drawing thread, so what it loads reaches the
-    /// atoms through <c>Post</c> — writing <c>Value</c> from here throws, and says so.
-    ///
-    /// Throwing is a normal outcome: the status turns to failed, the exception is kept for a view to
-    /// draw and for <see cref="Ready"/> to hand to whoever awaits it, and the application carries on
-    /// with whatever the atoms already hold.
+    /// Fetches what the store needs, off the drawing thread, so what it loads reaches the atoms through
+    /// <c>Post</c>. Throwing is a normal outcome and turns the status to failed.
     /// </summary>
     /// <param name="token">Canceled when the application is shutting down.</param>
     /// <returns>A task that completes when the store is ready.</returns>

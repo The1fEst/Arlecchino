@@ -4,9 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Arlecchino.Navigation;
 
 /// <summary>
-/// A screen together with the container scope it was built from. Navigating away disposes both, in
-/// that order, so anything the screen took from the container — a database context, a connection, a
-/// file handle — goes away with the screen rather than living as long as the application.
+/// A screen together with the container scope it was built from. Navigating away disposes the screen and
+/// then the scope, so whatever it took from the container goes with it.
 /// </summary>
 public sealed class ActiveView : IDisposable
 {

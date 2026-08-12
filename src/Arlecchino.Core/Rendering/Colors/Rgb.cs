@@ -16,7 +16,8 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
     /// <summary>The color as <c>#RRGGBB</c>.</summary>
     public string Hex => $"#{Red:X2}{Green:X2}{Blue:X2}";
 
-    /// <summary>Returns <see cref="Hex"/>.</summary>
+    /// <summary>Writes the color as its hexadecimal form.</summary>
+    /// <returns><see cref="Hex"/>.</returns>
     public override string ToString() => Hex;
 
     /// <summary>

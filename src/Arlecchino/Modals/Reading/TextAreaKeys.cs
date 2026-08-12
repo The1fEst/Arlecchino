@@ -6,9 +6,8 @@ using Arlecchino.Modals.Asking;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// The field of many lines. It differs from the field of one line in the two things that follow from having
-/// rows: the caret moves up and down as well as along, and Enter is a new line rather than the answer. That
-/// is why submitting it takes a key of its own.
+/// The keys of the field of many lines. The caret moves up and down as well as along, and Enter starts a new
+/// line, so submitting takes a key of its own.
 /// </summary>
 internal sealed class TextAreaKeys
 {

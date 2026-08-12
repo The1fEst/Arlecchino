@@ -54,9 +54,8 @@ internal abstract class PictureProtocol
     public abstract double PerCell(int cellWidth, int cellHeight);
 
     /// <summary>
-    /// Draws the picture where it was placed. It draws rather than returning something to draw,
-    /// because cells are not bytes: the block protocol writes into the cell grid and the other two
-    /// hand the terminal a payload, and no single answer covers both.
+    /// Draws the picture where it was placed. It draws rather than returning something to draw, since one
+    /// protocol writes into the cell grid and the others hand the terminal a payload.
     /// </summary>
     /// <param name="region">Where to draw.</param>
     /// <param name="pixels">The picture, row by row from the top left.</param>
@@ -103,13 +102,8 @@ internal sealed class BlockPicture : PictureProtocol
     }
 
     /// <summary>
-    /// Works out the color of every cell and keeps the objects, so the next frame hands the surface the
-    /// same instances rather than equal ones.
-    ///
-    /// That is what lets the frame diff do its job. It tells a cell apart from the one before it by
-    /// reference, so a picture built fresh each frame looks changed in every cell and is written out in full
-    /// however still it is. Rebuilding costs one pass over the cells, and only when the picture or the room it
-    /// is drawn in changes.
+    /// Works out the color of every cell and keeps the objects, so the next frame hands the surface the same
+    /// instances. The frame diff tells cells apart by reference, and rebuilt ones would all look changed.
     /// </summary>
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
@@ -154,10 +148,8 @@ internal sealed class BlockPicture : PictureProtocol
 }
 
 /// <summary>
-/// The picture as pixels handed to the terminal rather than as cells. The two protocols that do this share
-/// everything but the bytes. Both use the same shape of cell, both rebuild the payload only when the picture
-/// or the room it is drawn in changes, and both hand a way to undraw it over beside the payload. That last one
-/// is what lets the surface remove the picture once the frame stops offering it.
+/// The picture as pixels handed to the terminal rather than as cells, which the two protocols that do it
+/// share. Each rebuilds its payload only when the picture changes, and hands over a way to undraw it.
 /// </summary>
 internal abstract class PixelPicture : PictureProtocol
 {
@@ -221,12 +213,8 @@ internal sealed class KittyPicture : PixelPicture
     public override ImageProtocol Kind => ImageProtocol.Kitty;
 
     /// <summary>
-    /// Builds the kitty graphics escape sequence. Responses are suppressed with <c>q=2</c>, since a reply
-    /// from the terminal would arrive at the input reader as a stray escape sequence.
-    ///
-    /// It carries an image number of its own, so a picture that changes replaces the one the terminal is
-    /// holding instead of adding to it. Without that every new set of pixels would be another image kept
-    /// in the terminal's memory for as long as the session lasts.
+    /// Builds the kitty graphics escape sequence, with replies suppressed and an image number of its own. A
+    /// picture that changes then replaces the one the terminal holds instead of adding to it.
     /// </summary>
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
@@ -274,9 +262,8 @@ internal sealed class KittyPicture : PixelPicture
     }
 
     /// <summary>
-    /// Builds the sequence that tells the terminal to let go of the image it was handed. Only kitty has
-    /// one: sixel writes pixels into the screen rather than into a registry of images, so there is
-    /// nothing there to name and nothing to delete.
+    /// Builds the sequence that tells the terminal to let go of the image it was handed. Only kitty has one,
+    /// since sixel writes pixels into the screen rather than into a registry.
     /// </summary>
     /// <param name="placed">Where it ended up and how large, which kitty does not need to be told.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
@@ -284,9 +271,8 @@ internal sealed class KittyPicture : PixelPicture
 }
 
 /// <summary>
-/// Sixel: the older protocol. Two things make it unlike kitty. It draws from color registers, so the picture
-/// is brought down to a palette of at most 256 by <see cref="IndexedImage"/>. And it is measured in pixels
-/// rather than cells, so it is resampled to however many pixels the cells it was given come to.
+/// Sixel: the older protocol, drawn from color registers and measured in pixels. The picture is brought down
+/// to a palette of 256 by <see cref="IndexedImage"/> and resampled to the pixels its cells come to.
 /// </summary>
 internal sealed class SixelPicture : PixelPicture
 {
@@ -370,17 +356,8 @@ internal sealed class SixelPicture : PixelPicture
     }
 
     /// <summary>
-    /// Builds a sixel that paints a rectangle in the color the terminal said was behind its text. That is the
-    /// only way to remove one: sixel writes pixels into the screen, so what was drawn is gone only once
-    /// something else is drawn over it.
-    ///
-    /// Empty when the terminal never said what color that is — see
-    /// <see cref="TerminalCapabilities.Background"/> — because painting a guessed color leaves a
-    /// rectangle anyone can see, which is worse than the pixels it was meant to remove.
-    ///
-    /// The last band paints only the rows the picture actually had. Sixel bands are six rows whatever the
-    /// picture's height, so painting all six would reach up to five rows past it. A terminal that does not
-    /// clip to the raster size would show that as a line under the picture.
+    /// Builds a sixel that paints over the picture in the color behind the text, which is the only way to
+    /// remove one. It is empty where <see cref="TerminalCapabilities.Background"/> went unreported.
     /// </summary>
     /// <param name="placed">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal, or an empty string.</returns>

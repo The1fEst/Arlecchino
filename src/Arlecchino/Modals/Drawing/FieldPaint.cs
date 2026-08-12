@@ -10,9 +10,8 @@ using Arlecchino.Modals.Asking;
 namespace Arlecchino.Modals.Drawing;
 
 /// <summary>
-/// What a field being typed into looks like: the text, the caret, and a complaint under it when there
-/// is one. A value longer than the box is scrolled rather than cut off, with an ellipsis at whichever
-/// end has more of it — the caret has to stay on screen wherever in the text it is.
+/// What a field being typed into looks like: the text, the caret, and a complaint under it. A value longer
+/// than the box scrolls, so the caret stays on screen.
 /// </summary>
 internal sealed class FieldPaint
 {

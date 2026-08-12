@@ -8,10 +8,8 @@ using Arlecchino.Tests.Support;
 namespace Arlecchino.Tests.Input;
 
 /// <summary>
-/// The key next to the space bar. The byte sequences here were taken off a pty rather than written
-/// from the specification: keys were pressed in kitty on a Mac and the bytes they produced were read
-/// back. Two of them had nowhere to go before — the modifier bit was dropped, and the shape a terminal
-/// falls back to for a letter held with Command was not understood at all.
+/// The key next to the space bar, held to what kitty on a Mac really sent. The sequences were taken off a
+/// pty rather than written from the specification.
 /// </summary>
 public sealed class SuperModifierTests
 {

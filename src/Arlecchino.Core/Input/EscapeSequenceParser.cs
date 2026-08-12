@@ -8,7 +8,7 @@ namespace Arlecchino.Input;
 /// Reads the escape sequences a terminal sends for mouse reports and for keys that have no
 /// character — arrows, function keys, and their modified forms.
 /// </summary>
-internal sealed class EscapeSequenceParser
+internal static class EscapeSequenceParser
 {
     private const int WheelFlag = 64;
     private const int MotionFlag = 32;
@@ -149,10 +149,8 @@ internal sealed class EscapeSequenceParser
     }
 
     /// <summary>
-    /// Reads the <c>CSI code ; modifiers u</c> form, where the key is named by the character it would
-    /// have typed. A terminal reaches for it when the older shapes have nowhere to put what happened —
-    /// there is no legacy spelling for a letter held with Command, so <c>Cmd+J</c> arrives here or not
-    /// at all.
+    /// Reads the <c>CSI code ; modifiers u</c> form, where the key is named by the character it would have
+    /// typed. A terminal reaches for it where the older shapes cannot spell what happened.
     /// </summary>
     /// <param name="parameters">The numbers in front of the final byte.</param>
     /// <param name="modifiers">What was held, already read off the second number.</param>
@@ -181,14 +179,13 @@ internal sealed class EscapeSequenceParser
     }
 
     /// <summary>
-    /// Whether the code stands for a character at all. A terminal names the keys with nothing to type —
-    /// the keypad, the media keys, the modifiers themselves — with codes out of the private use area,
-    /// which is a range no keyboard types and no field should be handed.
+    /// Whether the code stands for a character at all. Keys with nothing to type are named by codes out of
+    /// the private use area, which no field should be handed.
     /// </summary>
     /// <param name="code">The number in front of the final byte.</param>
     /// <returns><c>true</c> when the code is a character.</returns>
     private static bool IsTypeable(int code) =>
-        code <= char.MaxValue && code is < PrivateUseFirst or > PrivateUseLast;
+        code is <= char.MaxValue and (< PrivateUseFirst or > PrivateUseLast);
 
     private static ConsoleKey KeyOfCode(int code) => code switch
     {
@@ -227,9 +224,8 @@ internal sealed class EscapeSequenceParser
     };
 
     /// <summary>
-    /// The numbers in front of the final byte. A number may carry extra parts of its own after a colon
-    /// — the key a shifted press would have typed, or whether the key went down or came back up — and
-    /// only the first part is the number itself.
+    /// The numbers in front of the final byte. A number may carry extra parts after a colon, of which only
+    /// the first is the number itself.
     /// </summary>
     /// <param name="body">The sequence without its final byte.</param>
     /// <returns>One number per parameter, zero for anything unreadable.</returns>
@@ -247,9 +243,8 @@ internal sealed class EscapeSequenceParser
     }
 
     /// <summary>
-    /// Whether the sequence says a key came back up rather than went down. Only terminals asked for
-    /// release events send them, and nothing here asks — but a key that arrived twice would act twice,
-    /// so the answer is worth reading rather than assuming.
+    /// Whether the sequence says a key came back up rather than went down. Nothing here asks for release
+    /// events, but a key that arrived twice would act twice.
     /// </summary>
     /// <param name="body">The sequence without its final byte.</param>
     /// <returns><c>true</c> when this is a release.</returns>

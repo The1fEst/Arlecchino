@@ -8,10 +8,8 @@ using Arlecchino.Rendering.Terminals;
 namespace Arlecchino.Testing;
 
 /// <summary>
-/// A terminal that keeps everything in memory: keys are queued in, output is collected as text, and
-/// the size is whatever a test sets it to. Nothing is written anywhere, so tests can run side by side
-/// and assert on what would have been drawn. The input queues are concurrent, so a test can deliver
-/// keys late — the way a real terminal splits an escape sequence across two reads.
+/// A terminal that keeps everything in memory: keys queued in, output collected as text, and the size a test
+/// sets. The input queues are concurrent, so keys can be delivered late as a real terminal delivers them.
 /// </summary>
 public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 {
@@ -55,10 +53,8 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     }
 
     /// <summary>
-    /// What the screen holds, rather than what was written to get it there. Frames are written as the
-    /// difference from the last one, so <see cref="Written"/> holds cursor jumps and short runs;
-    /// this holds the picture they add up to, and survives <see cref="Clear"/> the way a real screen
-    /// survives forgetting what you typed.
+    /// What the screen holds, rather than the cursor jumps and short runs <see cref="Written"/> collected to
+    /// get it there. It survives <see cref="Clear"/>, as a real screen does.
     /// </summary>
     public ScreenGrid Screen { get; }
 
@@ -88,20 +84,8 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public void Enqueue(KeyPress key) => _keys.Enqueue(key);
 
     /// <summary>
-    /// Queues text one character at a time, as a terminal reports it, naming the key where a console names it.
-    /// Whole escape sequences can be fed in as a plain string. The runtime recognizes some itself and hands
-    /// the rest over a character at a time, and this is that second shape: the one the reader has to make
-    /// sense of on its own.
-    ///
-    /// The characters a console does name are named here too. Enter, Tab, Backspace, the space bar, a letter,
-    /// a digit and a control chord all arrive carrying their key, because that is what
-    /// <see cref="Console.ReadKey(bool)"/> hands an application. A fake that handed over the bare character
-    /// would have every test agreeing with a shape no terminal produces.
-    ///
-    /// One thing it deliberately does not do is fold an escape and the letter after it into one press
-    /// with Alt held. A console may well do that, but the other reading — two presses in quick
-    /// succession — is what a terminal sends and what the reader is built to time out on, and that is
-    /// the harder case to get right.
+    /// Queues text one character at a time, as a terminal reports it, naming the key wherever
+    /// <see cref="Console.ReadKey(bool)"/> names one. An escape and the letter after it stay two presses.
     /// </summary>
     /// <param name="text">The characters to queue.</param>
     public void EnqueueText(string text)
@@ -190,14 +174,8 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public void Clear() => _written.Clear();
 
     /// <summary>
-    /// Holds the screen against the frame that was just composed. Every frame but the first is written as the
-    /// difference from the one before, so a cell the difference failed to send keeps whatever used to be
-    /// there. That is a stale symbol no assertion would think to look for, since a test only ever asks what
-    /// the screen holds. Comparing the two says outright that the differences added up to the picture.
-    ///
-    /// It runs on every frame any test builds rather than in a test of its own, because the frames worth
-    /// checking are the ones real views and widgets produce, and those only exist while a test is
-    /// running.
+    /// Holds the screen against the frame that was just composed, on every frame any test builds. A cell the
+    /// difference failed to send would otherwise keep a stale symbol no assertion looks for.
     /// </summary>
     /// <param name="surface">The surface holding the cells the frame was composed into.</param>
     /// <exception cref="InvalidOperationException">The screen and the frame disagree somewhere.</exception>

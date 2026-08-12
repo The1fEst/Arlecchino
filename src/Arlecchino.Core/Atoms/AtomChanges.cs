@@ -15,8 +15,8 @@ internal static class AtomChanges
     public static event Action<IAtomEdit>? Recorded;
 
     /// <summary>
-    /// Whether anybody is collecting undo steps. Atoms check this before building an edit, so a
-    /// program without a history pays nothing.
+    /// Whether an undo history is collecting steps. Atoms check this before building an edit, so a program
+    /// without a history pays nothing.
     /// </summary>
     public static bool IsRecording => Recorded is not null;
 

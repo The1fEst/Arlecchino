@@ -6,9 +6,8 @@ using Arlecchino.Modals.Asking;
 namespace Arlecchino.Modals.Reading;
 
 /// <summary>
-/// A field of one line, whatever it is asking for. Moving the caret, rubbing out, copying and typing are the
-/// same everywhere. So a dialog that asks for a name and one that asks for a number differ only in what they
-/// will accept and what they do when the answer is given.
+/// The keys of a field of one line, whatever it asks for. Two such dialogs differ only in what they accept
+/// and in what they do with the answer.
 /// </summary>
 internal sealed class FieldKeys
 {

@@ -3,10 +3,8 @@ using System;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// One key press, as the framework hands it to a view. It is <see cref="ConsoleKeyInfo"/> with room for one
-/// more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command,
-/// so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a
-/// view is given goes through here instead.
+/// One key press, as the framework hands it to a view. It is <see cref="ConsoleKeyInfo"/> with room for
+/// Command, which that type has nowhere to put.
 /// </summary>
 /// <param name="Key">The key itself, or <c>default</c> when the terminal named no key and only sent a character.</param>
 /// <param name="Modifiers">What was held with it.</param>

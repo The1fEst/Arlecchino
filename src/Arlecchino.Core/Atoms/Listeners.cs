@@ -3,9 +3,8 @@ using System;
 namespace Arlecchino.Atoms;
 
 /// <summary>
-/// The subscription list an atom keeps. Held in one place so that every kind of atom notifies the
-/// same way: the array is replaced rather than mutated, which is what lets a listener unsubscribe
-/// while the notification it is in is still running.
+/// The subscription list an atom keeps, held in one place, so every kind of atom notifies the same way. The
+/// array is replaced rather than mutated, so a listener may unsubscribe while being notified.
 /// </summary>
 internal sealed class Listeners
 {

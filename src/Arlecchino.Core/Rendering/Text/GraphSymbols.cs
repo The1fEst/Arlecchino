@@ -12,9 +12,8 @@ namespace Arlecchino.Rendering.Text;
 public enum GraphSymbols
 {
     /// <summary>
-    /// Braille dots, four levels and two samples to a cell — the densest, and what a graph looks
-    /// best in. Needs a font carrying the Braille Patterns block, or a terminal that falls back to
-    /// one that does; Windows Terminal does, the classic console host does not.
+    /// Braille dots, four levels and two samples to a cell, which is the densest of the sets. It needs a font
+    /// carrying the Braille Patterns block.
     /// </summary>
     Braille,
 
@@ -32,15 +31,8 @@ public enum GraphSymbols
 }
 
 /// <summary>
-/// The symbols in use, reachable from anywhere that draws — the same arrangement as
-/// <see cref="Theme"/>, and for the same reason: a widget reads the look rather than being told
-/// it. Assigned from <c>ArlecchinoOptions</c> when the container resolves them; set it directly when
-/// drawing without a host.
-///
-/// It is process-wide and settable, so an application can offer the choice in its own settings and
-/// have every graph follow on the next frame. A frame reads all of it, so all of it is written on the
-/// drawing thread and asks for a frame by itself; hand the change over with
-/// <see cref="FrameThread.Post"/> from anywhere else.
+/// The symbols in use, reachable from anywhere that draws, the way <see cref="Theme"/> is. It is written on
+/// the drawing thread and asks for a frame itself, so every graph follows on the next one.
 /// </summary>
 public static class Glyphs
 {
@@ -64,10 +56,9 @@ public static class Glyphs
     } = GraphSymbols.Braille;
 
     /// <summary>
-    /// How pictures reach the terminal when a widget does not say otherwise.
-    /// <see cref="ImageProtocol.Auto"/> by default, which is the best of what the terminal admitted to
-    /// when it was asked and cells when it admitted to nothing. Name a protocol to decide yourself — a
-    /// terminal that cannot speak the one you name shows the escape sequence as text.
+    /// How pictures reach the terminal when a widget does not say otherwise, which is
+    /// <see cref="ImageProtocol.Auto"/> by default. A terminal that cannot speak a named protocol shows the
+    /// escape sequence as text.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static ImageProtocol Picture
@@ -83,13 +74,8 @@ public static class Glyphs
     } = ImageProtocol.Auto;
 
     /// <summary>
-    /// How many pixels wide a cell is taken to be. Only <see cref="ImageProtocol.Sixel"/> needs it,
-    /// because sixel is measured in pixels and knows nothing of cells: a picture is resampled to
-    /// however many pixels the cells it was given come to.
-    ///
-    /// <see cref="TerminalProbe.Ask"/> sets it from what the terminal reports. Ten by twenty is the
-    /// standing guess for a terminal that does not answer, and a wrong guess shows as a picture that
-    /// does not quite fill its pane rather than as a broken picture.
+    /// How many pixels wide a cell is taken to be, which only <see cref="ImageProtocol.Sixel"/> needs.
+    /// <see cref="TerminalProbe.Ask"/> sets it, and ten by twenty is the guess for a silent terminal.
     /// </summary>
     /// <exception cref="InvalidOperationException">Assigned from off the drawing thread.</exception>
     public static int CellWidth

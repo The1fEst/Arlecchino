@@ -14,13 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Holds what the input reader understands against what a real terminal actually sends. The escape
-/// sequences the tests feed it were written by the same head that wrote the reader, so a key spelled
-/// wrong in both places reads correctly in every test and does nothing at all in a terminal. Here the
-/// spelling comes from tmux: a key is pressed in a pane, the bytes it produced are read off the pty,
-/// and those bytes — nobody's guess — are what the reader is asked to make sense of.
-///
-/// What tmux sends is tmux's answer, not every terminal's. It is still an answer nobody here wrote.
+/// Holds what the input reader understands against what a terminal sends. A key is pressed in a tmux pane
+/// and the bytes it produced are read off the pty, so the spelling comes from outside this repository.
 /// </summary>
 internal static class Keys
 {
@@ -155,9 +150,8 @@ internal static class Keys
     }
 
     /// <summary>
-    /// Presses every key into a pane reading them the way an application does, and collects what the
-    /// console handed over. This is the shape the reader actually meets: some sequences the runtime
-    /// understands itself, the rest arrive a character at a time.
+    /// Presses every key into a pane reading them the way an application does, and collects what the console
+    /// handed over. Some sequences the runtime understands itself, and the rest arrive a character at a time.
     /// </summary>
     /// <param name="folder">Where the listener writes.</param>
     /// <param name="presses">The keys to press.</param>
@@ -259,10 +253,8 @@ internal static class Keys
     }
 
     /// <summary>
-    /// The other half of the tool, running inside the pane: reads keys the way an application does and
-    /// writes down what it was handed. <c>Console.ReadKey</c> understands some sequences itself and
-    /// passes the rest through a character at a time, and which is which is the whole question — a fake
-    /// terminal that hands over the wrong shape makes every test that feeds it agree with nothing.
+    /// The other half of the tool, running inside the pane: reads keys the way an application does and writes
+    /// down what it was handed, which is what says the shape a fake terminal has to hand over.
     /// </summary>
     /// <param name="into">The file each press is written to.</param>
     /// <returns>Zero, when it is killed.</returns>
@@ -285,9 +277,8 @@ internal static class Keys
     }
 
     /// <summary>
-    /// Reads a stretch of bytes captured from a terminal and says what an application would have been
-    /// told. Some of what a terminal sends cannot be asked for on demand — a mouse report is made by a
-    /// hand on a mouse — so the way to check those is to catch them once and hold the reader to them.
+    /// Reads a stretch of bytes captured from a terminal and says what an application would have been told.
+    /// It is how the reader is held to what cannot be asked for on demand, such as a mouse report.
     /// </summary>
     /// <param name="captured">A file of bytes as they came off the pty.</param>
     /// <returns>Zero when the bytes said something.</returns>
@@ -424,7 +415,7 @@ internal static class Keys
     /// <param name="Send">The key, named the way tmux names it.</param>
     /// <param name="Key">The key the reader should report, or nothing when only the character matters.</param>
     /// <param name="Modifiers">The modifiers it should report.</param>
-    /// <param name="Character">The character it should report, where the key is a typed one.</param>
+    /// <param name="Character">The character it should report, where the key is typed rather than named.</param>
     /// <param name="Folded">
     /// Whether a console folds this into one press where a terminal sends two. The fake terminal models
     /// the terminal on purpose — two presses in quick succession is the shape the reader has to time out
@@ -486,7 +477,7 @@ internal static class Keys
                 .Concat(Pastes.Select(static paste => $"paste {Program.Escaped(paste)}"))
                 .Concat(Mice);
 
-            return string.Join(", ", parts) is var text && text.Length > 0 ? text : "nothing";
+            return string.Join(", ", parts) is { Length: > 0 } text ? text : "nothing";
         }
 
         private static string Spell(KeyPress key) =>
@@ -494,9 +485,8 @@ internal static class Keys
     }
 
     /// <summary>
-    /// An application listening for keys, with everything that would take one before the screen does
-    /// pointed at a key no terminal sends. The reader is the thing under test, and a key swallowed by
-    /// the log overlay or the command palette on its way past would read as a reader that lost it.
+    /// An application listening for keys, with everything that would take one before the screen does pointed
+    /// at a key no terminal sends. A key swallowed on its way past would read as a reader that lost it.
     /// </summary>
     private sealed class Reading : IDisposable
     {

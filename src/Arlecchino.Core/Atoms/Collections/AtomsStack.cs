@@ -8,19 +8,11 @@ using Arlecchino.Atoms.Tracked;
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
-/// A stack held as one piece of application state — where the user has been, the modals over one another, a
-/// plan being unwound. Things go on top and come off the top. Every change takes the same path a plain atom's
-/// write takes: it is checked against the drawing thread, it notifies what reads the stack, it marks the frame
-/// stale, and it records an undo step when the stack is undoable.
-///
-/// It is what a <c>ConcurrentStack&lt;T&gt;</c> is not for: nothing here is thread-safe, because
-/// nothing needs to be. Background work hands its item over with <c>FrameThread.Post</c> and the
-/// stack is only ever touched by the thread that draws it.
-///
-/// <see cref="Value"/> reads from the top down, the way <c>Stack&lt;T&gt;</c> itself enumerates, so
-/// <c>Value[0]</c> is what <see cref="Peek"/> answers. Whether changes can be undone is decided by
-/// the type created — <see cref="TrackedAtomsStack{T}"/> or <see cref="LocalAtomsStack{T}"/>.
+/// A stack held as one piece of application state, put on and taken off the top. <see cref="Value"/> reads
+/// from the top down, so <c>Value[0]</c> is what <see cref="Peek"/> answers.
 /// </summary>
+/// <seealso cref="TrackedAtomsStack{T}"/>
+/// <seealso cref="LocalAtomsStack{T}"/>
 /// <typeparam name="T">What the stack holds.</typeparam>
 public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
 {
@@ -42,9 +34,8 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     protected abstract bool RecordsHistory { get; }
 
     /// <summary>
-    /// What is on the stack now, top first: a live view rather than a copy, so a widget handed this
-    /// once draws whatever is on it on every later frame. It is read-only all the way down, so every
-    /// change goes through the members below.
+    /// What is on the stack now, top first, as a live view rather than a copy. It is read-only all the way
+    /// down, so every change goes through the members below.
     /// </summary>
     public IReadOnlyList<T> Value
     {

@@ -16,10 +16,11 @@ namespace Arlecchino.Tests.Input;
 public sealed class ChordTests
 {
     /// <summary>
-    /// The function keys as a terminal speaking the protocol really sends them, read off kitty rather than
-    /// written from the specification. The first four keep a legacy shape, and F3 does not: <c>CSI R</c> is
-    /// how a terminal answers where its cursor is, so F3 is sent as <c>CSI 13~</c> instead.
+    /// The function keys as a terminal speaking the protocol really sends them, read off kitty rather
+    /// than written from the specification.
     /// </summary>
+    /// <param name="sequence">The bytes the terminal sends, with the introducer already read.</param>
+    /// <param name="expected">The key they stand for.</param>
     [Theory]
     [InlineData("P", ConsoleKey.F1)]
     [InlineData("Q", ConsoleKey.F2)]
@@ -35,8 +36,7 @@ public sealed class ChordTests
 
     /// <summary>
     /// The keys a byte cannot tell apart, once the terminal has been asked to name them instead:
-    /// <c>Ctrl+Enter</c> against <c>Enter</c>, and the three letters whose control codes are Tab,
-    /// Backspace and Enter. Bound without the request, every one of them is a key that never arrives.
+    /// <c>Ctrl+Enter</c> against <c>Enter</c>, and the letters whose control codes are other keys.
     /// </summary>
     [Theory]
     [InlineData("13;5u", ConsoleKey.Enter)]
@@ -90,9 +90,8 @@ public sealed class ChordTests
     }
 
     /// <summary>
-    /// An alternative is one press even where the binding is a chord. That is how the same command reaches
-    /// a keyboard with the key on it and one without: a laptop spells the chord out, a full keyboard holds
-    /// the combination the chord stands in for.
+    /// An alternative is one press even where the binding is a chord. A laptop spells the chord out and a
+    /// full keyboard holds the combination it stands in for.
     /// </summary>
     [Fact]
     public void AnAlternativeFiresAChordWithoutTheLeader()
@@ -163,8 +162,8 @@ public sealed class ChordTests
     }
 
     /// <summary>
-    /// The second key belongs to the chord and to nothing else. Were it let through, a leader followed
-    /// by a key somebody meant as itself would run two things, and the one they wanted second.
+    /// The second key belongs to the chord and to nothing else. Let through, it would run two things and
+    /// the wanted one second.
     /// </summary>
     [Fact]
     public void TheKeyAfterALeaderReachesNothingElse()
@@ -200,9 +199,8 @@ public sealed class ChordTests
     }
 
     /// <summary>
-    /// An application that draws its own keys along the bottom has the box turned off, and turning it off
-    /// is a statement about the keys of the screen rather than about a key half pressed. A leader with
-    /// nothing on screen to answer it is a key nobody can press twice.
+    /// An application that draws its own keys along the bottom asks for the box only while a chord waits.
+    /// A leader with nothing on screen to answer it is a key that cannot be pressed twice.
     /// </summary>
     [Fact]
     public void ALeaderIsAnsweredEvenWhereTheBoxIsTurnedOff()

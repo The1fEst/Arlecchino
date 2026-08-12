@@ -124,9 +124,8 @@ public sealed class LayoutTests
     }
 
     /// <summary>
-    ///     An application whose frame belongs to the layout. The hints box and the output row are the
-    ///     framework's own chrome and are drawn over whatever is under them, which is why an application
-    ///     with a bar of its own turns them off — as this one does.
+    ///     An application whose frame belongs to the layout. The box of keys and the output row are the
+    ///     framework's own chrome, so an application with a bar of its own turns them off.
     /// </summary>
     /// <returns>The application.</returns>
     private static TestApplication Framed()

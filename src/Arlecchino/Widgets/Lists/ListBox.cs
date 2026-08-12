@@ -38,10 +38,8 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     public Func<T, IArlecchinoColor>? ItemStyle { get; set; }
 
     /// <summary>
-    /// Draws a row itself, for a list whose rows are not one color: a file name beside a size beside
-    /// a date, each in its own. Given one row of the list to fill and told whether the cursor is on it;
-    /// <see cref="Render"/> and <see cref="ItemStyle"/> are not consulted when this is set, and what is
-    /// left unwritten keeps whatever was behind it.
+    /// Draws a row itself, for a list whose rows are not one color. It is given one row to fill and told
+    /// whether the cursor is on it, and <see cref="Render"/> goes unread while it is set.
     /// </summary>
     public Action<SurfaceRegion, T, bool>? PaintRow { get; init; }
 

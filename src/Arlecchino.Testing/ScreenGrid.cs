@@ -5,15 +5,8 @@ using Arlecchino.Rendering.Text;
 namespace Arlecchino.Testing;
 
 /// <summary>
-/// A terminal screen as the terminal itself would hold it: a grid of cells that output is applied to
-/// rather than collected in. Where <see cref="FrameText"/> strips escapes out of what was written,
-/// this obeys them — a cursor jump moves the cursor, a style sticks to the cells that follow, a wide
-/// symbol takes two columns.
-///
-/// That difference is the point. Frames are written as the difference from the last one, so what reaches the
-/// terminal is a handful of jumps and runs which say nothing on their own about what the screen holds
-/// afterward. Applying them here answers that, and makes the invariant worth asserting: a screen built from
-/// diffs is the screen a whole repaint would have drawn.
+/// A terminal screen as the terminal itself would hold it: a grid of cells that output is applied to rather
+/// than collected in, obeying the escapes <see cref="FrameText"/> strips out.
 /// </summary>
 public sealed class ScreenGrid
 {
@@ -47,13 +40,8 @@ public sealed class ScreenGrid
     public int CursorRow => _row;
 
     /// <summary>
-    /// The column the cursor sits on, counted from the left. A symbol written into the last column while
-    /// wrapping is on leaves the cursor one past the right edge, waiting to wrap. The next symbol goes to the
-    /// row below, and a terminal asked where its cursor is answers the same way — tmux and kitty both do.
-    ///
-    /// With wrapping off they stop agreeing: the same symbol leaves the cursor in the last column for
-    /// tmux and one past it for kitty. Nothing visible turns on it, since with nowhere to wrap to the
-    /// next symbol lands in the last column either way; this follows tmux and says so.
+    /// The column the cursor sits on, counted from the left. A symbol written into the last column leaves it
+    /// one past the right edge while wrapping is on, and in that column while it is off, as tmux does.
     /// </summary>
     public int CursorColumn => Math.Min(_column, Width);
 
@@ -247,15 +235,8 @@ public sealed class ScreenGrid
     }
 
     /// <summary>
-    /// Skips a payload handed to the terminal whole — an image in one of the graphics protocols, most
-    /// of all. It is not text and never lands on a cell, so the screen has to step over it rather
-    /// than spell it out.
-    ///
-    /// What the pixels themselves come to is not modelled and cannot be: a grid of cells has nowhere to
-    /// put them, and a terminal that draws a sixel inline moves the cursor by however tall the picture
-    /// turned out. Nothing here depends on that — every frame positions the cursor outright before it
-    /// writes anything — but a screen read back after a picture was drawn is a screen with the picture
-    /// missing.
+    /// Skips a payload handed to the terminal whole, such as an image, which never lands on a cell. A grid
+    /// has nowhere to put pixels, so a screen read back after a picture was drawn is missing it.
     /// </summary>
     /// <param name="output">What was written.</param>
     /// <param name="start">The first character after the introducer.</param>
@@ -338,10 +319,8 @@ public sealed class ScreenGrid
     }
 
     /// <summary>
-    /// Takes the screen over, or gives it back. An application that draws full screen asks for a screen
-    /// of its own, which arrives blank and hands the one underneath back untouched when it leaves — the
-    /// shell scrollback a user sees again on exit. Asking twice for what is already in force changes
-    /// nothing, which is what a terminal does with it.
+    /// Takes the screen over, or gives it back. The alternate screen arrives blank and hands the one
+    /// underneath back untouched, and asking twice for what is in force changes nothing.
     /// </summary>
     /// <param name="on">Whether the screen is being taken over.</param>
     private void AlternateScreen(bool on)
@@ -472,16 +451,8 @@ public sealed class ScreenGrid
     }
 
     /// <summary>
-    /// Makes room for a symbol about to be written. A symbol that runs past the right edge moves to the next
-    /// row. With wrapping off there is nowhere to move it to, so the cursor stays in the last column and the
-    /// symbol is dropped rather than pushed inwards. That is what makes a frame drawn past its own width show
-    /// up as a defect rather than as a row that quietly grew.
-    ///
-    /// Terminals do not agree about that last case, and there is nothing to be right about. A wide symbol
-    /// written into the last column is dropped by tmux and shifted a column inwards by kitty, so whichever
-    /// this does will contradict one of them. It is dropped here because a frame never asks for it: the surface
-    /// refuses a wide symbol the right edge would split and writes a blank instead. So the only way to reach
-    /// this is by hand, and a symbol that vanishes is easier to notice than one that moved.
+    /// Makes room for a symbol about to be written, moving it to the next row where it runs past the edge.
+    /// With wrapping off it is dropped, as tmux drops it.
     /// </summary>
     /// <param name="width">Columns the symbol takes.</param>
     /// <returns><c>false</c> when there is nowhere to put it.</returns>

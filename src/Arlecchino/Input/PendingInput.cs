@@ -3,9 +3,8 @@ using System.Collections.Concurrent;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// What the terminal has said since the last frame. Reading the terminal and drawing are two loops, so the
-/// reader hands events over here instead of routing them itself. The frame loop drains the queue just before
-/// it draws, and every view, widget and atom is touched by that one thread.
+/// What the terminal has said since the last frame. Reading and drawing are two loops, and the frame loop
+/// drains this queue just before it draws, so one thread touches every view, widget and atom.
 /// </summary>
 internal sealed class PendingInput
 {

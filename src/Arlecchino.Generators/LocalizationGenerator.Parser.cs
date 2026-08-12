@@ -8,9 +8,8 @@ namespace Arlecchino.Generators;
 public sealed partial class LocalizationGenerator
 {
     /// <summary>
-    /// Reads one localization file. Only as much TOML as this needs: a <c>[localization]</c> table
-    /// naming the language, a <c>[strings]</c> table of quoted values, and nothing else — a file of
-    /// text does not need a parser that can express dates and arrays of tables.
+    /// Reads one localization file: a <c>[localization]</c> table naming the language and a
+    /// <c>[strings]</c> table of quoted values, which is as much TOML as this needs.
     /// </summary>
     /// <param name="source">The file and what is in it.</param>
     /// <returns>What it said, and everything wrong with it.</returns>

@@ -61,9 +61,8 @@ public partial class Surface
     public SurfaceRegion Frame => new(this, 0, 0, _width, _height);
 
     /// <summary>
-    /// Where a view draws: the frame minus the configured padding, or the room a layout left it while
-    /// one is drawing the view inside itself. A view asks for this and gets what it has been given,
-    /// which is what lets a layout be added to an application without a single view knowing.
+    /// Where a view draws: the frame minus its padding, or the room a layout left it. A view asks for this
+    /// and gets whatever it has been given, so a layout can be added without any view knowing.
     /// </summary>
     public SurfaceRegion Content => _body ??
                                     Frame.Inset(
@@ -82,9 +81,8 @@ public partial class Surface
     private int FreeLines => Math.Max(0, _height - _lines);
 
     /// <summary>
-    /// What the frame just built put in a cell. The testing package reads it to hold the terminal's screen
-    /// against the frame that was composed. A diff that dropped a cell and a cell that never had anything in
-    /// it read alike on the terminal, and only the frame itself tells them apart.
+    /// What the frame just built put in a cell, which the testing package reads to hold the terminal's screen
+    /// against the composed frame. A dropped cell and an empty one read alike on the terminal.
     /// </summary>
     /// <param name="row">Row in frame coordinates.</param>
     /// <param name="column">Column in frame coordinates.</param>
@@ -110,12 +108,8 @@ public partial class Surface
     }
 
     /// <summary>
-    /// Confines every write to a rectangle until the returned scope is disposed, whatever coordinates
-    /// the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an
-    /// offset that reaches outside the pane, and the parts that fall outside are dropped instead of
-    /// landing on a neighbor.
-    ///
-    /// Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
+    /// Confines every write to a rectangle until the returned scope is disposed, dropping whatever falls
+    /// outside it. Scopes nest, and a clip inside a clip is their intersection.
     /// </summary>
     /// <param name="region">The only part of the frame writes may reach.</param>
     /// <returns>Dispose it to go back to the clip that was in force before.</returns>
@@ -220,26 +214,8 @@ public partial class Surface
     }
 
     /// <summary>
-    /// Hands the terminal something the cell grid cannot express — an image in one of the graphics
-    /// protocols, most of all — to be written verbatim at a cell, after everything the frame drew.
-    ///
-    /// It goes out last on purpose: the cells are written first, so whatever was under or around the
-    /// payload last time is repainted before it lands.
-    ///
-    /// Repainting the cells is not enough to remove it, though, which is what <paramref name="undraw"/>
-    /// is for. Say a payload was handed over last frame and is not handed over this one, because the widget
-    /// moved, or shrank, or the screen no longer shows it at all. Its undraw is written at the place it used
-    /// to be, and written **first**, before a single cell of the new frame. Undrawing paints over what it
-    /// removes, so whatever the frame draws lands on top of it; the other way round it would
-    /// erase the frame instead of the picture. A frame that undraws anything is written whole rather than
-    /// diffed, since the cells painted over have to be put back whether they changed or not.
-    ///
-    /// Whoever hands over pixels says how to take them back, because only they know: kitty deletes an
-    /// image by number, a sixel has to be painted over.
-    ///
-    /// A payload is re-sent only once it changes. A frame is only composed when something asked for one, so a
-    /// picture that has stayed the same costs nothing between frames — and one measured in kilobytes is worth
-    /// handing over only when it has to be.
+    /// Hands the terminal something the cell grid cannot express, such as an image, to be written verbatim at
+    /// a cell after every cell of the frame. It is re-sent only once it changes.
     /// </summary>
     /// <param name="row">Row of the cell it starts at, counted from the top of the frame.</param>
     /// <param name="column">Column of that cell.</param>
@@ -260,10 +236,8 @@ public partial class Surface
     }
 
     /// <summary>
-    /// Writes what removes the payloads this frame no longer hands over, before a single cell goes out.
-    /// The order is the whole point: an undraw paints over what it removes, so anything the frame draws
-    /// afterward is drawn on top of it. Written the other way round it erases the frame instead of the
-    /// picture.
+    /// Writes what removes the payloads this frame no longer hands over, before a single cell goes out. An
+    /// Undrawing paints over what it removes, and done afterward it would erase the frame instead.
     /// </summary>
     /// <returns><c>true</c> when something was undrawn, so the frame is written whole rather than diffed.</returns>
     private bool AppendUndraws()

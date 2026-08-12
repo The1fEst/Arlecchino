@@ -4,9 +4,8 @@ using Arlecchino.Atoms.Collections;
 namespace Arlecchino.Atoms.Tracked;
 
 /// <summary>
-/// A set whose changes go on the undo stack: what the user marked, the columns they turned on, the
-/// tags they put on something. <see cref="AtomHistory"/> picks it up with nothing to register, and
-/// each call is one step — including one that puts several in at once.
+/// A set whose changes go on the undo stack, picked up by <see cref="AtomHistory"/> with nothing to
+/// register. Each call is one step, including one that puts several in at once.
 /// </summary>
 /// <typeparam name="T">What the set holds.</typeparam>
 public sealed class TrackedAtomsSet<T> : AtomsSet<T>

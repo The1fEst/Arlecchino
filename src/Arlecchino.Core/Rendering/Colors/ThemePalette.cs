@@ -15,22 +15,13 @@ public sealed class ThemePalette
     private static readonly Rgb Amber = new(0xD0, 0x8A, 0x2C);
 
     /// <summary>
-    /// The framework's own colors — the crimson, bone and ink of the harlequin mask. The background
-    /// stays whatever the terminal has, so it sits on a light theme as readily as on a dark theme; only the
-    /// two cursor rows paint behind their text, because a selection has to be visible.
-    ///
-    /// Each entry carries an exact color and a palette color behind it, so a terminal without 24-bit
-    /// draws the nearest thing the author picked rather than the nearest thing arithmetic found.
-    ///
-    /// This is what a palette starts from, so <c>new ThemePalette()</c> is already it; the property is
-    /// here to name it, and <see cref="Basic"/> is the way back to the sixteen plain colors.
+    /// The framework's own colors, on whatever background the terminal has. It is what a palette starts
+    /// from, and <see cref="Basic"/> is the way back to the sixteen plain colors.
     /// </summary>
     public static ThemePalette Arlecchino { get; } = new();
 
     /// <summary>
-    /// The terminal's own sixteen colors, with nothing exact behind them: magenta titles, blue column
-    /// headers, cyan borders, a green cursor row. This was the default before 2.0, and
-    /// <c>UseTheme(ThemePalette.Basic)</c> is how an application that liked it keeps it.
+    /// The terminal's own sixteen colors, with nothing exact behind them. It was the default before 2.0.
     /// </summary>
     public static ThemePalette Basic { get; } = new()
     {

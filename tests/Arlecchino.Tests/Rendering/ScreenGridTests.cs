@@ -151,10 +151,8 @@ public sealed class ScreenGridTests
     }
 
     /// <summary>
-    /// One of the two things a terminal does here, not the only one: tmux drops the symbol, kitty
-    /// shifts it a column inwards. A frame never asks for either — the surface refuses a wide symbol
-    /// the right edge would split — so this pins down the reading rather than claiming it is the only
-    /// one.
+    /// One of the two things a terminal does here: tmux drops the symbol and kitty shifts it a column
+    /// inwards. A frame asks for neither, so this pins the reading rather than claiming it is the only one.
     /// </summary>
     [Fact]
     public void AWideSymbolPastTheRightEdgeIsDroppedWhenWrappingIsOff()
@@ -179,9 +177,8 @@ public sealed class ScreenGridTests
     }
 
     /// <summary>
-    /// tmux's reading. kitty leaves the cursor one past the edge here as it does with wrapping on;
-    /// nothing visible turns on which, because with nowhere to wrap to the next symbol lands in the
-    /// last column either way.
+    /// The reading tmux gives, where kitty leaves the cursor one past the edge. Nothing visible turns on
+    /// which, since the next symbol lands in the last column either way.
     /// </summary>
     [Fact]
     public void TheCursorStopsAtTheLastColumnWhenWrappingIsOff()

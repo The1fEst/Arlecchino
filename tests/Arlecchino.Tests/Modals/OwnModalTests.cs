@@ -8,9 +8,8 @@ using Arlecchino.Tests.Support;
 namespace Arlecchino.Tests.Modals;
 
 /// <summary>
-/// A dialog the application draws itself. It derives from <c>Modal</c> like every dialog the framework
-/// brings, so what has to hold is that it is drawn where they are drawn and takes the keys they would
-/// have taken — no branch anywhere knows this type exists.
+/// A dialog the application draws itself, deriving from <c>Modal</c> as the framework's own do. It has to be
+/// drawn where they are drawn and take the keys they would take.
 /// </summary>
 public sealed class OwnModalTests
 {
@@ -25,8 +24,8 @@ public sealed class OwnModalTests
     }
 
     /// <summary>
-    /// Every key reaches it and none reach the view behind it, which is the whole of what makes a
-    /// dialog a dialog rather than a picture.
+    /// Every key reaches it and none reach the view behind it, which is what makes it a dialog rather than a
+    /// picture.
     /// </summary>
     [Fact]
     public void ItTakesEveryKeyWhileItIsOpen()

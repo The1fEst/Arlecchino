@@ -5,13 +5,8 @@ using System.Threading;
 namespace Arlecchino;
 
 /// <summary>
-/// Which thread draws. Views, widgets, atoms and the surface are written without locks because one thread
-/// touches them, and this is what turns that from a convention into something the framework can check. The
-/// frame loop claims the thread it runs on, and everything that must happen there asks before it changes
-/// anything.
-///
-/// Nothing claims it outside a running application — a headless host, a test, a single
-/// <c>DrawOnce</c> — so the checks stay quiet there and cost a null comparison.
+/// Which thread draws, claimed by the frame loop as it starts. Views, widgets, atoms and the surface are
+/// written without locks, and this is what turns that convention into something the framework checks.
 /// </summary>
 public static class FrameThread
 {
@@ -34,16 +29,16 @@ public static class FrameThread
     public static bool HasPending => !Pending.IsEmpty;
 
     /// <summary>
-    /// Claims the calling thread as the one that draws. Called by the frame loop as it starts; an
-    /// application that runs the loop itself calls it too, so that the checks know where "here" is.
+    /// Claims the calling thread as the one that draws. An application running the frame loop itself calls
+    /// this too, so the checks know which thread is meant.
     /// </summary>
     /// <param name="wake">
     /// Asks for a frame, called whenever something is posted. The frame loop passes its repaint
     /// signal, so posted work is drawn without the caller having to ask.
     /// </param>
     /// <returns>
-    /// A scope that gives the claim up again. Giving up the last claim drops what is still posted:
-    /// with nobody drawing there is no frame left for it to run before.
+    /// A scope that gives the claim up again. Giving up the last claim drops what is still posted, since no
+    /// frame is left for it to run before.
     /// </returns>
     public static IDisposable Claim(Action? wake = null)
     {
@@ -54,11 +49,8 @@ public static class FrameThread
     }
 
     /// <summary>
-    /// Hands work to the drawing thread, from wherever you are. It runs just before the next frame,
-    /// in the order it was posted, and a frame is asked for by itself.
-    ///
-    /// With nobody drawing — a test, a headless render — it waits until something runs it, which is
-    /// what <see cref="RunPending"/> is for.
+    /// Hands work to the drawing thread, to run just before the next frame in the order it was posted. With
+    /// no thread drawing it waits for <see cref="RunPending"/>.
     /// </summary>
     /// <param name="action">What to run where it is safe to change what a frame draws.</param>
     public static void Post(Action action)

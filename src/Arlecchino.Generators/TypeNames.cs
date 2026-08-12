@@ -14,10 +14,11 @@ internal static class TypeNames
     public static string Of(ITypeSymbol symbol) => symbol.ToDisplayString(Format);
 
     /// <summary>
-    /// Whether the generated file, which lands in the same assembly, can name the type at all. A type
-    /// nested privately inside another is deliberately invisible, and emitting a registration for it
-    /// would fail the build in generated code rather than in the file the author wrote.
+    /// Whether the generated file, which lands in the same assembly, can name the type at all. A registration
+    /// for a privately nested type would fail the build in generated code.
     /// </summary>
+    /// <param name="symbol">The type to name.</param>
+    /// <returns>Whether the generated file may name it.</returns>
     public static bool IsReachable(INamedTypeSymbol symbol)
     {
         for (var type = symbol; type is not null; type = type.ContainingType)

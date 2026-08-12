@@ -23,9 +23,8 @@ public enum KeyModifiers
     Control = 4,
 
     /// <summary>
-    /// Command on a Mac, the Windows key elsewhere. Terminals report it in the same modifier field as
-    /// the rest, one bit further up; the Windows console never reports it at all, because the key is
-    /// taken by the system before an application sees it.
+    /// Command on a Mac, the Windows key elsewhere. The Windows console never reports it, since the system
+    /// takes the key before an application sees it.
     /// </summary>
     Super = 8,
 }

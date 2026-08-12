@@ -130,9 +130,8 @@ internal sealed partial class WindowsConsoleInput
         WindowsInputTranslator.ToKeyPress(key.VirtualKeyCode, key.UnicodeChar, key.ControlKeyState);
 
     /// <summary>
-    /// Takes one key press, and with it whatever is already waiting behind it. The console reports a
-    /// paste as the keys that would have typed it, so a run that arrived together is read as one and
-    /// handed on wrapped in the markers a terminal elsewhere would have sent.
+    /// Takes one key press, and with it whatever is already waiting behind it. A run that arrived together is
+    /// handed on wrapped in the paste markers a terminal elsewhere would have sent.
     /// </summary>
     /// <param name="first">The press that was just read.</param>
     private void Take(KeyPress first)

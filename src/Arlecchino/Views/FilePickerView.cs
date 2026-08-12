@@ -14,10 +14,8 @@ using Arlecchino.State;
 namespace Arlecchino.Views;
 
 /// <summary>
-/// Browses the file system: shortcuts on the left, the current folder on the right. It is a view
-/// rather than a dialog because it needs the whole screen, which is also why the request that opened
-/// it has to say where to return to. It is registered automatically, so an application only has to
-/// fill in <see cref="ArlecchinoState.FilePicker"/> and navigate here.
+/// Browses the file system: shortcuts on the left, the current folder on the right. It is registered
+/// already, so an application fills in <see cref="ArlecchinoState.FilePicker"/> and navigates here.
 /// </summary>
 internal sealed class FilePickerView : IArlecchinoView
 {
@@ -541,7 +539,8 @@ internal sealed class FilePickerView : IArlecchinoView
     private void MoveSidebar(int delta)
     {
         var next = _sidebarSelected;
-        for (var i = 0; i < _sidebar.Count; i++)
+
+        foreach (var _ in _sidebar)
         {
             next += delta;
             if (next < 0 || next >= _sidebar.Count)
@@ -658,9 +657,8 @@ internal sealed class FilePickerView : IArlecchinoView
     }
 
     /// <summary>
-    /// Where browsing starts. A folder is browsed; a file is browsed in the folder that holds it, so
-    /// a field that already names a file reopens where that file is rather than on the drives.
-    /// Anything that is not there any more falls back to the drives.
+    /// Where browsing starts: the folder asked for, or the one holding the file asked for. Anything that is
+    /// no longer there falls back to the drives.
     /// </summary>
     /// <param name="requested">What the request asked for.</param>
     /// <returns>The folder to list, or an empty string for the drives.</returns>
@@ -724,7 +722,7 @@ internal sealed class FilePickerView : IArlecchinoView
                 .Select(static file => new Entry(file.Name, file.FullName, false, SafeTime(file), SafeLength(file), false))
                 .OrderBy(static entry => entry.Name, StringComparer.OrdinalIgnoreCase);
 
-            _entries = directories.Concat(files).ToList();
+            _entries = [.. directories, .. files];
         }
         catch (Exception e)
         {

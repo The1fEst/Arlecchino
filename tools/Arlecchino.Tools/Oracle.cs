@@ -15,16 +15,8 @@ using Arlecchino.Testing;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Holds the screen <see cref="ScreenGrid"/> reads frames back from against the screen a real terminal
-/// ends up with. The emulator and the code that writes the frames were written by the same head, so a
-/// wrong idea about the edge of a row or the width of a symbol would be held by both and cancel out,
-/// leaving every test green and the picture wrong. tmux is the second opinion.
-///
-/// A second opinion is not the last word. Terminals differ from one another as well: a wide symbol
-/// written into the last column with wrapping off is dropped by tmux and shifted a column inwards by
-/// kitty, both checked. <c>raw-wrap-off-wide</c> holds the screen to tmux's reading, which is a choice
-/// rather than a fact — the remark on the same case in <see cref="ScreenGrid"/> says why it is safe to
-/// choose either.
+/// Holds the screen <see cref="ScreenGrid"/> reads frames back from against the screen tmux and kitty end up
+/// with. Where the two terminals disagree, the scenario names which of them the screen is held to.
 /// </summary>
 internal static class Oracle
 {
@@ -121,10 +113,8 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// Plays what was written into a pane of the same size and reads the screen back. The pane is told
-    /// to touch a file once it has swallowed the lot, which is what says the screen is worth reading —
-    /// a pane that has exited says so by printing into itself, and that would scroll away the very
-    /// picture being measured.
+    /// Plays what was written into a pane of the same size and reads the screen back. The pane touches a file
+    /// once it has swallowed the lot, since a pane that announced it in itself would scroll the picture away.
     /// </summary>
     /// <param name="output">The bytes the frames wrote.</param>
     /// <param name="width">Columns the pane is opened at.</param>
@@ -215,17 +205,12 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// The colour every cell ended up in, as tmux hands it back: the text again, with the sequences it
-    /// would send to redraw it left in. Reading them is a matter of walking the line and remembering
-    /// what is in force, the same thing a terminal does — which is why both sides of the comparison are
-    /// boiled down to <see cref="Paint"/> rather than compared as sequences. tmux writes the same colour
-    /// differently from the way the frame asked for it, and neither spelling is wrong.
-    ///
-    /// A cell tmux never touched is not handed back at all, and reads as plain, which is what it is.
+    /// The color every cell ended up in, boiled down to <see cref="Paint"/> from the sequences tmux hands
+    /// back. A cell it never touched is not handed back at all and reads as plain.
     /// </summary>
     /// <param name="width">Columns the pane is.</param>
     /// <param name="height">Rows the pane is.</param>
-    /// <returns>The colour of every cell.</returns>
+    /// <returns>The color of every cell.</returns>
     private static Paint[][] Colours(int width, int height)
     {
         var lines = Tmux("capture-pane", "-p", "-N", "-e").Split('\n');
@@ -241,11 +226,11 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// What a cell's recorded style comes to. The screen keeps the sequence that was in force when the
-    /// cell was written, which is how the frame spelled the colour; this is the colour itself.
+    /// What a cell's recorded style comes to. The screen keeps the sequence that was in force when the cell
+    /// was written, which is how the frame spelled the color; this is the color itself.
     /// </summary>
     /// <param name="style">The sequence, empty where the style was reset.</param>
-    /// <returns>The colour.</returns>
+    /// <returns>The color.</returns>
     private static Paint Painted(string style)
     {
         var paint = Paint.Plain;
@@ -260,19 +245,13 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// The colour of every cell in one captured row. tmux writes the capture as the difference from
-    /// what it last said, and carries that across the line break — a row drawn in the colour the row
-    /// above ended in is handed back saying nothing about its colour at all. So the state is threaded
-    /// from row to row rather than started afresh, which is the only reading under which the capture
-    /// means what it looks like.
-    ///
-    /// A cell it never hands back is a different matter: it is blank and carries nothing, whatever was
-    /// in force when the row before it ended.
+    /// The color of every cell in one captured row. The capture is written as the difference from what tmux
+    /// last said and carries that across the line break, so the state is threaded from row to row.
     /// </summary>
     /// <param name="line">The captured row, sequences and all.</param>
     /// <param name="width">Columns the pane is.</param>
     /// <param name="paint">What is in force coming in, and what is left in force going out.</param>
-    /// <returns>The colour of every cell in the row.</returns>
+    /// <returns>The color of every cell in the row.</returns>
     private static Paint[] Painted(string line, int width, ref Paint paint)
     {
         var paints = new Paint[width];
@@ -332,13 +311,13 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// What a run of colour parameters leaves in force. Only what the framework can ask for is read —
-    /// the eight colours and their bright halves, the palette, exact colour, and the four attributes a
+    /// What a run of color parameters leaves in force. Only what the framework can ask for is read: the eight
+    /// colors and their bright halves, the palette, exact color, and the attributes a
     /// <see cref="TermColor"/> carries.
     /// </summary>
     /// <param name="paint">What was in force.</param>
     /// <param name="parameters">The parameters between the bracket and the <c>m</c>.</param>
-    /// <returns>What is in force afterwards.</returns>
+    /// <returns>What is in force afterward.</returns>
     private static Paint Repainted(Paint paint, string parameters)
     {
         var codes = parameters.Length == 0
@@ -860,15 +839,13 @@ internal static class Oracle
     private abstract record Scenario(string Name, int Width, int Height)
     {
         /// <summary>
-        /// How much colour the terminal is told it can do. The sequences a style writes depend on it,
-        /// and so does whether the emulator and tmux can be made to disagree about them.
+        /// How much color the terminal is told it can do, which decides the sequences a style writes.
         /// </summary>
         internal ColorSupport Colour { get; init; } = ColorSupport.TrueColor;
 
         /// <summary>
-        /// Why terminals are known to disagree here, when they are. A scenario that says so is reported
-        /// but not counted: the screen cannot be held to a reading that depends on which terminal, and
-        /// what this one does is pinned by a test instead.
+        /// Why terminals are known to disagree here, when they are. A scenario that says so is reported but
+        /// not counted, and what this emulator does is pinned by a test instead.
         /// </summary>
         internal string Disputed { get; init; } = "";
 
@@ -931,9 +908,8 @@ internal static class Oracle
     }
 
     /// <summary>
-    /// A stream written by hand, for the corners no frame reaches — a tab, a backspace, an erase, a
-    /// symbol shoved past the right edge. The emulator answers for those too, and nothing else here
-    /// would ask it to.
+    /// A stream written by hand, for the corners no frame reaches: a tab, a backspace, erasure, a symbol
+    /// shoved past the right edge. The emulator answers for those too, and nothing else here would ask it to.
     /// </summary>
     /// <param name="Name">What it is called on the command line.</param>
     /// <param name="Width">Columns the screen is.</param>
@@ -953,24 +929,24 @@ internal static class Oracle
     /// <summary>What was written, and the screen the emulator says it leaves.</summary>
     /// <param name="Output">The bytes written.</param>
     /// <param name="Lines">The screen, one string per row.</param>
-    /// <param name="Paints">The colour of every cell.</param>
+    /// <param name="Paints">The color of every cell.</param>
     /// <param name="CursorRow">Where the cursor ended up.</param>
     /// <param name="CursorColumn">Where the cursor ended up.</param>
     private sealed record Drawn(string Output, string[] Lines, Paint[][] Paints, int CursorRow, int CursorColumn);
 
     /// <summary>The screen tmux ended up with.</summary>
     /// <param name="Lines">The screen, one string per row.</param>
-    /// <param name="Paints">The colour of every cell.</param>
+    /// <param name="Paints">The color of every cell.</param>
     /// <param name="CursorRow">Where the cursor ended up.</param>
     /// <param name="CursorColumn">Where the cursor ended up.</param>
     private sealed record Played(string[] Lines, Paint[][] Paints, int CursorRow, int CursorColumn);
 
     /// <summary>
-    /// A colour boiled down to what it means rather than how it was spelled, so that the frame's way of
-    /// asking for it and tmux's way of handing it back can be held against one another.
+    /// A color boiled down to what it means rather than how it was spelled, so that the frame's way of asking
+    /// for it and tmux's way of handing it back can be held against one another.
     /// </summary>
-    /// <param name="Foreground">The colour of the symbol: <c>default</c>, a palette index, or <c>r,g,b</c>.</param>
-    /// <param name="Background">The colour behind it, spelled the same way.</param>
+    /// <param name="Foreground">The color of the symbol: <c>default</c>, a palette index, or <c>r,g,b</c>.</param>
+    /// <param name="Background">The color behind it, spelled the same way.</param>
     /// <param name="Bold">Whether it is bold.</param>
     /// <param name="Dim">Whether it is dim.</param>
     /// <param name="Italic">Whether it is italic.</param>
