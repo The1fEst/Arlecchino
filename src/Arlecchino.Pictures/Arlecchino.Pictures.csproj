@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <RootNamespace>Arlecchino.Pictures</RootNamespace>
+    <IsAotCompatible>true</IsAotCompatible>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>Arlecchino.Pictures</PackageId>
+    <Description>Image decoders for Arlecchino: PNG, JPEG, BMP, PNM, QOI and TGA read into the pixels the Picture widget draws. Managed, with no dependency beyond the renderer.</Description>
+    <EnablePackageValidation>false</EnablePackageValidation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="5.6.0" PrivateAssets="all" />
+    <AdditionalFiles Include="PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Arlecchino.Core/Arlecchino.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../nuget/Arlecchino.Pictures.md" Pack="true" PackagePath="/README.md" Visible="false" />
+  </ItemGroup>
+</Project>

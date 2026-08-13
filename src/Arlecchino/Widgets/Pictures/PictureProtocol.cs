@@ -22,6 +22,9 @@ namespace Arlecchino.Widgets.Pictures;
 /// Which set of pixels this is. It changes whenever the picture does, so anything cached against it
 /// is thrown away at the same moment.
 /// </param>
+/// <param name="Detail">
+/// How many pixels may be handed to the terminal at most, whatever the cells come to.
+/// </param>
 internal readonly record struct Placed(
     int Left,
     int Top,
@@ -29,7 +32,8 @@ internal readonly record struct Placed(
     int Rows,
     int CellWidth,
     int CellHeight,
-    int Version);
+    int Version,
+    int Detail);
 
 /// <summary>
 /// One way of getting a picture onto the screen. Each way keeps only what it needs and draws only its
@@ -198,8 +202,8 @@ internal abstract class PixelPicture : PictureProtocol
 }
 
 /// <summary>
-/// The kitty graphics protocol: the pixels as they are, base64 across chunks of the size the protocol
-/// allows, told which cell rectangle to scale into.
+/// The kitty graphics protocol: the pixels base64 across chunks of the size the protocol allows, told
+/// which cell rectangle to scale into. They are brought down to what that rectangle comes to first.
 /// </summary>
 internal sealed class KittyPicture : PixelPicture
 {
@@ -223,6 +227,23 @@ internal sealed class KittyPicture : PixelPicture
     /// <returns>The sequence to hand to the terminal.</returns>
     protected override string Build(Rgb[] pixels, int width, int height, Placed placed)
     {
+        var across = Math.Min(width, Math.Max(1, placed.Columns * placed.CellWidth));
+        var down = Math.Min(height, Math.Max(1, placed.Rows * placed.CellHeight));
+
+        if (placed.Detail > 0 && (long)across * down > placed.Detail)
+        {
+            var share = Math.Sqrt((double)placed.Detail / ((long)across * down));
+
+            across = Math.Max(1, (int)(across * share));
+            down = Math.Max(1, (int)(down * share));
+        }
+
+        var scaled = PictureScale.To(pixels, width, height, across, down);
+
+        pixels = scaled.Pixels;
+        width = scaled.Width;
+        height = scaled.Height;
+
         var bytes = new byte[width * height * 3];
 
         for (var index = 0; index < width * height; index++)

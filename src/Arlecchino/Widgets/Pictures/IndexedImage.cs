@@ -10,6 +10,8 @@ namespace Arlecchino.Widgets.Pictures;
 /// </summary>
 internal sealed class IndexedImage
 {
+    private const int Buckets = 32 * 32 * 32;
+
     private IndexedImage(Rgb[] palette, byte[] indexes, int width, int height)
     {
         Palette = palette;
@@ -28,84 +30,78 @@ internal sealed class IndexedImage
 
     public byte At(int column, int row) => Indexes[(row * Width) + column];
 
+    /// <summary>
+    /// Brings a picture down to a palette. The colors are counted in five bits a channel rather than
+    /// eight, since everything after the counting is paid for once per distinct color.
+    /// </summary>
+    /// <param name="pixels">The picture.</param>
+    /// <param name="width">Its width in pixels.</param>
+    /// <param name="height">Its height in pixels.</param>
+    /// <param name="across">How wide the result should be.</param>
+    /// <param name="down">How tall the result should be.</param>
+    /// <param name="colors">How many colors the palette may hold.</param>
+    /// <returns>The picture as entries in a palette of its own.</returns>
     public static IndexedImage From(Rgb[] pixels, int width, int height, int across, int down, int colors)
     {
-        var scaled = Resample(pixels, width, height, across, down);
-        var counted = new Dictionary<int, int>();
+        var (scaled, wide, tall) = PictureScale.To(pixels, width, height, across, down);
+        var counted = new int[Buckets];
+        var reds = new int[Buckets];
+        var greens = new int[Buckets];
+        var blues = new int[Buckets];
+        var distinct = 0;
 
         foreach (var pixel in scaled)
         {
-            var key = Key(pixel);
+            var bucket = Bucket(pixel);
 
-            counted[key] = counted.TryGetValue(key, out var seen) ? seen + 1 : 1;
+            if (counted[bucket] == 0)
+            {
+                distinct++;
+            }
+
+            counted[bucket]++;
+            reds[bucket] += pixel.Red;
+            greens[bucket] += pixel.Green;
+            blues[bucket] += pixel.Blue;
         }
 
-        var keys = new int[counted.Count];
-        var counts = new int[counted.Count];
+        var keys = new int[distinct];
+        var counts = new int[distinct];
         var at = 0;
 
-        foreach (var (key, count) in counted)
+        for (var bucket = 0; bucket < counted.Length; bucket++)
         {
-            keys[at] = key;
-            counts[at] = count;
+            if (counted[bucket] == 0)
+            {
+                continue;
+            }
+
+            keys[at] = ((reds[bucket] / counted[bucket]) << 16) | ((greens[bucket] / counted[bucket]) << 8) | (blues[bucket] / counted[bucket]);
+
+            counts[at] = counted[bucket];
             at++;
         }
 
         var palette = MedianCut(keys, counts, colors);
-        var nearest = new Dictionary<int, byte>(keys.Length);
-
-        foreach (var key in keys)
-        {
-            nearest[key] = Nearest(palette, key);
-        }
-
+        var nearest = new byte[Buckets];
+        var known = new bool[Buckets];
         var indexes = new byte[scaled.Length];
 
         for (var index = 0; index < scaled.Length; index++)
         {
-            indexes[index] = nearest[Key(scaled[index])];
-        }
+            var pixel = scaled[index];
+            var bucket = Bucket(pixel);
 
-        return new(palette, indexes, across, down);
-    }
-
-    private static Rgb[] Resample(Rgb[] pixels, int width, int height, int across, int down)
-    {
-        var scaled = new Rgb[across * down];
-
-        for (var row = 0; row < down; row++)
-        {
-            var top = row * height / down;
-            var bottom = Math.Max(top + 1, (row + 1) * height / down);
-
-            for (var column = 0; column < across; column++)
+            if (!known[bucket])
             {
-                var left = column * width / across;
-                var right = Math.Max(left + 1, (column + 1) * width / across);
-                var red = 0;
-                var green = 0;
-                var blue = 0;
-                var taken = 0;
-
-                for (var y = top; y < bottom; y++)
-                {
-                    for (var x = left; x < right; x++)
-                    {
-                        var pixel = pixels[(y * width) + x];
-
-                        red += pixel.Red;
-                        green += pixel.Green;
-                        blue += pixel.Blue;
-                        taken++;
-                    }
-                }
-
-                scaled[(row * across) + column] =
-                    new((byte)(red / taken), (byte)(green / taken), (byte)(blue / taken));
+                nearest[bucket] = Nearest(palette, Key(pixel));
+                known[bucket] = true;
             }
+
+            indexes[index] = nearest[bucket];
         }
 
-        return scaled;
+        return new(palette, indexes, wide, tall);
     }
 
     private static Rgb[] MedianCut(int[] keys, int[] counts, int colors)
@@ -272,6 +268,12 @@ internal sealed class IndexedImage
     }
 
     private static int Square(int value) => value * value;
+
+    /// <summary>Which of the buckets a color falls into, at five bits for each of the three.</summary>
+    /// <param name="pixel">The color.</param>
+    /// <returns>The bucket.</returns>
+    private static int Bucket(Rgb pixel) =>
+        ((pixel.Red >> 3) << 10) | ((pixel.Green >> 3) << 5) | (pixel.Blue >> 3);
 
     private static int Key(Rgb pixel) => (pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue;
 

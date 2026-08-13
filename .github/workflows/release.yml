@@ -43,6 +43,7 @@ jobs:
           version=${{ steps.version.outputs.value }}
           dotnet pack src/Arlecchino.Core/Arlecchino.Core.csproj --configuration Release --no-build -p:Version=$version
           dotnet pack src/Arlecchino/Arlecchino.csproj --configuration Release --no-build -p:Version=$version
+          dotnet pack src/Arlecchino.Pictures/Arlecchino.Pictures.csproj --configuration Release --no-build -p:Version=$version
           dotnet pack src/Arlecchino.Testing/Arlecchino.Testing.csproj --configuration Release --no-build -p:Version=$version
 
       - name: Exchange the workflow identity for a NuGet key

@@ -17,7 +17,8 @@ internal static class Ship
     private const string Header = "#nullable enable";
     private const string Gone = "*REMOVED*";
 
-    private static readonly string[] Packages = ["Arlecchino", "Arlecchino.Core", "Arlecchino.Testing"];
+    private static readonly string[] Packages =
+        ["Arlecchino", "Arlecchino.Core", "Arlecchino.Pictures", "Arlecchino.Testing"];
 
     private static readonly HttpClient Nuget = new() { Timeout = TimeSpan.FromSeconds(20) };
 

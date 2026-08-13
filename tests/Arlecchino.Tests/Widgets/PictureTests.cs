@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
@@ -166,6 +168,56 @@ public sealed class PictureTests
         Assert.Contains(Convert.ToBase64String([255, 0, 0, 0, 0, 255]), written, StringComparison.Ordinal);
         Assert.EndsWith("\e\\", written.TrimEnd(), StringComparison.Ordinal);
         Assert.DoesNotContain('▀', written);
+    }
+
+    /// <summary>
+    /// A terminal cannot show more than the cells it was given, so a picture larger than them is
+    /// brought down before it goes out.
+    /// </summary>
+    [Fact]
+    public void APictureLargerThanItsCellsIsBroughtDownBeforeItIsSent()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show(new Rgb[2000 * 1000], 2000, 1000);
+
+        var written = Draw(picture, 40, 10);
+
+        Assert.Contains($",s={40 * Glyphs.CellWidth},v={10 * Glyphs.CellHeight},c=40,r=10,", written, StringComparison.Ordinal);
+        Assert.True(written.Length < 2000 * 1000, $"the payload is {written.Length} bytes");
+    }
+
+    /// <summary>
+    /// A wide pane on a fine screen is still megabytes of escape sequence, so a ceiling stands above
+    /// the cells: past it a little sharpness is given up for a picture that appears at once.
+    /// </summary>
+    [Fact]
+    public void APictureIsNotSentInMoreDetailThanTheCeilingAllows()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty, Detail = 8 * 1024 };
+
+        picture.Show(new Rgb[2000 * 1000], 2000, 1000);
+
+        var size = Regex.Match(Draw(picture, 200, 50), @",s=(\d+),v=(\d+),");
+
+        Assert.True(size.Success, "the payload states no size");
+
+        var across = int.Parse(size.Groups[1].Value, CultureInfo.InvariantCulture);
+        var down = int.Parse(size.Groups[2].Value, CultureInfo.InvariantCulture);
+
+        Assert.True(across * down <= 8 * 1024, $"{across}×{down} is past the ceiling");
+        Assert.True(across > down, "the shape of the picture is kept");
+    }
+
+    /// <summary>A picture smaller than its cells is sent as it is, for the terminal to enlarge.</summary>
+    [Fact]
+    public void APictureSmallerThanItsCellsIsSentAsItIs()
+    {
+        var picture = new Picture { Protocol = ImageProtocol.Kitty };
+
+        picture.Show(new Rgb[4 * 4], 4, 4);
+
+        Assert.Contains(",s=4,v=4,", Draw(picture, 40, 10), StringComparison.Ordinal);
     }
 
     [Fact]

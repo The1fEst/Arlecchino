@@ -46,6 +46,12 @@ public sealed class Picture : IArlecchinoWidget
     public ImageProtocol? Protocol { get; set; }
 
     /// <summary>
+    /// How many pixels a protocol that hands pixels over may write at most, whatever the pane comes to.
+    /// The ceiling trades a little sharpness for a picture that appears at once; nought lifts it.
+    /// </summary>
+    public int Detail { get; set; } = 512 * 1024;
+
+    /// <summary>
     /// Hands over the pixels to draw, row by row from the top left. They are copied, so the caller is
     /// free to reuse its buffer.
     /// </summary>
@@ -130,7 +136,7 @@ public sealed class Picture : IArlecchinoWidget
             _pixels,
             PixelWidth,
             PixelHeight,
-            new(left, top, columns, rows, cellWidth, cellHeight, _version));
+            new(left, top, columns, rows, cellWidth, cellHeight, _version, Detail));
 
         return region.Rows(region.Height, 0);
     }

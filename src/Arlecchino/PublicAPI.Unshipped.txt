@@ -1,4 +1,6 @@
 #nullable enable
+Arlecchino.Widgets.Pictures.Picture.Detail.get -> int
+Arlecchino.Widgets.Pictures.Picture.Detail.set -> void
 *REMOVED*Arlecchino.Hosting.ArlecchinoOptions.ShowHints.get -> bool
 *REMOVED*Arlecchino.Hosting.ArlecchinoOptions.ShowHints.set -> void
 Arlecchino.Commands.CommandKeys

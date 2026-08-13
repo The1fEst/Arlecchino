@@ -141,6 +141,7 @@ comparison is in the [readme on GitHub](https://github.com/The1fEst/Arlecchino#w
 |---|---|
 | [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and atoms with their undo history |
 | [`Arlecchino`](https://www.nuget.org/packages/Arlecchino) | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
+| [`Arlecchino.Pictures`](https://www.nuget.org/packages/Arlecchino.Pictures) | PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels |
 | [`Arlecchino.Testing`](https://www.nuget.org/packages/Arlecchino.Testing) | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
 ## Links

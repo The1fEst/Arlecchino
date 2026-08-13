@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="src/Arlecchino.Core/Arlecchino.Core.csproj" />
   <Project Path="src/Arlecchino/Arlecchino.csproj" />
+  <Project Path="src/Arlecchino.Pictures/Arlecchino.Pictures.csproj" />
   <Project Path="src/Arlecchino.Generators/Arlecchino.Generators.csproj" />
   <Folder Name="/Samples/">
     <Project Path="samples/Arlecchino.Processes/Arlecchino.Processes.csproj" />

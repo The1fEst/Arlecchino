@@ -1,7 +1,7 @@
 # Changelog
 
-Notable changes to the `Arlecchino`, `Arlecchino.Core` and `Arlecchino.Testing` packages. The three ship
-together and always carry the same version.
+Notable changes to the `Arlecchino`, `Arlecchino.Core`, `Arlecchino.Pictures` and `Arlecchino.Testing`
+packages. They ship together and always carry the same version.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Up to `1.0.0` a breaking change only
@@ -19,6 +19,27 @@ record: the two properties that shadowed each other settle into one, and what is
 what it holds.
 
 ### Added
+
+- **A fourth package reads picture files.** `Arlecchino.Pictures` turns PNG, JPEG, BMP, Netpbm, QOI
+  and Targa into the pixels `Picture` already drew, so an application no longer has to bring a decoder
+  of its own. JPEG is read both ways round, baseline and progressive. Each format is written against
+  the specification itself: the package depends on `Arlecchino.Core` and on nothing native.
+
+  ```csharp
+  if (PictureFormats.Read(File.ReadAllBytes(path)) is { } raster)
+  {
+      picture.Show(raster.Pixels, raster.Width, raster.Height);
+  }
+  ```
+
+  A file is recognized by what is in it rather than by what it is called, and `PictureFormats.For`
+  says which format claimed it. Nothing throws: what cannot be read comes back as `null`, and a
+  header that asks for more pixels than `PictureLimits.Most` is refused before anything is allocated
+  against it.
+
+  `PictureLimits.Enough` says how many pixels the caller has a use for, and a format that can read
+  itself smaller does: a JPEG drawn into a pane is read at a quarter or an eighth of its side rather
+  than in full, which is where most of the time of opening a photograph went.
 
 - **The terminal can be lent to another program.** An editor, a pager or a shell cannot share a
   terminal with a full-screen application, so `Handover` stops being one for as long as the other

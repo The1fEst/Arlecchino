@@ -135,6 +135,7 @@ jobs:
         run: |
           dotnet pack src/Arlecchino.Core/Arlecchino.Core.csproj --configuration Release --no-build
           dotnet pack src/Arlecchino/Arlecchino.csproj --configuration Release --no-build
+          dotnet pack src/Arlecchino.Pictures/Arlecchino.Pictures.csproj --configuration Release --no-build
           dotnet pack src/Arlecchino.Testing/Arlecchino.Testing.csproj --configuration Release --no-build
 
       - name: Build an application against the packages
