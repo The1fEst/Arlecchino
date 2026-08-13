@@ -144,7 +144,7 @@ public sealed class RobustnessTests
     [Fact]
     public void AKeyBindingThatMatchesNothing()
     {
-        var binding = new KeyBinding(default);
+        var binding = new KeyBinding(default(ConsoleKey));
 
         Assert.False(binding.Matches(new(ConsoleKey.A, default, 'a')));
     }
