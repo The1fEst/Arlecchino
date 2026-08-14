@@ -32,7 +32,7 @@ dotnet run --project tools/Arlecchino.Tools -- oracle
 dotnet run --project tools/Arlecchino.Tools -- keys
 dotnet run --project tools/Arlecchino.Tools -- live
 dotnet run --project tools/Arlecchino.Tools -- terminal
-dotnet run --project tools/Arlecchino.Tools -- ship 3.1.0
+dotnet run --project tools/Arlecchino.Tools -- ship
 ```
 
 It is a project in the solution rather than a folder of scripts so that the tools are built, inspected
@@ -75,7 +75,9 @@ and analysed with everything else — a script beside the repository is checked 
   needs `tmux`.
 - **`ship`** prepares a release: it sets the version, moves the recorded public API from
   `PublicAPI.Unshipped.txt` to `PublicAPI.Shipped.txt`, and points package validation at the release
-  before it. Run it, read the diff, commit, tag.
+  before it. Run it, read the diff, commit, tag. It works the version out from the calendar and from
+  the one the repository holds — the first release of August 2026 is `2026.8.1` and the next that
+  month is `2026.8.2` — and takes one as an argument when a particular number is wanted.
 
 ## What the build will insist on
 
@@ -114,12 +116,19 @@ stay plain Markdown with absolute image URLs and no `<details>`. A change to the
 packages table or what the framework claims for itself belongs in `README.md` and in
 `nuget/Arlecchino.md`.
 
+## Versions
+
+A version is the year, the month and which release of that month it is: `2026.8.1` is the first
+release of August 2026, `2026.8.2` the next one. `ship` works the number out, and the tag is that
+number with a `v` in front of it. Every package in the repository carries it, so the number says how
+old what is on a machine is rather than what it is safe to upgrade across.
+
 ## Breaking changes
 
-Since `1.0.0` the public surface is a contract: breaking it means a new major, and the API analyzer
-will make the break visible in the diff. When one is genuinely due, it lands whole — the old shape is
-removed in the same release rather than left behind as an obsolete shim, and the changelog says what
-moved.
+The public surface is a contract, and the API analyzer will make a break visible in the diff. The
+version number no longer announces one — the changelog does, in the entry for the release it lands
+in. When a break is genuinely due it lands whole: the old shape is removed in the same release rather
+than left behind as an obsolete shim, and the changelog says what moved.
 
 ## Commits
 

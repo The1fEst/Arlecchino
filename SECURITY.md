@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-The latest `1.x` release is the one that gets fixes. Older versions are not patched — the three
-packages ship together and always carry the same version, so upgrading means moving all three.
+The latest release is the one that gets fixes. Older versions are not patched — the packages ship
+together and always carry the same version, so upgrading means moving all of them.
 
 ## Reporting a vulnerability
 

@@ -3,13 +3,16 @@
 Notable changes to the `Arlecchino`, `Arlecchino.Core`, `Arlecchino.Pictures` and `Arlecchino.Testing`
 packages. They ship together and always carry the same version.
 
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows
-[Semantic Versioning](https://semver.org/spec/v2.0.0.html). Up to `1.0.0` a breaking change only
-bumped the minor, which is why the `0.x` entries below are full of them; from `1.0.0` on, breaking
-the public API means a new major. See
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and a version is the
+year, the month and which release of that month it is: `2026.8.1` is the first release of August
+2026. The number says when a release was cut rather than what it is safe to upgrade across, so the
+entry is what to read — a break is written down here whichever digit moved. Everything below
+`2026.8.1` was numbered under [Semantic Versioning](https://semver.org/spec/v2.0.0.html): up to
+`1.0.0` a breaking change only bumped the minor, which is why the `0.x` entries are full of them, and
+from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## 6.0.0
+## 2026.8.1
 
 A release about where the cursor is. A focus ring is focusable itself, so `Tab` walks into a widget
 made of parts and out the far side; the hints box lists the keys of whatever holds the focus rather
@@ -129,6 +132,13 @@ what it holds.
 
   Being a record was never used for what a record is for: entries are held by reference and settled in
   place, so value equality, `with` and `Deconstruct` had nothing to do. They are gone with it.
+
+- **A version now says when the release was cut.** Numbering is `year.month.build`, so this release is
+  `2026.8.1` rather than the `6.0.0` it was prepared as, and a second release in the same month would
+  be `2026.8.2`. What the old scheme promised — a break only ever arrives in a major — was kept, and
+  it still left the one question a version is read for unanswered: how old the package on the machine
+  is. Breaks are as rare as they were and still land whole; the changelog is where they are announced,
+  and `ship` now works the next version out for itself.
 
 ### Fixed
 
