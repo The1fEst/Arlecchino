@@ -17,7 +17,7 @@ public static class ScrollBar
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion, int, int, IArlecchinoColor)`](#draw-surfaceregion-int-int-iarlecchinocolor) | Draws the bar down the last column of a region. The thumb is at least one cell tall however long the list is, and it only touches the ends when the list does, so "near the end" never looks the same as "at the end". |
+| [`Draw(SurfaceRegion, int, int, IArlecchinoColor)`](#draw-surfaceregion-int-int-iarlecchinocolor) | Draws the bar down the last column of a region. The thumb is at least one cell tall and touches an end only when the list does. |
 | [`IsNeeded(int, int)`](#isneeded-int-int) | Whether a list of this length needs a bar at all, which is also whether a column has to be kept free for it. |
 
 ## Methods in detail
@@ -28,7 +28,7 @@ public static class ScrollBar
 public static void Draw(SurfaceRegion region, int first, int total, IArlecchinoColor? style = null);
 ```
 
-Draws the bar down the last column of a region. The thumb is at least one cell tall however long the list is, and it only touches the ends when the list does, so "near the end" never looks the same as "at the end".
+Draws the bar down the last column of a region. The thumb is at least one cell tall and touches an end only when the list does.
 
 **Parameters**
 

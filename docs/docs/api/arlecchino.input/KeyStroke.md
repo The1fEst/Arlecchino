@@ -7,7 +7,7 @@ sidebar_label: "KeyStroke"
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino.Core`
 
-One key and the modifiers held with it — the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these, plus the alternatives that mean the same, plus the key that finishes it when the binding is a chord.
+One key and the modifiers held with it, which is the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these plus its alternatives and its finishing key.
 
 ```csharp
 public readonly struct KeyStroke : IEquatable<KeyStroke>
@@ -19,7 +19,8 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 
 | Member | Summary |
 |---|---|
-| [`KeyStroke(ConsoleKey, KeyModifiers)`](#keystroke-consolekey-keymodifiers) | One key and the modifiers held with it — the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these, plus the alternatives that mean the same, plus the key that finishes it when the binding is a chord. |
+| [`KeyStroke(char)`](#keystroke-char) | A stroke on a character rather than on a key, which is the only way to name punctuation. It answers on every layout that can type that character, whatever the keyboard does to produce it. |
+| [`KeyStroke(ConsoleKey, KeyModifiers)`](#keystroke-consolekey-keymodifiers) | One key and the modifiers held with it, which is the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these plus its alternatives and its finishing key. |
 
 ## Properties
 
@@ -28,17 +29,32 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 | [`IsNone`](#isnone) | Whether the stroke is unset and therefore stands for no key at all. |
 | [`Key`](#key) | The key itself. |
 | [`Modifiers`](#modifiers) | Modifiers that must be held, exactly. |
+| [`Typed`](#typed) | The character this stroke answers to, or `'\0'` when it is a stroke on a key. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
 | [`Deconstruct(out ConsoleKey, out KeyModifiers)`](#deconstruct-out-consolekey-out-keymodifiers) |  |
-| [`Matches(KeyPress)`](#matches-keypress) | Whether a key press is this stroke. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed. Some keys answer to two names, one where they sit on the keyboard and one on the keypad, and the runtime hands back whichever it likes: a slash arrives as `Divide` even when it was pressed next to the shift. A binding written on either name answers to both. |
+| [`Matches(KeyPress)`](#matches-keypress) | Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift. |
 | [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The same stroke with one modifier put in place of another. |
 | [`ToString()`](#tostring) | How the stroke is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. The palette and the hints box display this, so a rebound key relabels itself everywhere. |
 
 ## Constructors in detail
+
+### `KeyStroke(char)` {#keystroke-char}
+
+```csharp
+public KeyStroke(char typed);
+```
+
+A stroke on a character rather than on a key, which is the only way to name punctuation. It answers on every layout that can type that character, whatever the keyboard does to produce it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `typed` | `char` | The character to answer to. |
 
 ### `KeyStroke(ConsoleKey, KeyModifiers)` {#keystroke-consolekey-keymodifiers}
 
@@ -46,7 +62,7 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 public KeyStroke(ConsoleKey Key, KeyModifiers Modifiers = None);
 ```
 
-One key and the modifiers held with it — the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these, plus the alternatives that mean the same, plus the key that finishes it when the binding is a chord.
+One key and the modifiers held with it, which is the smallest thing a binding can be made of. A [`KeyBinding`](../arlecchino.input/KeyBinding.md) is one of these plus its alternatives and its finishing key.
 
 **Parameters**
 
@@ -87,6 +103,16 @@ Modifiers that must be held, exactly.
 
 **Type** [`KeyModifiers`](../arlecchino.input/KeyModifiers.md)
 
+### `Typed` {#typed}
+
+```csharp
+public char Typed { get; }
+```
+
+The character this stroke answers to, or `'\0'` when it is a stroke on a key.
+
+**Type** `char`
+
 ## Methods in detail
 
 ### `Deconstruct(out ConsoleKey, out KeyModifiers)` {#deconstruct-out-consolekey-out-keymodifiers}
@@ -108,7 +134,7 @@ public void Deconstruct(out ConsoleKey Key, out KeyModifiers Modifiers);
 public bool Matches(KeyPress pressed);
 ```
 
-Whether a key press is this stroke. Terminals that report no virtual key are still handled: letters, digits and the common control keys are then matched by the character typed. Some keys answer to two names, one where they sit on the keyboard and one on the keypad, and the runtime hands back whichever it likes: a slash arrives as `Divide` even when it was pressed next to the shift. A binding written on either name answers to both.
+Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift.
 
 **Parameters**
 

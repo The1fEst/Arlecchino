@@ -7,7 +7,7 @@ sidebar_label: "TrackedAtomsQueue<T>"
 
 **Namespace:** `Arlecchino.Atoms.Tracked` &middot; **Assembly:** `Arlecchino.Core`
 
-A queue whose changes go on the undo stack: the steps of a plan the user arranged, the batch they lined up. [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) picks it up with nothing to register, and each call is one step — including one that puts several in at once.
+A queue whose changes go on the undo stack, picked up by [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) with nothing to register. Each call is one step, including one that puts several in at once.
 
 ```csharp
 public sealed class TrackedAtomsQueue<T> : AtomsQueue<T>, IReadableAtom<IReadOnlyList<T>>

@@ -7,7 +7,7 @@ sidebar_label: "Joinery"
 
 **Namespace:** `Arlecchino.Rendering.Text` &middot; **Assembly:** `Arlecchino.Core`
 
-Lines that know about one another. Boxes and rules are recorded first and painted at the end, so where two of them meet the shared cell becomes the glyph that joins them — `┬`, `├`, `┼` — instead of one line drawn over the other. [`SurfaceRegion.Border`](../arlecchino.rendering/SurfaceRegion.md#border-iarlecchinocolor-string) draws a box that knows nothing of its neighbors, which is right for a box standing on its own and wrong for panes that touch: two of those side by side put two verticals where the eye expects one. Recording them here instead costs one object per frame and gives the drawing of a window manager.
+Lines that know about one another. Boxes and rules are recorded first and painted at the end, so a cell two of them share becomes the glyph that joins them rather than one line drawn over the other.
 
 ```csharp
 var joinery = new Joinery();
@@ -18,8 +18,6 @@ var log = joinery.Box(right, Theme.Active, "log");
 joinery.Draw(surface.Content, Theme.Info);
 
 ```
-
-A cell takes the style of the last thing recorded over it, so the pane that holds the focus is recorded last and its edges win where they are shared.
 
 ```csharp
 public sealed class Joinery

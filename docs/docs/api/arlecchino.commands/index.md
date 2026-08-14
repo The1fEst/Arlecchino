@@ -10,6 +10,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`CommandKeys`](CommandKeys.md) | The keys that reach commands, and the half-typed chord in between two of them. |
 | [`CommandRegistry`](CommandRegistry.md) | The application commands registered with `AddCommand`. Take it in a view to list or run them yourself — the sample draws its menu straight from this. |
 | [`ViewCommand`](ViewCommand.md) | A key a screen reacts to, declared as data rather than hidden in a switch. That is what lets the palette list it, the hints box label it, and the conflict check see it. |
 

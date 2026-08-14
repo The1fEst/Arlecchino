@@ -30,19 +30,19 @@ public sealed class ArlecchinoBuilder
 | [`AddView<T>(string)`](#addview-t-string) | Registers a view at a route, built from the container so it can take whatever it needs in its constructor. Views are created on demand rather than at startup. |
 | [`AddView(string, Func<IServiceProvider, IArlecchinoView>)`](#addview-string-func-iserviceprovider-iarlecchinoview) | Registers a view built by hand, for the cases the container cannot cover on its own, such as a view that needs a value known only at startup. |
 | [`AddViewFactory<TFactory>()`](#addviewfactory-tfactory) | Registers a source of views that decides at run time which routes it serves. This is what the generated factory is registered through, and how a plugin adds views the host never listed. |
-| [`AddWidget<TWidget>()`](#addwidget-twidget) | Registers one widget as a singleton, resolved by its own type. An alternative to `AddGeneratedWidgets()` for a widget the generator cannot see — one from another assembly — rather than a layer on top of it; registering the same type both ways puts it in the container twice. A singleton widget is shared by every screen that resolves it, state and focus included, so it suits a panel the application has one of. A widget each screen needs its own copy of is built in the view. |
+| [`AddWidget<TWidget>()`](#addwidget-twidget) | Registers one widget as a singleton, for a widget `AddGeneratedWidgets()` cannot see. It is shared by every screen that resolves it, state and focus included. |
 | [`StartAt(ViewRoute)`](#startat-viewroute) | Sets the view the application opens on. |
 | [`StartAt(string)`](#startat-string) | Sets the view the application opens on, by name. |
 | [`UseKeymap(ArlecchinoKeymap)`](#usekeymap-arlecchinokeymap) | Replaces the key bindings, which every widget then follows. |
-| [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default. |
-| [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own: a band along the top, a bar along the bottom, whatever a screen here always has around it. One instance serves the whole application, so what the frame holds outlives the view — a row of tabs keeps its place when a screen is left and come back to. A view that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout` and is drawn without it. |
-| [`UseMouse()`](#usemouse) | Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs. |
+| [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits rather than from what the layout makes of it, so shortcuts read the same everywhere and those languages cannot be typed at all. |
+| [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own, from one instance that outlives the views. A view answering `false` to `IArlecchinoView.UsesLayout` is drawn without it. |
+| [`UseMouse()`](#usemouse) | Turns the mouse on, which stops the terminal from handling selection itself. It is off by default for that reason. |
 | [`UseNotifications(Nullable<KeyPress>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-keypress-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
 | [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localized: nothing is looked up from resources. |
 | [`UseTerminal<TTerminal>()`](#useterminal-tterminal) | Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them. |
 | [`UseTextInput(TextInputMode)`](#usetextinput-textinputmode) | Chooses how typed characters are read. This is a trade-off rather than a preference: reading the terminal's own characters accepts any language but can misread keys on some terminals. |
 | [`UseTheme(ThemePalette)`](#usetheme-themepalette) | Replaces the colors. What actually reaches the screen still depends on what the terminal supports. |
-| [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts. Everything stays registered. A test can then drive the loop itself, frame by frame. |
+| [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts, leaving everything registered. A test can then drive the loop itself. |
 | [`WithoutNotifications()`](#withoutnotifications) | Leaves the output row off, so nothing the application says is drawn on the frame. |
 
 ## Properties in detail
@@ -148,7 +148,7 @@ Registers a source of views that decides at run time which routes it serves. Thi
 public ArlecchinoBuilder AddWidget<TWidget>();
 ```
 
-Registers one widget as a singleton, resolved by its own type. An alternative to `AddGeneratedWidgets()` for a widget the generator cannot see — one from another assembly — rather than a layer on top of it; registering the same type both ways puts it in the container twice. A singleton widget is shared by every screen that resolves it, state and focus included, so it suits a panel the application has one of. A widget each screen needs its own copy of is built in the view.
+Registers one widget as a singleton, for a widget `AddGeneratedWidgets()` cannot see. It is shared by every screen that resolves it, state and focus included.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -206,7 +206,7 @@ Replaces the key bindings, which every widget then follows.
 public ArlecchinoBuilder UseKeysByPosition();
 ```
 
-Takes every character from where its key sits on the keyboard rather than from what the layout makes of it: the key left of `S` types `a` whether the layout says `a`, `ф` or `α`. Shortcuts and filters then read the same everywhere, and the price is that the application cannot be typed into in those languages at all. Without this, whatever the terminal reports is taken as typed, which is what an application gets by default.
+Takes every character from where its key sits rather than from what the layout makes of it, so shortcuts read the same everywhere and those languages cannot be typed at all.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -216,7 +216,7 @@ Takes every character from where its key sits on the keyboard rather than from w
 public ArlecchinoBuilder UseLayout<TLayout>();
 ```
 
-Draws every view inside a frame of the application's own: a band along the top, a bar along the bottom, whatever a screen here always has around it. One instance serves the whole application, so what the frame holds outlives the view — a row of tabs keeps its place when a screen is left and come back to. A view that wants the whole terminal answers `false` to `IArlecchinoView.UsesLayout` and is drawn without it.
+Draws every view inside a frame of the application's own, from one instance that outlives the views. A view answering `false` to `IArlecchinoView.UsesLayout` is drawn without it.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -226,7 +226,7 @@ Draws every view inside a frame of the application's own: a band along the top, 
 public ArlecchinoBuilder UseMouse();
 ```
 
-Turns the mouse on. It stays off by default because the terminal then stops handling selection itself, and copying text with the mouse no longer works the way the user expects. Windows reads the console's event queue for this, which also means quick-edit selection is off while it runs.
+Turns the mouse on, which stops the terminal from handling selection itself. It is off by default for that reason.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -315,7 +315,7 @@ Replaces the colors. What actually reaches the screen still depends on what the 
 public ArlecchinoBuilder WithoutHostedService();
 ```
 
-Stops the application from taking over the terminal when the host starts. Everything stays registered. A test can then drive the loop itself, frame by frame.
+Stops the application from taking over the terminal when the host starts, leaving everything registered. A test can then drive the loop itself.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

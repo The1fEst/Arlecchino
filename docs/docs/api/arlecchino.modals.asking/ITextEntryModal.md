@@ -7,7 +7,7 @@ sidebar_label: "ITextEntryModal"
 
 **Namespace:** `Arlecchino.Modals.Asking` &middot; **Assembly:** `Arlecchino`
 
-A field that is typed into. Shared by the text field and the number field, which is why both behave the same way when it comes to editing and error messages.
+A field that is typed into, shared by the text field and the number field so both edit and complain alike.
 
 ```csharp
 public interface ITextEntryModal : IAffixedModal

@@ -7,7 +7,7 @@ sidebar_label: "ModalFrame"
 
 **Namespace:** `Arlecchino.Modals` &middot; **Assembly:** `Arlecchino`
 
-Everything a dialog needs from the application for as long as the screen shows it: where to draw, the words to draw in, the keys to obey, and how to close. A dialog is a value — an application writes `new TextModal { … }` and hands it over — so it cannot be given services when it is built. It is given them when it is asked to do something, which is what lets [`Modal.Draw`](../arlecchino.modals/Modal.md#draw-modalframe) and [`Modal.Handle`](../arlecchino.modals/Modal.md#handle-modalframe-keypress) live on the dialog itself rather than in a switch somewhere that has to know every kind there will ever be.
+Everything a dialog needs from the application: where to draw, the words to draw in, the keys to obey, and how to close. A dialog is a value, so it is given these when asked to act.
 
 ```csharp
 public sealed class ModalFrame
@@ -29,7 +29,7 @@ public sealed class ModalFrame
 
 | Member | Summary |
 |---|---|
-| [`Box(string, IReadOnlyList<Piece[]>, string)`](#box-string-ireadonlylist-piece-string) | Draws a titled box holding the lines given, with the hints under a rule. Every dialog the framework brings is drawn through this, which is why a color picker and a question read as the same application. |
+| [`Box(string, IReadOnlyList<Piece[]>, string)`](#box-string-ireadonlylist-piece-string) | Draws a titled box holding the lines given, with the hints under a rule. Every dialog the framework brings is drawn through this. |
 | [`Centered(int, int)`](#centered-int-int) | A box of the size asked for, in the middle of the screen and never off the edge of it. |
 | [`Close()`](#close) | Closes the dialog on top, which while it is being handled is this one. |
 | [`Copy(string)`](#copy-string) | Puts text on the clipboard, for the dialogs that offer copying. |
@@ -118,7 +118,7 @@ public ValueTuple<SurfaceRegion, SurfaceRegion> Box(
     string footer);
 ```
 
-Draws a titled box holding the lines given, with the hints under a rule. Every dialog the framework brings is drawn through this, which is why a color picker and a question read as the same application.
+Draws a titled box holding the lines given, with the hints under a rule. Every dialog the framework brings is drawn through this.
 
 **Parameters**
 

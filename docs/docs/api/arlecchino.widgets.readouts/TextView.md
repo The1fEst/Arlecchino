@@ -7,7 +7,7 @@ sidebar_label: "TextView"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-A block of text to read: wrapped to the width it is given, scrolled with the movement keys and the wheel. This is the widget for a description, a log, the output of something that ran — anything longer than the space available and not meant to be edited. The text is re-wrapped whenever the width changes, so resizing the terminal reflows it rather than cutting it off.
+A block of text to read: wrapped to the width it is given, scrolled with the movement keys and the wheel. It is re-wrapped whenever the width changes, so resizing the terminal reflows it.
 
 ```csharp
 public sealed class TextView : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable

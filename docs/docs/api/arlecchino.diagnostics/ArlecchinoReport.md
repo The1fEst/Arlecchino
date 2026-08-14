@@ -7,7 +7,7 @@ sidebar_label: "ArlecchinoReport"
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-What the application looks like right now, as text worth attaching to a bug report: the version, the platform, what the terminal said it can do, the screen being shown and the modals above it. Resolve it from the container and call [`ArlecchinoReport.Describe`](../arlecchino.diagnostics/ArlecchinoReport.md#describe) — a command that copies the result to the clipboard costs three lines and makes a report from a user useful.
+What the application looks like right now, as text for a bug report: the version, the platform, what the terminal can do, and the screen with the modals above it. Resolve it and call [`ArlecchinoReport.Describe`](../arlecchino.diagnostics/ArlecchinoReport.md#describe).
 
 ```csharp
 public sealed class ArlecchinoReport

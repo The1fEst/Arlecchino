@@ -7,7 +7,7 @@ sidebar_label: "BarChart<T>"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-One bar per item, laid out down the region: the label in front, the bar across the middle, the readout behind. Bars are measured against the largest item unless told otherwise, so a chart of things that are all small still fills the pane instead of drawing four invisible stubs.
+One bar per item, laid out down the region: the label in front, the bar across the middle, the readout behind. Bars are measured against the largest item unless told otherwise.
 
 ```csharp
 public sealed class BarChart<T> : IArlecchinoWidget
@@ -37,7 +37,7 @@ public sealed class BarChart<T> : IArlecchinoWidget
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws a bar for every item that fits and returns the rows below them, so a chart shorter than its pane leaves the rest to whatever comes next. Items past the bottom of the region are not drawn: the chart does not scroll, which is what keeps it readable without the focus. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws a bar for every item that fits and returns the rows below them. Items past the bottom of the region are not drawn, since the chart does not scroll. |
 
 ## Constructors in detail
 
@@ -133,7 +133,7 @@ The number the length of the bar stands for. Anything below zero draws as an emp
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws a bar for every item that fits and returns the rows below them, so a chart shorter than its pane leaves the rest to whatever comes next. Items past the bottom of the region are not drawn: the chart does not scroll, which is what keeps it readable without the focus.
+Draws a bar for every item that fits and returns the rows below them. Items past the bottom of the region are not drawn, since the chart does not scroll.
 
 **Parameters**
 

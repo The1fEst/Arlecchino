@@ -7,7 +7,7 @@ sidebar_label: "Sparkline"
 
 **Namespace:** `Arlecchino.Widgets.Readouts` &middot; **Assembly:** `Arlecchino`
 
-A series of numbers as one row of blocks, tallest for the largest of them. It says nothing about what the numbers are: no axis, no scale, no grid. That is what lets it sit in a status bar, a table cell or a corner of a pane and still be read at a glance, since the shape of the line is the point. The newest value is the rightmost, and only the last of them fit the row, so a widening terminal shows more history rather than a wider drawing of the same history.
+A series of numbers as one row of blocks, tallest for the largest of them, with no axis, scale or grid. The newest value is the rightmost, and only as many as fit the row are drawn.
 
 ```csharp
 public sealed class Sparkline : IArlecchinoWidget
@@ -27,15 +27,15 @@ public sealed class Sparkline : IArlecchinoWidget
 |---|---|
 | [`Caption`](#caption) | Builds the readout drawn after the line, given the newest value. Supplied as a delegate so the wording and units stay with the application rather than the widget. |
 | [`Maximum`](#maximum) | The value the tallest block stands for. The largest of the drawn values when left alone. |
-| [`Minimum`](#minimum) | The value the lowest block stands for. The smallest of the drawn values when left alone, which makes the line fill the row and answer "how does it move"; pinning it answers "how big is it" instead, and keeps the line still when the numbers barely change. |
+| [`Minimum`](#minimum) | The value the lowest block stands for, which is the smallest of the drawn values when left alone. Pinning it keeps the line still where the numbers barely change. |
 | [`Style`](#style) | Color of the line. The theme's active color when left alone. |
-| [`Values`](#values) | The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over. |
+| [`Values`](#values) | The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is the right thing to hand over. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the line across the first row of the region, leaving room for the caption when there is one, and returns the rows below it. A series with no spread at all — every number the same, or one number on its own — draws as the lowest block rather than as a full row. |
+| [`Draw(SurfaceRegion)`](#draw-surfaceregion) | Draws the line across the first row of the region, leaving room for the caption when there is one. A series with no spread at all draws as the lowest block rather than as a full row. |
 
 ## Constructors in detail
 
@@ -73,7 +73,7 @@ The value the tallest block stands for. The largest of the drawn values when lef
 public Nullable<decimal> Minimum { get; init; }
 ```
 
-The value the lowest block stands for. The smallest of the drawn values when left alone, which makes the line fill the row and answer "how does it move"; pinning it answers "how big is it" instead, and keeps the line still when the numbers barely change.
+The value the lowest block stands for, which is the smallest of the drawn values when left alone. Pinning it keeps the line still where the numbers barely change.
 
 **Type** `Nullable<T>`&lt;`decimal`&gt;
 
@@ -93,7 +93,7 @@ Color of the line. The theme's active color when left alone.
 public IReadOnlyList<decimal> Values { get; set; }
 ```
 
-The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is exactly the right thing to hand over.
+The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the application appends to between frames is the right thing to hand over.
 
 **Type** `IReadOnlyList<T>`&lt;`decimal`&gt;
 
@@ -105,7 +105,7 @@ The numbers to draw, the oldest first. Nothing is copied, so a ring buffer the a
 public SurfaceRegion Draw(SurfaceRegion region);
 ```
 
-Draws the line across the first row of the region, leaving room for the caption when there is one, and returns the rows below it. A series with no spread at all — every number the same, or one number on its own — draws as the lowest block rather than as a full row.
+Draws the line across the first row of the region, leaving room for the caption when there is one. A series with no spread at all draws as the lowest block rather than as a full row.
 
 **Parameters**
 

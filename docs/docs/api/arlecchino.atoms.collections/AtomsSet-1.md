@@ -7,7 +7,7 @@ sidebar_label: "AtomsSet<T>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A set held as one piece of application state — the files marked, the rows expanded, the hosts reachable. Every change takes the same path a plain atom's write takes: it is checked against the drawing thread, it notifies what reads the set, it marks the frame stale, and it records an undo step when the set is undoable. It behaves as a `HashSet<T>` does rather than as a map: adding what is already there changes nothing and is not an error, which is why [`AtomsSet.Add`](../arlecchino.atoms.collections/AtomsSet-1.md#add-t) answers nothing and [`AtomsSet.TryAdd`](../arlecchino.atoms.collections/AtomsSet-1.md#tryadd-t) is there for the times the answer matters. [`AtomsSet.Value`](../arlecchino.atoms.collections/AtomsSet-1.md#value) is a live, read-only view. A set has no order, so what a walk of it hands back is whatever the set holds them in — sort it where the order is what the reader sees. Whether changes can be undone is decided by the type created — [`TrackedAtomsSet`](../arlecchino.atoms.tracked/TrackedAtomsSet-1.md) or [`LocalAtomsSet`](../arlecchino.atoms.local/LocalAtomsSet-1.md).
+A set held as one piece of application state, behaving as a `HashSet<T>` does: adding what is already there changes nothing. A walk of it is in no order, so sort it where the reader sees the order.
 
 ```csharp
 public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
@@ -28,7 +28,7 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 | [`Count`](#count) | How many it holds. |
 | [`IsEmpty`](#isempty) | Whether it holds nothing. |
 | [`RecordsHistory`](#recordshistory) | Whether changes of this set enter the undo history. |
-| [`Value`](#value) | What the set holds now: a live view rather than a copy, so something handed this once reads whatever is in it on every later frame. It is read-only all the way down — there is no cast that gets a caller back to the set underneath. |
+| [`Value`](#value) | What the set holds now, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below. |
 
 ## Methods
 
@@ -100,7 +100,7 @@ Whether changes of this set enter the undo history.
 public IReadOnlySet<T> Value { get; }
 ```
 
-What the set holds now: a live view rather than a copy, so something handed this once reads whatever is in it on every later frame. It is read-only all the way down — there is no cast that gets a caller back to the set underneath.
+What the set holds now, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below.
 
 **Type** `IReadOnlySet<T>`&lt;`T`&gt;
 

@@ -17,7 +17,7 @@ public enum GraphSymbols
 
 | Name | Value | Summary |
 |---|---:|---|
-| `Braille` | `0` | Braille dots, four levels and two samples to a cell — the densest, and what a graph looks best in. Needs a font carrying the Braille Patterns block, or a terminal that falls back to one that does; Windows Terminal does, the classic console host does not. |
+| `Braille` | `0` | Braille dots, four levels and two samples to a cell, which is the densest of the sets. It needs a font carrying the Braille Patterns block. |
 | `Blocks` | `1` | Quadrant blocks, two levels and two samples to a cell — half the height of braille, and in nearly every monospace font there is. |
 | `Tty` | `2` | Shaded blocks, three levels and one sample to a cell. The plainest of the three, for a console whose font carries little more than ASCII. |
 

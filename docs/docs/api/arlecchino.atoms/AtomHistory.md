@@ -7,7 +7,7 @@ sidebar_label: "AtomHistory"
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino.Core`
 
-Undo and redo over every [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md). It collects from the moment it exists, so the hosted service resolves it at startup; a headless run has to create it before the edits it wants to undo. The undo stack is bounded: a long-running application would otherwise hold on to every edit it has ever made, and each of those keeps the old value alive too. Steps past [`AtomHistory.Capacity`](../arlecchino.atoms/AtomHistory.md#capacity) fall off the far end, which is the end nobody is going to reach.
+Undo and redo over every [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md), collecting from the moment it exists. The stack is bounded, and steps past [`AtomHistory.Capacity`](../arlecchino.atoms/AtomHistory.md#capacity) fall off the far end.
 
 ```csharp
 public sealed class AtomHistory : IDisposable
@@ -36,7 +36,7 @@ public sealed class AtomHistory : IDisposable
 |---|---|
 | [`Clear()`](#clear) | Forgets both stacks. The hosted service does this once the application is up, so wiring does not end up as the first undo step. |
 | [`Dispose()`](#dispose) | Stops collecting edits. |
-| [`Group()`](#group) | Collects everything written until the scope is disposed into a single undo step, so related edits go back together. Groups nest: a group opened inside another joins it rather than closing it early, so wrapping code that groups edits of its own still yields one step. |
+| [`Group()`](#group) | Collects everything written until the scope is disposed into a single undo step. A group opened inside another joins it rather than closing it early. |
 | [`Redo()`](#redo) | Applies an undone step again. Writing something new drops this branch. |
 | [`Undo()`](#undo) | Takes back the last step. Undoing does not itself become a step. |
 
@@ -116,7 +116,7 @@ Stops collecting edits.
 public IDisposable Group();
 ```
 
-Collects everything written until the scope is disposed into a single undo step, so related edits go back together. Groups nest: a group opened inside another joins it rather than closing it early, so wrapping code that groups edits of its own still yields one step.
+Collects everything written until the scope is disposed into a single undo step. A group opened inside another joins it rather than closing it early.
 
 **Returns** `IDisposable` — The scope to dispose when the group is complete.
 

@@ -7,7 +7,7 @@ sidebar_label: "Picture"
 
 **Namespace:** `Arlecchino.Widgets.Pictures` &middot; **Assembly:** `Arlecchino`
 
-An image drawn in cells. Each cell carries two pixels: the upper half block is painted in the color of the pixel above and its background in the color of the pixel below. A cell is about twice as tall as it is wide, so that comes out roughly square per pixel. That is the default because it needs nothing of the terminal but the color it already draws in: no protocol, no state left behind, nothing to clean up when the picture goes away. Where the terminal speaks a graphics protocol, [`Picture.Protocol`](../arlecchino.widgets.pictures/Picture.md#protocol) sends the pixels themselves instead and the picture is as sharp as the screen allows. The pixels are handed over rather than read from a file: decoding PNG or JPEG belongs to the application, which knows what it wants to depend on, while the framework only draws what it is given.
+An image drawn in cells, two pixels to each, or in a graphics protocol where [`Picture.Protocol`](../arlecchino.widgets.pictures/Picture.md#protocol) names one. The pixels are handed over rather than read from a file, since decoding belongs to the application.
 
 ```csharp
 private readonly Picture _preview = new();
@@ -34,6 +34,7 @@ public sealed class Picture : IArlecchinoWidget
 | Member | Summary |
 |---|---|
 | [`Background`](#background) | What to draw behind the picture where the region is wider or taller than the picture fits. The terminal's own background when left alone. |
+| [`Detail`](#detail) | How many pixels a protocol that hands pixels over may write at most, whatever the pane comes to. The ceiling trades a little sharpness for a picture that appears at once; nought lifts it. |
 | [`IsEmpty`](#isempty) | Whether there is anything to draw. |
 | [`PixelHeight`](#pixelheight) | How tall the picture is, in pixels. |
 | [`PixelWidth`](#pixelwidth) | How wide the picture is, in pixels. |
@@ -66,6 +67,16 @@ public IArlecchinoColor? Background { get; init; }
 What to draw behind the picture where the region is wider or taller than the picture fits. The terminal's own background when left alone.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
+
+### `Detail` {#detail}
+
+```csharp
+public int Detail { get; set; }
+```
+
+How many pixels a protocol that hands pixels over may write at most, whatever the pane comes to. The ceiling trades a little sharpness for a picture that appears at once; nought lifts it.
+
+**Type** `int`
 
 ### `IsEmpty` {#isempty}
 

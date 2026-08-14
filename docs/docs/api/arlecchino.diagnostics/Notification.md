@@ -7,7 +7,7 @@ sidebar_label: "Notification"
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-One thing the application said, and when it said it. A plain message needs no more than the three values it is built with; something still running fills in [`Notification.ProgressText`](../arlecchino.diagnostics/Notification.md#progresstext), and something worth reading at length fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions), which the notifications screen offers when the entry is opened.
+One thing the application said, and when it said it. Work still running fills in [`Notification.ProgressText`](../arlecchino.diagnostics/Notification.md#progresstext), and anything longer fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions).
 
 ```csharp
 public sealed class Notification

@@ -7,7 +7,7 @@ sidebar_label: "TrackedAtomsList<T>"
 
 **Namespace:** `Arlecchino.Atoms.Tracked` &middot; **Assembly:** `Arlecchino.Core`
 
-A list whose changes go on the undo stack: the rows of the document being edited, the tasks of a plan, the marked files. [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) picks it up with nothing to register, and each call is one step — a page added with [`AtomsList.Add`](../arlecchino.atoms.collections/AtomsList-1.md#add-ireadonlylist-t) comes back as a page rather than row by row.
+A list whose changes go on the undo stack, picked up by [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) with nothing to register. Each call is one step, so a page added at once comes back as a page.
 
 ```csharp
 public sealed class TrackedAtomsList<T> : AtomsList<T>, IReadableAtom<IReadOnlyList<T>>

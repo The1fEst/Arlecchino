@@ -7,7 +7,7 @@ sidebar_label: "InputRouter"
 
 **Namespace:** `Arlecchino` &middot; **Assembly:** `Arlecchino`
 
-Decides who gets a key or a mouse event. The order is what keeps the application predictable: an open dialog takes everything, then the palette key, then the view's own commands, then commands available everywhere, and only then the view itself. A handler that throws is reported on the output line rather than allowed to stop the loop. What a key means once a dialog has it is not decided here. This file is the order and nothing else, so that the order can be read at a sitting.
+Decides who gets a key or a mouse event, in order: an open dialog, the palette key, the view's commands, the commands available everywhere, then the view. A handler that throws is reported on the output line.
 
 ```csharp
 public class InputRouter

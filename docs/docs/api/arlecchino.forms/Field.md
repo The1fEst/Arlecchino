@@ -7,7 +7,7 @@ sidebar_label: "Field"
 
 **Namespace:** `Arlecchino.Forms` &middot; **Assembly:** `Arlecchino`
 
-One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything is read through delegates rather than stored, so a field always shows what the state holds now and follows the language the application is running in. The factories bind a field to an atom and pick the dialog that suits its type, which is the usual way to build one. The atom they take is a [`Atom`](../arlecchino.atoms/Atom-1.md), which is either a [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) — so that editing the field can be undone — or a [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) when it should not be.
+One row of a form: a label, the value beside it, and what happens when it is confirmed. Everything is read through delegates, so a field shows what the state holds now and follows the language it runs in.
 
 ```csharp
 public sealed class Field
@@ -23,7 +23,7 @@ public sealed class Field
 
 | Member | Summary |
 |---|---|
-| [`Activate`](#activate) | What confirming the field does, usually opening a dialog. Returning a route navigates; return [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) to stay put. Without this the field is read-only. |
+| [`Activate`](#activate) | What confirming the field does, usually opening a dialog. Returning a route navigates and [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) stays put; without this the field is read-only. |
 | [`Help`](#help) | A line shown under the field while it is selected. Empty means nothing is shown. |
 | [`IsAction`](#isaction) | Whether the row is a button rather than a value. Buttons have no value to align, so they are not counted when working out the label column. |
 | [`IsEnabled`](#isenabled) | Whether the field can be used. A disabled field is drawn muted and skipped when moving through the form. |
@@ -41,8 +41,8 @@ public sealed class Field
 | [`Date(Func<string>, Atom<DateOnly>, Func<DateOnly, string>, Func<string>)`](#date-func-string-atom-dateonly-func-dateonly-string-func-string) | A calendar date. There is no empty date, so the field cannot be cleared. |
 | [`MultiChoice(Func<string>, IReadOnlyList<string>, Atom<IReadOnlyList<string>>, Func<IReadOnlyList<string>, string>, Func<string>)`](#multichoice-func-string-ireadonlylist-string-atom-ireadonlylist-string-func-ireadonlylist-string-string-func-string) | Any number of options out of a list. |
 | [`Number(Func<string>, Atom<decimal>, decimal, decimal, Func<string>)`](#number-func-string-atom-decimal-decimal-decimal-func-string) | A number that can be typed or stepped. Clearing it puts the value back to the lowest allowed. |
-| [`Path(Func<string>, Atom<string>, ViewRoute, bool, Func<string>)`](#path-func-string-atom-string-viewroute-bool-func-string) | A path on disk. Unlike the other fields this leaves the form: the picker is a view of its own, which is why it has to be told where to come back to. |
-| [`PathFrom(Func<string>, Atom<string>, ViewRoute, bool, Func<string>, Func<string>)`](#pathfrom-func-string-atom-string-viewroute-bool-func-string-func-string) | A path on disk that opens the picker somewhere in particular while the field is still empty — a project folder, the last folder the user was in, wherever the answer is likely to be. It is a separate member rather than another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) because adding one to a method that already ships would break every application compiled against it. |
+| [`Path(Func<string>, Atom<string>, ViewRoute, bool, Func<string>)`](#path-func-string-atom-string-viewroute-bool-func-string) | A path on disk. It leaves the form, since the picker is a view of its own, and so it has to be told where to come back to. |
+| [`PathFrom(Func<string>, Atom<string>, ViewRoute, bool, Func<string>, Func<string>)`](#pathfrom-func-string-atom-string-viewroute-bool-func-string-func-string) | A path on disk that opens the picker somewhere in particular while the field is still empty. It is a member of its own, since another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) would break what ships. |
 | [`Secret(Func<string>, Atom<string>, Func<string>)`](#secret-func-string-atom-string-func-string) | A secret, shown as dots both in the form and while it is typed. The atom still holds the text as it is, so treat it as sensitive. |
 | [`Slider(Func<string>, Atom<decimal>, decimal, decimal, Func<string>)`](#slider-func-string-atom-decimal-decimal-decimal-func-string) | A number picked on a slider rather than typed, for values where the range matters more than the exact figure. |
 | [`Text(Func<string>, Atom<string>, Func<string, string>, Func<string>)`](#text-func-string-atom-string-func-string-string-func-string) | A line of text, edited in a dialog. |
@@ -71,7 +71,7 @@ public Field();
 public Func<ArlecchinoState, ViewRoute>? Activate { get; init; }
 ```
 
-What confirming the field does, usually opening a dialog. Returning a route navigates; return [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) to stay put. Without this the field is read-only.
+What confirming the field does, usually opening a dialog. Returning a route navigates and [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) stays put; without this the field is read-only.
 
 **Type** `Func<T, TResult>`&lt;[`ArlecchinoState`](../arlecchino.state/ArlecchinoState.md), [`ViewRoute`](../arlecchino.navigation/ViewRoute.md)&gt;
 
@@ -285,7 +285,7 @@ public static Field Path(
     Func<string>? help = null);
 ```
 
-A path on disk. Unlike the other fields this leaves the form: the picker is a view of its own, which is why it has to be told where to come back to.
+A path on disk. It leaves the form, since the picker is a view of its own, and so it has to be told where to come back to.
 
 **Parameters**
 
@@ -311,7 +311,7 @@ public static Field PathFrom(
     Func<string>? help = null);
 ```
 
-A path on disk that opens the picker somewhere in particular while the field is still empty — a project folder, the last folder the user was in, wherever the answer is likely to be. It is a separate member rather than another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) because adding one to a method that already ships would break every application compiled against it.
+A path on disk that opens the picker somewhere in particular while the field is still empty. It is a member of its own, since another argument to [`Field.Path`](../arlecchino.forms/Field.md#path-func-string-atom-string-viewroute-bool-func-string) would break what ships.
 
 **Parameters**
 

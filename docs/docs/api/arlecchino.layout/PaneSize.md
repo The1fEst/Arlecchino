@@ -7,7 +7,7 @@ sidebar_label: "PaneSize"
 
 **Namespace:** `Arlecchino.Layout` &middot; **Assembly:** `Arlecchino`
 
-How much of a region a branch gives to its first half. It is a share of what there is, a fixed number of cells, or — for the toolbars and status bars that sit at the far edge — a fixed number of cells measured from the other end. The unit is the literal, not the number. A `double` is a share and an `int` is a count of cells, and both convert on their own, so the call site says which it meant by whether it has a decimal point:
+How much of a region a branch gives to its first half: a share, a count of cells, or a count from the other end. The literal says which, since a `double` is a share and an `int` is a count.
 
 ```csharp
 Branch(Rows, 3, header, body);      // three rows
@@ -15,8 +15,6 @@ Branch(Rows, 0.3, header, body);    // three tenths of the height
 Branch(Columns, 3, side, main);     // three columns — a count follows the direction of the cut
 
 ```
-
-The pair worth remembering is `1` and `1.0`: the first is one row, the second is all of them. A bare `0` is rejected by the compiler rather than guessed at — it fits both a [`PaneSplit`](../arlecchino.layout/PaneSplit.md) and a size — so write [`PaneSize.Fraction`](../arlecchino.layout/PaneSize.md#fraction-double) or [`PaneSize.Cells`](../arlecchino.layout/PaneSize.md#cells-int) when nothing is what you mean.
 
 ```csharp
 public readonly struct PaneSize : IEquatable<PaneSize>
@@ -118,4 +116,8 @@ public static PaneSize op_Implicit(int count);
 | `count` | `int` |  |
 
 **Returns** [`PaneSize`](../arlecchino.layout/PaneSize.md)
+
+## Example
+
+`1` is one row and `1.0` is all of them. A bare `0` is rejected by the compiler, so write [`PaneSize.Fraction`](../arlecchino.layout/PaneSize.md#fraction-double) or [`PaneSize.Cells`](../arlecchino.layout/PaneSize.md#cells-int) where nothing is meant.
 

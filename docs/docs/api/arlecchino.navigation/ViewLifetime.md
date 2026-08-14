@@ -7,7 +7,7 @@ sidebar_label: "ViewLifetime"
 
 **Namespace:** `Arlecchino.Navigation` &middot; **Assembly:** `Arlecchino`
 
-How long the screen is on. Take it in a view's constructor to tie background work, subscriptions and anything else disposable to the screen: it is scoped, so navigating away cancels the token and releases everything registered here. Without it a load that outlives its screen keeps running and hands its result to a view nobody can see anymore.
+How long the screen is on. Take it in a view's constructor to tie background work and subscriptions to the screen, and navigating away cancels the token and releases everything registered here.
 
 ```csharp
 public sealed class ViewLifetime : IDisposable
@@ -25,7 +25,7 @@ public sealed class ViewLifetime : IDisposable
 
 | Member | Summary |
 |---|---|
-| [`Closing`](#closing) | Canceled when the screen goes away. Pass it into work you start yourself so it stops with the screen rather than with the application. It stays readable afterward, so background work that comes back late can still see that the screen has gone. |
+| [`Closing`](#closing) | Canceled when the screen goes away, to be passed into work started by the view. It stays readable afterward, so work coming back late can see the screen has gone. |
 
 ## Methods
 
@@ -54,7 +54,7 @@ Creates the lifetime. Resolved once per screen.
 public CancellationToken Closing { get; }
 ```
 
-Canceled when the screen goes away. Pass it into work you start yourself so it stops with the screen rather than with the application. It stays readable afterward, so background work that comes back late can still see that the screen has gone.
+Canceled when the screen goes away, to be passed into work started by the view. It stays readable afterward, so work coming back late can see the screen has gone.
 
 **Type** `CancellationToken`
 

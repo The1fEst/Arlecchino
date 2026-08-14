@@ -32,7 +32,7 @@ public sealed class ListBox<T> :
 | [`ItemStyle`](#itemstyle) | Colors an item. Ignored for the selected row, which has to stand out. |
 | [`Items`](#items) | What to show. Replacing this pulls the selection back into range on the next frame. |
 | [`OnActivate`](#onactivate) | What confirming an item does. Returning a route navigates; without this the list simply reports the key as handled. |
-| [`PaintRow`](#paintrow) | Draws a row itself, for a list whose rows are not one color: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it. |
+| [`PaintRow`](#paintrow) | Draws a row itself, for a list whose rows are not one color. It is given one row to fill and told whether the cursor is on it, and [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) goes unread while it is set. |
 | [`Render`](#render) | Turns an item into its row of text. Longer text is truncated by column, not by character. |
 | [`Selected`](#selected) | Index of the selected row. |
 | [`SelectedItem`](#selecteditem) | The selected item, or the type's default when the list is empty. |
@@ -115,7 +115,7 @@ What confirming an item does. Returning a route navigates; without this the list
 public Action<SurfaceRegion, T, bool> PaintRow { get; init; }
 ```
 
-Draws a row itself, for a list whose rows are not one color: a file name beside a size beside a date, each in its own. Given one row of the list to fill and told whether the cursor is on it; [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) and [`ListBox.ItemStyle`](../arlecchino.widgets.lists/ListBox-1.md#itemstyle) are not consulted when this is set, and what is left unwritten keeps whatever was behind it.
+Draws a row itself, for a list whose rows are not one color. It is given one row to fill and told whether the cursor is on it, and [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) goes unread while it is set.
 
 **Type** `Action<T1, T2, T3>`&lt;[`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md), `T`, `bool`&gt;
 

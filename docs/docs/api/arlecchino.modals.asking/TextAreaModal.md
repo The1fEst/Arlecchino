@@ -7,7 +7,7 @@ sidebar_label: "TextAreaModal"
 
 **Namespace:** `Arlecchino.Modals.Asking` &middot; **Assembly:** `Arlecchino`
 
-Several lines of text, edited in place: a description, a commit message, a snippet of configuration. `Enter` starts a new line here rather than accepting the dialog, so confirming is a key of its own — the `Submit` binding. The caret is a row and a position inside that row, and every move and edit goes by symbols rather than `char` values, so emoji and combining marks survive a backspace.
+Several lines of text, edited in place, where `Enter` starts a new line and the `Submit` binding confirms. Every move and edit goes by symbols, so emoji and combining marks survive a backspace.
 
 ```csharp
 public sealed class TextAreaModal : Modal

@@ -7,7 +7,7 @@ sidebar_label: "TerminalColor"
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal theme, which is why chrome should pick a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a color here.
+The sixteen ANSI colors plus the terminal's own default. Exact shades belong to the terminal theme, so chrome picks a role from [`Theme`](../arlecchino.rendering.colors/Theme.md) rather than a color here.
 
 ```csharp
 public enum TerminalColor : byte

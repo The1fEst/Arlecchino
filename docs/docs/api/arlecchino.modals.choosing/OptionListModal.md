@@ -36,7 +36,7 @@ public abstract class OptionListModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row was already the one under the cursor, so a click never confirms something the eye had not settled on yet. |
+| [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | The wheel walks the list, and a click picks the row it landed on. A row is taken only when it was already the one under the cursor. |
 | [`MatchingOptions()`](#matchingoptions) | The options that pass the filter, in their original order. |
 | [`Take(ModalFrame, string)`](#take-modalframe-string) | Acts on the row that was picked, which is what tells one kind of list from the other. |
 
@@ -114,7 +114,7 @@ Where the rows were drawn last frame, used to turn a click into a row.
 public override void HandleMouse(ModalFrame frame, MouseEvent mouse);
 ```
 
-The wheel walks the list, and a click picks the row it landed on. It only takes that row when the row was already the one under the cursor, so a click never confirms something the eye had not settled on yet.
+The wheel walks the list, and a click picks the row it landed on. A row is taken only when it was already the one under the cursor.
 
 **Parameters**
 

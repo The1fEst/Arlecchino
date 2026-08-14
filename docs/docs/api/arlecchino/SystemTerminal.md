@@ -7,7 +7,7 @@ sidebar_label: "SystemTerminal"
 
 **Namespace:** `Arlecchino` &middot; **Assembly:** `Arlecchino.Core`
 
-The real console. Registered by default and replaceable through `UseTerminal<T>()`. On Windows it turns on virtual terminal output at startup and turns off virtual terminal input, because that flag stops `Console.ReadKey` from delivering keys at all.
+The real console, registered by default and replaceable through `UseTerminal<T>()`. On Windows it turns virtual terminal output on and virtual terminal input off at startup.
 
 ```csharp
 public sealed class SystemTerminal : IArlecchinoTerminal
@@ -26,7 +26,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | Member | Summary |
 |---|---|
 | [`Height`](#height) | Window height, or a fixed height when output is redirected. |
-| [`KeyAvailable`](#keyavailable) | Whether a key is waiting. Always false when input is redirected. With the Windows mouse on, the answer comes from the console's own event queue rather than from `Console`, because the two cannot both consume it. |
+| [`KeyAvailable`](#keyavailable) | Whether a key is waiting, and always false when input is redirected. With the Windows mouse on, the answer comes from the console's own event queue. |
 | [`MouseAvailable`](#mouseavailable) | Whether a mouse event is waiting. Only ever true while the Windows mouse is on. |
 | [`Width`](#width) | Window width, or a fixed width when output is redirected. |
 
@@ -34,12 +34,12 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 
 | Member | Summary |
 |---|---|
-| [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal itself, encoded as base64. This is the only way to reach the clipboard of the machine the user is actually at when the application runs over a remote session; terminals that have it switched off silently drop it. |
+| [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal itself, encoded as base64, which is the only way to reach the local clipboard over a remote session. Terminals with it switched off drop it silently. |
 | [`DisableMouse()`](#disablemouse) | Stops mouse reporting and gives the console back the mode it had. |
 | [`DisablePaste()`](#disablepaste) | Turns bracketed paste off again. |
-| [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection. |
+| [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel: as SGR reports in the key stream, or record by record on Windows. Quick-edit mode is turned off while this is on. |
 | [`EnablePaste()`](#enablepaste) | Turns on bracketed paste. Terminals that do not know the mode ignore it. |
-| [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. The keyboard protocol is not asked for, though it is what would make `Ctrl+Enter` a key at all. Asking moves the function keys from `SS3 P` to `CSI P`, and the escape sequences are read by `Console.ReadKey` before this library sees a byte of them — which reads `CSI P` as F4, `CSI Q` as F5 and `CSI S` as F7. Measured, not deduced: kitty on a Mac, where the terminal's own description is inside the application bundle rather than in the system database, so the runtime falls back to one that spells those keys differently. Trading four working function keys for one new combination is not a trade. Reading the bytes ourselves would settle it, and until then the protocol stays unasked for. |
+| [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for, since asking it moves the function keys onto sequences the runtime reads as other keys. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and makes the cursor visible again. |
 | [`ReadKey()`](#readkey) | Takes the next key without echoing it. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
@@ -74,7 +74,7 @@ Window height, or a fixed height when output is redirected.
 public bool KeyAvailable { get; }
 ```
 
-Whether a key is waiting. Always false when input is redirected. With the Windows mouse on, the answer comes from the console's own event queue rather than from `Console`, because the two cannot both consume it.
+Whether a key is waiting, and always false when input is redirected. With the Windows mouse on, the answer comes from the console's own event queue.
 
 **Type** `bool`
 
@@ -106,7 +106,7 @@ Window width, or a fixed width when output is redirected.
 public void CopyToClipboard(string text);
 ```
 
-Copies through the terminal itself, encoded as base64. This is the only way to reach the clipboard of the machine the user is actually at when the application runs over a remote session; terminals that have it switched off silently drop it.
+Copies through the terminal itself, encoded as base64, which is the only way to reach the local clipboard over a remote session. Terminals with it switched off drop it silently.
 
 **Parameters**
 
@@ -136,7 +136,7 @@ Turns bracketed paste off again.
 public void EnableMouse();
 ```
 
-Starts reporting presses, releases, drags and the wheel. Elsewhere, that means SGR reports mixed into the key stream; on Windows the console is read record by record instead, because the flag that delivers SGR reports there also silences the keyboard. Quick-edit mode is turned off while this is on, since otherwise the console eats clicks as text selection.
+Starts reporting presses, releases, drags and the wheel: as SGR reports in the key stream, or record by record on Windows. Quick-edit mode is turned off while this is on.
 
 ### `EnablePaste()` {#enablepaste}
 
@@ -152,7 +152,7 @@ Turns on bracketed paste. Terminals that do not know the mode ignore it.
 public void EnterFullScreen();
 ```
 
-Switches to the alternate screen and hides the cursor. The keyboard protocol is not asked for, though it is what would make `Ctrl+Enter` a key at all. Asking moves the function keys from `SS3 P` to `CSI P`, and the escape sequences are read by `Console.ReadKey` before this library sees a byte of them — which reads `CSI P` as F4, `CSI Q` as F5 and `CSI S` as F7. Measured, not deduced: kitty on a Mac, where the terminal's own description is inside the application bundle rather than in the system database, so the runtime falls back to one that spells those keys differently. Trading four working function keys for one new combination is not a trade. Reading the bytes ourselves would settle it, and until then the protocol stays unasked for.
+Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for, since asking it moves the function keys onto sequences the runtime reads as other keys.
 
 ### `LeaveFullScreen()` {#leavefullscreen}
 

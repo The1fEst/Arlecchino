@@ -7,7 +7,7 @@ sidebar_label: "KeyPress"
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino.Core`
 
-One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead.
+One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for Command, which that type has nowhere to put.
 
 ```csharp
 public readonly struct KeyPress : IEquatable<KeyPress>
@@ -20,7 +20,7 @@ public readonly struct KeyPress : IEquatable<KeyPress>
 | Member | Summary |
 |---|---|
 | [`KeyPress(char)`](#keypress-char) | Creates a press the terminal reported as a character with no key behind it. |
-| [`KeyPress(ConsoleKey, KeyModifiers, char)`](#keypress-consolekey-keymodifiers-char) | One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead. |
+| [`KeyPress(ConsoleKey, KeyModifiers, char)`](#keypress-consolekey-keymodifiers-char) | One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for Command, which that type has nowhere to put. |
 
 ## Properties
 
@@ -60,7 +60,7 @@ Creates a press the terminal reported as a character with no key behind it.
 public KeyPress(ConsoleKey Key, KeyModifiers Modifiers = None, char Character = '\0');
 ```
 
-One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for one more modifier. That type stores Shift, Alt and Control as three booleans and has nowhere to put Command, so a terminal reporting Command had to be either misread as an unmodified key or dropped. Everything a view is given goes through here instead.
+One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with room for Command, which that type has nowhere to put.
 
 **Parameters**
 

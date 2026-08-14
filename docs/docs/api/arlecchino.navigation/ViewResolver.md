@@ -7,7 +7,7 @@ sidebar_label: "ViewResolver"
 
 **Namespace:** `Arlecchino.Navigation` &middot; **Assembly:** `Arlecchino`
 
-Turns a route into a view by asking each registered factory in registration order. Each screen is built inside its own container scope, which is what lets a view take a scoped service and have it released the moment the screen goes away.
+Turns a route into a view by asking each registered factory in turn. Each screen is built inside its own container scope, so a scoped service is released when the screen goes away.
 
 ```csharp
 public sealed class ViewResolver

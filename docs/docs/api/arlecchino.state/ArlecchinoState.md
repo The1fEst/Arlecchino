@@ -7,7 +7,7 @@ sidebar_label: "ArlecchinoState"
 
 **Namespace:** `Arlecchino.State` &middot; **Assembly:** `Arlecchino`
 
-State that outlives a single screen: the output line, the dialog that is open, and a pending file picker request. Derive from it to hang application state that every screen reads. A frame reads all of it, so all of it is written on the drawing thread — the `Request…` methods included, since each of them opens a dialog. Anything arriving on a timer, a task or a socket hands the change over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action), which runs it just before the next frame; only [`ArlecchinoState.Invalidate`](../arlecchino.state/ArlecchinoState.md#invalidate) may be called from anywhere. The stack of dialogs is a [`LocalAtomsList`](../arlecchino.atoms.local/LocalAtomsList-1.md), so opening or closing one asks for a frame by itself. It is outside the undo history: stepping back through what was typed should not reopen a dialog that was answered.
+State that outlives a single screen: the output line, the dialogs that are open, and a pending file picker request. All of it is written on the drawing thread, and only [`ArlecchinoState.Invalidate`](../arlecchino.state/ArlecchinoState.md#invalidate) from anywhere.
 
 ```csharp
 public class ArlecchinoState
@@ -23,12 +23,12 @@ public class ArlecchinoState
 
 | Member | Summary |
 |---|---|
-| [`FilePicker`](#filepicker) | What the file picker should show. Fill it in, then navigate to `Routes.FilePicker`; it is cleared when the picker finishes either way. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is. |
-| [`Modal`](#modal) | The dialog on top, or `null` when none is open. It takes every key while it is there. Assigning replaces whatever was open, however deep it was stacked; use [`ArlecchinoState.PushModal`](../arlecchino.state/ArlecchinoState.md#pushmodal-modal) to open one over another instead. Opened on the drawing thread: a dialog that appeared halfway through a frame would be drawn into a surface that has already been measured without it. Hand it over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else. |
-| [`Modals`](#modals) | Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath. |
+| [`FilePicker`](#filepicker) | What the file picker should show: fill it in, then navigate to `Routes.FilePicker`. It is written on the drawing thread and cleared however the picker finishes. |
+| [`Modal`](#modal) | The dialog on top, or `null` when none is open, taking every key while it is there. Assigning replaces the whole stack, where [`ArlecchinoState.PushModal`](../arlecchino.state/ArlecchinoState.md#pushmodal-modal) opens one over another. |
+| [`Modals`](#modals) | Every open dialog, bottom first, as a live read-only view. Drawing goes through this, so the ones underneath stay visible behind the top one. |
 | [`Notifications`](#notifications) | What the application has said lately, and the screen behind the output row. |
-| [`Output`](#output) | The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterward on the notifications screen. An empty string clears the row at once. |
-| [`PickerLastFolder`](#pickerlastfolder) | Folder the picker ended in. Pass it as the next starting path to resume where the user left off. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is. |
+| [`Output`](#output) | The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself and the message stays on the notifications screen; an empty string clears it at once. |
+| [`PickerLastFolder`](#pickerlastfolder) | Folder the picker ended in, to be passed as the next starting path. It is written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is. |
 
 ## Methods
 
@@ -79,7 +79,7 @@ Creates the state.
 public FilePickerRequest? FilePicker { get; set; }
 ```
 
-What the file picker should show. Fill it in, then navigate to `Routes.FilePicker`; it is cleared when the picker finishes either way. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is.
+What the file picker should show: fill it in, then navigate to `Routes.FilePicker`. It is written on the drawing thread and cleared however the picker finishes.
 
 **Type** [`FilePickerRequest`](../arlecchino.state/FilePickerRequest.md)
 
@@ -95,7 +95,7 @@ What the file picker should show. Fill it in, then navigate to `Routes.FilePicke
 public Modal? Modal { get; set; }
 ```
 
-The dialog on top, or `null` when none is open. It takes every key while it is there. Assigning replaces whatever was open, however deep it was stacked; use [`ArlecchinoState.PushModal`](../arlecchino.state/ArlecchinoState.md#pushmodal-modal) to open one over another instead. Opened on the drawing thread: a dialog that appeared halfway through a frame would be drawn into a surface that has already been measured without it. Hand it over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else.
+The dialog on top, or `null` when none is open, taking every key while it is there. Assigning replaces the whole stack, where [`ArlecchinoState.PushModal`](../arlecchino.state/ArlecchinoState.md#pushmodal-modal) opens one over another.
 
 **Type** [`Modal`](../arlecchino.modals/Modal.md)
 
@@ -111,7 +111,7 @@ The dialog on top, or `null` when none is open. It takes every key while it is t
 public IReadOnlyList<Modal> Modals { get; }
 ```
 
-Every open dialog, bottom first. Drawing goes through this, so the ones underneath stay visible behind the top one. A live view of the stack rather than a copy, and read-only all the way down. A widget handed it once draws whatever is open on every later frame, and there is no cast that gets a caller back to the list underneath.
+Every open dialog, bottom first, as a live read-only view. Drawing goes through this, so the ones underneath stay visible behind the top one.
 
 **Type** `IReadOnlyList<T>`&lt;[`Modal`](../arlecchino.modals/Modal.md)&gt;
 
@@ -131,7 +131,7 @@ What the application has said lately, and the screen behind the output row.
 public string Output { get; set; }
 ```
 
-The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself after `ArlecchinoOptions.NotificationTimeout` and the message stays readable afterward on the notifications screen. An empty string clears the row at once.
+The status line at the bottom of the frame. Writing to it raises a notification, so the line clears itself and the message stays on the notifications screen; an empty string clears it at once.
 
 **Type** `string`
 
@@ -141,7 +141,7 @@ The status line at the bottom of the frame. Writing to it raises a notification,
 public string PickerLastFolder { get; set; }
 ```
 
-Folder the picker ended in. Pass it as the next starting path to resume where the user left off. Written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is.
+Folder the picker ended in, to be passed as the next starting path. It is written on the drawing thread, as [`ArlecchinoState.Modal`](../arlecchino.state/ArlecchinoState.md#modal) is.
 
 **Type** `string`
 

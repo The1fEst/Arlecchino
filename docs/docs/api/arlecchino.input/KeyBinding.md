@@ -7,7 +7,7 @@ sidebar_label: "KeyBinding"
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino.Core`
 
-A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. A binding starts as the one combination it is named after and is added to from there: [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) for the combinations a platform disagrees about, and [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers) for a second keystroke, which turns the binding into a chord.
+A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. It is added to with [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) and turned into a chord with [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers).
 
 ```csharp
 public readonly struct KeyBinding : IEquatable<KeyBinding>
@@ -19,36 +19,52 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 
 | Member | Summary |
 |---|---|
-| [`KeyBinding(ConsoleKey, KeyModifiers)`](#keybinding-consolekey-keymodifiers) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. A binding starts as the one combination it is named after and is added to from there: [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) for the combinations a platform disagrees about, and [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers) for a second keystroke, which turns the binding into a chord. |
+| [`KeyBinding(char)`](#keybinding-char) | A binding on a character rather than on a key, which is the only dependable way to name punctuation. It answers wherever that character can be typed, and the key screen writes the character itself. |
+| [`KeyBinding(ConsoleKey, KeyModifiers)`](#keybinding-consolekey-keymodifiers) | A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. It is added to with [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) and turned into a chord with [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers). |
 
 ## Properties
 
 | Member | Summary |
 |---|---|
-| [`Alternatives`](#alternatives) | The other combinations that trigger the same thing, in the order they were added. They are matched but never written, since a binding is shown under one name. An alternative is one keystroke even where the binding is a chord, which is how a chord reaches a keyboard the other way round: `Ctrl+G U` for the machine that has to spell it out, and `Ctrl+PgUp` for the one with the key. |
+| [`Alternatives`](#alternatives) | The other combinations that trigger the same thing, in the order they were added. They are matched but never written, and each is a single press even where the binding itself is a chord. |
 | [`First`](#first) | The combination the binding is named after, and the one it is written from. |
-| [`IsChord`](#ischord) | Whether this takes two keystrokes rather than one. A chord is how an application reaches past the modifiers a terminal will give it. A Mac terminal keeps Option for typing and its Command belongs to the window, so what is left are the letters held with Control — and there are not thirty of those. A leader spends one of them and hands back the whole alphabet behind it. |
+| [`IsChord`](#ischord) | Whether this takes two keystrokes rather than one. A chord spends one combination on a leader and hands back the whole alphabet behind it, which is how an application reaches past what a terminal gives it. |
 | [`IsNone`](#isnone) | Whether this binding is unset and therefore matches nothing. |
 | [`Key`](#key) | The key itself. |
 | [`Modifiers`](#modifiers) | Modifiers that must be held, exactly. |
 | [`Second`](#second) | The keystroke that finishes a chord, or `null` when the binding is one press. |
+| [`Typed`](#typed) | The character this binding answers to, or `'\0'` when it is a binding on a key. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`AddAlternative(ConsoleKey, KeyModifiers)`](#addalternative-consolekey-keymodifiers) | The same binding, with one more combination that triggers it. Platforms disagree about some of them — copying is `Ctrl+Insert` in one habit and `Ctrl+Shift+C` in another — and a binding that carries both is right on either machine. Call it as often as there are habits. |
+| [`AddAlternative(ConsoleKey, KeyModifiers)`](#addalternative-consolekey-keymodifiers) | The same binding, with one more combination that triggers it, for the habits platforms disagree about. Call it as often as there are habits. |
 | [`Closes(KeyPress)`](#closes-keypress) | Whether a key press is the second half of this chord. |
 | [`Deconstruct(out ConsoleKey, out KeyModifiers)`](#deconstruct-out-consolekey-out-keymodifiers) |  |
 | [`Equals(KeyBinding)`](#equals-keybinding) | Whether two bindings stand for the same keys. The alternatives count and so does their order, since that is the order they are matched in. |
 | [`GetHashCode()`](#gethashcode) | A hash over the same keystrokes equality compares. |
-| [`Matches(KeyPress)`](#matches-keypress) | Whether one key press is this whole binding. The combination it is named after counts only when the binding is one keystroke — a chord is opened rather than matched — but an alternative counts either way, since an alternative is always a single press. |
+| [`Matches(KeyPress)`](#matches-keypress) | Whether one key press is this whole binding. The combination it is named after counts only when the binding is one keystroke, since a chord is opened rather than matched; an alternative counts either way. |
 | [`Opens(KeyPress)`](#opens-keypress) | Whether a key press is the first half of this chord. A binding of one keystroke opens nothing: it either matches or it does not. |
-| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The same binding with one modifier put in place of another, wherever it appears. This is how an application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing accented characters, so `Alt` never arrives and `Super` is what that keyboard has spare. |
-| [`ThenKey(ConsoleKey, KeyModifiers)`](#thenkey-consolekey-keymodifiers) | The same binding, finished by a second keystroke pressed after the first one is let go. The leader is expected to say what the group is about — the operations behind one, the places behind another — since what a person remembers is the grouping and not the letters. A binding gets one finishing key: calling this twice replaces it rather than growing a third keystroke, because a chord longer than two is a sequence nobody recalls. |
+| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The same binding with one modifier put in place of another, wherever it appears. It is how an application moves off a modifier its users cannot press. |
+| [`ThenKey(ConsoleKey, KeyModifiers)`](#thenkey-consolekey-keymodifiers) | The same binding, finished by a second keystroke pressed after the first one is let go. A binding gets one finishing key, so calling this twice replaces it rather than growing a third keystroke. |
 | [`ToString()`](#tostring) | How the binding is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. A chord is written as its two keystrokes with a space between them, `Ctrl+X T`. |
 
 ## Constructors in detail
+
+### `KeyBinding(char)` {#keybinding-char}
+
+```csharp
+public KeyBinding(char typed);
+```
+
+A binding on a character rather than on a key, which is the only dependable way to name punctuation. It answers wherever that character can be typed, and the key screen writes the character itself.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `typed` | `char` | The character to answer to. |
 
 ### `KeyBinding(ConsoleKey, KeyModifiers)` {#keybinding-consolekey-keymodifiers}
 
@@ -56,7 +72,7 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 public KeyBinding(ConsoleKey Key, KeyModifiers Modifiers = None);
 ```
 
-A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. Every key the framework reacts to is one of these, which is what makes them rebindable. A binding starts as the one combination it is named after and is added to from there: [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) for the combinations a platform disagrees about, and [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers) for a second keystroke, which turns the binding into a chord.
+A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fires on a bare `S`. It is added to with [`KeyBinding.AddAlternative`](../arlecchino.input/KeyBinding.md#addalternative-consolekey-keymodifiers) and turned into a chord with [`KeyBinding.ThenKey`](../arlecchino.input/KeyBinding.md#thenkey-consolekey-keymodifiers).
 
 **Parameters**
 
@@ -73,7 +89,7 @@ A key plus the exact modifiers that must be held with it, so `Ctrl+S` never fire
 public IReadOnlyList<KeyStroke> Alternatives { get; }
 ```
 
-The other combinations that trigger the same thing, in the order they were added. They are matched but never written, since a binding is shown under one name. An alternative is one keystroke even where the binding is a chord, which is how a chord reaches a keyboard the other way round: `Ctrl+G U` for the machine that has to spell it out, and `Ctrl+PgUp` for the one with the key.
+The other combinations that trigger the same thing, in the order they were added. They are matched but never written, and each is a single press even where the binding itself is a chord.
 
 **Type** `IReadOnlyList<T>`&lt;[`KeyStroke`](../arlecchino.input/KeyStroke.md)&gt;
 
@@ -93,7 +109,7 @@ The combination the binding is named after, and the one it is written from.
 public bool IsChord { get; }
 ```
 
-Whether this takes two keystrokes rather than one. A chord is how an application reaches past the modifiers a terminal will give it. A Mac terminal keeps Option for typing and its Command belongs to the window, so what is left are the letters held with Control — and there are not thirty of those. A leader spends one of them and hands back the whole alphabet behind it.
+Whether this takes two keystrokes rather than one. A chord spends one combination on a leader and hands back the whole alphabet behind it, which is how an application reaches past what a terminal gives it.
 
 **Type** `bool`
 
@@ -137,6 +153,16 @@ The keystroke that finishes a chord, or `null` when the binding is one press.
 
 **Type** `Nullable<T>`&lt;[`KeyStroke`](../arlecchino.input/KeyStroke.md)&gt;
 
+### `Typed` {#typed}
+
+```csharp
+public char Typed { get; }
+```
+
+The character this binding answers to, or `'\0'` when it is a binding on a key.
+
+**Type** `char`
+
 ## Methods in detail
 
 ### `AddAlternative(ConsoleKey, KeyModifiers)` {#addalternative-consolekey-keymodifiers}
@@ -145,7 +171,7 @@ The keystroke that finishes a chord, or `null` when the binding is one press.
 public KeyBinding AddAlternative(ConsoleKey key, KeyModifiers modifiers = None);
 ```
 
-The same binding, with one more combination that triggers it. Platforms disagree about some of them — copying is `Ctrl+Insert` in one habit and `Ctrl+Shift+C` in another — and a binding that carries both is right on either machine. Call it as often as there are habits.
+The same binding, with one more combination that triggers it, for the habits platforms disagree about. Call it as often as there are habits.
 
 **Parameters**
 
@@ -217,7 +243,7 @@ A hash over the same keystrokes equality compares.
 public bool Matches(KeyPress pressed);
 ```
 
-Whether one key press is this whole binding. The combination it is named after counts only when the binding is one keystroke — a chord is opened rather than matched — but an alternative counts either way, since an alternative is always a single press.
+Whether one key press is this whole binding. The combination it is named after counts only when the binding is one keystroke, since a chord is opened rather than matched; an alternative counts either way.
 
 **Parameters**
 
@@ -249,7 +275,7 @@ Whether a key press is the first half of this chord. A binding of one keystroke 
 public KeyBinding Replacing(KeyModifiers from, KeyModifiers to);
 ```
 
-The same binding with one modifier put in place of another, wherever it appears. This is how an application moves off a modifier its users cannot press — a Mac terminal keeps Option for typing accented characters, so `Alt` never arrives and `Super` is what that keyboard has spare.
+The same binding with one modifier put in place of another, wherever it appears. It is how an application moves off a modifier its users cannot press.
 
 **Parameters**
 
@@ -266,7 +292,7 @@ The same binding with one modifier put in place of another, wherever it appears.
 public KeyBinding ThenKey(ConsoleKey key, KeyModifiers modifiers = None);
 ```
 
-The same binding, finished by a second keystroke pressed after the first one is let go. The leader is expected to say what the group is about — the operations behind one, the places behind another — since what a person remembers is the grouping and not the letters. A binding gets one finishing key: calling this twice replaces it rather than growing a third keystroke, because a chord longer than two is a sequence nobody recalls.
+The same binding, finished by a second keystroke pressed after the first one is let go. A binding gets one finishing key, so calling this twice replaces it rather than growing a third keystroke.
 
 **Parameters**
 

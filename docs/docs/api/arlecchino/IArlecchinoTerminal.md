@@ -28,7 +28,7 @@ public interface IArlecchinoTerminal
 
 | Member | Summary |
 |---|---|
-| [`CopyToClipboard(string)`](#copytoclipboard-string) | Puts text on the clipboard of whatever is showing the terminal, which is the machine the user is sitting at even over a remote session. Terminals may refuse it, and none report back, so there is no way to tell whether it worked. |
+| [`CopyToClipboard(string)`](#copytoclipboard-string) | Puts text on the clipboard of whatever is showing the terminal, which is the local machine even over a remote session. Terminals may refuse it, and none report back. |
 | [`DisableMouse()`](#disablemouse) | Stops reporting mouse events. |
 | [`DisablePaste()`](#disablepaste) | Stops the paste markers. |
 | [`EnableMouse()`](#enablemouse) | Starts reporting mouse events, if the platform supports it. |
@@ -37,7 +37,7 @@ public interface IArlecchinoTerminal
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and shows the cursor again. |
 | [`ReadKey()`](#readkey) | Takes the next key, blocking until one arrives. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvailable`](../arlecchino/IArlecchinoTerminal.md#mouseavailable) is true. |
-| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it and [`IArlecchinoTerminal.KeyAvailable`](../arlecchino/IArlecchinoTerminal.md#keyavailable) reports it as waiting. For code that had to read a key to find out it did not want it — asking the terminal what it can do reads until an answer stops looking like one, and whatever ended it belongs to whoever pressed it. |
+| [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it. It is for code that had to read a key to find out it did not want it. |
 | [`Write(string)`](#write-string) | Writes composed output. A frame arrives as one call. |
 
 ## Properties in detail
@@ -90,7 +90,7 @@ Width of the window in cells.
 public void CopyToClipboard(string text);
 ```
 
-Puts text on the clipboard of whatever is showing the terminal, which is the machine the user is sitting at even over a remote session. Terminals may refuse it, and none report back, so there is no way to tell whether it worked.
+Puts text on the clipboard of whatever is showing the terminal, which is the local machine even over a remote session. Terminals may refuse it, and none report back.
 
 **Parameters**
 
@@ -172,7 +172,7 @@ Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvaila
 public void Unread(KeyPress key);
 ```
 
-Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it and [`IArlecchinoTerminal.KeyAvailable`](../arlecchino/IArlecchinoTerminal.md#keyavailable) reports it as waiting. For code that had to read a key to find out it did not want it — asking the terminal what it can do reads until an answer stops looking like one, and whatever ended it belongs to whoever pressed it.
+Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it. It is for code that had to read a key to find out it did not want it.
 
 **Parameters**
 

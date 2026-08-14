@@ -7,7 +7,7 @@ sidebar_label: "TerminalInputReader"
 
 **Namespace:** `Arlecchino.Input` &middot; **Assembly:** `Arlecchino`
 
-Turns what the terminal reports into keys and mouse events. Terminals send arrows, function keys and mouse reports as escape sequences, so an escape has to be read together with what follows it. Anything that turns out not to be a sequence is replayed key by key, which is what makes a plain Escape work even though it starts the same way. The rest of a sequence does not always arrive with its escape — over ssh or a busy terminal it can land a few milliseconds later — so the reader waits a short while for it. That wait is also what a lone Escape costs, which is the trade every terminal editor makes.
+Turns what the terminal reports into keys and mouse events, reading an escape together with what follows it. Anything that turns out not to be a sequence is replayed key by key, after a short wait.
 
 ```csharp
 public sealed class TerminalInputReader
@@ -17,13 +17,13 @@ public sealed class TerminalInputReader
 
 | Member | Summary |
 |---|---|
-| [`TerminalInputReader(IArlecchinoTerminal, InputRouter, ArlecchinoOptions)`](#terminalinputreader-iarlecchinoterminal-inputrouter-arlecchinooptions) | Creates the reader. Everything it reads is routed as it is read, which is what a caller driving the reader itself wants. Inside the framework it is built with a queue instead, so the thread reading the terminal never touches what the frame loop is drawing. |
+| [`TerminalInputReader(IArlecchinoTerminal, InputRouter, ArlecchinoOptions)`](#terminalinputreader-iarlecchinoterminal-inputrouter-arlecchinooptions) | Creates the reader, routing everything as it is read. Inside the framework it is built with a queue instead, so the reading thread never touches what the frame loop draws. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Read(KeyPress)`](#read-keypress) | Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind. |
+| [`Read(KeyPress)`](#read-keypress) | Handles one key press, reading further keys itself where it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`, which the runtime does not fold back together. |
 | [`ReadPending()`](#readpending) | Reads everything waiting and returns, without blocking for more. Mouse events are drained too, since a terminal that reports them outside the key stream would otherwise pile them up. |
 
 ## Constructors in detail
@@ -37,7 +37,7 @@ public TerminalInputReader(
     ArlecchinoOptions options);
 ```
 
-Creates the reader. Everything it reads is routed as it is read, which is what a caller driving the reader itself wants. Inside the framework it is built with a queue instead, so the thread reading the terminal never touches what the frame loop is drawing.
+Creates the reader, routing everything as it is read. Inside the framework it is built with a queue instead, so the reading thread never touches what the frame loop draws.
 
 **Parameters**
 
@@ -55,7 +55,7 @@ Creates the reader. Everything it reads is routed as it is read, which is what a
 public void Read(KeyPress key);
 ```
 
-Handles one key press, reading further keys itself when it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`: holding Alt puts an escape in front of the key, and the key here is itself an escape. The runtime folds that prefix back together for every other key — `\ea` arrives as `Alt+A` — but not for this one, which reached an application as two plain Escapes and left `Alt+Esc` impossible to bind.
+Handles one key press, reading further keys itself where it looks like the start of a sequence. An escape followed by another escape is `Alt+Escape`, which the runtime does not fold back together.
 
 **Parameters**
 

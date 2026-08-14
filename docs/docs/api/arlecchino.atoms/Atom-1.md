@@ -7,7 +7,7 @@ sidebar_label: "Atom<T>"
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino.Core`
 
-An atom: one piece of application state that notifies what reads it and marks the frame stale by itself, so a screen driven by atoms never needs a manual repaint request. Whether an edit can be undone is decided by the type that is created — [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) or [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md) — rather than by a flag set afterward, so the declaration says which kind of state it is. Everything that takes an atom takes this base type, so the two are interchangeable at the call site.
+One piece of application state that notifies what reads it and marks the frame stale by itself. Whether an edit can be undone is decided by creating a [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) or a [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md).
 
 ```csharp
 public abstract class Atom<T> : IReadableAtom<T>
@@ -26,13 +26,13 @@ public abstract class Atom<T> : IReadableAtom<T>
 | Member | Summary |
 |---|---|
 | [`RecordsHistory`](#recordshistory) | Whether edits of this atom enter the undo history. |
-| [`Value`](#value) | The value. Writing an equal value changes nothing and notifies nobody; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable. |
+| [`Value`](#value) | The value. Writing an equal value changes nothing; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Post(T)`](#post-t) | Hands a value to the drawing thread from wherever you are. It is written just before the next frame, in the order it was posted, and everything writing plainly does — notifying, asking for a repaint, recording an undo step — happens then. This is what background work calls instead of [`Atom.Value`](../arlecchino.atoms/Atom-1.md#value), which refuses to be written from another thread. Nothing has been written when this returns, so reading the atom back here still gives the old value. Several atoms that have to change together belong in one `FrameThread.Post` instead, so that no frame falls between them. |
+| [`Post(T)`](#post-t) | Hands a value to the drawing thread, to be written just before the next frame in the order it was posted. Nothing is written when this returns, and atoms that must change together belong in one `FrameThread.Post`. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the value changes. |
 
 ## Constructors in detail
@@ -70,7 +70,7 @@ Whether edits of this atom enter the undo history.
 public T Value { get; set; }
 ```
 
-The value. Writing an equal value changes nothing and notifies nobody; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable.
+The value. Writing an equal value changes nothing; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable.
 
 **Type** `T`
 
@@ -82,7 +82,7 @@ The value. Writing an equal value changes nothing and notifies nobody; any other
 public void Post(T value);
 ```
 
-Hands a value to the drawing thread from wherever you are. It is written just before the next frame, in the order it was posted, and everything writing plainly does — notifying, asking for a repaint, recording an undo step — happens then. This is what background work calls instead of [`Atom.Value`](../arlecchino.atoms/Atom-1.md#value), which refuses to be written from another thread. Nothing has been written when this returns, so reading the atom back here still gives the old value. Several atoms that have to change together belong in one `FrameThread.Post` instead, so that no frame falls between them.
+Hands a value to the drawing thread, to be written just before the next frame in the order it was posted. Nothing is written when this returns, and atoms that must change together belong in one `FrameThread.Post`.
 
 **Parameters**
 

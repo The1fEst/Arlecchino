@@ -7,7 +7,7 @@ sidebar_label: "Table<T>"
 
 **Namespace:** `Arlecchino.Widgets.Lists` &middot; **Assembly:** `Arlecchino`
 
-Rows in aligned columns, with a heading and optional sorting. Selection and scrolling are a list box underneath, so a table behaves exactly like a list that happens to draw more per row. Sorting reorders a copy, leaving whatever was assigned to [`Table.Rows`](../arlecchino.widgets.lists/Table-1.md#rows) untouched.
+Rows in aligned columns, with a heading and optional sorting, over a list box that does the selecting and the scrolling. Sorting reorders a copy, leaving [`Table.Rows`](../arlecchino.widgets.lists/Table-1.md#rows) untouched.
 
 ```csharp
 public sealed class Table<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable

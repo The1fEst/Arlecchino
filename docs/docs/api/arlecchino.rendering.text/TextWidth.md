@@ -7,7 +7,7 @@ sidebar_label: "TextWidth"
 
 **Namespace:** `Arlecchino.Rendering.Text` &middot; **Assembly:** `Arlecchino.Core`
 
-Measures text the way a terminal shows it: in columns, not in `char` values. CJK and emoji take two columns, combining marks take none, and a surrogate pair is one symbol. Use these instead of `string.Length`, `PadRight` and slicing whenever the result lands on screen.
+Measures text the way a terminal shows it, in columns rather than in `char` values. Use these instead of `string.Length`, `PadRight` and slicing wherever the result lands on screen.
 
 ```csharp
 public static class TextWidth
@@ -29,7 +29,7 @@ public static class TextWidth
 | [`SnapToCluster(string, int)`](#snaptocluster-string-int) | Pulls a position back to the start of the symbol it lands in, so an index that came from somewhere else never points into the middle of one. |
 | [`Truncate(string, int)`](#truncate-string-int) | Cuts the text down to a column width on a symbol boundary, so a wide character or a surrogate pair is never split in half. |
 | [`TruncateStart(string, int)`](#truncatestart-string-int) | Cuts the text down to a column width from the other end, keeping the tail rather than the head. That is what a field scrolled to the right shows. |
-| [`Wrap(string, int)`](#wrap-string-int) | Breaks text into lines that fit a column width, at spaces where there is one and mid-word only when a single word is wider than the space. Line breaks already in the text are kept, so a paragraph stays a paragraph. |
+| [`Wrap(string, int)`](#wrap-string-int) | Breaks text into lines that fit a column width, at spaces where there is one and mid-word only for a word wider than the space. Line breaks already in the text are kept. |
 
 ## Methods in detail
 
@@ -239,7 +239,7 @@ Cuts the text down to a column width from the other end, keeping the tail rather
 public static List<string> Wrap(string text, int width);
 ```
 
-Breaks text into lines that fit a column width, at spaces where there is one and mid-word only when a single word is wider than the space. Line breaks already in the text are kept, so a paragraph stays a paragraph.
+Breaks text into lines that fit a column width, at spaces where there is one and mid-word only for a word wider than the space. Line breaks already in the text are kept.
 
 **Parameters**
 

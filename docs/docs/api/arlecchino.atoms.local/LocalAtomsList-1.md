@@ -7,7 +7,7 @@ sidebar_label: "LocalAtomsList<T>"
 
 **Namespace:** `Arlecchino.Atoms.Local` &middot; **Assembly:** `Arlecchino.Core`
 
-A list the undo stack never sees: a log, search results, the rows a background scan found, the notifications on screen — contents the user did not author and would not expect to travel back through. It notifies and asks for a frame exactly as a [`TrackedAtomsList`](../arlecchino.atoms.tracked/TrackedAtomsList-1.md) does.
+A list the undo stack never sees, for contents the user did not author: a log, search results, the rows of a scan. It notifies and asks for a frame as a [`TrackedAtomsList`](../arlecchino.atoms.tracked/TrackedAtomsList-1.md) does.
 
 ```csharp
 public sealed class LocalAtomsList<T> : AtomsList<T>, IReadableAtom<IReadOnlyList<T>>

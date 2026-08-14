@@ -7,7 +7,7 @@ sidebar_label: "ArlecchinoStrings"
 
 **Namespace:** `Arlecchino.Hosting` &middot; **Assembly:** `Arlecchino`
 
-Every piece of text the framework itself draws. All of it is delegates with English defaults, so an application points them at its own resolver and switches language process-wide without the framework knowing that languages exist. They are called on the frames that need them, so nothing has to be rebuilt when the language changes.
+Every piece of text the framework itself draws, as delegates with English defaults. They are called on the frames that need them, so pointing them elsewhere switches language with nothing to rebuild.
 
 ```csharp
 public sealed class ArlecchinoStrings

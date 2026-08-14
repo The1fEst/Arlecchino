@@ -28,7 +28,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`Back`](#back) | Goes back in the history. `Alt+←` by default. |
 | [`Cancel`](#cancel) | Dismisses a dialog or leaves a screen. `Esc` by default. |
 | [`Confirm`](#confirm) | Accepts a dialog, opens a field, activates a row. `Enter` by default. |
-| [`Copy`](#copy) | Copies what is being edited to the clipboard. Two combinations, because the habits differ: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone — that is how the user stops the application. |
+| [`Copy`](#copy) | Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application. |
 | [`DeleteForward`](#deleteforward) | Deletes the character after the caret. `Delete` by default. |
 | [`Erase`](#erase) | Deletes: a character, a filter, a typed segment, a field value. `Backspace` by default. |
 | [`EraseToStart`](#erasetostart) | Deletes everything before the caret. `Ctrl+U` by default, as in a shell. |
@@ -57,7 +57,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 
 | Member | Summary |
 |---|---|
-| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The whole map with one modifier put in place of another. A keyboard that cannot send a modifier makes every key built on it unreachable, and rewriting thirty bindings by hand to say so is how an application ends up with twenty-eight of them rewritten. A Mac terminal is the case this was written for: Option is spoken for by the characters it types, so `Alt` never arrives and Command is what that keyboard has going spare. |
+| [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The whole map with one modifier put in place of another, for a keyboard that cannot send the one the bindings were written on. Rewriting thirty bindings by hand leaves twenty-eight rewritten. |
 
 ## Constructors in detail
 
@@ -105,7 +105,7 @@ Accepts a dialog, opens a field, activates a row. `Enter` by default.
 public KeyBinding Copy { get; init; }
 ```
 
-Copies what is being edited to the clipboard. Two combinations, because the habits differ: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone — that is how the user stops the application.
+Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -347,7 +347,7 @@ Moves the caret past the next word. `Ctrl+→` by default.
 public ArlecchinoKeymap Replacing(KeyModifiers from, KeyModifiers to);
 ```
 
-The whole map with one modifier put in place of another. A keyboard that cannot send a modifier makes every key built on it unreachable, and rewriting thirty bindings by hand to say so is how an application ends up with twenty-eight of them rewritten. A Mac terminal is the case this was written for: Option is spoken for by the characters it types, so `Alt` never arrives and Command is what that keyboard has going spare.
+The whole map with one modifier put in place of another, for a keyboard that cannot send the one the bindings were written on. Rewriting thirty bindings by hand leaves twenty-eight rewritten.
 
 **Parameters**
 

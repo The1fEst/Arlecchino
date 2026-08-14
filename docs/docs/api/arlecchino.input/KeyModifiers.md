@@ -22,5 +22,5 @@ public enum KeyModifiers
 | `Alt` | `1` | Alt, or Option on a Mac. |
 | `Shift` | `2` | Shift. |
 | `Control` | `4` | Control. |
-| `Super` | `8` | Command on a Mac, the Windows key elsewhere. Terminals report it in the same modifier field as the rest, one bit further up; the Windows console never reports it at all, because the key is taken by the system before an application sees it. |
+| `Super` | `8` | Command on a Mac, the Windows key elsewhere. The Windows console never reports it, since the system takes the key before an application sees it. |
 

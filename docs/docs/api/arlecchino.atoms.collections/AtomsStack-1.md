@@ -7,7 +7,7 @@ sidebar_label: "AtomsStack<T>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A stack held as one piece of application state — where the user has been, the modals over one another, a plan being unwound. Things go on top and come off the top. Every change takes the same path a plain atom's write takes: it is checked against the drawing thread, it notifies what reads the stack, it marks the frame stale, and it records an undo step when the stack is undoable. It is what a `ConcurrentStack<T>` is not for: nothing here is thread-safe, because nothing needs to be. Background work hands its item over with `FrameThread.Post` and the stack is only ever touched by the thread that draws it. [`AtomsStack.Value`](../arlecchino.atoms.collections/AtomsStack-1.md#value) reads from the top down, the way `Stack<T>` itself enumerates, so `Value[0]` is what [`AtomsStack.Peek`](../arlecchino.atoms.collections/AtomsStack-1.md#peek) answers. Whether changes can be undone is decided by the type created — [`TrackedAtomsStack`](../arlecchino.atoms.tracked/TrackedAtomsStack-1.md) or [`LocalAtomsStack`](../arlecchino.atoms.local/LocalAtomsStack-1.md).
+A stack held as one piece of application state, put on and taken off the top. [`AtomsStack.Value`](../arlecchino.atoms.collections/AtomsStack-1.md#value) reads from the top down, so `Value[0]` is what [`AtomsStack.Peek`](../arlecchino.atoms.collections/AtomsStack-1.md#peek) answers.
 
 ```csharp
 public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
@@ -28,7 +28,7 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
 | [`Count`](#count) | How many are on it. |
 | [`IsEmpty`](#isempty) | Whether nothing is on it. |
 | [`RecordsHistory`](#recordshistory) | Whether changes of this stack enter the undo history. |
-| [`Value`](#value) | What is on the stack now, top first: a live view rather than a copy, so a widget handed this once draws whatever is on it on every later frame. It is read-only all the way down, so every change goes through the members below. |
+| [`Value`](#value) | What is on the stack now, top first, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below. |
 
 ## Methods
 
@@ -99,7 +99,7 @@ Whether changes of this stack enter the undo history.
 public IReadOnlyList<T> Value { get; }
 ```
 
-What is on the stack now, top first: a live view rather than a copy, so a widget handed this once draws whatever is on it on every later frame. It is read-only all the way down, so every change goes through the members below.
+What is on the stack now, top first, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below.
 
 **Type** `IReadOnlyList<T>`&lt;`T`&gt;
 

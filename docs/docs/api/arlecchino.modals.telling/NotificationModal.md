@@ -7,7 +7,7 @@ sidebar_label: "NotificationModal"
 
 **Namespace:** `Arlecchino.Modals.Telling` &middot; **Assembly:** `Arlecchino`
 
-One notification, read in full. The output row and the notifications screen have one line each to give a message, which is not enough for the errors a copy collected or the output of a command. Opening the entry shows the whole of it, and offers whatever the entry said could be done about it. The notifications screen opens this itself, so an application only fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and [`Notification.Actions`](../arlecchino.diagnostics/Notification.md#actions) when it raises the entry.
+One notification, read in full, with whatever the entry said could be done about it. The notifications screen opens it, so an application only fills in [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) and its actions.
 
 ```csharp
 public sealed class NotificationModal : Modal

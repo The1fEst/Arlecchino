@@ -7,7 +7,7 @@ sidebar_label: "Notifications"
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-What the application has to say, and for how long. The newest line sits on the output row until it times out, so a message does not hold the screen for the rest of the session. It stays in the list for much longer, so opening the notifications screen still shows what went past while the user was looking elsewhere. Both timeouts come from [`ArlecchinoOptions`](../arlecchino.hosting/ArlecchinoOptions.md), and both are counted by the [`Ticker`](../arlecchino.hosting/Ticker.md) — nothing here runs on its own thread.
+What the application has to say, and for how long. The newest line sits on the output row until it times out and stays in the list much longer, on two timeouts the [`Ticker`](../arlecchino.hosting/Ticker.md) counts.
 
 ```csharp
 public sealed class Notifications
@@ -26,16 +26,16 @@ public sealed class Notifications
 | [`Capacity`](#capacity) | How many messages to keep at most, however young they are. A list bounded only by time grows without limit when something reports in a loop, so the oldest fall off once this many are held. |
 | [`Current`](#current) | The line the output row shows, or `null` once it has timed out. The entry itself stays in [`Notifications.Entries`](../arlecchino.diagnostics/Notifications.md#entries) until the longer timeout takes it. |
 | [`Entries`](#entries) | Everything still held, the newest first. |
-| [`Recent`](#recent) | What is worth showing right now, the newest first: everything still running, and everything that ended recently enough not to have timed out yet. [`Notifications.Current`](../arlecchino.diagnostics/Notifications.md#current) answers the same question for one row at the bottom of the screen, which can only hold the newest. An application that shows its work as a stack of cards rather than a line wants all of them, and wants each one to stay up however long the work takes. That is why running work is here whatever its age. |
+| [`Recent`](#recent) | What is worth showing right now, the newest first: everything still running, whatever its age, and everything that ended recently enough not to have timed out. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Clear()`](#clear) | Throws away everything that has been said, the output row included — except work that is still running, which keeps its line. A copy does not stop because its line was cleared, and a job running with nothing on screen to show for it is worse than a list that would not empty. |
+| [`Clear()`](#clear) | Throws away everything that has been said, the output row included, except work that is still running. Clearing a line does not stop the work behind it. |
 | [`Notify(string, NotificationLevel)`](#notify-string-notificationlevel) | Says something. The newest line replaces whatever the output row was showing. |
-| [`Raise(Notification)`](#raise-notification) | Says something that carries more than a line — work still running, a report to read in full, something to do about it. The entry is built by the caller, so it can be kept and taken back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification) once whatever it reports is over. |
-| [`Settle(Notification, string, NotificationLevel)`](#settle-notification-string-notificationlevel) | Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot in the list and its identity, so a dialog someone already has open changes under them rather than going stale, and the entry starts aging like any other message. |
+| [`Raise(Notification)`](#raise-notification) | Says something that carries more than a line: work still running, a report to read in full, something to do about it. The caller builds the entry, so it can take it back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification). |
+| [`Settle(Notification, string, NotificationLevel)`](#settle-notification-string-notificationlevel) | Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot and its identity, so an open dialog changes rather than going stale. |
 | [`Withdraw(Notification)`](#withdraw-notification) | Takes one entry back, for work whose line should not be kept at all. |
 
 ## Constructors in detail
@@ -94,7 +94,7 @@ Everything still held, the newest first.
 public IReadOnlyList<Notification> Recent { get; }
 ```
 
-What is worth showing right now, the newest first: everything still running, and everything that ended recently enough not to have timed out yet. [`Notifications.Current`](../arlecchino.diagnostics/Notifications.md#current) answers the same question for one row at the bottom of the screen, which can only hold the newest. An application that shows its work as a stack of cards rather than a line wants all of them, and wants each one to stay up however long the work takes. That is why running work is here whatever its age.
+What is worth showing right now, the newest first: everything still running, whatever its age, and everything that ended recently enough not to have timed out.
 
 **Type** `IReadOnlyList<T>`&lt;[`Notification`](../arlecchino.diagnostics/Notification.md)&gt;
 
@@ -106,7 +106,7 @@ What is worth showing right now, the newest first: everything still running, and
 public void Clear();
 ```
 
-Throws away everything that has been said, the output row included — except work that is still running, which keeps its line. A copy does not stop because its line was cleared, and a job running with nothing on screen to show for it is worse than a list that would not empty.
+Throws away everything that has been said, the output row included, except work that is still running. Clearing a line does not stop the work behind it.
 
 ### `Notify(string, NotificationLevel)` {#notify-string-notificationlevel}
 
@@ -129,7 +129,7 @@ Says something. The newest line replaces whatever the output row was showing.
 public Notification Raise(Notification entry);
 ```
 
-Says something that carries more than a line — work still running, a report to read in full, something to do about it. The entry is built by the caller, so it can be kept and taken back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification) once whatever it reports is over.
+Says something that carries more than a line: work still running, a report to read in full, something to do about it. The caller builds the entry, so it can take it back with [`Notifications.Withdraw`](../arlecchino.diagnostics/Notifications.md#withdraw-notification).
 
 **Parameters**
 
@@ -145,7 +145,7 @@ Says something that carries more than a line — work still running, a report to
 public void Settle(Notification entry, string text, NotificationLevel level = Information);
 ```
 
-Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot in the list and its identity, so a dialog someone already has open changes under them rather than going stale, and the entry starts aging like any other message.
+Turns a line that was reporting work into what came of that work, in place. The entry keeps its spot and its identity, so an open dialog changes rather than going stale.
 
 **Parameters**
 

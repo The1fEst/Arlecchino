@@ -7,7 +7,7 @@ sidebar_label: "SessionTape"
 
 **Namespace:** `Arlecchino.Testing` &middot; **Assembly:** `Arlecchino.Testing`
 
-A session written down: every event that goes in, how long the application waits for it, and where a frame is worth looking at. Playing a tape draws the same frames every time, because a screen here is a function of state, state only changes on an event, and the time comes from a provider rather than from the clock on the wall. What it is for is writing a test as the session it describes, rather than as a dozen calls with the assertions lost among them. What it is deliberately not for is recording a running application. The framework has a password modal and a paste step, so a tape captured from a real session would hold whatever the user typed into them. A file like that must not be something an application writes on their behalf.
+A session written down: the events that go in, the waits between them, and where a frame is worth looking at. A tape is written by hand rather than recorded.
 
 ```csharp
 var frames = new SessionTape()
@@ -21,8 +21,6 @@ var frames = new SessionTape()
 Assert.Contains("Copy files", frames[^1], StringComparison.Ordinal);
 
 ```
-
-A tape holds what the terminal reported rather than what it meant, so it replays the same whatever the keyboard layout, and it holds no application state at all — only what was done to it. [`SessionTape.Read`](../arlecchino.testing/SessionTape.md#read-string) takes back what [`SessionTape.ToString`](../arlecchino.testing/SessionTape.md#tostring) wrote, so a tape travels as a file.
 
 ```csharp
 public sealed class SessionTape

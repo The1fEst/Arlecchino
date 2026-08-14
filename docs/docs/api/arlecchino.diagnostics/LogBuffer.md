@@ -7,7 +7,7 @@ sidebar_label: "LogBuffer"
 
 **Namespace:** `Arlecchino.Diagnostics` &middot; **Assembly:** `Arlecchino`
 
-The last few log lines, held in memory. A terminal application cannot write logs to the console — they would land in the middle of the frame — so they are collected here instead and shown in an overlay on request. Oldest lines are dropped once the buffer is full. Logging happens on whatever thread did the work, so the lines live in a concurrent queue and the overlay draws from a snapshot rather than from the live collection. Dropping the oldest is done under a lock: the check and the removal have to be one step, or two threads trimming at once take the buffer below its capacity.
+The last few log lines, held in memory for the overlay to draw, since a terminal application cannot write them to the console. Logging happens on any thread, so the oldest are dropped under a lock.
 
 ```csharp
 public sealed class LogBuffer

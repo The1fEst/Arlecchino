@@ -7,7 +7,7 @@ sidebar_label: "ScreenGrid"
 
 **Namespace:** `Arlecchino.Testing` &middot; **Assembly:** `Arlecchino.Testing`
 
-A terminal screen as the terminal itself would hold it: a grid of cells that output is applied to rather than collected in. Where [`FrameText`](../arlecchino.testing/FrameText.md) strips escapes out of what was written, this obeys them — a cursor jump moves the cursor, a style sticks to the cells that follow, a wide symbol takes two columns. That difference is the point. Frames are written as the difference from the last one, so what reaches the terminal is a handful of jumps and runs which say nothing on their own about what the screen holds afterward. Applying them here answers that, and makes the invariant worth asserting: a screen built from diffs is the screen a whole repaint would have drawn.
+A terminal screen as the terminal itself would hold it: a grid of cells that output is applied to rather than collected in, obeying the escapes [`FrameText`](../arlecchino.testing/FrameText.md) strips out.
 
 ```csharp
 public sealed class ScreenGrid
@@ -23,7 +23,7 @@ public sealed class ScreenGrid
 
 | Member | Summary |
 |---|---|
-| [`CursorColumn`](#cursorcolumn) | The column the cursor sits on, counted from the left. A symbol written into the last column while wrapping is on leaves the cursor one past the right edge, waiting to wrap. The next symbol goes to the row below, and a terminal asked where its cursor is answers the same way — tmux and kitty both do. With wrapping off they stop agreeing: the same symbol leaves the cursor in the last column for tmux and one past it for kitty. Nothing visible turns on it, since with nowhere to wrap to the next symbol lands in the last column either way; this follows tmux and says so. |
+| [`CursorColumn`](#cursorcolumn) | The column the cursor sits on, counted from the left. A symbol written into the last column leaves it one past the right edge while wrapping is on, and in that column while it is off, as tmux does. |
 | [`CursorRow`](#cursorrow) | The row the cursor sits on, counted from the top. |
 | [`Height`](#height) | Rows. |
 | [`IsCursorVisible`](#iscursorvisible) | Whether the cursor was left visible. |
@@ -67,7 +67,7 @@ Creates a blank screen at a fixed size.
 public int CursorColumn { get; }
 ```
 
-The column the cursor sits on, counted from the left. A symbol written into the last column while wrapping is on leaves the cursor one past the right edge, waiting to wrap. The next symbol goes to the row below, and a terminal asked where its cursor is answers the same way — tmux and kitty both do. With wrapping off they stop agreeing: the same symbol leaves the cursor in the last column for tmux and one past it for kitty. Nothing visible turns on it, since with nowhere to wrap to the next symbol lands in the last column either way; this follows tmux and says so.
+The column the cursor sits on, counted from the left. A symbol written into the last column leaves it one past the right edge while wrapping is on, and in that column while it is off, as tmux does.
 
 **Type** `int`
 

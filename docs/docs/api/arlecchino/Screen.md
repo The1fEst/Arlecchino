@@ -7,7 +7,7 @@ sidebar_label: "Screen"
 
 **Namespace:** `Arlecchino` &middot; **Assembly:** `Arlecchino`
 
-Draws the frames: the current view first — inside the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) when the application registered one — then the output line, the hints and any dialog on top. A view that throws while drawing is reported on the output line instead of taking the application down, since a half-drawn frame is easier to recover from than a dead process.
+Draws the frames: the current view first, inside the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) when there is one, then the output line, the keys and any dialog on top. A view that throws is reported on the output line rather than taking the application down.
 
 ```csharp
 public class Screen

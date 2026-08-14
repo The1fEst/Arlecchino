@@ -10,7 +10,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`FocusRing`](FocusRing.md) | The cycle of focusable elements inside one view: `Tab` and `Shift+Tab` move between them, everything else goes to the one that holds the focus. A ring is itself focusable, so one goes inside another: add a ring to a ring and `Tab` walks into it, through what it holds and out the far side, without the view saying anything about it. A nested ring remembers where it was left, so coming back to it from either side lands where the cursor was rather than at the top. |
+| [`FocusRing`](FocusRing.md) | The cycle of focusable elements inside one view: `Tab` and `Shift+Tab` move between them, and everything else goes to the one holding the focus. A ring is itself focusable, so rings nest. |
 | [`FocusablePane`](FocusablePane.md) | Wraps delegates as a focusable element, for a view that keeps its logic in methods rather than in objects. That is how the file picker holds its list and the sidebar of places. |
 
 ## Structs

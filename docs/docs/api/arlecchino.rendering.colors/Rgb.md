@@ -37,7 +37,7 @@ public readonly struct Rgb : IEquatable<Rgb>
 | [`Deconstruct(out byte, out byte, out byte)`](#deconstruct-out-byte-out-byte-out-byte) |  |
 | [`FromHsl(int, int, int)`](#fromhsl-int-int-int) | Builds a color from hue, saturation and lightness — the form the color modal edits. |
 | [`ToHsl()`](#tohsl) | Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`Rgb.FromHsl`](../arlecchino.rendering.colors/Rgb.md#fromhsl-int-int-int) can shift a color by a unit or two. |
-| [`ToString()`](#tostring) | Returns [`Rgb.Hex`](../arlecchino.rendering.colors/Rgb.md#hex). |
+| [`ToString()`](#tostring) | Writes the color as its hexadecimal form. |
 | [`TryParseHex(string, out Rgb)`](#tryparsehex-string-out-rgb) | Reads a color written as `#RRGGBB` or `RRGGBB`. |
 
 ## Constructors in detail
@@ -150,9 +150,9 @@ Splits the color back into hue, saturation and lightness. Channels are whole num
 public override string ToString();
 ```
 
-Returns [`Rgb.Hex`](../arlecchino.rendering.colors/Rgb.md#hex).
+Writes the color as its hexadecimal form.
 
-**Returns** `string`
+**Returns** `string` — [`Rgb.Hex`](../arlecchino.rendering.colors/Rgb.md#hex).
 
 ### `TryParseHex(string, out Rgb)` {#tryparsehex-string-out-rgb}
 

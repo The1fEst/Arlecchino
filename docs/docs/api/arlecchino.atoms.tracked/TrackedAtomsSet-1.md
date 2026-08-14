@@ -7,7 +7,7 @@ sidebar_label: "TrackedAtomsSet<T>"
 
 **Namespace:** `Arlecchino.Atoms.Tracked` &middot; **Assembly:** `Arlecchino.Core`
 
-A set whose changes go on the undo stack: what the user marked, the columns they turned on, the tags they put on something. [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) picks it up with nothing to register, and each call is one step — including one that puts several in at once.
+A set whose changes go on the undo stack, picked up by [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) with nothing to register. Each call is one step, including one that puts several in at once.
 
 ```csharp
 public sealed class TrackedAtomsSet<T> : AtomsSet<T>, IReadableAtom<IReadOnlySet<T>>

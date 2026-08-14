@@ -17,7 +17,7 @@ public interface IReadableAtom<T>
 
 | Member | Summary |
 |---|---|
-| [`Value`](#value) | The current value. Reading it inside a [`Computed`](../arlecchino.atoms/Computed-1.md) also registers the dependency, which is why derived values need no dependency list. |
+| [`Value`](#value) | The current value. Reading it inside a [`Computed`](../arlecchino.atoms/Computed-1.md) registers the dependency, so derived values need no dependency list. |
 
 ## Methods
 
@@ -33,7 +33,7 @@ public interface IReadableAtom<T>
 public abstract T Value { get; }
 ```
 
-The current value. Reading it inside a [`Computed`](../arlecchino.atoms/Computed-1.md) also registers the dependency, which is why derived values need no dependency list.
+The current value. Reading it inside a [`Computed`](../arlecchino.atoms/Computed-1.md) registers the dependency, so derived values need no dependency list.
 
 **Type** `T`
 

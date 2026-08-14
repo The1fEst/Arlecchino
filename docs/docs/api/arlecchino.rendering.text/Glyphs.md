@@ -7,7 +7,7 @@ sidebar_label: "Glyphs"
 
 **Namespace:** `Arlecchino.Rendering.Text` &middot; **Assembly:** `Arlecchino.Core`
 
-The symbols in use, reachable from anywhere that draws — the same arrangement as [`Theme`](../arlecchino.rendering.colors/Theme.md), and for the same reason: a widget reads the look rather than being told it. Assigned from `ArlecchinoOptions` when the container resolves them; set it directly when drawing without a host. It is process-wide and settable, so an application can offer the choice in its own settings and have every graph follow on the next frame. A frame reads all of it, so all of it is written on the drawing thread and asks for a frame by itself; hand the change over with [`FrameThread.Post`](../arlecchino/FrameThread.md#post-action) from anywhere else.
+The symbols in use, reachable from anywhere that draws, the way [`Theme`](../arlecchino.rendering.colors/Theme.md) is. It is written on the drawing thread and asks for a frame itself, so every graph follows on the next one.
 
 ```csharp
 public static class Glyphs
@@ -18,9 +18,9 @@ public static class Glyphs
 | Member | Summary |
 |---|---|
 | [`CellHeight`](#cellheight) | How many pixels tall a cell is taken to be. See [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth). |
-| [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be. Only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) needs it, because sixel is measured in pixels and knows nothing of cells: a picture is resampled to however many pixels the cells it was given come to. [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan) sets it from what the terminal reports. Ten by twenty is the standing guess for a terminal that does not answer, and a wrong guess shows as a picture that does not quite fill its pane rather than as a broken picture. |
+| [`CellWidth`](#cellwidth) | How many pixels wide a cell is taken to be, which only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) needs. [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan) sets it, and ten by twenty is the guess for a silent terminal. |
 | [`Graph`](#graph) | What graphs are drawn with when a widget does not say otherwise. |
-| [`Picture`](#picture) | How pictures reach the terminal when a widget does not say otherwise. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which is the best of what the terminal admitted to when it was asked and cells when it admitted to nothing. Name a protocol to decide yourself — a terminal that cannot speak the one you name shows the escape sequence as text. |
+| [`Picture`](#picture) | How pictures reach the terminal when a widget does not say otherwise, which is [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default. A terminal that cannot speak a named protocol shows the escape sequence as text. |
 
 ## Properties in detail
 
@@ -46,7 +46,7 @@ How many pixels tall a cell is taken to be. See [`Glyphs.CellWidth`](../arlecchi
 public static int CellWidth { get; set; }
 ```
 
-How many pixels wide a cell is taken to be. Only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) needs it, because sixel is measured in pixels and knows nothing of cells: a picture is resampled to however many pixels the cells it was given come to. [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan) sets it from what the terminal reports. Ten by twenty is the standing guess for a terminal that does not answer, and a wrong guess shows as a picture that does not quite fill its pane rather than as a broken picture.
+How many pixels wide a cell is taken to be, which only [`ImageProtocol.Sixel`](../arlecchino.rendering.terminals/ImageProtocol.md) needs. [`TerminalProbe.Ask`](../arlecchino.rendering.terminals/TerminalProbe.md#ask-iarlecchinoterminal-timespan) sets it, and ten by twenty is the guess for a silent terminal.
 
 **Type** `int`
 
@@ -78,7 +78,7 @@ What graphs are drawn with when a widget does not say otherwise.
 public static ImageProtocol Picture { get; set; }
 ```
 
-How pictures reach the terminal when a widget does not say otherwise. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default, which is the best of what the terminal admitted to when it was asked and cells when it admitted to nothing. Name a protocol to decide yourself — a terminal that cannot speak the one you name shows the escape sequence as text.
+How pictures reach the terminal when a widget does not say otherwise, which is [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) by default. A terminal that cannot speak a named protocol shows the escape sequence as text.
 
 **Type** [`ImageProtocol`](../arlecchino.rendering.terminals/ImageProtocol.md)
 

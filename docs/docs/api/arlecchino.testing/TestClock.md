@@ -7,7 +7,7 @@ sidebar_label: "TestClock"
 
 **Namespace:** `Arlecchino.Testing` &middot; **Assembly:** `Arlecchino.Testing`
 
-A clock a test moves by hand. Scheduled work runs when the clock passes its due time, so a test that would otherwise wait for a second of real time moves a second instead and sees the result on the next frame.
+A clock a test moves by hand. Scheduled work runs when the clock passes its due time, so a second is moved rather than waited for.
 
 ```csharp
 public sealed class TestClock : TimeProvider

@@ -7,7 +7,7 @@ sidebar_label: "FrameThread"
 
 **Namespace:** `Arlecchino` &middot; **Assembly:** `Arlecchino.Core`
 
-Which thread draws. Views, widgets, atoms and the surface are written without locks because one thread touches them, and this is what turns that from a convention into something the framework can check. The frame loop claims the thread it runs on, and everything that must happen there asks before it changes anything. Nothing claims it outside a running application — a headless host, a test, a single `DrawOnce` — so the checks stay quiet there and cost a null comparison.
+Which thread draws, claimed by the frame loop as it starts. Views, widgets, atoms and the surface are written without locks, and this is what turns that convention into something the framework checks.
 
 ```csharp
 public static class FrameThread
@@ -24,9 +24,9 @@ public static class FrameThread
 
 | Member | Summary |
 |---|---|
-| [`Claim(Action)`](#claim-action) | Claims the calling thread as the one that draws. Called by the frame loop as it starts; an application that runs the loop itself calls it too, so that the checks know where "here" is. |
+| [`Claim(Action)`](#claim-action) | Claims the calling thread as the one that draws. An application running the frame loop itself calls this too, so the checks know which thread is meant. |
 | [`DiscardPending()`](#discardpending) | Drops what was posted and never run. An application going away calls it, and so does a test host as it is disposed, so that work left over by one does not run inside the next. |
-| [`Post(Action)`](#post-action) | Hands work to the drawing thread, from wherever you are. It runs just before the next frame, in the order it was posted, and a frame is asked for by itself. With nobody drawing — a test, a headless render — it waits until something runs it, which is what [`FrameThread.RunPending`](../arlecchino/FrameThread.md#runpending-action-exception) is for. |
+| [`Post(Action)`](#post-action) | Hands work to the drawing thread, to run just before the next frame in the order it was posted. With no thread drawing it waits for [`FrameThread.RunPending`](../arlecchino/FrameThread.md#runpending-action-exception). |
 | [`RunPending(Action<Exception>)`](#runpending-action-exception) | Runs what was posted before this call. Called by the frame loop; work posted by that work waits for the next frame, so an action that posts itself is a loop you can leave. |
 | [`Verify(string)`](#verify-string) | Throws unless the caller is on the drawing thread. This is what a member that changes what a frame draws calls before changing anything. |
 
@@ -60,7 +60,7 @@ Whether the calling thread is the one drawing, or nothing has claimed drawing ye
 public static IDisposable Claim(Action? wake = null);
 ```
 
-Claims the calling thread as the one that draws. Called by the frame loop as it starts; an application that runs the loop itself calls it too, so that the checks know where "here" is.
+Claims the calling thread as the one that draws. An application running the frame loop itself calls this too, so the checks know which thread is meant.
 
 **Parameters**
 
@@ -68,7 +68,7 @@ Claims the calling thread as the one that draws. Called by the frame loop as it 
 |---|---|---|
 | `wake` | `Action` | Asks for a frame, called whenever something is posted. The frame loop passes its repaint signal, so posted work is drawn without the caller having to ask. |
 
-**Returns** `IDisposable` — A scope that gives the claim up again. Giving up the last claim drops what is still posted: with nobody drawing there is no frame left for it to run before.
+**Returns** `IDisposable` — A scope that gives the claim up again. Giving up the last claim drops what is still posted, since no frame is left for it to run before.
 
 ### `DiscardPending()` {#discardpending}
 
@@ -84,7 +84,7 @@ Drops what was posted and never run. An application going away calls it, and so 
 public static void Post(Action action);
 ```
 
-Hands work to the drawing thread, from wherever you are. It runs just before the next frame, in the order it was posted, and a frame is asked for by itself. With nobody drawing — a test, a headless render — it waits until something runs it, which is what [`FrameThread.RunPending`](../arlecchino/FrameThread.md#runpending-action-exception) is for.
+Hands work to the drawing thread, to run just before the next frame in the order it was posted. With no thread drawing it waits for [`FrameThread.RunPending`](../arlecchino/FrameThread.md#runpending-action-exception).
 
 **Parameters**
 

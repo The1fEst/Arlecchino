@@ -7,7 +7,7 @@ sidebar_label: "Ticker"
 
 **Namespace:** `Arlecchino.Hosting` &middot; **Assembly:** `Arlecchino`
 
-Work on a clock, run on the frame loop. A terminal application redraws when something asks it to, so anything that changes on its own — a spinner, a clock, a list that refreshes itself, a message that fades — needs someone to say when. That someone is this: schedule an action, and it runs between frames, on the same thread as drawing and input, with a repaint asked for afterward. Every schedule returns the handle that cancels it. Hand it to [`ViewLifetime.Track`](../arlecchino.navigation/ViewLifetime.md#track-t-t) and the work stops when the screen goes away. Missed time is not made up for. An action runs at most once per pass, so a loop that was held up — a window that came back from being minimized, a long operation, a debugger — resumes with a single run rather than firing everything it slept through.
+Work on a clock, run between frames on the thread that draws, with a repaint asked for afterward. Missed time is not made up for: an action runs at most once per pass.
 
 ```csharp
 public sealed class Ticker

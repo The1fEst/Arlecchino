@@ -23,7 +23,7 @@ public class Surface
 
 | Member | Summary |
 |---|---|
-| [`Content`](#content) | Where a view draws: the frame minus the configured padding, or the room a layout left it while one is drawing the view inside itself. A view asks for this and gets what it has been given, which is what lets a layout be added to an application without a single view knowing. |
+| [`Content`](#content) | Where a view draws: the frame minus its padding, or the room a layout left it. A view asks for this and gets whatever it has been given, so a layout can be added without any view knowing. |
 | [`Frame`](#frame) | The whole frame as a region. |
 | [`FrameHeight`](#frameheight) | Height of the current frame in rows. |
 | [`FrameWidth`](#framewidth) | Width of the current frame in cells. |
@@ -36,12 +36,12 @@ public class Surface
 |---|---|
 | [`AppendLine(string, IArlecchinoColor, Align, Margin)`](#appendline-string-iarlecchinocolor-align-margin) | Writes one line at the flow cursor and moves it down. Stops silently once the frame is full, so a view never has to bound its own output. |
 | [`Build()`](#build) | Sends the composed frame to the terminal, writing only what changed since the last one — an idle frame writes nothing at all. The first frame, a resize and a fixed size send everything. |
-| [`Clip(SurfaceRegion)`](#clip-surfaceregion) | Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbor. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection. |
+| [`Clip(SurfaceRegion)`](#clip-surfaceregion) | Confines every write to a rectangle until the returned scope is disposed, dropping whatever falls outside it. Scopes nest, and a clip inside a clip is their intersection. |
 | [`FillLine()`](#fillline) | Draws a rule across the content width at the flow cursor. |
 | [`FillLineAt(int, IArlecchinoColor)`](#filllineat-int-iarlecchinocolor) | Draws a rule across the content width on a given row. |
 | [`ForgetPreviousFrame()`](#forgetpreviousframe) | Drops the memory of the last frame, so the next [`Surface.Build`](../arlecchino.rendering/Surface.md#build) sends the whole screen instead of the difference. Use it after something else wrote to the terminal. |
 | [`ListWindow()`](#listwindow) | How many rows a scrolling list may use: what is left of the frame minus room for the chrome, never fewer than four. |
-| [`Passthrough(int, int, string, string)`](#passthrough-int-int-string-string) | Hands the terminal something the cell grid cannot express — an image in one of the graphics protocols, most of all — to be written verbatim at a cell, after everything the frame drew. It goes out last on purpose: the cells are written first, so whatever was under or around the payload last time is repainted before it lands. Repainting the cells is not enough to remove it, though, which is what `undraw` is for. Say a payload was handed over last frame and is not handed over this one, because the widget moved, or shrank, or the screen no longer shows it at all. Its undraw is written at the place it used to be, and written **first**, before a single cell of the new frame. Undrawing paints over what it removes, so whatever the frame draws lands on top of it; the other way round it would erase the frame instead of the picture. A frame that undraws anything is written whole rather than diffed, since the cells painted over have to be put back whether they changed or not. Whoever hands over pixels says how to take them back, because only they know: kitty deletes an image by number, a sixel has to be painted over. A payload is re-sent only once it changes. A frame is only composed when something asked for one, so a picture that has stayed the same costs nothing between frames — and one measured in kilobytes is worth handing over only when it has to be. |
+| [`Passthrough(int, int, string, string)`](#passthrough-int-int-string-string) | Hands the terminal something the cell grid cannot express, such as an image, to be written verbatim at a cell after every cell of the frame. It is re-sent only once it changes. |
 | [`SetFixedSize(int, int)`](#setfixedsize-int-int) | Pins the frame size instead of asking the terminal, which is what makes headless rendering possible. A fixed-size surface always sends whole frames. |
 | [`SkipLine()`](#skipline) | Leaves a blank line at the flow cursor. |
 | [`StartFrame()`](#startframe) | Begins a frame: reads the terminal size, reallocates if it changed, clears every cell and skips the vertical padding. Nothing reaches the terminal until [`Surface.Build`](../arlecchino.rendering/Surface.md#build). |
@@ -74,7 +74,7 @@ Creates a surface that draws to a terminal.
 public SurfaceRegion Content { get; }
 ```
 
-Where a view draws: the frame minus the configured padding, or the room a layout left it while one is drawing the view inside itself. A view asks for this and gets what it has been given, which is what lets a layout be added to an application without a single view knowing.
+Where a view draws: the frame minus its padding, or the room a layout left it. A view asks for this and gets whatever it has been given, so a layout can be added without any view knowing.
 
 **Type** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md)
 
@@ -161,7 +161,7 @@ Sends the composed frame to the terminal, writing only what changed since the la
 public IDisposable Clip(SurfaceRegion region);
 ```
 
-Confines every write to a rectangle until the returned scope is disposed, whatever coordinates the writing code uses. This is what makes a scrolling pane possible: the content is drawn at an offset that reaches outside the pane, and the parts that fall outside are dropped instead of landing on a neighbor. Scopes nest, and the innermost one wins — a clip inside a clip is their intersection.
+Confines every write to a rectangle until the returned scope is disposed, dropping whatever falls outside it. Scopes nest, and a clip inside a clip is their intersection.
 
 **Parameters**
 
@@ -218,7 +218,7 @@ How many rows a scrolling list may use: what is left of the frame minus room for
 public void Passthrough(int row, int column, string payload, string undraw = "");
 ```
 
-Hands the terminal something the cell grid cannot express — an image in one of the graphics protocols, most of all — to be written verbatim at a cell, after everything the frame drew. It goes out last on purpose: the cells are written first, so whatever was under or around the payload last time is repainted before it lands. Repainting the cells is not enough to remove it, though, which is what `undraw` is for. Say a payload was handed over last frame and is not handed over this one, because the widget moved, or shrank, or the screen no longer shows it at all. Its undraw is written at the place it used to be, and written **first**, before a single cell of the new frame. Undrawing paints over what it removes, so whatever the frame draws lands on top of it; the other way round it would erase the frame instead of the picture. A frame that undraws anything is written whole rather than diffed, since the cells painted over have to be put back whether they changed or not. Whoever hands over pixels says how to take them back, because only they know: kitty deletes an image by number, a sixel has to be painted over. A payload is re-sent only once it changes. A frame is only composed when something asked for one, so a picture that has stayed the same costs nothing between frames — and one measured in kilobytes is worth handing over only when it has to be.
+Hands the terminal something the cell grid cannot express, such as an image, to be written verbatim at a cell after every cell of the frame. It is re-sent only once it changes.
 
 **Parameters**
 

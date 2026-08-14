@@ -7,7 +7,7 @@ sidebar_label: "RgbTermColor"
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-A style built from exact colors. Use it where the color itself is the point — a swatch, a chart, syntax highlighting — and keep chrome on [`Theme`](../arlecchino.rendering.colors/Theme.md), which follows the terminal theme. Falls back to the nearest palette color when the terminal cannot do 24-bit.
+A style built from exact colors, for where the color itself is the point rather than a role in [`Theme`](../arlecchino.rendering.colors/Theme.md). It falls back to the nearest palette color where the terminal cannot do 24-bit.
 
 ```csharp
 public sealed class RgbTermColor : IArlecchinoColor
@@ -34,7 +34,7 @@ public sealed class RgbTermColor : IArlecchinoColor
 
 | Member | Summary |
 |---|---|
-| [`ToString()`](#tostring) | Returns [`RgbTermColor.Ansi`](../arlecchino.rendering.colors/RgbTermColor.md#ansi). |
+| [`ToString()`](#tostring) | Writes the style as the sequence that puts it in force. |
 
 ## Constructors in detail
 
@@ -94,7 +94,7 @@ Bold, italic, underline and dim, in any combination.
 public override string ToString();
 ```
 
-Returns [`RgbTermColor.Ansi`](../arlecchino.rendering.colors/RgbTermColor.md#ansi).
+Writes the style as the sequence that puts it in force.
 
-**Returns** `string`
+**Returns** `string` — [`RgbTermColor.Ansi`](../arlecchino.rendering.colors/RgbTermColor.md#ansi).
 

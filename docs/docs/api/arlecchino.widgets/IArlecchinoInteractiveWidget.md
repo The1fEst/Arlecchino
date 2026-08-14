@@ -7,7 +7,7 @@ sidebar_label: "IArlecchinoInteractiveWidget"
 
 **Namespace:** `Arlecchino.Widgets` &middot; **Assembly:** `Arlecchino`
 
-A widget that answers keys and the mouse as well as drawing: a list, a table, a set of tabs, a form. Adding one to a [`FocusRing`](../arlecchino.focus/FocusRing.md) is the whole integration — the ring cycles the focus with `Tab`, hands keys to whichever widget holds it, and moves the focus to the widget that claims a click. The members come from [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md): `IsFocused` for drawing the difference, and `Handle` / `HandleMouse` returning a [`FocusResult`](../arlecchino.focus/FocusResult.md) that says whether the event was claimed and whether it navigates.
+A widget that answers keys and the mouse as well as drawing. Adding one to a [`FocusRing`](../arlecchino.focus/FocusRing.md) is the whole integration, and its members come from [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md).
 
 ```csharp
 public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFocusable

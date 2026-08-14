@@ -7,7 +7,7 @@ sidebar_label: "DateModal"
 
 **Namespace:** `Arlecchino.Modals.Setting` &middot; **Assembly:** `Arlecchino`
 
-A calendar date, edited as year, month and day. The value is kept inside the bounds and inside the calendar at every step, so a day that the new month does not have is pulled back to its last day rather than rejected.
+A calendar date, edited as year, month and day, and kept inside both the bounds and the calendar at every step. A day the new month does not have is pulled back to its last.
 
 ```csharp
 public sealed class DateModal : SegmentedModal
