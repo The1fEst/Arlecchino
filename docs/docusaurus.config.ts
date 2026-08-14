@@ -124,7 +124,7 @@ const config: Config = {
           items: [
             {label: 'Getting started', to: '/docs/getting-started'},
             {label: 'Views and navigation', to: '/docs/views-and-navigation'},
-            {label: 'Migrating to 2.0', to: '/docs/migrating-to-2.0'},
+            {label: 'Migrating to 2026.8.1', to: '/docs/migrating-to-2026.8.1'},
             {label: 'API reference', to: '/docs/api'},
           ],
         },
@@ -133,6 +133,7 @@ const config: Config = {
           items: [
             {label: 'Arlecchino', href: 'https://www.nuget.org/packages/Arlecchino'},
             {label: 'Arlecchino.Core', href: 'https://www.nuget.org/packages/Arlecchino.Core'},
+            {label: 'Arlecchino.Pictures', href: 'https://www.nuget.org/packages/Arlecchino.Pictures'},
             {label: 'Arlecchino.Testing', href: 'https://www.nuget.org/packages/Arlecchino.Testing'},
           ],
         },
