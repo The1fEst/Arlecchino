@@ -96,6 +96,8 @@ does not have.
 
 | Page | What it covers |
 |---|---|
+| [Migrating to 2026.8.1](migrating-to-2026.8.1.md) | What a `5.0` application edits: the notification, and the switch that showed the keys |
+| [Migrating to 5.0](migrating-to-5.0.md) | The keys a `4.x` application reads, now that a binding is not a `ConsoleKeyInfo` |
 | [What's new in 4.0](whats-new-in-4.0.md) | Every string gets a name, a dialog draws itself, namespaces follow their folders |
 | [Migrating to 4.0](migrating-to-4.0.md) | The `using` lines a `3.x` application needs, and one quiet behavior change |
 | [What's new in 3.0](whats-new-in-3.0.md) | Pictures, a terminal that is asked what it can do, panes that share a line |
@@ -110,6 +112,7 @@ does not have.
 |---|---|---|
 | `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input`, `Arlecchino.Atoms` | `Surface`, `SurfaceRegion`, `Atom`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI |
 | `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.Modals`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
+| `Arlecchino.Pictures` | `Arlecchino.Pictures` | `PictureFormats`, `PictureLimits` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels |
 | `Arlecchino.Testing` | `Arlecchino.Testing` | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` — the headless host for tests |
 | `Arlecchino.Generators` | — | the incremental generator, shipped inside the `Arlecchino` package |
 

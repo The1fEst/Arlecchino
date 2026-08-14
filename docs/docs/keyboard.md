@@ -73,6 +73,18 @@ A binding can carry a second combination for actions the platforms disagree abou
 `AlsoKey` and `AlsoModifiers` are for, and why `Copy` answers to both `Ctrl+Insert` and `Ctrl+Shift+C`.
 `ToString()` shows the first one, so hints stay short.
 
+A binding can also be a character rather than a key:
+
+```csharp
+new KeyBinding('!')
+```
+
+It answers wherever that character can be typed, forgives the Shift held to type it, and writes itself
+as `!`. Punctuation had no dependable way to be named otherwise: half of it has no `ConsoleKey`, the
+half that does is named for a US keyboard, and consoles disagree about whether Shift is reported
+alongside it — so the keys a person actually presses were missing from the one screen that exists to
+list them.
+
 ## The keymap
 
 Every key the framework itself reacts to is a `KeyBinding` on `ArlecchinoKeymap`, not a constant buried

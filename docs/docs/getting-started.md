@@ -16,6 +16,10 @@ dotnet add package Arlecchino
 so nothing else has to be referenced. `Microsoft.Extensions.Hosting` is what you need for the host
 itself.
 
+Two packages are added only when they are wanted: `Arlecchino.Pictures` reads image files into the
+pixels a [picture](pictures.md) draws, and `Arlecchino.Testing` is the headless host the
+[tests](testing.md) of your application run on.
+
 ## The smallest app
 
 ```csharp

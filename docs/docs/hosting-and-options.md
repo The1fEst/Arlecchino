@@ -46,7 +46,7 @@ it puts in the container are singletons:
 | `MinimumWidth` / `MinimumHeight` | `100` / `30` | Below this the frame is replaced by a size notice |
 | `HorizontalPadding` / `VerticalPadding` | `2` / `1` | Gutters applied by the surface |
 | `UseAlternateScreen` | `true` | Enter the alternate screen buffer and hide the cursor while running |
-| `ShowHints` | `true` | Draw the `Keys` box from the current view's `Hints()` |
+| `Hints` | `HintsShown.Always` | Draw the `Keys` box from whatever holds the focus. `WhileWaiting` draws it only while a chord is half typed, `Never` not at all |
 | `ShowOutputLine` | `true` | Draw `ArlecchinoState.Output` on the last row |
 | `CommandPaletteKey` | `':'` | Key that opens the palette |
 | `TextInput` | `Native` | How typed characters are resolved |

@@ -49,6 +49,26 @@ public sealed class PackagesView : IArlecchinoView
 The ring takes the [keymap](keyboard.md#the-keymap), so the keys that move the focus are the
 application's `NextField` and `PreviousField` — `Tab` and `Shift+Tab` unless they were rebound.
 
+## A ring inside a ring
+
+`FocusRing` is an `IArlecchinoFocusable` itself, so one goes inside another and the view says nothing
+about it:
+
+```csharp
+var fields = new FocusRing(keymap);
+fields.Add(_name);
+fields.Add(_version);
+
+_focus.Add(fields);
+_focus.Add(_table);
+```
+
+`Tab` walks into the inner ring, through what it holds, and out the far side into the next element of
+the outer one — a nested ring does not wrap, it hands the step back at either end. It remembers where
+it was left, so coming back from either direction lands where the cursor was rather than at the top.
+
+That is the whole of what a widget made of parts needs: build a ring for the parts, add the ring.
+
 ## IArlecchinoFocusable
 
 ```csharp
@@ -56,13 +76,27 @@ public interface IArlecchinoFocusable
 {
     bool IsFocused { get; set; }
     FocusResult Handle(KeyPress key);
-    FocusResult HandleMouse(MouseEvent mouse);
+    FocusResult HandleMouse(MouseEvent mouse) => FocusResult.Ignored;
+    bool MoveFocus(FocusDirection direction) => false;
+    (string Key, string Description)[] Hints() => [];
 }
 ```
 
 `IsFocused` is set by the ring. Draw the element differently while it is `false` — that is what the
 `Selected` and `ActiveSelected` [roles](theming.md#roles) are for: the cursor row of the pane with the
 focus and the cursor row of the pane without it.
+
+Only `IsFocused` and `Handle` have to be written. The other three have defaults that say *nothing to
+add*: an element that ignores the mouse, holds no focusable parts of its own, and has no keys worth
+listing implements two members and is done.
+
+`Hints` is what the box at the bottom of the screen is built from. An element states the keys it
+reacts to while it has the focus, the screen collects them down the chain of focus, and the box
+follows the cursor instead of listing the same keys wherever it stands — the focused element's keys
+first, the screen's after them, minus any the element already claimed.
+
+`MoveFocus` is for a widget made of several fields: it takes a step inside itself and answers `true`,
+or leaves the step alone and answers `false`, and the ring around it moves on as it always has.
 
 Every interactive widget already implements it — [`ListBox`](lists.md), [`Table`](table.md),
 [`Tree`](tree.md), [`Tabs`](tabs.md), [`TextView`](text-view.md), [`ScrollPane`](scrolling.md) and

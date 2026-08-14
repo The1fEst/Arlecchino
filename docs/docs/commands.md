@@ -91,6 +91,22 @@ Until `4.0` a disabled command swallowed its key. See
 `Hints()` is optional for a view with commands: when it returns nothing, the hints box is built from
 the command list, so a rebound key relabels itself there too.
 
+A screen of unlike panes lists different keys depending on where the cursor is, which the box does by
+itself once the view says what holds the focus:
+
+```csharp
+public IArlecchinoFocusable Focus => _ring;
+```
+
+The keys of the focused element come first — an element states its own through
+[`IArlecchinoFocusable.Hints`](focus.md#iarlecchinofocusable) — and the screen's keys after them,
+minus any the element already claimed, so one key is never listed twice under two labels. A view that
+leaves `Focus` alone gets the box it always had.
+
+Whether the box is drawn at all is `ArlecchinoOptions.Hints`: `Always`, `WhileWaiting` for nothing but
+a half-typed chord, or `Never` for an application that draws the keys in its own shape from
+`CommandKeys.IsWaiting` and `CommandKeys.Hints()`.
+
 The box also offers the palette itself — `: → commands` with the default keymap — whenever at least
 one command is registered, which is the same condition under which the key does anything at all. The
 key shown is `CommandPaletteKey`, so rebinding it relabels the line, and the wording is

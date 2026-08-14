@@ -285,7 +285,7 @@ list to keep in step by hand:
 _focus = _layout.AsFocusRing(options.Keymap);
 
 public ViewRoute Handle(KeyPress key) => _focus.Handle(key);
-public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
+public ViewRoute HandleMouse(MouseEvent mouse) => _layout.HandleMouse(mouse);
 ```
 
 Widgets that cannot take the focus — a status bar, a pane the view draws with a delegate — are simply
@@ -294,6 +294,13 @@ drift apart, because there is only one of them.
 
 What comes back is an ordinary ring, so anything focusable that lives outside the tree is added to it
 afterward and lands at the end of the walk.
+
+`HandleMouse` on the tree is the other half. The tree already worked out which pane owns which cells
+in order to draw them, and the same knowledge says where a click goes: it reaches the pane it landed
+in rather than being offered to every widget on the screen in turn, and no widget is asked to guess
+whether the point was its own. The pane that claims it takes the focus with it, for a tree whose ring
+came from `AsFocusRing`. A click in the gap between panes, in the space around them, or before the
+first frame was drawn belongs to no pane and is left alone.
 
 ### Writing line after line inside a pane
 

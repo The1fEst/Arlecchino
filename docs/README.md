@@ -34,8 +34,8 @@ was built.
 
 ## Regenerating the API reference
 
-The API pages are generated from the three Arlecchino assemblies and the XML documentation they ship
-with, then committed — so building the site needs nothing but Node.
+The API pages are generated from the four published Arlecchino assemblies and the XML documentation
+they ship with, then committed — so building the site needs nothing but Node.
 
 With the framework checked out beside this repository:
 

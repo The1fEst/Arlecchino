@@ -93,26 +93,27 @@ thread of its own.
 
 ### Work that takes a while
 
-A copy of four hundred files is not one message. Build the entry yourself and give it a `Progress`,
-which is read every frame, and a `Share` between `0` and `1` for the bar drawn beside it:
+A copy of four hundred files is not one message. Build the entry yourself and give it a
+`ProgressText`, which is read every frame, and a `Progress` between `0` and `1` for the bar drawn
+beside it:
 
 ```csharp
 var entry = _state.Notifications.Raise(
     new(DateTimeOffset.Now, NotificationLevel.Information, "Copying")
     {
-        Progress = () => $"Copying {copy.Done} of {copy.Total}",
-        Share = () => copy.Done / (double)copy.Total,
+        ProgressText = () => $"Copying {copy.Done} of {copy.Total}",
+        Progress = () => copy.Done / (double)copy.Total,
         Detail = () => string.Join('\n', copy.Failures),
         Actions = [new(() => "Stop", copy.Cancel)],
     });
 ```
 
-While `Progress` is set and the work has not been settled the entry `IsRunning`: it stays on the output
+While `ProgressText` is set and the work has not been settled the entry `IsRunning`: it stays on the output
 row past `NotificationTimeout`, is never expired by `NotificationLifetime`, and survives `Clear()` — a
 copy does not stop because its line was cleared.
 
 `Settle` ends it in place. The entry keeps its spot and its identity, so a dialog someone already has
-open turns from "copying" into what was copied rather than going stale, and it starts ageing from the
+open turns from "copying" into what was copied rather than going stale, and it starts aging from the
 moment it finished rather than the moment it began:
 
 ```csharp
@@ -133,7 +134,7 @@ still running whatever its age, plus everything that ended within `NotificationT
 ```csharp
 foreach (var entry in _state.Notifications.Recent)
 {
-    card.WriteLine(0, entry.Line, entry.Loudness switch
+    card.WriteLine(0, entry.Line, entry.Level switch
     {
         NotificationLevel.Failure => Theme.Error,
         NotificationLevel.Warning => Theme.Warning,
@@ -143,8 +144,9 @@ foreach (var entry in _state.Notifications.Recent)
 ```
 
 `Line` is the single line to draw — what came of the work, what is happening now, or what was said, in
-that order — `Loudness` is the level it turned out to be rather than the one it was raised as, and
-`Filled()` is how full a bar for it should be, or `null` when there is nothing to draw.
+that order — `Level` is how loud it is now, which is what it was raised as until the work it reports
+ends as something else, and `Filled()` is how full a bar for it should be, or `null` when there is
+nothing to draw.
 
 ## A report to attach to a bug
 
@@ -182,7 +184,7 @@ runtime, what the terminal said it can do, the screen being shown, and the modal
 
 ```
 [Arlecchino]
-version: 2.0.0
+version: 2026.8.1
 runtime: .NET 10.0.10
 platform: Microsoft Windows 10.0.26200 (X64)
 
@@ -221,7 +223,7 @@ is capped. What can be turned off is the chrome —
 
 ```csharp
 builder.Services
-    .AddArlecchino(options => options.ShowHints = false)
+    .AddArlecchino(options => options.Hints = HintsShown.Never)
     .WithoutNotifications();
 ```
 

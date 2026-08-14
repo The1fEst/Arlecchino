@@ -35,7 +35,8 @@ An idle application draws nothing and writes nothing to the terminal.
    frame ends here — the view is not asked to draw at all.
 4. The current view's `Draw()`, through the [navigator](views-and-navigation.md).
 5. The output line, when `ShowOutputLine` is on.
-6. The hints box, when `ShowHints` is on and no modal is open.
+6. The hints box, when `Hints` asks for it and no modal is open, listing the keys of whatever holds
+   the focus.
 7. The [log overlay](diagnostics.md), while it is visible.
 8. Every open [modal](modals.md), innermost last, each offset three columns and one row from the one
    below it.
@@ -168,6 +169,23 @@ frame, the widget stops early and `DrawFaults` counts the cut-short rows; `Scree
 naming the route. It is a symptom of a change that skipped `Post`, not something to tune around.
 
 :::
+
+## Lending the terminal out
+
+An editor, a pager or a shell cannot share a terminal with a full-screen application. `Handover` is a
+service in the container that stops being one for as long as the other program runs: the thread
+reading keys is parked, the modes are given back, the program is started with all three of its streams
+its own, and the next frame is drawn whole over whatever it left behind.
+
+```csharp
+var code = _handover.Run(new ProcessStartInfo("vim") { ArgumentList = { path } });
+```
+
+`Give(Action)` does the same for work that is not a process. Both are called on the drawing thread and
+both block it, which is the point — nothing is drawn while somebody else has the screen — so neither
+belongs on a background thread. The terminal comes back however the work ended: a program that could
+not be started raises an exception into your command rather than leaving a terminal nobody can type
+in, and `IsAway` says whether somebody else has the screen at this moment.
 
 ## Work on a clock
 

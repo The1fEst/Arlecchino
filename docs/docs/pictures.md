@@ -22,37 +22,50 @@ _preview.Draw(region);
 `Show` copies the pixels, so the caller is free to reuse its buffer. `Clear` forgets them; whatever
 the terminal was handed is undrawn on the next frame.
 
-## Showing a PNG from disk
+## Showing a file from disk
 
-Arlecchino draws pixels rather than files. Decoding PNG or JPEG belongs to the application, which
-knows what it wants to depend on — the framework carries no image library into your build.
+`Picture` draws pixels; turning a file into pixels is `Arlecchino.Pictures`, a package of its own so
+that an application that only ever draws a plot carries no decoder at all.
 
-A PNG needs no library. It is eight bytes of signature, a handful of chunks and one deflate stream,
-and `ZLibStream` is in the framework already — a reader for the eight-bit non-interlaced files that
-nearly all PNGs are fits in about two hundred lines:
+```
+dotnet add package Arlecchino.Pictures
+```
 
 ```csharp
-var raster = Png.Read(File.ReadAllBytes(path));
-
-if (raster is not null)
+if (PictureFormats.Read(File.ReadAllBytes(path)) is { } raster)
 {
     _preview.Show(raster.Pixels, raster.Width, raster.Height);
 }
 ```
 
-[Arlecchino Commander](https://github.com/The1fEst/Arlecchino.Commander/blob/master/src/Arlecchino.Commander/Files/Png.cs)
-has that `Png` — gray, palette, truecolor and either with alpha, written so that anything it cannot
-read comes back as `null` rather than throwing, which is what a viewer opening arbitrary files needs.
-Copy it, or write your own against the
-[specification](https://www.w3.org/TR/png/); the whole of the work is walking the chunks, inflating
-the `IDAT`s and undoing five row filters.
+PNG, JPEG, BMP, Netpbm, QOI and Targa, each written against its own specification, depending on
+`Arlecchino.Core` and on nothing native. JPEG is read both ways round, baseline and progressive.
 
-Whole-file reads matter here: a PNG is one deflate stream from end to end, so the first half of one
+A file is recognized by what is in it rather than by what it is called — `PictureFormats.For` says
+which format claimed the bytes, and `PictureFormats.All` is the list. Nothing throws: what cannot be
+read comes back as `null`, which is what a viewer opening arbitrary files needs. Whole-file reads
+matter, since several of these formats are one stream from end to end and the first half of one
 decodes to nothing.
 
-Reach for a decoder from NuGet when you need the formats a hand-written reader will not give you —
-JPEG, WebP, animation. Check its licence before you do; the popular ones are not all as free as they
-look.
+### Two ceilings
+
+`PictureLimits` says how much work a file is allowed to be:
+
+| Limit | What it does |
+|---|---|
+| `Most` | The header is refused before anything is allocated against it. A file claiming more pixels than this is not read at all |
+| `Enough` | How many pixels the caller has a use for. A format that can read itself smaller does |
+
+`Enough` is where the time goes on a photograph: a JPEG drawn into a pane is read at a quarter or an
+eighth of its side rather than in full. `PictureLimits.For(pixels)` builds a pair from the size the
+pane can actually show, and `PictureLimits.Default` is what the plain `Read` uses.
+
+```csharp
+var raster = PictureFormats.Read(bytes, PictureLimits.For(region.Width * region.Height * 4));
+```
+
+Reach for a decoder from NuGet when you need what this package does not read — WebP, animation, raw
+camera files. Check its license before you do; the popular ones are not all as free as they look.
 
 ## The array
 
@@ -86,6 +99,10 @@ see. Set `Picture.Protocol` for one picture, or `ArlecchinoOptions.ImageProtocol
 ```csharp
 private readonly Picture _preview = new() { Protocol = ImageProtocol.Blocks };
 ```
+
+`Detail` is the other half of that: how many pixels a protocol that hands pixels over may write at
+most, whatever size the pane comes to. It sits at half a megapixel, which trades a little sharpness
+for a picture that appears at once on a large pane; `0` lifts the ceiling.
 
 ## What the terminal was asked
 

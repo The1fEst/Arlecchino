@@ -7,7 +7,7 @@ description: Every public type in the Arlecchino packages, generated from the as
 
 # API reference
 
-Every public and protected member of the three packages, generated from the assemblies and
+Every public and protected member of the published packages, generated from the assemblies and
 the XML documentation they ship with. The written pages are the place to start; this is the
 place to look a member up.
 
@@ -31,6 +31,13 @@ place to look a member up.
 | [Arlecchino.Modals.Setting](arlecchino.modals.setting/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Modals.Telling](arlecchino.modals.telling/index.md) | `Arlecchino` | 2 |
 | [Arlecchino.Navigation](arlecchino.navigation/index.md) | `Arlecchino` | 9 |
+| [Arlecchino.Pictures](arlecchino.pictures/index.md) | `Arlecchino.Pictures` | 4 |
+| [Arlecchino.Pictures.Formats.Bmp](arlecchino.pictures.formats.bmp/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Jpeg](arlecchino.pictures.formats.jpeg/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Png](arlecchino.pictures.formats.png/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Pnm](arlecchino.pictures.formats.pnm/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Qoi](arlecchino.pictures.formats.qoi/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Tga](arlecchino.pictures.formats.tga/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Rendering](arlecchino.rendering/index.md) | `Arlecchino.Core` | 5 |
 | [Arlecchino.Rendering.Colors](arlecchino.rendering.colors/index.md) | `Arlecchino.Core` | 9 |
 | [Arlecchino.Rendering.Terminals](arlecchino.rendering.terminals/index.md) | `Arlecchino.Core` | 3 |

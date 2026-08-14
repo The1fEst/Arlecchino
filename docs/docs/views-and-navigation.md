@@ -150,7 +150,7 @@ The [hints box](commands.md) and the [output line](state.md#the-output-line) are
 after the layout, so an application with a bar of its own turns them off:
 
 ```csharp
-options.ShowHints = false;
+options.Hints = HintsShown.Never;
 options.ShowOutputLine = false;
 ```
 

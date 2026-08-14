@@ -12,6 +12,7 @@ description: What ships in which package, the local feed, versioning, CI and ben
 |---|---|---|
 | `Arlecchino.Core` | `net8.0`, `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
 | `Arlecchino` | `net8.0`, `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
+| `Arlecchino.Pictures` | `net8.0`, `net10.0` | `PictureFormats` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels; depends on `Arlecchino.Core` and on nothing native |
 | `Arlecchino.Testing` | `net8.0`, `net10.0` | Headless host for testing an application built on Arlecchino |
 
 `Arlecchino` also carries the generators as `analyzers/dotnet/cs` and a `build/Arlecchino.props` that
@@ -30,7 +31,7 @@ was built with: raise that reference and the generator stops loading for anyone 
 is the oldest Roslyn the package supports, and moving it is a deliberate change with a floor to raise
 in the documentation, not a dependency bump.
 
-Both libraries are marked `IsAotCompatible`, and the whole repository builds with
+The libraries are marked `IsAotCompatible`, and the whole repository builds with
 `TreatWarningsAsErrors`. Generic parameters that reach `ActivatorUtilities` or
 `AddSingleton<TService, TImpl>` carry `[DynamicallyAccessedMembers]` so trimming keeps their
 constructors.
@@ -51,10 +52,10 @@ around 5 MB with no runtime to install.
 ## Building
 
 ```
-tools\pack.cmd
+dotnet run --project tools/Arlecchino.Tools -- pack
 ```
 
-Builds all three packages in `Release` and drops the `.nupkg` files into `artifacts/packages`, which is
+Builds all four packages in `Release` and drops the `.nupkg` files into `artifacts/packages`, which is
 the local feed a consuming application points its `nuget.config` at:
 
 ```xml
@@ -63,9 +64,9 @@ the local feed a consuming application points its `nuget.config` at:
 </packageSources>
 ```
 
-The version is `2.0.0` for the whole repository. Because it does not change between builds, NuGet may
-serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a consumer seems to be
-building against stale code.
+`Directory.Build.props` holds one version for the whole repository. Because it does not change between
+builds, NuGet may serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a
+consumer seems to be building against stale code.
 
 For a plain compile of everything, including the sample:
 
@@ -85,7 +86,7 @@ testing an application of your own.
 
 ## What ends up in the package
 
-`Arlecchino.2.0.0.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+`Arlecchino.2026.8.1.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
 page. The two libraries are the same source: `net8.0` is there because that is the long-term support
 release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks
@@ -172,43 +173,35 @@ artifact.
 
 ## Versioning
 
-The three packages ship together and always carry the same version — mixing versions between them is
+The four packages ship together and always carry the same version — mixing versions between them is
 not supported, and there is nothing to gain from it since they are built from one commit.
 
-Versions follow SemVer, and since `1.0.0` they mean what SemVer says: breaking the public API takes a
-new **major**, a feature takes the minor, a fix takes the patch. Before `1.0.0` a break only bumped
-the minor, which is why the `0.x` line moved as fast as it did. That is over — the surface recorded in
-`PublicAPI.Shipped.txt` is the contract now.
+A version is the year, the month and which release of that month it is: `2026.8.1` is the first
+release of August 2026, `2026.8.2` the next one, and a month with nothing to release skips its number
+entirely. What the number tells you is how old the code in your `packages` folder is, which is the
+question a version is usually read for.
 
-What has not changed is how a break is delivered when one is due: no obsolete shims, no duplicate
-overloads left behind. The [changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md) says what moved and the old shape goes in the
-same release.
+What it does not tell you is whether an upgrade is free. No digit is reserved for a break, so the
+[changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md) is what to read before
+moving — it says what moved and what the edit is. How a break is delivered has not changed: no
+obsolete shims, no duplicate overloads left behind, the old shape removed in the same release that
+brings the new one. Breaks stay rare, and the surface recorded in `PublicAPI.Shipped.txt` is what
+makes one impossible to ship by accident.
 
-### What 2.0 broke
+Everything up to and including `5.0.0` was numbered under SemVer, where a break took a new major.
+Those numbers stay as they are and still sort below the calendar ones, so an application pinned to
+`5.0.0` is not disturbed by any of this. `2026.8.1` is the first calendar version, and the release
+that would have been `6.0.0`.
 
-Breaking changes are collected rather than trickled out, which is why `2.0.0` carries three of them
-and the `1.x` line carried none:
+`Directory.Build.props` holds the version for local builds, and `ship` is what sets it. A release
+takes its number from the tag instead (`v2026.8.1` → `2026.8.1`), so publishing is a matter of
+tagging — and a tag shaped like anything else fails the workflow on its first step rather than
+publishing a package nobody can name.
 
-| Change | Why |
-|---|---|
-| `IArlecchinoWidget.Place` took the name `Draw`, and the old `void Draw` went | Two names for one call was the price of not breaking `1.x` — see [Widgets](widgets.md) |
-| `UiDispatcher` went; posting is `FrameThread.Post` | One type already owned the drawing thread; the queue belongs with it — see [The frame loop](frame-loop.md) |
-| [`ThemePalette.Arlecchino`](theming.md) became the default palette | A framework that looks like itself out of the box, with `ThemePalette.Basic` as the way back |
-
-Each one was announced in `1.x` and each has an edit an application can make mechanically:
-[Migrating to 2.0](migrating-to-2.0.md) is the list.
-
-The next collection starts empty. Nothing is deprecated in `2.0`.
-
-`Directory.Build.props` holds the version for local builds. A release takes it from the tag instead
-(`v0.2.0` → `0.2.0`), so publishing is a matter of tagging: nothing has to be edited in the
-repository first, and a tag that does not match the props file is fine and deliberate.
-
-Every change worth a line goes into `CHANGELOG.md` under `Unreleased`, which becomes the release
-section when the tag is pushed. That section is not only for readers: `release.yml` reads it back out
-of the file and it becomes the body of the GitHub release, with the `.nupkg` files attached — so a
-tag whose version has no section in the changelog fails the release rather than publishing something
-undocumented.
+Every change worth a line goes into `CHANGELOG.md` under a heading naming the version. That section is
+not only for readers: `release.yml` reads it back out of the file and it becomes the body of the
+GitHub release, with the `.nupkg` files attached — so a tag whose version has no section in the
+changelog fails the release rather than publishing something undocumented.
 
 ### The public API is written down
 
@@ -224,10 +217,10 @@ Recording the change is mechanical:
 dotnet format analyzers src/Arlecchino/Arlecchino.csproj --diagnostics RS0016 --severity warn
 ```
 
-That writes the new entries. Deliberate removals are recorded by hand — delete the line, or move it
-under `*REMOVED*` when it was already shipped. At release time the contents of `Unshipped` move into
-`Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first release on NuGet, did
-with the whole surface, and what `1.0.0` did with the review that preceded it.
+That writes the new entries. Deliberate removals are recorded by hand — write `*REMOVED*` in front of
+the entry when it was already shipped, delete the line when it was not. At release time the contents
+of `Unshipped` move into `Shipped` and `Unshipped` is emptied again — which is what `0.2.0`, the first
+release on NuGet, did with the whole surface, and what `1.0.0` did with the review that preceded it.
 
 That move is what keeps the record worth having. While an entry sits in `Unshipped` it can be deleted
 for nothing; once it is in `Shipped`, taking it away is a build error until the removal is written
@@ -235,16 +228,20 @@ down, so a breaking change cannot slip through as an ordinary diff.
 
 ### Preparing a release
 
-Three things change together, so one script does them:
+Three things change together, so one tool does them:
 
 ```
-dotnet run tools/ship.cs 2.9.0
+dotnet run --project tools/Arlecchino.Tools -- ship
 ```
 
-It sets `<Version>`, moves every recorded entry from `Unshipped` into `Shipped` for all three
-packages, and points `PackageValidationBaselineVersion` at the release that came before — after
-checking that release really is on nuget.org, since a baseline that is not published fails the pack
-rather than validating anything. Read the diff, commit, tag.
+It works out the version — this year and month, and the build after the one the repository holds, or
+`1` when the month it holds is not this one — sets `<Version>` to it, moves every recorded entry from
+`Unshipped` into `Shipped` for all four packages, and points `PackageValidationBaselineVersion` at the
+release that came before, after checking that release really is on nuget.org, since a baseline that is
+not published fails the pack rather than validating anything. Read the diff, commit, tag.
+
+A version given as an argument is taken instead of the calculated one — `ship 2026.9.4` — which is how
+a release is put back where it belongs after a false start.
 
 ### And checked against the last release
 
@@ -253,15 +250,20 @@ out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net8
 cannot drift apart, and over the previous release once there is one to compare with.
 
 ```xml
-<PackageValidationBaselineVersion Condition="'$(Version)' != '2.0.0'">2.8.0</PackageValidationBaselineVersion>
+<PackageValidationBaselineVersion Condition="'$(IsPackable)' != 'false'">5.0.0</PackageValidationBaselineVersion>
 ```
 
-The condition is doing the bookkeeping: the release that opens a major line has nothing it may be
-compared with, since a major is where the surface is allowed to move. Every version after it is
-compared with the release before it, which is the number `tools/ship.cs` advances — a baseline left
-behind on an old release still passes, but it says nothing about everything added since. Packing a
-version whose baseline is missing from NuGet fails with `NU1102` rather than passing quietly, which
-is the behavior worth having: a validation that silently does nothing is worse than none.
+The baseline is the last release that is on nuget.org, which is the number `ship` advances — a
+baseline left behind on an old release still passes, but it says nothing about everything added since.
+Packing a version whose baseline is missing from NuGet fails with `NU1102` rather than passing
+quietly, which is the behavior worth having: a validation that silently does nothing is worse than
+none.
+
+Since no version is allowed to break the surface, a break against the baseline is always deliberate
+and always written down: `dotnet pack` refuses it until the difference sits in the project's
+`CompatibilitySuppressions.xml`, where the diff of a pull request has to walk past it. A suppression
+names the two versions it was written between, so `ship` throws them away when it moves the baseline —
+kept, they would hide the next break rather than the last one.
 
 ## Continuous integration
 
@@ -311,8 +313,9 @@ git commit -m "halfway through the layout [skip ci]"
 None of this touches `release.yml`: publishing is triggered by a tag, so it happens when a tag is
 pushed and never by accident.
 
-`.github/workflows/release.yml` publishes: push a `v0.4.0` tag and it builds, tests and pushes all
-three packages to NuGet with the version taken from the tag.
+`.github/workflows/release.yml` publishes: push a `v2026.8.1` tag and it builds, tests and pushes all
+four packages to NuGet with the version taken from the tag. A tag not shaped `year.month.build` stops
+the run before anything is built.
 
 There is no API key anywhere. The workflow asks GitHub for an OIDC token — which is what
 `permissions: id-token: write` grants — and `NuGet/login` exchanges that token for a key that lives
@@ -332,17 +335,22 @@ that is the point of it.
 | `src/Arlecchino.Core` | Renderer and input primitives |
 | `src/Arlecchino` | Framework, hosting, built-in views |
 | `src/Arlecchino.Generators` | The incremental generator |
+| `src/Arlecchino.Pictures` | Readers for the picture formats, published as a package |
 | `src/Arlecchino.Testing` | Headless test host published as a package |
+| `tools/Arlecchino.Tools` | Everything the repository is maintained with, one file to a tool |
 | `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, color conversion |
-| `docs` | This documentation |
-| `artifacts/packages` | Local package feed produced by `tools\pack.cmd` |
+| `artifacts/packages` | Local package feed produced by the `pack` tool |
+
+This documentation is not among them: it lives in
+[Arlecchino.Docs](https://github.com/The1fEst/Arlecchino.Docs), and a release asks that repository to
+regenerate the API reference from the assemblies it just published.
 
 ## Conventions
 
-- No comments in the source; names carry the meaning, and documentation lives here in `docs`.
+- No comments in the source; names carry the meaning, and documentation lives in its own repository.
 - No user-visible string at a call site — every one of them is a delegate on
   [`ArlecchinoStrings`](localization.md).
 - No application domain types in the framework; extension points are interfaces (`IArlecchinoView`,

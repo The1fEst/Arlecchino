@@ -18,12 +18,13 @@ using System.Xml.Linq;
 return ApiDocs.Run(args);
 
 /// <summary>
-/// Turns the three Arlecchino assemblies and the XML documentation they ship with into the markdown
+/// Turns the published Arlecchino assemblies and the XML documentation they ship with into the markdown
 /// behind the API section of the site.
 /// </summary>
 internal sealed class ApiDocs
 {
-    private static readonly string[] Projects = ["Arlecchino.Core", "Arlecchino", "Arlecchino.Testing"];
+    private static readonly string[] Projects =
+        ["Arlecchino.Core", "Arlecchino", "Arlecchino.Pictures", "Arlecchino.Testing"];
     private static readonly string[] Modifiers = ["static", "abstract", "virtual", "override", "sealed", "readonly"];
 
     private const int Margin = 100;
@@ -91,7 +92,11 @@ internal sealed class ApiDocs
 
         probe.AddRange(Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll"));
 
-        using var context = new MetadataLoadContext(new PathAssemblyResolver(probe.Distinct()));
+        var resolved = probe
+            .GroupBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase)
+            .Select(copies => copies.First());
+
+        using var context = new MetadataLoadContext(new PathAssemblyResolver(resolved));
 
         var types = binaries
             .Select(context.LoadFromAssemblyPath)
@@ -114,10 +119,11 @@ internal sealed class ApiDocs
     }
 
     /// <summary>
-    /// A library build leaves its package references in the NuGet cache rather than beside the
-    /// assembly, so the dependency file is what says where to find them. Without them the reader
-    /// cannot resolve a parameter typed as one.
+    /// Where the package references of a library build actually sit, which is the NuGet cache rather than
+    /// the folder beside the assembly. Without them a parameter typed as one cannot be resolved.
     /// </summary>
+    /// <param name="deps">The dependency file written beside the assembly.</param>
+    /// <returns>The full path of every package assembly the build resolved.</returns>
     private static IEnumerable<string> Dependencies(string deps)
     {
         if (!File.Exists(deps))
@@ -163,8 +169,6 @@ internal sealed class ApiDocs
         }
     }
 
-    // ------------------------------------------------------------------ inputs
-
     private static Dictionary<string, XElement> Documentation(IEnumerable<string> files)
     {
         var members = new Dictionary<string, XElement>(StringComparer.Ordinal);
@@ -185,15 +189,11 @@ internal sealed class ApiDocs
     }
 
     /// <summary>
-    /// The public API baseline carries the exact signature the analyzer holds the package to, nullable
-    /// annotations included, which is more than metadata alone can say. Keyed by the same signature
-    /// with the annotations stripped, it decorates what reflection produced.
-    ///
-    /// Both halves of the baseline are read. What is shipped is what the last release promised; what is
-    /// unshipped is what the assemblies being read right now actually carry, and between two releases
-    /// that is where every member that moved lives. A member listed as removed is skipped: it is a
-    /// note about the last release rather than something the assembly still has.
+    /// The declarations the public API baseline records, which carry the nullable annotations metadata
+    /// alone cannot say. Both halves are read, and a member recorded as removed is skipped.
     /// </summary>
+    /// <param name="repo">The framework repository the assemblies were built from.</param>
+    /// <returns>Each declaration by key, minus those two members would answer to.</returns>
     private static Dictionary<string, string> Shipped(string repo)
     {
         var declarations = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -236,10 +236,11 @@ internal sealed class ApiDocs
     }
 
     /// <summary>
-    /// "static Arlecchino.Rendering.Theme.Header.get -&gt; Arlecchino.Rendering.TermColor!" becomes
-    /// "Arlecchino.Rendering.Theme.Header.get-&gt;Arlecchino.Rendering.TermColor", which is also what
-    /// the same member looks like once reflection has written it out.
+    /// The shape a declaration is left in once its modifiers, its spacing and its nullable annotations
+    /// are gone, which is what the same member looks like written out from reflection.
     /// </summary>
+    /// <param name="declaration">A line of the public API baseline.</param>
+    /// <returns>The key both spellings of the member share.</returns>
     private static string Key(string declaration)
     {
         var text = declaration;
@@ -271,8 +272,6 @@ internal sealed class ApiDocs
     private static bool Generated(MemberInfo member) =>
         member.CustomAttributes.Any(a => a.AttributeType.FullName == "System.Runtime.CompilerServices.CompilerGeneratedAttribute");
 
-    // ------------------------------------------------------------------ pages
-
     private static string Page(Type type) => $"{Slug(type.Namespace!)}/{PageFile(type)}";
 
     private static string Slug(string ns) => ns.ToLowerInvariant();
@@ -280,10 +279,8 @@ internal sealed class ApiDocs
     private static string PageFile(Type type) => type.Name.Replace('`', '-');
 
     /// <summary>
-    /// A name as the front matter has to carry it. The page body is Markdown, where a bare
-    /// <c>Tree&lt;T&gt;</c> would be read as a tag and has to be escaped; the front matter is YAML,
-    /// which is read before any of that and hands the sidebar whatever it finds — so an escaped name
-    /// there is shown to the reader with the ampersands still in it.
+    /// A name as YAML has to carry it. The front matter is read before the page's Markdown, so a name
+    /// escaped for Markdown reaches the sidebar with its ampersands still showing.
     /// </summary>
     /// <param name="name">The name of the type.</param>
     /// <returns>The name as a YAML string.</returns>
@@ -327,7 +324,7 @@ internal sealed class ApiDocs
         page.AppendLine();
         page.AppendLine("# API reference");
         page.AppendLine();
-        page.AppendLine("Every public and protected member of the three packages, generated from the assemblies and");
+        page.AppendLine("Every public and protected member of the published packages, generated from the assemblies and");
         page.AppendLine("the XML documentation they ship with. The written pages are the place to start; this is the");
         page.AppendLine("place to look a member up.");
         page.AppendLine();
@@ -559,10 +556,11 @@ internal sealed class ApiDocs
     }
 
     /// <summary>
-    /// A record brings its own equality, printing and cloning. None of it is written by hand, none of
-    /// it carries documentation, and a page of it says nothing a reader did not already know from the
-    /// word "record" in the declaration. <c>Deconstruct</c> stays, since that one is used.
+    /// Whether a member is one that the record brought with it: equality, printing, cloning. A page of them
+    /// says nothing the word "record" in the declaration did not, and <c>Deconstruct</c> is not among them.
     /// </summary>
+    /// <param name="member">The member the page is being built from.</param>
+    /// <returns>Whether it is left off the page.</returns>
     private static bool Synthesized(MemberInfo member) =>
         Generated(member) && member.Name is "Equals" or "GetHashCode" or "ToString" or "PrintMembers"
             or "op_Equality" or "op_Inequality" or "<Clone>$" or "EqualityContract";
@@ -720,13 +718,12 @@ internal sealed class ApiDocs
         page.AppendLine();
     }
 
-    // ------------------------------------------------------------------ signatures
-
     /// <summary>
-    /// Breaks a declaration that runs past the margin, one item to a line. A signature that fits is
-    /// left alone: the point is a page that reads without a horizontal scrollbar, not every member
-    /// four lines tall.
+    /// Breaks a declaration that runs past the margin, one item to a line. A signature that fits is left
+    /// alone, so a page reads without a horizontal scrollbar.
     /// </summary>
+    /// <param name="declaration">The declaration as one line.</param>
+    /// <returns>The declaration, broken where it was too long to stand as it was.</returns>
     private static string Wrapped(string declaration)
     {
         if (declaration.Length <= Margin || declaration.Contains('\n'))
@@ -741,6 +738,9 @@ internal sealed class ApiDocs
     /// Splits a parameter list, or the bases after a colon, on the commas that belong to it — those
     /// inside a generic argument, an array rank or a nested call stay where they are.
     /// </summary>
+    /// <param name="declaration">The declaration as one line.</param>
+    /// <param name="parameters">Whether to split the parameters rather than the bases after the colon.</param>
+    /// <returns>The declaration over several lines, or <c>null</c> when there was nothing to split.</returns>
     private static string? Chopped(string declaration, bool parameters)
     {
         var start = IndexAtDepth(declaration, parameters ? '(' : ':');
@@ -947,6 +947,8 @@ internal sealed class ApiDocs
     /// <summary>
     /// A property is two lines in the baseline, one per accessor, and one declaration on the page.
     /// </summary>
+    /// <param name="property">The property being written out.</param>
+    /// <returns>The declaration as C# writes it, accessors included.</returns>
     private string Property(PropertyInfo property)
     {
         var owner = Qualified(property.DeclaringType!);
@@ -991,9 +993,12 @@ internal sealed class ApiDocs
     }
 
     /// <summary>
-    /// The baseline writes a member as "Type.Member(args) -&gt; Result"; C# writes the result first and
-    /// the declaring type not at all.
+    /// Turns the baseline's spelling of a member into the one C# uses, where the result comes first and
+    /// the declaring type is not written at all.
     /// </summary>
+    /// <param name="declaration">The declaration as the baseline records it.</param>
+    /// <param name="constructor">Whether the member is a constructor, which has no result to move.</param>
+    /// <returns>The declaration as C# writes it.</returns>
     private static string Rewrite(string declaration, bool constructor)
     {
         var arrow = declaration.LastIndexOf(" -> ", StringComparison.Ordinal);
@@ -1073,6 +1078,8 @@ internal sealed class ApiDocs
     /// Namespace-qualified names are noise on a page that already says which namespace it is in, and
     /// the project writes them out that way everywhere else too.
     /// </summary>
+    /// <param name="text">A declaration whose names are namespace-qualified.</param>
+    /// <returns>The same declaration, each name cut back to its last part.</returns>
     private static string Short(string text) =>
         Regex.Replace(text.Replace("!", ""), @"\b(?:[A-Za-z_]\w*\.)+([A-Za-z_]\w*)", "$1");
 
@@ -1220,8 +1227,6 @@ internal sealed class ApiDocs
             ? $"[`{display}`](../{page}.md)"
             : $"`{Name(type)}`";
     }
-
-    // ------------------------------------------------------------------ documentation
 
     private XElement? Documented(MemberInfo member) => _docs.GetValueOrDefault(Id(member));
 
@@ -1405,5 +1410,7 @@ internal sealed class ApiDocs
     }
 
     /// <summary>A table cell holds neither a pipe nor a line break, and every cell here is generated.</summary>
+    /// <param name="text">What the cell is to say.</param>
+    /// <returns>The same text, safe to put between two pipes.</returns>
     private static string Cell(string text) => text.Replace("|", "\\|").Replace("\n", " ").Trim();
 }

@@ -64,7 +64,7 @@ builder.Services.AddArlecchino().UseNotifications(timeout: TimeSpan.FromSeconds(
 ```
 
 `WithoutNotifications()` leaves the row off entirely; the hints box is turned off separately with
-`options.ShowHints = false`.
+`options.Hints = HintsShown.Never`.
 
 ## Asking for a modal
 
