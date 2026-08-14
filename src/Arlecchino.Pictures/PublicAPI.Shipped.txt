@@ -1,1 +1,73 @@
 #nullable enable
+Arlecchino.Pictures.Formats.Bmp.Bmp
+Arlecchino.Pictures.Formats.Bmp.Bmp.Bmp() -> void
+Arlecchino.Pictures.Formats.Bmp.Bmp.Name.get -> string!
+Arlecchino.Pictures.Formats.Bmp.Bmp.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Bmp.Bmp.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Jpeg.Jpeg
+Arlecchino.Pictures.Formats.Jpeg.Jpeg.Jpeg() -> void
+Arlecchino.Pictures.Formats.Jpeg.Jpeg.Name.get -> string!
+Arlecchino.Pictures.Formats.Jpeg.Jpeg.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Jpeg.Jpeg.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Png.Png
+Arlecchino.Pictures.Formats.Png.Png.Name.get -> string!
+Arlecchino.Pictures.Formats.Png.Png.Png() -> void
+Arlecchino.Pictures.Formats.Png.Png.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Png.Png.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Pnm.Pnm
+Arlecchino.Pictures.Formats.Pnm.Pnm.Name.get -> string!
+Arlecchino.Pictures.Formats.Pnm.Pnm.Pnm() -> void
+Arlecchino.Pictures.Formats.Pnm.Pnm.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Pnm.Pnm.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Qoi.Qoi
+Arlecchino.Pictures.Formats.Qoi.Qoi.Name.get -> string!
+Arlecchino.Pictures.Formats.Qoi.Qoi.Qoi() -> void
+Arlecchino.Pictures.Formats.Qoi.Qoi.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Qoi.Qoi.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Tga.Tga
+Arlecchino.Pictures.Formats.Tga.Tga.Name.get -> string!
+Arlecchino.Pictures.Formats.Tga.Tga.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.Formats.Tga.Tga.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.Formats.Tga.Tga.Tga() -> void
+Arlecchino.Pictures.IPictureFormat
+Arlecchino.Pictures.IPictureFormat.Name.get -> string!
+Arlecchino.Pictures.IPictureFormat.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+Arlecchino.Pictures.IPictureFormat.Starts(System.ReadOnlySpan<byte> bytes) -> bool
+Arlecchino.Pictures.PictureFormats
+Arlecchino.Pictures.PictureLimits
+Arlecchino.Pictures.PictureLimits.Deconstruct(out int Most, out int Enough) -> void
+Arlecchino.Pictures.PictureLimits.Enough.get -> int
+Arlecchino.Pictures.PictureLimits.Enough.init -> void
+Arlecchino.Pictures.PictureLimits.Equals(Arlecchino.Pictures.PictureLimits other) -> bool
+Arlecchino.Pictures.PictureLimits.Most.get -> int
+Arlecchino.Pictures.PictureLimits.Most.init -> void
+Arlecchino.Pictures.PictureLimits.PictureLimits() -> void
+Arlecchino.Pictures.PictureLimits.PictureLimits(int Most, int Enough) -> void
+Arlecchino.Pictures.Raster
+Arlecchino.Pictures.Raster.<Clone>$() -> Arlecchino.Pictures.Raster!
+Arlecchino.Pictures.Raster.Deconstruct(out Arlecchino.Rendering.Colors.Rgb[]! Pixels, out int Width, out int Height) -> void
+Arlecchino.Pictures.Raster.Equals(Arlecchino.Pictures.Raster? other) -> bool
+Arlecchino.Pictures.Raster.Height.get -> int
+Arlecchino.Pictures.Raster.Height.init -> void
+Arlecchino.Pictures.Raster.Pixels.get -> Arlecchino.Rendering.Colors.Rgb[]!
+Arlecchino.Pictures.Raster.Pixels.init -> void
+Arlecchino.Pictures.Raster.Raster(Arlecchino.Rendering.Colors.Rgb[]! Pixels, int Width, int Height) -> void
+Arlecchino.Pictures.Raster.Width.get -> int
+Arlecchino.Pictures.Raster.Width.init -> void
+const Arlecchino.Pictures.PictureFormats.DefaultPixels = 33554432 -> int
+override Arlecchino.Pictures.PictureLimits.GetHashCode() -> int
+override Arlecchino.Pictures.Raster.Equals(object? obj) -> bool
+override Arlecchino.Pictures.Raster.GetHashCode() -> int
+override Arlecchino.Pictures.Raster.ToString() -> string!
+static Arlecchino.Pictures.PictureFormats.All.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Pictures.IPictureFormat!>!
+static Arlecchino.Pictures.PictureFormats.For(System.ReadOnlySpan<byte> head) -> Arlecchino.Pictures.IPictureFormat?
+static Arlecchino.Pictures.PictureFormats.Read(System.ReadOnlySpan<byte> bytes) -> Arlecchino.Pictures.Raster?
+static Arlecchino.Pictures.PictureFormats.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
+static Arlecchino.Pictures.PictureLimits.Default.get -> Arlecchino.Pictures.PictureLimits
+static Arlecchino.Pictures.PictureLimits.For(int pixels) -> Arlecchino.Pictures.PictureLimits
+static Arlecchino.Pictures.PictureLimits.operator !=(Arlecchino.Pictures.PictureLimits left, Arlecchino.Pictures.PictureLimits right) -> bool
+static Arlecchino.Pictures.PictureLimits.operator ==(Arlecchino.Pictures.PictureLimits left, Arlecchino.Pictures.PictureLimits right) -> bool
+static Arlecchino.Pictures.Raster.operator !=(Arlecchino.Pictures.Raster? left, Arlecchino.Pictures.Raster? right) -> bool
+static Arlecchino.Pictures.Raster.operator ==(Arlecchino.Pictures.Raster? left, Arlecchino.Pictures.Raster? right) -> bool
+~override Arlecchino.Pictures.PictureLimits.Equals(object obj) -> bool
+~override Arlecchino.Pictures.PictureLimits.ToString() -> string

@@ -163,6 +163,7 @@ Arlecchino.Input.KeyBinding.Key.get -> System.ConsoleKey
 Arlecchino.Input.KeyBinding.Key.init -> void
 Arlecchino.Input.KeyBinding.KeyBinding() -> void
 Arlecchino.Input.KeyBinding.KeyBinding(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None) -> void
+Arlecchino.Input.KeyBinding.KeyBinding(char typed) -> void
 Arlecchino.Input.KeyBinding.Matches(Arlecchino.Input.KeyPress pressed) -> bool
 Arlecchino.Input.KeyBinding.Modifiers.get -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyBinding.Modifiers.init -> void
@@ -170,6 +171,7 @@ Arlecchino.Input.KeyBinding.Opens(Arlecchino.Input.KeyPress pressed) -> bool
 Arlecchino.Input.KeyBinding.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyBinding
 Arlecchino.Input.KeyBinding.Second.get -> Arlecchino.Input.KeyStroke?
 Arlecchino.Input.KeyBinding.ThenKey(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> Arlecchino.Input.KeyBinding
+Arlecchino.Input.KeyBinding.Typed.get -> char
 Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Alt = 1 -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Control = 4 -> Arlecchino.Input.KeyModifiers
@@ -197,10 +199,12 @@ Arlecchino.Input.KeyStroke.Key.get -> System.ConsoleKey
 Arlecchino.Input.KeyStroke.Key.init -> void
 Arlecchino.Input.KeyStroke.KeyStroke() -> void
 Arlecchino.Input.KeyStroke.KeyStroke(System.ConsoleKey Key, Arlecchino.Input.KeyModifiers Modifiers = Arlecchino.Input.KeyModifiers.None) -> void
+Arlecchino.Input.KeyStroke.KeyStroke(char typed) -> void
 Arlecchino.Input.KeyStroke.Matches(Arlecchino.Input.KeyPress pressed) -> bool
 Arlecchino.Input.KeyStroke.Modifiers.get -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyStroke.Modifiers.init -> void
 Arlecchino.Input.KeyStroke.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyStroke
+Arlecchino.Input.KeyStroke.Typed.get -> char
 Arlecchino.Input.KeyText
 Arlecchino.Input.KeyText.KeyText(Arlecchino.Input.TextInputMode mode) -> void
 Arlecchino.Input.KeyText.Mode.get -> Arlecchino.Input.TextInputMode

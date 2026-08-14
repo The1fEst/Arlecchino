@@ -22,6 +22,9 @@ Arlecchino.Atoms.LoadStatus.Failed = 3 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Idle = 0 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Loaded = 2 -> Arlecchino.Atoms.LoadStatus
 Arlecchino.Atoms.LoadStatus.Loading = 1 -> Arlecchino.Atoms.LoadStatus
+Arlecchino.Commands.CommandKeys
+Arlecchino.Commands.CommandKeys.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Commands.CommandKeys.IsWaiting.get -> bool
 Arlecchino.Commands.CommandRegistry
 Arlecchino.Commands.CommandRegistry.CommandRegistry(System.Collections.Generic.IEnumerable<Arlecchino.Commands.IArlecchinoCommand!>! commands) -> void
 Arlecchino.Commands.CommandRegistry.Commands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.IArlecchinoCommand!>!
@@ -275,6 +278,8 @@ Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.EscapeTimeout.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.get -> Arlecchino.Rendering.Text.GraphSymbols
 Arlecchino.Hosting.ArlecchinoOptions.GraphSymbols.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.Hints.get -> Arlecchino.Hosting.HintsShown
+Arlecchino.Hosting.ArlecchinoOptions.Hints.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.HorizontalPadding.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.ImageProtocol.get -> Arlecchino.Rendering.Terminals.ImageProtocol
@@ -478,6 +483,14 @@ Arlecchino.Hosting.ArlecchinoStrings.ViewFailed.get -> System.Func<string!, stri
 Arlecchino.Hosting.ArlecchinoStrings.ViewFailed.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.Yes.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.Yes.set -> void
+Arlecchino.Hosting.Handover
+Arlecchino.Hosting.Handover.Give(System.Action! work) -> void
+Arlecchino.Hosting.Handover.IsAway.get -> bool
+Arlecchino.Hosting.Handover.Run(System.Diagnostics.ProcessStartInfo! start) -> int
+Arlecchino.Hosting.HintsShown
+Arlecchino.Hosting.HintsShown.Always = 0 -> Arlecchino.Hosting.HintsShown
+Arlecchino.Hosting.HintsShown.Never = 2 -> Arlecchino.Hosting.HintsShown
+Arlecchino.Hosting.HintsShown.WhileWaiting = 1 -> Arlecchino.Hosting.HintsShown
 Arlecchino.Hosting.IArlecchinoStartup
 Arlecchino.Hosting.IArlecchinoStartup.Start() -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Hosting.Ticker
@@ -1037,6 +1050,8 @@ Arlecchino.Widgets.Pictures.Picture
 Arlecchino.Widgets.Pictures.Picture.Background.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
 Arlecchino.Widgets.Pictures.Picture.Background.init -> void
 Arlecchino.Widgets.Pictures.Picture.Clear() -> void
+Arlecchino.Widgets.Pictures.Picture.Detail.get -> int
+Arlecchino.Widgets.Pictures.Picture.Detail.set -> void
 Arlecchino.Widgets.Pictures.Picture.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Widgets.Pictures.Picture.IsEmpty.get -> bool
 Arlecchino.Widgets.Pictures.Picture.Picture() -> void
