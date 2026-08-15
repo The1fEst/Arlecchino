@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -49,15 +50,20 @@ internal sealed class FieldPaint
             SmallestFieldColumns,
             _surface.FrameWidth - BoxChromeColumns - TextWidth.Of(modal.Prefix) - TextWidth.Of(modal.Suffix));
         var (before, after) = Window(shown, caret, room);
+        var (start, end) = Selection(modal);
+        var kept = Math.Clamp(start - (caret - before.Length), 0, before.Length);
+        var taken = Math.Clamp(end - caret, 0, after.Length);
 
         List<Piece[]> body =
         [
             [
                 new(modal.Prefix, Theme.Muted),
                 new(before.Length < caret ? ScrollMarker : "", Theme.Muted),
-                new(before, Theme.Input),
+                new(before[..kept], Theme.Input),
+                new(before[kept..], Theme.Selected),
                 new(Caret, Theme.Accent),
-                new(after, Theme.Input),
+                new(after[..taken], Theme.Selected),
+                new(after[taken..], Theme.Input),
                 new(caret + after.Length < shown.Length ? ScrollMarker : "", Theme.Muted),
                 new(modal.Suffix, Theme.Muted),
             ],
@@ -102,6 +108,21 @@ internal sealed class FieldPaint
 
         modal.Box = box;
         modal.Rows = inside.Rows(0, window.Count);
+    }
+
+    /// <summary>
+    /// What is selected, counted the way the field is drawn: a masked field shows one dot per symbol, so
+    /// the places the selection is at are counted in symbols there rather than in characters.
+    /// </summary>
+    /// <param name="modal">The dialog.</param>
+    /// <returns>Where the selection starts and where it ends.</returns>
+    private static (int Start, int End) Selection(ITextEntryModal modal)
+    {
+        var (start, end) = TextEditing.Selection(modal);
+
+        return modal.Masked
+            ? (TextWidth.CountClusters(modal.Text[..start]), TextWidth.CountClusters(modal.Text[..end]))
+            : (start, end);
     }
 
     /// <summary>

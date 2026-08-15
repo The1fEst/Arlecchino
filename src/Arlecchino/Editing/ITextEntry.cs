@@ -7,8 +7,8 @@ namespace Arlecchino.Editing;
 public interface ITextEntry
 {
     /// <summary>
-    /// Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text
-    /// wholesale means the old caret no longer refers to anything.
+    /// Whatever has been typed so far. Assigning it puts the caret and the anchor at the end, since
+    /// replacing the text wholesale means neither refers to anything anymore.
     /// </summary>
     string Text { get; set; }
 
@@ -17,4 +17,10 @@ public interface ITextEntry
     /// are pulled back in, so a caret can never point past the end.
     /// </summary>
     int Caret { get; set; }
+
+    /// <summary>
+    /// Where the selection was started from, counted the same way. It stands on the caret while nothing is
+    /// selected, and the text between the two is what is selected while they differ.
+    /// </summary>
+    int Anchor { get; set; }
 }

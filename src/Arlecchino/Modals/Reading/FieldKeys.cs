@@ -100,19 +100,29 @@ internal sealed class FieldKeys
         Recheck(modal);
     }
 
-    /// <summary>Copying, moving, rubbing out and typing, for any field of one line.</summary>
+    /// <summary>Copying, selecting, moving, rubbing out and typing, for any field of one line.</summary>
     /// <param name="modal">The dialog.</param>
     /// <param name="key">The key that arrived.</param>
     public void Edit(ITextEntryModal modal, KeyPress key)
     {
         if (_keymap.Copy.Matches(key))
         {
-            _terminal.CopyToClipboard(modal.Text);
+            _terminal.CopyToClipboard(Taken(modal));
 
             return;
         }
 
-        if (Moved(modal, key) || Erased(modal, key))
+        if (_keymap.Cut.Matches(key))
+        {
+            _terminal.CopyToClipboard(Taken(modal));
+            TextEditing.EraseSelection(modal);
+
+            return;
+        }
+
+        if (SelectKeys.Handled(modal, _keymap, key) ||
+            CaretKeys.Moved(modal, _keymap, key) ||
+            EraseKeys.Erased(modal, _keymap, key))
         {
             return;
         }
@@ -138,6 +148,14 @@ internal sealed class FieldKeys
         }
     }
 
+    /// <summary>
+    /// What the clipboard keys work on: the selection where there is one, the whole value where there is not.
+    /// </summary>
+    /// <param name="modal">The dialog.</param>
+    /// <returns>The text to put on the clipboard.</returns>
+    private static string Taken(ITextEntryModal modal) =>
+        TextEditing.Selected(modal) is { Length: > 0 } selected ? selected : modal.Text;
+
     private void Submit(NumberModal modal)
     {
         if (Complaints.AboutNumber(modal, _strings) is { } problem)
@@ -151,85 +169,5 @@ internal sealed class FieldKeys
 
         _state.CloseModal();
         modal.OnSubmit(value);
-    }
-
-    private bool Moved(ITextEntryModal modal, KeyPress key)
-    {
-        if (_keymap.WordLeft.Matches(key))
-        {
-            TextEditing.MoveWord(modal, -1);
-
-            return true;
-        }
-
-        if (_keymap.WordRight.Matches(key))
-        {
-            TextEditing.MoveWord(modal, 1);
-
-            return true;
-        }
-
-        if (_keymap.MoveLeft.Matches(key))
-        {
-            TextEditing.MoveCaret(modal, -1);
-
-            return true;
-        }
-
-        if (_keymap.MoveRight.Matches(key))
-        {
-            TextEditing.MoveCaret(modal, 1);
-
-            return true;
-        }
-
-        if (_keymap.First.Matches(key))
-        {
-            TextEditing.MoveToStart(modal);
-
-            return true;
-        }
-
-        if (!_keymap.Last.Matches(key))
-        {
-            return false;
-        }
-
-        TextEditing.MoveToEnd(modal);
-
-        return true;
-    }
-
-    private bool Erased(ITextEntryModal modal, KeyPress key)
-    {
-        if (_keymap.EraseWord.Matches(key))
-        {
-            TextEditing.EraseWord(modal);
-
-            return true;
-        }
-
-        if (_keymap.EraseToStart.Matches(key))
-        {
-            TextEditing.EraseToStart(modal);
-
-            return true;
-        }
-
-        if (_keymap.Erase.Matches(key))
-        {
-            TextEditing.Backspace(modal);
-
-            return true;
-        }
-
-        if (!_keymap.DeleteForward.Matches(key))
-        {
-            return false;
-        }
-
-        TextEditing.Delete(modal);
-
-        return true;
     }
 }

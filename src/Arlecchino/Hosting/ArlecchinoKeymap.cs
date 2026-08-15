@@ -82,6 +82,44 @@ public sealed record ArlecchinoKeymap
     public KeyBinding WordRight { get; init; } = new KeyBinding(ConsoleKey.RightArrow, KeyModifiers.Control)
         .AddAlternative(ConsoleKey.RightArrow, KeyModifiers.Alt);
 
+    /// <summary>Takes the selection one symbol to the left. <c>Shift+←</c> by default.</summary>
+    public KeyBinding SelectLeft { get; init; } = new(ConsoleKey.LeftArrow, KeyModifiers.Shift);
+
+    /// <summary>Takes the selection one symbol to the right. <c>Shift+→</c> by default.</summary>
+    public KeyBinding SelectRight { get; init; } = new(ConsoleKey.RightArrow, KeyModifiers.Shift);
+
+    /// <summary>
+    /// Takes the selection a word to the left, under both habits: <c>Ctrl+Shift+←</c> and
+    /// <c>Alt+Shift+←</c>.
+    /// </summary>
+    public KeyBinding SelectWordLeft { get; init; } =
+        new KeyBinding(ConsoleKey.LeftArrow, KeyModifiers.Control | KeyModifiers.Shift)
+            .AddAlternative(ConsoleKey.LeftArrow, KeyModifiers.Alt | KeyModifiers.Shift);
+
+    /// <summary>
+    /// Takes the selection a word to the right, under both habits: <c>Ctrl+Shift+→</c> and
+    /// <c>Alt+Shift+→</c>.
+    /// </summary>
+    public KeyBinding SelectWordRight { get; init; } =
+        new KeyBinding(ConsoleKey.RightArrow, KeyModifiers.Control | KeyModifiers.Shift)
+            .AddAlternative(ConsoleKey.RightArrow, KeyModifiers.Alt | KeyModifiers.Shift);
+
+    /// <summary>Takes the selection back to the start of the line. <c>Shift+Home</c> by default.</summary>
+    public KeyBinding SelectToStart { get; init; } = new(ConsoleKey.Home, KeyModifiers.Shift);
+
+    /// <summary>Takes the selection on to the end of the line. <c>Shift+End</c> by default.</summary>
+    public KeyBinding SelectToEnd { get; init; } = new(ConsoleKey.End, KeyModifiers.Shift);
+
+    /// <summary>Selects everything that is being edited. <c>Ctrl+A</c> by default.</summary>
+    public KeyBinding SelectAll { get; init; } = new(ConsoleKey.A, KeyModifiers.Control);
+
+    /// <summary>
+    /// Cuts the selection to the clipboard, under both habits: <c>Shift+Delete</c> and
+    /// <c>Ctrl+Shift+X</c>.
+    /// </summary>
+    public KeyBinding Cut { get; init; } = new KeyBinding(ConsoleKey.Delete, KeyModifiers.Shift)
+        .AddAlternative(ConsoleKey.X, KeyModifiers.Control | KeyModifiers.Shift);
+
     /// <summary>
     /// Copies what is being edited to the clipboard, under both habits: <c>Ctrl+Insert</c> and
     /// <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone, since it stops the application.
@@ -144,6 +182,14 @@ public sealed record ArlecchinoKeymap
         EraseToStart = EraseToStart.Replacing(from, to),
         WordLeft = WordLeft.Replacing(from, to),
         WordRight = WordRight.Replacing(from, to),
+        SelectLeft = SelectLeft.Replacing(from, to),
+        SelectRight = SelectRight.Replacing(from, to),
+        SelectWordLeft = SelectWordLeft.Replacing(from, to),
+        SelectWordRight = SelectWordRight.Replacing(from, to),
+        SelectToStart = SelectToStart.Replacing(from, to),
+        SelectToEnd = SelectToEnd.Replacing(from, to),
+        SelectAll = SelectAll.Replacing(from, to),
+        Cut = Cut.Replacing(from, to),
         Copy = Copy.Replacing(from, to),
         ToggleLog = ToggleLog.Replacing(from, to),
         Notifications = Notifications.Replacing(from, to),

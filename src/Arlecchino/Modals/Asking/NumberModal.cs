@@ -13,6 +13,7 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
 {
     private string _text = "";
     private int _caret;
+    private int _anchor;
 
     /// <summary>
     /// Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end,
@@ -25,6 +26,7 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
         {
             _text = value;
             _caret = value.Length;
+            _anchor = value.Length;
         }
     }
 
@@ -33,6 +35,13 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
     {
         get => Math.Clamp(_caret, 0, _text.Length);
         set => _caret = Math.Clamp(value, 0, _text.Length);
+    }
+
+    /// <summary>Where the selection was started from, on the caret while nothing is selected.</summary>
+    public int Anchor
+    {
+        get => Math.Clamp(_anchor, 0, _text.Length);
+        set => _anchor = Math.Clamp(value, 0, _text.Length);
     }
 
     /// <summary>Lowest value allowed. A negative bound is also what allows a minus sign to be typed.</summary>
