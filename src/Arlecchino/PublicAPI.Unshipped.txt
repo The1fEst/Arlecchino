@@ -1,1 +1,32 @@
 #nullable enable
+Arlecchino.Editing.ITextEntry
+Arlecchino.Editing.ITextEntry.Caret.get -> int
+Arlecchino.Editing.ITextEntry.Caret.set -> void
+Arlecchino.Editing.ITextEntry.Text.get -> string!
+Arlecchino.Editing.ITextEntry.Text.set -> void
+Arlecchino.Editing.TextEditing
+Arlecchino.Navigation.IArlecchinoView.IsTyping.get -> bool
+Arlecchino.Navigation.Navigator.CurrentIsTyping.get -> bool
+*REMOVED*Arlecchino.Modals.Asking.ITextEntryModal.Caret.get -> int
+*REMOVED*Arlecchino.Modals.Asking.ITextEntryModal.Caret.set -> void
+*REMOVED*Arlecchino.Modals.Asking.ITextEntryModal.Text.get -> string!
+*REMOVED*Arlecchino.Modals.Asking.ITextEntryModal.Text.set -> void
+*REMOVED*Arlecchino.Modals.Asking.TextEditing
+static Arlecchino.Editing.TextEditing.Backspace(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.Backspace(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.Delete(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.Delete(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.EraseToStart(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.EraseToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.EraseWord(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.EraseWord(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.Insert(Arlecchino.Editing.ITextEntry! entry, char character) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.Insert(Arlecchino.Modals.Asking.ITextEntryModal! modal, char character) -> void
+static Arlecchino.Editing.TextEditing.MoveCaret(Arlecchino.Editing.ITextEntry! entry, int delta) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.MoveCaret(Arlecchino.Modals.Asking.ITextEntryModal! modal, int delta) -> void
+static Arlecchino.Editing.TextEditing.MoveToEnd(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.MoveToEnd(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.MoveToStart(Arlecchino.Editing.ITextEntry! entry) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.MoveToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
+static Arlecchino.Editing.TextEditing.MoveWord(Arlecchino.Editing.ITextEntry! entry, int direction) -> void
+*REMOVED*static Arlecchino.Modals.Asking.TextEditing.MoveWord(Arlecchino.Modals.Asking.ITextEntryModal! modal, int direction) -> void

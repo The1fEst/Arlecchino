@@ -1,3 +1,4 @@
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.State;

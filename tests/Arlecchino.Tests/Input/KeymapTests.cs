@@ -1,5 +1,6 @@
 using System;
 using Arlecchino.Commands;
+using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.State;
@@ -30,6 +31,28 @@ public sealed class KeymapTests
         Assert.Equal("Ctrl+Alt+Shift+F5",
             new KeyBinding(ConsoleKey.F5,
                 KeyModifiers.Control | KeyModifiers.Alt | KeyModifiers.Shift).ToString());
+    }
+
+    [Fact]
+    public void MovingByWordIsBoundUnderBothHabits()
+    {
+        var keymap = new ArlecchinoKeymap();
+
+        Assert.True(keymap.WordLeft.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Control)));
+        Assert.True(keymap.WordLeft.Matches(new(ConsoleKey.LeftArrow, KeyModifiers.Alt)));
+        Assert.True(keymap.WordRight.Matches(new(ConsoleKey.RightArrow, KeyModifiers.Control)));
+        Assert.True(keymap.WordRight.Matches(new(ConsoleKey.RightArrow, KeyModifiers.Alt)));
+        Assert.False(keymap.WordLeft.Matches(new(ConsoleKey.LeftArrow)));
+    }
+
+    [Fact]
+    public void RubbingOutAWordIsBoundUnderBothHabitsToo()
+    {
+        var keymap = new ArlecchinoKeymap();
+
+        Assert.True(keymap.EraseWord.Matches(new(ConsoleKey.Backspace, KeyModifiers.Control)));
+        Assert.True(keymap.EraseWord.Matches(new(ConsoleKey.Backspace, KeyModifiers.Alt)));
+        Assert.False(keymap.EraseWord.Matches(new(ConsoleKey.Backspace)));
     }
 
     [Fact]

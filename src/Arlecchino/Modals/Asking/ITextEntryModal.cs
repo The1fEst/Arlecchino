@@ -1,23 +1,13 @@
+using Arlecchino.Editing;
+
 namespace Arlecchino.Modals.Asking;
 
 /// <summary>
 /// A field that is typed into, shared by the text field and the number field so both edit and complain
-/// alike.
+/// alike. What is typed and where the caret is come from <see cref="ITextEntry"/>.
 /// </summary>
-public interface ITextEntryModal : IAffixedModal
+public interface ITextEntryModal : IAffixedModal, ITextEntry
 {
-    /// <summary>
-    /// Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text
-    /// wholesale means the old caret no longer refers to anything.
-    /// </summary>
-    string Text { get; set; }
-
-    /// <summary>
-    /// Where the caret sits, counted in characters from the start of the text. Values outside the text
-    /// are pulled back in, so a caret can never point past the end.
-    /// </summary>
-    int Caret { get; set; }
-
     /// <summary>Validation message shown under the field, cleared by typing.</summary>
     string? Message { get; set; }
 

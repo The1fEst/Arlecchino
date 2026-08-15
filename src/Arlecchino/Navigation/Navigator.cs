@@ -137,6 +137,17 @@ public class Navigator
         }
     }
 
+    /// <summary>Whether the screen being shown has something on it being typed into.</summary>
+    public bool CurrentIsTyping
+    {
+        get
+        {
+            Build();
+
+            return _active?.View.IsTyping ?? false;
+        }
+    }
+
     /// <summary>Draws the current screen. Called once per frame.</summary>
     public void Draw()
     {

@@ -1,6 +1,7 @@
 using System;
 using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Modals;
@@ -173,14 +174,14 @@ public class InputRouter
             return;
         }
 
-        if (_keymap.Back.Matches(key))
+        if (_keymap.Back.Matches(key) && !_navigator.CurrentIsTyping)
         {
             _navigator.Back();
 
             return;
         }
 
-        if (_keymap.Forward.Matches(key))
+        if (_keymap.Forward.Matches(key) && !_navigator.CurrentIsTyping)
         {
             _navigator.Forward();
 

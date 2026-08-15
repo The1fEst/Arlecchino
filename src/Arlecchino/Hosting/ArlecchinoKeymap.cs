@@ -58,17 +58,29 @@ public sealed record ArlecchinoKeymap
     /// <summary>Deletes the character after the caret. <c>Delete</c> by default.</summary>
     public KeyBinding DeleteForward { get; init; } = new(ConsoleKey.Delete);
 
-    /// <summary>Deletes the word before the caret. <c>Ctrl+Backspace</c> by default.</summary>
-    public KeyBinding EraseWord { get; init; } = new(ConsoleKey.Backspace, KeyModifiers.Control);
+    /// <summary>
+    /// Deletes the word before the caret, under both habits: <c>Ctrl+Backspace</c> and <c>Alt+Backspace</c>,
+    /// which is what a Mac rubs a word out with.
+    /// </summary>
+    public KeyBinding EraseWord { get; init; } = new KeyBinding(ConsoleKey.Backspace, KeyModifiers.Control)
+        .AddAlternative(ConsoleKey.Backspace, KeyModifiers.Alt);
 
     /// <summary>Deletes everything before the caret. <c>Ctrl+U</c> by default, as in a shell.</summary>
     public KeyBinding EraseToStart { get; init; } = new(ConsoleKey.U, KeyModifiers.Control);
 
-    /// <summary>Moves the caret to the previous word. <c>Ctrl+←</c> by default.</summary>
-    public KeyBinding WordLeft { get; init; } = new(ConsoleKey.LeftArrow, KeyModifiers.Control);
+    /// <summary>
+    /// Moves the caret to the previous word, under both habits: <c>Ctrl+←</c> and <c>Alt+←</c>, which is
+    /// what a Mac moves by word on.
+    /// </summary>
+    public KeyBinding WordLeft { get; init; } = new KeyBinding(ConsoleKey.LeftArrow, KeyModifiers.Control)
+        .AddAlternative(ConsoleKey.LeftArrow, KeyModifiers.Alt);
 
-    /// <summary>Moves the caret past the next word. <c>Ctrl+→</c> by default.</summary>
-    public KeyBinding WordRight { get; init; } = new(ConsoleKey.RightArrow, KeyModifiers.Control);
+    /// <summary>
+    /// Moves the caret past the next word, under both habits: <c>Ctrl+→</c> and <c>Alt+→</c>, which is
+    /// what a Mac moves by word on.
+    /// </summary>
+    public KeyBinding WordRight { get; init; } = new KeyBinding(ConsoleKey.RightArrow, KeyModifiers.Control)
+        .AddAlternative(ConsoleKey.RightArrow, KeyModifiers.Alt);
 
     /// <summary>
     /// Copies what is being edited to the clipboard, under both habits: <c>Ctrl+Insert</c> and

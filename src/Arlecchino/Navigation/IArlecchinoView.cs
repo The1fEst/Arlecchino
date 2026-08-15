@@ -64,4 +64,10 @@ public interface IArlecchinoView
     /// one. Answer <c>false</c> for a screen that wants the whole terminal.
     /// </summary>
     bool UsesLayout => true;
+
+    /// <summary>
+    /// Whether something on this screen is being typed into. The keys a text field edits by are left to
+    /// the screen while it is, rather than moving the application about behind the caret.
+    /// </summary>
+    bool IsTyping => false;
 }
