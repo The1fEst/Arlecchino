@@ -18,8 +18,6 @@ public sealed class ChoiceModal : OptionListModal
     /// <inheritdoc/>
     protected override void Take(ModalFrame frame, string picked)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         frame.Close();
         OnPicked(picked);
     }

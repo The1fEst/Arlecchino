@@ -55,8 +55,6 @@ public sealed class ScreenGrid
     /// <param name="output">The bytes written, escapes and all.</param>
     public void Apply(string output)
     {
-        ArgumentNullException.ThrowIfNull(output);
-
         var index = 0;
         while (index < output.Length)
         {
@@ -145,8 +143,6 @@ public sealed class ScreenGrid
     /// <returns><c>true</c> when both the symbols and the styles agree.</returns>
     public bool Matches(ScreenGrid other)
     {
-        ArgumentNullException.ThrowIfNull(other);
-
         if (other.Width != Width || other.Height != Height)
         {
             return false;

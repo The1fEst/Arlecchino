@@ -213,8 +213,6 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// <param name="items">What the map should hold instead.</param>
     public void Reset(IReadOnlyDictionary<TKey, TValue> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (Holds(items))
         {
             return;

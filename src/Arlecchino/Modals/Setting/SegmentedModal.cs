@@ -17,18 +17,18 @@ public abstract class SegmentedModal : Modal
     public int Segment { get; private set; }
 
     /// <summary>How many segments the value is made of.</summary>
-    public abstract int SegmentCount { get; }
+    protected abstract int SegmentCount { get; }
 
     /// <summary>What is drawn between the segments.</summary>
     public abstract string Separator { get; }
 
     /// <summary>The stored value as one padded string per segment.</summary>
     /// <returns>A fresh array the caller may modify.</returns>
-    public abstract string[] SegmentTexts();
+    protected abstract string[] SegmentTexts();
 
     /// <summary>Steps the active segment, carrying into the neighbors as that value type requires.</summary>
     /// <param name="delta">How far to step; negative goes down.</param>
-    public abstract void Add(int delta);
+    protected abstract void Add(int delta);
 
     /// <summary>How many digits a segment holds, which is also when typing moves on to the next one.</summary>
     /// <param name="segment">Index of the segment.</param>
@@ -91,7 +91,7 @@ public abstract class SegmentedModal : Modal
     /// Applies a partly typed segment, padding it with leading zeroes. Called before anything that
     /// reads the value, so confirming the dialog keeps what was typed.
     /// </summary>
-    public void CommitTypedDigits()
+    protected void CommitTypedDigits()
     {
         if (_typedDigits.Length == 0)
         {
@@ -112,8 +112,6 @@ public abstract class SegmentedModal : Modal
     /// <inheritdoc/>
     public override void Handle(ModalFrame frame, KeyPress key)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         if (frame.Keymap.Cancel.Matches(key))
         {
             frame.Close();

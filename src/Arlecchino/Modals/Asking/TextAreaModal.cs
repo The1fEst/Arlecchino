@@ -95,8 +95,6 @@ public sealed class TextAreaModal : Modal, ITextEntry
     /// <param name="text">What to insert; a newline in it starts a new line.</param>
     public void InsertText(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
         foreach (var character in text.Replace("\r", "", StringComparison.Ordinal))
         {
             TextEditing.Insert(this, character);

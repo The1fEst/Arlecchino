@@ -158,8 +158,6 @@ public sealed class FramedLayout : IArlecchinoLayout
 
     public void Draw(SurfaceRegion frame, Action<SurfaceRegion> body)
     {
-        ArgumentNullException.ThrowIfNull(body);
-
         Drawn++;
         _band = frame.Rows(0, 1);
 

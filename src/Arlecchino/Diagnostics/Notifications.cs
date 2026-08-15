@@ -220,8 +220,6 @@ public sealed class Notifications
     /// <returns>The same entry, so a caller can hold on to it in one expression.</returns>
     public Notification Raise(Notification entry)
     {
-        ArgumentNullException.ThrowIfNull(entry);
-
         _entries.Add(entry);
 
         var surplus = _entries.Count - Math.Max(1, Capacity);
@@ -243,8 +241,6 @@ public sealed class Notifications
     /// <param name="level">How loud that is.</param>
     public void Settle(Notification entry, string text, NotificationLevel level = NotificationLevel.Information)
     {
-        ArgumentNullException.ThrowIfNull(entry);
-
         entry.Complete(text, level, _time.GetUtcNow());
         _entries.Touch();
     }

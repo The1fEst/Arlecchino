@@ -50,8 +50,6 @@ public static class TerminalProbe
     /// </returns>
     public static bool Ask(IArlecchinoTerminal terminal, TimeSpan within)
     {
-        ArgumentNullException.ThrowIfNull(terminal);
-
         terminal.Write(KittyQuery + CellSizeQuery + TextAreaQuery + BackgroundQuery + AttributesQuery);
 
         var heard = Listen(terminal, within);

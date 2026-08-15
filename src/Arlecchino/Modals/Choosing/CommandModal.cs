@@ -26,8 +26,6 @@ public sealed class CommandModal : Modal
     /// <inheritdoc/>
     public override void Draw(ModalFrame frame)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         frame.Lists.Commands(this);
     }
 

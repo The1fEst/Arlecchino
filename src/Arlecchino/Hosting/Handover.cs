@@ -45,8 +45,6 @@ public sealed class Handover
     /// <exception cref="InvalidOperationException">Nothing could be started from what was asked for.</exception>
     public int Run(ProcessStartInfo start)
     {
-        ArgumentNullException.ThrowIfNull(start);
-
         start.UseShellExecute = false;
         start.RedirectStandardInput = false;
         start.RedirectStandardOutput = false;
@@ -75,7 +73,6 @@ public sealed class Handover
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
     public void Give(Action work)
     {
-        ArgumentNullException.ThrowIfNull(work);
         FrameThread.Verify(Giving);
 
         var ours = _modes.AreOn;

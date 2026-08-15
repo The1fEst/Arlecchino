@@ -103,3 +103,9 @@ Arlecchino.Editing.TextEntry.Caret.set -> void
 Arlecchino.Editing.TextEntry.Text.get -> string!
 Arlecchino.Editing.TextEntry.Text.set -> void
 Arlecchino.Editing.TextEntry.TextEntry() -> void
+*REMOVED*override Arlecchino.Modals.Setting.DateModal.Add(int delta) -> void
+*REMOVED*override Arlecchino.Modals.Setting.DateModal.SegmentCount.get -> int
+*REMOVED*override Arlecchino.Modals.Setting.DateModal.SegmentTexts() -> string![]!
+*REMOVED*override Arlecchino.Modals.Setting.TimeModal.Add(int delta) -> void
+*REMOVED*override Arlecchino.Modals.Setting.TimeModal.SegmentCount.get -> int
+*REMOVED*override Arlecchino.Modals.Setting.TimeModal.SegmentTexts() -> string![]!

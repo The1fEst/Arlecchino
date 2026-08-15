@@ -226,9 +226,6 @@ public partial class Surface
     /// </param>
     public void Passthrough(int row, int column, string payload, string undraw = "")
     {
-        ArgumentNullException.ThrowIfNull(payload);
-        ArgumentNullException.ThrowIfNull(undraw);
-
         if (payload.Length > 0)
         {
             _passthrough.Add((row, column, payload, undraw));

@@ -31,8 +31,6 @@ internal sealed class LogPaint
     /// <param name="log">Which lines, and where it is scrolled to.</param>
     public void Draw(LogOverlay log)
     {
-        ArgumentNullException.ThrowIfNull(log);
-
         var entries = log.Buffer.Snapshot();
         var height = Math.Clamp(_surface.FrameHeight / 2, LeastRows, Math.Max(LeastRows, _surface.FrameHeight - 2));
         var box = _surface.Frame.Rows(_surface.FrameHeight - height, height);

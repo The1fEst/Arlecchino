@@ -106,8 +106,6 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What to add. Adding none changes nothing.</param>
     public void Add(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (items.Count == 0)
         {
             return;
@@ -213,8 +211,6 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What the list should hold instead.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (Holds(items))
         {
             return;

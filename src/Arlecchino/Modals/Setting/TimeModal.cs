@@ -20,14 +20,14 @@ public sealed class TimeModal : SegmentedModal
     public required Action<TimeOnly> OnSubmit { get; init; }
 
     /// <summary>Hours and minutes; seconds are not edited here.</summary>
-    public override int SegmentCount => 2;
+    protected override int SegmentCount => 2;
 
     /// <summary>Segments are separated the way a clock is written.</summary>
     public override string Separator => ":";
 
     /// <summary>The time as two-digit hours and minutes.</summary>
     /// <returns>One string per segment.</returns>
-    public override string[] SegmentTexts() =>
+    protected override string[] SegmentTexts() =>
     [
         Value.Hour.ToString("D2", CultureInfo.InvariantCulture),
         Value.Minute.ToString("D2", CultureInfo.InvariantCulture),
@@ -35,7 +35,7 @@ public sealed class TimeModal : SegmentedModal
 
     /// <summary>Steps by whole hours or minutes depending on the active segment, wrapping around the clock.</summary>
     /// <param name="delta">How far to step; negative goes back.</param>
-    public override void Add(int delta)
+    protected override void Add(int delta)
     {
         CommitTypedDigits();
         Value = Segment == HourSegment ? Value.AddHours(delta) : Value.AddMinutes(delta);

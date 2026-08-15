@@ -25,8 +25,6 @@ public sealed class ToggleModal : Modal
     /// <inheritdoc/>
     public override void Handle(ModalFrame frame, KeyPress key)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         if (frame.Keymap.Cancel.Matches(key))
         {
             frame.Close();

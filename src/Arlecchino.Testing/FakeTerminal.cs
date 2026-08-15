@@ -90,8 +90,6 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     /// <param name="text">The characters to queue.</param>
     public void EnqueueText(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
         foreach (var character in text)
         {
             _keys.Enqueue(Named(character));

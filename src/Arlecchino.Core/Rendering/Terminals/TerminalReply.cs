@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Arlecchino.Rendering.Terminals;
@@ -14,8 +13,6 @@ internal static class TerminalReply
     /// <returns>Where each typed character sits in <paramref name="heard"/>, in the order it was read.</returns>
     public static IReadOnlyList<int> Typing(string heard)
     {
-        ArgumentNullException.ThrowIfNull(heard);
-
         var typed = new List<int>();
         var reading = Reading.Ground;
         var spoken = false;

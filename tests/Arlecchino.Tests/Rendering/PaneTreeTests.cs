@@ -434,15 +434,6 @@ public sealed class PaneTreeTests
     }
 
     [Fact]
-    public void APaneNeedsSomethingToDraw()
-    {
-        Assert.Throws<ArgumentNullException>(static () => Leaf((IArlecchinoWidget)null!));
-        Assert.Throws<ArgumentNullException>(static () => Leaf((Action<SurfaceRegion>)null!));
-        Assert.Throws<ArgumentNullException>(static () => Branch(Leaf(), null!));
-        Assert.Throws<ArgumentNullException>(static () => Branch(Rows, 0.5, null!, Leaf()));
-    }
-
-    [Fact]
     public void PanesWithNoGapBetweenThemShareOneLine()
     {
         var terminal = new FakeTerminal(20, 4);

@@ -68,8 +68,6 @@ internal sealed class LogOverlay
     /// <returns><c>true</c> when the overlay took it.</returns>
     public bool Handle(KeyPress key, ArlecchinoKeymap keymap)
     {
-        ArgumentNullException.ThrowIfNull(keymap);
-
         if (keymap.Cancel.Matches(key))
         {
             IsVisible = false;

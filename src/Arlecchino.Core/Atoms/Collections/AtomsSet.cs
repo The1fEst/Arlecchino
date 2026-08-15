@@ -85,8 +85,6 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     /// <param name="items">What to put in. Adding none, or only what is there, changes nothing.</param>
     public void Add(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         var added = new List<T>(items.Count);
         var seen = new HashSet<T>(_items.Comparer);
 
@@ -191,8 +189,6 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     /// <param name="items">What the set should hold instead.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (Holds(items))
         {
             return;

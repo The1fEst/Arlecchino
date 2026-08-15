@@ -34,8 +34,6 @@ internal static class WindowsPaste
     /// <returns><c>true</c> when the run should be handed on as pasted text.</returns>
     public static bool Reads(IReadOnlyList<KeyPress> run)
     {
-        ArgumentNullException.ThrowIfNull(run);
-
         if (run.Count < 2)
         {
             return false;
@@ -66,8 +64,6 @@ internal static class WindowsPaste
     /// <returns>The presses to hand on, markers and all.</returns>
     public static IEnumerable<KeyPress> Wrapped(IReadOnlyList<KeyPress> run)
     {
-        ArgumentNullException.ThrowIfNull(run);
-
         foreach (var key in Marker(Start))
         {
             yield return key;

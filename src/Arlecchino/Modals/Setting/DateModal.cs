@@ -26,14 +26,14 @@ public sealed class DateModal : SegmentedModal
     public required Action<DateOnly> OnSubmit { get; init; }
 
     /// <summary>Year, month and day.</summary>
-    public override int SegmentCount => 3;
+    protected override int SegmentCount => 3;
 
     /// <summary>Segments are drawn in ISO order, so they are separated by a dash.</summary>
     public override string Separator => "-";
 
     /// <summary>The date as a four-digit year and two-digit month and day.</summary>
     /// <returns>One string per segment.</returns>
-    public override string[] SegmentTexts() =>
+    protected override string[] SegmentTexts() =>
     [
         Value.Year.ToString("D4", CultureInfo.InvariantCulture),
         Value.Month.ToString("D2", CultureInfo.InvariantCulture),
@@ -45,7 +45,7 @@ public sealed class DateModal : SegmentedModal
     /// the end of a long month lands on a date the shorter month actually has.
     /// </summary>
     /// <param name="delta">How far to step; negative goes back.</param>
-    public override void Add(int delta)
+    protected override void Add(int delta)
     {
         CommitTypedDigits();
 

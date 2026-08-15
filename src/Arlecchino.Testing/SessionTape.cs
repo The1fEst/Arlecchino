@@ -45,8 +45,6 @@ public sealed class SessionTape
     /// </param>
     public SessionTape(TimeProvider clock)
     {
-        ArgumentNullException.ThrowIfNull(clock);
-
         _clock = clock;
         _last = clock.GetUtcNow();
     }
@@ -59,8 +57,6 @@ public sealed class SessionTape
     /// <returns>The tape.</returns>
     public static SessionTape Read(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
         var tape = new SessionTape();
 
         foreach (var line in text.Split('\n'))
@@ -88,8 +84,6 @@ public sealed class SessionTape
     /// <returns>The tape, so steps chain.</returns>
     public SessionTape Type(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
         foreach (var character in text)
         {
             Add(Step.OfKey(Waited(), new(character)));
@@ -121,8 +115,6 @@ public sealed class SessionTape
     /// <returns>The tape, so steps chain.</returns>
     public SessionTape Paste(string text)
     {
-        ArgumentNullException.ThrowIfNull(text);
-
         return Add(Step.OfPaste(Waited(), text));
     }
 
@@ -173,8 +165,6 @@ public sealed class SessionTape
     /// <returns>One frame per mark, in order.</returns>
     public List<string> Play(ArlecchinoTestHost host)
     {
-        ArgumentNullException.ThrowIfNull(host);
-
         var frames = new List<string>();
 
         foreach (var step in _steps)

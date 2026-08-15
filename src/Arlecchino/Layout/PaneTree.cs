@@ -105,8 +105,6 @@ public sealed class PaneTree
     /// <returns>The leaf.</returns>
     public static PaneTree Leaf(IArlecchinoWidget widget)
     {
-        ArgumentNullException.ThrowIfNull(widget);
-
         return new(region => widget.Draw(region), widget);
     }
 
@@ -121,9 +119,6 @@ public sealed class PaneTree
     /// <returns>The leaf.</returns>
     public static PaneTree Leaf(IArlecchinoWidget widget, Func<string> title)
     {
-        ArgumentNullException.ThrowIfNull(widget);
-        ArgumentNullException.ThrowIfNull(title);
-
         return new(region => widget.Draw(region), widget, title);
     }
 
@@ -135,8 +130,6 @@ public sealed class PaneTree
     /// <returns>The leaf.</returns>
     public static PaneTree Leaf(Action<SurfaceRegion> draw)
     {
-        ArgumentNullException.ThrowIfNull(draw);
-
         return new(draw, null);
     }
 
@@ -146,9 +139,6 @@ public sealed class PaneTree
     /// <returns>The leaf.</returns>
     public static PaneTree Leaf(Action<SurfaceRegion> draw, Func<string> title)
     {
-        ArgumentNullException.ThrowIfNull(draw);
-        ArgumentNullException.ThrowIfNull(title);
-
         return new(draw, null, title);
     }
 
@@ -362,9 +352,6 @@ public sealed class PaneTree
 
     private static PaneTree Build(PaneSplit? split, PaneSize size, PaneTree first, PaneTree second)
     {
-        ArgumentNullException.ThrowIfNull(first);
-        ArgumentNullException.ThrowIfNull(second);
-
         foreach (var widget in first._widgets)
         {
             foreach (var taken in second._widgets)

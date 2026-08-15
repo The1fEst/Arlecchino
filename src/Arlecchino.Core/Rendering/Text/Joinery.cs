@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering.Colors;
 
@@ -89,8 +88,6 @@ public sealed class Joinery
     /// <param name="style">How lines recorded without a style of their own are drawn.</param>
     public void Draw(SurfaceRegion into, IArlecchinoColor style)
     {
-        ArgumentNullException.ThrowIfNull(style);
-
         foreach (var ((row, column), joint) in _joints)
         {
             var local = (Row: row - into.Top, Column: column - into.Left);

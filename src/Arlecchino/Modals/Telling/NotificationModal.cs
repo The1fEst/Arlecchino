@@ -54,8 +54,6 @@ public sealed class NotificationModal : Modal
     /// <param name="key">The key that arrived.</param>
     public override void Handle(ModalFrame frame, KeyPress key)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         if (frame.Keymap.MoveLeft.Matches(key))
         {
             Move(-1);
@@ -89,8 +87,6 @@ public sealed class NotificationModal : Modal
     /// <inheritdoc/>
     public override void HandleMouse(ModalFrame frame, MouseEvent mouse)
     {
-        ArgumentNullException.ThrowIfNull(frame);
-
         if (mouse.Action != MouseAction.Pressed || mouse.Button != MouseButton.Left)
         {
             return;

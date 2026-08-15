@@ -84,8 +84,6 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What to put on. Putting none on changes nothing.</param>
     public void Push(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (items.Count == 0)
         {
             return;
@@ -173,8 +171,6 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What should be on it instead, top first.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        ArgumentNullException.ThrowIfNull(items);
-
         if (Holds(items))
         {
             return;
