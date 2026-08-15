@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Prepares a release: sets the version, moves the recorded public API from unshipped to shipped, and
-/// points package validation at the release before it. Run it, read the diff, commit, tag.
+/// Prepares a release: sets the version and moves the recorded public API from unshipped to shipped. Run
+/// it, read the diff, commit, tag.
 /// </summary>
 internal static class Ship
 {
@@ -21,8 +20,6 @@ internal static class Ship
 
     private static readonly string[] Packages =
         ["Arlecchino", "Arlecchino.Core", "Arlecchino.Pictures", "Arlecchino.Testing"];
-
-    private static readonly HttpClient Nuget = new() { Timeout = TimeSpan.FromSeconds(20) };
 
     /// <summary>Writes the release into the repository.</summary>
     /// <param name="args">The version to release, or nothing to take the next build of this month.</param>
@@ -57,28 +54,6 @@ internal static class Ship
             Console.WriteLine($"version {current} -> {version}");
         }
 
-        var baseline = Regex.Match(text, "<PackageValidationBaselineVersion[^>]*>([^<]+)<").Groups[1].Value;
-
-        if (baseline == current)
-        {
-            Console.WriteLine($"baseline stays {baseline}");
-        }
-        else if (await IsOnNuGet(current))
-        {
-            text = Regex.Replace(
-                text,
-                "(<PackageValidationBaselineVersion[^>]*>)[^<]+(</PackageValidationBaselineVersion>)",
-                $"${{1}}{current}${{2}}");
-
-            Console.WriteLine($"baseline {baseline} -> {current}");
-
-            Unsuppressed();
-        }
-        else
-        {
-            Console.WriteLine($"baseline stays {baseline}: {current} is not on nuget.org, so nothing can be compared against it");
-        }
-
         await File.WriteAllTextAsync(props, text);
 
         foreach (var package in Packages)
@@ -93,10 +68,8 @@ internal static class Ship
     {
         Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- ship [version]");
         Console.WriteLine();
-        Console.WriteLine("Prepares a release: sets the version, moves the recorded public API from");
-        Console.WriteLine("Unshipped to Shipped, points package validation at the release before it,");
-        Console.WriteLine("and throws away the breaks written down against the baseline it left.");
-        Console.WriteLine("Run it, read the diff, commit, tag.");
+        Console.WriteLine("Prepares a release: sets the version and moves the recorded public API from");
+        Console.WriteLine("Unshipped to Shipped. Run it, read the diff, commit, tag.");
         Console.WriteLine();
         Console.WriteLine("A version is year.month.build: 2026.8.1 is the first release of August 2026.");
         Console.WriteLine("Given none, the version in Directory.Build.props says which build this is.");
@@ -121,27 +94,6 @@ internal static class Ship
             : 1;
 
         return FormattableString.Invariant($"{month}.{build}");
-    }
-
-    /// <summary>
-    /// Throws away the breaks that were written down against the release before this one. A suppression names
-    /// two versions, and once the baseline moves it would hide the next break rather than the last one.
-    /// </summary>
-    private static void Unsuppressed()
-    {
-        foreach (var package in Packages)
-        {
-            var written = Path.Combine(Program.Root(), "src", package, "CompatibilitySuppressions.xml");
-
-            if (!File.Exists(written))
-            {
-                continue;
-            }
-
-            File.Delete(written);
-
-            Console.WriteLine($"{package}: the breaks written down against the old baseline are gone");
-        }
     }
 
     private static void Record(string package)
@@ -179,20 +131,4 @@ internal static class Ship
 
     private static List<string> Entries(string path) =>
         [.. File.ReadAllLines(path).Skip(1).Where(static line => line.Trim().Length > 0)];
-
-    private static async Task<bool> IsOnNuGet(string version)
-    {
-        try
-        {
-            var index = await Nuget.GetStringAsync(new Uri("https://api.nuget.org/v3-flatcontainer/arlecchino/index.json"));
-
-            return index.Contains($"\"{version}\"", StringComparison.Ordinal);
-        }
-        catch (Exception failure) when (failure is HttpRequestException or TaskCanceledException)
-        {
-            Console.WriteLine($"could not ask nuget.org: {failure.Message}");
-
-            return false;
-        }
-    }
 }

@@ -26,7 +26,6 @@
 
   <PropertyGroup>
     <EnablePackageValidation Condition="'$(IsPackable)' != 'false'">true</EnablePackageValidation>
-    <PackageValidationBaselineVersion Condition="'$(IsPackable)' != 'false'">5.0.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <PropertyGroup>
