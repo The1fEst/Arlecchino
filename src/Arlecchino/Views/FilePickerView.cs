@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Arlecchino.Editing;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -46,7 +47,7 @@ internal sealed class FilePickerView : IArlecchinoView
     private int _sidebarFirstVisible;
     private int _listFirstVisible;
     private string _path;
-    private string _filter = "";
+    private readonly TextEntry _filter = new();
     private string _error = "";
     private List<Entry> _entries = [];
     private int _selected;
@@ -289,17 +290,13 @@ internal sealed class FilePickerView : IArlecchinoView
         {
             NavigateTo(entries[_selected].FullPath);
         }
-        else if (_keymap.Erase.Matches(key))
+        else if (_keymap.Erase.Matches(key) && _filter.Text.Length == 0)
         {
-            if (_filter.Length > 0)
-            {
-                _filter = _filter[..^1];
-                _selected = 0;
-            }
-            else
-            {
-                GoUp();
-            }
+            GoUp();
+        }
+        else if (EraseKeys.Erased(_filter, _keymap, key))
+        {
+            _selected = 0;
         }
         else if (_keymap.Confirm.Matches(key) && entries.Count > 0)
         {
@@ -307,7 +304,7 @@ internal sealed class FilePickerView : IArlecchinoView
         }
         else if (_keyText.Resolve(key) is { } typed)
         {
-            _filter += typed;
+            TextEditing.Insert(_filter, typed);
             _selected = 0;
         }
         else
@@ -331,9 +328,9 @@ internal sealed class FilePickerView : IArlecchinoView
             toolbar.Write(0, titleColumn, title, Theme.Muted);
         }
 
-        var search = $"{_strings.Search()}: {_filter}▏";
+        var search = $"{_strings.Search()}: {_filter.Text}▏";
         var searchColumn = Math.Max(titleColumn + TextWidth.Of(title) + 2, toolbar.Width - TextWidth.Of(search));
-        toolbar.Write(0, searchColumn, search, _filter.Length > 0 ? Theme.Info : Theme.Muted);
+        toolbar.Write(0, searchColumn, search, _filter.Text.Length > 0 ? Theme.Info : Theme.Muted);
     }
 
     private void DrawSidebar(SurfaceRegion sidebar)
@@ -574,7 +571,7 @@ internal sealed class FilePickerView : IArlecchinoView
     private void SetPath(string path)
     {
         _path = path;
-        _filter = "";
+        _filter.Text = "";
         _selected = 0;
         LoadEntries();
         SyncSidebarSelection();
@@ -757,13 +754,13 @@ internal sealed class FilePickerView : IArlecchinoView
 
     private List<Entry> GetMatchingEntries()
     {
-        if (_filter.Length == 0)
+        if (_filter.Text.Length == 0)
         {
             return _entries;
         }
 
         return _entries
-            .Where(entry => entry.Name.Contains(_filter, StringComparison.OrdinalIgnoreCase))
+            .Where(entry => entry.Name.Contains(_filter.Text, StringComparison.OrdinalIgnoreCase))
             .ToList();
     }
 }

@@ -88,15 +88,21 @@ internal sealed class FieldPaint
         modal.FirstVisible = window.First;
 
         var body = new List<Piece[]>();
+        var (from, to) = TextEditing.Selection(modal);
 
         for (var offset = 0; offset < window.Count; offset++)
         {
             var index = window.First + offset;
             var line = modal.Lines[index];
+            var start = modal.StartOf(index);
+            var caret = index == modal.Row ? modal.Column : -1;
 
-            body.Add(index == modal.Row
-                ? [new(CaretLine(line, modal.Column, width), Theme.Input)]
-                : [new(TextWidth.PadRight(TextWidth.Truncate(line, width), width), Theme.Default)]);
+            body.Add(AreaRows.Of(
+                line,
+                caret < 0 ? 0 : Shift(line, caret, width),
+                width,
+                (Math.Clamp(from - start, 0, line.Length), Math.Clamp(to - start, 0, line.Length)),
+                caret));
         }
 
         if (modal.Message.Length > 0)
@@ -152,45 +158,14 @@ internal sealed class FieldPaint
 
     private static string Dots(string text) => new('•', TextWidth.CountClusters(text));
 
-    private static string CaretLine(string line, int column, int width)
-    {
-        var caret = TextWidth.Of(line[..Math.Clamp(column, 0, line.Length)]);
-        var shift = Math.Max(0, caret - width + 2);
-        var visible = TextWidth.Truncate(SkipColumnsOf(line, shift), width - 1);
-        var before = IndexAtWidth(visible, Math.Max(0, caret - shift));
-
-        return TextWidth.PadRight($"{visible[..before]}{Caret}{visible[before..]}", width);
-    }
-
-    private static string SkipColumnsOf(string text, int columns)
-    {
-        var skipped = 0;
-        var index = 0;
-
-        while (index < text.Length && skipped < columns)
-        {
-            var length = TextWidth.NextClusterLength(text, index);
-
-            skipped += TextWidth.OfCluster(text.AsSpan(index, length));
-            index += length;
-        }
-
-        return text[index..];
-    }
-
-    private static int IndexAtWidth(string text, int columns)
-    {
-        var walked = 0;
-        var index = 0;
-
-        while (index < text.Length && walked < columns)
-        {
-            var length = TextWidth.NextClusterLength(text, index);
-
-            walked += TextWidth.OfCluster(text.AsSpan(index, length));
-            index += length;
-        }
-
-        return index;
-    }
+    /// <summary>
+    /// How far the row the caret is on has to be scrolled to keep the caret in the box. Only that row is
+    /// scrolled: the surrounding rows are read rather than typed on.
+    /// </summary>
+    /// <param name="line">What the row says.</param>
+    /// <param name="column">Where the caret is inside it.</param>
+    /// <param name="width">Columns the row is drawn in.</param>
+    /// <returns>Columns to scroll off the left.</returns>
+    private static int Shift(string line, int column, int width) =>
+        Math.Max(0, TextWidth.Of(line[..Math.Clamp(column, 0, line.Length)]) - width + 2);
 }

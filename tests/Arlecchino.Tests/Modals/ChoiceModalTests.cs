@@ -61,7 +61,25 @@ public sealed class ChoiceModalTests
         app.Type("ga");
         app.Press(ConsoleKey.Backspace);
 
-        Assert.Equal("g", ((ChoiceModal)app.State.Modal!).Filter);
+        Assert.Equal("g", ((ChoiceModal)app.State.Modal!).Text);
+    }
+
+    /// <summary>
+    ///     What is typed to narrow a list is edited the way any other line is: a symbol goes in one press and
+    ///     comes out in one, and the word key takes the whole word.
+    /// </summary>
+    [Fact]
+    public void BackspaceTakesAWholeSymbolOffTheFilter()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestChoice("Pick", Options, static _ => { });
+        var modal = (ChoiceModal)app.State.Modal!;
+
+        modal.Text = "a😀";
+        app.Press(ConsoleKey.Backspace);
+
+        Assert.Equal("a", modal.Text);
     }
 
     [Fact]

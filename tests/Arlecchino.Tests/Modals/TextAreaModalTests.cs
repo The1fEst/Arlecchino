@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Editing;
 using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
 using Xunit;
@@ -177,11 +178,69 @@ public sealed class TextAreaModalTests
     }
 
     [Fact]
+    public void ShiftAndAnArrowSelectsAcrossRows()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "one\ntwo", static _ => { });
+        var modal = (TextAreaModal)app.State.Modal!;
+
+        modal.MoveCaret(1, 3);
+        app.Press(ConsoleKey.UpArrow, KeyModifiers.Shift);
+
+        Assert.Equal("\ntwo", TextEditing.Selected(modal));
+    }
+
+    [Fact]
+    public void TypingOverASelectionReplacesIt()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "one\ntwo", static _ => { });
+        var modal = (TextAreaModal)app.State.Modal!;
+
+        modal.MoveCaret(1, 3);
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
+        app.Type("x");
+
+        Assert.Equal("one\nx", modal.Text);
+    }
+
+    [Fact]
+    public void AWordIsRubbedOutAtATime()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "one two", static _ => { });
+
+        app.Press(ConsoleKey.Backspace, KeyModifiers.Alt);
+
+        Assert.Equal("one ", ((TextAreaModal)app.State.Modal!).Text);
+    }
+
+    [Fact]
+    public void TheSelectionIsWhatCuttingTakes()
+    {
+        using var app = new TestApplication();
+
+        app.State.RequestTextArea("Notes", "one two", static _ => { });
+        var modal = (TextAreaModal)app.State.Modal!;
+
+        app.Press(ConsoleKey.LeftArrow, KeyModifiers.Control | KeyModifiers.Shift);
+        app.Press(ConsoleKey.Delete, KeyModifiers.Shift);
+
+        Assert.Equal("two", app.Terminal.Copied);
+        Assert.Equal("one ", modal.Text);
+    }
+
+    [Fact]
     public void LongTextScrollsSoTheCaretStaysVisible()
     {
         using var app = new TestApplication(60, 20);
 
-        app.State.RequestTextArea("Notes", string.Join("\n", new[] { "l0", "l1", "l2", "l3", "l4", "l5" }), static _ => { }, visibleRows: 3);
+        app.State.RequestTextArea("Notes", string.Join("\n", "l0", "l1", "l2", "l3", "l4", "l5"), static _ => { }, visibleRows: 3);
         var modal = (TextAreaModal)app.State.Modal!;
 
         modal.MoveCaret(5, 0);

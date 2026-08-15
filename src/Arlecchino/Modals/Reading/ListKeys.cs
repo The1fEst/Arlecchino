@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.State;
@@ -108,20 +109,16 @@ internal sealed class ListKeys
             return;
         }
 
-        if (_keymap.Erase.Matches(key) && modal.Filter.Length > 0)
+        var typedSoFar = modal.Text;
+
+        if (!EraseKeys.Erased(modal, _keymap, key) && _keyText.Resolve(key) is { } typed)
         {
-            modal.Filter = modal.Filter[..^1];
+            TextEditing.Insert(modal, typed);
+        }
+
+        if (modal.Text != typedSoFar)
+        {
             modal.Index = 0;
-
-            return;
         }
-
-        if (_keyText.Resolve(key) is not { } typed)
-        {
-            return;
-        }
-
-        modal.Filter += typed;
-        modal.Index = 0;
     }
 }

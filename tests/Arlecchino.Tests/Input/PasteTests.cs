@@ -52,7 +52,7 @@ public sealed class PasteTests
         app.State.RequestChoice("Pick", ["alpha", "beta"], static _ => { });
         app.ReadFromTerminal("\e[200~bet\e[201~");
 
-        Assert.Equal("bet", ((ChoiceModal)app.State.Modal!).Filter);
+        Assert.Equal("bet", ((ChoiceModal)app.State.Modal!).Text);
     }
 
     [Fact]

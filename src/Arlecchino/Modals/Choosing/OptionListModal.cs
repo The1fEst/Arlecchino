@@ -1,20 +1,49 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Editing;
 using Arlecchino.Rendering;
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Choosing;
 
 /// <summary>
-/// What the single- and multi-choice dialogs share: the options, the typed filter and the cursor.
+/// What the single- and multi-choice dialogs share: the options, what has been typed to narrow them, and the
+/// cursor. What is typed is edited the way any other line is, so a symbol goes in one press.
 /// </summary>
-public abstract class OptionListModal : Modal
+public abstract class OptionListModal : Modal, ITextEntry
 {
+    private string _text = "";
+    private int _caret;
+    private int _anchor;
+
     /// <summary>Everything that can be chosen from.</summary>
     public IReadOnlyList<string> Options { get; init; } = [];
 
     /// <summary>Whatever has been typed to narrow the list. Editing it resets the cursor to the top.</summary>
-    public string Filter { get; set; } = "";
+    public string Text
+    {
+        get => _text;
+        set
+        {
+            _text = value;
+            _caret = value.Length;
+            _anchor = value.Length;
+        }
+    }
+
+    /// <summary>Where the caret sits in what has been typed, which is at the end of it.</summary>
+    public int Caret
+    {
+        get => _caret;
+        set => _caret = Math.Clamp(value, 0, _text.Length);
+    }
+
+    /// <summary>Where a selection would start from, on the caret since none is drawn here.</summary>
+    public int Anchor
+    {
+        get => _anchor;
+        set => _anchor = Math.Clamp(value, 0, _text.Length);
+    }
 
     /// <summary>Cursor position within the options that match.</summary>
     public int Index { get; set; }
@@ -29,7 +58,7 @@ public abstract class OptionListModal : Modal
     /// <returns>Matching options; all of them when nothing is typed.</returns>
     public List<string> MatchingOptions()
     {
-        if (Filter.Length == 0)
+        if (_text.Length == 0)
         {
             return [.. Options];
         }
@@ -37,7 +66,7 @@ public abstract class OptionListModal : Modal
         var matching = new List<string>();
         foreach (var option in Options)
         {
-            if (option.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+            if (option.Contains(_text, StringComparison.OrdinalIgnoreCase))
             {
                 matching.Add(option);
             }

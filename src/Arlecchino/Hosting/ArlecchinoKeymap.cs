@@ -104,6 +104,12 @@ public sealed record ArlecchinoKeymap
         new KeyBinding(ConsoleKey.RightArrow, KeyModifiers.Control | KeyModifiers.Shift)
             .AddAlternative(ConsoleKey.RightArrow, KeyModifiers.Alt | KeyModifiers.Shift);
 
+    /// <summary>Takes the selection one row up, where the text has rows. <c>Shift+↑</c> by default.</summary>
+    public KeyBinding SelectUp { get; init; } = new(ConsoleKey.UpArrow, KeyModifiers.Shift);
+
+    /// <summary>Takes the selection one row down, where the text has rows. <c>Shift+↓</c> by default.</summary>
+    public KeyBinding SelectDown { get; init; } = new(ConsoleKey.DownArrow, KeyModifiers.Shift);
+
     /// <summary>Takes the selection back to the start of the line. <c>Shift+Home</c> by default.</summary>
     public KeyBinding SelectToStart { get; init; } = new(ConsoleKey.Home, KeyModifiers.Shift);
 
@@ -186,6 +192,8 @@ public sealed record ArlecchinoKeymap
         SelectRight = SelectRight.Replacing(from, to),
         SelectWordLeft = SelectWordLeft.Replacing(from, to),
         SelectWordRight = SelectWordRight.Replacing(from, to),
+        SelectUp = SelectUp.Replacing(from, to),
+        SelectDown = SelectDown.Replacing(from, to),
         SelectToStart = SelectToStart.Replacing(from, to),
         SelectToEnd = SelectToEnd.Replacing(from, to),
         SelectAll = SelectAll.Replacing(from, to),

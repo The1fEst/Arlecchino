@@ -1,0 +1,82 @@
+using System;
+using System.Collections.Generic;
+using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
+
+namespace Arlecchino.Modals.Drawing;
+
+/// <summary>
+/// One row of a field of many lines, cut into the pieces it is drawn in: what is selected, what is not,
+/// and the caret. A row longer than the box is scrolled rather than cut off.
+/// </summary>
+internal static class AreaRows
+{
+    private const string Caret = "▏";
+
+    /// <summary>Builds the pieces of one row.</summary>
+    /// <param name="line">What the row says.</param>
+    /// <param name="shift">Columns scrolled off the left of it.</param>
+    /// <param name="width">Columns the row is drawn in.</param>
+    /// <param name="selection">Where the selection starts and ends inside this row.</param>
+    /// <param name="caret">Where the caret is inside this row, or <c>-1</c> when it is on another row.</param>
+    /// <returns>The pieces, together filling the width.</returns>
+    public static Piece[] Of(string line, int shift, int width, (int Start, int End) selection, int caret)
+    {
+        var head = IndexAtWidth(line, shift);
+        var slice = TextWidth.Truncate(line[head..], width - 1);
+        var coat = caret < 0 ? Theme.Default : Theme.Input;
+
+        var start = Math.Clamp(selection.Start - head, 0, slice.Length);
+        var end = Math.Clamp(selection.End - head, 0, slice.Length);
+        var at = caret < 0 ? -1 : Math.Clamp(caret - head, 0, slice.Length);
+
+        List<Piece> pieces = at switch
+        {
+            < 0 =>
+            [
+                new(slice[..start], coat),
+                new(slice[start..end], Theme.Selected),
+                new(slice[end..], coat),
+            ],
+            _ when at <= start =>
+            [
+                new(slice[..at], coat),
+                new(Caret, Theme.Accent),
+                new(slice[at..start], coat),
+                new(slice[start..end], Theme.Selected),
+                new(slice[end..], coat),
+            ],
+            _ =>
+            [
+                new(slice[..start], coat),
+                new(slice[start..end], Theme.Selected),
+                new(slice[end..at], coat),
+                new(Caret, Theme.Accent),
+                new(slice[at..], coat),
+            ],
+        };
+
+        var drawn = TextWidth.Of(slice) + (caret < 0 ? 0 : 1);
+        var padding = new string(' ', Math.Max(0, width - drawn));
+
+        pieces.Add(new(padding, coat));
+
+        return [.. pieces];
+    }
+
+    private static int IndexAtWidth(string text, int columns)
+    {
+        var walked = 0;
+        var index = 0;
+
+        while (index < text.Length && walked < columns)
+        {
+            var length = TextWidth.NextClusterLength(text, index);
+
+            walked += TextWidth.OfCluster(text.AsSpan(index, length));
+            index += length;
+        }
+
+        return index;
+    }
+}

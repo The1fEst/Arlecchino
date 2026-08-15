@@ -1,3 +1,4 @@
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.State;
@@ -52,21 +53,14 @@ internal sealed class TextAreaKeys
             return;
         }
 
-        if (_keymap.Copy.Matches(key))
-        {
-            _terminal.CopyToClipboard(modal.Text);
-
-            return;
-        }
-
-        if (Moved(modal, key) || Edited(modal, key))
+        if (Clipped(modal, key) || Selected(modal, key) || Moved(modal, key) || Edited(modal, key))
         {
             return;
         }
 
         if (_keyText.Resolve(key) is { } typed)
         {
-            modal.Insert(typed);
+            TextEditing.Insert(modal, typed);
         }
     }
 
@@ -85,63 +79,67 @@ internal sealed class TextAreaKeys
         modal.OnSubmit(text);
     }
 
-    private bool Moved(TextAreaModal modal, KeyPress key)
+    private bool Clipped(TextAreaModal modal, KeyPress key)
     {
-        if (_keymap.MoveLeft.Matches(key))
+        var selected = TextEditing.Selected(modal);
+
+        if (_keymap.Copy.Matches(key))
         {
-            modal.MoveLeft();
+            _terminal.CopyToClipboard(selected.Length > 0 ? selected : modal.Text);
 
             return true;
         }
 
-        if (_keymap.MoveRight.Matches(key))
-        {
-            modal.MoveRight();
-
-            return true;
-        }
-
-        if (_keymap.MoveUp.Matches(key))
-        {
-            modal.MoveRows(-1);
-
-            return true;
-        }
-
-        if (_keymap.MoveDown.Matches(key))
-        {
-            modal.MoveRows(1);
-
-            return true;
-        }
-
-        if (_keymap.JumpUp.Matches(key))
-        {
-            modal.MoveRows(-modal.VisibleRows);
-
-            return true;
-        }
-
-        if (_keymap.JumpDown.Matches(key))
-        {
-            modal.MoveRows(modal.VisibleRows);
-
-            return true;
-        }
-
-        if (_keymap.First.Matches(key))
-        {
-            modal.MoveToLineStart();
-
-            return true;
-        }
-
-        if (!_keymap.Last.Matches(key))
+        if (!_keymap.Cut.Matches(key) || selected.Length == 0)
         {
             return false;
         }
 
-        modal.MoveToLineEnd();
+        _terminal.CopyToClipboard(selected);
+        TextEditing.EraseSelection(modal);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Taking the selection about. The keys that go by rows and to either end of a row are this field's own;
+    /// the rest are the ones every line being typed into obeys.
+    /// </summary>
+    /// <param name="modal">The dialog.</param>
+    /// <param name="key">The key that arrived.</param>
+    /// <returns><c>true</c> when the key was one of these.</returns>
+    private bool Selected(TextAreaModal modal, KeyPress key) =>
+        RowKeys.Selected(modal, _keymap, key) || SelectKeys.Handled(modal, _keymap, key);
+
+    private bool Moved(TextAreaModal modal, KeyPress key)
+    {
+        if (_keymap.WordLeft.Matches(key))
+        {
+            TextEditing.MoveWord(modal, -1);
+
+            return true;
+        }
+
+        if (_keymap.WordRight.Matches(key))
+        {
+            TextEditing.MoveWord(modal, 1);
+
+            return true;
+        }
+
+        if (_keymap.MoveLeft.Matches(key))
+        {
+            TextEditing.MoveCaret(modal, -1);
+
+            return true;
+        }
+
+        if (!_keymap.MoveRight.Matches(key))
+        {
+            return RowKeys.Moved(modal, _keymap, key);
+        }
+
+        TextEditing.MoveCaret(modal, 1);
 
         return true;
     }
@@ -150,14 +148,21 @@ internal sealed class TextAreaKeys
     {
         if (_keymap.Confirm.Matches(key))
         {
-            modal.Break();
+            TextEditing.Insert(modal, '\n');
+
+            return true;
+        }
+
+        if (_keymap.EraseWord.Matches(key))
+        {
+            TextEditing.EraseWord(modal);
 
             return true;
         }
 
         if (_keymap.Erase.Matches(key))
         {
-            modal.Erase();
+            TextEditing.Backspace(modal);
 
             return true;
         }
@@ -167,7 +172,7 @@ internal sealed class TextAreaKeys
             return false;
         }
 
-        modal.DeleteForward();
+        TextEditing.Delete(modal);
 
         return true;
     }

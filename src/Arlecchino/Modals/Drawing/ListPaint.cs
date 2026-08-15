@@ -100,7 +100,7 @@ internal sealed class ListPaint
         modal.Rows = inside.Rows(2 + notice, visible);
         modal.FirstVisible = start;
 
-        inside.WriteLine(0, _strings.Filter(modal.Filter), Theme.Info);
+        inside.WriteLine(0, _strings.Filter(modal.Text), Theme.Info);
         ModalBox.Divider(box, 1);
 
         if (notice == 1)

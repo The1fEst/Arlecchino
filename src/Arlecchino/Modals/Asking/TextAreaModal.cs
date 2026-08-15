@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Arlecchino.Editing;
 using Arlecchino.Input;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Text;
@@ -8,30 +9,50 @@ namespace Arlecchino.Modals.Asking;
 
 /// <summary>
 /// Several lines of text, edited in place, where <c>Enter</c> starts a new line and the <c>Submit</c> binding
-/// confirms. Every move and edit goes by symbols, so emoji and combining marks survive a backspace.
+/// confirms. The text is one line with newlines in it, so every edit is the one a field of one line has.
 /// </summary>
-public sealed class TextAreaModal : Modal
+public sealed class TextAreaModal : Modal, ITextEntry
 {
-    private readonly List<string> _lines = [""];
-
-    private int _row;
-    private int _column;
+    private string _text = "";
+    private string[] _lines = [""];
+    private int _caret;
+    private int _anchor;
 
     /// <summary>The whole text, lines joined with a newline. Assigning it puts the caret at the end.</summary>
     public string Text
     {
-        get => string.Join("\n", _lines);
-        init => SetText(value);
+        get => _text;
+        set
+        {
+            _text = value.Replace("\r", "", StringComparison.Ordinal);
+            _lines = _text.Split('\n');
+            _caret = _text.Length;
+            _anchor = _text.Length;
+        }
+    }
+
+    /// <summary>Where the caret sits, counted from the start of the whole text.</summary>
+    public int Caret
+    {
+        get => _caret;
+        set => _caret = Math.Clamp(value, 0, _text.Length);
+    }
+
+    /// <summary>Where the selection was started from, on the caret while nothing is selected.</summary>
+    public int Anchor
+    {
+        get => _anchor;
+        set => _anchor = Math.Clamp(value, 0, _text.Length);
     }
 
     /// <summary>The lines as they stand, top to bottom.</summary>
     public IReadOnlyList<string> Lines => _lines;
 
     /// <summary>Row the caret is on.</summary>
-    public int Row => _row;
+    public int Row => Placed(_caret).Row;
 
     /// <summary>Where the caret sits inside its row, as an index into that line.</summary>
-    public int Column => _column;
+    public int Column => Placed(_caret).Column;
 
     /// <summary>How many rows of text the dialog shows before it starts scrolling.</summary>
     public int VisibleRows { get; init; } = 8;
@@ -54,165 +75,101 @@ public sealed class TextAreaModal : Modal
     /// <summary>First visible row, kept in step with the caret while drawing.</summary>
     public int FirstVisible { get; set; }
 
-    /// <summary>Replaces the whole text and puts the caret at its end.</summary>
-    /// <param name="text">The text to hold.</param>
-    public void SetText(string text)
+    /// <summary>Where in the whole text a row begins.</summary>
+    /// <param name="row">The row, clamped to the rows there are.</param>
+    /// <returns>The index of the first character on it.</returns>
+    public int StartOf(int row)
     {
-        _lines.Clear();
-        _lines.AddRange(text.Replace("\r", "").Split('\n'));
+        var wanted = Math.Clamp(row, 0, _lines.Length - 1);
+        var start = 0;
 
-        _row = _lines.Count - 1;
-        _column = _lines[_row].Length;
+        for (var index = 0; index < wanted; index++)
+        {
+            start += _lines[index].Length + 1;
+        }
+
+        return start;
+    }
+
+    /// <summary>Inserts text where the caret is, over whatever was selected.</summary>
+    /// <param name="text">What to insert; a newline in it starts a new line.</param>
+    public void InsertText(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        foreach (var character in text.Replace("\r", "", StringComparison.Ordinal))
+        {
+            TextEditing.Insert(this, character);
+        }
     }
 
     /// <summary>Puts the caret at a row and a position inside it, clamped to what exists.</summary>
     /// <param name="row">Row to move to.</param>
     /// <param name="column">Index inside that row.</param>
-    public void MoveCaret(int row, int column)
-    {
-        _row = Math.Clamp(row, 0, _lines.Count - 1);
-        _column = TextWidth.SnapToCluster(_lines[_row], Math.Clamp(column, 0, _lines[_row].Length));
-    }
-
-    /// <summary>Inserts a character where the caret is.</summary>
-    /// <param name="character">What to insert.</param>
-    public void Insert(char character) => InsertText(character.ToString());
-
-    /// <summary>Inserts text where the caret is, starting a new line for every newline in it.</summary>
-    /// <param name="text">What to insert.</param>
-    public void InsertText(string text)
-    {
-        var parts = text.Replace("\r", "").Split('\n');
-
-        for (var index = 0; index < parts.Length; index++)
-        {
-            var line = _lines[_row];
-
-            _lines[_row] = line[.._column] + parts[index] + line[_column..];
-            _column += parts[index].Length;
-
-            if (index < parts.Length - 1)
-            {
-                Break();
-            }
-        }
-    }
-
-    /// <summary>Splits the current line at the caret, which is what <c>Enter</c> does here.</summary>
-    public void Break()
-    {
-        var line = _lines[_row];
-
-        _lines[_row] = line[.._column];
-        _lines.Insert(_row + 1, line[_column..]);
-
-        _row++;
-        _column = 0;
-    }
-
-    /// <summary>
-    /// Deletes the symbol before the caret, joining this line onto the one above when the caret is at
-    /// the start of a line.
-    /// </summary>
-    public void Erase()
-    {
-        if (_column > 0)
-        {
-            var line = _lines[_row];
-            var start = TextWidth.PreviousClusterStart(line, _column);
-
-            _lines[_row] = line[..start] + line[_column..];
-            _column = start;
-            return;
-        }
-
-        if (_row == 0)
-        {
-            return;
-        }
-
-        var above = _lines[_row - 1];
-
-        _column = above.Length;
-        _lines[_row - 1] = above + _lines[_row];
-        _lines.RemoveAt(_row);
-        _row--;
-    }
-
-    /// <summary>
-    /// Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a
-    /// line.
-    /// </summary>
-    public void DeleteForward()
-    {
-        var line = _lines[_row];
-
-        if (_column < line.Length)
-        {
-            _lines[_row] = line[.._column] + line[TextWidth.NextClusterEnd(line, _column)..];
-            return;
-        }
-
-        if (_row + 1 >= _lines.Count)
-        {
-            return;
-        }
-
-        _lines[_row] = line + _lines[_row + 1];
-        _lines.RemoveAt(_row + 1);
-    }
-
-    /// <summary>Moves the caret one symbol left, wrapping to the end of the line above.</summary>
-    public void MoveLeft()
-    {
-        if (_column > 0)
-        {
-            _column = TextWidth.PreviousClusterStart(_lines[_row], _column);
-            return;
-        }
-
-        if (_row == 0)
-        {
-            return;
-        }
-
-        _row--;
-        _column = _lines[_row].Length;
-    }
-
-    /// <summary>Moves the caret one symbol right, wrapping to the start of the line below.</summary>
-    public void MoveRight()
-    {
-        var line = _lines[_row];
-
-        if (_column < line.Length)
-        {
-            _column = TextWidth.NextClusterEnd(line, _column);
-            return;
-        }
-
-        if (_row + 1 >= _lines.Count)
-        {
-            return;
-        }
-
-        _row++;
-        _column = 0;
-    }
+    public void MoveCaret(int row, int column) => Put(Placed(row, column), collapse: true);
 
     /// <summary>Moves the caret a number of rows, keeping as much of the column as the new row has.</summary>
     /// <param name="rows">How far to move; negative goes up.</param>
-    public void MoveRows(int rows) => MoveCaret(_row + rows, _column);
+    public void MoveRows(int rows) => Put(Placed(Row + rows, Column), collapse: true);
+
+    /// <summary>Takes the selection a number of rows, dragging it along behind the caret.</summary>
+    /// <param name="rows">How far to take it; negative goes up.</param>
+    public void SelectRows(int rows) => Put(Placed(Row + rows, Column), collapse: false);
 
     /// <summary>Puts the caret at the start of its line.</summary>
-    public void MoveToLineStart() => _column = 0;
+    public void MoveToLineStart() => Put(StartOf(Row), collapse: true);
 
     /// <summary>Puts the caret at the end of its line.</summary>
-    public void MoveToLineEnd() => _column = _lines[_row].Length;
+    public void MoveToLineEnd() => Put(StartOf(Row) + _lines[Row].Length, collapse: true);
+
+    /// <summary>Takes the selection back to the start of the line.</summary>
+    public void SelectToLineStart() => Put(StartOf(Row), collapse: false);
+
+    /// <summary>Takes the selection on to the end of the line.</summary>
+    public void SelectToLineEnd() => Put(StartOf(Row) + _lines[Row].Length, collapse: false);
 
     /// <inheritdoc/>
     public override void Draw(ModalFrame frame) => frame.Paint.Area(this);
 
     /// <inheritdoc/>
     public override void Handle(ModalFrame frame, KeyPress key) => frame.Areas.Handle(this, key);
+
+    /// <summary>Where a place in the text falls, as the row it is on and how far into that row it is.</summary>
+    /// <param name="index">The place in the whole text.</param>
+    /// <returns>The row and the index inside it.</returns>
+    private (int Row, int Column) Placed(int index)
+    {
+        var row = 0;
+        var start = 0;
+
+        for (var walk = 0; walk < index && walk < _text.Length; walk++)
+        {
+            if (_text[walk] != '\n')
+            {
+                continue;
+            }
+
+            row++;
+            start = walk + 1;
+        }
+
+        return (row, index - start);
+    }
+
+    private int Placed(int row, int column)
+    {
+        var wanted = Math.Clamp(row, 0, _lines.Length - 1);
+
+        return StartOf(wanted) + Math.Clamp(column, 0, _lines[wanted].Length);
+    }
+
+    private void Put(int caret, bool collapse)
+    {
+        Caret = TextWidth.SnapToCluster(_text, caret);
+
+        if (collapse)
+        {
+            Anchor = Caret;
+        }
+    }
 }

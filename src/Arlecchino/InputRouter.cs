@@ -235,7 +235,11 @@ public class InputRouter
                 PasteIntoField(entry, text);
                 return;
             case OptionListModal list:
-                list.Filter += FirstLine(text);
+                foreach (var character in FirstLine(text))
+                {
+                    TextEditing.Insert(list, character);
+                }
+
                 list.Index = 0;
                 return;
             case null:
