@@ -103,6 +103,49 @@ Arlecchino.Editing.TextEntry.Caret.set -> void
 Arlecchino.Editing.TextEntry.Text.get -> string!
 Arlecchino.Editing.TextEntry.Text.set -> void
 Arlecchino.Editing.TextEntry.TextEntry() -> void
+Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.CompletionAsk.After.get -> string!
+Arlecchino.Editing.CompletionAsk.Before.get -> string!
+Arlecchino.Editing.CompletionAsk.CompletionAsk() -> void
+Arlecchino.Editing.CompletionAsk.CompletionAsk(string! Line, int Start, int Length) -> void
+Arlecchino.Editing.CompletionAsk.Deconstruct(out string! Line, out int Start, out int Length) -> void
+Arlecchino.Editing.CompletionAsk.Equals(Arlecchino.Editing.CompletionAsk other) -> bool
+Arlecchino.Editing.CompletionAsk.Length.get -> int
+Arlecchino.Editing.CompletionAsk.Length.init -> void
+Arlecchino.Editing.CompletionAsk.Line.get -> string!
+Arlecchino.Editing.CompletionAsk.Line.init -> void
+Arlecchino.Editing.CompletionAsk.Start.get -> int
+Arlecchino.Editing.CompletionAsk.Start.init -> void
+Arlecchino.Editing.CompletionAsk.Word.get -> string!
+Arlecchino.Editing.ICutsWords
+Arlecchino.Editing.ICutsWords.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.ISuggestsWords
+Arlecchino.Editing.ISuggestsWords.SuggestAsync(Arlecchino.Editing.CompletionAsk ask, System.Threading.CancellationToken token) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<string!>!>
+Arlecchino.Editing.SpaceWords
+Arlecchino.Editing.SpaceWords.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.SpaceWords.SpaceWords() -> void
+Arlecchino.Editing.TextCompleter
+Arlecchino.Editing.TextCompleter.Chosen.get -> int
+Arlecchino.Editing.TextCompleter.Complete(bool forward) -> void
+Arlecchino.Editing.TextCompleter.Forget() -> void
+Arlecchino.Editing.TextCompleter.Handle(Arlecchino.Input.KeyPress key) -> bool
+Arlecchino.Editing.TextCompleter.TextCompleter(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Editing.ISuggestsWords! words, Arlecchino.Editing.ICutsWords! cuts, Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Editing.TextCompleter.Words.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Arlecchino.Editing.WholeLine
+Arlecchino.Editing.WholeLine.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.WholeLine.WholeLine() -> void
+Arlecchino.Editing.WordList
+Arlecchino.Editing.WordList.SuggestAsync(Arlecchino.Editing.CompletionAsk ask, System.Threading.CancellationToken token) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<string!>!>
+Arlecchino.Editing.WordList.WordList(System.Func<System.Collections.Generic.IReadOnlyList<string!>!>! words) -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Complete.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.Complete.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.CompleteBack.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.CompleteBack.init -> void
+override Arlecchino.Editing.CompletionAsk.GetHashCode() -> int
+static Arlecchino.Editing.CompletionAsk.operator !=(Arlecchino.Editing.CompletionAsk left, Arlecchino.Editing.CompletionAsk right) -> bool
+static Arlecchino.Editing.CompletionAsk.operator ==(Arlecchino.Editing.CompletionAsk left, Arlecchino.Editing.CompletionAsk right) -> bool
+~override Arlecchino.Editing.CompletionAsk.Equals(object obj) -> bool
+~override Arlecchino.Editing.CompletionAsk.ToString() -> string
 *REMOVED*override Arlecchino.Modals.Setting.DateModal.Add(int delta) -> void
 *REMOVED*override Arlecchino.Modals.Setting.DateModal.SegmentCount.get -> int
 *REMOVED*override Arlecchino.Modals.Setting.DateModal.SegmentTexts() -> string![]!

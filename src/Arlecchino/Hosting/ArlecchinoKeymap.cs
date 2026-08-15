@@ -28,6 +28,15 @@ public sealed record ArlecchinoKeymap
     /// <summary>Moves to the previous one. <c>Shift+Tab</c> by default.</summary>
     public KeyBinding PreviousField { get; init; } = new(ConsoleKey.Tab, KeyModifiers.Shift);
 
+    /// <summary>
+    /// Finishes the word being typed, where the line has something to finish it from. <c>Tab</c> by default,
+    /// the same key that moves to the next field: the line being typed into is asked first.
+    /// </summary>
+    public KeyBinding Complete { get; init; } = new(ConsoleKey.Tab);
+
+    /// <summary>Steps back through what was offered for the word. <c>Shift+Tab</c> by default.</summary>
+    public KeyBinding CompleteBack { get; init; } = new(ConsoleKey.Tab, KeyModifiers.Shift);
+
     /// <summary>Moves the cursor up, or steps a number up. <c>↑</c> by default.</summary>
     public KeyBinding MoveUp { get; init; } = new(ConsoleKey.UpArrow);
 
@@ -174,6 +183,8 @@ public sealed record ArlecchinoKeymap
         Cancel = Cancel.Replacing(from, to),
         NextField = NextField.Replacing(from, to),
         PreviousField = PreviousField.Replacing(from, to),
+        Complete = Complete.Replacing(from, to),
+        CompleteBack = CompleteBack.Replacing(from, to),
         MoveUp = MoveUp.Replacing(from, to),
         MoveDown = MoveDown.Replacing(from, to),
         MoveLeft = MoveLeft.Replacing(from, to),
