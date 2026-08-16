@@ -12,6 +12,7 @@ namespace Arlecchino;
 public static class FrameThread
 {
     private static readonly ConcurrentQueue<Action> Pending = new();
+    private static readonly FrameContext Context = new();
 
     private static int _drawing;
     private static Action? _wake;
@@ -45,11 +46,8 @@ public static class FrameThread
     {
         var previousWake = Interlocked.Exchange(ref _wake, wake);
         var previous = Interlocked.Exchange(ref _drawing, Environment.CurrentManagedThreadId);
-        var previousContext = SynchronizationContext.Current;
 
-        SynchronizationContext.SetSynchronizationContext(new FrameContext());
-
-        return new Claimed(previous, previousWake, previousContext);
+        return new Claimed(previous, previousWake);
     }
 
     /// <summary>
@@ -101,16 +99,27 @@ public static class FrameThread
     /// <param name="onError">What to do with an action that threw.</param>
     public static void RunPending(Action<Exception> onError)
     {
-        for (var waiting = Pending.Count; waiting > 0 && Pending.TryDequeue(out var action); waiting--)
+        var previousContext = SynchronizationContext.Current;
+
+        SynchronizationContext.SetSynchronizationContext(Context);
+
+        try
         {
-            try
+            for (var waiting = Pending.Count; waiting > 0 && Pending.TryDequeue(out var action); waiting--)
             {
-                action();
+                try
+                {
+                    action();
+                }
+                catch (Exception exception)
+                {
+                    onError(exception);
+                }
             }
-            catch (Exception exception)
-            {
-                onError(exception);
-            }
+        }
+        finally
+        {
+            SynchronizationContext.SetSynchronizationContext(previousContext);
         }
     }
 
@@ -145,20 +154,17 @@ public static class FrameThread
     {
         private readonly int _previous;
         private readonly Action? _previousWake;
-        private readonly SynchronizationContext? _previousContext;
 
-        public Claimed(int previous, Action? previousWake, SynchronizationContext? previousContext)
+        public Claimed(int previous, Action? previousWake)
         {
             _previous = previous;
             _previousWake = previousWake;
-            _previousContext = previousContext;
         }
 
         public void Dispose()
         {
             Interlocked.Exchange(ref _drawing, _previous);
             Interlocked.Exchange(ref _wake, _previousWake);
-            SynchronizationContext.SetSynchronizationContext(_previousContext);
 
             if (_previous == 0)
             {
@@ -168,8 +174,8 @@ public static class FrameThread
     }
 
     /// <summary>
-    /// What an <c>await</c> on the drawing thread comes back through: the same queue everything else is
-    /// posted to, so a continuation waits for the next frame rather than landing mid-draw.
+    /// What an <c>await</c> inside posted work comes back through, which is the queue everything else is
+    /// posted to. It is in force only while that work runs, so a wait anywhere else is left alone.
     /// </summary>
     private sealed class FrameContext : SynchronizationContext
     {
