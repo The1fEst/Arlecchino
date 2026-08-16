@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Arlecchino;
 
@@ -44,8 +45,11 @@ public static class FrameThread
     {
         var previousWake = Interlocked.Exchange(ref _wake, wake);
         var previous = Interlocked.Exchange(ref _drawing, Environment.CurrentManagedThreadId);
+        var previousContext = SynchronizationContext.Current;
 
-        return new Claimed(previous, previousWake);
+        SynchronizationContext.SetSynchronizationContext(new FrameContext());
+
+        return new Claimed(previous, previousWake, previousContext);
     }
 
     /// <summary>
@@ -57,6 +61,37 @@ public static class FrameThread
     {
         Pending.Enqueue(action);
         Volatile.Read(ref _wake)?.Invoke();
+    }
+
+    /// <summary>
+    /// Hands asynchronous work to the drawing thread. It starts there, and every <c>await</c> inside it
+    /// that was not told otherwise comes back there, so what it reads and writes is what a frame draws.
+    /// </summary>
+    /// <param name="work">
+    /// What to run. Whatever it throws, before an <c>await</c> or after one, reaches the frame loop the
+    /// way a posted action's failure does; being canceled is not a failure.
+    /// </param>
+    public static void Post(Func<Task> work) => Post(() => Watch(work()));
+
+    /// <summary>
+    /// Follows work that has not finished by the time it hands control back, and posts whatever it
+    /// throws so that the frame loop reports it.
+    /// </summary>
+    /// <param name="running">The work, as it stands after its first synchronous stretch.</param>
+    private static void Watch(Task running)
+    {
+        if (running.IsCompleted)
+        {
+            running.GetAwaiter().GetResult();
+
+            return;
+        }
+
+        running.ContinueWith(
+            static finished => Post(() => finished.GetAwaiter().GetResult()),
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
     }
 
     /// <summary>
@@ -110,22 +145,58 @@ public static class FrameThread
     {
         private readonly int _previous;
         private readonly Action? _previousWake;
+        private readonly SynchronizationContext? _previousContext;
 
-        public Claimed(int previous, Action? previousWake)
+        public Claimed(int previous, Action? previousWake, SynchronizationContext? previousContext)
         {
             _previous = previous;
             _previousWake = previousWake;
+            _previousContext = previousContext;
         }
 
         public void Dispose()
         {
             Interlocked.Exchange(ref _drawing, _previous);
             Interlocked.Exchange(ref _wake, _previousWake);
+            SynchronizationContext.SetSynchronizationContext(_previousContext);
 
             if (_previous == 0)
             {
                 DiscardPending();
             }
         }
+    }
+
+    /// <summary>
+    /// What an <c>await</c> on the drawing thread comes back through: the same queue everything else is
+    /// posted to, so a continuation waits for the next frame rather than landing mid-draw.
+    /// </summary>
+    private sealed class FrameContext : SynchronizationContext
+    {
+        /// <inheritdoc/>
+        public override void Post(SendOrPostCallback callback, object? state) =>
+            FrameThread.Post(() => callback(state));
+
+        /// <summary>
+        /// Runs the callback where the caller is already drawing, and refuses anywhere else: waiting for
+        /// the drawing thread from another one deadlocks whenever that thread is what is being waited on.
+        /// </summary>
+        /// <param name="callback">What to run.</param>
+        /// <param name="state">What to run it on.</param>
+        /// <exception cref="InvalidOperationException">The caller is on another thread.</exception>
+        public override void Send(SendOrPostCallback callback, object? state)
+        {
+            if (!IsCurrent)
+            {
+                throw new InvalidOperationException(
+                    "Waiting on the drawing thread from another thread deadlocks. Hand the work over with " +
+                    "FrameThread.Post instead, which runs it just before the next frame.");
+            }
+
+            callback(state);
+        }
+
+        /// <inheritdoc/>
+        public override SynchronizationContext CreateCopy() => new FrameContext();
     }
 }

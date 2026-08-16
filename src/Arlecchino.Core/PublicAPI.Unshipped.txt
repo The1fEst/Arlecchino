@@ -1,1 +1,2 @@
 #nullable enable
+static Arlecchino.FrameThread.Post(System.Func<System.Threading.Tasks.Task!>! work) -> void
