@@ -13,6 +13,7 @@ namespace Arlecchino.Input;
 public sealed class TerminalInputReader
 {
     private const int LongestSequence = 32;
+    private const int LongestReply = 128;
     private const string PasteStart = "200~";
     private const string PasteEnd = "\e[201~";
     private const int PollInterval = 1;
@@ -124,6 +125,12 @@ public sealed class TerminalInputReader
             return;
         }
 
+        if (introducer.Character is ']' or '_' or 'P' or '^' or 'X')
+        {
+            ReadStringBody();
+            return;
+        }
+
         if (introducer.Character is not ('[' or 'O'))
         {
             Send(key);
@@ -134,11 +141,32 @@ public sealed class TerminalInputReader
         ReadSequenceBody(key, introducer);
     }
 
+    /// <summary>
+    /// Reads to the end of a string the terminal answered in and drops it. A terminal sends one only when
+    /// asked, so none of it was typed.
+    /// </summary>
+    private void ReadStringBody()
+    {
+        var escaped = false;
+
+        while (WaitForKey())
+        {
+            var next = _terminal.ReadKey();
+
+            if (next.Character == '\a' || (escaped && next.Character == '\\'))
+            {
+                return;
+            }
+
+            escaped = next.Character == '\e';
+        }
+    }
+
     private void ReadSequenceBody(KeyPress escape, KeyPress introducer)
     {
         _sequence.Clear();
 
-        while (_sequence.Length < LongestSequence)
+        while (_sequence.Length < Room())
         {
             if (!WaitForKey())
             {
@@ -160,6 +188,14 @@ public sealed class TerminalInputReader
 
         Replay(escape, introducer);
     }
+
+    /// <summary>
+    /// How long the sequence being read may run. A key takes a handful of characters; a terminal listing
+    /// what it can do takes as many numbers as it has answers.
+    /// </summary>
+    /// <returns>The characters this sequence is allowed.</returns>
+    private int Room() =>
+        _sequence.Length > 0 && _sequence[0] is '?' or '>' or '=' ? LongestReply : LongestSequence;
 
     private void Dispatch(string sequence, KeyPress escape, KeyPress introducer)
     {
@@ -185,8 +221,22 @@ public sealed class TerminalInputReader
             return;
         }
 
+        if (IsReply(sequence))
+        {
+            return;
+        }
+
         Replay(escape, introducer);
     }
+
+    /// <summary>
+    /// Whether the sequence is the terminal answering rather than the keyboard speaking. A private marker
+    /// in front of the numbers says so, as does the letter a window report ends with.
+    /// </summary>
+    /// <param name="sequence">What followed the introducer, final byte included.</param>
+    /// <returns><c>true</c> when the sequence is an answer rather than a key.</returns>
+    private static bool IsReply(string sequence) =>
+        sequence.Length > 0 && (sequence[0] is '?' or '>' or '=' || sequence[^1] == 't');
 
     private void Replay(KeyPress escape, KeyPress introducer)
     {
