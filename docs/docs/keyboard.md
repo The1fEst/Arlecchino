@@ -102,7 +102,13 @@ in the router:
 | `DeleteForward` | `Delete` | Text fields |
 | `EraseWord` / `EraseToStart` | `Ctrl+Backspace` / `Ctrl+U` | Text fields |
 | `WordLeft` / `WordRight` | `Ctrl+←` / `Ctrl+→` | Text fields |
+| `SelectLeft` / `SelectRight` / `SelectUp` / `SelectDown` | arrows with Shift | [Lines of text](editing.md) |
+| `SelectWordLeft` / `SelectWordRight` | `Ctrl+Shift+←` / `Ctrl+Shift+→` | Lines of text |
+| `SelectToStart` / `SelectToEnd` | `Shift+Home` / `Shift+End` | Lines of text |
+| `SelectAll` | `Ctrl+A` | Lines of text |
 | `Copy` | `Ctrl+Insert` or `Ctrl+Shift+C` | Text fields and the multi-line dialog |
+| `Cut` | `Shift+Delete` or `Ctrl+X` | What is selected in a line of text |
+| `Complete` / `CompleteBack` | `Tab` / `Shift+Tab` | Finishing the word being typed, where a line offers it |
 | `Submit` | `Ctrl+Enter` | Confirms the [multi-line text dialog](modals.md), where `Enter` breaks the line |
 | `ToggleLog` | `Ctrl+L` | The [log overlay](diagnostics.md) |
 | `Notifications` | `Ctrl+N` | The [notifications screen](diagnostics.md) |

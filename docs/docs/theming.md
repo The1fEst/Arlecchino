@@ -21,7 +21,8 @@ palette then restyles the whole application, chrome included.
 | `Info` | ash | Box borders and structural lines |
 | `Muted` | ash | Hints, footers, secondary text |
 | `Input` | ink on bone | The editable part of a text field |
-| `Selected` | bone on hairline | The cursor row of an unfocused pane |
+| `Caret` | black on white | The symbol the caret stands on in a [line of text](editing.md) |
+| `Selected` | bone on hairline | The cursor row of an unfocused pane, and what is selected in a line |
 | `Active` | crimson | Something switched on or available |
 | `ActiveSelected` | ink on ash | The cursor row of the focused pane |
 | `Warning` | ink on amber | The output line when it carries text |

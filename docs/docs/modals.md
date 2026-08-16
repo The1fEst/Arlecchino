@@ -40,7 +40,7 @@ Shared behavior lives in interfaces rather than being repeated per type:
 | Interface | Members | Implemented by |
 |---|---|---|
 | `IAffixedModal` | `Prefix`, `Suffix` | `TextModal`, `NumericModal` |
-| `ITextEntryModal` | `Text`, `Message`, `Masked`, `AcceptsCharacter(char)` | `TextModal`, `NumberModal` |
+| `ITextEntry` | `Text`, `Caret`, `Anchor` — see [Lines of text](editing.md) | `TextModal`, `NumberModal`, `TextAreaModal`, `OptionListModal` |
 | `IBoundedModal` | `Minimum`, `Maximum`, `Step`, `LargeStep`, `Add(delta)` | `NumberModal`, `SliderModal` |
 
 `NumericModal` is the abstract base of `NumberModal` and `SliderModal`, holding `Step`, `LargeStep`,
@@ -82,10 +82,14 @@ will go, and every text field — including the number field — takes the same 
 | `Backspace` / `Delete` | Remove the symbol before or after the caret |
 | `Ctrl+Backspace` | Remove the word before the caret |
 | `Ctrl+U` | Remove everything before the caret |
+| The same with Shift held | Take the selection with the caret |
+| `Ctrl+A` | Select all of it |
+| `Ctrl+Insert` / `Shift+Insert` / `Shift+Delete` | Copy, paste, cut what is selected |
 
 All of these come from the [keymap](keyboard.md#the-keymap), so they are rebindable. `TextEditing`
-holds the logic and works on any `ITextEntryModal`, which is what keeps the number field's editing
-identical to the text field's.
+holds the logic and works on any [`ITextEntry`](editing.md), which is what keeps the number field's
+editing identical to the text field's — and what lets a line an application draws itself take the
+same keys.
 
 A value longer than the terminal scrolls inside the field: the box never grows past the frame, `…`
 marks the side that continues, and the caret is always on screen — it sits near the middle while the

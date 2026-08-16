@@ -18,12 +18,17 @@ public interface IArlecchinoView
     IReadOnlyList<ViewCommand> Commands() => [];
     (string Key, string Description)[] Hints() => [];
     bool UsesLayout => true;
+    bool IsTyping => false;
 }
 ```
 
 Only `Draw` and `Handle` have to be written: everything else has a default implementation, so a view
 writes what it needs and nothing else — see [Commands](commands.md) and
 [a layout around every view](#a-layout-around-every-view).
+
+`IsTyping` says something on the screen is being typed into, so the keys a
+[line of text](editing.md) edits by are left to the view rather than moving the application about
+behind the caret. `Navigator.CurrentIsTyping` is that answer for whatever screen is open.
 
 `Draw` runs once per frame against the shared [`Surface`](rendering.md). `Handle` receives keys that
 survived the input router — modal keys and the command palette key never reach a view, see

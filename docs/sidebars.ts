@@ -27,7 +27,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Input',
-      items: ['keyboard', 'commands', 'mouse', 'focus', 'ansi'],
+      items: ['keyboard', 'editing', 'commands', 'mouse', 'focus', 'ansi'],
     },
     {
       type: 'category',
@@ -60,6 +60,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Releases',
       items: [
+        'migrating-to-2026.8.2',
         'migrating-to-2026.8.1',
         'migrating-to-5.0',
         'whats-new-in-4.0',

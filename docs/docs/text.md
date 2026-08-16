@@ -65,7 +65,7 @@ These are what a text field uses to move a caret without cutting a symbol in hal
 
 Anywhere the result lands on screen, the column measure is the one that matters. The framework's own
 widgets, modals and text editing are written against these calls, and
-[`TextEditing`](modals.md#editing-a-line) is the shared implementation they share.
+[`TextEditing`](editing.md) is the shared implementation they share.
 
 ## What the surface does with a wide symbol
 
