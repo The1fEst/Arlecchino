@@ -10,11 +10,16 @@ sidebar_label: "NumberModal"
 A number that can be both typed and stepped. Bounds are checked before your validator runs, and the message reports them with affixes, so the user sees the same form they are editing.
 
 ```csharp
-public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, IBoundedModal
+public sealed class NumberModal :
+    NumericModal,
+    IAffixedModal,
+    ITextEntryModal,
+    ITextEntry,
+    IBoundedModal
 ```
 
 **Inherits from** [`NumericModal`](../arlecchino.modals.asking/NumericModal.md)  
-**Implements** [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md), [`ITextEntryModal`](../arlecchino.modals.asking/ITextEntryModal.md), [`IBoundedModal`](../arlecchino.modals.setting/IBoundedModal.md)
+**Implements** [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md), [`ITextEntryModal`](../arlecchino.modals.asking/ITextEntryModal.md), [`ITextEntry`](../arlecchino.editing/ITextEntry.md), [`IBoundedModal`](../arlecchino.modals.setting/IBoundedModal.md)
 
 ## Constructors
 
@@ -26,6 +31,7 @@ public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, 
 
 | Member | Summary |
 |---|---|
+| [`Anchor`](#anchor) | Where the selection was started from, on the caret while nothing is selected. |
 | [`Caret`](#caret) | Where the caret sits, pulled into the text when it would fall outside. |
 | [`Masked`](#masked) | Numbers are never masked. |
 | [`Maximum`](#maximum) | Highest value allowed. |
@@ -33,6 +39,7 @@ public sealed class NumberModal : NumericModal, IAffixedModal, ITextEntryModal, 
 | [`Minimum`](#minimum) | Lowest value allowed. A negative bound is also what allows a minus sign to be typed. |
 | [`OnSubmit`](#onsubmit) | Called with the accepted number. |
 | [`Text`](#text) | Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number. |
+| [`Typing`](#typing) | The line being typed into, which for a field of one line is the field itself. |
 | [`Validate`](#validate) | Your own check, run after parsing and bounds. Return a message to keep the dialog open. |
 
 ## Methods
@@ -60,6 +67,16 @@ public NumberModal();
 ```
 
 ## Properties in detail
+
+### `Anchor` {#anchor}
+
+```csharp
+public int Anchor { get; set; }
+```
+
+Where the selection was started from, on the caret while nothing is selected.
+
+**Type** `int`
 
 ### `Caret` {#caret}
 
@@ -130,6 +147,16 @@ public string Text { get; set; }
 Whatever has been typed so far, which may not parse yet. Assigning it puts the caret at the end, which is what makes stepping leave the caret after the new number.
 
 **Type** `string`
+
+### `Typing` {#typing}
+
+```csharp
+public override ITextEntry Typing { get; }
+```
+
+The line being typed into, which for a field of one line is the field itself.
+
+**Type** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ### `Validate` {#validate}
 

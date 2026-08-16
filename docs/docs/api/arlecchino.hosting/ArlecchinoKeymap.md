@@ -27,12 +27,15 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 |---|---|
 | [`Back`](#back) | Goes back in the history. `Alt+←` by default. |
 | [`Cancel`](#cancel) | Dismisses a dialog or leaves a screen. `Esc` by default. |
+| [`Complete`](#complete) | Finishes the word being typed, where the line has something to finish it from. `Tab` by default, the same key that moves to the next field: the line being typed into is asked first. |
+| [`CompleteBack`](#completeback) | Steps back through what was offered for the word. `Shift+Tab` by default. |
 | [`Confirm`](#confirm) | Accepts a dialog, opens a field, activates a row. `Enter` by default. |
 | [`Copy`](#copy) | Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application. |
+| [`Cut`](#cut) | Cuts the selection to the clipboard, under both habits: `Shift+Delete` and `Ctrl+Shift+X`. |
 | [`DeleteForward`](#deleteforward) | Deletes the character after the caret. `Delete` by default. |
 | [`Erase`](#erase) | Deletes: a character, a filter, a typed segment, a field value. `Backspace` by default. |
 | [`EraseToStart`](#erasetostart) | Deletes everything before the caret. `Ctrl+U` by default, as in a shell. |
-| [`EraseWord`](#eraseword) | Deletes the word before the caret. `Ctrl+Backspace` by default. |
+| [`EraseWord`](#eraseword) | Deletes the word before the caret, under both habits: `Ctrl+Backspace` and `Alt+Backspace`, which is what a Mac rubs a word out with. |
 | [`First`](#first) | Goes to the start of a list or the minimum of a range. `Home` by default. |
 | [`Forward`](#forward) | Retraces a step back. `Alt+→` by default. |
 | [`Help`](#help) | Opens the screen listing every key. `F1` by default. |
@@ -48,10 +51,19 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`Notifications`](#notifications) | Opens the screen listing what the application has said lately. |
 | [`PickCurrentFolder`](#pickcurrentfolder) | Picks the folder open in the file picker. `Ctrl+Enter` by default. |
 | [`PreviousField`](#previousfield) | Moves to the previous one. `Shift+Tab` by default. |
+| [`SelectAll`](#selectall) | Selects everything that is being edited. `Ctrl+A` by default. |
+| [`SelectDown`](#selectdown) | Takes the selection one row down, where the text has rows. `Shift+↓` by default. |
+| [`SelectLeft`](#selectleft) | Takes the selection one symbol to the left. `Shift+←` by default. |
+| [`SelectRight`](#selectright) | Takes the selection one symbol to the right. `Shift+→` by default. |
+| [`SelectToEnd`](#selecttoend) | Takes the selection on to the end of the line. `Shift+End` by default. |
+| [`SelectToStart`](#selecttostart) | Takes the selection back to the start of the line. `Shift+Home` by default. |
+| [`SelectUp`](#selectup) | Takes the selection one row up, where the text has rows. `Shift+↑` by default. |
+| [`SelectWordLeft`](#selectwordleft) | Takes the selection a word to the left, under both habits: `Ctrl+Shift+←` and `Alt+Shift+←`. |
+| [`SelectWordRight`](#selectwordright) | Takes the selection a word to the right, under both habits: `Ctrl+Shift+→` and `Alt+Shift+→`. |
 | [`Submit`](#submit) | Accepts a dialog where `Enter` means something else — the multi-line text area, where it starts a new line. `Ctrl+Enter` by default. |
 | [`ToggleLog`](#togglelog) | Shows or hides the log overlay. `Ctrl+L` by default. |
-| [`WordLeft`](#wordleft) | Moves the caret to the previous word. `Ctrl+←` by default. |
-| [`WordRight`](#wordright) | Moves the caret past the next word. `Ctrl+→` by default. |
+| [`WordLeft`](#wordleft) | Moves the caret to the previous word, under both habits: `Ctrl+←` and `Alt+←`, which is what a Mac moves by word on. |
+| [`WordRight`](#wordright) | Moves the caret past the next word, under both habits: `Ctrl+→` and `Alt+→`, which is what a Mac moves by word on. |
 
 ## Methods
 
@@ -89,6 +101,26 @@ Dismisses a dialog or leaves a screen. `Esc` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
+### `Complete` {#complete}
+
+```csharp
+public KeyBinding Complete { get; init; }
+```
+
+Finishes the word being typed, where the line has something to finish it from. `Tab` by default, the same key that moves to the next field: the line being typed into is asked first.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `CompleteBack` {#completeback}
+
+```csharp
+public KeyBinding CompleteBack { get; init; }
+```
+
+Steps back through what was offered for the word. `Shift+Tab` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
 ### `Confirm` {#confirm}
 
 ```csharp
@@ -106,6 +138,16 @@ public KeyBinding Copy { get; init; }
 ```
 
 Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `Cut` {#cut}
+
+```csharp
+public KeyBinding Cut { get; init; }
+```
+
+Cuts the selection to the clipboard, under both habits: `Shift+Delete` and `Ctrl+Shift+X`.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -145,7 +187,7 @@ Deletes everything before the caret. `Ctrl+U` by default, as in a shell.
 public KeyBinding EraseWord { get; init; }
 ```
 
-Deletes the word before the caret. `Ctrl+Backspace` by default.
+Deletes the word before the caret, under both habits: `Ctrl+Backspace` and `Alt+Backspace`, which is what a Mac rubs a word out with.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -299,6 +341,96 @@ Moves to the previous one. `Shift+Tab` by default.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
+### `SelectAll` {#selectall}
+
+```csharp
+public KeyBinding SelectAll { get; init; }
+```
+
+Selects everything that is being edited. `Ctrl+A` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectDown` {#selectdown}
+
+```csharp
+public KeyBinding SelectDown { get; init; }
+```
+
+Takes the selection one row down, where the text has rows. `Shift+↓` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectLeft` {#selectleft}
+
+```csharp
+public KeyBinding SelectLeft { get; init; }
+```
+
+Takes the selection one symbol to the left. `Shift+←` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectRight` {#selectright}
+
+```csharp
+public KeyBinding SelectRight { get; init; }
+```
+
+Takes the selection one symbol to the right. `Shift+→` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectToEnd` {#selecttoend}
+
+```csharp
+public KeyBinding SelectToEnd { get; init; }
+```
+
+Takes the selection on to the end of the line. `Shift+End` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectToStart` {#selecttostart}
+
+```csharp
+public KeyBinding SelectToStart { get; init; }
+```
+
+Takes the selection back to the start of the line. `Shift+Home` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectUp` {#selectup}
+
+```csharp
+public KeyBinding SelectUp { get; init; }
+```
+
+Takes the selection one row up, where the text has rows. `Shift+↑` by default.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectWordLeft` {#selectwordleft}
+
+```csharp
+public KeyBinding SelectWordLeft { get; init; }
+```
+
+Takes the selection a word to the left, under both habits: `Ctrl+Shift+←` and `Alt+Shift+←`.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
+### `SelectWordRight` {#selectwordright}
+
+```csharp
+public KeyBinding SelectWordRight { get; init; }
+```
+
+Takes the selection a word to the right, under both habits: `Ctrl+Shift+→` and `Alt+Shift+→`.
+
+**Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
+
 ### `Submit` {#submit}
 
 ```csharp
@@ -325,7 +457,7 @@ Shows or hides the log overlay. `Ctrl+L` by default.
 public KeyBinding WordLeft { get; init; }
 ```
 
-Moves the caret to the previous word. `Ctrl+←` by default.
+Moves the caret to the previous word, under both habits: `Ctrl+←` and `Alt+←`, which is what a Mac moves by word on.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 
@@ -335,7 +467,7 @@ Moves the caret to the previous word. `Ctrl+←` by default.
 public KeyBinding WordRight { get; init; }
 ```
 
-Moves the caret past the next word. `Ctrl+→` by default.
+Moves the caret past the next word, under both habits: `Ctrl+→` and `Alt+→`, which is what a Mac moves by word on.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 

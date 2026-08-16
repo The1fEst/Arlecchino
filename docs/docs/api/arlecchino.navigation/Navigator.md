@@ -21,6 +21,7 @@ public class Navigator
 | [`CanGoForward`](#cangoforward) | Whether a step back can be retraced. |
 | [`CurrentCommands`](#currentcommands) | Commands of the screen being shown, for the router and the palette. |
 | [`CurrentHints`](#currenthints) | What the hints box should show: the keys of whatever holds the focus, then the screen's own hints or its commands. A key the focused element claims wins, so nothing is listed twice. |
+| [`CurrentIsTyping`](#currentistyping) | Whether the screen being shown has something on it being typed into. |
 | [`CurrentRoute`](#currentroute) | The route being shown. |
 | [`CurrentUsesLayout`](#currentuseslayout) | Whether the screen being shown wants the layout drawn around it. |
 
@@ -78,6 +79,16 @@ public ValueTuple<string, string>[] CurrentHints { get; }
 What the hints box should show: the keys of whatever holds the focus, then the screen's own hints or its commands. A key the focused element claims wins, so nothing is listed twice.
 
 **Type** `ValueTuple<T1, T2>`&lt;`string`, `string`&gt;\[\]
+
+### `CurrentIsTyping` {#currentistyping}
+
+```csharp
+public bool CurrentIsTyping { get; }
+```
+
+Whether the screen being shown has something on it being typed into.
+
+**Type** `bool`
 
 ### `CurrentRoute` {#currentroute}
 

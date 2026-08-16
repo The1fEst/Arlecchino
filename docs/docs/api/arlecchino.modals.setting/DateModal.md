@@ -92,7 +92,7 @@ Called with the date that was confirmed.
 ### `SegmentCount` {#segmentcount}
 
 ```csharp
-public override int SegmentCount { get; }
+public virtual int SegmentCount { get; }
 ```
 
 Year, month and day.
@@ -124,7 +124,7 @@ The date as it stands. Defaults to today.
 ### `Add(int)` {#add-int}
 
 ```csharp
-public override void Add(int delta);
+public virtual void Add(int delta);
 ```
 
 Steps by whole years, months or days depending on the active segment, so stepping the month at the end of a long month lands on a date the shorter month actually has.
@@ -181,7 +181,7 @@ Four digits for the year, two for the rest.
 ### `SegmentTexts()` {#segmenttexts}
 
 ```csharp
-public override string[] SegmentTexts();
+public virtual string[] SegmentTexts();
 ```
 
 The date as a four-digit year and two-digit month and day.

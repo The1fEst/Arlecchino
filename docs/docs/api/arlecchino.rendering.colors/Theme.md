@@ -20,6 +20,7 @@ public static class Theme
 | [`Accent`](#accent) | Text that should stand out from ordinary text. |
 | [`Active`](#active) | Something switched on, such as an enabled action. |
 | [`ActiveSelected`](#activeselected) | The row under the cursor in the focused pane. |
+| [`Caret`](#caret) | The symbol the caret stands on, written the other way round rather than beside. |
 | [`Default`](#default) | Ordinary text on the terminal's own background. |
 | [`Error`](#error) | Validation messages and failures. |
 | [`Header`](#header) | Screen titles. |
@@ -60,6 +61,16 @@ public static TermColor ActiveSelected { get; }
 ```
 
 The row under the cursor in the focused pane.
+
+**Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
+
+### `Caret` {#caret}
+
+```csharp
+public static TermColor Caret { get; }
+```
+
+The symbol the caret stands on, written the other way round rather than beside.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 

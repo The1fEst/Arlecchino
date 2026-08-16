@@ -28,6 +28,7 @@ public sealed class ThemePalette
 | [`ActiveSelected`](#activeselected) | The cursor row of the focused pane. Ink on ash, so it is never read as a failure. |
 | [`Arlecchino`](#arlecchino) | The framework's own colors, on whatever background the terminal has. It is what a palette starts from, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colors. |
 | [`Basic`](#basic) | The terminal's own sixteen colors, with nothing exact behind them. It was the default before 2.0. |
+| [`Caret`](#caret) | The symbol the caret stands on, which is written the other way round rather than beside. Bone on crimson, so the caret is found at a glance without the text shifting to make room for it. |
 | [`Default`](#default) | Ordinary text. The terminal's own foreground and background. |
 | [`Error`](#error) | Failures and validation messages. Bone on crimson. |
 | [`Header`](#header) | Screen titles. Bold crimson. |
@@ -97,6 +98,16 @@ public static ThemePalette Basic { get; }
 The terminal's own sixteen colors, with nothing exact behind them. It was the default before 2.0.
 
 **Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
+
+### `Caret` {#caret}
+
+```csharp
+public TermColor Caret { get; init; }
+```
+
+The symbol the caret stands on, which is written the other way round rather than beside. Bone on crimson, so the caret is found at a glance without the text shifting to make room for it.
+
+**Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
 ### `Default` {#default}
 

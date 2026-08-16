@@ -18,6 +18,7 @@ public interface IArlecchinoView
 | Member | Summary |
 |---|---|
 | [`Focus`](#focus) | What holds the focus inside this screen, normally the [`FocusRing`](../arlecchino.focus/FocusRing.md) the view built. It puts the keys of the focused widget at the top of the hints box, and keeps them in step as `Tab` moves. |
+| [`IsTyping`](#istyping) | Whether something on this screen is being typed into. The keys a text field edits by are left to the screen while it is, rather than moving the application about behind the caret. |
 | [`UsesLayout`](#useslayout) | Whether the [`IArlecchinoLayout`](../arlecchino.navigation/IArlecchinoLayout.md) is drawn around this screen, where the application has one. Answer `false` for a screen that wants the whole terminal. |
 
 ## Methods
@@ -42,6 +43,16 @@ public IArlecchinoFocusable? Focus { get; }
 What holds the focus inside this screen, normally the [`FocusRing`](../arlecchino.focus/FocusRing.md) the view built. It puts the keys of the focused widget at the top of the hints box, and keeps them in step as `Tab` moves.
 
 **Type** [`IArlecchinoFocusable`](../arlecchino.focus/IArlecchinoFocusable.md)
+
+### `IsTyping` {#istyping}
+
+```csharp
+public bool IsTyping { get; }
+```
+
+Whether something on this screen is being typed into. The keys a text field edits by are left to the screen while it is, rather than moving the application about behind the caret.
+
+**Type** `bool`
 
 ### `UsesLayout` {#useslayout}
 

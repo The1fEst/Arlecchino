@@ -30,7 +30,7 @@ public sealed class ArlecchinoStrings
 | [`CommandUnknown`](#commandunknown) | Shown when a key pressed in the palette belongs to no command. |
 | [`Empty`](#empty) | Stands in for a value that has not been set, in forms and fields. |
 | [`FilePicker`](#filepicker) | Text of the file picker, which has enough of its own to be grouped separately. |
-| [`Filter`](#filter) | The filter line above a list, with whatever has been typed so far. |
+| [`Filter`](#filter) | What the filter line above a list is called. What has been typed is drawn after it by the list itself, since it carries a caret and a selection of its own. |
 | [`FormEdit`](#formedit) | Hint for opening the field under the cursor. |
 | [`FormMove`](#formmove) | Hint for moving between form fields. |
 | [`FormReset`](#formreset) | Hint for clearing the field under the cursor. |
@@ -162,12 +162,12 @@ Text of the file picker, which has enough of its own to be grouped separately.
 ### `Filter` {#filter}
 
 ```csharp
-public Func<string, string> Filter { get; set; }
+public Func<string> Filter { get; set; }
 ```
 
-The filter line above a list, with whatever has been typed so far.
+What the filter line above a list is called. What has been typed is drawn after it by the list itself, since it carries a caret and a selection of its own.
 
-**Type** `Func<T, TResult>`&lt;`string`, `string`&gt;
+**Type** `Func<TResult>`&lt;`string`&gt;
 
 ### `FormEdit` {#formedit}
 

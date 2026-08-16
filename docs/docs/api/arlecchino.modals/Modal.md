@@ -27,6 +27,7 @@ public abstract class Modal
 |---|---|
 | [`Box`](#box) | Where the box was drawn last frame. Set as the dialog draws itself, and used to tell a click on it from a click outside. |
 | [`Title`](#title) | Title written into the top edge of the box. |
+| [`Typing`](#typing) | The line this dialog is being typed into now, or nothing while it is not being typed into at all. Naming it is all a dialog has to do to be pasted into. |
 
 ## Methods
 
@@ -35,6 +36,7 @@ public abstract class Modal
 | [`Draw(ModalFrame)`](#draw-modalframe) | Draws it. |
 | [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) | Reads one key, which reaches no one else while this dialog is on top. |
 | [`HandleMouse(ModalFrame, MouseEvent)`](#handlemouse-modalframe-mouseevent) | Reads one mouse event. Dialogs that cannot be clicked leave it alone. |
+| [`HandlePaste(ModalFrame, string)`](#handlepaste-modalframe-string) | Takes a block of pasted text, which lands in [`Modal.Typing`](../arlecchino.modals/Modal.md#typing) as one edit. A dialog of several rows overrides this; one of a single row has nothing to add. |
 
 ## Constructors in detail
 
@@ -71,6 +73,16 @@ public string Title { get; init; }
 Title written into the top edge of the box.
 
 **Type** `string`
+
+### `Typing` {#typing}
+
+```csharp
+public virtual ITextEntry? Typing { get; }
+```
+
+The line this dialog is being typed into now, or nothing while it is not being typed into at all. Naming it is all a dialog has to do to be pasted into.
+
+**Type** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ## Methods in detail
 
@@ -117,4 +129,19 @@ Reads one mouse event. Dialogs that cannot be clicked leave it alone.
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | The keys to obey, and how to close. |
 | `mouse` | [`MouseEvent`](../arlecchino.input/MouseEvent.md) | The event that arrived. |
+
+### `HandlePaste(ModalFrame, string)` {#handlepaste-modalframe-string}
+
+```csharp
+public virtual void HandlePaste(ModalFrame frame, string text);
+```
+
+Takes a block of pasted text, which lands in [`Modal.Typing`](../arlecchino.modals/Modal.md#typing) as one edit. A dialog of several rows overrides this; one of a single row has nothing to add.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | The keys to obey, and how to close. |
+| `text` | `string` | What was pasted, with the terminal's markers already stripped. |
 

@@ -10,10 +10,11 @@ sidebar_label: "MultiChoiceModal"
 Any number of options out of a filterable list. Marks survive a change of filter.
 
 ```csharp
-public sealed class MultiChoiceModal : OptionListModal
+public sealed class MultiChoiceModal : OptionListModal, ITextEntry
 ```
 
-**Inherits from** [`OptionListModal`](../arlecchino.modals.choosing/OptionListModal.md)
+**Inherits from** [`OptionListModal`](../arlecchino.modals.choosing/OptionListModal.md)  
+**Implements** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ## Constructors
 

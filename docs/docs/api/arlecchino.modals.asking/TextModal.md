@@ -10,11 +10,11 @@ sidebar_label: "TextModal"
 A line of text: free text, a secret, an email or a link. The built-in format check runs before [`TextModal.Validate`](../arlecchino.modals.asking/TextModal.md#validate), so your validator only sees input that already looks right.
 
 ```csharp
-public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal
+public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal, ITextEntry
 ```
 
 **Inherits from** [`Modal`](../arlecchino.modals/Modal.md)  
-**Implements** [`ITextEntryModal`](../arlecchino.modals.asking/ITextEntryModal.md), [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md)
+**Implements** [`ITextEntryModal`](../arlecchino.modals.asking/ITextEntryModal.md), [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md), [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ## Constructors
 
@@ -26,6 +26,7 @@ public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal
 
 | Member | Summary |
 |---|---|
+| [`Anchor`](#anchor) | Where the selection was started from, on the caret while nothing is selected. |
 | [`Caret`](#caret) | Where the caret sits, pulled into the text when it would fall outside. |
 | [`Format`](#format) | Built-in check applied on confirm. |
 | [`Masked`](#masked) | Whether to draw dots instead of the text. |
@@ -34,6 +35,7 @@ public sealed class TextModal : Modal, ITextEntryModal, IAffixedModal
 | [`Prefix`](#prefix) | Drawn before the field. |
 | [`Suffix`](#suffix) | Drawn after the field. |
 | [`Text`](#text) | Whatever has been typed so far. Assigning it puts the caret at the end. |
+| [`Typing`](#typing) | The line being typed into, which for a field of one line is the field itself. |
 | [`Validate`](#validate) | Your own check, run after the format one. Return a message to keep the dialog open. |
 
 ## Methods
@@ -59,6 +61,16 @@ public TextModal();
 ```
 
 ## Properties in detail
+
+### `Anchor` {#anchor}
+
+```csharp
+public int Anchor { get; set; }
+```
+
+Where the selection was started from, on the caret while nothing is selected.
+
+**Type** `int`
 
 ### `Caret` {#caret}
 
@@ -139,6 +151,16 @@ public string Text { get; set; }
 Whatever has been typed so far. Assigning it puts the caret at the end.
 
 **Type** `string`
+
+### `Typing` {#typing}
+
+```csharp
+public override ITextEntry Typing { get; }
+```
+
+The line being typed into, which for a field of one line is the field itself.
+
+**Type** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ### `Validate` {#validate}
 

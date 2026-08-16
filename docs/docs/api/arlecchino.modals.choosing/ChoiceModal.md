@@ -10,10 +10,11 @@ sidebar_label: "ChoiceModal"
 One option out of a filterable list.
 
 ```csharp
-public sealed class ChoiceModal : OptionListModal
+public sealed class ChoiceModal : OptionListModal, ITextEntry
 ```
 
-**Inherits from** [`OptionListModal`](../arlecchino.modals.choosing/OptionListModal.md)
+**Inherits from** [`OptionListModal`](../arlecchino.modals.choosing/OptionListModal.md)  
+**Implements** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ## Constructors
 

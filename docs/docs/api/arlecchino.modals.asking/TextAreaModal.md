@@ -7,13 +7,14 @@ sidebar_label: "TextAreaModal"
 
 **Namespace:** `Arlecchino.Modals.Asking` &middot; **Assembly:** `Arlecchino`
 
-Several lines of text, edited in place, where `Enter` starts a new line and the `Submit` binding confirms. Every move and edit goes by symbols, so emoji and combining marks survive a backspace.
+Several lines of text, edited in place, where `Enter` starts a new line and the `Submit` binding confirms. The text is one line with newlines in it, so every edit is the one a field of one line has.
 
 ```csharp
-public sealed class TextAreaModal : Modal
+public sealed class TextAreaModal : Modal, ITextEntry
 ```
 
-**Inherits from** [`Modal`](../arlecchino.modals/Modal.md)
+**Inherits from** [`Modal`](../arlecchino.modals/Modal.md)  
+**Implements** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ## Constructors
 
@@ -25,6 +26,8 @@ public sealed class TextAreaModal : Modal
 
 | Member | Summary |
 |---|---|
+| [`Anchor`](#anchor) | Where the selection was started from, on the caret while nothing is selected. |
+| [`Caret`](#caret) | Where the caret sits, counted from the start of the whole text. |
 | [`Column`](#column) | Where the caret sits inside its row, as an index into that line. |
 | [`FirstVisible`](#firstvisible) | First visible row, kept in step with the caret while drawing. |
 | [`Lines`](#lines) | The lines as they stand, top to bottom. |
@@ -33,6 +36,7 @@ public sealed class TextAreaModal : Modal
 | [`Row`](#row) | Row the caret is on. |
 | [`Rows`](#rows) | Where the text area was drawn last frame, for turning a click into a caret position. |
 | [`Text`](#text) | The whole text, lines joined with a newline. Assigning it puts the caret at the end. |
+| [`Typing`](#typing) | The line being typed into, which here is the whole text with its newlines in it. |
 | [`Validate`](#validate) | Checked when the text is submitted; return a message to keep the dialog open, or `null` to accept. |
 | [`VisibleRows`](#visiblerows) | How many rows of text the dialog shows before it starts scrolling. |
 
@@ -40,20 +44,18 @@ public sealed class TextAreaModal : Modal
 
 | Member | Summary |
 |---|---|
-| [`Break()`](#break) | Splits the current line at the caret, which is what `Enter` does here. |
-| [`DeleteForward()`](#deleteforward) | Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a line. |
 | [`Draw(ModalFrame)`](#draw-modalframe) |  |
-| [`Erase()`](#erase) | Deletes the symbol before the caret, joining this line onto the one above when the caret is at the start of a line. |
 | [`Handle(ModalFrame, KeyPress)`](#handle-modalframe-keypress) |  |
-| [`Insert(char)`](#insert-char) | Inserts a character where the caret is. |
-| [`InsertText(string)`](#inserttext-string) | Inserts text where the caret is, starting a new line for every newline in it. |
+| [`HandlePaste(ModalFrame, string)`](#handlepaste-modalframe-string) | Takes pasted text whole, line breaks included, since this is the one dialog that holds more than one row of it. |
+| [`InsertText(string)`](#inserttext-string) | Inserts text where the caret is, over whatever was selected. |
 | [`MoveCaret(int, int)`](#movecaret-int-int) | Puts the caret at a row and a position inside it, clamped to what exists. |
-| [`MoveLeft()`](#moveleft) | Moves the caret one symbol left, wrapping to the end of the line above. |
-| [`MoveRight()`](#moveright) | Moves the caret one symbol right, wrapping to the start of the line below. |
 | [`MoveRows(int)`](#moverows-int) | Moves the caret a number of rows, keeping as much of the column as the new row has. |
 | [`MoveToLineEnd()`](#movetolineend) | Puts the caret at the end of its line. |
 | [`MoveToLineStart()`](#movetolinestart) | Puts the caret at the start of its line. |
-| [`SetText(string)`](#settext-string) | Replaces the whole text and puts the caret at its end. |
+| [`SelectRows(int)`](#selectrows-int) | Takes the selection a number of rows, dragging it along behind the caret. |
+| [`SelectToLineEnd()`](#selecttolineend) | Takes the selection on to the end of the line. |
+| [`SelectToLineStart()`](#selecttolinestart) | Takes the selection back to the start of the line. |
+| [`StartOf(int)`](#startof-int) | Where in the whole text a row begins. |
 
 ## Constructors in detail
 
@@ -70,6 +72,26 @@ public TextAreaModal();
 ```
 
 ## Properties in detail
+
+### `Anchor` {#anchor}
+
+```csharp
+public int Anchor { get; set; }
+```
+
+Where the selection was started from, on the caret while nothing is selected.
+
+**Type** `int`
+
+### `Caret` {#caret}
+
+```csharp
+public int Caret { get; set; }
+```
+
+Where the caret sits, counted from the start of the whole text.
+
+**Type** `int`
 
 ### `Column` {#column}
 
@@ -144,12 +166,22 @@ Where the text area was drawn last frame, for turning a click into a caret posit
 ### `Text` {#text}
 
 ```csharp
-public string Text { get; init; }
+public string Text { get; set; }
 ```
 
 The whole text, lines joined with a newline. Assigning it puts the caret at the end.
 
 **Type** `string`
+
+### `Typing` {#typing}
+
+```csharp
+public override ITextEntry Typing { get; }
+```
+
+The line being typed into, which here is the whole text with its newlines in it.
+
+**Type** [`ITextEntry`](../arlecchino.editing/ITextEntry.md)
 
 ### `Validate` {#validate}
 
@@ -173,22 +205,6 @@ How many rows of text the dialog shows before it starts scrolling.
 
 ## Methods in detail
 
-### `Break()` {#break}
-
-```csharp
-public void Break();
-```
-
-Splits the current line at the caret, which is what `Enter` does here.
-
-### `DeleteForward()` {#deleteforward}
-
-```csharp
-public void DeleteForward();
-```
-
-Deletes the symbol after the caret, pulling up the next line when the caret is at the end of a line.
-
 ### `Draw(ModalFrame)` {#draw-modalframe}
 
 ```csharp
@@ -200,14 +216,6 @@ public override void Draw(ModalFrame frame);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-
-### `Erase()` {#erase}
-
-```csharp
-public void Erase();
-```
-
-Deletes the symbol before the caret, joining this line onto the one above when the caret is at the start of a line.
 
 ### `Handle(ModalFrame, KeyPress)` {#handle-modalframe-keypress}
 
@@ -222,19 +230,20 @@ public override void Handle(ModalFrame frame, KeyPress key);
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
 | `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) |  |
 
-### `Insert(char)` {#insert-char}
+### `HandlePaste(ModalFrame, string)` {#handlepaste-modalframe-string}
 
 ```csharp
-public void Insert(char character);
+public override void HandlePaste(ModalFrame frame, string text);
 ```
 
-Inserts a character where the caret is.
+Takes pasted text whole, line breaks included, since this is the one dialog that holds more than one row of it.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `character` | `char` | What to insert. |
+| `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | The keys to obey, and how to close. |
+| `text` | `string` | What was pasted. |
 
 ### `InsertText(string)` {#inserttext-string}
 
@@ -242,13 +251,13 @@ Inserts a character where the caret is.
 public void InsertText(string text);
 ```
 
-Inserts text where the caret is, starting a new line for every newline in it.
+Inserts text where the caret is, over whatever was selected.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `text` | `string` | What to insert. |
+| `text` | `string` | What to insert; a newline in it starts a new line. |
 
 ### `MoveCaret(int, int)` {#movecaret-int-int}
 
@@ -264,22 +273,6 @@ Puts the caret at a row and a position inside it, clamped to what exists.
 |---|---|---|
 | `row` | `int` | Row to move to. |
 | `column` | `int` | Index inside that row. |
-
-### `MoveLeft()` {#moveleft}
-
-```csharp
-public void MoveLeft();
-```
-
-Moves the caret one symbol left, wrapping to the end of the line above.
-
-### `MoveRight()` {#moveright}
-
-```csharp
-public void MoveRight();
-```
-
-Moves the caret one symbol right, wrapping to the start of the line below.
 
 ### `MoveRows(int)` {#moverows-int}
 
@@ -311,17 +304,49 @@ public void MoveToLineStart();
 
 Puts the caret at the start of its line.
 
-### `SetText(string)` {#settext-string}
+### `SelectRows(int)` {#selectrows-int}
 
 ```csharp
-public void SetText(string text);
+public void SelectRows(int rows);
 ```
 
-Replaces the whole text and puts the caret at its end.
+Takes the selection a number of rows, dragging it along behind the caret.
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `text` | `string` | The text to hold. |
+| `rows` | `int` | How far to take it; negative goes up. |
+
+### `SelectToLineEnd()` {#selecttolineend}
+
+```csharp
+public void SelectToLineEnd();
+```
+
+Takes the selection on to the end of the line.
+
+### `SelectToLineStart()` {#selecttolinestart}
+
+```csharp
+public void SelectToLineStart();
+```
+
+Takes the selection back to the start of the line.
+
+### `StartOf(int)` {#startof-int}
+
+```csharp
+public int StartOf(int row);
+```
+
+Where in the whole text a row begins.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `row` | `int` | The row, clamped to the rows there are. |
+
+**Returns** `int` — The index of the first character on it.
 

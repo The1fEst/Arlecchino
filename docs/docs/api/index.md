@@ -20,13 +20,14 @@ place to look a member up.
 | [Arlecchino.Atoms.Tracked](arlecchino.atoms.tracked/index.md) | `Arlecchino.Core` | 6 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 4 |
 | [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 7 |
+| [Arlecchino.Editing](arlecchino.editing/index.md) | `Arlecchino` | 15 |
 | [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 5 |
 | [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 2 |
 | [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 10 |
 | [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 10 |
 | [Arlecchino.Layout](arlecchino.layout/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Modals](arlecchino.modals/index.md) | `Arlecchino` | 3 |
-| [Arlecchino.Modals.Asking](arlecchino.modals.asking/index.md) | `Arlecchino` | 8 |
+| [Arlecchino.Modals.Asking](arlecchino.modals.asking/index.md) | `Arlecchino` | 7 |
 | [Arlecchino.Modals.Choosing](arlecchino.modals.choosing/index.md) | `Arlecchino` | 4 |
 | [Arlecchino.Modals.Setting](arlecchino.modals.setting/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Modals.Telling](arlecchino.modals.telling/index.md) | `Arlecchino` | 2 |
@@ -48,3 +49,4 @@ place to look a member up.
 | [Arlecchino.Widgets.Lists](arlecchino.widgets.lists/index.md) | `Arlecchino` | 9 |
 | [Arlecchino.Widgets.Pictures](arlecchino.widgets.pictures/index.md) | `Arlecchino` | 1 |
 | [Arlecchino.Widgets.Readouts](arlecchino.widgets.readouts/index.md) | `Arlecchino` | 9 |
+| [Arlecchino.Widgets.Text](arlecchino.widgets.text/index.md) | `Arlecchino` | 3 |

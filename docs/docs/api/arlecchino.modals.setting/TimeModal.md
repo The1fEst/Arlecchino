@@ -70,7 +70,7 @@ Called with the time that was confirmed.
 ### `SegmentCount` {#segmentcount}
 
 ```csharp
-public override int SegmentCount { get; }
+public virtual int SegmentCount { get; }
 ```
 
 Hours and minutes; seconds are not edited here.
@@ -102,7 +102,7 @@ The time as it stands. Defaults to midnight.
 ### `Add(int)` {#add-int}
 
 ```csharp
-public override void Add(int delta);
+public virtual void Add(int delta);
 ```
 
 Steps by whole hours or minutes depending on the active segment, wrapping around the clock.
@@ -159,7 +159,7 @@ Two digits for both hours and minutes.
 ### `SegmentTexts()` {#segmenttexts}
 
 ```csharp
-public override string[] SegmentTexts();
+public virtual string[] SegmentTexts();
 ```
 
 The time as two-digit hours and minutes.

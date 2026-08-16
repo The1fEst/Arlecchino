@@ -7,23 +7,21 @@ sidebar_label: "ITextEntryModal"
 
 **Namespace:** `Arlecchino.Modals.Asking` &middot; **Assembly:** `Arlecchino`
 
-A field that is typed into, shared by the text field and the number field so both edit and complain alike.
+A field that is typed into, shared by the text field and the number field so both edit and complain alike. What is typed and where the caret is come from [`ITextEntry`](../arlecchino.editing/ITextEntry.md).
 
 ```csharp
-public interface ITextEntryModal : IAffixedModal
+public interface ITextEntryModal : IAffixedModal, ITextEntry
 ```
 
-**Implements** [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md)  
+**Implements** [`IAffixedModal`](../arlecchino.modals.asking/IAffixedModal.md), [`ITextEntry`](../arlecchino.editing/ITextEntry.md)  
 **Implemented by** [`NumberModal`](../arlecchino.modals.asking/NumberModal.md), [`TextModal`](../arlecchino.modals.asking/TextModal.md)
 
 ## Properties
 
 | Member | Summary |
 |---|---|
-| [`Caret`](#caret) | Where the caret sits, counted in characters from the start of the text. Values outside the text are pulled back in, so a caret can never point past the end. |
 | [`Masked`](#masked) | Whether to draw dots instead of the text. The value itself stays as typed. |
 | [`Message`](#message) | Validation message shown under the field, cleared by typing. |
-| [`Text`](#text) | Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything. |
 
 ## Methods
 
@@ -32,16 +30,6 @@ public interface ITextEntryModal : IAffixedModal
 | [`AcceptsCharacter(char)`](#acceptscharacter-char) | Whether a character may be typed here at all. |
 
 ## Properties in detail
-
-### `Caret` {#caret}
-
-```csharp
-public int Caret { get; set; }
-```
-
-Where the caret sits, counted in characters from the start of the text. Values outside the text are pulled back in, so a caret can never point past the end.
-
-**Type** `int`
 
 ### `Masked` {#masked}
 
@@ -60,16 +48,6 @@ public string? Message { get; set; }
 ```
 
 Validation message shown under the field, cleared by typing.
-
-**Type** `string`
-
-### `Text` {#text}
-
-```csharp
-public string Text { get; set; }
-```
-
-Whatever has been typed so far. Assigning it puts the caret at the end, since replacing the text wholesale means the old caret no longer refers to anything.
 
 **Type** `string`
 
