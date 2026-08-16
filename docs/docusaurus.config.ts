@@ -2,6 +2,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 import type {Config} from '@docusaurus/types';
 import {themes as prismThemes} from 'prism-react-renderer';
 
+const packages = ['Arlecchino', 'Arlecchino.Core', 'Arlecchino.Pictures', 'Arlecchino.Testing'];
+
 const config: Config = {
   title: 'Arlecchino',
   tagline: 'A terminal UI framework for .NET',
@@ -124,17 +126,15 @@ const config: Config = {
           items: [
             {label: 'Getting started', to: '/docs/getting-started'},
             {label: 'Views and navigation', to: '/docs/views-and-navigation'},
-            {label: 'Migrating to 2026.8.1', to: '/docs/migrating-to-2026.8.1'},
+            {label: 'Releases', to: '/docs/releases'},
             {label: 'API reference', to: '/docs/api'},
           ],
         },
         {
           title: 'Packages',
           items: [
-            {label: 'Arlecchino', href: 'https://www.nuget.org/packages/Arlecchino'},
-            {label: 'Arlecchino.Core', href: 'https://www.nuget.org/packages/Arlecchino.Core'},
-            {label: 'Arlecchino.Pictures', href: 'https://www.nuget.org/packages/Arlecchino.Pictures'},
-            {label: 'Arlecchino.Testing', href: 'https://www.nuget.org/packages/Arlecchino.Testing'},
+            ...packages.map(name => ({label: name, href: `https://www.nuget.org/packages/${name}`})),
+            {label: 'What is in each', to: '/docs/packages-and-building'},
           ],
         },
         {

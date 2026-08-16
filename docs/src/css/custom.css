@@ -67,8 +67,21 @@
   border-bottom-color: var(--arl-hairline);
 }
 
+/*
+ * The glyph is centered on the weight of the mask rather than on its bounding box, so the brand row
+ * lines the box up with the middle of the word beside it and the mask lands where the eye puts it.
+ */
+.navbar__brand,
+.navbar__logo {
+  display: flex;
+  align-items: center;
+}
+
 .navbar__logo img {
-  height: 1.6rem;
+  display: block;
+  height: 2rem;
+  /* The word has no descenders, so its ink sits above the middle of its line; the mask follows it. */
+  transform: translateY(-1px);
 }
 
 /* A crimson rule under every page title, the one under ARLECCHINO on the banner. */

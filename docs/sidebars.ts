@@ -59,6 +59,13 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Releases',
+      link: {
+        type: 'generated-index',
+        title: 'Releases',
+        description:
+          'What each release changed and what an application has to do about it, newest first.',
+        slug: '/releases',
+      },
       items: [
         'migrating-to-2026.8.2',
         'migrating-to-2026.8.1',
