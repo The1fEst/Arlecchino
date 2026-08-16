@@ -64,9 +64,34 @@ public sealed class TestApplication : IDisposable
 
     public IReadOnlyList<string> Styles() => _host.Styles();
 
+    /// <summary>The style the first cell of some text was drawn in.</summary>
+    /// <param name="text">The text to find on screen.</param>
+    /// <returns>The escape sequence, or an empty string when the text was not drawn.</returns>
+    public string StyleOf(string text) => StyleAt(text, after: false);
+
+    /// <summary>The style of the cell just past some text, which is where a caret at the end of it stands.</summary>
+    /// <param name="text">The text to find on screen.</param>
+    /// <returns>The escape sequence, or an empty string when the text was not drawn.</returns>
+    public string StyleAfter(string text) => StyleAt(text, after: true);
+
     public void Click(int row, int column) => _host.Click(row, column);
 
     public void Scroll(int row, int column, bool down) => _host.Scroll(row, column, down);
 
     public void Dispose() => _host.Dispose();
+
+    private string StyleAt(string text, bool after)
+    {
+        for (var row = 0; row < Screen.Height; row++)
+        {
+            var at = Screen.Line(row).IndexOf(text, StringComparison.Ordinal);
+
+            if (at >= 0)
+            {
+                return Screen.StyleAt(row, after ? at + text.Length : at);
+            }
+        }
+
+        return "";
+    }
 }

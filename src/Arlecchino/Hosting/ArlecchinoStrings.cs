@@ -162,8 +162,11 @@ public sealed class ArlecchinoStrings
     public Func<int, string> SelectedCount { get; set; } =
         static count => count == 1 ? "1 selected" : $"{count} selected";
 
-    /// <summary>The filter line above a list, with whatever has been typed so far.</summary>
-    public Func<string, string> Filter { get; set; } = static filter => $"Filter: {filter}";
+    /// <summary>
+    /// What the filter line above a list is called. What has been typed is drawn after it by the list
+    /// itself, since it carries a caret and a selection of its own.
+    /// </summary>
+    public Func<string> Filter { get; set; } = static () => "Filter:";
 
     /// <summary>Shown in place of a list when the filter matches nothing.</summary>
     public Func<string> NothingMatches { get; set; } = static () => "nothing matches";

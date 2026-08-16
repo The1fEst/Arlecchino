@@ -48,7 +48,7 @@ public sealed class ModalFrame
         Steps = new(state, Keymap);
         Fields = new(state, Keymap, Keys, terminal, Strings, Steps);
         Areas = new(state, Keymap, Keys, terminal);
-        Choices = new(state, Keymap, Keys);
+        Choices = new(state, Keymap, Keys, terminal);
         Paint = new(surface, Strings, _box);
         Values = new(Strings, _box);
         Lists = new(surface, Strings, _box);

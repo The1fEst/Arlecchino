@@ -31,6 +31,7 @@ public sealed class ThemePalette
         Info = new() { Foreground = TerminalColor.Cyan },
         Muted = new() { Foreground = TerminalColor.BrightBlack },
         Input = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Blue },
+        Caret = new() { Foreground = TerminalColor.Black, Background = TerminalColor.White },
         Selected = new() { Background = TerminalColor.BrightBlack },
         Active = new() { Foreground = TerminalColor.Green },
         ActiveSelected = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Green },
@@ -76,6 +77,18 @@ public sealed class ThemePalette
         ExactForeground = Ink,
         Background = TerminalColor.White,
         ExactBackground = Bone,
+    };
+
+    /// <summary>
+    /// The symbol the caret stands on, which is written the other way round rather than beside. Bone on
+    /// crimson, so the caret is found at a glance without the text shifting to make room for it.
+    /// </summary>
+    public TermColor Caret { get; init; } = new()
+    {
+        Foreground = TerminalColor.White,
+        ExactForeground = Bone,
+        Background = TerminalColor.BrightRed,
+        ExactBackground = Crimson,
     };
 
     /// <summary>The cursor row of an unfocused pane. Bone on the hairline gray.</summary>

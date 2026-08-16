@@ -34,6 +34,7 @@ internal sealed class FilePickerView : IArlecchinoView
     private readonly PickerTable _table;
     private readonly PickerChrome _chrome;
     private readonly PickerInput _input;
+    private readonly PickerClicks _clicks;
 
     private readonly FocusRing _panes;
     private readonly FocusablePane _placesPane;
@@ -50,8 +51,14 @@ internal sealed class FilePickerView : IArlecchinoView
     /// <param name="state">Holds the request that opened the picker.</param>
     /// <param name="surface">The cell grid to draw into.</param>
     /// <param name="keyText">Turns a key press into the character it stands for, for the filter.</param>
+    /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
     /// <param name="options">Supplies the keymap and the wording.</param>
-    public FilePickerView(ArlecchinoState state, Surface surface, KeyText keyText, ArlecchinoOptions options)
+    public FilePickerView(
+        ArlecchinoState state,
+        Surface surface,
+        KeyText keyText,
+        IArlecchinoTerminal terminal,
+        ArlecchinoOptions options)
     {
         _state = state;
         _surface = surface;
@@ -66,7 +73,8 @@ internal sealed class FilePickerView : IArlecchinoView
         _places = new(_request, strings);
         _table = new(strings);
         _chrome = new(strings, _keymap, _request);
-        _input = new(_keymap, keyText, _listing, _places, _table, Open, Focus);
+        _input = new(_keymap, keyText, terminal, _listing, _places, _table, Open, Focus);
+        _clicks = new(_listing, _places, _table, Open, _input.GoTo);
 
         _placesPane = new(_input.Places);
         _listPane = new(_input.List);
@@ -90,7 +98,7 @@ internal sealed class FilePickerView : IArlecchinoView
 
         var (toolbar, rest) = frame.SplitTop(2);
 
-        _chrome.Toolbar(toolbar, _listing.Folder, _listing.Filter.Text);
+        _chrome.Toolbar(toolbar, _listing.Folder, _listing.Filter);
 
         var (browser, status) = rest.SplitTop(rest.Height - 2);
         var inside = browser.Border(Theme.Muted);
@@ -121,7 +129,7 @@ internal sealed class FilePickerView : IArlecchinoView
             var (row, _) = _placesRows.ToLocal(mouse.Row, mouse.Column);
 
             return mouse is { Action: MouseAction.Pressed, Button: MouseButton.Left }
-                ? _input.ClickedPlaces(row)
+                ? _clicks.Places(row)
                 : ViewRoute.None;
         }
 
@@ -134,7 +142,7 @@ internal sealed class FilePickerView : IArlecchinoView
 
         var (listRow, _) = _listRows.ToLocal(mouse.Row, mouse.Column);
 
-        return _input.ClickedList(mouse, listRow);
+        return _clicks.List(mouse, listRow);
     }
 
     /// <summary>
@@ -155,6 +163,22 @@ internal sealed class FilePickerView : IArlecchinoView
         }
 
         return _panes.Handle(key);
+    }
+
+    /// <summary>
+    /// Puts pasted text into the filter, which is where typing goes. It is taken only while the listing has
+    /// the keyboard, since the shortcuts are walked rather than typed into.
+    /// </summary>
+    /// <param name="text">What was pasted.</param>
+    /// <returns>Where to go, which is nowhere.</returns>
+    public ViewRoute HandlePaste(string text)
+    {
+        if (_listPane.IsFocused)
+        {
+            _input.Paste(text);
+        }
+
+        return ViewRoute.None;
     }
 
     /// <summary>No hint box: the picker draws its own key line as part of its layout.</summary>

@@ -6,6 +6,7 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.Widgets.Lists;
+using Arlecchino.Widgets.Text;
 using Arlecchino.Modals.Asking;
 
 namespace Arlecchino.Modals.Drawing;
@@ -19,11 +20,16 @@ internal sealed class FieldPaint
     private const int BoxChromeColumns = 8;
     private const int SmallestFieldColumns = 12;
     private const string ScrollMarker = "…";
-    private const string Caret = "▏";
 
     private readonly Surface _surface;
     private readonly ArlecchinoStrings _strings;
     private readonly ModalBox _box;
+
+    /// <summary>
+    /// The colors a line being typed into is written in, read afresh every frame so that swapping the
+    /// palette restyles the fields along with everything else.
+    /// </summary>
+    private static EntryLook Look => new(Theme.Input, Theme.Selected, Theme.Caret);
 
     /// <summary>Draws the fields.</summary>
     /// <param name="surface">The cell grid frames are built in.</param>
@@ -49,25 +55,28 @@ internal sealed class FieldPaint
         var room = Math.Max(
             SmallestFieldColumns,
             _surface.FrameWidth - BoxChromeColumns - TextWidth.Of(modal.Prefix) - TextWidth.Of(modal.Suffix));
-        var (before, after) = Window(shown, caret, room);
+        var (before, after) = LineWindow.Around(shown, caret, room);
         var (start, end) = Selection(modal);
-        var kept = Math.Clamp(start - (caret - before.Length), 0, before.Length);
-        var taken = Math.Clamp(end - caret, 0, after.Length);
+        var window = before + after;
+        var head = caret - before.Length;
 
-        List<Piece[]> body =
+        List<Piece> line =
         [
-            [
-                new(modal.Prefix, Theme.Muted),
-                new(before.Length < caret ? ScrollMarker : "", Theme.Muted),
-                new(before[..kept], Theme.Input),
-                new(before[kept..], Theme.Selected),
-                new(Caret, Theme.Accent),
-                new(after[..taken], Theme.Selected),
-                new(after[taken..], Theme.Input),
-                new(caret + after.Length < shown.Length ? ScrollMarker : "", Theme.Muted),
-                new(modal.Suffix, Theme.Muted),
-            ],
+            new(modal.Prefix, Theme.Muted),
+            new(head > 0 ? ScrollMarker : "", Theme.Muted),
         ];
+
+        EntryRuns.Of(
+            window,
+            before.Length,
+            (Math.Clamp(start - head, 0, window.Length), Math.Clamp(end - head, 0, window.Length)),
+            Look,
+            (piece, style) => line.Add(new(piece, style)));
+
+        line.Add(new(caret + after.Length < shown.Length ? ScrollMarker : "", Theme.Muted));
+        line.Add(new(modal.Suffix, Theme.Muted));
+
+        List<Piece[]> body = [[.. line]];
 
         if (!string.IsNullOrEmpty(modal.Message))
         {
@@ -129,31 +138,6 @@ internal sealed class FieldPaint
         return modal.Masked
             ? (TextWidth.CountClusters(modal.Text[..start]), TextWidth.CountClusters(modal.Text[..end]))
             : (start, end);
-    }
-
-    /// <summary>
-    /// The slice of a value that fits beside the caret. A value longer than the terminal is scrolled
-    /// rather than cut off, so the caret stays on screen wherever it is in the text.
-    /// </summary>
-    /// <param name="text">The whole value.</param>
-    /// <param name="caret">Where the caret is in it.</param>
-    /// <param name="room">How many cells there are.</param>
-    /// <returns>What goes before the caret and what goes after.</returns>
-    private static (string Before, string After) Window(string text, int caret, int room)
-    {
-        var before = text[..caret];
-        var after = text[caret..];
-
-        if (TextWidth.Of(text) < room)
-        {
-            return (before, after);
-        }
-
-        var forCaretAndMarkers = 3;
-        var visible = Math.Max(1, room - forCaretAndMarkers);
-        var trailing = TextWidth.Truncate(after, visible / 2);
-
-        return (TextWidth.TruncateStart(before, visible - TextWidth.Of(trailing)), trailing);
     }
 
     private static string Dots(string text) => new('•', TextWidth.CountClusters(text));

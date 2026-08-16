@@ -16,16 +16,23 @@ internal sealed class ListKeys
     private readonly ArlecchinoState _state;
     private readonly ArlecchinoKeymap _keymap;
     private readonly KeyText _keyText;
+    private readonly IArlecchinoTerminal _terminal;
 
     /// <summary>Reads keys for the list dialogs.</summary>
     /// <param name="state">Where the dialog on top lives, so that it can be closed.</param>
     /// <param name="keymap">Keys to obey.</param>
     /// <param name="keyText">Turns a key press into the character it stands for.</param>
-    public ListKeys(ArlecchinoState state, ArlecchinoKeymap keymap, KeyText keyText)
+    /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
+    public ListKeys(
+        ArlecchinoState state,
+        ArlecchinoKeymap keymap,
+        KeyText keyText,
+        IArlecchinoTerminal terminal)
     {
         _state = state;
         _keymap = keymap;
         _keyText = keyText;
+        _terminal = terminal;
     }
 
     /// <summary>Reads a key for a list one thing is picked from.</summary>
@@ -111,7 +118,7 @@ internal sealed class ListKeys
 
         var typedSoFar = modal.Text;
 
-        if (!EraseKeys.Erased(modal, _keymap, key) && _keyText.Resolve(key) is { } typed)
+        if (!Filtering(modal, key) && _keyText.Resolve(key) is { } typed)
         {
             TextEditing.Insert(modal, typed);
         }
@@ -121,4 +128,14 @@ internal sealed class ListKeys
             modal.Index = 0;
         }
     }
+
+    /// <summary>
+    /// The keys that edit the filter rather than the list, which are read only once something is being
+    /// filtered by. With nothing typed the rows are what the keys are for, so the filter leaves them alone.
+    /// </summary>
+    /// <param name="modal">The list.</param>
+    /// <param name="key">The key that arrived.</param>
+    /// <returns><c>true</c> when the filter took the key.</returns>
+    private bool Filtering(OptionListModal modal, KeyPress key) =>
+        modal.Text.Length > 0 && EntryKeys.Handled(modal, _keymap, _terminal.CopyToClipboard, key);
 }

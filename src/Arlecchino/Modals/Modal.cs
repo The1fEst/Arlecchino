@@ -1,4 +1,6 @@
+using Arlecchino.Editing;
 using Arlecchino.Input;
+using Arlecchino.Modals.Asking;
 using Arlecchino.Rendering;
 
 namespace Arlecchino.Modals;
@@ -31,4 +33,34 @@ public abstract class Modal
     /// <param name="frame">The keys to obey, and how to close.</param>
     /// <param name="mouse">The event that arrived.</param>
     public virtual void HandleMouse(ModalFrame frame, MouseEvent mouse) { }
+
+    /// <summary>
+    /// The line this dialog is being typed into now, or nothing while it is not being typed into at all.
+    /// Naming it is all a dialog has to do to be pasted into.
+    /// </summary>
+    public virtual ITextEntry? Typing => null;
+
+    /// <summary>
+    /// Takes a block of pasted text, which lands in <see cref="Typing"/> as one edit. A dialog of several
+    /// rows overrides this; one of a single row has nothing to add.
+    /// </summary>
+    /// <param name="frame">The keys to obey, and how to close.</param>
+    /// <param name="text">What was pasted, with the terminal's markers already stripped.</param>
+    public virtual void HandlePaste(ModalFrame frame, string text)
+    {
+        if (Typing is not { } entry)
+        {
+            return;
+        }
+
+        if (entry is ITextEntryModal field)
+        {
+            TextEditing.InsertText(entry, PastedText.FirstLine(text, field.AcceptsCharacter));
+            frame.Fields.Recheck(field);
+
+            return;
+        }
+
+        TextEditing.InsertText(entry, PastedText.FirstLine(text));
+    }
 }

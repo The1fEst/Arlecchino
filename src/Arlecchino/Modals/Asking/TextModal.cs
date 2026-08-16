@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Editing;
 using Arlecchino.Input;
 
 namespace Arlecchino.Modals.Asking;
@@ -61,6 +62,9 @@ public sealed class TextModal : Modal, ITextEntryModal
 
     /// <summary>Validation message shown under the field.</summary>
     public string? Message { get; set; }
+
+    /// <summary>The line being typed into, which for a field of one line is the field itself.</summary>
+    public override ITextEntry Typing => this;
 
     /// <summary>Accepts anything that can be typed.</summary>
     /// <param name="character">The character resolved from the key press.</param>

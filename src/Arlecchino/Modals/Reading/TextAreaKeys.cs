@@ -53,7 +53,10 @@ internal sealed class TextAreaKeys
             return;
         }
 
-        if (Clipped(modal, key) || Selected(modal, key) || Moved(modal, key) || Edited(modal, key))
+        if (EntryKeys.Clipped(modal, _keymap, _terminal.CopyToClipboard, key) ||
+            Selected(modal, key) ||
+            Moved(modal, key) ||
+            Edited(modal, key))
         {
             return;
         }
@@ -77,28 +80,6 @@ internal sealed class TextAreaKeys
 
         _state.CloseModal();
         modal.OnSubmit(text);
-    }
-
-    private bool Clipped(TextAreaModal modal, KeyPress key)
-    {
-        var selected = TextEditing.Selected(modal);
-
-        if (_keymap.Copy.Matches(key))
-        {
-            _terminal.CopyToClipboard(selected.Length > 0 ? selected : modal.Text);
-
-            return true;
-        }
-
-        if (!_keymap.Cut.Matches(key) || selected.Length == 0)
-        {
-            return false;
-        }
-
-        _terminal.CopyToClipboard(selected);
-        TextEditing.EraseSelection(modal);
-
-        return true;
     }
 
     /// <summary>

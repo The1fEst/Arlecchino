@@ -105,24 +105,7 @@ internal sealed class FieldKeys
     /// <param name="key">The key that arrived.</param>
     public void Edit(ITextEntryModal modal, KeyPress key)
     {
-        if (_keymap.Copy.Matches(key))
-        {
-            _terminal.CopyToClipboard(Taken(modal));
-
-            return;
-        }
-
-        if (_keymap.Cut.Matches(key))
-        {
-            _terminal.CopyToClipboard(Taken(modal));
-            TextEditing.EraseSelection(modal);
-
-            return;
-        }
-
-        if (SelectKeys.Handled(modal, _keymap, key) ||
-            CaretKeys.Moved(modal, _keymap, key) ||
-            EraseKeys.Erased(modal, _keymap, key))
+        if (EntryKeys.Handled(modal, _keymap, _terminal.CopyToClipboard, key))
         {
             return;
         }
@@ -147,14 +130,6 @@ internal sealed class FieldKeys
             modal.Message = Complaints.About(modal, _strings);
         }
     }
-
-    /// <summary>
-    /// What the clipboard keys work on: the selection where there is one, the whole value where there is not.
-    /// </summary>
-    /// <param name="modal">The dialog.</param>
-    /// <returns>The text to put on the clipboard.</returns>
-    private static string Taken(ITextEntryModal modal) =>
-        TextEditing.Selected(modal) is { Length: > 0 } selected ? selected : modal.Text;
 
     private void Submit(NumberModal modal)
     {

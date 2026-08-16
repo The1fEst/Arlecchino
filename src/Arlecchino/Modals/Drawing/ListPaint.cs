@@ -5,6 +5,7 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.Widgets.Lists;
+using Arlecchino.Widgets.Text;
 using Arlecchino.Modals.Choosing;
 
 namespace Arlecchino.Modals.Drawing;
@@ -100,7 +101,7 @@ internal sealed class ListPaint
         modal.Rows = inside.Rows(2 + notice, visible);
         modal.FirstVisible = start;
 
-        inside.WriteLine(0, _strings.Filter(modal.Text), Theme.Info);
+        Filter(modal, inside);
         ModalBox.Divider(box, 1);
 
         if (notice == 1)
@@ -122,6 +123,26 @@ internal sealed class ListPaint
 
         ModalBox.Divider(box, footer);
         inside.WriteLine(footer + 1, hints, Theme.Muted);
+    }
+
+    /// <summary>
+    /// Draws what is narrowing the list, with the caret and whatever is selected in it. It is drawn the way
+    /// a field is, because it is edited the way a field is.
+    /// </summary>
+    /// <param name="modal">The dialog.</param>
+    /// <param name="inside">The region inside the box.</param>
+    private void Filter(OptionListModal modal, SurfaceRegion inside)
+    {
+        var label = _strings.Filter();
+
+        inside.Write(0, 0, label, Theme.Info);
+        EntryRow.Draw(
+            inside,
+            0,
+            TextWidth.Of(label) + 1,
+            Math.Max(0, inside.Width - TextWidth.Of(label) - 1),
+            modal,
+            new(Theme.Info, Theme.Selected, Theme.Caret));
     }
 
     private static void Rows(

@@ -152,3 +152,41 @@ static Arlecchino.Editing.CompletionAsk.operator ==(Arlecchino.Editing.Completio
 *REMOVED*override Arlecchino.Modals.Setting.TimeModal.Add(int delta) -> void
 *REMOVED*override Arlecchino.Modals.Setting.TimeModal.SegmentCount.get -> int
 *REMOVED*override Arlecchino.Modals.Setting.TimeModal.SegmentTexts() -> string![]!
+Arlecchino.Editing.EntryKeys
+Arlecchino.Editing.PastedText
+Arlecchino.Hosting.ArlecchinoStrings.Filter.get -> System.Func<string!>!
+Arlecchino.Widgets.Text.EntryLook
+Arlecchino.Widgets.Text.EntryLook.Caret.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Caret.init -> void
+Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook() -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.Equals(Arlecchino.Widgets.Text.EntryLook other) -> bool
+Arlecchino.Widgets.Text.EntryLook.Selected.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Selected.init -> void
+Arlecchino.Widgets.Text.EntryLook.Text.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Text.init -> void
+Arlecchino.Widgets.Text.EntryRow
+override Arlecchino.Modals.Asking.NumberModal.Typing.get -> Arlecchino.Editing.ITextEntry!
+override Arlecchino.Modals.Asking.TextAreaModal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.Typing.get -> Arlecchino.Editing.ITextEntry!
+override Arlecchino.Modals.Asking.TextModal.Typing.get -> Arlecchino.Editing.ITextEntry!
+override Arlecchino.Modals.Choosing.OptionListModal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+override Arlecchino.Modals.Choosing.OptionListModal.Typing.get -> Arlecchino.Editing.ITextEntry!
+override Arlecchino.Widgets.Text.EntryLook.GetHashCode() -> int
+static Arlecchino.Editing.EntryKeys.Clipped(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, System.Action<string!>! copy, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.EntryKeys.Handled(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, System.Action<string!>! copy, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.PastedText.FirstLine(string! text) -> string!
+static Arlecchino.Editing.PastedText.FirstLine(string! text, System.Func<char, bool>! accepts) -> string!
+static Arlecchino.Editing.TextEditing.InsertText(Arlecchino.Editing.ITextEntry! entry, string! text) -> void
+static Arlecchino.Widgets.Text.EntryLook.operator !=(Arlecchino.Widgets.Text.EntryLook left, Arlecchino.Widgets.Text.EntryLook right) -> bool
+static Arlecchino.Widgets.Text.EntryLook.operator ==(Arlecchino.Widgets.Text.EntryLook left, Arlecchino.Widgets.Text.EntryLook right) -> bool
+static Arlecchino.Widgets.Text.EntryRow.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, int width, Arlecchino.Editing.ITextEntry! entry, Arlecchino.Widgets.Text.EntryLook look) -> int
+virtual Arlecchino.Modals.Modal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+virtual Arlecchino.Modals.Modal.Typing.get -> Arlecchino.Editing.ITextEntry?
+~override Arlecchino.Widgets.Text.EntryLook.Equals(object obj) -> bool
+~override Arlecchino.Widgets.Text.EntryLook.ToString() -> string
+*REMOVED*Arlecchino.Hosting.ArlecchinoStrings.Filter.get -> System.Func<string!, string!>!
+static Arlecchino.Widgets.Text.EntryRow.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, int width, string! text, int caret, (int Start, int End) selection, Arlecchino.Widgets.Text.EntryLook look) -> int
+Arlecchino.Widgets.Text.EntryRuns
+static Arlecchino.Widgets.Text.EntryRuns.Of(string! text, int caret, (int Start, int End) selection, Arlecchino.Widgets.Text.EntryLook look, System.Action<string!, Arlecchino.Rendering.Colors.IArlecchinoColor!>! write) -> void

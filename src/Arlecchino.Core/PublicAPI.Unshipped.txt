@@ -1,1 +1,4 @@
 #nullable enable
+Arlecchino.Rendering.Colors.ThemePalette.Caret.get -> Arlecchino.Rendering.Colors.TermColor!
+Arlecchino.Rendering.Colors.ThemePalette.Caret.init -> void
+static Arlecchino.Rendering.Colors.Theme.Caret.get -> Arlecchino.Rendering.Colors.TermColor!

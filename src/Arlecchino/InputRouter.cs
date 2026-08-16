@@ -1,12 +1,9 @@
 using System;
 using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
-using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Modals;
-using Arlecchino.Modals.Asking;
-using Arlecchino.Modals.Choosing;
 using Arlecchino.Navigation;
 using Arlecchino.State;
 using Microsoft.Extensions.Logging;
@@ -219,6 +216,11 @@ public class InputRouter
         }
     }
 
+    /// <summary>
+    /// Where pasted text goes: the dialog on top when there is one, and the view otherwise. A dialog takes
+    /// it into whatever line it says it is being typed into, so none of them are named here.
+    /// </summary>
+    /// <param name="text">What was pasted.</param>
     private void RoutePaste(string text)
     {
         if (text.Length == 0)
@@ -226,52 +228,14 @@ public class InputRouter
             return;
         }
 
-        switch (_state.Modal)
+        if (_state.Modal is { } modal)
         {
-            case TextAreaModal area:
-                area.InsertText(text);
-                return;
-            case ITextEntryModal entry:
-                PasteIntoField(entry, text);
-                return;
-            case OptionListModal list:
-                foreach (var character in FirstLine(text))
-                {
-                    TextEditing.Insert(list, character);
-                }
+            modal.HandlePaste(_frame, text);
 
-                list.Index = 0;
-                return;
-            case null:
-                _navigator.HandlePaste(text);
-                return;
-        }
-    }
-
-    /// <summary>
-    /// Pastes into a field of one line: the first line of what was pasted, and only the characters the field
-    /// will take. What was on the clipboard does not widen what a field accepts.
-    /// </summary>
-    /// <param name="modal">The field.</param>
-    /// <param name="text">What was pasted.</param>
-    private void PasteIntoField(ITextEntryModal modal, string text)
-    {
-        foreach (var character in FirstLine(text))
-        {
-            if (modal.AcceptsCharacter(character))
-            {
-                TextEditing.Insert(modal, character);
-            }
+            return;
         }
 
-        _frame.Fields.Recheck(modal);
-    }
-
-    private static string FirstLine(string text)
-    {
-        var end = text.IndexOfAny(['\r', '\n']);
-
-        return end < 0 ? text : text[..end];
+        _navigator.HandlePaste(text);
     }
 
     private bool ClickedOutputRow(MouseEvent mouse) =>

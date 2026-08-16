@@ -48,6 +48,9 @@ public abstract class OptionListModal : Modal, ITextEntry
     /// <summary>Cursor position within the options that match.</summary>
     public int Index { get; set; }
 
+    /// <summary>The line being typed into, which here is what narrows the list.</summary>
+    public override ITextEntry Typing => this;
+
     /// <summary>Where the rows were drawn last frame, used to turn a click into a row.</summary>
     public SurfaceRegion Rows { get; set; }
 
@@ -73,6 +76,19 @@ public abstract class OptionListModal : Modal, ITextEntry
         }
 
         return matching;
+    }
+
+    /// <summary>
+    /// Takes pasted text into the filter and puts the cursor back on the first row, since what is showing
+    /// after the paste is a different set of rows.
+    /// </summary>
+    /// <param name="frame">The keys to obey, and how to close.</param>
+    /// <param name="text">What was pasted.</param>
+    public override void HandlePaste(ModalFrame frame, string text)
+    {
+        base.HandlePaste(frame, text);
+
+        Index = 0;
     }
 
     /// <summary>Acts on the row that was picked, which is what tells one kind of list from the other.</summary>

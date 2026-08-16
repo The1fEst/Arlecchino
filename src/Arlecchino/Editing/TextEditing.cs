@@ -69,6 +69,27 @@ public static class TextEditing
     }
 
     /// <summary>
+    /// Puts a run of text in at the caret and leaves it after the run, over whatever was selected. Pasting
+    /// comes to this, so a block arrives as one edit rather than as one edit per character.
+    /// </summary>
+    /// <param name="entry">The line being edited.</param>
+    /// <param name="text">The text to insert.</param>
+    public static void InsertText(ITextEntry entry, string text)
+    {
+        EraseSelection(entry);
+
+        if (text.Length == 0)
+        {
+            return;
+        }
+
+        var caret = TextWidth.SnapToCluster(entry.Text, entry.Caret);
+
+        entry.Text = entry.Text[..caret] + text + entry.Text[caret..];
+        Put(entry, caret + text.Length);
+    }
+
+    /// <summary>
     /// Removes the symbol before the caret, or whatever is selected. A symbol, not a <c>char</c>: an emoji
     /// or a letter with a combining mark goes in one press rather than being left as half a surrogate pair.
     /// </summary>
@@ -120,7 +141,7 @@ public static class TextEditing
 
         var caret = entry.Caret;
 
-        Cut(entry, WordStart(entry.Text, caret), caret);
+        Cut(entry, LineWords.Start(entry.Text, caret), caret);
     }
 
     /// <summary>Removes everything before the caret, or whatever is selected.</summary>
@@ -175,7 +196,7 @@ public static class TextEditing
     public static void SelectWord(ITextEntry entry, int direction) => Drag(entry, Word(entry, direction));
 
     private static int Word(ITextEntry entry, int direction) =>
-        direction < 0 ? WordStart(entry.Text, entry.Caret) : WordEnd(entry.Text, entry.Caret);
+        direction < 0 ? LineWords.Start(entry.Text, entry.Caret) : LineWords.End(entry.Text, entry.Caret);
 
     private static int Stepped(ITextEntry entry, int delta)
     {
@@ -209,39 +230,5 @@ public static class TextEditing
     {
         entry.Text = entry.Text[..start] + entry.Text[end..];
         Put(entry, start);
-    }
-
-    private static int WordStart(string text, int caret)
-    {
-        var index = Math.Clamp(caret, 0, text.Length);
-
-        while (index > 0 && char.IsWhiteSpace(text[index - 1]))
-        {
-            index--;
-        }
-
-        while (index > 0 && !char.IsWhiteSpace(text[index - 1]))
-        {
-            index--;
-        }
-
-        return index;
-    }
-
-    private static int WordEnd(string text, int caret)
-    {
-        var index = Math.Clamp(caret, 0, text.Length);
-
-        while (index < text.Length && char.IsWhiteSpace(text[index]))
-        {
-            index++;
-        }
-
-        while (index < text.Length && !char.IsWhiteSpace(text[index]))
-        {
-            index++;
-        }
-
-        return index;
     }
 }

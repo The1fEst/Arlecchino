@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Arlecchino.Editing;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
@@ -9,7 +8,7 @@ using Arlecchino.Navigation;
 namespace Arlecchino.Views.FilePicker;
 
 /// <summary>
-/// What each key and click does in the two panes. Typing narrows the listing rather than jumping to a
+/// What each key does in the two panes. Typing narrows the listing rather than jumping to a
 /// letter, so the keys that would type are read last.
 /// </summary>
 internal sealed class PickerInput
@@ -18,6 +17,7 @@ internal sealed class PickerInput
 
     private readonly ArlecchinoKeymap _keymap;
     private readonly KeyText _keyText;
+    private readonly IArlecchinoTerminal _terminal;
     private readonly PickerListing _listing;
     private readonly PickerPlaces _places;
     private readonly PickerTable _table;
@@ -27,6 +27,7 @@ internal sealed class PickerInput
     /// <summary>Reads the picker's input.</summary>
     /// <param name="keymap">Keys to obey.</param>
     /// <param name="keyText">Turns a key press into the character it stands for, for what is typed.</param>
+    /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
     /// <param name="folder">The folder being listed.</param>
     /// <param name="places">The shortcuts down the left.</param>
     /// <param name="table">The listing on the right.</param>
@@ -35,6 +36,7 @@ internal sealed class PickerInput
     public PickerInput(
         ArlecchinoKeymap keymap,
         KeyText keyText,
+        IArlecchinoTerminal terminal,
         PickerListing folder,
         PickerPlaces places,
         PickerTable table,
@@ -43,6 +45,7 @@ internal sealed class PickerInput
     {
         _keymap = keymap;
         _keyText = keyText;
+        _terminal = terminal;
         _listing = folder;
         _places = places;
         _table = table;
@@ -91,6 +94,30 @@ internal sealed class PickerInput
             return FocusResult.Handled;
         }
 
+        if (_keymap.Confirm.Matches(key) && entries.Count > 0)
+        {
+            return FocusResult.Navigate(_open(entries[_table.Selected]));
+        }
+
+        if (_keymap.Erase.Matches(key) && _listing.Filter.Text.Length == 0)
+        {
+            _listing.Up();
+
+            return FocusResult.Handled;
+        }
+
+        if (Filtering(key))
+        {
+            _table.Selected = 0;
+
+            return FocusResult.Handled;
+        }
+
+        if (Ended(key, entries.Count))
+        {
+            return FocusResult.Handled;
+        }
+
         if (_keymap.MoveLeft.Matches(key))
         {
             Leave();
@@ -98,18 +125,6 @@ internal sealed class PickerInput
         else if (_keymap.MoveRight.Matches(key) && entries.Count > 0 && entries[_table.Selected].IsDirectory)
         {
             GoTo(entries[_table.Selected].FullPath);
-        }
-        else if (_keymap.Erase.Matches(key) && _listing.Filter.Text.Length == 0)
-        {
-            _listing.Up();
-        }
-        else if (EraseKeys.Erased(_listing.Filter, _keymap, key))
-        {
-            _table.Selected = 0;
-        }
-        else if (_keymap.Confirm.Matches(key) && entries.Count > 0)
-        {
-            return FocusResult.Navigate(_open(entries[_table.Selected]));
         }
         else if (_keyText.Resolve(key) is { } typed)
         {
@@ -124,59 +139,34 @@ internal sealed class PickerInput
         return FocusResult.Handled;
     }
 
-    /// <summary>Follows the shortcut that was clicked.</summary>
-    /// <param name="row">Row on screen, counted from the top of the pane.</param>
-    /// <returns>Where to go, which is nowhere.</returns>
-    public ViewRoute ClickedPlaces(int row)
+    /// <summary>
+    /// Puts pasted text into the filter, which is the one thing in the picker that is typed into.
+    /// </summary>
+    /// <param name="text">What was pasted.</param>
+    public void Paste(string text)
     {
-        if (_places.ClickedAt(row) is { } target)
-        {
-            GoTo(target);
-        }
-
-        return ViewRoute.None;
+        TextEditing.InsertText(_listing.Filter, PastedText.FirstLine(text));
+        _table.Selected = 0;
     }
 
     /// <summary>
-    /// Acts on a click or a turn of the wheel in the listing. A row is opened only when it was already the
-    /// one under the cursor, so the first click picks it out and the second acts on it.
+    /// The keys that edit what is being filtered by rather than walk the listing. They are read only once
+    /// something is being filtered by: with nothing typed the rows are what the keys are for.
     /// </summary>
-    /// <param name="mouse">The event that arrived.</param>
-    /// <param name="row">Row on screen, counted from the top of the pane.</param>
-    /// <returns>Where to go.</returns>
-    public ViewRoute ClickedList(MouseEvent mouse, int row)
+    /// <param name="key">The key that arrived.</param>
+    /// <returns><c>true</c> when the filter took the key.</returns>
+    private bool Filtering(KeyPress key) =>
+        _listing.Filter.Text.Length > 0 &&
+        EntryKeys.Handled(_listing.Filter, _keymap, _terminal.CopyToClipboard, key);
+
+    /// <summary>Browses to a folder, taking the shortcuts and the cursor with it.</summary>
+    /// <param name="path">The folder to look at.</param>
+    public void GoTo(string path)
     {
-        var entries = _listing.Matching();
-
-        switch (mouse.Action)
-        {
-            case MouseAction.ScrolledUp:
-                _table.Selected = Math.Max(0, _table.Selected - 1);
-
-                return ViewRoute.None;
-            case MouseAction.ScrolledDown:
-                _table.Selected = Math.Min(Math.Max(0, entries.Count - 1), _table.Selected + 1);
-
-                return ViewRoute.None;
-            case MouseAction.Pressed when mouse.Button == MouseButton.Left:
-                return Clicked(_table.RowAt(row), entries);
-            default:
-                return ViewRoute.None;
-        }
-    }
-
-    private ViewRoute Clicked(int index, List<PickerEntry> entries)
-    {
-        if (index < 0 || index >= entries.Count)
-        {
-            return ViewRoute.None;
-        }
-
-        var wasSelected = index == _table.Selected;
-
-        _table.Selected = index;
-
-        return wasSelected ? _open(entries[index]) : ViewRoute.None;
+        _listing.GoTo(path);
+        _places.SyncTo(path);
+        _table.Selected = 0;
+        _focus(true);
     }
 
     private bool Stepped(KeyPress key, int count)
@@ -199,13 +189,30 @@ internal sealed class PickerInput
         {
             _table.Selected = Math.Min(last, _table.Selected + PageRows);
         }
-        else if (_keymap.First.Matches(key))
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// The keys that go to either end of the listing. They belong to the caret instead while something is
+    /// being filtered by, so they are read after the filter has had the key.
+    /// </summary>
+    /// <param name="key">The key that arrived.</param>
+    /// <param name="count">How many rows there are.</param>
+    /// <returns><c>true</c> when the key was one of these.</returns>
+    private bool Ended(KeyPress key, int count)
+    {
+        if (_keymap.First.Matches(key))
         {
             _table.Selected = 0;
         }
         else if (_keymap.Last.Matches(key))
         {
-            _table.Selected = last;
+            _table.Selected = Math.Max(0, count - 1);
         }
         else
         {
@@ -227,13 +234,5 @@ internal sealed class PickerInput
         _listing.Up();
         _places.SyncTo(_listing.Folder);
         _table.Selected = 0;
-    }
-
-    private void GoTo(string path)
-    {
-        _listing.GoTo(path);
-        _places.SyncTo(path);
-        _table.Selected = 0;
-        _focus(true);
     }
 }

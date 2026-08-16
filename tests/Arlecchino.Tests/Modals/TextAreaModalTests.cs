@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Editing;
 using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
@@ -135,7 +136,7 @@ public sealed class TextAreaModalTests
 
         Assert.Contains("alpha", frame, StringComparison.Ordinal);
         Assert.Contains("beta", frame, StringComparison.Ordinal);
-        Assert.Contains("▏", frame, StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleAfter("beta"));
     }
 
     [Fact]

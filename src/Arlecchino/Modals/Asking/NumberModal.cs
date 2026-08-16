@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using Arlecchino.Editing;
 using Arlecchino.Input;
 using Arlecchino.Modals.Setting;
 
@@ -61,6 +62,9 @@ public sealed class NumberModal : NumericModal, ITextEntryModal, IBoundedModal
 
     /// <summary>Numbers are never masked.</summary>
     public bool Masked => false;
+
+    /// <summary>The line being typed into, which for a field of one line is the field itself.</summary>
+    public override ITextEntry Typing => this;
 
     /// <summary>Reads what has been typed as a number. Both <c>.</c> and <c>,</c> are accepted.</summary>
     /// <param name="value">The parsed value, when the text is a number.</param>

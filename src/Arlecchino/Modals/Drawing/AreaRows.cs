@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
+using Arlecchino.Widgets.Text;
 
 namespace Arlecchino.Modals.Drawing;
 
@@ -11,8 +12,6 @@ namespace Arlecchino.Modals.Drawing;
 /// </summary>
 internal static class AreaRows
 {
-    private const string Caret = "▏";
-
     /// <summary>Builds the pieces of one row.</summary>
     /// <param name="line">What the row says.</param>
     /// <param name="shift">Columns scrolled off the left of it.</param>
@@ -25,38 +24,19 @@ internal static class AreaRows
         var head = IndexAtWidth(line, shift);
         var slice = TextWidth.Truncate(line[head..], width - 1);
         var coat = caret < 0 ? Theme.Default : Theme.Input;
-
-        var start = Math.Clamp(selection.Start - head, 0, slice.Length);
-        var end = Math.Clamp(selection.End - head, 0, slice.Length);
         var at = caret < 0 ? -1 : Math.Clamp(caret - head, 0, slice.Length);
 
-        List<Piece> pieces = at switch
-        {
-            < 0 =>
-            [
-                new(slice[..start], coat),
-                new(slice[start..end], Theme.Selected),
-                new(slice[end..], coat),
-            ],
-            _ when at <= start =>
-            [
-                new(slice[..at], coat),
-                new(Caret, Theme.Accent),
-                new(slice[at..start], coat),
-                new(slice[start..end], Theme.Selected),
-                new(slice[end..], coat),
-            ],
-            _ =>
-            [
-                new(slice[..start], coat),
-                new(slice[start..end], Theme.Selected),
-                new(slice[end..at], coat),
-                new(Caret, Theme.Accent),
-                new(slice[at..], coat),
-            ],
-        };
+        List<Piece> pieces = [];
+        EntryLook look = new(coat, Theme.Selected, Theme.Caret);
 
-        var drawn = TextWidth.Of(slice) + (caret < 0 ? 0 : 1);
+        EntryRuns.Of(
+            slice,
+            at,
+            (Math.Clamp(selection.Start - head, 0, slice.Length), Math.Clamp(selection.End - head, 0, slice.Length)),
+            look,
+            (piece, style) => pieces.Add(new(piece, style)));
+
+        var drawn = TextWidth.Of(slice) + (at == slice.Length ? 1 : 0);
         var padding = new string(' ', Math.Max(0, width - drawn));
 
         pieces.Add(new(padding, coat));

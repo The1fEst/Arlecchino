@@ -93,13 +93,19 @@ public sealed class TextAreaModal : Modal, ITextEntry
 
     /// <summary>Inserts text where the caret is, over whatever was selected.</summary>
     /// <param name="text">What to insert; a newline in it starts a new line.</param>
-    public void InsertText(string text)
-    {
-        foreach (var character in text.Replace("\r", "", StringComparison.Ordinal))
-        {
-            TextEditing.Insert(this, character);
-        }
-    }
+    public void InsertText(string text) =>
+        TextEditing.InsertText(this, text.Replace("\r", "", StringComparison.Ordinal));
+
+    /// <summary>The line being typed into, which here is the whole text with its newlines in it.</summary>
+    public override ITextEntry Typing => this;
+
+    /// <summary>
+    /// Takes pasted text whole, line breaks included, since this is the one dialog that holds more than
+    /// one row of it.
+    /// </summary>
+    /// <param name="frame">The keys to obey, and how to close.</param>
+    /// <param name="text">What was pasted.</param>
+    public override void HandlePaste(ModalFrame frame, string text) => InsertText(text);
 
     /// <summary>Puts the caret at a row and a position inside it, clamped to what exists.</summary>
     /// <param name="row">Row to move to.</param>

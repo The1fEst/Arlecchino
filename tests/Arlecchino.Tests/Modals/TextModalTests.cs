@@ -1,4 +1,5 @@
 using System;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Input;
 using Xunit;
 using Arlecchino.Modals.Asking;
@@ -162,7 +163,8 @@ public sealed class TextModalTests
             OnSubmit = static _ => { },
         };
 
-        Assert.Contains("@fest▏ on github", app.Frame(), StringComparison.Ordinal);
+        Assert.Contains("@fest  on github", app.Frame(), StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleAfter("@fest"));
     }
 
     [Fact]
@@ -289,7 +291,8 @@ public sealed class TextModalTests
         app.State.RequestText("Name", "abc", null, static _ => { });
         app.Press(ConsoleKey.Home);
 
-        Assert.Contains("▏abc", app.Frame(), StringComparison.Ordinal);
+        Assert.Contains("abc", app.Frame(), StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleOf("abc"));
     }
 
     [Fact]
@@ -301,8 +304,8 @@ public sealed class TextModalTests
         app.State.RequestText("Path", value, null, static _ => { });
 
         var line = app.FrameLineContaining("END");
-        Assert.Contains("END▏", line, StringComparison.Ordinal);
         Assert.Contains("…", line, StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleAfter("END"));
         Assert.True(line.Length <= 40);
     }
 
@@ -314,9 +317,10 @@ public sealed class TextModalTests
         app.State.RequestText("Path", new('x', 200), null, static _ => { });
         app.Press(ConsoleKey.Home);
 
-        var line = app.FrameLineContaining("▏");
-        Assert.StartsWith("▏", line.TrimStart(' ', '│'), StringComparison.Ordinal);
+        var line = app.FrameLineContaining("xxx");
+        Assert.StartsWith("x", line.TrimStart(' ', '│'), StringComparison.Ordinal);
         Assert.EndsWith("…", line.TrimEnd(' ', '│'), StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleOf("xxx"));
     }
 
     [Fact]
@@ -327,7 +331,8 @@ public sealed class TextModalTests
         app.State.RequestPassword("Passphrase", static _ => { });
         app.State.Modal = new TextModal { Title = "Passphrase", Masked = true, Text = "👩‍👩‍👧ab", OnSubmit = static _ => { } };
 
-        Assert.Contains("•••▏", app.Frame(), StringComparison.Ordinal);
+        Assert.Contains("•••", app.Frame(), StringComparison.Ordinal);
+        Assert.Equal(Theme.Caret.Ansi, app.StyleAfter("•••"));
     }
 
     [Fact]

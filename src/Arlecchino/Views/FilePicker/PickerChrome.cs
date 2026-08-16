@@ -1,10 +1,12 @@
 using System;
 using System.IO;
+using Arlecchino.Editing;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.State;
+using Arlecchino.Widgets.Text;
 
 namespace Arlecchino.Views.FilePicker;
 
@@ -32,8 +34,8 @@ internal sealed class PickerChrome
     /// <summary>Draws the row above the panes.</summary>
     /// <param name="toolbar">The row to draw on.</param>
     /// <param name="path">The folder being listed.</param>
-    /// <param name="filter">Whatever has been typed to narrow it.</param>
-    public void Toolbar(SurfaceRegion toolbar, string path, string filter)
+    /// <param name="filter">Whatever has been typed to narrow it, with its caret and selection.</param>
+    public void Toolbar(SurfaceRegion toolbar, string path, ITextEntry filter)
     {
         var folder = path.Length == 0
             ? _strings.Drives()
@@ -52,10 +54,19 @@ internal sealed class PickerChrome
             toolbar.Write(0, titleColumn, title, Theme.Muted);
         }
 
-        var search = $"{_strings.Search()}: {filter}▏";
-        var searchColumn = Math.Max(titleColumn + TextWidth.Of(title) + 2, toolbar.Width - TextWidth.Of(search));
+        var label = $"{_strings.Search()}:";
+        var wanted = TextWidth.Of(label) + TextWidth.Of(filter.Text) + 2;
+        var searchColumn = Math.Max(titleColumn + TextWidth.Of(title) + 2, toolbar.Width - wanted);
+        var written = filter.Text.Length > 0 ? Theme.Info : Theme.Muted;
 
-        toolbar.Write(0, searchColumn, search, filter.Length > 0 ? Theme.Info : Theme.Muted);
+        toolbar.Write(0, searchColumn, label, written);
+        EntryRow.Draw(
+            toolbar,
+            0,
+            searchColumn + TextWidth.Of(label) + 1,
+            Math.Max(0, toolbar.Width - searchColumn - TextWidth.Of(label) - 1),
+            filter,
+            new(written, Theme.Selected, Theme.Caret));
     }
 
     /// <summary>Draws the row below the panes.</summary>

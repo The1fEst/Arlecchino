@@ -49,6 +49,9 @@ public static class Theme
     /// <summary>The editable part of a text field.</summary>
     public static TermColor Input => Palette.Input;
 
+    /// <summary>The symbol the caret stands on, written the other way round rather than beside.</summary>
+    public static TermColor Caret => Palette.Caret;
+
     /// <summary>The row under the cursor while its pane is not focused.</summary>
     public static TermColor Selected => Palette.Selected;
 
