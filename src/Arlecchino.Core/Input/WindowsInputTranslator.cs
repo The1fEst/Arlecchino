@@ -28,7 +28,17 @@ internal sealed class WindowsInputTranslator
     /// <param name="controlKeyState">The modifier flags the console reported.</param>
     /// <returns>The key press, as the rest of the library reads one.</returns>
     public static KeyPress ToKeyPress(ushort virtualKeyCode, ushort character, uint controlKeyState) =>
-        new((ConsoleKey)virtualKeyCode, Held(character, controlKeyState), (char)character);
+        new(Named(virtualKeyCode, character), Held(character, controlKeyState), (char)character);
+
+    /// <summary>
+    /// The key behind an event. What a terminal answers with is relayed character by character with no key
+    /// named, so an escape among it is named here.
+    /// </summary>
+    /// <param name="virtualKeyCode">The virtual key the console reported, which is zero for what it relays.</param>
+    /// <param name="character">The character the event carries.</param>
+    /// <returns>The key to hand on.</returns>
+    private static ConsoleKey Named(ushort virtualKeyCode, ushort character) =>
+        virtualKeyCode == 0 && character == '\e' ? ConsoleKey.Escape : (ConsoleKey)virtualKeyCode;
 
     private static KeyModifiers Held(ushort character, uint controlKeyState)
     {

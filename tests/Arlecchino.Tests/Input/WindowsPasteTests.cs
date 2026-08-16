@@ -73,5 +73,11 @@ public sealed class WindowsPasteTests
         Assert.Equal('\e', first.Character);
     }
 
+    [Fact]
+    public void WhatATerminalAnswersWithIsNeverATypedRun()
+    {
+        Assert.False(WindowsPaste.Types(new(ConsoleKey.Escape, KeyModifiers.None, '\e')));
+    }
+
     private static KeyPress Typed(char character) => new(default, KeyModifiers.None, character);
 }
