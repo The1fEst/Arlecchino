@@ -30,8 +30,8 @@ internal static class Program
         Console.WriteLine("  keys [name]       compare what a real terminal sends against what is read");
         Console.WriteLine("  live [options]    run an application in a real terminal and see it give it back");
         Console.WriteLine("  oracle [name]     compare the screen the frames leave against a real terminal");
-        Console.WriteLine("  pack              build the three packages into the local feed");
-        Console.WriteLine("  ship [version]    prepare a release: version, public API, validation baseline");
+        Console.WriteLine("  pack              build the four packages into the local feed");
+        Console.WriteLine("  ship [version]    prepare a release: the version and the public API it carries");
         Console.WriteLine("  terminal [check]  ask, copy and paste against a real terminal");
         Console.WriteLine();
         Console.WriteLine("Ask a tool for --help to hear what it does at length.");
