@@ -12,6 +12,19 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.8.4
+
+A fix to what `2026.8.3` added, and nothing else. Take it if you took that one.
+
+### Fixed
+
+- **The drawing thread's synchronization context no longer outlives the work it is for.** `2026.8.3`
+  installed it for as long as the thread was claimed, which is right for an application and wrong for
+  anything that draws frames on the thread it is already running on — a test, a headless host. There,
+  an `await` in code that was never posted tried to come back through the frame queue, and nothing was
+  drawing frames to run it, so the wait never ended. The context is now in force only while posted work
+  runs, which is where `FrameThread.Post(Func<Task>)` needs it; a wait anywhere else is left as it was.
+
 ## 2026.8.3
 
 A release about what happens off the drawing thread. Work that waits can now be handed to that thread
