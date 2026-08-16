@@ -119,6 +119,7 @@ Nothing claims the thread outside a running application — a headless host, a t
 | `FrameThread.IsCurrent` | Whether this is the drawing thread, or nothing is drawing at all |
 | `FrameThread.Claim(wake)` | Claims the calling thread; dispose the result to give it back |
 | `FrameThread.Post(action)` | Hands work over from any thread |
+| `FrameThread.Post(work)` | The same for asynchronous work, which resumes here after every wait |
 | `FrameThread.HasPending` | Whether anything posted is still waiting |
 | `FrameThread.RunPending(onError)` | Runs what was posted; the loop calls this each frame |
 | `FrameThread.DiscardPending()` | Drops what was posted and never ran |
@@ -144,6 +145,27 @@ public sealed class ModsView : IArlecchinoView
 
 `Post` is safe from any thread, queues in order, and asks for a repaint by itself. An action that
 throws is logged and reported on the output line — the remaining actions still run.
+
+## Waiting without leaving the drawing thread
+
+`Post` also takes work that waits. It starts on the drawing thread, and the loop holds a
+synchronization context, so every `await` inside comes back to the drawing thread rather than
+landing on a pool thread where the atoms would refuse it:
+
+```csharp
+public void Reload() => FrameThread.Post(async () =>
+{
+    _rows = await _mods.LoadAsync();
+    _status = LoadStatus.Loaded;
+});
+```
+
+Nothing has to be handed back at the end, and nothing is lost if it fails: whatever the work throws,
+before a wait or after one, is reported the way a posted action's failure is. Being canceled is not a
+failure and passes in silence.
+
+Work that has no business on the drawing thread still says so with `ConfigureAwait(false)`, and then
+hands its result over with the plain `Post` above.
 
 A frame runs what was waiting when it started, and no more. Work posted by that work belongs to the
 next frame, so an action that posts itself is a once-a-frame loop rather than a frame that never
