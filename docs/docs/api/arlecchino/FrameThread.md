@@ -27,6 +27,7 @@ public static class FrameThread
 | [`Claim(Action)`](#claim-action) | Claims the calling thread as the one that draws. An application running the frame loop itself calls this too, so the checks know which thread is meant. |
 | [`DiscardPending()`](#discardpending) | Drops what was posted and never run. An application going away calls it, and so does a test host as it is disposed, so that work left over by one does not run inside the next. |
 | [`Post(Action)`](#post-action) | Hands work to the drawing thread, to run just before the next frame in the order it was posted. With no thread drawing it waits for [`FrameThread.RunPending`](../arlecchino/FrameThread.md#runpending-action-exception). |
+| [`Post(Func<Task>)`](#post-func-task) | Hands asynchronous work to the drawing thread. It starts there, and every `await` inside it that was not told otherwise comes back there, so what it reads and writes is what a frame draws. |
 | [`RunPending(Action<Exception>)`](#runpending-action-exception) | Runs what was posted before this call. Called by the frame loop; work posted by that work waits for the next frame, so an action that posts itself is a loop you can leave. |
 | [`Verify(string)`](#verify-string) | Throws unless the caller is on the drawing thread. This is what a member that changes what a frame draws calls before changing anything. |
 
@@ -91,6 +92,20 @@ Hands work to the drawing thread, to run just before the next frame in the order
 | Name | Type | Description |
 |---|---|---|
 | `action` | `Action` | What to run where it is safe to change what a frame draws. |
+
+### `Post(Func<Task>)` {#post-func-task}
+
+```csharp
+public static void Post(Func<Task> work);
+```
+
+Hands asynchronous work to the drawing thread. It starts there, and every `await` inside it that was not told otherwise comes back there, so what it reads and writes is what a frame draws.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `work` | `Func<TResult>`&lt;`Task`&gt; | What to run. Whatever it throws, before an `await` or after one, reaches the frame loop the way a posted action's failure does; being canceled is not a failure. |
 
 ### `RunPending(Action<Exception>)` {#runpending-action-exception}
 
