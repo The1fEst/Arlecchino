@@ -12,6 +12,23 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.8.5
+
+A release about Windows, where what the terminal answers about itself was still being read as
+something a hand did. Nothing breaks.
+
+### Fixed
+
+- **What the terminal answers about itself no longer types itself into a Windows console.** The answer
+  is relayed there character by character with no key named behind any of them, escape included, so
+  the reader never opened a sequence and `[?65;4;6;18;22;52c` was read as typing — which `2026.8.3`
+  fixed everywhere the escape arrived named, and nowhere here. The whole answer also lands at once,
+  which is the shape a paste has, so the run behind the escape was wrapped in the paste markers and
+  handed to whatever was being typed into as a block. An escape is now named as the key it is wherever
+  it comes from, and a run behind one is the terminal speaking rather than anything a hand did. The
+  reader drops each answer the way it drops one elsewhere, and the probe reads them — which is what
+  tells sixel, the color behind the text and the size of a cell apart on Windows.
+
 ## 2026.8.4
 
 A fix to what `2026.8.3` added, and nothing else. Take it if you took that one.
