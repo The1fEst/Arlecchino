@@ -12,6 +12,40 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.8.3
+
+A release about what happens off the drawing thread. Work that waits can now be handed to that thread
+whole rather than in two halves, and what the terminal says about itself stops arriving as typing.
+Nothing breaks.
+
+### Added
+
+- **`FrameThread.Post` takes work that waits.** It starts on the drawing thread and comes back there
+  after every `await`, since the frame loop now holds a synchronization context of its own. What used
+  to be a background task ending in a hand-over is one block:
+
+  ```csharp
+  FrameThread.Post(async () =>
+  {
+      _rows = await _mods.LoadAsync();
+      _status = LoadStatus.Loaded;
+  });
+  ```
+
+  Whatever it throws, before a wait or after one, is reported the way a posted action's failure is,
+  so work no longer fails into a task nobody reads. Being canceled passes in silence. Anything with no
+  business on the drawing thread still says `ConfigureAwait(false)` and hands its result back through
+  the plain `Post`.
+
+### Fixed
+
+- **What the terminal answers about itself no longer types itself into the line.** The probe asks the
+  terminal what it can do and waits a moment for the answer; a terminal that answered later — Windows
+  is where it shows — had its reply read as keys, so `[?65;4;6;18;22;52c` appeared wherever the caret
+  was. Replies are now recognized and dropped: device attributes, the window and cell reports, and the
+  strings that answer the color query and the graphics query. A long list of attributes is read to the
+  end as well, where the reader used to give up at thirty-two characters and spell the rest out.
+
 ## 2026.8.2
 
 A release about the line of text. Editing one lived inside the dialog it was written for, so a filter,
