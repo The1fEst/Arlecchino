@@ -19,15 +19,14 @@ namespace Arlecchino.Input;
 /// </example>
 public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers = default)
 {
-    private readonly KeyStroke[]? _alternatives;
     private readonly KeyStroke? _second;
+    private readonly KeyStroke[]? _alternatives;
 
-    private KeyBinding(KeyStroke first, KeyStroke[]? alternatives, KeyStroke? second)
-        : this(first.Key, first.Modifiers)
+    private KeyBinding(KeyStroke first, KeyStroke? second, KeyStroke[]? alternatives) : this(first.Key, first.Modifiers)
     {
         Typed = first.Typed;
-        _alternatives = alternatives;
         _second = second;
+        _alternatives = alternatives;
     }
 
     /// <summary>
@@ -35,8 +34,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// It answers wherever that character can be typed, and the key screen writes the character itself.
     /// </summary>
     /// <param name="typed">The character to answer to.</param>
-    public KeyBinding(char typed)
-        : this(default(ConsoleKey)) => Typed = typed;
+    public KeyBinding(char typed) : this(default(ConsoleKey)) => Typed = typed;
 
     /// <summary>The character this binding answers to, or <c>'\0'</c> when it is a binding on a key.</summary>
     public char Typed { get; }
@@ -71,7 +69,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <param name="modifiers">Modifiers that must be held with it, exactly.</param>
     /// <returns>The binding, with the combination added after the ones already there.</returns>
     public KeyBinding AddAlternative(ConsoleKey key, KeyModifiers modifiers = default) =>
-        new(First, [.. Alternatives, new(key, modifiers)], _second);
+        new(First, _second, [.. Alternatives, new(key, modifiers)]);
 
     /// <summary>
     /// The same binding, finished by a second keystroke pressed after the first one is let go. A binding gets
@@ -81,7 +79,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <param name="modifiers">Modifiers held with it, which is usually none.</param>
     /// <returns>The chord.</returns>
     public KeyBinding ThenKey(ConsoleKey key, KeyModifiers modifiers = default) =>
-        new(First, _alternatives, new(key, modifiers));
+        new(First, new(key, modifiers), _alternatives);
 
     /// <summary>
     /// The same binding with one modifier put in place of another, wherever it appears. It is how an
@@ -91,7 +89,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <param name="to">The modifier to put in its place.</param>
     /// <returns>The rewritten binding, or this one when the modifier is not in it.</returns>
     public KeyBinding Replacing(KeyModifiers from, KeyModifiers to) =>
-        new(First.Replacing(from, to), MovedAlternatives(from, to), _second?.Replacing(from, to));
+        new(First.Replacing(from, to), _second?.Replacing(from, to), MovedAlternatives(from, to));
 
     private KeyStroke[]? MovedAlternatives(KeyModifiers from, KeyModifiers to)
     {
