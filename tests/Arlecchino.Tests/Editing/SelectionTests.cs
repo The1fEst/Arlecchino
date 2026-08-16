@@ -16,7 +16,7 @@ public sealed class SelectionTests
     [Fact]
     public void NothingIsSelectedUntilAKeyWithShiftIsPressed()
     {
-        var entry = new Line { Text = "abc" };
+        var entry = new TestEntry { Text = "abc" };
 
         Assert.Equal("", TextEditing.Selected(entry));
 
@@ -28,7 +28,7 @@ public sealed class SelectionTests
     [Fact]
     public void TakingTheCaretWithShiftSelectsWhatItPassed()
     {
-        var entry = new Line { Text = "abc" };
+        var entry = new TestEntry { Text = "abc" };
 
         TextEditing.SelectCaret(entry, -1);
         TextEditing.SelectCaret(entry, -1);
@@ -40,7 +40,7 @@ public sealed class SelectionTests
     [Fact]
     public void MovingWithoutShiftDropsTheSelection()
     {
-        var entry = new Line { Text = "abc" };
+        var entry = new TestEntry { Text = "abc" };
 
         TextEditing.SelectToStart(entry);
         TextEditing.MoveCaret(entry, 1);
@@ -51,7 +51,7 @@ public sealed class SelectionTests
     [Fact]
     public void TypingReplacesWhatIsSelected()
     {
-        var entry = new Line { Text = "one two" };
+        var entry = new TestEntry { Text = "one two" };
 
         TextEditing.SelectWord(entry, -1);
         TextEditing.Insert(entry, 'x');
@@ -63,7 +63,7 @@ public sealed class SelectionTests
     [Fact]
     public void RubbingOutTakesTheSelectionRatherThanASymbol()
     {
-        var entry = new Line { Text = "abcd" };
+        var entry = new TestEntry { Text = "abcd" };
 
         TextEditing.SelectCaret(entry, -1);
         TextEditing.SelectCaret(entry, -1);
@@ -76,7 +76,7 @@ public sealed class SelectionTests
     [Fact]
     public void SelectingEverythingTakesTheWholeLine()
     {
-        var entry = new Line { Text = "git status" };
+        var entry = new TestEntry { Text = "git status" };
 
         TextEditing.MoveToStart(entry);
         TextEditing.SelectAll(entry);
@@ -87,7 +87,7 @@ public sealed class SelectionTests
     [Fact]
     public void AWholeSymbolIsSelectedAtATime()
     {
-        var entry = new Line { Text = "a😀" };
+        var entry = new TestEntry { Text = "a😀" };
 
         TextEditing.SelectCaret(entry, -1);
 
@@ -129,35 +129,5 @@ public sealed class SelectionTests
 
         Assert.Equal("c", app.Terminal.Copied);
         Assert.Equal("ab", ((TextModal)app.State.Modal!).Text);
-    }
-
-    private sealed class Line : ITextEntry
-    {
-        private string _text = "";
-        private int _caret;
-        private int _anchor;
-
-        public string Text
-        {
-            get => _text;
-            set
-            {
-                _text = value;
-                _caret = value.Length;
-                _anchor = value.Length;
-            }
-        }
-
-        public int Caret
-        {
-            get => _caret;
-            set => _caret = Math.Clamp(value, 0, _text.Length);
-        }
-
-        public int Anchor
-        {
-            get => _anchor;
-            set => _anchor = Math.Clamp(value, 0, _text.Length);
-        }
     }
 }
