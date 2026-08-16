@@ -12,6 +12,77 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.8.2
+
+A release about the line of text. Editing one lived inside the dialog it was written for, so a filter,
+a search line or a command line an application drew itself had to reimplement the caret and the
+rub-outs, and each of them did it a little differently. It is now a contract anything typed into can
+carry, with the keys, the selection, the drawing and the completion written once against it. The break
+is where that code moved to: `Arlecchino.Editing` rather than `Arlecchino.Modals.Asking`.
+
+### Added
+
+- **`Arlecchino.Editing`: one contract for every line typed into.** `ITextEntry` is the text, the
+  caret and the anchor a selection is measured from; `TextEditing` does the work on it — insert,
+  backspace, delete, erase a word or to the start, move the caret by character or by word, select,
+  and read what is selected. `TextEntry` is a holder for an application with nothing of its own.
+
+  ```csharp
+  public sealed class SearchLine : ITextEntry
+  {
+      public string Text { get; set; } = "";
+      public int Caret { get; set; }
+      public int Anchor { get; set; }
+  }
+
+  TextEditing.Insert(line, 'a');
+  TextEditing.MoveWord(line, -1);
+  ```
+
+  `CaretKeys.Moved`, `EraseKeys.Erased` and `SelectKeys.Handled` answer a key against the keymap and
+  say whether they took it, so a line answers the keys a line is expected to answer in three calls
+  rather than in a switch of its own.
+
+- **A selection, with Shift held.** `SelectLeft`, `SelectRight`, `SelectWordLeft`, `SelectWordRight`,
+  `SelectUp`, `SelectDown`, `SelectToStart` and `SelectToEnd` are the arrows, the word keys, `Home`
+  and `End` with Shift; `SelectAll` is `Ctrl+A` and `Cut` is `Shift+Delete` beside `Ctrl+X`. What is
+  selected is copied, cut, typed over and erased as one thing: `TextEditing.Selected` reads it,
+  `TextEditing.Selection` says where it is, and `TextEditing.EraseSelection` takes it out.
+
+- **Tab finishes the half-typed word.** `TextCompleter` hangs on any line: the first press fills in
+  what every candidate agrees on, later presses step through them, and typing on leaves the offer
+  behind. Where the words come from is `ISuggestsWords` — `WordList` is a list of them — and which
+  part of the line is the word is `ICutsWords`, either `SpaceWords` or `WholeLine`.
+
+  ```csharp
+  var completer = new TextCompleter(entry, new WordList(() => Commands), new SpaceWords(), keymap);
+  ```
+
+- **A line being typed into is drawn the same way wherever it is.** `EntryRow.Draw` writes the text,
+  the selection and the symbol the caret stands on; `EntryRuns.Of` hands the same runs to a caller
+  that draws them itself. `EntryLook` is the three colors they use, and `Theme.Caret` is the new one
+  of them.
+
+- **A screen says when it is being typed into.** `IArlecchinoView.IsTyping`, read through
+  `Navigator.CurrentIsTyping`, keeps the keys a field edits by from moving the application about
+  behind the caret.
+
+### Changed
+
+- **The caret moves by word the way the letters read.** A dot stops it, so `report.2026.md` is
+  crossed in steps rather than in one, and an underscore does not, so `read_me` stays a word.
+
+- **Nothing is guarded against null any more.** A public method that took a reference threw
+  `ArgumentNullException` on one; nullable annotations already refuse it at the call, and the check
+  was a second answer to a question the compiler had answered. Passing `null!` now faults where it is
+  used rather than where it arrived.
+
+### Removed
+
+- **`Arlecchino.Modals.Asking.ITextEntryModal` and its `TextEditing`.** Both moved into
+  `Arlecchino.Editing` under the names above, and the modals implement the new contract, so a caller
+  changes the `using` and the interface name and keeps the calls.
+
 ## 2026.8.1
 
 A release about where the cursor is. A focus ring is focusable itself, so `Tab` walks into a widget

@@ -112,6 +112,61 @@ Arlecchino.Diagnostics.Notifications.Raise(Arlecchino.Diagnostics.Notification! 
 Arlecchino.Diagnostics.Notifications.Recent.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Diagnostics.Notification!>!
 Arlecchino.Diagnostics.Notifications.Settle(Arlecchino.Diagnostics.Notification! entry, string! text, Arlecchino.Diagnostics.NotificationLevel level = Arlecchino.Diagnostics.NotificationLevel.Information) -> void
 Arlecchino.Diagnostics.Notifications.Withdraw(Arlecchino.Diagnostics.Notification! entry) -> void
+Arlecchino.Editing.CaretKeys
+Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.CompletionAsk.After.get -> string!
+Arlecchino.Editing.CompletionAsk.Before.get -> string!
+Arlecchino.Editing.CompletionAsk.CompletionAsk() -> void
+Arlecchino.Editing.CompletionAsk.CompletionAsk(string! Line, int Start, int Length) -> void
+Arlecchino.Editing.CompletionAsk.Deconstruct(out string! Line, out int Start, out int Length) -> void
+Arlecchino.Editing.CompletionAsk.Equals(Arlecchino.Editing.CompletionAsk other) -> bool
+Arlecchino.Editing.CompletionAsk.Length.get -> int
+Arlecchino.Editing.CompletionAsk.Length.init -> void
+Arlecchino.Editing.CompletionAsk.Line.get -> string!
+Arlecchino.Editing.CompletionAsk.Line.init -> void
+Arlecchino.Editing.CompletionAsk.Start.get -> int
+Arlecchino.Editing.CompletionAsk.Start.init -> void
+Arlecchino.Editing.CompletionAsk.Word.get -> string!
+Arlecchino.Editing.EntryKeys
+Arlecchino.Editing.EraseKeys
+Arlecchino.Editing.ICutsWords
+Arlecchino.Editing.ICutsWords.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.ISuggestsWords
+Arlecchino.Editing.ISuggestsWords.SuggestAsync(Arlecchino.Editing.CompletionAsk ask, System.Threading.CancellationToken token) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<string!>!>
+Arlecchino.Editing.ITextEntry
+Arlecchino.Editing.ITextEntry.Anchor.get -> int
+Arlecchino.Editing.ITextEntry.Anchor.set -> void
+Arlecchino.Editing.ITextEntry.Caret.get -> int
+Arlecchino.Editing.ITextEntry.Caret.set -> void
+Arlecchino.Editing.ITextEntry.Text.get -> string!
+Arlecchino.Editing.ITextEntry.Text.set -> void
+Arlecchino.Editing.PastedText
+Arlecchino.Editing.SelectKeys
+Arlecchino.Editing.SpaceWords
+Arlecchino.Editing.SpaceWords.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.SpaceWords.SpaceWords() -> void
+Arlecchino.Editing.TextCompleter
+Arlecchino.Editing.TextCompleter.Chosen.get -> int
+Arlecchino.Editing.TextCompleter.Complete(bool forward) -> void
+Arlecchino.Editing.TextCompleter.Forget() -> void
+Arlecchino.Editing.TextCompleter.Handle(Arlecchino.Input.KeyPress key) -> bool
+Arlecchino.Editing.TextCompleter.TextCompleter(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Editing.ISuggestsWords! words, Arlecchino.Editing.ICutsWords! cuts, Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Editing.TextCompleter.Words.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Arlecchino.Editing.TextEditing
+Arlecchino.Editing.TextEntry
+Arlecchino.Editing.TextEntry.Anchor.get -> int
+Arlecchino.Editing.TextEntry.Anchor.set -> void
+Arlecchino.Editing.TextEntry.Caret.get -> int
+Arlecchino.Editing.TextEntry.Caret.set -> void
+Arlecchino.Editing.TextEntry.Text.get -> string!
+Arlecchino.Editing.TextEntry.Text.set -> void
+Arlecchino.Editing.TextEntry.TextEntry() -> void
+Arlecchino.Editing.WholeLine
+Arlecchino.Editing.WholeLine.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
+Arlecchino.Editing.WholeLine.WholeLine() -> void
+Arlecchino.Editing.WordList
+Arlecchino.Editing.WordList.SuggestAsync(Arlecchino.Editing.CompletionAsk ask, System.Threading.CancellationToken token) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<string!>!>
+Arlecchino.Editing.WordList.WordList(System.Func<System.Collections.Generic.IReadOnlyList<string!>!>! words) -> void
 Arlecchino.Focus.FocusDirection
 Arlecchino.Focus.FocusDirection.Next = 0 -> Arlecchino.Focus.FocusDirection
 Arlecchino.Focus.FocusDirection.Previous = 1 -> Arlecchino.Focus.FocusDirection
@@ -210,10 +265,16 @@ Arlecchino.Hosting.ArlecchinoKeymap.Back.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Back.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Cancel.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Cancel.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Complete.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.Complete.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.CompleteBack.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.CompleteBack.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Confirm.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Confirm.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Copy.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Copy.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.Cut.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.Cut.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.DeleteForward.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.DeleteForward.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Equals(Arlecchino.Hosting.ArlecchinoKeymap? other) -> bool
@@ -254,6 +315,24 @@ Arlecchino.Hosting.ArlecchinoKeymap.PickCurrentFolder.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.PreviousField.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.PreviousField.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Hosting.ArlecchinoKeymap!
+Arlecchino.Hosting.ArlecchinoKeymap.SelectAll.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectAll.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectDown.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectDown.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectLeft.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectLeft.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectRight.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectRight.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectToEnd.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectToEnd.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectToStart.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectToStart.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectUp.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectUp.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectWordLeft.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectWordLeft.init -> void
+Arlecchino.Hosting.ArlecchinoKeymap.SelectWordRight.get -> Arlecchino.Input.KeyBinding
+Arlecchino.Hosting.ArlecchinoKeymap.SelectWordRight.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Hosting.ArlecchinoKeymap.Submit.init -> void
 Arlecchino.Hosting.ArlecchinoKeymap.ToggleLog.get -> Arlecchino.Input.KeyBinding
@@ -387,7 +466,7 @@ Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.Size.get -> System.Func<l
 Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.Size.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.Title.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.Title.set -> void
-Arlecchino.Hosting.ArlecchinoStrings.Filter.get -> System.Func<string!, string!>!
+Arlecchino.Hosting.ArlecchinoStrings.Filter.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.Filter.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.FormEdit.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.FormEdit.set -> void
@@ -526,16 +605,14 @@ Arlecchino.Modals.Asking.IAffixedModal.Prefix.get -> string!
 Arlecchino.Modals.Asking.IAffixedModal.Suffix.get -> string!
 Arlecchino.Modals.Asking.ITextEntryModal
 Arlecchino.Modals.Asking.ITextEntryModal.AcceptsCharacter(char character) -> bool
-Arlecchino.Modals.Asking.ITextEntryModal.Caret.get -> int
-Arlecchino.Modals.Asking.ITextEntryModal.Caret.set -> void
 Arlecchino.Modals.Asking.ITextEntryModal.Masked.get -> bool
 Arlecchino.Modals.Asking.ITextEntryModal.Message.get -> string?
 Arlecchino.Modals.Asking.ITextEntryModal.Message.set -> void
-Arlecchino.Modals.Asking.ITextEntryModal.Text.get -> string!
-Arlecchino.Modals.Asking.ITextEntryModal.Text.set -> void
 Arlecchino.Modals.Asking.NumberModal
 Arlecchino.Modals.Asking.NumberModal.AcceptsCharacter(char character) -> bool
 Arlecchino.Modals.Asking.NumberModal.Add(decimal delta) -> void
+Arlecchino.Modals.Asking.NumberModal.Anchor.get -> int
+Arlecchino.Modals.Asking.NumberModal.Anchor.set -> void
 Arlecchino.Modals.Asking.NumberModal.Caret.get -> int
 Arlecchino.Modals.Asking.NumberModal.Caret.set -> void
 Arlecchino.Modals.Asking.NumberModal.Masked.get -> bool
@@ -568,20 +645,18 @@ Arlecchino.Modals.Asking.NumericModal.Step.init -> void
 Arlecchino.Modals.Asking.NumericModal.Suffix.get -> string!
 Arlecchino.Modals.Asking.NumericModal.Suffix.init -> void
 Arlecchino.Modals.Asking.TextAreaModal
-Arlecchino.Modals.Asking.TextAreaModal.Break() -> void
+Arlecchino.Modals.Asking.TextAreaModal.Anchor.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.Anchor.set -> void
+Arlecchino.Modals.Asking.TextAreaModal.Caret.get -> int
+Arlecchino.Modals.Asking.TextAreaModal.Caret.set -> void
 Arlecchino.Modals.Asking.TextAreaModal.Column.get -> int
-Arlecchino.Modals.Asking.TextAreaModal.DeleteForward() -> void
-Arlecchino.Modals.Asking.TextAreaModal.Erase() -> void
 Arlecchino.Modals.Asking.TextAreaModal.FirstVisible.get -> int
 Arlecchino.Modals.Asking.TextAreaModal.FirstVisible.set -> void
-Arlecchino.Modals.Asking.TextAreaModal.Insert(char character) -> void
 Arlecchino.Modals.Asking.TextAreaModal.InsertText(string! text) -> void
 Arlecchino.Modals.Asking.TextAreaModal.Lines.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Arlecchino.Modals.Asking.TextAreaModal.Message.get -> string!
 Arlecchino.Modals.Asking.TextAreaModal.Message.set -> void
 Arlecchino.Modals.Asking.TextAreaModal.MoveCaret(int row, int column) -> void
-Arlecchino.Modals.Asking.TextAreaModal.MoveLeft() -> void
-Arlecchino.Modals.Asking.TextAreaModal.MoveRight() -> void
 Arlecchino.Modals.Asking.TextAreaModal.MoveRows(int rows) -> void
 Arlecchino.Modals.Asking.TextAreaModal.MoveToLineEnd() -> void
 Arlecchino.Modals.Asking.TextAreaModal.MoveToLineStart() -> void
@@ -590,21 +665,25 @@ Arlecchino.Modals.Asking.TextAreaModal.OnSubmit.init -> void
 Arlecchino.Modals.Asking.TextAreaModal.Row.get -> int
 Arlecchino.Modals.Asking.TextAreaModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.Asking.TextAreaModal.Rows.set -> void
-Arlecchino.Modals.Asking.TextAreaModal.SetText(string! text) -> void
+Arlecchino.Modals.Asking.TextAreaModal.SelectRows(int rows) -> void
+Arlecchino.Modals.Asking.TextAreaModal.SelectToLineEnd() -> void
+Arlecchino.Modals.Asking.TextAreaModal.SelectToLineStart() -> void
+Arlecchino.Modals.Asking.TextAreaModal.StartOf(int row) -> int
 Arlecchino.Modals.Asking.TextAreaModal.Text.get -> string!
-Arlecchino.Modals.Asking.TextAreaModal.Text.init -> void
+Arlecchino.Modals.Asking.TextAreaModal.Text.set -> void
 Arlecchino.Modals.Asking.TextAreaModal.TextAreaModal() -> void
 Arlecchino.Modals.Asking.TextAreaModal.Validate.get -> System.Func<string!, string?>?
 Arlecchino.Modals.Asking.TextAreaModal.Validate.init -> void
 Arlecchino.Modals.Asking.TextAreaModal.VisibleRows.get -> int
 Arlecchino.Modals.Asking.TextAreaModal.VisibleRows.init -> void
-Arlecchino.Modals.Asking.TextEditing
 Arlecchino.Modals.Asking.TextFormat
 Arlecchino.Modals.Asking.TextFormat.Email = 1 -> Arlecchino.Modals.Asking.TextFormat
 Arlecchino.Modals.Asking.TextFormat.Free = 0 -> Arlecchino.Modals.Asking.TextFormat
 Arlecchino.Modals.Asking.TextFormat.Url = 2 -> Arlecchino.Modals.Asking.TextFormat
 Arlecchino.Modals.Asking.TextModal
 Arlecchino.Modals.Asking.TextModal.AcceptsCharacter(char character) -> bool
+Arlecchino.Modals.Asking.TextModal.Anchor.get -> int
+Arlecchino.Modals.Asking.TextModal.Anchor.set -> void
 Arlecchino.Modals.Asking.TextModal.Caret.get -> int
 Arlecchino.Modals.Asking.TextModal.Caret.set -> void
 Arlecchino.Modals.Asking.TextModal.Format.get -> Arlecchino.Modals.Asking.TextFormat
@@ -648,8 +727,10 @@ Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.init -> void
 Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedInOptionOrder() -> System.Collections.Generic.List<string!>!
 Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! option) -> void
 Arlecchino.Modals.Choosing.OptionListModal
-Arlecchino.Modals.Choosing.OptionListModal.Filter.get -> string!
-Arlecchino.Modals.Choosing.OptionListModal.Filter.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.Anchor.get -> int
+Arlecchino.Modals.Choosing.OptionListModal.Anchor.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.Caret.get -> int
+Arlecchino.Modals.Choosing.OptionListModal.Caret.set -> void
 Arlecchino.Modals.Choosing.OptionListModal.FirstVisible.get -> int
 Arlecchino.Modals.Choosing.OptionListModal.FirstVisible.set -> void
 Arlecchino.Modals.Choosing.OptionListModal.Index.get -> int
@@ -660,6 +741,8 @@ Arlecchino.Modals.Choosing.OptionListModal.Options.get -> System.Collections.Gen
 Arlecchino.Modals.Choosing.OptionListModal.Options.init -> void
 Arlecchino.Modals.Choosing.OptionListModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.Choosing.OptionListModal.Rows.set -> void
+Arlecchino.Modals.Choosing.OptionListModal.Text.get -> string!
+Arlecchino.Modals.Choosing.OptionListModal.Text.set -> void
 Arlecchino.Modals.Modal
 Arlecchino.Modals.Modal.Box.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.Modal.Box.set -> void
@@ -811,6 +894,7 @@ Arlecchino.Navigation.IArlecchinoView.Handle(Arlecchino.Input.KeyPress key) -> A
 Arlecchino.Navigation.IArlecchinoView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.HandlePaste(string! text) -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.IArlecchinoView.Hints() -> (string! Key, string! Description)[]!
+Arlecchino.Navigation.IArlecchinoView.IsTyping.get -> bool
 Arlecchino.Navigation.IArlecchinoView.UsesLayout.get -> bool
 Arlecchino.Navigation.IArlecchinoViewFactory
 Arlecchino.Navigation.IArlecchinoViewFactory.TryCreate(System.IServiceProvider! services, Arlecchino.Navigation.ViewRoute route, out Arlecchino.Navigation.IArlecchinoView? view) -> bool
@@ -821,6 +905,7 @@ Arlecchino.Navigation.Navigator.CanGoBack.get -> bool
 Arlecchino.Navigation.Navigator.CanGoForward.get -> bool
 Arlecchino.Navigation.Navigator.CurrentCommands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.ViewCommand!>!
 Arlecchino.Navigation.Navigator.CurrentHints.get -> (string! Key, string! Description)[]!
+Arlecchino.Navigation.Navigator.CurrentIsTyping.get -> bool
 Arlecchino.Navigation.Navigator.CurrentRoute.get -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Navigation.Navigator.CurrentUsesLayout.get -> bool
 Arlecchino.Navigation.Navigator.Draw() -> void
@@ -1181,6 +1266,19 @@ Arlecchino.Widgets.Readouts.TextView.Style.set -> void
 Arlecchino.Widgets.Readouts.TextView.Text.get -> string!
 Arlecchino.Widgets.Readouts.TextView.Text.set -> void
 Arlecchino.Widgets.Readouts.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Text.EntryLook
+Arlecchino.Widgets.Text.EntryLook.Caret.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Caret.init -> void
+Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook() -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.Equals(Arlecchino.Widgets.Text.EntryLook other) -> bool
+Arlecchino.Widgets.Text.EntryLook.Selected.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Selected.init -> void
+Arlecchino.Widgets.Text.EntryLook.Text.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Text.init -> void
+Arlecchino.Widgets.Text.EntryRow
+Arlecchino.Widgets.Text.EntryRuns
 abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
 abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void
 abstract Arlecchino.Modals.Modal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
@@ -1198,6 +1296,7 @@ override Arlecchino.Diagnostics.LogEntry.ToString() -> string!
 override Arlecchino.Diagnostics.NotificationAction.Equals(object? obj) -> bool
 override Arlecchino.Diagnostics.NotificationAction.GetHashCode() -> int
 override Arlecchino.Diagnostics.NotificationAction.ToString() -> string!
+override Arlecchino.Editing.CompletionAsk.GetHashCode() -> int
 override Arlecchino.Focus.FocusResult.GetHashCode() -> int
 override Arlecchino.Hosting.ArlecchinoKeymap.Equals(object? obj) -> bool
 override Arlecchino.Hosting.ArlecchinoKeymap.GetHashCode() -> int
@@ -1205,10 +1304,14 @@ override Arlecchino.Hosting.ArlecchinoKeymap.ToString() -> string!
 override Arlecchino.Layout.PaneSize.GetHashCode() -> int
 override Arlecchino.Modals.Asking.NumberModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Asking.NumberModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
+override Arlecchino.Modals.Asking.NumberModal.Typing.get -> Arlecchino.Editing.ITextEntry!
 override Arlecchino.Modals.Asking.TextAreaModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Asking.TextAreaModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+override Arlecchino.Modals.Asking.TextAreaModal.Typing.get -> Arlecchino.Editing.ITextEntry!
 override Arlecchino.Modals.Asking.TextModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Asking.TextModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
+override Arlecchino.Modals.Asking.TextModal.Typing.get -> Arlecchino.Editing.ITextEntry!
 override Arlecchino.Modals.Choosing.ChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Choosing.ChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.CommandModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
@@ -1217,23 +1320,19 @@ override Arlecchino.Modals.Choosing.CommandModal.HandleMouse(Arlecchino.Modals.M
 override Arlecchino.Modals.Choosing.MultiChoiceModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Choosing.MultiChoiceModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Choosing.OptionListModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+override Arlecchino.Modals.Choosing.OptionListModal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+override Arlecchino.Modals.Choosing.OptionListModal.Typing.get -> Arlecchino.Editing.ITextEntry!
 override Arlecchino.Modals.Piece.GetHashCode() -> int
 override Arlecchino.Modals.Setting.ColorModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Setting.ColorModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.ColorModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
-override Arlecchino.Modals.Setting.DateModal.Add(int delta) -> void
 override Arlecchino.Modals.Setting.DateModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Setting.DateModal.SegmentCount.get -> int
-override Arlecchino.Modals.Setting.DateModal.SegmentTexts() -> string![]!
 override Arlecchino.Modals.Setting.DateModal.Separator.get -> string!
 override Arlecchino.Modals.Setting.SegmentedModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.SliderModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Setting.SliderModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 override Arlecchino.Modals.Setting.SliderModal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
-override Arlecchino.Modals.Setting.TimeModal.Add(int delta) -> void
 override Arlecchino.Modals.Setting.TimeModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
-override Arlecchino.Modals.Setting.TimeModal.SegmentCount.get -> int
-override Arlecchino.Modals.Setting.TimeModal.SegmentTexts() -> string![]!
 override Arlecchino.Modals.Setting.TimeModal.Separator.get -> string!
 override Arlecchino.Modals.Setting.ToggleModal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 override Arlecchino.Modals.Setting.ToggleModal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
@@ -1253,6 +1352,7 @@ override Arlecchino.State.FilePickerRequest.GetHashCode() -> int
 override Arlecchino.State.FilePickerRequest.ToString() -> string!
 override Arlecchino.Widgets.Lists.ScrollWindow.GetHashCode() -> int
 override Arlecchino.Widgets.Readouts.GaugeBand.GetHashCode() -> int
+override Arlecchino.Widgets.Text.EntryLook.GetHashCode() -> int
 static Arlecchino.Commands.ViewCommand.For(Arlecchino.Input.KeyBinding binding, System.Func<string!>! label, System.Action! run) -> Arlecchino.Commands.ViewCommand!
 static Arlecchino.Commands.ViewCommand.For(System.ConsoleKey key, System.Func<string!>! label, System.Action! run) -> Arlecchino.Commands.ViewCommand!
 static Arlecchino.Commands.ViewCommand.Navigating(System.ConsoleKey key, System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run) -> Arlecchino.Commands.ViewCommand!
@@ -1260,6 +1360,33 @@ static Arlecchino.Diagnostics.LogEntry.operator !=(Arlecchino.Diagnostics.LogEnt
 static Arlecchino.Diagnostics.LogEntry.operator ==(Arlecchino.Diagnostics.LogEntry? left, Arlecchino.Diagnostics.LogEntry? right) -> bool
 static Arlecchino.Diagnostics.NotificationAction.operator !=(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool
 static Arlecchino.Diagnostics.NotificationAction.operator ==(Arlecchino.Diagnostics.NotificationAction? left, Arlecchino.Diagnostics.NotificationAction? right) -> bool
+static Arlecchino.Editing.CaretKeys.Moved(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.CompletionAsk.operator !=(Arlecchino.Editing.CompletionAsk left, Arlecchino.Editing.CompletionAsk right) -> bool
+static Arlecchino.Editing.CompletionAsk.operator ==(Arlecchino.Editing.CompletionAsk left, Arlecchino.Editing.CompletionAsk right) -> bool
+static Arlecchino.Editing.EntryKeys.Clipped(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, System.Action<string!>! copy, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.EntryKeys.Handled(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, System.Action<string!>! copy, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.EraseKeys.Erased(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.PastedText.FirstLine(string! text) -> string!
+static Arlecchino.Editing.PastedText.FirstLine(string! text, System.Func<char, bool>! accepts) -> string!
+static Arlecchino.Editing.SelectKeys.Handled(Arlecchino.Editing.ITextEntry! entry, Arlecchino.Hosting.ArlecchinoKeymap! keymap, Arlecchino.Input.KeyPress key) -> bool
+static Arlecchino.Editing.TextEditing.Backspace(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.Delete(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.EraseSelection(Arlecchino.Editing.ITextEntry! entry) -> bool
+static Arlecchino.Editing.TextEditing.EraseToStart(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.EraseWord(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.Insert(Arlecchino.Editing.ITextEntry! entry, char character) -> void
+static Arlecchino.Editing.TextEditing.InsertText(Arlecchino.Editing.ITextEntry! entry, string! text) -> void
+static Arlecchino.Editing.TextEditing.MoveCaret(Arlecchino.Editing.ITextEntry! entry, int delta) -> void
+static Arlecchino.Editing.TextEditing.MoveToEnd(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.MoveToStart(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.MoveWord(Arlecchino.Editing.ITextEntry! entry, int direction) -> void
+static Arlecchino.Editing.TextEditing.SelectAll(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.SelectCaret(Arlecchino.Editing.ITextEntry! entry, int delta) -> void
+static Arlecchino.Editing.TextEditing.SelectToEnd(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.SelectToStart(Arlecchino.Editing.ITextEntry! entry) -> void
+static Arlecchino.Editing.TextEditing.SelectWord(Arlecchino.Editing.ITextEntry! entry, int direction) -> void
+static Arlecchino.Editing.TextEditing.Selected(Arlecchino.Editing.ITextEntry! entry) -> string!
+static Arlecchino.Editing.TextEditing.Selection(Arlecchino.Editing.ITextEntry! entry) -> (int Start, int End)
 static Arlecchino.Focus.FocusResult.Handled.get -> Arlecchino.Focus.FocusResult
 static Arlecchino.Focus.FocusResult.Ignored.get -> Arlecchino.Focus.FocusResult
 static Arlecchino.Focus.FocusResult.Navigate(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Focus.FocusResult
@@ -1297,15 +1424,6 @@ static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! wid
 static Arlecchino.Layout.PaneTree.Leaf(Arlecchino.Widgets.IArlecchinoWidget! widget, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw) -> Arlecchino.Layout.PaneTree!
 static Arlecchino.Layout.PaneTree.Leaf(System.Action<Arlecchino.Rendering.SurfaceRegion>! draw, System.Func<string!>! title) -> Arlecchino.Layout.PaneTree!
-static Arlecchino.Modals.Asking.TextEditing.Backspace(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.Delete(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.EraseToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.EraseWord(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.Insert(Arlecchino.Modals.Asking.ITextEntryModal! modal, char character) -> void
-static Arlecchino.Modals.Asking.TextEditing.MoveCaret(Arlecchino.Modals.Asking.ITextEntryModal! modal, int delta) -> void
-static Arlecchino.Modals.Asking.TextEditing.MoveToEnd(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.MoveToStart(Arlecchino.Modals.Asking.ITextEntryModal! modal) -> void
-static Arlecchino.Modals.Asking.TextEditing.MoveWord(Arlecchino.Modals.Asking.ITextEntryModal! modal, int direction) -> void
 static Arlecchino.Modals.ModalFrame.Divider(Arlecchino.Rendering.SurfaceRegion box, int insideRow) -> void
 static Arlecchino.Modals.Piece.operator !=(Arlecchino.Modals.Piece left, Arlecchino.Modals.Piece right) -> bool
 static Arlecchino.Modals.Piece.operator ==(Arlecchino.Modals.Piece left, Arlecchino.Modals.Piece right) -> bool
@@ -1324,10 +1442,19 @@ static Arlecchino.Widgets.Lists.ScrollWindow.operator !=(Arlecchino.Widgets.List
 static Arlecchino.Widgets.Lists.ScrollWindow.operator ==(Arlecchino.Widgets.Lists.ScrollWindow left, Arlecchino.Widgets.Lists.ScrollWindow right) -> bool
 static Arlecchino.Widgets.Readouts.GaugeBand.operator !=(Arlecchino.Widgets.Readouts.GaugeBand left, Arlecchino.Widgets.Readouts.GaugeBand right) -> bool
 static Arlecchino.Widgets.Readouts.GaugeBand.operator ==(Arlecchino.Widgets.Readouts.GaugeBand left, Arlecchino.Widgets.Readouts.GaugeBand right) -> bool
+static Arlecchino.Widgets.Text.EntryLook.operator !=(Arlecchino.Widgets.Text.EntryLook left, Arlecchino.Widgets.Text.EntryLook right) -> bool
+static Arlecchino.Widgets.Text.EntryLook.operator ==(Arlecchino.Widgets.Text.EntryLook left, Arlecchino.Widgets.Text.EntryLook right) -> bool
+static Arlecchino.Widgets.Text.EntryRow.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, int width, Arlecchino.Editing.ITextEntry! entry, Arlecchino.Widgets.Text.EntryLook look) -> int
+static Arlecchino.Widgets.Text.EntryRow.Draw(Arlecchino.Rendering.SurfaceRegion region, int row, int column, int width, string! text, int caret, (int Start, int End) selection, Arlecchino.Widgets.Text.EntryLook look) -> int
+static Arlecchino.Widgets.Text.EntryRuns.Of(string! text, int caret, (int Start, int End) selection, Arlecchino.Widgets.Text.EntryLook look, System.Action<string!, Arlecchino.Rendering.Colors.IArlecchinoColor!>! write) -> void
 static readonly Arlecchino.Navigation.Routes.FilePicker -> Arlecchino.Navigation.ViewRoute
 static readonly Arlecchino.Navigation.Routes.Help -> Arlecchino.Navigation.ViewRoute
 static readonly Arlecchino.Navigation.Routes.Notifications -> Arlecchino.Navigation.ViewRoute
 virtual Arlecchino.Modals.Modal.HandleMouse(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.MouseEvent mouse) -> void
+virtual Arlecchino.Modals.Modal.HandlePaste(Arlecchino.Modals.ModalFrame! frame, string! text) -> void
+virtual Arlecchino.Modals.Modal.Typing.get -> Arlecchino.Editing.ITextEntry?
+~override Arlecchino.Editing.CompletionAsk.Equals(object obj) -> bool
+~override Arlecchino.Editing.CompletionAsk.ToString() -> string
 ~override Arlecchino.Focus.FocusResult.Equals(object obj) -> bool
 ~override Arlecchino.Focus.FocusResult.ToString() -> string
 ~override Arlecchino.Layout.PaneSize.Equals(object obj) -> bool
@@ -1339,3 +1466,5 @@ virtual Arlecchino.Modals.Modal.HandleMouse(Arlecchino.Modals.ModalFrame! frame,
 ~override Arlecchino.Widgets.Lists.ScrollWindow.ToString() -> string
 ~override Arlecchino.Widgets.Readouts.GaugeBand.Equals(object obj) -> bool
 ~override Arlecchino.Widgets.Readouts.GaugeBand.ToString() -> string
+~override Arlecchino.Widgets.Text.EntryLook.Equals(object obj) -> bool
+~override Arlecchino.Widgets.Text.EntryLook.ToString() -> string

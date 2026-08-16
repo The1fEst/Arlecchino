@@ -320,6 +320,8 @@ Arlecchino.Rendering.Colors.ThemePalette.Active.get -> Arlecchino.Rendering.Colo
 Arlecchino.Rendering.Colors.ThemePalette.Active.init -> void
 Arlecchino.Rendering.Colors.ThemePalette.ActiveSelected.get -> Arlecchino.Rendering.Colors.TermColor!
 Arlecchino.Rendering.Colors.ThemePalette.ActiveSelected.init -> void
+Arlecchino.Rendering.Colors.ThemePalette.Caret.get -> Arlecchino.Rendering.Colors.TermColor!
+Arlecchino.Rendering.Colors.ThemePalette.Caret.init -> void
 Arlecchino.Rendering.Colors.ThemePalette.Default.get -> Arlecchino.Rendering.Colors.TermColor!
 Arlecchino.Rendering.Colors.ThemePalette.Default.init -> void
 Arlecchino.Rendering.Colors.ThemePalette.Error.get -> Arlecchino.Rendering.Colors.TermColor!
@@ -500,6 +502,7 @@ static Arlecchino.Rendering.Colors.Rgb.operator ==(Arlecchino.Rendering.Colors.R
 static Arlecchino.Rendering.Colors.Theme.Accent.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Active.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.ActiveSelected.get -> Arlecchino.Rendering.Colors.TermColor!
+static Arlecchino.Rendering.Colors.Theme.Caret.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Default.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Error.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Header.get -> Arlecchino.Rendering.Colors.TermColor!
