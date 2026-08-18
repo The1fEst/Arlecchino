@@ -14,11 +14,12 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## 2026.8.5
 
-A release about names. Nothing here changes what the framework does; what changes is what its members
-are called. A name that says what a thing is costs nothing to read, and one that says what was done to
-it — `Selected` for an index, `Muted` for a color, `Since` for a moment — costs a release to correct, so
-they are corrected together rather than a few at a time. Every break below is a rename: the type, the
-shape and the meaning are what they were, and the compiler names the member that moved.
+A release about names, and about Windows, where what the terminal answers about itself was still being
+read as something a hand did. Nothing here changes what the framework does; what changes is what its
+members are called. A name that says what a thing is costs nothing to read, and one that says what was
+done to it — `Selected` for an index, `Muted` for a color, `Since` for a moment — costs a release to
+correct, so they are corrected together rather than a few at a time. Every break below is a rename: the
+type, the shape and the meaning are what they were, and the compiler names the member that moved.
 
 ### Changed
 
@@ -72,6 +73,18 @@ shape and the meaning are what they were, and the compiler names the member that
 
 Everything else the sweep touched is inside the packages — locals, fields and the parameters of members
 no caller can see — and needs nothing from an application.
+
+### Fixed
+
+- **What the terminal answers about itself no longer types itself into a Windows console.** The answer
+  is relayed there character by character with no key named behind any of them, escape included, so
+  the reader never opened a sequence and `[?65;4;6;18;22;52c` was read as typing — which `2026.8.3`
+  fixed everywhere the escape arrived named, and nowhere here. The whole answer also lands at once,
+  which is the shape a paste has, so the run behind the escape was wrapped in the paste markers and
+  handed to whatever was being typed into as a block. An escape is now named as the key it is wherever
+  it comes from, and a run behind one is the terminal speaking rather than anything a hand did. The
+  reader drops each answer the way it drops one elsewhere, and the probe reads them — which is what
+  tells sixel, the color behind the text and the size of a cell apart on Windows.
 
 ## 2026.8.4
 

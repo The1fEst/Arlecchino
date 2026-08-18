@@ -68,6 +68,30 @@ public sealed class WindowsInputTranslatorTests
     }
 
     [Fact]
+    public void AnEscapeRelayedWithNoKeyBehindItIsStillNamedAnEscape()
+    {
+        var escape = WindowsInputTranslator.ToKeyPress(0, '\e', 0);
+
+        Assert.Equal(ConsoleKey.Escape, escape.Key);
+        Assert.Equal('\e', escape.Character);
+    }
+
+    [Fact]
+    public void TheRestOfWhatIsRelayedIsLeftWithNoKeyBehindIt()
+    {
+        Assert.Equal(default, WindowsInputTranslator.ToKeyPress(0, '[', 0).Key);
+        Assert.Equal(default, WindowsInputTranslator.ToKeyPress(0, '?', 0).Key);
+    }
+
+    [Fact]
+    public void TheEscapeKeyItselfIsUnchanged()
+    {
+        var escape = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Escape, '\e', 0);
+
+        Assert.Equal(ConsoleKey.Escape, escape.Key);
+    }
+
+    [Fact]
     public void PressBecomesPressedAtTheCellItHappenedIn()
     {
         Assert.True(_translator.TryTranslateMouse(4, 7, Left, 0, 0, out var mouse));

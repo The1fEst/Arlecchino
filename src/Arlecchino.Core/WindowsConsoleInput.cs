@@ -28,6 +28,9 @@ internal sealed partial class WindowsConsoleInput
     private readonly IntPtr _input;
     private readonly uint _restoreMode;
 
+    /// <summary>Whether the last press handed on was an escape, so what follows belongs to a sequence.</summary>
+    private bool _opened;
+
     private WindowsConsoleInput(IntPtr input, uint restoreMode)
     {
         _input = input;
@@ -167,15 +170,30 @@ internal sealed partial class WindowsConsoleInput
             run.Add(next);
         }
 
-        foreach (var key in WindowsPaste.Reads(run) ? WindowsPaste.Wrapped(run) : run)
+        foreach (var key in Handed(run))
         {
-            _keys.Enqueue(key);
+            Hand(key);
         }
 
         if (commanding is { } pressed)
         {
-            _keys.Enqueue(pressed);
+            Hand(pressed);
         }
+    }
+
+    /// <summary>
+    /// What a run that arrived together is read as: a paste, or the rest of what a terminal is saying. A run
+    /// behind an escape is never a paste.
+    /// </summary>
+    /// <param name="run">The presses that were waiting together.</param>
+    /// <returns>The presses to hand on.</returns>
+    private IEnumerable<KeyPress> Handed(IReadOnlyList<KeyPress> run) =>
+        !_opened && WindowsPaste.Reads(run) ? WindowsPaste.Wrapped(run) : run;
+
+    private void Hand(KeyPress key)
+    {
+        _opened = key.Key == ConsoleKey.Escape;
+        _keys.Enqueue(key);
     }
 
     private void Translate(MouseEventRecord mouse)
