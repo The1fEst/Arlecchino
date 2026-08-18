@@ -30,7 +30,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
     private volatile WindowsConsoleInput? _windowsInput;
 
-    /// <summary>Whether Ctrl+C was the console's when it was borrowed, and so is its to have back.</summary>
+    /// <summary>Whether the console had Ctrl+C when it was borrowed, and so is owed it back.</summary>
     private bool _controlKeysWereOn;
 
     /// <summary>
@@ -212,18 +212,18 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
-    /// Copies through the terminal itself, encoded as base64, which is the only way to reach the local
-    /// clipboard over a remote session. Terminals with it switched off drop it silently.
+    /// Copies through the terminal as base64, the only way to the clipboard of whoever is watching a
+    /// remote session, and then through <see cref="ClipboardPrograms"/>, which a silent terminal is not.
     /// </summary>
     /// <param name="text">What to copy.</param>
     public void CopyToClipboard(string text)
     {
-        if (!_escapeSequencesWork)
+        if (_escapeSequencesWork)
         {
-            return;
+            Console.Out.Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
         }
 
-        Console.Out.Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
+        ClipboardPrograms.Write(text);
     }
 
     /// <summary>Takes a flag off a console mode, and says whether it was there to take off.</summary>

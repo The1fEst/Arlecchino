@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Arlecchino.Rendering.Terminals;
 using Xunit;
 using Arlecchino.Tests.Support;
@@ -132,6 +133,7 @@ public sealed class SystemTerminalTests : IDisposable
     [Fact]
     public void CopyingGoesThroughTheTerminalAsBase64()
     {
+        using var programs = new ClipboardProgramScope();
         using var output = new ConsoleOutputScope();
 
         _terminal.CopyToClipboard("привет");
@@ -143,11 +145,57 @@ public sealed class SystemTerminalTests : IDisposable
     [Fact]
     public void ACopyOfNothingIsStillAValidRequest()
     {
+        using var programs = new ClipboardProgramScope();
         using var output = new ConsoleOutputScope();
 
         _terminal.CopyToClipboard(string.Empty);
 
         Assert.Equal(Expected("\e]52;c;\a"), output.WrittenText);
+    }
+
+    /// <summary>
+    /// The sequence says nothing about whether it landed, so the text goes to a clipboard program too, and
+    /// goes there whole.
+    /// </summary>
+    [Fact]
+    public void CopyingAlsoGoesToTheFirstClipboardProgramThatTakesIt()
+    {
+        if (!OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS() && !OperatingSystem.IsFreeBSD())
+        {
+            return;
+        }
+
+        var file = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        try
+        {
+            using (new ClipboardProgramScope(
+                       new ClipboardProgram("this-is-not-installed"),
+                       new ClipboardProgram("sh", "-c", $"cat > '{file}'")))
+            using (new ConsoleOutputScope())
+            {
+                _terminal.CopyToClipboard("привет");
+            }
+
+            Assert.Equal("привет", File.ReadAllText(file));
+        }
+        finally
+        {
+            File.Delete(file);
+        }
+    }
+
+    /// <summary>A machine with none of them installed is not an error, only a copy that went nowhere.</summary>
+    [Fact]
+    public void NoClipboardProgramInstalledIsNotAnError()
+    {
+        using var programs = new ClipboardProgramScope(new ClipboardProgram("this-is-not-installed"));
+        using var output = new ConsoleOutputScope();
+
+        _terminal.CopyToClipboard("привет");
+
+        var sequence = Convert.ToBase64String("привет"u8);
+        Assert.Equal(Expected($"\e]52;c;{sequence}\a"), output.WrittenText);
     }
 
     private string Expected(string sequences) => _terminal.EscapeSequencesWork ? sequences : string.Empty;

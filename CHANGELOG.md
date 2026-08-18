@@ -27,6 +27,16 @@ from `1.0.0` on breaking the public API meant a new major. See
   A terminal that keeps `Ctrl+Shift+C` for its own copying — Windows Terminal, WezTerm and kitty all do
   by default — never passes it on, and there `Ctrl+Insert` is the binding that arrives.
 
+- **`CopyToClipboard` no longer goes nowhere in a terminal that has OSC 52 switched off.** The sequence
+  was the only way out, and a terminal that ignores it ignores it in silence, so a copy that never landed
+  looked from the inside exactly like one that did. It is still written first — over a remote session it
+  is the only thing that reaches the clipboard of whoever is watching — and the text now also goes down
+  the standard input of the first clipboard program the machine has: `pbcopy`, `termux-clipboard-set`,
+  `wl-copy`, `xclip`, `xsel`, tried in that order. A program that is not installed fails to start and
+  costs nothing, so a machine with none of them spends no time on this. Only Linux, macOS and the BSDs
+  run them; everywhere else, Windows included, is left to the sequence alone, having no such program to
+  pipe into.
+
 ### Added
 
 - **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
