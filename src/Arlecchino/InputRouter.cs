@@ -6,6 +6,7 @@ using Arlecchino.Input;
 using Arlecchino.Modals;
 using Arlecchino.Navigation;
 using Arlecchino.State;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Arlecchino;
@@ -28,6 +29,7 @@ public class InputRouter
     private readonly CommandPalette _palette;
     private readonly CommandKeys _keys;
     private readonly IArlecchinoLayout? _layout;
+    private readonly IHostApplicationLifetime? _lifetime;
 
     /// <summary>Creates the router.</summary>
     /// <param name="state">Holds the open dialog and the output line.</param>
@@ -42,6 +44,10 @@ public class InputRouter
     /// <param name="logger">Where handler failures are reported.</param>
     /// <param name="keys">Finds the command a key belongs to, and holds a chord that is half typed.</param>
     /// <param name="layout">The frame around every view, which sees a click before the view does.</param>
+    /// <param name="lifetime">
+    /// How the application is stopped, for the <c>Ctrl+C</c> the console no longer answers itself. Absent
+    /// outside a host, where the key is read and nothing is stopped.
+    /// </param>
     internal InputRouter(
         ArlecchinoState state,
         Navigator navigator,
@@ -54,10 +60,12 @@ public class InputRouter
         ModalFrame frame,
         ILogger<InputRouter> logger,
         CommandKeys keys,
-        IArlecchinoLayout? layout = null)
+        IArlecchinoLayout? layout = null,
+        IHostApplicationLifetime? lifetime = null)
     {
         _keys = keys;
         _layout = layout;
+        _lifetime = lifetime;
         _state = state;
         _navigator = navigator;
         _terminal = terminal;
@@ -124,6 +132,13 @@ public class InputRouter
 
     private void Route(KeyPress key)
     {
+        if (Quits(key))
+        {
+            _lifetime?.StopApplication();
+
+            return;
+        }
+
         if (_state.Modal is { } modal)
         {
             modal.Handle(_frame, key);
@@ -192,6 +207,16 @@ public class InputRouter
 
         _navigator.Handle(key);
     }
+
+    /// <summary>
+    /// Whether a press is the one that stops the application, which is <c>Ctrl+C</c> and nothing else. The
+    /// console used to answer it first, and answered <c>Ctrl+Shift+C</c> the same way, since both type the
+    /// same character.
+    /// </summary>
+    /// <param name="key">The key that arrived.</param>
+    /// <returns><c>true</c> when the application should stop.</returns>
+    private static bool Quits(KeyPress key) =>
+        key is { Key: ConsoleKey.C, Modifiers: KeyModifiers.Control };
 
     /// <summary>
     /// Where a mouse event goes: the dialog on top, then the output row, then the layout, then the view. The

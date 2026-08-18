@@ -12,6 +12,27 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Fixed
+
+- **`Ctrl+Shift+C` no longer stops a Windows application instead of copying.** Both it and `Ctrl+C` type
+  the same character, and the Windows console decided for itself which had been pressed: with processed
+  input on it raised the same signal for either, so the `Copy` binding never saw the key and the
+  application quit under the user's hand. The console is now handed the key rather than the verdict —
+  processed input is off while the application has the terminal — and `Ctrl+C` stops it from the input
+  router, where the Shift can be seen. The console gets it back the moment the terminal is lent to
+  another program, so what runs there is still stopped the way everything is stopped.
+
+  A terminal that keeps `Ctrl+Shift+C` for its own copying — Windows Terminal, WezTerm and kitty all do
+  by default — never passes it on, and there `Ctrl+Insert` is the binding that arrives.
+
+### Added
+
+- **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
+  around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
+  until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.
+
 ## 2026.8.5
 
 A release about names, and about Windows, where what the terminal answers about itself was still being

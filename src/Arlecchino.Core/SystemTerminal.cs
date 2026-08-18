@@ -12,12 +12,14 @@ namespace Arlecchino;
 
 /// <summary>
 /// The real console, registered by default and replaceable through <c>UseTerminal&lt;T&gt;()</c>. On Windows
-/// it turns virtual terminal output on and virtual terminal input off at startup.
+/// it turns virtual terminal output on, virtual terminal input off, and borrows <c>Ctrl+C</c> while it
+/// has the terminal.
 /// </summary>
 public sealed partial class SystemTerminal : IArlecchinoTerminal
 {
     private const int StandardOutputHandle = -11;
     private const int StandardInputHandle = -10;
+    private const uint EnableProcessedInput = 0x0001;
     private const uint EnableVirtualTerminalProcessing = 0x0004;
     private const uint EnableVirtualTerminalInput = 0x0200;
     private const int RedirectedWidth = 120;
@@ -27,6 +29,9 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     private readonly ConcurrentQueue<KeyPress> _unread = new();
 
     private volatile WindowsConsoleInput? _windowsInput;
+
+    /// <summary>Whether Ctrl+C was the console's when it was borrowed, and so is its to have back.</summary>
+    private bool _controlKeysWereOn;
 
     /// <summary>
     /// Prepares the console: UTF-8 output, hidden cursor, and escape sequences where the platform
@@ -182,6 +187,31 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
+    /// Takes <c>Ctrl+C</c> off the Windows console, which raises it as a signal — and raises the same
+    /// signal for <c>Ctrl+Shift+C</c>, since both type the same character. Whether it was the console's is
+    /// remembered, so it is given back as found.
+    /// </summary>
+    public void TakeControlKeys()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            _controlKeysWereOn = TryRemoveConsoleMode(StandardInputHandle, EnableProcessedInput);
+        }
+    }
+
+    /// <summary>
+    /// Gives <c>Ctrl+C</c> back to the console, which the shell and any program the terminal is lent to
+    /// expect to have it. Doing so twice, or without having taken it, changes nothing.
+    /// </summary>
+    public void GiveBackControlKeys()
+    {
+        if (OperatingSystem.IsWindows() && _controlKeysWereOn)
+        {
+            TryAddConsoleMode(StandardInputHandle, EnableProcessedInput);
+        }
+    }
+
+    /// <summary>
     /// Copies through the terminal itself, encoded as base64, which is the only way to reach the local
     /// clipboard over a remote session. Terminals with it switched off drop it silently.
     /// </summary>
@@ -196,23 +226,30 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
         Console.Out.Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
     }
 
-    private static void TryRemoveConsoleMode(int standardHandle, uint flag)
+    /// <summary>Takes a flag off a console mode, and says whether it was there to take off.</summary>
+    /// <param name="standardHandle">Which handle to change.</param>
+    /// <param name="flag">The flag to take off.</param>
+    /// <returns><c>true</c> when the flag was set and has been taken off.</returns>
+    private static bool TryRemoveConsoleMode(int standardHandle, uint flag)
     {
         try
         {
             var handle = GetStdHandle(standardHandle);
             if (handle == IntPtr.Zero || handle == new IntPtr(-1) || !GetConsoleMode(handle, out var mode))
             {
-                return;
+                return false;
             }
 
-            if ((mode & flag) != 0)
-            {
-                SetConsoleMode(handle, mode & ~flag);
-            }
+            return (mode & flag) != 0 && SetConsoleMode(handle, mode & ~flag);
         }
-        catch (DllNotFoundException) { }
-        catch (EntryPointNotFoundException) { }
+        catch (DllNotFoundException)
+        {
+            return false;
+        }
+        catch (EntryPointNotFoundException)
+        {
+            return false;
+        }
     }
 
     private static bool TryAddConsoleMode(int standardHandle, uint flag)

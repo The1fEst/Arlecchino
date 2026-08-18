@@ -4,7 +4,7 @@ namespace Arlecchino.Hosting;
 
 /// <summary>
 /// The modes an application puts a terminal into and has to take it back out of: the alternate screen, the
-/// mouse, bracketed paste. Leaving runs once however many times it is asked for.
+/// mouse, bracketed paste, and Ctrl+C. Leaving runs once however many times it is asked for.
 /// </summary>
 internal sealed class TerminalModes
 {
@@ -29,6 +29,8 @@ internal sealed class TerminalModes
     public void Enter()
     {
         Interlocked.Exchange(ref _left, 0);
+
+        _terminal.TakeControlKeys();
 
         if (_options.UseAlternateScreen)
         {
@@ -65,5 +67,6 @@ internal sealed class TerminalModes
         }
 
         _terminal.LeaveFullScreen();
+        _terminal.GiveBackControlKeys();
     }
 }

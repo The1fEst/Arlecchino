@@ -37,6 +37,12 @@ internal sealed partial class WindowsConsoleInput
         _restoreMode = restoreMode;
     }
 
+    /// <summary>
+    /// Takes the console over, reporting the mouse and the window and handing every key on as it is.
+    /// Processed input goes off with the rest, since with it on the console reads <c>Ctrl+Shift+C</c> as
+    /// <c>Ctrl+C</c>.
+    /// </summary>
+    /// <returns>The reader, or <c>null</c> where there is no console to read.</returns>
     [SupportedOSPlatform("windows")]
     public static WindowsConsoleInput? TryStart()
     {
@@ -48,8 +54,8 @@ internal sealed partial class WindowsConsoleInput
                 return null;
             }
 
-            var raw = (mode | EnableMouseInput | EnableWindowInput | EnableExtendedFlags | EnableProcessedInput) &
-                      ~(EnableQuickEdit | EnableLineInput | EnableEchoInput);
+            var raw = (mode | EnableMouseInput | EnableWindowInput | EnableExtendedFlags) &
+                      ~(EnableQuickEdit | EnableLineInput | EnableEchoInput | EnableProcessedInput);
 
             return SetConsoleMode(input, raw) ? new WindowsConsoleInput(input, mode) : null;
         }

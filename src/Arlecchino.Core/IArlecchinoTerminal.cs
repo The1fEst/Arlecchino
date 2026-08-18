@@ -65,6 +65,18 @@ public interface IArlecchinoTerminal
     void DisablePaste();
 
     /// <summary>
+    /// Takes <c>Ctrl+C</c> off the terminal, so it arrives as a key press rather than as a signal. The
+    /// terminal cannot tell it from <c>Ctrl+Shift+C</c>, which types the same character; the application can.
+    /// </summary>
+    void TakeControlKeys() { }
+
+    /// <summary>
+    /// Gives <c>Ctrl+C</c> back to the terminal, for the shell the application came from and for whatever
+    /// program the terminal is lent to while it runs.
+    /// </summary>
+    void GiveBackControlKeys() { }
+
+    /// <summary>
     /// Puts text on the clipboard of whatever is showing the terminal, which is the local machine even over a
     /// remote session. Terminals may refuse it, and none report back.
     /// </summary>

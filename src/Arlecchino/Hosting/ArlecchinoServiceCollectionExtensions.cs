@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Arlecchino.Commands;
 using Arlecchino.Diagnostics;
@@ -116,7 +117,8 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<ModalFrame>(),
             provider.GetRequiredService<ILogger<InputRouter>>(),
             provider.GetRequiredService<CommandKeys>(),
-            provider.GetService<IArlecchinoLayout>()));
+            provider.GetService<IArlecchinoLayout>(),
+            provider.GetService<IHostApplicationLifetime>()));
         services.AddSingleton(static provider => new TerminalModes(
             provider.GetRequiredService<IArlecchinoTerminal>(),
             provider.GetRequiredService<ArlecchinoOptions>()));

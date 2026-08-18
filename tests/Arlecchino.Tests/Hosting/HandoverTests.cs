@@ -41,6 +41,25 @@ public sealed class HandoverTests : IDisposable
     }
 
     /// <summary>
+    /// Ctrl+C goes back to the terminal while another program has it. A program that cannot be stopped
+    /// with the key everyone stops a program with is a program that has to be killed from elsewhere.
+    /// </summary>
+    [Fact]
+    public void ControlCIsTheOtherProgramsWhileItRuns()
+    {
+        Modes.Enter();
+
+        Assert.True(_host.Terminal.AreControlKeysTaken);
+
+        var wereTaken = true;
+
+        Lending.Give(() => wereTaken = _host.Terminal.AreControlKeysTaken);
+
+        Assert.False(wereTaken);
+        Assert.True(_host.Terminal.AreControlKeysTaken);
+    }
+
+    /// <summary>
     /// What is taken back is what was in force. Nothing here ever took the terminal over — no loop is
     /// running — so nothing is switched on behind the work either.
     /// </summary>

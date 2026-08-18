@@ -23,6 +23,8 @@ static Arlecchino.Rendering.Colors.Theme.Secondary.get -> Arlecchino.Rendering.C
 *REMOVED*static Arlecchino.Rendering.Colors.Theme.ActiveSelected.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*static Arlecchino.Rendering.Colors.Theme.Selected.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*static Arlecchino.Rendering.Terminals.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan within) -> bool
+Arlecchino.IArlecchinoTerminal.GiveBackControlKeys() -> void
+Arlecchino.IArlecchinoTerminal.TakeControlKeys() -> void
 Arlecchino.Input.KeyBinding.Character.get -> char
 Arlecchino.Input.KeyBinding.Closes(Arlecchino.Input.KeyPress press) -> bool
 Arlecchino.Input.KeyBinding.KeyBinding(char character) -> void
@@ -38,6 +40,8 @@ Arlecchino.Rendering.Colors.ThemePalette.Selection.init -> void
 Arlecchino.Rendering.Margin.Margin(int size) -> void
 Arlecchino.Rendering.SurfaceRegion.Inset(int size) -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Rendering.Text.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.Colors.IArlecchinoColor! style) -> void
+Arlecchino.SystemTerminal.GiveBackControlKeys() -> void
+Arlecchino.SystemTerminal.TakeControlKeys() -> void
 static Arlecchino.Rendering.Colors.Theme.ActiveSelection.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Selection.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Terminals.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan timeout) -> bool

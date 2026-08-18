@@ -137,7 +137,8 @@ public sealed record ArlecchinoKeymap
 
     /// <summary>
     /// Copies what is being edited to the clipboard, under both habits: <c>Ctrl+Insert</c> and
-    /// <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone, since it stops the application.
+    /// <c>Ctrl+Shift+C</c>. Plain <c>Ctrl+C</c> is left alone, since it stops the application, and a
+    /// terminal that keeps <c>Ctrl+Shift+C</c> for its own copying never passes it on.
     /// </summary>
     public KeyBinding Copy { get; init; } = new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
         .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
