@@ -386,44 +386,44 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     {
         private readonly AtomsMap<TKey, TValue> _map;
         private readonly TKey _key;
-        private readonly TValue _before;
-        private readonly TValue _after;
+        private readonly TValue _oldValue;
+        private readonly TValue _newValue;
 
-        public Replaced(AtomsMap<TKey, TValue> map, TKey key, TValue before, TValue after)
+        public Replaced(AtomsMap<TKey, TValue> map, TKey key, TValue oldValue, TValue newValue)
         {
             _map = map;
             _key = key;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _map;
 
-        public void Undo() => _map.SetSilently(_key, _before);
+        public void Undo() => _map.SetSilently(_key, _oldValue);
 
-        public void Redo() => _map.SetSilently(_key, _after);
+        public void Redo() => _map.SetSilently(_key, _newValue);
     }
 
     private sealed class Swapped : IAtomEdit
     {
         private readonly AtomsMap<TKey, TValue> _map;
-        private readonly KeyValuePair<TKey, TValue>[] _before;
-        private readonly KeyValuePair<TKey, TValue>[] _after;
+        private readonly KeyValuePair<TKey, TValue>[] _oldValue;
+        private readonly KeyValuePair<TKey, TValue>[] _newValue;
 
         public Swapped(
             AtomsMap<TKey, TValue> map,
-            KeyValuePair<TKey, TValue>[] before,
-            KeyValuePair<TKey, TValue>[] after)
+            KeyValuePair<TKey, TValue>[] oldValue,
+            KeyValuePair<TKey, TValue>[] newValue)
         {
             _map = map;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _map;
 
-        public void Undo() => _map.ResetSilently(_before);
+        public void Undo() => _map.ResetSilently(_oldValue);
 
-        public void Redo() => _map.ResetSilently(_after);
+        public void Redo() => _map.ResetSilently(_newValue);
     }
 }

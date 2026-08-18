@@ -77,9 +77,9 @@ public class Navigator
 
             var hints = _active.View.Hints();
             var screen = hints.Length > 0 ? hints : HintsOf(_active.View.Commands());
-            var focused = _active.View.Focus?.Hints() ?? [];
+            var focusedHints = _active.View.Focus?.Hints() ?? [];
 
-            return focused.Length == 0 ? screen : Merged(focused, screen);
+            return focusedHints.Length == 0 ? screen : Merged(focusedHints, screen);
         }
     }
 
@@ -99,25 +99,25 @@ public class Navigator
     /// Puts the hints of the focused element in front of the hints of the screen, leaving out the
     /// ones the screen states again under a key the element already claimed.
     /// </summary>
-    /// <param name="focused">What the focused element answers to.</param>
+    /// <param name="focusedHints">What the focused element answers to.</param>
     /// <param name="screen">What the screen answers to.</param>
     /// <returns>The hints to draw, in the order they should be read.</returns>
     private static (string Key, string Description)[] Merged(
-        (string Key, string Description)[] focused,
+        (string Key, string Description)[] focusedHints,
         (string Key, string Description)[] screen)
     {
-        var merged = new List<(string Key, string Description)>(focused.Length + screen.Length);
-        merged.AddRange(focused);
+        var hints = new List<(string Key, string Description)>(focusedHints.Length + screen.Length);
+        hints.AddRange(focusedHints);
 
         foreach (var hint in screen)
         {
-            if (!Array.Exists(focused, taken => taken.Key == hint.Key))
+            if (!Array.Exists(focusedHints, taken => taken.Key == hint.Key))
             {
-                merged.Add(hint);
+                hints.Add(hint);
             }
         }
 
-        return [.. merged];
+        return [.. hints];
     }
 
     /// <summary>Whether there is somewhere to go back to.</summary>

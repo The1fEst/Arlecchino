@@ -46,7 +46,7 @@ public sealed class PanesView : IArlecchinoView
             Rows,
             3,
             Leaf(
-                static region => region.WriteLine(0, "three rows, whatever the terminal is", Theme.Muted),
+                static region => region.WriteLine(0, "three rows, whatever the terminal is", Theme.Secondary),
                 static () => "toolbar"),
             Branch(
                 Rows,
@@ -78,7 +78,7 @@ public sealed class PanesView : IArlecchinoView
 
     private static void Log(SurfaceRegion region)
     {
-        region.WriteLine(0, "the rest of it", Theme.Muted);
+        region.WriteLine(0, "the rest of it", Theme.Secondary);
 
         if (region.Height > 2)
         {

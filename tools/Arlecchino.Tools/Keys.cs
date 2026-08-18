@@ -31,14 +31,14 @@ internal static class Keys
             return Explain();
         }
 
-        if (args is ["--listen", var into, ..])
+        if (args is ["--listen", var listenTo, ..])
         {
-            return Listening(into);
+            return Listening(listenTo);
         }
 
-        if (args is ["--decode", var captured, ..])
+        if (args is ["--decode", var decodeFrom, ..])
         {
-            return Decode(captured);
+            return Decode(decodeFrom);
         }
 
         if (Which("tmux") is "")
@@ -48,14 +48,14 @@ internal static class Keys
             return 2;
         }
 
-        var wanted = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
+        var name = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
         var presses = Presses()
-            .Where(press => wanted.Length == 0 || press.Send.Contains(wanted, StringComparison.OrdinalIgnoreCase))
+            .Where(press => name.Length == 0 || press.Send.Contains(name, StringComparison.OrdinalIgnoreCase))
             .ToList();
 
         if (presses.Count == 0)
         {
-            Console.WriteLine($"no key matches '{wanted}'");
+            Console.WriteLine($"no key matches '{name}'");
 
             return 1;
         }
@@ -64,8 +64,8 @@ internal static class Keys
 
         try
         {
-            var sent = Bytes(folder.FullName, presses);
-            var handed = Handed(folder.FullName, presses);
+            var bytes = Bytes(folder.FullName, presses);
+            var answers = Handed(folder.FullName, presses);
 
             Tmux("kill-server");
 
@@ -75,19 +75,19 @@ internal static class Keys
 
             foreach (var press in presses)
             {
-                var bytes = sent[press.Send];
-                var console = handed[press.Send];
-                var read = reader.Read(console);
-                var complaint = press.Disagrees(read);
-                var fake = reader.ReadText(bytes);
+                var raw = bytes[press.Send];
+                var console = answers[press.Send];
+                var answer = reader.Read(console);
+                var complaint = press.Disagrees(answer);
+                var fake = reader.ReadText(raw);
 
                 Console.WriteLine(complaint is ""
-                    ? $"  ok    {press.Send,-10}  {Program.Escaped(bytes),-16}  {read}"
-                    : $"  DIFF  {press.Send,-10}  {Program.Escaped(bytes),-16}  {read}   {complaint}");
+                    ? $"  ok    {press.Send,-10}  {Program.Escaped(raw),-16}  {answer}"
+                    : $"  DIFF  {press.Send,-10}  {Program.Escaped(raw),-16}  {answer}   {complaint}");
 
                 wrong += complaint is "" ? 0 : 1;
 
-                if (fake.ToString() == read.ToString())
+                if (fake.ToString() == answer.ToString())
                 {
                     continue;
                 }
@@ -126,23 +126,23 @@ internal static class Keys
     /// <returns>The bytes each key produced.</returns>
     private static Dictionary<string, string> Bytes(string folder, IEnumerable<Press> presses)
     {
-        var typed = Path.Combine(folder, "typed");
+        var file = Path.Combine(folder, "typed");
 
-        Open("sh", "-c", $"stty raw -echo; cat -u > '{typed}'");
-        Await(() => File.Exists(typed), "the pane never started listening");
+        Open("sh", "-c", $"stty raw -echo; cat -u > '{file}'");
+        Await(() => File.Exists(file), "the pane never started listening");
 
         var bytes = new Dictionary<string, string>(StringComparer.Ordinal);
 
         foreach (var press in presses)
         {
-            bytes[press.Send] = Grown(typed,
+            bytes[press.Send] = Grown(file,
                 press.Send,
                 static (stream, count) =>
                 {
-                    var read = new byte[count];
-                    stream.ReadExactly(read);
+                    var answer = new byte[count];
+                    stream.ReadExactly(answer);
 
-                    return Encoding.Latin1.GetString(read);
+                    return Encoding.Latin1.GetString(answer);
                 });
         }
 
@@ -158,27 +158,27 @@ internal static class Keys
     /// <returns>The presses the console reported for each key.</returns>
     private static Dictionary<string, KeyPress[]> Handed(string folder, IEnumerable<Press> presses)
     {
-        var heard = Path.Combine(folder, "heard");
+        var log = Path.Combine(folder, "heard");
 
-        Open(Self(), "keys", "--listen", heard);
-        Await(() => File.Exists(heard), "the listener never started");
+        Open(Self(), "keys", "--listen", log);
+        Await(() => File.Exists(log), "the listener never started");
 
-        var handed = new Dictionary<string, KeyPress[]>(StringComparer.Ordinal);
+        var answers = new Dictionary<string, KeyPress[]>(StringComparer.Ordinal);
 
         foreach (var press in presses)
         {
-            handed[press.Send] = Grown(heard,
+            answers[press.Send] = Grown(log,
                 press.Send,
                 static (stream, count) =>
                 {
-                    var read = new byte[count];
-                    stream.ReadExactly(read);
+                    var answer = new byte[count];
+                    stream.ReadExactly(answer);
 
-                    return Parsed(Encoding.UTF8.GetString(read));
+                    return Parsed(Encoding.UTF8.GetString(answer));
                 });
         }
 
-        return handed;
+        return answers;
     }
 
     private static KeyPress[] Parsed(string lines) =>
@@ -197,36 +197,36 @@ internal static class Keys
     /// <typeparam name="T">What the caller makes of the bytes that arrived.</typeparam>
     /// <param name="file">The file the pane appends to.</param>
     /// <param name="key">The key, named the way tmux names it.</param>
-    /// <param name="read">Turns the bytes that arrived into an answer.</param>
+    /// <param name="answer">Turns the bytes that arrived into an answer.</param>
     /// <returns>The answer, or what an empty stretch of bytes comes to.</returns>
-    private static T Grown<T>(string file, string key, Func<FileStream, int, T> read)
+    private static T Grown<T>(string file, string key, Func<FileStream, int, T> answer)
     {
-        var before = new FileInfo(file).Length;
+        var length = new FileInfo(file).Length;
 
         Tmux("send-keys", "-t", Socket, key);
 
-        var settled = -1L;
+        var steady = -1L;
 
         for (var attempt = 0; attempt < 200; attempt++)
         {
             Thread.Sleep(10);
 
-            var now = new FileInfo(file).Length;
+            var size = new FileInfo(file).Length;
 
-            if (now > before && now == settled)
+            if (size > length && size == steady)
             {
                 break;
             }
 
-            settled = now;
+            steady = size;
         }
 
-        var length = new FileInfo(file).Length;
+        var grown = new FileInfo(file).Length;
 
         using var stream = File.OpenRead(file);
-        stream.Seek(before, SeekOrigin.Begin);
+        stream.Seek(length, SeekOrigin.Begin);
 
-        return read(stream, (int)Math.Max(0, length - before));
+        return answer(stream, (int)Math.Max(0, grown - length));
     }
 
     private static string Self()
@@ -256,18 +256,18 @@ internal static class Keys
     /// The other half of the tool, running inside the pane: reads keys the way an application does and writes
     /// down what it was handed, which is what says the shape a fake terminal has to hand over.
     /// </summary>
-    /// <param name="into">The file each press is written to.</param>
+    /// <param name="file">The file each press is written to.</param>
     /// <returns>Zero, when it is killed.</returns>
-    private static int Listening(string into)
+    private static int Listening(string file)
     {
-        File.WriteAllText(into, "");
+        File.WriteAllText(file, "");
 
         while (!Console.IsInputRedirected)
         {
             var key = Console.ReadKey(true);
 
             File.AppendAllText(
-                into,
+                file,
                 string.Create(
                     CultureInfo.InvariantCulture,
                     $"{(int)key.Key}\t{(int)key.KeyChar}\t{(int)key.Modifiers}\n"));
@@ -280,27 +280,27 @@ internal static class Keys
     /// Reads a stretch of bytes captured from a terminal and says what an application would have been told.
     /// It is how the reader is held to what cannot be asked for on demand, such as a mouse report.
     /// </summary>
-    /// <param name="captured">A file of bytes as they came off the pty.</param>
+    /// <param name="file">A file of bytes as they came off the pty.</param>
     /// <returns>Zero when the bytes said something.</returns>
-    private static int Decode(string captured)
+    private static int Decode(string file)
     {
-        if (!File.Exists(captured))
+        if (!File.Exists(file))
         {
-            Console.WriteLine($"nothing captured at {captured}");
+            Console.WriteLine($"nothing captured at {file}");
 
             return 1;
         }
 
-        var bytes = Encoding.Latin1.GetString(File.ReadAllBytes(captured));
+        var bytes = Encoding.Latin1.GetString(File.ReadAllBytes(file));
 
         using var reader = new Reading();
-        var heard = reader.ReadText(bytes);
+        var report = reader.ReadText(bytes);
 
         Console.WriteLine($"{bytes.Length} bytes: {Program.Escaped(bytes[..Math.Min(60, bytes.Length)])}...");
         Console.WriteLine();
-        Console.WriteLine(heard.ToString());
+        Console.WriteLine(report.ToString());
 
-        return heard.ToString() is "nothing" ? 1 : 0;
+        return report.ToString() is "nothing" ? 1 : 0;
     }
 
     private static int Explain()
@@ -363,11 +363,11 @@ internal static class Keys
             return "";
         }
 
-        var found = process.StandardOutput.ReadToEnd().Trim();
+        var output = process.StandardOutput.ReadToEnd().Trim();
         process.StandardError.ReadToEnd();
         process.WaitForExit();
 
-        return process.ExitCode == 0 ? found : "";
+        return process.ExitCode == 0 ? output : "";
     }
 
     private static IEnumerable<Press> Presses()
@@ -429,31 +429,31 @@ internal static class Keys
         bool Folded = false)
     {
         /// <summary>What is wrong with what the reader made of the press, if anything.</summary>
-        /// <param name="read">What the reader reported.</param>
+        /// <param name="answer">What the reader reported.</param>
         /// <returns>The complaint, or an empty string when the two agree.</returns>
-        internal string Disagrees(Heard read)
+        internal string Disagrees(Report answer)
         {
-            if (read.Keys.Count != 1)
+            if (answer.Keys.Count != 1)
             {
-                return $"expected one key, got {read.Keys.Count}";
+                return $"expected one key, got {answer.Keys.Count}";
             }
 
-            var got = read.Keys[0];
-            var wanted = Character == '\0'
+            var first = answer.Keys[0];
+            var name = Character == '\0'
                 ? $"{Key}{Suffix(Modifiers)}"
                 : $"'{Character}'{Suffix(Modifiers)}";
 
-            if (Key != default && got.Key != Key)
+            if (Key != default && first.Key != Key)
             {
-                return $"expected {wanted}";
+                return $"expected {name}";
             }
 
-            if (Character != '\0' && got.Character != Character)
+            if (Character != '\0' && first.Character != Character)
             {
-                return $"expected {wanted}";
+                return $"expected {name}";
             }
 
-            return got.Modifiers == Modifiers ? "" : $"expected {wanted}";
+            return first.Modifiers == Modifiers ? "" : $"expected {name}";
         }
 
         private static string Suffix(KeyModifiers modifiers) => modifiers == default ? "" : $"+{modifiers}";
@@ -463,7 +463,7 @@ internal static class Keys
     /// <param name="Keys">The key presses it reported, in order.</param>
     /// <param name="Pastes">The blocks of pasted text it reported.</param>
     /// <param name="Mice">The mouse events it reported, spelled out.</param>
-    private sealed record Heard(
+    private sealed record Report(
         IReadOnlyList<KeyPress> Keys,
         IReadOnlyList<string> Pastes,
         IReadOnlyList<string> Mice)
@@ -514,11 +514,11 @@ internal static class Keys
                 });
         }
 
-        internal Heard Read(IEnumerable<KeyPress> handed)
+        internal Report Read(IEnumerable<KeyPress> answers)
         {
             _recorder.Forget();
 
-            foreach (var key in handed)
+            foreach (var key in answers)
             {
                 _host.Terminal.Enqueue(key);
             }
@@ -529,7 +529,7 @@ internal static class Keys
             return new([.. _recorder.Keys], [.. _recorder.Pastes], [.. _recorder.Mice]);
         }
 
-        internal Heard ReadText(string bytes)
+        internal Report ReadText(string bytes)
         {
             _recorder.Forget();
             _host.ReadFromTerminal(bytes);

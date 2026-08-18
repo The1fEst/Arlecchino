@@ -13,13 +13,13 @@ namespace Arlecchino.Diagnostics;
 internal static partial class Log
 {
     [LoggerMessage(Level = LogLevel.Warning,
-        Message = "{Route} binds {Binding} to both '{Kept}' and '{Shadowed}'; only the first one can run.")]
+        Message = "{Route} binds {Binding} to both '{KeptView}' and '{ShadowedView}'; only the first one can run.")]
     public static partial void KeyBoundTwice(
         ILogger logger,
         ViewRoute route,
         KeyBinding binding,
-        string kept,
-        string shadowed);
+        string keptView,
+        string shadowedView);
 
     [LoggerMessage(Level = LogLevel.Warning,
         Message = "{Route} binds {Binding} to '{View}', shadowing the application command '{Global}'.")]
@@ -71,8 +71,8 @@ internal static partial class Log
     public static partial void DrawFailed(ILogger logger, Exception exception, ViewRoute route);
 
     [LoggerMessage(Level = LogLevel.Warning,
-        Message = "A collection shrank while it was being drawn at route {Route}; {Skipped} frame(s) were cut " +
+        Message = "A collection shrank while it was being drawn at route {Route}; {Frames} frame(s) were cut " +
                   "short. Change what a widget draws from the drawing thread — through FrameThread.Post when " +
                   "the change comes from somewhere else.")]
-    public static partial void RowsVanished(ILogger logger, ViewRoute route, int skipped);
+    public static partial void RowsVanished(ILogger logger, ViewRoute route, int frames);
 }

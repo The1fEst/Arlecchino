@@ -18,7 +18,7 @@ internal sealed class ListPaint
 {
     private const int MostRows = 12;
     private const int FewestRows = 3;
-    private const int RoomAround = 10;
+    private const int Padding = 10;
     private const int LeastInner = 34;
 
     private readonly Surface _surface;
@@ -46,7 +46,7 @@ internal sealed class ListPaint
     public void Several(MultiChoiceModal modal) =>
         Options(
             modal,
-            $"{modal.Title} — {_strings.SelectedCount(modal.Selected.Count)}",
+            $"{modal.Title} — {_strings.SelectedCount(modal.SelectedKeys.Count)}",
             _strings.ModalMultiChoiceHints(),
             option => $"[{(modal.IsSelected(option) ? '×' : ' ')}] {option}");
 
@@ -68,10 +68,10 @@ internal sealed class ListPaint
             body.Add([new($"{TextWidth.PadLeft(key, keyWidth)}  {label}", Theme.Default)]);
         }
 
-        var (box, inside) = _box.Draw(modal.Title, body, _strings.ModalCommandHints());
+        var (box, content) = _box.Draw(modal.Title, body, _strings.ModalCommandHints());
 
         modal.Box = box;
-        modal.Rows = inside.Rows(0, modal.Commands.Count);
+        modal.Rows = content.Rows(0, modal.Commands.Count);
     }
 
     private void Options(OptionListModal modal, string title, string hints, Func<string, string> formatRow)
@@ -80,49 +80,49 @@ internal sealed class ListPaint
 
         modal.Index = Math.Clamp(modal.Index, 0, Math.Max(0, matching.Count - 1));
 
-        var maxRows = Math.Min(MostRows, Math.Max(FewestRows, _surface.FrameHeight - RoomAround));
+        var maxRows = Math.Min(MostRows, Math.Max(FewestRows, _surface.FrameHeight - Padding));
         var visible = Math.Min(matching.Count, maxRows);
         var start = Math.Clamp(modal.Index - (maxRows / 2), 0, Math.Max(0, matching.Count - maxRows));
 
         var rows = new string[visible];
-        var content = Math.Max(Math.Max(TextWidth.Of(title) + 4, LeastInner), TextWidth.Of(hints));
+        var width = Math.Max(Math.Max(TextWidth.Of(title) + 4, LeastInner), TextWidth.Of(hints));
 
         for (var index = 0; index < visible; index++)
         {
             rows[index] = formatRow(matching[start + index]);
-            content = Math.Max(content, TextWidth.Of(rows[index]));
+            width = Math.Max(width, TextWidth.Of(rows[index]));
         }
 
         var notice = matching.Count == 0 ? 1 : 0;
-        var box = _box.Centered(content, visible + notice + 4);
-        var inside = box.Border(Theme.Info, title).Inset(new Margin(1, 0, 1, 0));
+        var box = _box.Centered(width, visible + notice + 4);
+        var content = box.Border(Theme.Info, title).Inset(new Margin(1, 0, 1, 0));
 
         modal.Box = box;
-        modal.Rows = inside.Rows(2 + notice, visible);
+        modal.Rows = content.Rows(2 + notice, visible);
         modal.FirstVisible = start;
 
-        Filter(modal, inside);
+        Filter(modal, content);
         ModalBox.Divider(box, 1);
 
         if (notice == 1)
         {
-            inside.WriteLine(2, _strings.NothingMatches(), Theme.Muted);
+            content.WriteLine(2, _strings.NothingMatches(), Theme.Secondary);
         }
 
         var scrolled = ScrollBar.IsNeeded(matching.Count, visible);
 
-        Rows(modal, inside, rows, start, notice, scrolled);
+        Rows(modal, content, rows, start, notice, scrolled);
 
         if (scrolled)
         {
             ScrollBar.Draw(modal.Rows, start, matching.Count);
-            Position(inside, modal.Index + 1, matching.Count);
+            Position(content, modal.Index + 1, matching.Count);
         }
 
         var footer = 2 + notice + visible;
 
         ModalBox.Divider(box, footer);
-        inside.WriteLine(footer + 1, hints, Theme.Muted);
+        content.WriteLine(footer + 1, hints, Theme.Secondary);
     }
 
     /// <summary>
@@ -130,49 +130,49 @@ internal sealed class ListPaint
     /// a field is, because it is edited the way a field is.
     /// </summary>
     /// <param name="modal">The dialog.</param>
-    /// <param name="inside">The region inside the box.</param>
-    private void Filter(OptionListModal modal, SurfaceRegion inside)
+    /// <param name="content">The region inside the box.</param>
+    private void Filter(OptionListModal modal, SurfaceRegion content)
     {
         var label = _strings.Filter();
 
-        inside.Write(0, 0, label, Theme.Info);
+        content.Write(0, 0, label, Theme.Info);
         EntryRow.Draw(
-            inside,
+            content,
             0,
             TextWidth.Of(label) + 1,
-            Math.Max(0, inside.Width - TextWidth.Of(label) - 1),
+            Math.Max(0, content.Width - TextWidth.Of(label) - 1),
             modal,
-            new(Theme.Info, Theme.Selected, Theme.Caret));
+            new(Theme.Info, Theme.Selection, Theme.Caret));
     }
 
     private static void Rows(
         OptionListModal modal,
-        SurfaceRegion inside,
+        SurfaceRegion content,
         string[] rows,
         int start,
         int notice,
         bool scrolled)
     {
-        var width = scrolled ? Math.Max(0, inside.Width - 1) : inside.Width;
+        var width = scrolled ? Math.Max(0, content.Width - 1) : content.Width;
 
         for (var index = 0; index < rows.Length; index++)
         {
-            inside.Write(
+            content.Write(
                 2 + notice + index,
                 0,
                 TextWidth.PadRight(TextWidth.Truncate(rows[index], width), width),
-                start + index == modal.Index ? Theme.Selected : Theme.Default);
+                start + index == modal.Index ? Theme.Selection : Theme.Default);
         }
     }
 
-    private void Position(SurfaceRegion inside, int position, int count)
+    private void Position(SurfaceRegion content, int position, int count)
     {
         var text = _strings.ListPosition(position, count);
-        var column = inside.Width - TextWidth.Of(text);
+        var column = content.Width - TextWidth.Of(text);
 
         if (column > 0)
         {
-            inside.Write(0, column, text, Theme.Muted);
+            content.Write(0, column, text, Theme.Secondary);
         }
     }
 }

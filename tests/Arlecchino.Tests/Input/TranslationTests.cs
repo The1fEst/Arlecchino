@@ -66,10 +66,10 @@ public sealed class TranslationTests
     [Fact]
     public void EveryStringCanBeReplaced()
     {
-        var translated = Translated();
+        var press = Translated();
 
-        Assert.Empty(Untranslated(translated));
-        Assert.Empty(Untranslated(translated.FilePicker));
+        Assert.Empty(Untranslated(press));
+        Assert.Empty(Untranslated(press.FilePicker));
     }
 
     private static ArlecchinoStrings Translated()

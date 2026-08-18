@@ -229,40 +229,40 @@ public sealed class PaneTree
     /// <param name="region">The space to fill, usually <c>surface.Content</c>.</param>
     public void Draw(SurfaceRegion region)
     {
-        var placed = new List<(PaneTree Pane, SurfaceRegion Region)>(Count);
+        var placements = new List<(PaneTree Pane, SurfaceRegion Region)>(Count);
 
-        Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap, placed);
+        Place(OuterGap > 0 ? region.Inset(OuterGap) : region, InnerGap, placements);
 
         if (InnerGap == 0)
         {
-            Share(placed);
+            Share(placements);
         }
 
         var joinery = new Joinery();
-        var inside = new SurfaceRegion[placed.Count];
+        var inner = new SurfaceRegion[placements.Count];
 
         for (var pass = 0; pass < 2; pass++)
         {
-            for (var index = 0; index < placed.Count; index++)
+            for (var index = 0; index < placements.Count; index++)
             {
-                var (pane, area) = placed[index];
+                var (pane, area) = placements[index];
 
                 if (pane._title is null)
                 {
-                    inside[index] = area;
+                    inner[index] = area;
                     continue;
                 }
 
                 if (pane.IsFocused == (pass == 1))
                 {
-                    inside[index] = joinery.Box(area, BorderOf(pane._widget), pane._title());
+                    inner[index] = joinery.Box(area, BorderOf(pane._widget), pane._title());
                 }
             }
         }
 
-        for (var index = 0; index < placed.Count; index++)
+        for (var index = 0; index < placements.Count; index++)
         {
-            placed[index].Pane._content?.Invoke(inside[index]);
+            placements[index].Pane._content?.Invoke(inner[index]);
         }
 
         joinery.Draw(region, Theme.Info);
@@ -310,12 +310,12 @@ public sealed class PaneTree
     /// Pulls every boxed pane onto the edge of the boxed pane before it, so two of them touching share one
     /// line. Only panes in a box take part, since one without would lose a column of what it draws.
     /// </summary>
-    /// <param name="placed">Where each pane landed, in the order the tree lays them out.</param>
-    private static void Share(List<(PaneTree Pane, SurfaceRegion Region)> placed)
+    /// <param name="placements">Where each pane landed, in the order the tree lays them out.</param>
+    private static void Share(List<(PaneTree Pane, SurfaceRegion Region)> placements)
     {
-        for (var index = 1; index < placed.Count; index++)
+        for (var index = 1; index < placements.Count; index++)
         {
-            var (pane, region) = placed[index];
+            var (pane, region) = placements[index];
 
             if (pane._title is null)
             {
@@ -324,7 +324,7 @@ public sealed class PaneTree
 
             for (var before = 0; before < index; before++)
             {
-                var (neighbor, taken) = placed[before];
+                var (neighbor, taken) = placements[before];
 
                 if (neighbor._title is null)
                 {
@@ -342,7 +342,7 @@ public sealed class PaneTree
                 }
             }
 
-            placed[index] = (pane, region);
+            placements[index] = (pane, region);
             pane._area = region;
         }
     }
@@ -370,13 +370,13 @@ public sealed class PaneTree
         return new(split, size, first, second);
     }
 
-    private void Place(SurfaceRegion region, int gap, List<(PaneTree Pane, SurfaceRegion Region)> placed)
+    private void Place(SurfaceRegion region, int gap, List<(PaneTree Pane, SurfaceRegion Region)> placements)
     {
         _area = region;
 
         if (_content is not null)
         {
-            placed.Add((this, region));
+            placements.Add((this, region));
             return;
         }
 
@@ -391,8 +391,8 @@ public sealed class PaneTree
             var (left, rest) = region.SplitLeft(_size.Of(usable));
             var (_, right) = rest.SplitLeft(Math.Min(gap, rest.Width));
 
-            _first.Place(left, gap, placed);
-            _second.Place(right, gap, placed);
+            _first.Place(left, gap, placements);
+            _second.Place(right, gap, placements);
 
             return;
         }
@@ -401,8 +401,8 @@ public sealed class PaneTree
         var (top, below) = region.SplitTop(_size.Of(rows));
         var (_, bottom) = below.SplitTop(Math.Min(gap, below.Height));
 
-        _first.Place(top, gap, placed);
-        _second.Place(bottom, gap, placed);
+        _first.Place(top, gap, placements);
+        _second.Place(bottom, gap, placements);
     }
 
     private PaneSplit SplitOf(SurfaceRegion region) =>

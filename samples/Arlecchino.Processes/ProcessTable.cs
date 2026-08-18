@@ -8,23 +8,18 @@ using Arlecchino.Atoms.Local;
 
 namespace Arlecchino.Processes;
 
-public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, TimeSpan Cpu, DateTime? Started);
+public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, TimeSpan Cpu, DateTime? StartTime);
 
 public sealed class ProcessTable : IArlecchinoStore
 {
-    private readonly AsyncAtom<IReadOnlyList<ProcessRow>> _rows;
+    private readonly AsyncAtom<IReadOnlyList<ProcessRow>> _rows = new([]);
     private readonly LocalAtom<string> _filter = new("");
-
-    public ProcessTable()
-    {
-        _rows = new([]);
-    }
 
     public AsyncAtom<IReadOnlyList<ProcessRow>> Rows => _rows;
 
     public Atom<string> Filter => _filter;
 
-    public Atom<ProcessRow?> Selected { get; } = new LocalAtom<ProcessRow?>(null);
+    public Atom<ProcessRow?> SelectedRow { get; } = new LocalAtom<ProcessRow?>(null);
 
     public DateTimeOffset LoadedAt { get; private set; }
 

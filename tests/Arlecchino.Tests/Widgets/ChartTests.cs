@@ -21,7 +21,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("▁▂▃▄▅▆▇█", FrameText.Lines(terminal.Written)[0].TrimEnd());
+        Assert.Equal("▁▂▃▄▅▆▇█", FrameText.Lines(terminal.WrittenText)[0].TrimEnd());
     }
 
     [Fact]
@@ -34,7 +34,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("▁▁▁", FrameText.Lines(terminal.Written)[0].TrimEnd());
+        Assert.Equal("▁▁▁", FrameText.Lines(terminal.WrittenText)[0].TrimEnd());
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("▁▃▆█", FrameText.Lines(terminal.Written)[0].TrimEnd());
+        Assert.Equal("▁▃▆█", FrameText.Lines(terminal.WrittenText)[0].TrimEnd());
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("▅", FrameText.Lines(terminal.Written)[0].TrimEnd());
+        Assert.Equal("▅", FrameText.Lines(terminal.WrittenText)[0].TrimEnd());
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        var line = FrameText.Lines(terminal.Written)[0];
+        var line = FrameText.Lines(terminal.WrittenText)[0];
 
         Assert.EndsWith("62%", line.TrimEnd(), StringComparison.Ordinal);
         Assert.StartsWith("▁▁█", line, StringComparison.Ordinal);
@@ -94,7 +94,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Equal("a " + new string('█', 20), lines[0]);
         Assert.Equal("b " + new string('█', 10) + new string('░', 10), lines[1]);
@@ -119,7 +119,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("a " + new string('█', 10) + new string('░', 10), FrameText.Lines(terminal.Written)[0]);
+        Assert.Equal("a " + new string('█', 10) + new string('░', 10), FrameText.Lines(terminal.WrittenText)[0]);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.EndsWith(" 100", lines[0], StringComparison.Ordinal);
         Assert.EndsWith("   5", lines[1], StringComparison.Ordinal);
@@ -157,7 +157,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.StartsWith("a", lines[0], StringComparison.Ordinal);
         Assert.StartsWith("b", lines[1], StringComparison.Ordinal);
@@ -174,7 +174,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        var line = FrameText.Lines(terminal.Written)[0];
+        var line = FrameText.Lines(terminal.WrittenText)[0];
 
         Assert.StartsWith("Storef ", line, StringComparison.Ordinal);
         Assert.Equal(13, line.Length - line.IndexOf('█'));
@@ -192,7 +192,7 @@ public sealed class ChartTests
         surface.Build();
 
         Assert.Equal(0.5m, gauge.Fraction);
-        Assert.Equal(new string('█', 10) + new string('░', 10), FrameText.Lines(terminal.Written)[0]);
+        Assert.Equal(new string('█', 10) + new string('░', 10), FrameText.Lines(terminal.WrittenText)[0]);
         Assert.Equal(1, rest.Top);
     }
 
@@ -257,7 +257,7 @@ public sealed class ChartTests
 
         surface.Build();
 
-        Assert.Equal("", FrameText.Lines(terminal.Written)[0].Trim());
+        Assert.Equal("", FrameText.Lines(terminal.WrittenText)[0].Trim());
         Assert.Equal(4, rest.Height);
     }
 
@@ -269,9 +269,9 @@ public sealed class ChartTests
         gauge.Draw(surface.Frame);
         surface.Build();
 
-        Assert.Equal(new('█', 10), FrameText.Lines(terminal.Written)[0]);
+        Assert.Equal(new('█', 10), FrameText.Lines(terminal.WrittenText)[0]);
 
-        return FrameText.StylesIn(terminal.Written).Distinct().Count();
+        return FrameText.StylesIn(terminal.WrittenText).Distinct().Count();
     }
 
 

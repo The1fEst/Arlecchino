@@ -23,7 +23,7 @@ internal sealed class PickerTable
     }
 
     /// <summary>Which row the cursor is on.</summary>
-    public int Selected { get; set; }
+    public int SelectedIndex { get; set; }
 
     /// <summary>The first row drawn, since a long listing only shows a window of it.</summary>
     public int FirstVisible { get; private set; }
@@ -49,7 +49,7 @@ internal sealed class PickerTable
 
         list.Write(0, 0, Header(widths), Theme.TableHeader);
 
-        Selected = Math.Clamp(Selected, 0, Math.Max(0, entries.Count - 1));
+        SelectedIndex = Math.Clamp(SelectedIndex, 0, Math.Max(0, entries.Count - 1));
 
         if (error.Length > 0)
         {
@@ -60,13 +60,13 @@ internal sealed class PickerTable
 
         if (entries.Count == 0)
         {
-            list.Write(1, 0, PickerText.Clip(_strings.ItemCount(0), list.Width), Theme.Muted);
+            list.Write(1, 0, PickerText.Clip(_strings.ItemCount(0), list.Width), Theme.Secondary);
 
             return;
         }
 
         var rows = list.Height - 1;
-        var start = Math.Clamp(Selected - rows / 2, 0, Math.Max(0, entries.Count - rows));
+        var start = Math.Clamp(SelectedIndex - rows / 2, 0, Math.Max(0, entries.Count - rows));
 
         FirstVisible = start;
 
@@ -74,8 +74,8 @@ internal sealed class PickerTable
         {
             var entry = entries[start + offset];
 
-            var style = start + offset == Selected
-                ? focused ? Theme.ActiveSelected : Theme.Selected
+            var style = start + offset == SelectedIndex
+                ? focused ? Theme.ActiveSelection : Theme.Selection
                 : entry.IsDirectory
                     ? Theme.Info
                     : Theme.Default;

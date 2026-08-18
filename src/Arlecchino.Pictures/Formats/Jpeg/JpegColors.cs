@@ -21,7 +21,7 @@ internal static class JpegColors
     /// <returns>The pixels.</returns>
     internal static Raster Read(JpegFrame frame)
     {
-        var pixels = new Rgb[frame.Shown * frame.Deep];
+        var pixels = new Rgb[frame.OutputWidth * frame.OutputHeight];
         var gray = frame.Parts.Count == 1;
         var plain = frame.Transform == 0;
         var columns = Columns(frame);
@@ -33,9 +33,9 @@ internal static class JpegColors
             planes[index] = frame.Parts[index].Plane;
         }
 
-        for (var row = 0; row < frame.Deep; row++)
+        for (var row = 0; row < frame.OutputHeight; row++)
         {
-            var into = row * frame.Shown;
+            var offset = row * frame.OutputWidth;
 
             for (var index = 0; index < planes.Length; index++)
             {
@@ -44,13 +44,13 @@ internal static class JpegColors
                 rows[index] = row * part.Tall / frame.Tall * part.PlaneWidth;
             }
 
-            for (var column = 0; column < frame.Shown; column++)
+            for (var column = 0; column < frame.OutputWidth; column++)
             {
                 var first = At(planes[0], rows[0] + columns[0][column]);
 
                 if (gray)
                 {
-                    pixels[into + column] = new(first, first, first);
+                    pixels[offset + column] = new(first, first, first);
 
                     continue;
                 }
@@ -58,13 +58,13 @@ internal static class JpegColors
                 var second = At(planes[1], rows[1] + columns[1][column]);
                 var third = At(planes[2], rows[2] + columns[2][column]);
 
-                pixels[into + column] = plain
+                pixels[offset + column] = plain
                     ? new(first, second, third)
                     : Color(first, second, third);
             }
         }
 
-        return new(pixels, frame.Shown, frame.Deep);
+        return new(pixels, frame.OutputWidth, frame.OutputHeight);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ internal static class JpegColors
         for (var index = 0; index < columns.Length; index++)
         {
             var part = frame.Parts[index];
-            var row = new int[frame.Shown];
+            var row = new int[frame.OutputWidth];
 
             for (var column = 0; column < row.Length; column++)
             {

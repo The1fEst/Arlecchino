@@ -121,7 +121,7 @@ public sealed class JoineryTests
 
         surface.Build();
 
-        Assert.Contains(Theme.Active.Ansi, terminal.Written, StringComparison.Ordinal);
+        Assert.Contains(Theme.Active.Ansi, terminal.WrittenText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public sealed class JoineryTests
         surface.Build();
 
         Assert.Equal(18, joinery.Count);
-        Assert.All(FrameText.Lines(terminal.Written), line => Assert.Equal("", line.Trim()));
+        Assert.All(FrameText.Lines(terminal.WrittenText), line => Assert.Equal("", line.Trim()));
     }
 
     [Fact]
@@ -168,12 +168,12 @@ public sealed class JoineryTests
 
         surface.StartFrame();
 
-        var inside = joinery.Box(surface.Frame, title: "files");
+        var content = joinery.Box(surface.Frame, title: "files");
 
-        Assert.Equal(1, inside.Left);
-        Assert.Equal(1, inside.Top);
-        Assert.Equal(8, inside.Width);
-        Assert.Equal(2, inside.Height);
+        Assert.Equal(1, content.Left);
+        Assert.Equal(1, content.Top);
+        Assert.Equal(8, content.Width);
+        Assert.Equal(2, content.Height);
     }
 
     private static string[] Draw(int width, int height, Action<Surface, Joinery> record)
@@ -187,6 +187,6 @@ public sealed class JoineryTests
         joinery.Draw(surface.Frame, Theme.Info);
         surface.Build();
 
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 }

@@ -33,13 +33,13 @@ public sealed record NotificationAction(Func<string> Label, Action Run);
 public sealed class Notification
 {
     /// <summary>Raises an entry, which is as much as a plain message ever needs.</summary>
-    /// <param name="since">When it was raised.</param>
+    /// <param name="raisedAt">When it was raised.</param>
     /// <param name="level">How loud it is.</param>
     /// <param name="text">What it says in one line.</param>
-    public Notification(DateTimeOffset since, NotificationLevel level, string text)
+    public Notification(DateTimeOffset raisedAt, NotificationLevel level, string text)
     {
         Level = level;
-        Since = since;
+        RaisedAt = raisedAt;
         Text = text;
     }
 
@@ -79,7 +79,7 @@ public sealed class Notification
     /// not stale the moment it finishes, so the timeouts are counted from here rather than from the
     /// moment it was raised.
     /// </summary>
-    public DateTimeOffset Since { get; private set; }
+    public DateTimeOffset RaisedAt { get; private set; }
 
     /// <summary>
     /// What can be done about it, offered when the entry is opened. Work that has ended clears these,
@@ -102,13 +102,13 @@ public sealed class Notification
     /// </summary>
     /// <param name="text">What came of it.</param>
     /// <param name="level">How loud that is.</param>
-    /// <param name="when">The moment it ended, from which its timeouts are counted.</param>
-    internal void Complete(string text, NotificationLevel level, DateTimeOffset when)
+    /// <param name="endedAt">The moment it ended, from which its timeouts are counted.</param>
+    internal void Complete(string text, NotificationLevel level, DateTimeOffset endedAt)
     {
         EndedText = text;
         Level = level;
         Actions = [];
-        Since = when;
+        RaisedAt = endedAt;
     }
 
     /// <summary>The full text to read: <see cref="Detail"/> when there is one, the line otherwise.</summary>
@@ -117,7 +117,7 @@ public sealed class Notification
 
     /// <summary>How full a bar for this entry should be, or <c>null</c> when there is nothing to draw.</summary>
     /// <returns>A fraction between <c>0</c> and <c>1</c>.</returns>
-    public double? Filled() => IsRunning && Progress?.Invoke() is { } progress ? Math.Clamp(progress, 0, 1) : null;
+    public double? Fraction() => IsRunning && Progress?.Invoke() is { } progress ? Math.Clamp(progress, 0, 1) : null;
 }
 
 /// <summary>
@@ -168,7 +168,7 @@ public sealed class Notifications
 
             var newest = _entries.Value[^1];
 
-            return newest.IsRunning || _time.GetUtcNow() - newest.Since < _options.NotificationTimeout
+            return newest.IsRunning || _time.GetUtcNow() - newest.RaisedAt < _options.NotificationTimeout
                 ? newest
                 : null;
         }
@@ -184,7 +184,7 @@ public sealed class Notifications
         get
         {
             var cutoff = _time.GetUtcNow() - _options.NotificationTimeout;
-            var showing = Kept(entry => entry.IsRunning || entry.Since > cutoff);
+            var showing = Kept(entry => entry.IsRunning || entry.RaisedAt > cutoff);
 
             showing.Reverse();
 
@@ -261,21 +261,21 @@ public sealed class Notifications
     {
         var cutoff = _time.GetUtcNow() - _options.NotificationLifetime;
 
-        _entries.Reset(Kept(entry => entry.IsRunning || entry.Since > cutoff));
+        _entries.Reset(Kept(entry => entry.IsRunning || entry.RaisedAt > cutoff));
     }
 
     private List<Notification> Kept(Func<Notification, bool> worth)
     {
-        var kept = new List<Notification>(_entries.Count);
+        var worthKeeping = new List<Notification>(_entries.Count);
 
         foreach (var entry in _entries)
         {
             if (worth(entry))
             {
-                kept.Add(entry);
+                worthKeeping.Add(entry);
             }
         }
 
-        return kept;
+        return worthKeeping;
     }
 }

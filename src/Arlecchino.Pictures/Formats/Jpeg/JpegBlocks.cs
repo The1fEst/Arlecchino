@@ -37,7 +37,7 @@ internal sealed class JpegBlocks
         var partial = _partial;
         var waves = Waves[side];
 
-        foreach (var index in JpegCoefficients.Wanted[side])
+        foreach (var index in JpegCoefficients.Places[side])
         {
             block[JpegCoefficients.Diagonal[index]] = coefficients[from + index] * divisors[index];
         }
@@ -53,11 +53,11 @@ internal sealed class JpegBlocks
         {
             if (Flat(block, row * 8, side))
             {
-                var only = block[row * 8] * waves[0];
+                var level = block[row * 8] * waves[0];
 
                 for (var column = 0; column < side; column++)
                 {
-                    partial[(row * side) + column] = only;
+                    partial[(row * side) + column] = level;
                 }
 
                 continue;
@@ -87,11 +87,11 @@ internal sealed class JpegBlocks
                     sum += waves[(wave * side) + row] * partial[(wave * side) + column];
                 }
 
-                var into = ((top + row) * stride) + left + column;
+                var offset = ((top + row) * stride) + left + column;
 
-                if (into >= 0 && into < plane.Length)
+                if (offset >= 0 && offset < plane.Length)
                 {
-                    plane[into] = (byte)Math.Clamp((int)MathF.Round(sum + 128f), 0, 255);
+                    plane[offset] = (byte)Math.Clamp((int)MathF.Round(sum + 128f), 0, 255);
                 }
             }
         }
@@ -154,9 +154,9 @@ internal sealed class JpegBlocks
                 far += Vector128.LoadUnsafe(ref partial[(wave * 8) + 4]) * scale;
             }
 
-            var into = ((top + row) * stride) + left;
+            var offset = ((top + row) * stride) + left;
 
-            if (into < 0 || into + 8 > plane.Length)
+            if (offset < 0 || offset + 8 > plane.Length)
             {
                 continue;
             }
@@ -165,7 +165,7 @@ internal sealed class JpegBlocks
             {
                 var sum = column < 4 ? near[column] : far[column - 4];
 
-                plane[into + column] = (byte)Math.Clamp((int)MathF.Round(sum + 128f), 0, 255);
+                plane[offset + column] = (byte)Math.Clamp((int)MathF.Round(sum + 128f), 0, 255);
             }
         }
     }

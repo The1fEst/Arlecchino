@@ -103,7 +103,7 @@ public sealed class FieldTests
         var field = Field.MultiChoice(static () => "Columns",
             _options,
             value,
-            static picked => string.Join(", ", picked));
+            static choice => string.Join(", ", choice));
 
         Assert.Equal("alpha", field.Value());
 
@@ -120,7 +120,7 @@ public sealed class FieldTests
     {
         var value = new LocalAtom<IReadOnlyList<string>>(["alpha", "beta"]);
 
-        Field.MultiChoice(static () => "Columns", _options, value, static picked => string.Join(", ", picked))
+        Field.MultiChoice(static () => "Columns", _options, value, static choice => string.Join(", ", choice))
             .Reset!();
 
         Assert.Empty(value.Value);

@@ -9,11 +9,11 @@ namespace Arlecchino.Widgets.Text;
 /// <summary>How a line being typed into is written: the text itself, the part of it that is selected, and
 /// the one symbol the caret stands on, which is written the other way round.</summary>
 /// <param name="Text">What the line is written in.</param>
-/// <param name="Selected">What the selected part of it is written in.</param>
+/// <param name="Selection">What the selected part of it is written in.</param>
 /// <param name="Caret">What the symbol under the caret is written in.</param>
 public readonly record struct EntryLook(
     IArlecchinoColor Text,
-    IArlecchinoColor Selected,
+    IArlecchinoColor Selection,
     IArlecchinoColor Caret);
 
 /// <summary>
@@ -79,19 +79,20 @@ public static class EntryRow
 
         var stands = Math.Clamp(caret, 0, text.Length);
         var (before, after) = LineWindow.Around(text, stands, width);
-        var shown = before + after;
+        var shownText = before + after;
         var head = stands - before.Length;
         var start = column + Written(region, row, column, head > 0 ? ScrollMarker : "", look.Text);
-        var written = 0;
+        var run = 0;
 
         EntryRuns.Of(
-            shown,
+            shownText,
             caret < 0 ? -1 : before.Length,
-            (Math.Clamp(selection.Start - head, 0, shown.Length), Math.Clamp(selection.End - head, 0, shown.Length)),
+            (Math.Clamp(selection.Start - head, 0, shownText.Length),
+                Math.Clamp(selection.End - head, 0, shownText.Length)),
             look,
-            (piece, style) => written += Written(region, row, start + written, piece, style));
+            (piece, style) => run += Written(region, row, start + run, piece, style));
 
-        var tail = start + written;
+        var tail = start + run;
 
         return tail -
                column +

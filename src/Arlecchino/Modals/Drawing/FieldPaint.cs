@@ -29,7 +29,7 @@ internal sealed class FieldPaint
     /// The colors a line being typed into is written in, read afresh every frame so that swapping the
     /// palette restyles the fields along with everything else.
     /// </summary>
-    private static EntryLook Look => new(Theme.Input, Theme.Selected, Theme.Caret);
+    private static EntryLook Look => new(Theme.Input, Theme.Selection, Theme.Caret);
 
     /// <summary>Draws the fields.</summary>
     /// <param name="surface">The cell grid frames are built in.</param>
@@ -49,21 +49,21 @@ internal sealed class FieldPaint
     public void Entry(ITextEntryModal modal, string title, string hints)
     {
         var caretIndex = TextWidth.SnapToCluster(modal.Text, modal.Caret);
-        var shown = modal.Masked ? Dots(modal.Text) : modal.Text;
+        var text = modal.Masked ? Dots(modal.Text) : modal.Text;
         var caret = modal.Masked ? TextWidth.CountClusters(modal.Text[..caretIndex]) : caretIndex;
 
         var room = Math.Max(
             SmallestFieldColumns,
             _surface.FrameWidth - BoxChromeColumns - TextWidth.Of(modal.Prefix) - TextWidth.Of(modal.Suffix));
-        var (before, after) = LineWindow.Around(shown, caret, room);
+        var (before, after) = LineWindow.Around(text, caret, room);
         var (start, end) = Selection(modal);
         var window = before + after;
         var head = caret - before.Length;
 
         List<Piece> line =
         [
-            new(modal.Prefix, Theme.Muted),
-            new(head > 0 ? ScrollMarker : "", Theme.Muted),
+            new(modal.Prefix, Theme.Secondary),
+            new(head > 0 ? ScrollMarker : "", Theme.Secondary),
         ];
 
         EntryRuns.Of(
@@ -73,8 +73,8 @@ internal sealed class FieldPaint
             Look,
             (piece, style) => line.Add(new(piece, style)));
 
-        line.Add(new(caret + after.Length < shown.Length ? ScrollMarker : "", Theme.Muted));
-        line.Add(new(modal.Suffix, Theme.Muted));
+        line.Add(new(caret + after.Length < text.Length ? ScrollMarker : "", Theme.Secondary));
+        line.Add(new(modal.Suffix, Theme.Secondary));
 
         List<Piece[]> body = [[.. line]];
 

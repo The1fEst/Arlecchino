@@ -18,7 +18,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
 {
     private readonly ScrollPane _pane;
 
-    private List<string> _wrapped = [];
+    private List<string> _wrappedLines = [];
     private string _wrappedFrom = "";
     private int _wrappedTo = -1;
 
@@ -28,7 +28,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
     {
         _pane = new(keymap)
         {
-            ContentHeight = () => _wrapped.Count,
+            ContentHeight = () => _wrappedLines.Count,
             Content = DrawLines,
         };
     }
@@ -54,7 +54,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
     }
 
     /// <summary>How many lines the text takes once wrapped to the last width it was drawn at.</summary>
-    public int LineCount => _wrapped.Count;
+    public int LineCount => _wrappedLines.Count;
 
     /// <summary>Whether the view has focus. Only a focused view answers keys.</summary>
     public bool IsFocused
@@ -99,7 +99,7 @@ public sealed class TextView : IArlecchinoInteractiveWidget
             return;
         }
 
-        _wrapped = TextWidth.Wrap(Text, width);
+        _wrappedLines = TextWidth.Wrap(Text, width);
         _wrappedFrom = Text;
         _wrappedTo = width;
     }
@@ -108,9 +108,9 @@ public sealed class TextView : IArlecchinoInteractiveWidget
     {
         var style = Style ?? Theme.Default;
 
-        for (var row = 0; row < _wrapped.Count; row++)
+        for (var row = 0; row < _wrappedLines.Count; row++)
         {
-            region.WriteLine(row, _wrapped[row], style);
+            region.WriteLine(row, _wrappedLines[row], style);
         }
     }
 }

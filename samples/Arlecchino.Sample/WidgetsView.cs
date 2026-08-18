@@ -52,7 +52,7 @@ public sealed class WidgetsView : IArlecchinoView
                 new() { Header = static () => "Author", Cell = static mod => mod.Author, Width = 12 },
                 new() { Header = static () => "Files", Cell = static mod => mod.Files.ToString(CultureInfo.InvariantCulture), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
             ],
-            ItemStyle = static mod => mod.Enabled ? Theme.Default : Theme.Muted,
+            ItemStyle = static mod => mod.Enabled ? Theme.Default : Theme.Secondary,
             Rows = Catalog,
         };
 
@@ -76,8 +76,8 @@ public sealed class WidgetsView : IArlecchinoView
 
     public void Draw()
     {
-        var under = _tabs.Draw(_surface.Content);
-        var (_, rest) = under.SplitTop(1);
+        var caretStyle = _tabs.Draw(_surface.Content);
+        var (_, rest) = caretStyle.SplitTop(1);
 
         var (body, footer) = rest.SplitTop(rest.Height - 3);
         var (table, authors) = body.SplitLeft(body.Width - 20);
@@ -96,7 +96,7 @@ public sealed class WidgetsView : IArlecchinoView
             case ConsoleKey.Escape:
                 return ViewKind.Default;
             case ConsoleKey.S:
-                _table.SortBy(_table.SortedBy == 0 ? 2 : 0);
+                _table.SortBy(_table.SortedColumn == 0 ? 2 : 0);
                 return ViewRoute.None;
             case ConsoleKey.Spacebar:
                 _spinner.Advance();

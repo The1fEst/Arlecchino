@@ -21,52 +21,52 @@ public sealed class DateTimeModalTests
     public void ArrowsChangeTheSegmentUnderTheCursor()
     {
         using var app = new TestApplication();
-        var submitted = default(DateOnly);
+        var result = default(DateOnly);
 
-        app.State.RequestDate("Release", new(2026, 7, 25), value => submitted = value);
+        app.State.RequestDate("Release", new(2026, 7, 25), value => result = value);
 
         app.Press(ConsoleKey.UpArrow);
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.UpArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(2027, 8, 25), submitted);
+        Assert.Equal(new(2027, 8, 25), result);
     }
 
     [Fact]
     public void MonthStepKeepsTheDayValid()
     {
         using var app = new TestApplication();
-        var submitted = default(DateOnly);
+        var result = default(DateOnly);
 
-        app.State.RequestDate("Release", new(2026, 1, 31), value => submitted = value);
+        app.State.RequestDate("Release", new(2026, 1, 31), value => result = value);
 
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.UpArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(2026, 2, 28), submitted);
+        Assert.Equal(new(2026, 2, 28), result);
     }
 
     [Fact]
     public void TypingDigitsFillsSegmentsLeftToRight()
     {
         using var app = new TestApplication();
-        var submitted = default(DateOnly);
+        var result = default(DateOnly);
 
-        app.State.RequestDate("Release", new(2026, 7, 25), value => submitted = value);
+        app.State.RequestDate("Release", new(2026, 7, 25), value => result = value);
 
         app.Type("20240103");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(2024, 1, 3), submitted);
+        Assert.Equal(new(2024, 1, 3), result);
     }
 
     [Fact]
     public void BoundsClampTypedAndSteppedValues()
     {
         using var app = new TestApplication();
-        var submitted = default(DateOnly);
+        var result = default(DateOnly);
 
         app.State.Modal = new DateModal
         {
@@ -74,13 +74,13 @@ public sealed class DateTimeModalTests
             Value = new(2026, 7, 25),
             Minimum = new(2026, 1, 1),
             Maximum = new(2026, 12, 31),
-            OnSubmit = value => submitted = value,
+            OnSubmit = value => result = value,
         };
 
         app.Type("2030");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(2026, 12, 31), submitted);
+        Assert.Equal(new(2026, 12, 31), result);
     }
 
     [Fact]
@@ -110,40 +110,40 @@ public sealed class DateTimeModalTests
     public void HourStepWrapsAroundMidnight()
     {
         using var app = new TestApplication();
-        var submitted = default(TimeOnly);
+        var result = default(TimeOnly);
 
-        app.State.RequestTime("Start", new(23, 30), value => submitted = value);
+        app.State.RequestTime("Start", new(23, 30), value => result = value);
 
         app.Press(ConsoleKey.UpArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(0, 30), submitted);
+        Assert.Equal(new(0, 30), result);
     }
 
     [Fact]
     public void TypedMinutesWrapWithinTheHour()
     {
         using var app = new TestApplication();
-        var submitted = default(TimeOnly);
+        var result = default(TimeOnly);
 
-        app.State.RequestTime("Start", new(9, 41), value => submitted = value);
+        app.State.RequestTime("Start", new(9, 41), value => result = value);
 
         app.Type("1075");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(10, 15), submitted);
+        Assert.Equal(new(10, 15), result);
     }
 
     [Fact]
     public void EscapeCancelsTheSegmentEditor()
     {
         using var app = new TestApplication();
-        var submitted = false;
+        var result = false;
 
-        app.State.RequestTime("Start", new(9, 41), _ => submitted = true);
+        app.State.RequestTime("Start", new(9, 41), _ => result = true);
         app.Press(ConsoleKey.Escape);
 
         Assert.Null(app.State.Modal);
-        Assert.False(submitted);
+        Assert.False(result);
     }
 }

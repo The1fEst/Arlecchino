@@ -98,9 +98,9 @@ public abstract class SegmentedModal : Modal
             return;
         }
 
-        var typed = _typedDigits;
+        var digit = _typedDigits;
         _typedDigits = "";
-        ApplyTypedValue(Segment, int.Parse(typed, CultureInfo.InvariantCulture));
+        ApplyTypedValue(Segment, int.Parse(digit, CultureInfo.InvariantCulture));
     }
 
     /// <summary>Throws away a partly typed segment, restoring what was stored.</summary>
@@ -163,9 +163,9 @@ public abstract class SegmentedModal : Modal
             return;
         }
 
-        if (frame.Keys.Resolve(key) is { } typed && char.IsAsciiDigit(typed))
+        if (frame.Keys.Resolve(key) is { } digit && char.IsAsciiDigit(digit))
         {
-            TypeDigit(typed);
+            TypeDigit(digit);
         }
     }
 }

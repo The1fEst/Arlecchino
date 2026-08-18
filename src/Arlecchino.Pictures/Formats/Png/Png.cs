@@ -25,7 +25,7 @@ public sealed class Png : IPictureFormat
     {
         try
         {
-            return Decode(bytes, limits.Most);
+            return Decode(bytes, limits.MostPixels);
         }
         catch (Exception failure) when (failure is InvalidDataException or IOException or
                                             ArgumentException or IndexOutOfRangeException or
@@ -42,7 +42,7 @@ public sealed class Png : IPictureFormat
             return null;
         }
 
-        using var deflated = new MemoryStream();
+        using var stream = new MemoryStream();
 
         var at = Signature.Length;
         var header = default(PngHeader);
@@ -73,7 +73,7 @@ public sealed class Png : IPictureFormat
                     break;
 
                 case "IDAT":
-                    deflated.Write(chunk);
+                    stream.Write(chunk);
                     break;
 
                 case "IEND":
@@ -82,14 +82,14 @@ public sealed class Png : IPictureFormat
             }
         }
 
-        if (!Sound(header, palette, pixels) || deflated.Length == 0)
+        if (!Sound(header, palette, pixels) || stream.Length == 0)
         {
             return null;
         }
 
-        deflated.Position = 0;
+        stream.Position = 0;
 
-        return PngRows.Read(header, deflated, palette);
+        return PngRows.Read(header, stream, palette);
     }
 
     /// <summary>Reads the header chunk, which every other chunk is read against.</summary>

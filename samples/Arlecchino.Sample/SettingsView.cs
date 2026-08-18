@@ -78,7 +78,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
     {
         var content = _surface.Content;
         content.WriteLine(0, "Settings", Theme.Header);
-        content.WriteLine(1, _settings.Summary.Value, Theme.Muted);
+        content.WriteLine(1, _settings.Summary.Value, Theme.Secondary);
 
         _form.Draw(content.Rows(3, content.Height - 3));
     }

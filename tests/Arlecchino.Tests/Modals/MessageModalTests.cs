@@ -42,19 +42,19 @@ public sealed class MessageModalTests
     public void ConfirmAndCancelBothCloseIt()
     {
         using var app = new TestApplication();
-        var closed = 0;
+        var closings = 0;
 
-        app.State.RequestMessage("Note", "Nothing to do.", () => closed++);
+        app.State.RequestMessage("Note", "Nothing to do.", () => closings++);
         app.Press(ConsoleKey.Enter);
 
         Assert.Null(app.State.Modal);
-        Assert.Equal(1, closed);
+        Assert.Equal(1, closings);
 
-        app.State.RequestMessage("Note", "Nothing to do.", () => closed++);
+        app.State.RequestMessage("Note", "Nothing to do.", () => closings++);
         app.Press(ConsoleKey.Escape);
 
         Assert.Null(app.State.Modal);
-        Assert.Equal(2, closed);
+        Assert.Equal(2, closings);
     }
 
     [Fact]

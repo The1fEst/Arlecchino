@@ -18,17 +18,17 @@ internal static class LineWindow
     /// <returns>What goes before the caret and what goes after.</returns>
     public static (string Before, string After) Around(string text, int caret, int room)
     {
-        var before = text[..caret];
-        var after = text[caret..];
+        var prefix = text[..caret];
+        var suffix = text[caret..];
 
         if (TextWidth.Of(text) < room)
         {
-            return (before, after);
+            return (prefix, suffix);
         }
 
         var visible = Math.Max(1, room - ForCaretAndMarkers);
-        var trailing = TextWidth.Truncate(after, visible / 2);
+        var trailing = TextWidth.Truncate(suffix, visible / 2);
 
-        return (TextWidth.TruncateStart(before, visible - TextWidth.Of(trailing)), trailing);
+        return (TextWidth.TruncateStart(prefix, visible - TextWidth.Of(trailing)), trailing);
     }
 }

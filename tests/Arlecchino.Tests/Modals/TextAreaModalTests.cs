@@ -14,15 +14,15 @@ public sealed class TextAreaModalTests
     public void EnterStartsANewLineInsteadOfConfirming()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestTextArea("Notes", "first", text => submitted = text);
+        app.State.RequestTextArea("Notes", "first", text => result = text);
 
         app.Press(ConsoleKey.Enter);
         app.Type("second");
 
         Assert.NotNull(app.State.Modal);
-        Assert.Equal("", submitted);
+        Assert.Equal("", result);
         Assert.Equal("first\nsecond", ((TextAreaModal)app.State.Modal!).Text);
     }
 
@@ -30,31 +30,31 @@ public sealed class TextAreaModalTests
     public void SubmitConfirmsTheWholeText()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestTextArea("Notes", "one", text => submitted = text);
+        app.State.RequestTextArea("Notes", "one", text => result = text);
 
         app.Press(ConsoleKey.Enter);
         app.Type("two");
         app.Press(ConsoleKey.Enter, KeyModifiers.Control);
 
         Assert.Null(app.State.Modal);
-        Assert.Equal("one\ntwo", submitted);
+        Assert.Equal("one\ntwo", result);
     }
 
     [Fact]
     public void EscapeThrowsTheTextAway()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestTextArea("Notes", "kept", text => submitted = text);
+        app.State.RequestTextArea("Notes", "kept", text => result = text);
 
         app.Type("!");
         app.Press(ConsoleKey.Escape);
 
         Assert.Null(app.State.Modal);
-        Assert.Equal("", submitted);
+        Assert.Equal("", result);
     }
 
     [Fact]
@@ -111,18 +111,18 @@ public sealed class TextAreaModalTests
     public void ValidationKeepsTheDialogOpenAndSaysWhy()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
         app.State.RequestTextArea(
             "Notes",
             "short",
-            text => submitted = text,
+            text => result = text,
             static text => text.Length < 10 ? "at least ten characters" : null);
 
         app.Press(ConsoleKey.Enter, KeyModifiers.Control);
 
         Assert.NotNull(app.State.Modal);
-        Assert.Equal("", submitted);
+        Assert.Equal("", result);
         Assert.Contains("at least ten characters", app.Frame(), StringComparison.Ordinal);
     }
 
@@ -158,12 +158,12 @@ public sealed class TextAreaModalTests
         app.State.RequestTextArea("Notes", "one\ntwo", static _ => { });
 
         app.Press(ConsoleKey.Insert, KeyModifiers.Control);
-        Assert.Contains("one\ntwo", app.Terminal.Copied, StringComparison.Ordinal);
+        Assert.Contains("one\ntwo", app.Terminal.CopiedText, StringComparison.Ordinal);
 
         app.State.RequestTextArea("Notes", "third", static _ => { });
         app.Press(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
-        Assert.Contains("third", app.Terminal.Copied, StringComparison.Ordinal);
+        Assert.Contains("third", app.Terminal.CopiedText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -232,7 +232,7 @@ public sealed class TextAreaModalTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Control | KeyModifiers.Shift);
         app.Press(ConsoleKey.Delete, KeyModifiers.Shift);
 
-        Assert.Equal("two", app.Terminal.Copied);
+        Assert.Equal("two", app.Terminal.CopiedText);
         Assert.Equal("one ", modal.Text);
     }
 

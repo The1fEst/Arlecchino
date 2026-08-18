@@ -62,19 +62,19 @@ public sealed class AsyncStoreTests
     {
         using var app = new TestApplication();
         var store = new Probe { Fails = true };
-        Exception? reported = null;
+        Exception? failure = null;
 
-        _ = store.RunAsync(exception => reported = exception, CancellationToken.None);
+        _ = store.RunAsync(exception => failure = exception, CancellationToken.None);
 
         store.Finish();
 
-        var thrown = await Assert.ThrowsAsync<InvalidOperationException>(() => store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => store.Ready.WaitAsync(TimeSpan.FromSeconds(5)));
 
         Settle(store, LoadStatus.Failed);
 
         Assert.True(store.Failed);
-        Assert.Same(thrown, store.Error.Value);
-        Assert.Same(thrown, reported);
+        Assert.Same(error, store.Error.Value);
+        Assert.Same(error, failure);
     }
 
     [Fact]
@@ -117,9 +117,9 @@ public sealed class AsyncStoreTests
 
     private static void Settle(Probe store, LoadStatus expected)
     {
-        var waited = TimeSpan.Zero;
+        var attempts = TimeSpan.Zero;
 
-        while (waited < TimeSpan.FromSeconds(5))
+        while (attempts < TimeSpan.FromSeconds(5))
         {
             FrameThread.RunPending(static _ => { });
 
@@ -129,7 +129,7 @@ public sealed class AsyncStoreTests
             }
 
             Thread.Sleep(10);
-            waited += TimeSpan.FromMilliseconds(10);
+            attempts += TimeSpan.FromMilliseconds(10);
         }
 
         Assert.Fail($"the store never reached {expected}; it is {store.Status.Value}");
@@ -137,8 +137,8 @@ public sealed class AsyncStoreTests
 
     private sealed class Probe : ArlecchinoAsyncStore
     {
-        private readonly SemaphoreSlim _released = new(0);
-        private readonly SemaphoreSlim _done = new(0);
+        private readonly SemaphoreSlim _release = new(0);
+        private readonly SemaphoreSlim _finish = new(0);
 
         public LocalAtom<string> Server { get; } = new("");
 
@@ -146,15 +146,15 @@ public sealed class AsyncStoreTests
 
         public bool Cancels { get; init; }
 
-        public void Finish() => _released.Release();
+        public void Finish() => _release.Release();
 
-        public void Wait() => Assert.True(_done.Wait(TimeSpan.FromSeconds(5)));
+        public void Wait() => Assert.True(_finish.Wait(TimeSpan.FromSeconds(5)));
 
         protected override async Task LoadAsync(CancellationToken token)
         {
             try
             {
-                await _released.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+                await _release.WaitAsync(CancellationToken.None).ConfigureAwait(false);
 
                 if (Cancels)
                 {
@@ -170,7 +170,7 @@ public sealed class AsyncStoreTests
             }
             finally
             {
-                _done.Release();
+                _finish.Release();
             }
         }
     }

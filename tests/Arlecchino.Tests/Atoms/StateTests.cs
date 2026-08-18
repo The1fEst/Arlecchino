@@ -14,62 +14,62 @@ public sealed class StateTests
     public void WritingNotifiesSubscribers()
     {
         var name = new TrackedAtom<string>("");
-        var seen = new List<string>();
+        var sightings = new List<string>();
 
-        using var subscription = name.Subscribe(() => seen.Add(name.Value));
+        using var subscription = name.Subscribe(() => sightings.Add(name.Value));
 
         name.Value = "first";
         name.Value = "second";
 
-        Assert.Equal(["first", "second"], seen);
+        Assert.Equal(["first", "second"], sightings);
     }
 
     [Fact]
     public void WritingTheSameValueChangesNothing()
     {
         var count = new TrackedAtom<int>(1);
-        var notified = 0;
+        var notices = 0;
 
-        using var subscription = count.Subscribe(() => notified++);
+        using var subscription = count.Subscribe(() => notices++);
 
         count.Value = 1;
 
-        Assert.Equal(0, notified);
+        Assert.Equal(0, notices);
     }
 
     [Fact]
     public void DisposingStopsNotifications()
     {
         var count = new TrackedAtom<int>(0);
-        var notified = 0;
+        var notices = 0;
 
-        var subscription = count.Subscribe(() => notified++);
+        var subscription = count.Subscribe(() => notices++);
         count.Value = 1;
         subscription.Dispose();
         count.Value = 2;
 
-        Assert.Equal(1, notified);
+        Assert.Equal(1, notices);
     }
 
     [Fact]
     public void ASubscriberMayUnsubscribeWhileBeingNotified()
     {
         var count = new LocalAtom<int>(0);
-        var notified = 0;
+        var notices = 0;
         var subscriptions = new List<IDisposable>();
 
         subscriptions.Add(count.Subscribe(() =>
         {
-            notified++;
+            notices++;
             subscriptions[0].Dispose();
         }));
 
-        using var second = count.Subscribe(() => notified++);
+        using var second = count.Subscribe(() => notices++);
 
         count.Value = 1;
         count.Value = 2;
 
-        Assert.Equal(3, notified);
+        Assert.Equal(3, notices);
     }
 
     [Fact]
@@ -77,14 +77,14 @@ public sealed class StateTests
     {
         var count = new LocalAtom<int>(0);
         var late = 0;
-        IDisposable? added = null;
+        IDisposable? link = null;
 
-        using var first = count.Subscribe(() => added ??= count.Subscribe(() => late++));
+        using var first = count.Subscribe(() => link ??= count.Subscribe(() => late++));
 
         count.Value = 1;
         count.Value = 2;
 
-        added?.Dispose();
+        link?.Dispose();
 
         Assert.Equal(1, late);
     }
@@ -94,30 +94,30 @@ public sealed class StateTests
     {
         var first = new TrackedAtom<string>("a");
         var second = new TrackedAtom<string>("b");
-        var joined = new Computed<string>(() => first.Value + second.Value);
+        var pair = new Computed<string>(() => first.Value + second.Value);
 
-        Assert.Equal("ab", joined.Value);
+        Assert.Equal("ab", pair.Value);
 
         first.Value = "x";
-        Assert.Equal("xb", joined.Value);
+        Assert.Equal("xb", pair.Value);
 
         second.Value = "y";
-        Assert.Equal("xy", joined.Value);
+        Assert.Equal("xy", pair.Value);
     }
 
     [Fact]
     public void ComputedNotifiesItsOwnSubscribers()
     {
         var length = new TrackedAtom<int>(1);
-        var doubled = new Computed<int>(() => length.Value * 2);
-        var notified = 0;
+        var doubling = new Computed<int>(() => length.Value * 2);
+        var notices = 0;
 
-        using var subscription = doubled.Subscribe(() => notified++);
+        using var subscription = doubling.Subscribe(() => notices++);
 
         length.Value = 5;
 
-        Assert.Equal(1, notified);
-        Assert.Equal(10, doubled.Value);
+        Assert.Equal(1, notices);
+        Assert.Equal(10, doubling.Value);
     }
 
     [Fact]
@@ -125,12 +125,12 @@ public sealed class StateTests
     {
         var price = new TrackedAtom<decimal>(100);
         var withTax = new Computed<decimal>(() => price.Value * 1.2m);
-        var rounded = new Computed<int>(() => (int)Math.Round(withTax.Value));
+        var whole = new Computed<int>(() => (int)Math.Round(withTax.Value));
 
-        Assert.Equal(120, rounded.Value);
+        Assert.Equal(120, whole.Value);
 
         price.Value = 200;
-        Assert.Equal(240, rounded.Value);
+        Assert.Equal(240, whole.Value);
     }
 
     [Fact]

@@ -175,18 +175,18 @@ public sealed class ColorModal : Modal
             return;
         }
 
-        for (var channel = 0; channel < ChannelRows.Length; channel++)
+        for (var row = 0; row < ChannelRows.Length; row++)
         {
-            if (!ChannelRows[channel].Contains(mouse.Row, mouse.Column))
+            if (!ChannelRows[row].Contains(mouse.Row, mouse.Column))
             {
                 continue;
             }
 
-            var which = (ColorChannel)channel;
+            var channel = (ColorChannel)row;
 
-            Channel = which;
+            Channel = channel;
 
-            Tracking.Follow(ChannelTracks[channel], mouse, fraction => SetChannelFromFraction(which, fraction));
+            Tracking.Follow(ChannelTracks[row], mouse, fraction => SetChannelFromFraction(channel, fraction));
 
             return;
         }

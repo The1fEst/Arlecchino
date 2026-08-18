@@ -15,39 +15,39 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     /// A stroke on a character rather than on a key, which is the only way to name punctuation. It answers
     /// on every layout that can type that character, whatever the keyboard does to produce it.
     /// </summary>
-    /// <param name="typed">The character to answer to.</param>
-    public KeyStroke(char typed)
-        : this(default(ConsoleKey)) => Typed = typed;
+    /// <param name="character">The character to answer to.</param>
+    public KeyStroke(char character)
+        : this(default(ConsoleKey)) => Character = character;
 
     /// <summary>The character this stroke answers to, or <c>'\0'</c> when it is a stroke on a key.</summary>
-    public char Typed { get; }
+    public char Character { get; }
 
     /// <summary>Whether the stroke is unset and therefore stands for no key at all.</summary>
-    public bool IsNone => Key == default && Typed == '\0';
+    public bool IsNone => Key == default && Character == '\0';
 
     /// <summary>
     /// Whether a key press is this stroke, by the key where one was reported and by the character otherwise.
     /// A key that answers to two names matches under either, and a stroke on a character forgives Shift.
     /// </summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <returns><c>true</c> when the press is this combination.</returns>
-    public bool Matches(KeyPress pressed)
+    public bool Matches(KeyPress press)
     {
-        if (Typed != '\0')
+        if (Character != '\0')
         {
-            return (pressed.Modifiers & ~KeyModifiers.Shift) == KeyModifiers.None &&
-                   (pressed.Character == Typed ||
-                    (pressed.Character == '\0' && new KeyStroke(pressed.Key).MatchesCharacter(Typed)));
+            return (press.Modifiers & ~KeyModifiers.Shift) == KeyModifiers.None &&
+                   (press.Character == Character ||
+                    (press.Character == '\0' && new KeyStroke(press.Key).MatchesCharacter(Character)));
         }
 
-        if (pressed.Modifiers != Modifiers)
+        if (press.Modifiers != Modifiers)
         {
             return false;
         }
 
-        return pressed.Key == Key ||
-               Twinned(pressed.Key) == Twinned(Key) ||
-               (pressed.Key == default && MatchesCharacter(pressed.Character));
+        return press.Key == Key ||
+               Twinned(press.Key) == Twinned(Key) ||
+               (press.Key == default && MatchesCharacter(press.Character));
     }
 
     /// <summary>
@@ -115,9 +115,9 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
             return "";
         }
 
-        if (Typed != '\0')
+        if (Character != '\0')
         {
-            return Typed.ToString();
+            return Character.ToString();
         }
 
         var text = new StringBuilder();

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
 
@@ -16,21 +15,21 @@ public class CommandRegistry
     /// <param name="commands">Commands from the container, in registration order.</param>
     public CommandRegistry(IEnumerable<IArlecchinoCommand> commands)
     {
-        Commands = commands.ToArray();
+        Commands = [.. commands];
     }
 
     /// <summary>The registered commands, in registration order.</summary>
     public IReadOnlyList<IArlecchinoCommand> Commands { get; }
 
     /// <summary>Finds the command a key press belongs to.</summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <param name="command">The command, when one claims the key.</param>
     /// <returns><c>true</c> when a command claimed the key.</returns>
-    public bool TryFind(KeyPress pressed, [NotNullWhen(true)] out IArlecchinoCommand? command)
+    public bool TryFind(KeyPress press, [NotNullWhen(true)] out IArlecchinoCommand? command)
     {
         foreach (var candidate in Commands)
         {
-            if (!candidate.Binding.Matches(pressed))
+            if (!candidate.Binding.Matches(press))
             {
                 continue;
             }
@@ -44,8 +43,8 @@ public class CommandRegistry
     }
 
     /// <summary>Runs the command a key belongs to, if any.</summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <returns>The route the command returned, or <see cref="ViewRoute.None"/>.</returns>
-    public ViewRoute Send(KeyPress pressed) =>
-        TryFind(pressed, out var command) ? command.Execute() : ViewRoute.None;
+    public ViewRoute Send(KeyPress press) =>
+        TryFind(press, out var command) ? command.Execute() : ViewRoute.None;
 }

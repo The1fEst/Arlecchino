@@ -59,20 +59,20 @@ public sealed class ValueModalTests
     public void DecimalSeparatorIsAcceptedWhenDecimalsAreAllowed()
     {
         using var app = new TestApplication();
-        decimal submitted = 0;
+        decimal result = 0;
 
         app.State.Modal = new NumberModal
         {
             Title = "Price",
             Decimals = 2,
             Maximum = 100,
-            OnSubmit = value => submitted = value,
+            OnSubmit = value => result = value,
         };
 
         app.Type("2,50");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(2.5m, submitted);
+        Assert.Equal(2.5m, result);
     }
 
     [Fact]
@@ -117,9 +117,9 @@ public sealed class ValueModalTests
     public void SliderMovesWithHorizontalArrowsAndEnds()
     {
         using var app = new TestApplication();
-        decimal submitted = 0;
+        decimal result = 0;
 
-        app.State.RequestSlider("Volume", 50, 0, 100, value => submitted = value);
+        app.State.RequestSlider("Volume", 50, 0, 100, value => result = value);
 
         app.Press(ConsoleKey.RightArrow);
         Assert.Equal(51m, ((SliderModal)app.State.Modal!).Value);
@@ -129,7 +129,7 @@ public sealed class ValueModalTests
 
         app.Press(ConsoleKey.End);
         app.Press(ConsoleKey.Enter);
-        Assert.Equal(100m, submitted);
+        Assert.Equal(100m, result);
     }
 
     [Fact]
@@ -154,14 +154,14 @@ public sealed class ValueModalTests
     public void ToggleSwitchesAndSubmits()
     {
         using var app = new TestApplication();
-        var submitted = true;
+        var result = true;
 
-        app.State.RequestToggle("Fullscreen", true, value => submitted = value);
+        app.State.RequestToggle("Fullscreen", true, value => result = value);
 
         app.Press(ConsoleKey.LeftArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.False(submitted);
+        Assert.False(result);
     }
 
     [Fact]

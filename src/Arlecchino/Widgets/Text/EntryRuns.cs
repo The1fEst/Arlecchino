@@ -30,7 +30,7 @@ public static class EntryRuns
         var stands = caret < 0 ? -1 : Math.Clamp(caret, 0, text.Length);
 
         Part(text[..start], 0, stands, look, look.Text, write);
-        Part(text[start..end], start, stands, look, look.Selected, write);
+        Part(text[start..end], start, stands, look, look.Selection, write);
         Part(text[end..], end, stands, look, look.Text, write);
 
         if (stands == text.Length)
@@ -71,10 +71,10 @@ public static class EntryRuns
             return;
         }
 
-        var under = TextWidth.NextClusterEnd(part, at);
+        var caretStyle = TextWidth.NextClusterEnd(part, at);
 
         write(part[..at], style);
-        write(part[at..under], look.Caret);
-        write(part[under..], style);
+        write(part[at..caretStyle], look.Caret);
+        write(part[caretStyle..], style);
     }
 }

@@ -35,7 +35,7 @@ public sealed class Qoi : IPictureFormat
         var width = BinaryPrimitives.ReadInt32BigEndian(bytes.Slice(4, 4));
         var height = BinaryPrimitives.ReadInt32BigEndian(bytes.Slice(8, 4));
 
-        if (width <= 0 || height <= 0 || (long)width * height > limits.Most)
+        if (width <= 0 || height <= 0 || (long)width * height > limits.MostPixels)
         {
             return null;
         }
@@ -45,14 +45,14 @@ public sealed class Qoi : IPictureFormat
 
     private static Raster? Decode(ReadOnlySpan<byte> body, int width, int height)
     {
-        var painted = new Rgb[width * height];
-        var seen = new Rgb[64];
+        var pixels = new Rgb[width * height];
+        var recent = new Rgb[64];
         var alpha = new byte[64];
         var color = new Rgb(0, 0, 0);
         var opacity = (byte)255;
         var at = 0;
 
-        for (var index = 0; index < painted.Length; index++)
+        for (var index = 0; index < pixels.Length; index++)
         {
             if (at >= body.Length)
             {
@@ -79,7 +79,7 @@ public sealed class Qoi : IPictureFormat
                     switch (tag & 0xC0)
                     {
                         case Index:
-                            color = seen[tag & 0x3F];
+                            color = recent[tag & 0x3F];
                             opacity = alpha[tag & 0x3F];
                             break;
 
@@ -114,12 +114,12 @@ public sealed class Qoi : IPictureFormat
 
             var slot = Slot(color, opacity);
 
-            seen[slot] = color;
+            recent[slot] = color;
             alpha[slot] = opacity;
 
-            for (var repeat = 0; repeat <= run && index < painted.Length; repeat++)
+            for (var repeat = 0; repeat <= run && index < pixels.Length; repeat++)
             {
-                painted[index] = color;
+                pixels[index] = color;
 
                 if (repeat < run)
                 {
@@ -128,7 +128,7 @@ public sealed class Qoi : IPictureFormat
             }
         }
 
-        return new(painted, width, height);
+        return new(pixels, width, height);
     }
 
     private static int Slot(Rgb color, byte opacity) =>

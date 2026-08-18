@@ -49,18 +49,18 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
         Math.Max(0, Height - margin.Top - margin.Bottom));
 
     /// <summary>A smaller region with the same space kept free on every side.</summary>
-    /// <param name="all">Cells to keep free.</param>
+    /// <param name="size">Cells to keep free.</param>
     /// <returns>The region that is left.</returns>
-    public SurfaceRegion Inset(int all) => Inset(new Margin(all));
+    public SurfaceRegion Inset(int size) => Inset(new Margin(size));
 
     /// <summary>Cuts a column off the left. The split is clamped to what the region actually has.</summary>
     /// <param name="width">Cells to give to the left part.</param>
     /// <returns>The left part and the rest.</returns>
     public (SurfaceRegion Left, SurfaceRegion Right) SplitLeft(int width)
     {
-        var taken = Math.Clamp(width, 0, Width);
-        return (this with { Width = taken },
-            this with { Left = Left + taken, Width = Width - taken });
+        var takenWidth = Math.Clamp(width, 0, Width);
+        return (this with { Width = takenWidth },
+            this with { Left = Left + takenWidth, Width = Width - takenWidth });
     }
 
     /// <summary>Cuts a band off the top. The split is clamped to what the region actually has.</summary>
@@ -68,9 +68,9 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <returns>The top part and the rest.</returns>
     public (SurfaceRegion Top, SurfaceRegion Bottom) SplitTop(int height)
     {
-        var taken = Math.Clamp(height, 0, Height);
-        return (this with { Height = taken },
-            this with { Top = Top + taken, Height = Height - taken });
+        var takenHeight = Math.Clamp(height, 0, Height);
+        return (this with { Height = takenHeight },
+            this with { Top = Top + takenHeight, Height = Height - takenHeight });
     }
 
     /// <summary>A horizontal band of this region, clamped to its bounds.</summary>
@@ -120,14 +120,14 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
     /// <param name="align">Horizontal alignment inside the region.</param>
     public void WriteLine(int row, string text, IArlecchinoColor style, Align align = Align.Left)
     {
-        var clipped = TextWidth.Truncate(text, Width);
+        var clippedText = TextWidth.Truncate(text, Width);
         var column = align.HasFlag(Align.Center)
-            ? Math.Max(0, (Width - TextWidth.Of(clipped)) / 2)
+            ? Math.Max(0, (Width - TextWidth.Of(clippedText)) / 2)
             : align.HasFlag(Align.Right)
-                ? Math.Max(0, Width - TextWidth.Of(clipped))
+                ? Math.Max(0, Width - TextWidth.Of(clippedText))
                 : 0;
 
-        Write(row, column, clipped, style);
+        Write(row, column, clippedText, style);
     }
 
     /// <summary>Paints every cell of the region.</summary>
@@ -178,20 +178,20 @@ public readonly record struct SurfaceRegion(Surface Surface, int Left, int Top, 
 
     private static string BuildTitleBar(string title, int inner)
     {
-        var clipped = TextWidth.Truncate(title, Math.Max(0, inner - 3));
-        var used = TextWidth.Of(clipped) + 3;
-        return $"─ {clipped} {new string('─', Math.Max(0, inner - used))}";
+        var clippedTitle = TextWidth.Truncate(title, Math.Max(0, inner - 3));
+        var used = TextWidth.Of(clippedTitle) + 3;
+        return $"─ {clippedTitle} {new string('─', Math.Max(0, inner - used))}";
     }
 
     private static string SkipColumns(string text, int columns)
     {
-        var skipped = 0;
+        var skippedColumns = 0;
         var index = 0;
 
-        while (index < text.Length && skipped < columns)
+        while (index < text.Length && skippedColumns < columns)
         {
             var length = TextWidth.NextClusterLength(text, index);
-            skipped += TextWidth.OfCluster(text.AsSpan(index, length));
+            skippedColumns += TextWidth.OfCluster(text.AsSpan(index, length));
             index += length;
         }
 

@@ -65,8 +65,8 @@ internal abstract class PictureProtocol
     /// <param name="pixels">The picture, row by row from the top left.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="placed">Where it ended up and how large.</param>
-    public abstract void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placed);
+    /// <param name="placement">Where it ended up and how large.</param>
+    public abstract void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement);
 }
 
 /// <summary>
@@ -79,7 +79,7 @@ internal sealed class BlockPicture : PictureProtocol
     private const int PixelsPerCell = 2;
 
     private RgbTermColor[] _blocks = [];
-    private (int Columns, int Rows, int Version) _composed;
+    private (int Columns, int Rows, int Version) _drawnAt;
 
     /// <inheritdoc/>
     public override ImageProtocol Kind => ImageProtocol.Blocks;
@@ -88,19 +88,19 @@ internal sealed class BlockPicture : PictureProtocol
     public override double PerCell(int cellWidth, int cellHeight) => PixelsPerCell;
 
     /// <inheritdoc/>
-    public override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placed)
+    public override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement)
     {
-        Compose(pixels, width, height, placed);
+        Compose(pixels, width, height, placement);
 
-        for (var row = 0; row < placed.Rows; row++)
+        for (var row = 0; row < placement.Rows; row++)
         {
-            for (var column = 0; column < placed.Columns; column++)
+            for (var column = 0; column < placement.Columns; column++)
             {
                 region.Write(
-                    placed.Top + row,
-                    placed.Left + column,
+                    placement.Top + row,
+                    placement.Left + column,
                     UpperHalf.ToString(),
-                    _blocks[(row * placed.Columns) + column]);
+                    _blocks[(row * placement.Columns) + column]);
             }
         }
     }
@@ -112,34 +112,34 @@ internal sealed class BlockPicture : PictureProtocol
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="placed">Where it ended up and how large.</param>
-    private void Compose(Rgb[] pixels, int width, int height, Placed placed)
+    /// <param name="placement">Where it ended up and how large.</param>
+    private void Compose(Rgb[] pixels, int width, int height, Placed placement)
     {
-        if (_composed == (placed.Columns, placed.Rows, placed.Version))
+        if (_drawnAt == (placement.Columns, placement.Rows, placement.Version))
         {
             return;
         }
 
-        if (_blocks.Length != placed.Columns * placed.Rows)
+        if (_blocks.Length != placement.Columns * placement.Rows)
         {
-            _blocks = new RgbTermColor[placed.Columns * placed.Rows];
+            _blocks = new RgbTermColor[placement.Columns * placement.Rows];
         }
 
-        var lines = placed.Rows * PixelsPerCell;
+        var lines = placement.Rows * PixelsPerCell;
 
-        for (var row = 0; row < placed.Rows; row++)
+        for (var row = 0; row < placement.Rows; row++)
         {
-            for (var column = 0; column < placed.Columns; column++)
+            for (var column = 0; column < placement.Columns; column++)
             {
-                _blocks[(row * placed.Columns) + column] = new()
+                _blocks[(row * placement.Columns) + column] = new()
                 {
-                    Foreground = At(pixels, width, height, column, placed.Columns, (row * PixelsPerCell) + 0, lines),
-                    Background = At(pixels, width, height, column, placed.Columns, (row * PixelsPerCell) + 1, lines),
+                    Foreground = At(pixels, width, height, column, placement.Columns, (row * PixelsPerCell) + 0, lines),
+                    Background = At(pixels, width, height, column, placement.Columns, (row * PixelsPerCell) + 1, lines),
                 };
             }
         }
 
-        _composed = (placed.Columns, placed.Rows, placed.Version);
+        _drawnAt = (placement.Columns, placement.Rows, placement.Version);
     }
 
     private static Rgb At(Rgb[] pixels, int width, int height, int column, int columns, int row, int lines)
@@ -164,41 +164,41 @@ internal abstract class PixelPicture : PictureProtocol
     protected static readonly CultureInfo Invariant = CultureInfo.InvariantCulture;
 
     private string _payload = "";
-    private (int Columns, int Rows, int CellWidth, int CellHeight, int Version) _made;
+    private (int Columns, int Rows, int CellWidth, int CellHeight, int Version) _drawnFor;
 
     /// <inheritdoc/>
     public sealed override double PerCell(int cellWidth, int cellHeight) => (double)cellHeight / cellWidth;
 
     /// <inheritdoc/>
-    public sealed override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placed)
+    public sealed override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement)
     {
-        var made = (placed.Columns, placed.Rows, placed.CellWidth, placed.CellHeight, placed.Version);
+        var state = (placement.Columns, placement.Rows, placement.CellWidth, placement.CellHeight, placement.Version);
 
-        if (_made != made)
+        if (_drawnFor != state)
         {
-            _payload = Build(pixels, width, height, placed);
-            _made = made;
+            _payload = Build(pixels, width, height, placement);
+            _drawnFor = state;
         }
 
         region.Surface.Passthrough(
-            region.Top + placed.Top,
-            region.Left + placed.Left,
+            region.Top + placement.Top,
+            region.Left + placement.Left,
             _payload,
-            Undraw(placed));
+            Undraw(placement));
     }
 
     /// <summary>Builds what is handed to the terminal.</summary>
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="placed">Where it ended up and how large.</param>
+    /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected abstract string Build(Rgb[] pixels, int width, int height, Placed placed);
+    protected abstract string Build(Rgb[] pixels, int width, int height, Placed placement);
 
     /// <summary>Builds what removes it again, or an empty string when nothing can.</summary>
-    /// <param name="placed">Where it ended up and how large.</param>
+    /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected abstract string Undraw(Placed placed);
+    protected abstract string Undraw(Placed placement);
 }
 
 /// <summary>
@@ -223,26 +223,26 @@ internal sealed class KittyPicture : PixelPicture
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="placed">Where it ended up and how large.</param>
+    /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected override string Build(Rgb[] pixels, int width, int height, Placed placed)
+    protected override string Build(Rgb[] pixels, int width, int height, Placed placement)
     {
-        var across = Math.Min(width, Math.Max(1, placed.Columns * placed.CellWidth));
-        var down = Math.Min(height, Math.Max(1, placed.Rows * placed.CellHeight));
+        var pixelWidth = Math.Min(width, Math.Max(1, placement.Columns * placement.CellWidth));
+        var pixelHeight = Math.Min(height, Math.Max(1, placement.Rows * placement.CellHeight));
 
-        if (placed.Detail > 0 && (long)across * down > placed.Detail)
+        if (placement.Detail > 0 && (long)pixelWidth * pixelHeight > placement.Detail)
         {
-            var share = Math.Sqrt((double)placed.Detail / ((long)across * down));
+            var share = Math.Sqrt((double)placement.Detail / ((long)pixelWidth * pixelHeight));
 
-            across = Math.Max(1, (int)(across * share));
-            down = Math.Max(1, (int)(down * share));
+            pixelWidth = Math.Max(1, (int)(pixelWidth * share));
+            pixelHeight = Math.Max(1, (int)(pixelHeight * share));
         }
 
-        var scaled = PictureScale.To(pixels, width, height, across, down);
+        var smaller = PictureScale.To(pixels, width, height, pixelWidth, pixelHeight);
 
-        pixels = scaled.Pixels;
-        width = scaled.Width;
-        height = scaled.Height;
+        pixels = smaller.Pixels;
+        width = smaller.Width;
+        height = smaller.Height;
 
         var bytes = new byte[width * height * 3];
 
@@ -253,30 +253,30 @@ internal sealed class KittyPicture : PixelPicture
             bytes[(index * 3) + 2] = pixels[index].Blue;
         }
 
-        var encoded = Convert.ToBase64String(bytes);
-        var sequence = new StringBuilder(encoded.Length + 128);
-        var sent = 0;
+        var payload = Convert.ToBase64String(bytes);
+        var sequence = new StringBuilder(payload.Length + 128);
+        var at = 0;
 
-        while (sent < encoded.Length)
+        while (at < payload.Length)
         {
-            var take = Math.Min(Chunk, encoded.Length - sent);
-            var more = sent + take < encoded.Length ? 1 : 0;
+            var take = Math.Min(Chunk, payload.Length - at);
+            var moreChunks = at + take < payload.Length ? 1 : 0;
 
             sequence.Append("\e_G");
 
-            if (sent == 0)
+            if (at == 0)
             {
                 sequence
                     .Append(Invariant, $"a=T,q=2,f=24,i={_image}")
                     .Append(Invariant, $",s={width}")
                     .Append(Invariant, $",v={height}")
-                    .Append(Invariant, $",c={placed.Columns}")
-                    .Append(Invariant, $",r={placed.Rows},");
+                    .Append(Invariant, $",c={placement.Columns}")
+                    .Append(Invariant, $",r={placement.Rows},");
             }
 
-            sequence.Append(Invariant, $"m={more};").Append(encoded, sent, take).Append("\e\\");
+            sequence.Append(Invariant, $"m={moreChunks};").Append(payload, at, take).Append("\e\\");
 
-            sent += take;
+            at += take;
         }
 
         return sequence.ToString();
@@ -286,9 +286,9 @@ internal sealed class KittyPicture : PixelPicture
     /// Builds the sequence that tells the terminal to let go of the image it was handed. Only kitty has one,
     /// since sixel writes pixels into the screen rather than into a registry.
     /// </summary>
-    /// <param name="placed">Where it ended up and how large, which kitty does not need to be told.</param>
+    /// <param name="placement">Where it ended up and how large, which kitty does not need to be told.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected override string Undraw(Placed placed) => $"\e_Ga=d,d=i,i={_image},q=2\e\\";
+    protected override string Undraw(Placed placement) => $"\e_Ga=d,d=i,i={_image},q=2\e\\";
 }
 
 /// <summary>
@@ -311,16 +311,16 @@ internal sealed class SixelPicture : PixelPicture
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="placed">Where it ended up and how large.</param>
+    /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected override string Build(Rgb[] pixels, int width, int height, Placed placed)
+    protected override string Build(Rgb[] pixels, int width, int height, Placed placement)
     {
         var image = IndexedImage.From(
             pixels,
             width,
             height,
-            Math.Max(1, placed.Columns * placed.CellWidth),
-            Math.Max(1, placed.Rows * placed.CellHeight),
+            Math.Max(1, placement.Columns * placement.CellWidth),
+            Math.Max(1, placement.Rows * placement.CellHeight),
             Registers);
 
         var sixel = new StringBuilder(image.Width * image.Height / 4);
@@ -336,25 +336,25 @@ internal sealed class SixelPicture : PixelPicture
                 $"#{index};2;{Percent(color.Red)};{Percent(color.Green)};{Percent(color.Blue)}");
         }
 
-        var here = new bool[image.Palette.Length];
+        var inBand = new bool[image.Palette.Length];
 
         for (var top = 0; top < image.Height; top += Band)
         {
-            Array.Clear(here);
+            Array.Clear(inBand);
 
             for (var row = top; row < Math.Min(top + Band, image.Height); row++)
             {
                 for (var column = 0; column < image.Width; column++)
                 {
-                    here[image.At(column, row)] = true;
+                    inBand[image.At(column, row)] = true;
                 }
             }
 
             var written = false;
 
-            for (var index = 0; index < here.Length; index++)
+            for (var index = 0; index < inBand.Length; index++)
             {
-                if (!here[index])
+                if (!inBand[index])
                 {
                     continue;
                 }
@@ -380,32 +380,32 @@ internal sealed class SixelPicture : PixelPicture
     /// Builds a sixel that paints over the picture in the color behind the text, which is the only way to
     /// remove one. It is empty where <see cref="TerminalCapabilities.Background"/> went unreported.
     /// </summary>
-    /// <param name="placed">Where it ended up and how large.</param>
+    /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal, or an empty string.</returns>
-    protected override string Undraw(Placed placed)
+    protected override string Undraw(Placed placement)
     {
-        var across = placed.Columns * placed.CellWidth;
-        var down = placed.Rows * placed.CellHeight;
+        var pixelWidth = placement.Columns * placement.CellWidth;
+        var pixelHeight = placement.Rows * placement.CellHeight;
 
-        if (TerminalCapabilities.Background is not { } behind || across <= 0 || down <= 0)
+        if (TerminalCapabilities.Background is not { } behind || pixelWidth <= 0 || pixelHeight <= 0)
         {
             return "";
         }
 
-        var painted = new StringBuilder(64);
+        var sequence = new StringBuilder(64);
 
-        painted
-            .Append(Invariant, $"\ePq\"1;1;{across};{down}")
+        sequence
+            .Append(Invariant, $"\ePq\"1;1;{pixelWidth};{pixelHeight}")
             .Append(Invariant, $"#0;2;{Percent(behind.Red)};{Percent(behind.Green)};{Percent(behind.Blue)}");
 
-        for (var band = 0; band < down; band += Band)
+        for (var band = 0; band < pixelHeight; band += Band)
         {
-            var rows = Math.Min(Band, down - band);
+            var rows = Math.Min(Band, pixelHeight - band);
 
-            painted.Append(Invariant, $"#0!{across}{(char)(63 + ((1 << rows) - 1))}-");
+            sequence.Append(Invariant, $"#0!{pixelWidth}{(char)(63 + ((1 << rows) - 1))}-");
         }
 
-        return painted.Append("\e\\").ToString();
+        return sequence.Append("\e\\").ToString();
     }
 
     private static int Percent(byte value) => ((value * 100) + 127) / 255;

@@ -92,10 +92,10 @@ public sealed class SuperModifierTests
         var copy = new KeyBinding(ConsoleKey.Insert, KeyModifiers.Control)
             .AddAlternative(ConsoleKey.C, KeyModifiers.Control | KeyModifiers.Shift);
 
-        var moved = copy.Replacing(KeyModifiers.Control, KeyModifiers.Super);
+        var press = copy.Replacing(KeyModifiers.Control, KeyModifiers.Super);
 
-        Assert.Equal(KeyModifiers.Super, moved.Modifiers);
-        Assert.Equal(KeyModifiers.Super | KeyModifiers.Shift, Assert.Single(moved.Alternatives).Modifiers);
+        Assert.Equal(KeyModifiers.Super, press.Modifiers);
+        Assert.Equal(KeyModifiers.Super | KeyModifiers.Shift, Assert.Single(press.Alternatives).Modifiers);
     }
 
     [Fact]
@@ -109,15 +109,15 @@ public sealed class SuperModifierTests
     [Fact]
     public void ReplacingTheWholeMapMovesEveryBindingBuiltOnTheModifier()
     {
-        var moved = new ArlecchinoKeymap
+        var press = new ArlecchinoKeymap
         {
             Back = new(ConsoleKey.LeftArrow, KeyModifiers.Alt),
             Forward = new(ConsoleKey.RightArrow, KeyModifiers.Alt),
         }.Replacing(KeyModifiers.Alt, KeyModifiers.Super);
 
-        Assert.Equal(KeyModifiers.Super, moved.Back.Modifiers);
-        Assert.Equal(KeyModifiers.Super, moved.Forward.Modifiers);
-        Assert.Equal(KeyModifiers.Control, moved.ToggleLog.Modifiers);
+        Assert.Equal(KeyModifiers.Super, press.Back.Modifiers);
+        Assert.Equal(KeyModifiers.Super, press.Forward.Modifiers);
+        Assert.Equal(KeyModifiers.Control, press.ToggleLog.Modifiers);
     }
 
     [Fact]

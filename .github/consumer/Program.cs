@@ -111,10 +111,10 @@ internal static class Program
         var commands = provider.GetRequiredService<CommandRegistry>().Commands.Count;
         var ticker = provider.GetRequiredService<Ticker>();
 
-        using var scheduled = ticker.Every(TimeSpan.FromSeconds(1), static () => { });
+        using var tick = ticker.Every(TimeSpan.FromSeconds(1), static () => { });
 
         Console.WriteLine($"resolved {profile}, route {ViewKind.Default.Name}, visits {visits}, " +
                           $"widget {badge is not null}, commands {commands}, " +
-                          $"view commands {navigator.CurrentCommands.Count}, ticker {scheduled is not null}");
+                          $"view commands {navigator.CurrentCommands.Count}, ticker {tick is not null}");
     }
 }

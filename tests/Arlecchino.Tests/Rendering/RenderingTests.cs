@@ -20,11 +20,11 @@ public sealed class RenderingTests
     {
         var original = new Rgb(red, green, blue);
         var (hue, saturation, lightness) = original.ToHsl();
-        var restored = Rgb.FromHsl(hue, saturation, lightness);
+        var color = Rgb.FromHsl(hue, saturation, lightness);
 
-        Assert.InRange(Math.Abs(restored.Red - original.Red), 0, 3);
-        Assert.InRange(Math.Abs(restored.Green - original.Green), 0, 3);
-        Assert.InRange(Math.Abs(restored.Blue - original.Blue), 0, 3);
+        Assert.InRange(Math.Abs(color.Red - original.Red), 0, 3);
+        Assert.InRange(Math.Abs(color.Green - original.Green), 0, 3);
+        Assert.InRange(Math.Abs(color.Blue - original.Blue), 0, 3);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public sealed class RenderingTests
         surface.AppendLine("two", Theme.Header);
         surface.Build();
 
-        Assert.Equal(4, FrameText.Lines(terminal.Written).Length);
+        Assert.Equal(4, FrameText.Lines(terminal.WrittenText).Length);
     }
 
     [Fact]
@@ -152,10 +152,10 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
-        var moved = new KeyPress(ConsoleKey.Q, default, 'a');
+        var press = new KeyPress(ConsoleKey.Q, default, 'a');
 
-        Assert.Equal('q', byPosition.Resolve(moved));
-        Assert.Equal('a', native.Resolve(moved));
+        Assert.Equal('q', byPosition.Resolve(press));
+        Assert.Equal('a', native.Resolve(press));
     }
 
     [Fact]
@@ -163,10 +163,10 @@ public sealed class RenderingTests
     {
         var byPosition = KeyText.For(TextInputMode.ByPosition);
         var native = KeyText.For(TextInputMode.Native);
-        var unmapped = new KeyPress(ConsoleKey.Oem8, default, '€');
+        var plain = new KeyPress(ConsoleKey.Oem8, default, '€');
 
-        Assert.Null(byPosition.Resolve(unmapped));
-        Assert.Equal('€', native.Resolve(unmapped));
+        Assert.Null(byPosition.Resolve(plain));
+        Assert.Equal('€', native.Resolve(plain));
     }
 
     [Fact]

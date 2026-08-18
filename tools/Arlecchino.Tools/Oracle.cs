@@ -42,25 +42,25 @@ internal static class Oracle
 
         TerminalCapabilities.Color = ColorSupport.TrueColor;
 
-        var wanted = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
+        var name = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
         var scenarios = Scenarios()
-            .Where(scenario => wanted.Length == 0 || scenario.Name.Contains(wanted, StringComparison.Ordinal))
+            .Where(scenario => name.Length == 0 || scenario.Name.Contains(name, StringComparison.Ordinal))
             .ToList();
 
         if (scenarios.Count == 0)
         {
-            Console.WriteLine($"no scenario matches '{wanted}'");
+            Console.WriteLine($"no scenario matches '{name}'");
 
             return 1;
         }
 
-        var mismatched = 0;
+        var wrong = 0;
 
         foreach (var scenario in scenarios)
         {
-            var drawn = scenario.Draw();
-            var played = Play(drawn.Output, scenario.Width, scenario.Height);
-            var differences = Differences(drawn, played);
+            var ours = scenario.Draw();
+            var theirs = Play(ours.Output, scenario.Width, scenario.Height);
+            var differences = Differences(ours, theirs);
 
             if (differences.Count == 0)
             {
@@ -69,29 +69,29 @@ internal static class Oracle
                 continue;
             }
 
-            var counts = scenario.Disputed is "";
-            mismatched += counts ? 1 : 0;
+            var counts = scenario.Dispute is "";
+            wrong += counts ? 1 : 0;
 
             Console.WriteLine(counts
                 ? $"  DIFF  {scenario.Name} ({scenario.Width}x{scenario.Height})"
-                : $"  ~~    {scenario.Name} ({scenario.Width}x{scenario.Height})   {scenario.Disputed}");
+                : $"  ~~    {scenario.Name} ({scenario.Width}x{scenario.Height})   {scenario.Dispute}");
 
             foreach (var difference in differences)
             {
                 Console.WriteLine($"          {difference}");
             }
 
-            Console.WriteLine($"          stream: {Program.Escaped(drawn.Output)}");
+            Console.WriteLine($"          stream: {Program.Escaped(ours.Output)}");
         }
 
         Tmux("kill-server");
 
         Console.WriteLine();
-        Console.WriteLine(mismatched == 0
+        Console.WriteLine(wrong == 0
             ? $"{scenarios.Count} scenarios, the screen tmux draws is the screen ScreenGrid draws"
-            : $"{scenarios.Count} scenarios, {mismatched} where they disagree");
+            : $"{scenarios.Count} scenarios, {wrong} where they disagree");
 
-        return mismatched == 0 ? 0 : 1;
+        return wrong == 0 ? 0 : 1;
     }
 
     private static int Explain()
@@ -179,14 +179,14 @@ internal static class Oracle
 
         for (var attempt = 0; attempt < 25; attempt++)
         {
-            var now = string.Join('\n', Grid(height));
+            var screen = string.Join('\n', Grid(height));
 
-            if (attempt > 0 && now == last)
+            if (attempt > 0 && screen == last)
             {
                 return;
             }
 
-            last = now;
+            last = screen;
             Thread.Sleep(20);
         }
     }
@@ -215,11 +215,11 @@ internal static class Oracle
     {
         var lines = Tmux("capture-pane", "-p", "-N", "-e").Split('\n');
         var paints = new Paint[height][];
-        var carried = Paint.Plain;
+        var spread = Paint.Plain;
 
         for (var row = 0; row < height; row++)
         {
-            paints[row] = Painted(row < lines.Length ? lines[row] : "", width, ref carried);
+            paints[row] = Painted(row < lines.Length ? lines[row] : "", width, ref spread);
         }
 
         return paints;
@@ -399,45 +399,45 @@ internal static class Oracle
         return spread.ToString();
     }
 
-    private static List<string> Differences(Drawn drawn, Played played)
+    private static List<string> Differences(Drawn ours, Played theirs)
     {
         var differences = new List<string>();
 
-        for (var row = 0; row < drawn.Lines.Length; row++)
+        for (var row = 0; row < ours.Lines.Length; row++)
         {
-            var ours = drawn.Lines[row].TrimEnd();
-            var theirs = played.Lines[row].TrimEnd();
+            var ourLine = ours.Lines[row].TrimEnd();
+            var theirLine = theirs.Lines[row].TrimEnd();
 
-            if (ours == theirs)
+            if (ourLine == theirLine)
             {
                 continue;
             }
 
-            differences.Add($"row {row}  grid: {Program.Escaped(ours)}");
-            differences.Add($"          tmux: {Program.Escaped(theirs)}");
+            differences.Add($"row {row}  grid: {Program.Escaped(ourLine)}");
+            differences.Add($"          tmux: {Program.Escaped(theirLine)}");
         }
 
-        for (var row = 0; row < drawn.Paints.Length; row++)
+        for (var row = 0; row < ours.Paints.Length; row++)
         {
-            for (var column = 0; column < drawn.Paints[row].Length; column++)
+            for (var column = 0; column < ours.Paints[row].Length; column++)
             {
-                var ours = drawn.Paints[row][column];
-                var theirs = played.Paints[row][column];
+                var ourPaint = ours.Paints[row][column];
+                var theirPaint = theirs.Paints[row][column];
 
-                if (ours == theirs)
+                if (ourPaint == theirPaint)
                 {
                     continue;
                 }
 
-                differences.Add($"paint at {row},{column}  grid: {ours}");
-                differences.Add($"                  tmux: {theirs}");
+                differences.Add($"paint at {row},{column}  grid: {ourPaint}");
+                differences.Add($"                  tmux: {theirPaint}");
             }
         }
 
-        if (drawn.CursorRow != played.CursorRow || drawn.CursorColumn != played.CursorColumn)
+        if (ours.CursorRow != theirs.CursorRow || ours.CursorColumn != theirs.CursorColumn)
         {
             differences.Add(
-                $"cursor  grid: {drawn.CursorRow},{drawn.CursorColumn}  tmux: {played.CursorRow},{played.CursorColumn}");
+                $"cursor  grid: {ours.CursorRow},{ours.CursorColumn}  tmux: {theirs.CursorRow},{theirs.CursorColumn}");
         }
 
         return differences;
@@ -491,11 +491,11 @@ internal static class Oracle
             return "";
         }
 
-        var found = process.StandardOutput.ReadToEnd().Trim();
+        var output = process.StandardOutput.ReadToEnd().Trim();
         process.StandardError.ReadToEnd();
         process.WaitForExit();
 
-        return process.ExitCode == 0 ? found : "";
+        return process.ExitCode == 0 ? output : "";
     }
 
     private static IEnumerable<Scenario> Scenarios()
@@ -597,8 +597,8 @@ internal static class Oracle
                 static surface =>
                 {
                     surface.WriteAt(0, 0, "red", Theme.Error);
-                    surface.WriteAt(0, 4, "muted", Theme.Muted);
-                    surface.WriteAt(1, 0, "selected row", Theme.Selected);
+                    surface.WriteAt(0, 4, "muted", Theme.Secondary);
+                    surface.WriteAt(1, 0, "selected row", Theme.Selection);
                 },
             ]);
 
@@ -747,7 +747,7 @@ internal static class Oracle
                 static surface =>
                 {
                     surface.WriteAt(0, 0, "no colour at all", Theme.Error);
-                    surface.WriteAt(1, 0, "none here either", Theme.Selected);
+                    surface.WriteAt(1, 0, "none here either", Theme.Selection);
                 },
             ]) { Colour = ColorSupport.None };
 
@@ -809,7 +809,7 @@ internal static class Oracle
 
         yield return new Raw("raw-over-wide-tail", 12, 2, "日本語\e[1;2Hx")
         {
-            Disputed = "tmux before 3.7 leaves the half of the wide symbol that was not written over",
+            Dispute = "tmux before 3.7 leaves the half of the wide symbol that was not written over",
         };
 
         yield return new Raw("raw-off-screen-jump", 12, 3, "\e[9;99Hx");
@@ -847,7 +847,7 @@ internal static class Oracle
         /// Why terminals are known to disagree here, when they are. A scenario that says so is reported but
         /// not counted, and what this emulator does is pinned by a test instead.
         /// </summary>
-        internal string Disputed { get; init; } = "";
+        internal string Dispute { get; init; } = "";
 
         internal abstract Drawn Draw();
 
@@ -898,7 +898,7 @@ internal static class Oracle
                     surface.Build();
                 }
 
-                return Read(terminal.Written, terminal.Screen);
+                return Read(terminal.WrittenText, terminal.Screen);
             }
             finally
             {

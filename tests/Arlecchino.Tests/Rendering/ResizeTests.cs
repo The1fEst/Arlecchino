@@ -26,7 +26,7 @@ public sealed class ResizeTests
         {
             Render = static item => item,
             Items = Enumerable.Range(0, 60).Select(static index => $"item {index}").ToArray(),
-            Selected = 55,
+            SelectedIndex = 55,
         };
 
         Draw(surface, list);
@@ -39,7 +39,7 @@ public sealed class ResizeTests
         Draw(surface, list);
 
         Assert.Contains("item 55", Lines(terminal), StringComparison.Ordinal);
-        Assert.Equal(55, list.Selected);
+        Assert.Equal(55, list.SelectedIndex);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public sealed class ResizeTests
 
         Draw(surface, list);
 
-        Assert.All(FrameText.Lines(terminal.Written), line => Assert.True(TextWidth.Of(line) <= 12));
+        Assert.All(FrameText.Lines(terminal.WrittenText), line => Assert.True(TextWidth.Of(line) <= 12));
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public sealed class ResizeTests
         var narrow = NonEmptyLines(terminal);
 
         Assert.True(narrow > wide);
-        Assert.All(FrameText.Lines(terminal.Written), line => Assert.True(TextWidth.Of(line) <= 24));
+        Assert.All(FrameText.Lines(terminal.WrittenText), line => Assert.True(TextWidth.Of(line) <= 24));
     }
 
     [Fact]
@@ -166,8 +166,8 @@ public sealed class ResizeTests
         surface.Build();
     }
 
-    private static string Lines(FakeTerminal terminal) => FrameText.WithoutStyles(terminal.Written);
+    private static string Lines(FakeTerminal terminal) => FrameText.WithoutStyles(terminal.WrittenText);
 
     private static int NonEmptyLines(FakeTerminal terminal) =>
-        FrameText.Lines(terminal.Written).Count(static line => line.Trim().Length > 0);
+        FrameText.Lines(terminal.WrittenText).Count(static line => line.Trim().Length > 0);
 }

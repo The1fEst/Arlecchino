@@ -44,7 +44,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     private const int ColumnGap = 1;
 
     private readonly ListBox<T> _rows;
-    private readonly List<T> _sorted = [];
+    private readonly List<T> _sortedRows = [];
 
     private IReadOnlyList<T> _source = [];
     private int[] _widths = [];
@@ -85,16 +85,16 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
     }
 
     /// <summary>Index of the column being sorted by, or <c>-1</c> when the rows are in their original order.</summary>
-    public int SortedBy { get; private set; } = -1;
+    public int SortedColumn { get; private set; } = -1;
 
     /// <summary>Which way the sort runs.</summary>
     public bool SortsDescending { get; private set; }
 
     /// <summary>Index of the selected row within the sorted order, not within what was assigned.</summary>
-    public int Selected
+    public int SelectedIndex
     {
-        get => _rows.Selected;
-        set => _rows.Selected = value;
+        get => _rows.SelectedIndex;
+        set => _rows.SelectedIndex = value;
     }
 
     /// <summary>The selected row, or the type's default when the table is empty.</summary>
@@ -119,8 +119,8 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
             return;
         }
 
-        SortsDescending = SortedBy == column && !SortsDescending;
-        SortedBy = column;
+        SortsDescending = SortedColumn == column && !SortsDescending;
+        SortedColumn = column;
         Resort();
     }
 
@@ -155,15 +155,15 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
 
     private void Resort()
     {
-        _sorted.Clear();
-        _sorted.AddRange(_source);
+        _sortedRows.Clear();
+        _sortedRows.AddRange(_source);
 
-        if (SortedBy >= 0 && Columns[SortedBy].Sort is { } comparison)
+        if (SortedColumn >= 0 && Columns[SortedColumn].Sort is { } comparison)
         {
-            _sorted.Sort(SortsDescending ? (first, second) => comparison(second, first) : comparison);
+            _sortedRows.Sort(SortsDescending ? (first, second) => comparison(second, first) : comparison);
         }
 
-        _rows.Items = _sorted;
+        _rows.Items = _sortedRows;
     }
 
     private string HeaderLine()
@@ -172,7 +172,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
 
         for (var i = 0; i < Columns.Count && i < _widths.Length; i++)
         {
-            var marker = i == SortedBy ? SortsDescending ? " ↓" : " ↑" : "";
+            var marker = i == SortedColumn ? SortsDescending ? " ↓" : " ↑" : "";
             line.Append(Fit(Columns[i].Header() + marker, _widths[i], Columns[i].AlignRight));
 
             if (i < Columns.Count - 1)
@@ -247,7 +247,7 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget
 
     private static string Fit(string text, int width, bool alignRight)
     {
-        var clipped = TextWidth.Truncate(text, width);
-        return alignRight ? TextWidth.PadLeft(clipped, width) : TextWidth.PadRight(clipped, width);
+        var clippedText = TextWidth.Truncate(text, width);
+        return alignRight ? TextWidth.PadLeft(clippedText, width) : TextWidth.PadRight(clippedText, width);
     }
 }

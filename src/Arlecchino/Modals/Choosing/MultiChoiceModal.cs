@@ -8,23 +8,23 @@ namespace Arlecchino.Modals.Choosing;
 public sealed class MultiChoiceModal : OptionListModal
 {
     /// <summary>Options marked so far.</summary>
-    public HashSet<string> Selected { get; init; } = new(StringComparer.Ordinal);
+    public HashSet<string> SelectedKeys { get; init; } = new(StringComparer.Ordinal);
 
     /// <summary>Called with everything marked, in the order of the options.</summary>
     public required Action<IReadOnlyList<string>> OnSubmit { get; init; }
 
     /// <summary>Whether an option is marked.</summary>
-    /// <param name="option">The option to check.</param>
+    /// <param name="choice">The option to check.</param>
     /// <returns><c>true</c> when it is marked.</returns>
-    public bool IsSelected(string option) => Selected.Contains(option);
+    public bool IsSelected(string choice) => SelectedKeys.Contains(choice);
 
     /// <summary>Marks an option, or unmarks it when it already was.</summary>
-    /// <param name="option">The option to flip.</param>
-    public void Toggle(string option)
+    /// <param name="choice">The option to flip.</param>
+    public void Toggle(string choice)
     {
-        if (!Selected.Add(option))
+        if (!SelectedKeys.Add(choice))
         {
-            Selected.Remove(option);
+            SelectedKeys.Remove(choice);
         }
     }
 
@@ -35,16 +35,17 @@ public sealed class MultiChoiceModal : OptionListModal
     /// <returns>The marked options.</returns>
     public List<string> SelectedInOptionOrder()
     {
-        var picked = new List<string>();
-        foreach (var option in Options)
+        var chosenOptions = new List<string>();
+
+        foreach (var choice in Options)
         {
-            if (Selected.Contains(option))
+            if (SelectedKeys.Contains(choice))
             {
-                picked.Add(option);
+                chosenOptions.Add(choice);
             }
         }
 
-        return picked;
+        return chosenOptions;
     }
 
     /// <inheritdoc/>
@@ -54,5 +55,5 @@ public sealed class MultiChoiceModal : OptionListModal
     public override void Handle(ModalFrame frame, KeyPress key) => frame.Choices.Several(this, key);
 
     /// <inheritdoc/>
-    protected override void Take(ModalFrame frame, string picked) => Toggle(picked);
+    protected override void Take(ModalFrame frame, string choice) => Toggle(choice);
 }

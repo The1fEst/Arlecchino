@@ -16,7 +16,7 @@ public sealed class TickerTests
         var ticker = app.Services.GetRequiredService<Ticker>();
         var runs = 0;
 
-        using var scheduled = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
+        using var tick = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
 
         app.Advance(TimeSpan.FromMilliseconds(900));
         Assert.Equal(0, runs);
@@ -37,7 +37,7 @@ public sealed class TickerTests
         var ticker = app.Services.GetRequiredService<Ticker>();
         var runs = 0;
 
-        using var scheduled = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
+        using var tick = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
 
         app.Advance(TimeSpan.FromHours(1));
 
@@ -72,10 +72,10 @@ public sealed class TickerTests
         var ticker = app.Services.GetRequiredService<Ticker>();
         var runs = 0;
 
-        var scheduled = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
+        var tick = ticker.Every(TimeSpan.FromSeconds(1), () => runs++);
 
         app.Advance(TimeSpan.FromSeconds(1));
-        scheduled.Dispose();
+        tick.Dispose();
         app.Advance(TimeSpan.FromSeconds(5));
 
         Assert.Equal(1, runs);
@@ -87,7 +87,7 @@ public sealed class TickerTests
         using var app = new TestApplication();
         var ticker = app.Services.GetRequiredService<Ticker>();
 
-        using var scheduled = ticker.Every(TimeSpan.FromSeconds(1), static () => { });
+        using var tick = ticker.Every(TimeSpan.FromSeconds(1), static () => { });
 
         app.Frame();
         app.Repaint.TakeRequested();

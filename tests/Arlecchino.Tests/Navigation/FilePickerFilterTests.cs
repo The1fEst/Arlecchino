@@ -40,7 +40,7 @@ public sealed class FilePickerFilterTests : IDisposable
         app.Type("note");
         app.Press(ConsoleKey.Insert, KeyModifiers.Control);
 
-        Assert.Equal("note", app.Terminal.Copied);
+        Assert.Equal("note", app.Terminal.CopiedText);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public sealed class FilePickerFilterTests : IDisposable
         Assert.Equal(_root.FullName, Folder(app));
     }
 
-    private string Picked { get; set; } = "";
+    private string Choice { get; set; } = "";
 
     /// <summary>
     /// Which folder is being listed, read from the picker itself by picking it. The view keeps the folder
@@ -84,7 +84,7 @@ public sealed class FilePickerFilterTests : IDisposable
     {
         app.Press(ConsoleKey.Enter, KeyModifiers.Control);
 
-        return Picked;
+        return Choice;
     }
 
     private TestApplication Show(string? startAt = null)
@@ -96,7 +96,7 @@ public sealed class FilePickerFilterTests : IDisposable
             PickFolder: true,
             startAt ?? _root.FullName,
             ViewRoute.None,
-            picked => Picked = picked);
+            choice => Choice = choice);
         app.Navigator.Apply(Routes.FilePicker);
 
         return app;

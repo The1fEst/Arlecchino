@@ -15,8 +15,8 @@ public sealed class ViewScopeTests
     [Fact]
     public void AScopedServiceIsBuiltPerScreenAndReleasedWithIt()
     {
-        ScopedProbe.Created = 0;
-        ScopedProbe.Disposed = 0;
+        ScopedProbe.Creations = 0;
+        ScopedProbe.Disposals = 0;
 
         using var app = new TestApplication(configure: static builder =>
         {
@@ -26,18 +26,18 @@ public sealed class ViewScopeTests
         });
 
         app.Navigator.Apply(new("Scoped"));
-        Assert.Equal(1, ScopedProbe.Created);
-        Assert.Equal(0, ScopedProbe.Disposed);
+        Assert.Equal(1, ScopedProbe.Creations);
+        Assert.Equal(0, ScopedProbe.Disposals);
 
         app.Navigator.Apply(new("ScopedAgain"));
-        Assert.Equal(2, ScopedProbe.Created);
-        Assert.Equal(1, ScopedProbe.Disposed);
+        Assert.Equal(2, ScopedProbe.Creations);
+        Assert.Equal(1, ScopedProbe.Disposals);
     }
 
     [Fact]
     public void TwoScreensDoNotShareAScopedService()
     {
-        ScopedProbe.Created = 0;
+        ScopedProbe.Creations = 0;
 
         using var app = new TestApplication(configure: static builder =>
         {
@@ -57,7 +57,7 @@ public sealed class ViewScopeTests
     [Fact]
     public void TheScreenIsDisposedBeforeItsScope()
     {
-        ScopedProbe.Disposed = 0;
+        ScopedProbe.Disposals = 0;
         ScopedView.DisposedBeforeProbe = false;
 
         using var app = new TestApplication(configure: static builder =>
@@ -75,18 +75,18 @@ public sealed class ViewScopeTests
 
 public sealed class ScopedProbe : IDisposable
 {
-    public static int Created { get; set; }
+    public static int Creations { get; set; }
 
-    public static int Disposed { get; set; }
+    public static int Disposals { get; set; }
 
-    public ScopedProbe() => Created++;
+    public ScopedProbe() => Creations++;
 
     public bool IsDisposed { get; private set; }
 
     public void Dispose()
     {
         IsDisposed = true;
-        Disposed++;
+        Disposals++;
     }
 }
 

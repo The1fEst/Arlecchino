@@ -22,13 +22,13 @@ public sealed class Tga : IPictureFormat
             return false;
         }
 
-        var mapped = bytes[1];
+        var mapKind = bytes[1];
         var kind = bytes[2];
         var entry = bytes[7];
         var width = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(12, 2));
         var height = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(14, 2));
 
-        if (mapped > 1 || kind is not (1 or 2 or 3 or 9 or 10 or 11) || width == 0 || height == 0)
+        if (mapKind > 1 || kind is not (1 or 2 or 3 or 9 or 10 or 11) || width == 0 || height == 0)
         {
             return false;
         }
@@ -40,7 +40,7 @@ public sealed class Tga : IPictureFormat
 
         var wants = kind is 1 or 9;
 
-        return mapped == (wants ? 1 : 0) && (mapped == 0 || entry is 15 or 16 or 24 or 32);
+        return mapKind == (wants ? 1 : 0) && (mapKind == 0 || entry is 15 or 16 or 24 or 32);
     }
 
     /// <inheritdoc />
@@ -55,7 +55,7 @@ public sealed class Tga : IPictureFormat
         var width = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(12, 2));
         var height = BinaryPrimitives.ReadUInt16LittleEndian(bytes.Slice(14, 2));
 
-        if ((long)width * height > limits.Most)
+        if ((long)width * height > limits.MostPixels)
         {
             return null;
         }
@@ -109,9 +109,9 @@ public sealed class Tga : IPictureFormat
     private static byte[]? Unpacked(ReadOnlySpan<byte> bytes, int at, int count, int size)
     {
         var raw = new byte[count * size];
-        var into = 0;
+        var offset = 0;
 
-        while (into < raw.Length)
+        while (offset < raw.Length)
         {
             if (at >= bytes.Length)
             {
@@ -128,9 +128,9 @@ public sealed class Tga : IPictureFormat
                     return null;
                 }
 
-                for (var repeat = 0; repeat < run && into < raw.Length; repeat++, into += size)
+                for (var repeat = 0; repeat < run && offset < raw.Length; repeat++, offset += size)
                 {
-                    bytes.Slice(at, size).CopyTo(raw.AsSpan(into));
+                    bytes.Slice(at, size).CopyTo(raw.AsSpan(offset));
                 }
 
                 at += size;
@@ -138,18 +138,18 @@ public sealed class Tga : IPictureFormat
                 continue;
             }
 
-            var length = run * size;
+            var span = run * size;
 
-            if (at + length > bytes.Length)
+            if (at + span > bytes.Length)
             {
                 return null;
             }
 
-            var taken = Math.Min(length, raw.Length - into);
+            var length = Math.Min(span, raw.Length - offset);
 
-            bytes.Slice(at, taken).CopyTo(raw.AsSpan(into));
+            bytes.Slice(at, length).CopyTo(raw.AsSpan(offset));
 
-            into += taken;
+            offset += length;
             at += length;
         }
 

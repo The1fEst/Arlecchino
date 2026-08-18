@@ -26,16 +26,16 @@ public sealed class JpegTests
     /// A caller that will draw the picture small says so, and the file is read at a size to match. The
     /// value it lands on is the one the whole block averages to.
     /// </summary>
-    /// <param name="enough">How many pixels the caller says it has a use for.</param>
+    /// <param name="enoughPixels">How many pixels the caller says it has a use for.</param>
     /// <param name="side">How wide and tall the picture should come out.</param>
     [Theory]
     [InlineData(64, 8)]
     [InlineData(16, 4)]
     [InlineData(4, 2)]
     [InlineData(1, 1)]
-    public void APictureIsReadNoLargerThanTheCallerAsksFor(int enough, int side)
+    public void APictureIsReadNoLargerThanTheCallerAsksFor(int enoughPixels, int side)
     {
-        var raster = new Jpeg().Read(Written(0xC0, [0x43]), PictureLimits.For(enough));
+        var raster = new Jpeg().Read(Written(0xC0, [0x43]), PictureLimits.For(enoughPixels));
 
         Assert.NotNull(raster);
         Assert.Equal(side, raster.Width);

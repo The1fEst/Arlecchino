@@ -169,9 +169,9 @@ public sealed class SessionTape
 
         foreach (var step in _steps)
         {
-            if (step.After > TimeSpan.Zero)
+            if (step.Delay > TimeSpan.Zero)
             {
-                host.Advance(step.After);
+                host.Advance(step.Delay);
             }
 
             switch (step.Kind)
@@ -211,12 +211,12 @@ public sealed class SessionTape
             return TimeSpan.Zero;
         }
 
-        var now = _clock.GetUtcNow();
-        var waited = now - _last;
+        var moment = _clock.GetUtcNow();
+        var wait = moment - _last;
 
-        _last = now;
+        _last = moment;
 
-        return waited > TimeSpan.Zero ? waited : TimeSpan.Zero;
+        return wait > TimeSpan.Zero ? wait : TimeSpan.Zero;
     }
 
     private enum StepKind : byte
@@ -229,76 +229,76 @@ public sealed class SessionTape
     }
 
     private readonly record struct Step(
-        TimeSpan After,
+        TimeSpan Delay,
         StepKind Kind,
         KeyPress Key,
         MouseEvent Mouse,
         string Text)
     {
-        public static Step OfKey(TimeSpan after, KeyPress key) => new(after, StepKind.Key, key, default, "");
+        public static Step OfKey(TimeSpan delay, KeyPress key) => new(delay, StepKind.Key, key, default, "");
 
-        public static Step OfMouse(TimeSpan after, MouseEvent mouse) =>
-            new(after, StepKind.Mouse, default, mouse, "");
+        public static Step OfMouse(TimeSpan delay, MouseEvent mouse) =>
+            new(delay, StepKind.Mouse, default, mouse, "");
 
-        public static Step OfPaste(TimeSpan after, string text) => new(after, StepKind.Paste, default, default, text);
+        public static Step OfPaste(TimeSpan delay, string text) => new(delay, StepKind.Paste, default, default, text);
 
-        public static Step OfFrame(TimeSpan after) => new(after, StepKind.Frame, default, default, "");
+        public static Step OfFrame(TimeSpan delay) => new(delay, StepKind.Frame, default, default, "");
 
-        public static Step OfWait(TimeSpan after) => new(after, StepKind.Wait, default, default, "");
+        public static Step OfWait(TimeSpan delay) => new(delay, StepKind.Wait, default, default, "");
 
         public static Step Parse(string line)
         {
             var parts = line.Split(' ');
-            var after = TimeSpan.FromMilliseconds(long.Parse(parts[0], CultureInfo.InvariantCulture));
+            var delay = TimeSpan.FromMilliseconds(long.Parse(parts[0], CultureInfo.InvariantCulture));
 
             return parts[1] switch
             {
                 "key" => OfKey(
-                    after,
+                    delay,
                     new(
                         Enum.Parse<ConsoleKey>(parts[3]),
                         (KeyModifiers)int.Parse(parts[4], CultureInfo.InvariantCulture),
                         (char)int.Parse(parts[2], CultureInfo.InvariantCulture))),
                 "mouse" => OfMouse(
-                    after,
+                    delay,
                     new(
                         Enum.Parse<MouseAction>(parts[2]),
                         Enum.Parse<MouseButton>(parts[3]),
                         int.Parse(parts[4], CultureInfo.InvariantCulture),
                         int.Parse(parts[5], CultureInfo.InvariantCulture),
                         (KeyModifiers)int.Parse(parts[6], CultureInfo.InvariantCulture))),
-                "paste" => OfPaste(after, line[(line.IndexOf(" paste ", StringComparison.Ordinal) + 7)..]),
-                "frame" => OfFrame(after),
-                "wait" => OfWait(after),
+                "paste" => OfPaste(delay, line[(line.IndexOf(" paste ", StringComparison.Ordinal) + 7)..]),
+                "frame" => OfFrame(delay),
+                "wait" => OfWait(delay),
                 _ => throw new FormatException($"a tape cannot say '{line}'"),
             };
         }
 
         public string Write()
         {
-            var after = ((long)After.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
+            var delay = ((long)Delay.TotalMilliseconds).ToString(CultureInfo.InvariantCulture);
 
             return Kind switch
             {
                 StepKind.Key => string.Join(
                     ' ',
-                    after,
+                    delay,
                     "key",
                     ((int)Key.Character).ToString(CultureInfo.InvariantCulture),
                     Key.Key,
                     ((int)Key.Modifiers).ToString(CultureInfo.InvariantCulture)),
                 StepKind.Mouse => string.Join(
                     ' ',
-                    after,
+                    delay,
                     "mouse",
                     Mouse.Action,
                     Mouse.Button,
                     Mouse.Row.ToString(CultureInfo.InvariantCulture),
                     Mouse.Column.ToString(CultureInfo.InvariantCulture),
                     ((int)Mouse.Modifiers).ToString(CultureInfo.InvariantCulture)),
-                StepKind.Paste => $"{after} paste {Text}",
-                StepKind.Frame => $"{after} frame",
-                _ => $"{after} wait",
+                StepKind.Paste => $"{delay} paste {Text}",
+                StepKind.Frame => $"{delay} frame",
+                _ => $"{delay} wait",
             };
         }
     }

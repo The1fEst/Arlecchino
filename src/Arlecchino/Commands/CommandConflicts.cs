@@ -14,7 +14,7 @@ internal sealed class CommandConflicts
 {
     private readonly CommandRegistry _global;
     private readonly ILogger<CommandConflicts> _logger;
-    private readonly HashSet<string> _reported = [];
+    private readonly HashSet<string> _reportedRoutes = [];
 
     /// <summary>Creates the check.</summary>
     /// <param name="global">Application commands to compare against.</param>
@@ -33,22 +33,22 @@ internal sealed class CommandConflicts
     /// <param name="commands">Commands the screen declared.</param>
     public void Report(ViewRoute route, IReadOnlyList<ViewCommand> commands)
     {
-        if (commands.Count == 0 || !_reported.Add(route.Name))
+        if (commands.Count == 0 || !_reportedRoutes.Add(route.Name))
         {
             return;
         }
 
-        var seen = new Dictionary<KeyBinding, ViewCommand>();
+        var bindings = new Dictionary<KeyBinding, ViewCommand>();
 
         foreach (var command in commands)
         {
-            if (seen.TryGetValue(command.Binding, out var earlier))
+            if (bindings.TryGetValue(command.Binding, out var earlier))
             {
                 Log.KeyBoundTwice(_logger, route, command.Binding, earlier.Label(), command.Label());
                 continue;
             }
 
-            seen[command.Binding] = command;
+            bindings[command.Binding] = command;
 
             foreach (var global in _global.Commands)
             {

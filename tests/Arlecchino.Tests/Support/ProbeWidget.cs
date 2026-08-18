@@ -11,7 +11,7 @@ public sealed class ProbeWidget : IArlecchinoInteractiveWidget
 {
     private readonly ArlecchinoKeymap _keymap;
 
-    private SurfaceRegion _drawn;
+    private SurfaceRegion _drawnRegion;
 
     public ProbeWidget(ArlecchinoKeymap keymap)
     {
@@ -24,8 +24,8 @@ public sealed class ProbeWidget : IArlecchinoInteractiveWidget
 
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        _drawn = region;
-        region.WriteLine(0, Text, IsFocused ? Theme.Active : Theme.Muted);
+        _drawnRegion = region;
+        region.WriteLine(0, Text, IsFocused ? Theme.Active : Theme.Secondary);
 
         return region.Rows(1, region.Height - 1);
     }
@@ -34,7 +34,7 @@ public sealed class ProbeWidget : IArlecchinoInteractiveWidget
         _keymap.Confirm.Matches(key) ? FocusResult.Handled : FocusResult.Ignored;
 
     public FocusResult HandleMouse(MouseEvent mouse) =>
-        mouse.IsLeftClick && _drawn.Contains(mouse.Row, mouse.Column)
+        mouse.IsLeftClick && _drawnRegion.Contains(mouse.Row, mouse.Column)
             ? FocusResult.Handled
             : FocusResult.Ignored;
 }
@@ -50,7 +50,7 @@ public sealed class ProbeReadoutWidget : IArlecchinoWidget
 
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        region.WriteLine(0, _store.Name.Value, Theme.Muted);
+        region.WriteLine(0, _store.Name.Value, Theme.Secondary);
 
         return region.Rows(1, region.Height - 1);
     }

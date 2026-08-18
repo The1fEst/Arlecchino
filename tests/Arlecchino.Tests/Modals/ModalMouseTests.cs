@@ -32,17 +32,17 @@ public sealed class ModalMouseTests
     public void ClickingAnOptionSelectsItAndTheSecondClickPicks()
     {
         using var app = new TestApplication();
-        var picked = "";
+        var choice = "";
 
-        app.State.RequestChoice("Pick", Options, value => picked = value);
+        app.State.RequestChoice("Pick", Options, value => choice = value);
         var (row, column) = RowOf(app, "gamma");
 
         app.Click(row, column);
         Assert.Equal(2, ((ChoiceModal)app.State.Modal!).Index);
-        Assert.Equal("", picked);
+        Assert.Equal("", choice);
 
         app.Click(row, column);
-        Assert.Equal("gamma", picked);
+        Assert.Equal("gamma", choice);
         Assert.Null(app.State.Modal);
     }
 
@@ -174,9 +174,9 @@ public sealed class ModalMouseTests
 
             app.Click(row, column);
 
-            var opened = app.Frame();
-            Assert.Contains("beta-folder", opened, StringComparison.Ordinal);
-            Assert.DoesNotContain("alpha-folder", opened, StringComparison.Ordinal);
+            var frame = app.Frame();
+            Assert.Contains("beta-folder", frame, StringComparison.Ordinal);
+            Assert.DoesNotContain("alpha-folder", frame, StringComparison.Ordinal);
         }
         finally
         {
@@ -192,13 +192,13 @@ public sealed class ModalMouseTests
         app.State.FilePicker = new("Pick", PickFolder: true, Path.GetTempPath(), ViewRoute.None, static _ => { });
         app.Navigator.Apply(Routes.FilePicker);
 
-        var before = app.Styles();
+        var start = app.Styles();
         var (row, column) = RowOf(app, app.Options.Strings.FilePicker.Drives());
 
         Assert.True(row > 0);
         app.Click(row, column);
 
-        Assert.NotEqual(before, app.Styles());
+        Assert.NotEqual(start, app.Styles());
     }
 
     [Fact]

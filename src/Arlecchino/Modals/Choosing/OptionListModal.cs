@@ -67,11 +67,11 @@ public abstract class OptionListModal : Modal, ITextEntry
         }
 
         var matching = new List<string>();
-        foreach (var option in Options)
+        foreach (var choice in Options)
         {
-            if (option.Contains(_text, StringComparison.OrdinalIgnoreCase))
+            if (choice.Contains(_text, StringComparison.OrdinalIgnoreCase))
             {
-                matching.Add(option);
+                matching.Add(choice);
             }
         }
 
@@ -93,8 +93,8 @@ public abstract class OptionListModal : Modal, ITextEntry
 
     /// <summary>Acts on the row that was picked, which is what tells one kind of list from the other.</summary>
     /// <param name="frame">How to close, when picking closes.</param>
-    /// <param name="picked">The option.</param>
-    protected abstract void Take(ModalFrame frame, string picked);
+    /// <param name="choice">The option.</param>
+    protected abstract void Take(ModalFrame frame, string choice);
 
     /// <summary>
     /// The wheel walks the list, and a click picks the row it landed on. A row is taken only when it was

@@ -71,7 +71,7 @@ public sealed class ProcessesView : IArlecchinoView
                     Sort = static (first, second) => first.Threads.CompareTo(second.Threads),
                 },
             ],
-            ItemStyle = static row => row.Memory == 0 ? Theme.Muted : Theme.Default,
+            ItemStyle = static row => row.Memory == 0 ? Theme.Secondary : Theme.Default,
             OnActivate = Open,
         };
 
@@ -91,7 +91,7 @@ public sealed class ProcessesView : IArlecchinoView
         var (rows, status) = rest.SplitTop(rest.Height - 1);
 
         header.WriteLine(0, "Processes", Theme.Header);
-        header.WriteLine(1, Headline(), Theme.Muted);
+        header.WriteLine(1, Headline(), Theme.Secondary);
 
         _table.Rows = _processes.Visible();
         _table.Draw(rows);
@@ -126,7 +126,7 @@ public sealed class ProcessesView : IArlecchinoView
             return ViewRoute.None;
         }
 
-        _processes.Selected.Value = row;
+        _processes.SelectedRow.Value = row;
         return ViewKind.Details;
     }
 
@@ -137,7 +137,7 @@ public sealed class ProcessesView : IArlecchinoView
             typed =>
             {
                 _processes.Filter.Value = typed;
-                _table.Selected = 0;
+                _table.SelectedIndex = 0;
             });
 
     private string Headline() => _processes.Rows.Error.Value is { } failure

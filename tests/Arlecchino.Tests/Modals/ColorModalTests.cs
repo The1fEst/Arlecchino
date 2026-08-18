@@ -86,16 +86,16 @@ public sealed class ColorModalTests
     public void EnterHandsBackTheEditedColor()
     {
         using var app = new TestApplication();
-        var picked = default(Rgb);
+        var choice = default(Rgb);
 
-        app.State.RequestColor("Accent", new(255, 0, 0), value => picked = value);
+        app.State.RequestColor("Accent", new(255, 0, 0), value => choice = value);
 
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.Home);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(new(0, 0, 0), picked);
+        Assert.Equal(new(0, 0, 0), choice);
         Assert.Null(app.State.Modal);
     }
 

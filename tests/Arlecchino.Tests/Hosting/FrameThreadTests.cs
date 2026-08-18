@@ -22,6 +22,8 @@ public sealed class FrameThreadTests
     {
         var value = new LocalAtom<int>(0);
 
+        Assert.Equal(0, value.Value);
+
         value.Value = 1;
 
         Assert.True(FrameThread.IsCurrent);
@@ -186,7 +188,7 @@ public sealed class FrameThreadTests
     public void TheLookAsksForAFrameWithoutBeingTold()
     {
         using var app = new TestApplication();
-        var was = (Theme.Palette, Glyphs.Graph, Glyphs.CellWidth);
+        var original = (Theme.Palette, Glyphs.Graph, Glyphs.CellWidth);
 
         try
         {
@@ -207,7 +209,7 @@ public sealed class FrameThreadTests
         }
         finally
         {
-            (Theme.Palette, Glyphs.Graph, Glyphs.CellWidth) = was;
+            (Theme.Palette, Glyphs.Graph, Glyphs.CellWidth) = original;
         }
     }
 
@@ -217,7 +219,7 @@ public sealed class FrameThreadTests
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim();
 
-        Exception? thrown = null;
+        Exception? failure = null;
 
         var reading = new Thread(() =>
         {
@@ -227,14 +229,14 @@ public sealed class FrameThreadTests
             }
             catch (Exception exception)
             {
-                thrown = exception;
+                failure = exception;
             }
         });
 
         reading.Start();
         reading.Join();
 
-        Assert.Null(thrown);
+        Assert.Null(failure);
     }
 
     [Fact]
@@ -243,10 +245,10 @@ public sealed class FrameThreadTests
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim();
 
-        var posted = new Thread(() => FrameThread.Post(() => app.State.Modal = Dialog("posted")));
+        var work = new Thread(() => FrameThread.Post(() => app.State.Modal = Dialog("posted")));
 
-        posted.Start();
-        posted.Join();
+        work.Start();
+        work.Join();
 
         Assert.Null(app.State.Modal);
 
@@ -262,10 +264,10 @@ public sealed class FrameThreadTests
         var value = new LocalAtom<int>(0);
 
         using var drawing = FrameThread.Claim();
-        var posted = new Thread(() => FrameThread.Post(() => value.Value = 7));
+        var work = new Thread(() => FrameThread.Post(() => value.Value = 7));
 
-        posted.Start();
-        posted.Join();
+        work.Start();
+        work.Join();
 
         FrameThread.RunPending(static _ => { });
 
@@ -290,7 +292,7 @@ public sealed class FrameThreadTests
 
     private static InvalidOperationException Refused(Action write)
     {
-        Exception? thrown = null;
+        Exception? failure = null;
 
         var writing = new Thread(() =>
         {
@@ -300,13 +302,13 @@ public sealed class FrameThreadTests
             }
             catch (Exception exception)
             {
-                thrown = exception;
+                failure = exception;
             }
         });
 
         writing.Start();
         writing.Join();
 
-        return Assert.IsType<InvalidOperationException>(thrown);
+        return Assert.IsType<InvalidOperationException>(failure);
     }
 }

@@ -10,13 +10,13 @@ internal static class JpegPlanes
     /// <param name="frame">What the frame header said.</param>
     internal static void Room(JpegFrame frame)
     {
-        var across = (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
-        var down = (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
+        var blockColumns = (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
+        var blockRows = (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
 
         foreach (var part in frame.Parts)
         {
-            part.BlocksWide = across * part.Wide;
-            part.BlocksTall = down * part.Tall;
+            part.BlocksWide = blockColumns * part.Wide;
+            part.BlocksTall = blockRows * part.Tall;
             part.PlaneWidth = part.BlocksWide * frame.Eighths;
             part.Blocks = new int[part.BlocksWide * part.BlocksTall * 64];
         }

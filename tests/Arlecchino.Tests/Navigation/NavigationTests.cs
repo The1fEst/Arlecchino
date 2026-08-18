@@ -122,22 +122,22 @@ public sealed class NavigationTests
     [Fact]
     public void TheStartViewIsNotBuiltBeforeItIsNeeded()
     {
-        CountedView.Built = 0;
+        CountedView.Builds = 0;
 
         using var app = new TestApplication(configure: static builder =>
             builder.AddView<CountedView>("Counted").StartAt("Counted"));
 
-        Assert.Equal(0, CountedView.Built);
+        Assert.Equal(0, CountedView.Builds);
 
         app.Frame();
 
-        Assert.Equal(1, CountedView.Built);
+        Assert.Equal(1, CountedView.Builds);
     }
 
     [Fact]
     public async Task AStartViewMayAskForTheNavigatorItself()
     {
-        var built = Task.Run(static () =>
+        var view = Task.Run(static () =>
         {
             using var app = new TestApplication(configure: static builder =>
                 builder.AddView<NavigatingView>("Navigating").StartAt("Navigating"));
@@ -145,10 +145,10 @@ public sealed class NavigationTests
             return app.Frame();
         });
 
-        var finished = await Task.WhenAny(built, Task.Delay(TimeSpan.FromSeconds(10)));
+        var ending = await Task.WhenAny(view, Task.Delay(TimeSpan.FromSeconds(10)));
 
-        Assert.True(ReferenceEquals(finished, built), "building a view that asks for the navigator hung");
-        Assert.Contains("navigating", await built, StringComparison.Ordinal);
+        Assert.True(ReferenceEquals(ending, view), "building a view that asks for the navigator hung");
+        Assert.Contains("navigating", await view, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -158,16 +158,16 @@ public sealed class NavigationTests
             .AddView<EagerView>("Eager")
             .StartAt("Eager"));
 
-        var error = Assert.Throws<InvalidOperationException>(() => app.Frame());
+        var error = Assert.Throws<InvalidOperationException>(app.Frame);
 
         Assert.Contains("still being built", error.Message, StringComparison.Ordinal);
     }
 
     public sealed class CountedView : IArlecchinoView
     {
-        public CountedView() => Built++;
+        public CountedView() => Builds++;
 
-        public static int Built { get; set; }
+        public static int Builds { get; set; }
 
         public void Draw() { }
 

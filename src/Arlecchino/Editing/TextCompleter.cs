@@ -29,10 +29,10 @@ public sealed class TextCompleter
     private readonly ArlecchinoKeymap _keymap;
 
     private CancellationTokenSource? _asking;
-    private IReadOnlyList<string> _found = [];
+    private IReadOnlyList<string> _matches = [];
     private CompletionAsk _ask;
-    private string _filled = "";
-    private int _chosen = -1;
+    private string _stem = "";
+    private int _chosenIndex = -1;
 
     /// <summary>Hangs completion on a line.</summary>
     /// <param name="entry">The line being typed into.</param>
@@ -51,16 +51,16 @@ public sealed class TextCompleter
     /// What the last press found, for an application that draws them. It is empty while nothing has been
     /// offered and empties itself once the line has been typed into again.
     /// </summary>
-    public IReadOnlyList<string> Words => IsOffering ? _found : [];
+    public IReadOnlyList<string> Words => IsOffering ? _matches : [];
 
     /// <summary>
     /// Which of <see cref="Words"/> is on the line now, or <c>-1</c> while the line holds only as much as
     /// they all agree on and none of them in particular.
     /// </summary>
-    public int Chosen => IsOffering ? _chosen : -1;
+    public int ChosenIndex => IsOffering ? _chosenIndex : -1;
 
     /// <summary>Whether the words offered are still the ones this line holds.</summary>
-    private bool IsOffering => _found.Count > 0 && _entry.Text == _filled;
+    private bool IsOffering => _matches.Count > 0 && _entry.Text == _stem;
 
     /// <summary>
     /// Finishes the word, or steps to the next of what was offered for it. Any other key is left alone and
@@ -113,9 +113,9 @@ public sealed class TextCompleter
         _asking?.Cancel();
         _asking?.Dispose();
         _asking = null;
-        _found = [];
-        _filled = "";
-        _chosen = -1;
+        _matches = [];
+        _stem = "";
+        _chosenIndex = -1;
     }
 
     /// <summary>
@@ -145,9 +145,9 @@ public sealed class TextCompleter
         {
             try
             {
-                var found = await answer.ConfigureAwait(false);
+                var matches = await answer.ConfigureAwait(false);
 
-                FrameThread.Post(() => Arrived(asking, ask, found));
+                FrameThread.Post(() => Arrived(asking, ask, matches));
             }
             catch (OperationCanceledException) { }
         }
@@ -159,15 +159,15 @@ public sealed class TextCompleter
     /// </summary>
     /// <param name="asking">The press that asked, which is cancelled once anything else has happened.</param>
     /// <param name="ask">What was asked.</param>
-    /// <param name="found">What came back.</param>
-    private void Arrived(CancellationTokenSource asking, CompletionAsk ask, IReadOnlyList<string> found)
+    /// <param name="matches">What came back.</param>
+    private void Arrived(CancellationTokenSource asking, CompletionAsk ask, IReadOnlyList<string> matches)
     {
         if (!ReferenceEquals(_asking, asking) || asking.IsCancellationRequested || _entry.Text != ask.Line)
         {
             return;
         }
 
-        Found(ask, found);
+        Found(ask, matches);
     }
 
     /// <summary>
@@ -175,34 +175,34 @@ public sealed class TextCompleter
     /// where they agree on nothing more than was typed.
     /// </summary>
     /// <param name="ask">What was asked.</param>
-    /// <param name="found">What came back.</param>
-    private void Found(CompletionAsk ask, IReadOnlyList<string> found)
+    /// <param name="matches">What came back.</param>
+    private void Found(CompletionAsk ask, IReadOnlyList<string> matches)
     {
-        if (found.Count == 0)
+        if (matches.Count == 0)
         {
             return;
         }
 
-        var shared = Shared(found);
+        var stem = Shared(matches);
 
         _ask = ask;
-        _found = found;
-        _chosen = shared.Length > ask.Word.Length ? -1 : 0;
+        _matches = matches;
+        _chosenIndex = stem.Length > ask.Word.Length ? -1 : 0;
 
-        Fill(_chosen < 0 ? shared : found[0]);
+        Fill(_chosenIndex < 0 ? stem : matches[0]);
     }
 
     /// <summary>Steps through what was offered, coming round to the first again past the last.</summary>
     /// <param name="forward">Which way to step.</param>
     private void Step(bool forward)
     {
-        _chosen = forward
-            ? (_chosen + 1) % _found.Count
-            : _chosen <= 0
-                ? _found.Count - 1
-                : _chosen - 1;
+        _chosenIndex = forward
+            ? (_chosenIndex + 1) % _matches.Count
+            : _chosenIndex <= 0
+                ? _matches.Count - 1
+                : _chosenIndex - 1;
 
-        Fill(_found[_chosen]);
+        Fill(_matches[_chosenIndex]);
     }
 
     /// <summary>
@@ -212,37 +212,37 @@ public sealed class TextCompleter
     /// <param name="word">What to put there.</param>
     private void Fill(string word)
     {
-        _entry.Text = _ask.Before + word + _ask.After;
+        _entry.Text = _ask.Prefix + word + _ask.Suffix;
         _entry.Caret = _ask.Start + word.Length;
         _entry.Anchor = _entry.Caret;
-        _filled = _entry.Text;
+        _stem = _entry.Text;
     }
 
     /// <summary>
     /// The beginning every candidate shares, which is what a press fills in when there is more than one of
     /// them. Case is forgiven while they are compared, and the first of them lends its own.
     /// </summary>
-    /// <param name="found">The candidates.</param>
+    /// <param name="matches">The candidates.</param>
     /// <returns>The beginning they all have.</returns>
-    private static string Shared(IReadOnlyList<string> found)
+    private static string Shared(IReadOnlyList<string> matches)
     {
-        var shared = found[0].Length;
+        var stemLength = matches[0].Length;
 
-        for (var at = 1; at < found.Count; at++)
+        for (var at = 1; at < matches.Count; at++)
         {
-            var other = found[at];
-            var same = 0;
+            var other = matches[at];
+            var count = 0;
 
-            while (same < shared &&
-                   same < other.Length &&
-                   char.ToLowerInvariant(found[0][same]) == char.ToLowerInvariant(other[same]))
+            while (count < stemLength &&
+                   count < other.Length &&
+                   char.ToLowerInvariant(matches[0][count]) == char.ToLowerInvariant(other[count]))
             {
-                same++;
+                count++;
             }
 
-            shared = same;
+            stemLength = count;
         }
 
-        return found[0][..shared];
+        return matches[0][..stemLength];
     }
 }

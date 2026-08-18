@@ -88,9 +88,9 @@ public sealed class LogOverlayTests
             Log(app, LogLevel.Information, $"line {i}");
         }
 
-        var held = buffer.Snapshot();
-        Assert.Equal(3, held.Count);
-        Assert.Equal("line 9", held[^1].Message);
+        var overlay = buffer.Snapshot();
+        Assert.Equal(3, overlay.Count);
+        Assert.Equal("line 9", overlay[^1].Message);
     }
 
     [Fact]

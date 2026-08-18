@@ -27,7 +27,7 @@ internal static class AreaRows
         var at = caret < 0 ? -1 : Math.Clamp(caret - head, 0, slice.Length);
 
         List<Piece> pieces = [];
-        EntryLook look = new(coat, Theme.Selected, Theme.Caret);
+        EntryLook look = new(coat, Theme.Selection, Theme.Caret);
 
         EntryRuns.Of(
             slice,
@@ -36,8 +36,8 @@ internal static class AreaRows
             look,
             (piece, style) => pieces.Add(new(piece, style)));
 
-        var drawn = TextWidth.Of(slice) + (at == slice.Length ? 1 : 0);
-        var padding = new string(' ', Math.Max(0, width - drawn));
+        var rows = TextWidth.Of(slice) + (at == slice.Length ? 1 : 0);
+        var padding = new string(' ', Math.Max(0, width - rows));
 
         pieces.Add(new(padding, coat));
 
@@ -46,14 +46,14 @@ internal static class AreaRows
 
     private static int IndexAtWidth(string text, int columns)
     {
-        var walked = 0;
+        var column = 0;
         var index = 0;
 
-        while (index < text.Length && walked < columns)
+        while (index < text.Length && column < columns)
         {
             var length = TextWidth.NextClusterLength(text, index);
 
-            walked += TextWidth.OfCluster(text.AsSpan(index, length));
+            column += TextWidth.OfCluster(text.AsSpan(index, length));
             index += length;
         }
 

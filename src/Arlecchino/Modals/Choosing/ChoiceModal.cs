@@ -16,9 +16,9 @@ public sealed class ChoiceModal : OptionListModal
     public override void Handle(ModalFrame frame, KeyPress key) => frame.Choices.One(this, key);
 
     /// <inheritdoc/>
-    protected override void Take(ModalFrame frame, string picked)
+    protected override void Take(ModalFrame frame, string choice)
     {
         frame.Close();
-        OnPicked(picked);
+        OnPicked(choice);
     }
 }

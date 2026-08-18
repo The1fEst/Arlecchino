@@ -96,13 +96,13 @@ public sealed class KeymapTests
         using var app = new TestApplication(configure: static builder =>
             builder.UseKeymap(new() { Mark = new(ConsoleKey.Insert) }));
 
-        string[] picked = [];
-        app.State.RequestMultiChoice("Columns", ["a", "b"], [], value => picked = [.. value]);
+        string[] choice = [];
+        app.State.RequestMultiChoice("Columns", ["a", "b"], [], value => choice = [.. value]);
 
         app.Press(ConsoleKey.Insert);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(["a"], picked);
+        Assert.Equal(["a"], choice);
     }
 
     [Fact]

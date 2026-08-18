@@ -66,12 +66,12 @@ public sealed class Ticker
             return;
         }
 
-        var now = _time.GetUtcNow();
+        var moment = _time.GetUtcNow();
         var ran = false;
 
         foreach (var entry in _entries.ToArray())
         {
-            if (entry.IsCancelled || entry.Due > now)
+            if (entry.IsCancelled || entry.Due > moment)
             {
                 continue;
             }
@@ -89,7 +89,7 @@ public sealed class Ticker
 
             if (entry.Repeating)
             {
-                entry.Due = NextDueAfter(entry, now);
+                entry.Due = NextDueAfter(entry, moment);
             }
             else
             {
@@ -108,11 +108,11 @@ public sealed class Ticker
         }
     }
 
-    private static DateTimeOffset NextDueAfter(Entry entry, DateTimeOffset now)
+    private static DateTimeOffset NextDueAfter(Entry entry, DateTimeOffset moment)
     {
         var next = entry.Due + entry.Interval;
 
-        return next > now ? next : now + entry.Interval;
+        return next > moment ? next : moment + entry.Interval;
     }
 
     private Entry Schedule(TimeSpan interval, Action action, bool repeating)

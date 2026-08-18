@@ -82,11 +82,11 @@ public sealed class PaneTreeMouseTests
     [Fact]
     public void NoPaneAnswersBeforeTheFirstFrameIsDrawn()
     {
-        var only = new Greedy();
+        var pane = new Greedy();
 
-        Leaf(only).HandleMouse(Click(row: 1, column: 1));
+        Leaf(pane).HandleMouse(Click(row: 1, column: 1));
 
-        Assert.Equal(0, only.Clicks);
+        Assert.Equal(0, pane.Clicks);
     }
 
     [Fact]

@@ -115,7 +115,7 @@ public sealed class SelectionTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
         app.Press(ConsoleKey.Insert, KeyModifiers.Control);
 
-        Assert.Equal("c", app.Terminal.Copied);
+        Assert.Equal("c", app.Terminal.CopiedText);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public sealed class SelectionTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
         app.Press(ConsoleKey.Delete, KeyModifiers.Shift);
 
-        Assert.Equal("c", app.Terminal.Copied);
+        Assert.Equal("c", app.Terminal.CopiedText);
         Assert.Equal("ab", ((TextModal)app.State.Modal!).Text);
     }
 }

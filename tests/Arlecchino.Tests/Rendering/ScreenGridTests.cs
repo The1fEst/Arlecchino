@@ -280,7 +280,7 @@ public sealed class ScreenGridTests
 
         terminal.Clear();
 
-        Assert.Equal("", terminal.Written);
+        Assert.Equal("", terminal.WrittenText);
         Assert.Equal("hello", terminal.Screen.Line(0).TrimEnd());
     }
 
@@ -289,13 +289,13 @@ public sealed class ScreenGridTests
     {
         var (surface, terminal) = CreateSurface();
         DrawLine(surface, "hello");
-        var before = terminal.Screen.ToString();
+        var start = terminal.Screen.ToString();
         terminal.Clear();
 
         DrawLine(surface, "hello");
 
-        Assert.Equal("", terminal.Written);
-        Assert.Equal(before, terminal.Screen.ToString());
+        Assert.Equal("", terminal.WrittenText);
+        Assert.Equal(start, terminal.Screen.ToString());
     }
 
     [Fact]
@@ -307,7 +307,7 @@ public sealed class ScreenGridTests
 
         DrawLine(surface, "hellp");
 
-        Assert.DoesNotContain("hell", terminal.Written, StringComparison.Ordinal);
+        Assert.DoesNotContain("hell", terminal.WrittenText, StringComparison.Ordinal);
         Assert.Equal("hellp", terminal.Screen.Line(0).TrimEnd());
         Assert.Equal(Height, terminal.Screen.Lines().Length);
     }
@@ -317,12 +317,12 @@ public sealed class ScreenGridTests
     {
         using var app = new TestApplication(40, 10);
         app.Frame();
-        var whole = app.Terminal.Written.Length;
+        var whole = app.Terminal.WrittenText.Length;
 
         app.Navigator.Apply(ViewKind.Other);
         var lines = app.FrameLines();
 
-        Assert.True(app.Terminal.Written.Length < whole);
+        Assert.True(app.Terminal.WrittenText.Length < whole);
         Assert.Equal(10, lines.Length);
         Assert.Contains(lines, line => line.Contains("other", StringComparison.Ordinal));
         Assert.DoesNotContain(lines, line => line.Contains("probe", StringComparison.Ordinal));

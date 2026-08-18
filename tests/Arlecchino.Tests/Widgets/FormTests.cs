@@ -31,7 +31,7 @@ public sealed class FormTests
 
     private static string Show(TestApplication app, Form form)
     {
-        FormHostView.Hosted = form;
+        FormHostView.Form = form;
         app.Navigator.Apply(ViewKind.FormHost);
         return app.Frame();
     }
@@ -62,13 +62,13 @@ public sealed class FormTests
         using var app = new TestApplication();
         var form = CreateForm(app, new TrackedAtom<string>(""), new TrackedAtom<bool>(false));
 
-        Assert.Equal(0, form.Selected);
+        Assert.Equal(0, form.SelectedIndex);
 
         form.Handle(new(ConsoleKey.DownArrow));
-        Assert.Equal(1, form.Selected);
+        Assert.Equal(1, form.SelectedIndex);
 
         form.Handle(new(ConsoleKey.UpArrow));
-        Assert.Equal(0, form.Selected);
+        Assert.Equal(0, form.SelectedIndex);
     }
 
     [Fact]
@@ -164,7 +164,7 @@ public sealed class FormTests
         var column = FormHostView.Rows.Left;
 
         form.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, flagRow, column, default));
-        Assert.Equal(1, form.Selected);
+        Assert.Equal(1, form.SelectedIndex);
         Assert.Null(app.State.Modal);
 
         form.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, flagRow, column, default));

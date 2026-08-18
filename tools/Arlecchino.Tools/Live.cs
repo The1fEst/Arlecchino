@@ -57,9 +57,9 @@ internal static class Live
         Shell(size[0], size[1]);
         Say($"echo {Marker}");
 
-        var before = Screen();
+        var first = Screen();
 
-        if (!before.Contains(Marker, StringComparison.Ordinal))
+        if (!first.Contains(Marker, StringComparison.Ordinal))
         {
             Console.WriteLine("the shell never printed anything, so there is nothing to compare against");
 
@@ -81,21 +81,21 @@ internal static class Live
         Settle();
 
         var running = State();
-        var drawn = Screen();
+        var frame = Screen();
 
-        Console.WriteLine(Framed("what the application drew", drawn));
+        Console.WriteLine(Framed("what the application drew", frame));
 
         if (running.Alternate != 1)
         {
             complaints.Add("it never took a screen of its own, so quitting will leave its frames behind");
         }
 
-        if (drawn.Trim().Length == 0)
+        if (frame.Trim().Length == 0)
         {
             complaints.Add("it took the screen and drew nothing on it");
         }
 
-        if (drawn.Contains(Marker, StringComparison.Ordinal))
+        if (frame.Contains(Marker, StringComparison.Ordinal))
         {
             complaints.Add("the shell underneath is still showing through what it drew");
         }
@@ -112,20 +112,20 @@ internal static class Live
         Until(() => State().Alternate == 0);
         Settle();
 
-        var after = State();
+        var ending = State();
         var back = Screen();
 
-        if (after.Alternate != 0)
+        if (ending.Alternate != 0)
         {
             complaints.Add("it kept the screen it took");
         }
 
-        if (running.Cursor == 0 && after.Cursor != 1)
+        if (running.Cursor == 0 && ending.Cursor != 1)
         {
             complaints.Add("it hid the cursor and left it hidden");
         }
 
-        if (running.Mouse == 1 && after.Mouse != 0)
+        if (running.Mouse == 1 && ending.Mouse != 0)
         {
             complaints.Add("it asked for the mouse and never gave it back");
         }
@@ -138,7 +138,7 @@ internal static class Live
         Tmux("kill-server");
 
         Console.WriteLine($"while running: {running}");
-        Console.WriteLine($"after quitting: {after}");
+        Console.WriteLine($"after quitting: {ending}");
         Console.WriteLine();
 
         if (complaints.Count == 0)
@@ -180,17 +180,17 @@ internal static class Live
     private static string Sample()
     {
         var project = Path.Combine(Program.Root(), "samples", "Arlecchino.Sample");
-        var built = Path.Combine(project, "bin", "Release", "net10.0", "Arlecchino.Sample");
+        var binary = Path.Combine(project, "bin", "Release", "net10.0", "Arlecchino.Sample");
 
-        if (File.Exists(built))
+        if (File.Exists(binary))
         {
-            return built;
+            return binary;
         }
 
         Console.WriteLine("building the sample");
         Dotnet("build", project, "--configuration", "Release");
 
-        return built;
+        return binary;
     }
 
     /// <summary>
@@ -235,18 +235,18 @@ internal static class Live
 
     private static Terminal State()
     {
-        var told = Tmux(
+        var fields = Tmux(
                 "display-message",
                 "-p",
                 "#{alternate_on} #{cursor_flag} #{mouse_any_flag}")
             .Trim()
             .Split(' ');
 
-        return new(Number(told, 0), Number(told, 1), Number(told, 2));
+        return new(Number(fields, 0), Number(fields, 1), Number(fields, 2));
     }
 
-    private static int Number(string[] told, int at) =>
-        at < told.Length && int.TryParse(told[at], CultureInfo.InvariantCulture, out var value) ? value : -1;
+    private static int Number(string[] fields, int at) =>
+        at < fields.Length && int.TryParse(fields[at], CultureInfo.InvariantCulture, out var value) ? value : -1;
 
     /// <summary>
     /// Waits for the terminal to say something is so, or gives up. What is waited for happens at the pace of
@@ -281,14 +281,14 @@ internal static class Live
         {
             Thread.Sleep(50);
 
-            var now = Screen();
+            var screen = Screen();
 
-            if (attempt > 0 && now == last)
+            if (attempt > 0 && screen == last)
             {
                 return;
             }
 
-            last = now;
+            last = screen;
         }
     }
 
@@ -362,11 +362,11 @@ internal static class Live
             return "";
         }
 
-        var found = process.StandardOutput.ReadToEnd().Trim();
+        var output = process.StandardOutput.ReadToEnd().Trim();
         process.StandardError.ReadToEnd();
         process.WaitForExit();
 
-        return process.ExitCode == 0 ? found : "";
+        return process.ExitCode == 0 ? output : "";
     }
 
     /// <summary>What the terminal says about itself.</summary>

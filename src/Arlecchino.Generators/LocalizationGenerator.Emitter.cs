@@ -11,12 +11,12 @@ public sealed partial class LocalizationGenerator
     /// Writes the enum of names and the function that resolves them. A string is a <c>switch</c> arm rather
     /// than a dictionary entry, since the set is closed at compile time.
     /// </summary>
-    /// <param name="where">The namespace to put it in.</param>
+    /// <param name="namespaceName">The namespace to put it in.</param>
     /// <param name="standard">The default localization.</param>
     /// <param name="localizations">Every localization, the default included.</param>
     /// <returns>The source to compile.</returns>
     private static string BuildSource(
-        string where,
+        string namespaceName,
         LocalizationFile standard,
         IReadOnlyList<LocalizationFile> localizations)
     {
@@ -37,7 +37,7 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("using Arlecchino.Input;");
         source.AppendLine("using Arlecchino.Navigation;");
         source.AppendLine();
-        source.Append("namespace ").Append(where).AppendLine(";");
+        source.Append("namespace ").Append(namespaceName).AppendLine(";");
         source.AppendLine();
         source.AppendLine("/// <summary>Every piece of text this application draws, by name.</summary>");
         source.AppendLine("public enum LocString : ushort");

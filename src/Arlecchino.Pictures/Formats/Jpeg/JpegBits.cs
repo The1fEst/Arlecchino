@@ -16,7 +16,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
 
     private readonly ReadOnlySpan<byte> _bytes = bytes;
     private int _at = at;
-    private ulong _held;
+    private ulong _register;
     private int _count;
     private bool _spent;
 
@@ -66,7 +66,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
             Fill();
         }
 
-        return (int)(_held >> (Register - count));
+        return (int)(_register >> (Register - count));
     }
 
     /// <summary>Steps over bits that have been looked at.</summary>
@@ -74,7 +74,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void Skip(int count)
     {
-        _held <<= count;
+        _register <<= count;
         _count -= count;
 
         if (_count < 0)
@@ -89,7 +89,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
     /// </summary>
     internal void Restart()
     {
-        _held = 0;
+        _register = 0;
         _count = 0;
         _spent = false;
 
@@ -126,9 +126,9 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
     /// <returns><c>true</c> when one of them needs looking at.</returns>
     private static bool Marked(ulong eight)
     {
-        var flipped = ~eight;
+        var inverse = ~eight;
 
-        return ((flipped - 0x0101010101010101UL) & ~flipped & 0x8080808080808080UL) != 0;
+        return ((inverse - 0x0101010101010101UL) & ~inverse & 0x8080808080808080UL) != 0;
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
             {
                 var room = (Register - _count) / 8 * 8;
 
-                _held |= (eight >> (Register - room)) << (Register - _count - room);
+                _register |= (eight >> (Register - room)) << (Register - _count - room);
                 _count += room;
                 _at += room / 8;
 
@@ -187,7 +187,7 @@ internal ref struct JpegBits(ReadOnlySpan<byte> bytes, int at)
                 _at++;
             }
 
-            _held |= (ulong)value << (Register - 8 - _count);
+            _register |= (ulong)value << (Register - 8 - _count);
             _count += 8;
         }
     }

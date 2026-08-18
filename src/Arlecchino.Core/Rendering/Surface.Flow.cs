@@ -32,21 +32,21 @@ public partial class Surface
 
         var left = HorizontalPadding + margin.Left;
         var contentWidth = Math.Max(0, _width - left - HorizontalPadding - margin.Right);
-        var clipped = TextWidth.Truncate(line, contentWidth);
+        var clippedLine = TextWidth.Truncate(line, contentWidth);
         var offset = 0;
 
         if (align.HasFlag(Align.Center))
         {
-            offset = Math.Max(0, (contentWidth - TextWidth.Of(clipped)) / 2);
+            offset = Math.Max(0, (contentWidth - TextWidth.Of(clippedLine)) / 2);
         }
         else if (align.HasFlag(Align.Right))
         {
-            offset = Math.Max(0, contentWidth - TextWidth.Of(clipped));
+            offset = Math.Max(0, contentWidth - TextWidth.Of(clippedLine));
         }
 
         var row = _lines++;
         WriteLineAt(row, "", style);
-        WriteAt(row, left + offset, clipped, style);
+        WriteAt(row, left + offset, clippedLine, style);
 
         for (var i = 0; i < margin.Bottom; i++)
         {

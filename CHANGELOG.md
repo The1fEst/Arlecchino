@@ -12,6 +12,67 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.8.5
+
+A release about names. Nothing here changes what the framework does; what changes is what its members
+are called. A name that says what a thing is costs nothing to read, and one that says what was done to
+it — `Selected` for an index, `Muted` for a color, `Since` for a moment — costs a release to correct, so
+they are corrected together rather than a few at a time. Every break below is a rename: the type, the
+shape and the meaning are what they were, and the compiler names the member that moved.
+
+### Changed
+
+- **A selection index is `SelectedIndex`.** `ListBox<T>`, `Table<T>`, `Tabs`, `Tree<T>` and `Form` all
+  called it `Selected`, which reads as the item rather than as where the item sits — and `Table<T>` has a
+  `SelectedRow` beside it, which is the row. The pair now says which is which:
+
+  ```csharp
+  var list = new ListBox<string>(keymap) { Items = items, SelectedIndex = 4 };
+  ```
+
+  The same word wherever it stood for a place in a list: `ScrollWindow.Around(int selectedIndex, …)`,
+  `TextCompleter.ChosenIndex`, and `Table<T>.SortedColumn` for what was `SortedBy` — an index of a
+  column, not the order the rows are in.
+
+- **The color of a selection is `Selection`, and the quiet one is `Secondary`.** `Theme.Selected` and
+  `Theme.ActiveSelected` are `Theme.Selection` and `Theme.ActiveSelection`, and the same two on
+  `ThemePalette`; `EntryLook.Selected` is `EntryLook.Selection`. `Muted` says how a color was made rather
+  than what it is for, so the role it fills names it: `Theme.Secondary`, `ThemePalette.Secondary`.
+
+- **What a key typed is its `Character`, and what a handler is handed is a `press`.** `KeyStroke.Typed`
+  and `KeyBinding.Typed` are `Character`, as is the constructor parameter behind them, matching the
+  `KeyPress.Character` they are compared against. `Matches`, `Opens`, `Closes`, `CommandRegistry.Send`
+  and `CommandRegistry.TryFind` take `press` rather than `pressed`, which named nothing.
+
+- **A notification says when it was raised and how far along it is.** `Notification.Since` is `RaisedAt`,
+  the moment the timeouts are counted from; `Filled()` is `Fraction()`, which is what `Indicators` and
+  `Charts` call the same number.
+
+- **The choices of a multi-choice modal are `SelectedKeys`.** `MultiChoiceModal.Selected` held keys, not
+  options, and now says so; `IsSelected` and `Toggle` take a `choice`, `OptionListModal.Take` takes one
+  too, and `ArlecchinoState.RequestMultiChoice` takes `selectedKeys`. `RequestConfirmation` names its
+  callback `onYes`, for the answer that runs it.
+
+- **What stands on either side of a completion is `Prefix` and `Suffix`.** `CompletionAsk.Before` and
+  `CompletionAsk.After` said where the text was rather than what it was.
+
+- **A size is a size and a timeout is a timeout.** `Margin(int size)` and `SurfaceRegion.Inset(int size)`
+  where both said `all`; `Joinery.Draw(SurfaceRegion region, …)` where it said `into`; and
+  `TerminalProbe.Ask(terminal, TimeSpan timeout)` where it said `within`.
+
+- **The string for a terminal too small is `TerminalMinimum`.** `ArlecchinoStrings.TerminalNeeded` named
+  the complaint rather than the number it carries.
+
+- **A fake terminal hands back `WrittenText` and `CopiedText`.** `FakeTerminal.Written` and
+  `FakeTerminal.Copied` read as questions about whether anything happened. (`Arlecchino.Testing`)
+
+- **Picture limits are counted in pixels.** `PictureLimits.Most` and `PictureLimits.Enough` are
+  `MostPixels` and `EnoughPixels`, positionally as well, so a call written out reads as the two counts it
+  is. (`Arlecchino.Pictures`)
+
+Everything else the sweep touched is inside the packages — locals, fields and the parameters of members
+no caller can see — and needs nothing from an application.
+
 ## 2026.8.4
 
 A fix to what `2026.8.3` added, and nothing else. Take it if you took that one.

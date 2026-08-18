@@ -14,26 +14,26 @@ public class StateBenchmarks
 
     private readonly List<IDisposable> _subscriptions = [];
     private readonly LocalAtom<int> _plain = new(0);
-    private readonly TrackedAtom<int> _tracked = new(0);
-    private readonly LocalAtom<int> _watched = new(0);
+    private readonly TrackedAtom<int> _trackedAtom = new(0);
+    private readonly LocalAtom<int> _watchedAtom = new(0);
     private readonly LocalAtom<string> _first = new("first");
     private readonly LocalAtom<string> _second = new("second");
 
     private AtomHistory _history = null!;
-    private Computed<int> _computed = null!;
+    private Computed<int> _computedAtom = null!;
     private int _next;
-    private int _notified;
+    private int _notifications;
 
     [GlobalSetup]
     public void Setup()
     {
         _history = new() { Capacity = 1000 };
-        _computed = new(() => _first.Value.Length + _second.Value.Length);
-        _ = _computed.Value;
+        _computedAtom = new(() => _first.Value.Length + _second.Value.Length);
+        _ = _computedAtom.Value;
 
         for (var subscriber = 0; subscriber < Subscribers; subscriber++)
         {
-            _subscriptions.Add(_watched.Subscribe(() => _notified++));
+            _subscriptions.Add(_watchedAtom.Subscribe(() => _notifications++));
         }
     }
 
@@ -66,31 +66,31 @@ public class StateBenchmarks
     [Benchmark(Description = "Write an atom 20 things listen to")]
     public int WriteWatched()
     {
-        _watched.Value = _next++;
-        return _notified;
+        _watchedAtom.Value = _next++;
+        return _notifications;
     }
 
     [Benchmark(Description = "Write an atom that records history")]
     public int WriteTracked()
     {
-        _tracked.Value = _next++;
+        _trackedAtom.Value = _next++;
         return _history.Depth;
     }
 
     [Benchmark(Description = "Read a computed value that did not change")]
-    public int ReadComputedCached() => _computed.Value;
+    public int ReadComputedCached() => _computedAtom.Value;
 
     [Benchmark(Description = "Read a computed value after a dependency changed")]
     public int ReadComputedInvalidated()
     {
         _first.Value = _next++ % 2 == 0 ? "first" : "another first";
-        return _computed.Value;
+        return _computedAtom.Value;
     }
 
     [Benchmark(Description = "Undo and redo one edit")]
     public bool UndoRedo()
     {
-        _tracked.Value = _next++;
+        _trackedAtom.Value = _next++;
         _history.Undo();
         return _history.Redo();
     }

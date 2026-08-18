@@ -61,11 +61,11 @@ internal sealed class PickerClicks
         switch (mouse.Action)
         {
             case MouseAction.ScrolledUp:
-                _table.Selected = Math.Max(0, _table.Selected - 1);
+                _table.SelectedIndex = Math.Max(0, _table.SelectedIndex - 1);
 
                 return ViewRoute.None;
             case MouseAction.ScrolledDown:
-                _table.Selected = Math.Min(Math.Max(0, entries.Count - 1), _table.Selected + 1);
+                _table.SelectedIndex = Math.Min(Math.Max(0, entries.Count - 1), _table.SelectedIndex + 1);
 
                 return ViewRoute.None;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left:
@@ -82,9 +82,9 @@ internal sealed class PickerClicks
             return ViewRoute.None;
         }
 
-        var wasSelected = index == _table.Selected;
+        var wasSelected = index == _table.SelectedIndex;
 
-        _table.Selected = index;
+        _table.SelectedIndex = index;
 
         return wasSelected ? _open(entries[index]) : ViewRoute.None;
     }

@@ -228,7 +228,7 @@ public sealed class ArlecchinoStrings
     public Func<int, int, string> TerminalSize { get; set; } = static (width, height) => $"{width} x {height}";
 
     /// <summary>Introduces the required size in that notice.</summary>
-    public Func<string> TerminalNeeded { get; set; } = static () => "needed at least";
+    public Func<string> TerminalMinimum { get; set; } = static () => "needed at least";
 
     /// <summary>Text of the file picker, which has enough of its own to be grouped separately.</summary>
     public FilePickerStrings FilePicker { get; set; } = new();

@@ -131,14 +131,14 @@ public sealed class ChordTests
     [Fact]
     public void ReplacingAModifierRewritesBothHalvesOfAChord()
     {
-        var moved = new KeyBinding(ConsoleKey.X, KeyModifiers.Alt)
+        var press = new KeyBinding(ConsoleKey.X, KeyModifiers.Alt)
             .AddAlternative(ConsoleKey.Y, KeyModifiers.Alt)
             .ThenKey(ConsoleKey.T, KeyModifiers.Alt)
             .Replacing(KeyModifiers.Alt, KeyModifiers.Super);
 
-        Assert.Equal(KeyModifiers.Super, moved.Modifiers);
-        Assert.Equal(KeyModifiers.Super, Assert.Single(moved.Alternatives).Modifiers);
-        Assert.Equal(KeyModifiers.Super, moved.Second?.Modifiers);
+        Assert.Equal(KeyModifiers.Super, press.Modifiers);
+        Assert.Equal(KeyModifiers.Super, Assert.Single(press.Alternatives).Modifiers);
+        Assert.Equal(KeyModifiers.Super, press.Second?.Modifiers);
     }
 
     [Fact]

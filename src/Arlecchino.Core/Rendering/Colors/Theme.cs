@@ -44,7 +44,7 @@ public static class Theme
     public static TermColor Info => Palette.Info;
 
     /// <summary>Secondary text: hints, footers, disabled rows.</summary>
-    public static TermColor Muted => Palette.Muted;
+    public static TermColor Secondary => Palette.Secondary;
 
     /// <summary>The editable part of a text field.</summary>
     public static TermColor Input => Palette.Input;
@@ -53,13 +53,13 @@ public static class Theme
     public static TermColor Caret => Palette.Caret;
 
     /// <summary>The row under the cursor while its pane is not focused.</summary>
-    public static TermColor Selected => Palette.Selected;
+    public static TermColor Selection => Palette.Selection;
 
     /// <summary>Something switched on, such as an enabled action.</summary>
     public static TermColor Active => Palette.Active;
 
     /// <summary>The row under the cursor in the focused pane.</summary>
-    public static TermColor ActiveSelected => Palette.ActiveSelected;
+    public static TermColor ActiveSelection => Palette.ActiveSelection;
 
     /// <summary>Something the user should notice, such as the output line.</summary>
     public static TermColor Warning => Palette.Warning;

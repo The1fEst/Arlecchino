@@ -13,13 +13,13 @@ public sealed class PnmTests
     public void ColoursAreReadAsBytesOrAsNumbers()
     {
         var raw = Read(Written("P6\n2 1\n255\n", [255, 0, 0, 0, 255, 0]));
-        var written = Read(Written("P3\n2 1\n255\n255 0 0 0 255 0\n"));
+        var output = Read(Written("P3\n2 1\n255\n255 0 0 0 255 0\n"));
 
         Assert.NotNull(raw);
-        Assert.NotNull(written);
+        Assert.NotNull(output);
         Assert.Equal(new(255, 0, 0), raw.Pixels[0]);
         Assert.Equal(new(0, 255, 0), raw.Pixels[1]);
-        Assert.Equal(raw.Pixels, written.Pixels);
+        Assert.Equal(raw.Pixels, output.Pixels);
     }
 
     [Fact]
@@ -36,14 +36,14 @@ public sealed class PnmTests
     [Fact]
     public void ASetBitIsBlack()
     {
-        var packed = Read(Written("P4\n2 1\n", [0b0100_0000]));
-        var written = Read(Written("P1\n2 1\n0 1\n"));
+        var body = Read(Written("P4\n2 1\n", [0b0100_0000]));
+        var output = Read(Written("P1\n2 1\n0 1\n"));
 
-        Assert.NotNull(packed);
-        Assert.NotNull(written);
-        Assert.Equal(new(255, 255, 255), packed.Pixels[0]);
-        Assert.Equal(new(0, 0, 0), packed.Pixels[1]);
-        Assert.Equal(packed.Pixels, written.Pixels);
+        Assert.NotNull(body);
+        Assert.NotNull(output);
+        Assert.Equal(new(255, 255, 255), body.Pixels[0]);
+        Assert.Equal(new(0, 0, 0), body.Pixels[1]);
+        Assert.Equal(body.Pixels, output.Pixels);
     }
 
     /// <summary>A comment runs to the end of its line and may stand anywhere a space may.</summary>

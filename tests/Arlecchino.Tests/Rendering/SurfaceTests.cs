@@ -27,7 +27,7 @@ public sealed class SurfaceTests
     private static string[] Render(Surface surface, FakeTerminal terminal)
     {
         surface.Build();
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 
     [Fact]

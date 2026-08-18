@@ -16,7 +16,7 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
 
     private readonly ArlecchinoKeymap _keymap;
 
-    private SurfaceRegion _drawn;
+    private SurfaceRegion _drawnRegion;
     private int _offset;
 
     /// <summary>Creates the pane.</summary>
@@ -57,7 +57,7 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
     /// <returns>An empty region: the pane uses every row it is handed.</returns>
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        _drawn = region;
+        _drawnRegion = region;
 
         if (region.IsEmpty)
         {
@@ -130,7 +130,7 @@ public sealed class ScrollPane : IArlecchinoInteractiveWidget
     /// <returns>Whether the pane took it.</returns>
     public FocusResult HandleMouse(MouseEvent mouse)
     {
-        if (_drawn.IsEmpty || !_drawn.Contains(mouse.Row, mouse.Column))
+        if (_drawnRegion.IsEmpty || !_drawnRegion.Contains(mouse.Row, mouse.Column))
         {
             return FocusResult.Ignored;
         }

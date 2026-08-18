@@ -51,10 +51,10 @@ internal sealed class ListKeys
 
         if (_keymap.Confirm.Matches(key) && matching.Count > 0)
         {
-            var picked = matching[Math.Clamp(modal.Index, 0, matching.Count - 1)];
+            var option = matching[Math.Clamp(modal.Index, 0, matching.Count - 1)];
 
             _state.CloseModal();
-            modal.OnPicked(picked);
+            modal.OnPicked(option);
 
             return;
         }
@@ -85,10 +85,10 @@ internal sealed class ListKeys
 
         if (_keymap.Confirm.Matches(key))
         {
-            var picked = modal.SelectedInOptionOrder();
+            var option = modal.SelectedInOptionOrder();
 
             _state.CloseModal();
-            modal.OnSubmit(picked);
+            modal.OnSubmit(option);
 
             return;
         }

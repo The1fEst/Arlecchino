@@ -32,7 +32,7 @@ internal sealed class HelpView : IArlecchinoView
     private readonly ScrollPane _pane;
     private readonly List<Row> _everywhere = [];
     private readonly List<Row> _screen = [];
-    private readonly List<Row> _registered = [];
+    private readonly List<Row> _registeredRows = [];
 
     private int _column;
     private bool _doubled;
@@ -65,7 +65,7 @@ internal sealed class HelpView : IArlecchinoView
         var (header, rest) = content.SplitTop(2);
 
         header.WriteLine(0, _strings.HelpTitle(), Theme.Header);
-        header.WriteLine(1, $"{_keymap.Cancel} {_strings.HelpClose()}", Theme.Muted);
+        header.WriteLine(1, $"{_keymap.Cancel} {_strings.HelpClose()}", Theme.Secondary);
 
         Build();
 
@@ -94,7 +94,7 @@ internal sealed class HelpView : IArlecchinoView
         (_keymap.Cancel.ToString(), _strings.HelpClose()),
     ];
 
-    private int Height() => Above() + 1 + _registered.Count;
+    private int Height() => Above() + 1 + _registeredRows.Count;
 
     private int Above() => _doubled
         ? Math.Max(_everywhere.Count, _screen.Count)
@@ -102,7 +102,7 @@ internal sealed class HelpView : IArlecchinoView
 
     private void Paint(SurfaceRegion region)
     {
-        var above = Above();
+        var dividerRow = Above();
 
         if (_doubled)
         {
@@ -115,8 +115,8 @@ internal sealed class HelpView : IArlecchinoView
             Write(region, _screen, _everywhere.Count + 1, 0);
         }
 
-        region.WriteLine(above, new('─', region.Width), Theme.Muted);
-        Write(region, _registered, above + 1, 0);
+        region.WriteLine(dividerRow, new('─', region.Width), Theme.Secondary);
+        Write(region, _registeredRows, dividerRow + 1, 0);
     }
 
     private void Write(SurfaceRegion region, List<Row> rows, int top, int column)
@@ -135,7 +135,7 @@ internal sealed class HelpView : IArlecchinoView
     {
         _everywhere.Clear();
         _screen.Clear();
-        _registered.Clear();
+        _registeredRows.Clear();
 
         _everywhere.Add(new(_strings.HelpFrameworkSection(), true));
 
@@ -154,17 +154,17 @@ internal sealed class HelpView : IArlecchinoView
             }
         }
 
-        _registered.Add(new(_strings.HelpCommandsSection(), true));
+        _registeredRows.Add(new(_strings.HelpCommandsSection(), true));
 
         if (_commands.Commands.Count == 0)
         {
-            _registered.Add(new(Line("", _strings.HelpNoCommands()), false));
+            _registeredRows.Add(new(Line("", _strings.HelpNoCommands()), false));
             return;
         }
 
         foreach (var command in _commands.Commands)
         {
-            _registered.Add(new(Line(command.Binding.ToString(), $"{command.Icon} {command.Label}".TrimStart()), false));
+            _registeredRows.Add(new(Line(command.Binding.ToString(), $"{command.Icon} {command.Label}".TrimStart()), false));
         }
     }
 

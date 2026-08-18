@@ -15,9 +15,9 @@ public sealed class AtomsMapTests
     public void ChangingTheMapTellsWhoeverIsListening()
     {
         var sizes = new LocalAtomsMap<string, int>();
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = sizes.Subscribe(() => heard++);
+        using var subscription = sizes.Subscribe(() => changes++);
 
         sizes["alpha"] = 1;
         sizes["alpha"] = 2;
@@ -31,7 +31,7 @@ public sealed class AtomsMapTests
 
         sizes.Clear();
 
-        Assert.Equal(5, heard);
+        Assert.Equal(5, changes);
         Assert.Equal(0, sizes.Count);
         Assert.Empty(sizes.Value);
     }
@@ -55,20 +55,20 @@ public sealed class AtomsMapTests
     public void ChangingNothingNotifiesNobody()
     {
         var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = sizes.Subscribe(() => heard++);
+        using var subscription = sizes.Subscribe(() => changes++);
 
         sizes["alpha"] = 1;
         sizes.Remove("missing");
         sizes.Reset(new Dictionary<string, int> { ["alpha"] = 1 });
 
-        Assert.Equal(0, heard);
+        Assert.Equal(0, changes);
 
         sizes.Clear();
         sizes.Clear();
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
@@ -144,14 +144,14 @@ public sealed class AtomsMapTests
     public void TryingAndFailingChangesNothing()
     {
         var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = sizes.Subscribe(() => heard++);
+        using var subscription = sizes.Subscribe(() => changes++);
 
         Assert.False(sizes.TryAdd("alpha", 2));
         Assert.False(sizes.TryRemove("beta", out _));
 
-        Assert.Equal(0, heard);
+        Assert.Equal(0, changes);
     }
 
     [Fact]
@@ -238,21 +238,23 @@ public sealed class AtomsMapTests
     public void ATrackedMapGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var kept = new TrackedAtomsMap<string, int>();
+        var survivors = new TrackedAtomsMap<string, int>();
         var ignored = new LocalAtomsMap<string, int>();
+
+        Assert.False(history.CanUndo);
 
         ignored["nothing"] = 1;
 
         Assert.False(history.CanUndo);
 
-        kept["alpha"] = 1;
+        survivors["alpha"] = 1;
 
         Assert.True(history.CanUndo);
         Assert.True(history.Undo());
-        Assert.Empty(kept.Value);
+        Assert.Empty(survivors.Value);
 
         Assert.True(history.Redo());
-        Assert.Equal(1, kept["alpha"]);
+        Assert.Equal(1, survivors["alpha"]);
     }
 
     [Fact]
@@ -260,6 +262,8 @@ public sealed class AtomsMapTests
     {
         using var history = new AtomHistory();
         var sizes = new TrackedAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+
+        Assert.Equal(0, history.Depth);
 
         sizes["beta"] = 2;
         sizes["alpha"] = 10;
@@ -309,9 +313,9 @@ public sealed class AtomsMapTests
 
         using var drawing = FrameThread.Claim();
 
-        var thrown = Refused(() => sizes["alpha"] = 1);
+        var failure = Refused(() => sizes["alpha"] = 1);
 
-        Assert.Contains("LocalAtomsMap`2", thrown.Message, StringComparison.Ordinal);
+        Assert.Contains("LocalAtomsMap`2", failure.Message, StringComparison.Ordinal);
         Assert.Empty(sizes.Value);
     }
 
@@ -341,6 +345,8 @@ public sealed class AtomsMapTests
     {
         var names = new LocalAtomsMap<int, string>();
 
+        Assert.Empty(names.Value);
+
         names[1] = "alpha";
 
         Assert.Equal(1, names.Count);
@@ -352,6 +358,8 @@ public sealed class AtomsMapTests
     {
         using var history = new AtomHistory();
         var names = new TrackedAtomsMap<int, string?>(new Dictionary<int, string?> { [1] = null });
+
+        Assert.Null(names[1]);
 
         names[1] = "alpha";
 
@@ -365,7 +373,7 @@ public sealed class AtomsMapTests
 
     private static InvalidOperationException Refused(Action change)
     {
-        Exception? thrown = null;
+        Exception? failure = null;
 
         var changing = new Thread(() =>
         {
@@ -375,13 +383,13 @@ public sealed class AtomsMapTests
             }
             catch (Exception exception)
             {
-                thrown = exception;
+                failure = exception;
             }
         });
 
         changing.Start();
         changing.Join();
 
-        return Assert.IsType<InvalidOperationException>(thrown);
+        return Assert.IsType<InvalidOperationException>(failure);
     }
 }

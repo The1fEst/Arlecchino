@@ -82,7 +82,7 @@ internal sealed class FilePickerView : IArlecchinoView
         _panes.Add(_listPane);
         _panes.Add(_placesPane);
 
-        _table.Selected = _listing.IndexOf(_request.InitialPath) is var row and >= 0 ? row : 0;
+        _table.SelectedIndex = _listing.IndexOf(_request.InitialPath) is var row and >= 0 ? row : 0;
         _places.SyncTo(_listing.Folder);
     }
 
@@ -101,8 +101,8 @@ internal sealed class FilePickerView : IArlecchinoView
         _chrome.Toolbar(toolbar, _listing.Folder, _listing.Filter);
 
         var (browser, status) = rest.SplitTop(rest.Height - 2);
-        var inside = browser.Border(Theme.Muted);
-        var (sidebar, list) = inside.SplitLeft(SidebarWidth);
+        var content = browser.Border(Theme.Secondary);
+        var (sidebar, list) = content.SplitLeft(SidebarWidth);
 
         _placesRows = sidebar;
         _listRows = list.Inset(new Margin(1, 1, 0, 0));
@@ -197,7 +197,7 @@ internal sealed class FilePickerView : IArlecchinoView
 
         _listing.GoTo(entry.FullPath);
         _places.SyncTo(_listing.Folder);
-        _table.Selected = 0;
+        _table.SelectedIndex = 0;
 
         return ViewRoute.None;
     }

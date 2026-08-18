@@ -69,7 +69,7 @@ static void Frame(string view, string size)
 
         if (rows.Count > 0)
         {
-            processes.Selected.Value = rows[0];
+            processes.SelectedRow.Value = rows[0];
         }
 
         navigator.Apply(ViewKind.Details);

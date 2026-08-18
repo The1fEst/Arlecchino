@@ -43,9 +43,9 @@ public sealed class Bmp : IPictureFormat
             return null;
         }
 
-        var told = header.Value;
+        var info = header.Value;
 
-        if (told.Width <= 0 || told.Height <= 0 || (long)told.Width * told.Height > limits.Most)
+        if (info.Width <= 0 || info.Height <= 0 || (long)info.Width * info.Height > limits.MostPixels)
         {
             return null;
         }
@@ -55,11 +55,11 @@ public sealed class Bmp : IPictureFormat
             return null;
         }
 
-        var palette = Palette(bytes, told, size);
+        var palette = Palette(bytes, info, size);
 
-        return told.Compression is 1 or 2
-            ? BmpPacked.Read(bytes, told, palette, offset)
-            : BmpRows.Read(bytes, told, palette, offset);
+        return info.Compression is 1 or 2
+            ? BmpPacked.Read(bytes, info, palette, offset)
+            : BmpRows.Read(bytes, info, palette, offset);
     }
 
     /// <summary>Reads the header a bitmap has had since Windows 3, and the versions that extend it.</summary>
@@ -134,10 +134,10 @@ public sealed class Bmp : IPictureFormat
 
         var entry = size == Core ? 3 : 4;
         var at = FileHeader + size;
-        var counted = header.Used > 0 ? header.Used : 1 << header.Bits;
-        var colors = new byte[counted * 3];
+        var entries = header.Used > 0 ? header.Used : 1 << header.Bits;
+        var colors = new byte[entries * 3];
 
-        for (var index = 0; index < counted; index++)
+        for (var index = 0; index < entries; index++)
         {
             var from = at + (index * entry);
 

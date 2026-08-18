@@ -36,42 +36,42 @@ public sealed class PicturesView : IArlecchinoView
         _picture.Draw(left.Border(Theme.Info, $"{_picture.PixelWidth}×{_picture.PixelHeight} pixels"));
 
         var notes = right.Border(Theme.Info, "how").Flow();
-        var asked = Protocol();
-        var drawn = TerminalCapabilities.Resolve(asked);
+        var size = Protocol();
+        var image = TerminalCapabilities.Resolve(size);
 
-        notes.AppendLine(asked == drawn ? $"drawn as {drawn}" : $"{asked} → {drawn}", Theme.Accent);
+        notes.AppendLine(size == image ? $"drawn as {image}" : $"{size} → {image}", Theme.Accent);
         notes.SkipLine();
-        notes.AppendLine("The terminal says:", Theme.Muted);
-        notes.AppendLine($"  sixel {Said(TerminalCapabilities.Sixel)}", Theme.Muted);
-        notes.AppendLine($"  kitty {Said(TerminalCapabilities.Kitty)}", Theme.Muted);
+        notes.AppendLine("The terminal says:", Theme.Secondary);
+        notes.AppendLine($"  sixel {Said(TerminalCapabilities.Sixel)}", Theme.Secondary);
+        notes.AppendLine($"  kitty {Said(TerminalCapabilities.Kitty)}", Theme.Secondary);
         notes.AppendLine(
             $"  cell {Glyphs.CellWidth}x{Glyphs.CellHeight} " +
             (TerminalCapabilities.CellSizeKnown ? "reported" : "guessed"),
-            Theme.Muted);
+            Theme.Secondary);
 
         notes.AppendLine(
             $"  behind {TerminalCapabilities.Background?.Hex ?? "unknown"}",
-            Theme.Muted);
+            Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("p walks the four.", Theme.Muted);
+        notes.AppendLine("p walks the four.", Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("Blocks work in every", Theme.Muted);
-        notes.AppendLine("terminal: two pixels", Theme.Muted);
-        notes.AppendLine("to a cell, upper half", Theme.Muted);
-        notes.AppendLine("block over background.", Theme.Muted);
+        notes.AppendLine("Blocks work in every", Theme.Secondary);
+        notes.AppendLine("terminal: two pixels", Theme.Secondary);
+        notes.AppendLine("to a cell, upper half", Theme.Secondary);
+        notes.AppendLine("block over background.", Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("Sixel: Windows Terminal,", Theme.Muted);
-        notes.AppendLine("xterm, foot, WezTerm.", Theme.Muted);
-        notes.AppendLine("256 colors taken from", Theme.Muted);
-        notes.AppendLine("the picture. Measured", Theme.Muted);
-        notes.AppendLine("in pixels, not cells.", Theme.Muted);
+        notes.AppendLine("Sixel: Windows Terminal,", Theme.Secondary);
+        notes.AppendLine("xterm, foot, WezTerm.", Theme.Secondary);
+        notes.AppendLine("256 colors taken from", Theme.Secondary);
+        notes.AppendLine("the picture. Measured", Theme.Secondary);
+        notes.AppendLine("in pixels, not cells.", Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("Kitty: kitty, WezTerm,", Theme.Muted);
-        notes.AppendLine("Ghostty. Full color.", Theme.Muted);
+        notes.AppendLine("Kitty: kitty, WezTerm,", Theme.Secondary);
+        notes.AppendLine("Ghostty. Full color.", Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("A terminal that cannot", Theme.Muted);
-        notes.AppendLine("speak one shows the", Theme.Muted);
-        notes.AppendLine("escape as text.", Theme.Muted);
+        notes.AppendLine("A terminal that cannot", Theme.Secondary);
+        notes.AppendLine("speak one shows the", Theme.Secondary);
+        notes.AppendLine("escape as text.", Theme.Secondary);
     }
 
     public ViewRoute Handle(KeyPress key)
@@ -117,7 +117,7 @@ public sealed class PicturesView : IArlecchinoView
     private static (Rgb[] Pixels, int Width, int Height) Png(Stream stream)
     {
         using var reader = new BinaryReader(stream);
-        using var deflated = new MemoryStream();
+        using var pixelData = new MemoryStream();
 
         reader.ReadBytes(8);
 
@@ -140,7 +140,7 @@ public sealed class PicturesView : IArlecchinoView
 
             if (kind == "IDAT")
             {
-                deflated.Write(chunk);
+                pixelData.Write(chunk);
                 continue;
             }
 
@@ -160,38 +160,38 @@ public sealed class PicturesView : IArlecchinoView
             }
         }
 
-        deflated.Position = 0;
+        pixelData.Position = 0;
 
-        return Unfilter(deflated, width, height, channels);
+        return Unfilter(pixelData, width, height, channels);
     }
 
     private static (Rgb[] Pixels, int Width, int Height) Unfilter(
-        Stream deflated,
+        Stream stream,
         int width,
         int height,
         int channels)
     {
-        using var inflate = new ZLibStream(deflated, CompressionMode.Decompress);
+        using var inflate = new ZLibStream(stream, CompressionMode.Decompress);
 
         var stride = width * channels;
         var raw = new byte[(stride + 1) * height];
-        var read = 0;
+        var at = 0;
 
-        while (read < raw.Length)
+        while (at < raw.Length)
         {
-            var got = inflate.Read(raw, read, raw.Length - read);
+            var count = inflate.Read(raw, at, raw.Length - at);
 
-            if (got == 0)
+            if (count == 0)
             {
                 throw new InvalidOperationException("the PNG ended before its pixels did");
             }
 
-            read += got;
+            at += count;
         }
 
         var pixels = new Rgb[width * height];
         var line = new byte[stride];
-        var above = new byte[stride];
+        var previousRow = new byte[stride];
 
         for (var row = 0; row < height; row++)
         {
@@ -199,17 +199,17 @@ public sealed class PicturesView : IArlecchinoView
 
             Array.Copy(raw, (row * (stride + 1)) + 1, line, 0, stride);
 
-            for (var at = 0; at < stride; at++)
+            for (var index = 0; index < stride; index++)
             {
-                var left = at >= channels ? line[at - channels] : 0;
-                var corner = at >= channels ? above[at - channels] : 0;
+                var left = index >= channels ? line[index - channels] : 0;
+                var corner = index >= channels ? previousRow[index - channels] : 0;
 
-                line[at] += filter switch
+                line[index] += filter switch
                 {
                     1 => (byte)left,
-                    2 => above[at],
-                    3 => (byte)((left + above[at]) / 2),
-                    4 => Paeth(left, above[at], corner),
+                    2 => previousRow[index],
+                    3 => (byte)((left + previousRow[index]) / 2),
+                    4 => Paeth(left, previousRow[index], corner),
                     _ => 0,
                 };
             }
@@ -222,20 +222,20 @@ public sealed class PicturesView : IArlecchinoView
                     line[(column * channels) + 2]);
             }
 
-            Array.Copy(line, above, stride);
+            Array.Copy(line, previousRow, stride);
         }
 
         return (pixels, width, height);
     }
 
-    private static byte Paeth(int left, int above, int corner)
+    private static byte Paeth(int left, int previousRow, int corner)
     {
-        var guess = left + above - corner;
+        var guess = left + previousRow - corner;
         var toLeft = Math.Abs(guess - left);
-        var toAbove = Math.Abs(guess - above);
+        var toPrevious = Math.Abs(guess - previousRow);
         var toCorner = Math.Abs(guess - corner);
 
-        return (byte)(toLeft <= toAbove && toLeft <= toCorner ? left : toAbove <= toCorner ? above : corner);
+        return (byte)(toLeft <= toPrevious && toLeft <= toCorner ? left : toPrevious <= toCorner ? previousRow : corner);
     }
 
     private static int BigEndian(ReadOnlySpan<byte> bytes) =>

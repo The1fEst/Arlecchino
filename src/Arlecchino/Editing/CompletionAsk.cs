@@ -13,8 +13,8 @@ public readonly record struct CompletionAsk(string Line, int Start, int Length)
     public string Word => Line.Substring(Start, Length);
 
     /// <summary>Whatever stands in front of the word.</summary>
-    public string Before => Line[..Start];
+    public string Prefix => Line[..Start];
 
     /// <summary>Whatever follows the caret, which finishing the word leaves where it is.</summary>
-    public string After => Line[(Start + Length)..];
+    public string Suffix => Line[(Start + Length)..];
 }

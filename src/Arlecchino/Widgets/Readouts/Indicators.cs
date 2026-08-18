@@ -49,10 +49,10 @@ public sealed class ProgressBar : IArlecchinoWidget
 
         var caption = Caption?.Invoke(Value) ?? "";
         var trackWidth = Math.Max(0, region.Width - (caption.Length == 0 ? 0 : TextWidth.Of(caption) + 1));
-        var filled = (int)Math.Round(Fraction * trackWidth);
+        var cells = (int)Math.Round(Fraction * trackWidth);
 
-        region.Write(0, 0, new(FilledCell, filled), Style ?? Theme.Active);
-        region.Write(0, filled, new(EmptyCell, Math.Max(0, trackWidth - filled)), Theme.Muted);
+        region.Write(0, 0, new(FilledCell, cells), Style ?? Theme.Active);
+        region.Write(0, cells, new(EmptyCell, Math.Max(0, trackWidth - cells)), Theme.Secondary);
 
         if (caption.Length > 0)
         {

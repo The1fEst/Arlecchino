@@ -50,11 +50,11 @@ public sealed class ModalStackTests
         app.State.PushModal(new TextModal { Title = "Above", OnSubmit = static _ => { } });
 
         var lines = app.FrameLines();
-        var below = Array.FindIndex(lines, line => line.Contains("Below", StringComparison.Ordinal));
-        var above = Array.FindIndex(lines, line => line.Contains("Above", StringComparison.Ordinal));
+        var lower = Array.FindIndex(lines, line => line.Contains("Below", StringComparison.Ordinal));
+        var upper = Array.FindIndex(lines, line => line.Contains("Above", StringComparison.Ordinal));
 
-        Assert.True(below >= 0);
-        Assert.True(above > below);
+        Assert.True(lower >= 0);
+        Assert.True(upper > lower);
     }
 
     [Fact]

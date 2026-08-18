@@ -12,7 +12,7 @@ namespace Arlecchino.Navigation;
 public sealed class ViewLifetime : IDisposable
 {
     private readonly CancellationTokenSource _closing = new();
-    private readonly List<IDisposable> _owned = [];
+    private readonly List<IDisposable> _ownedItems = [];
 
     private bool _closed;
 
@@ -59,7 +59,7 @@ public sealed class ViewLifetime : IDisposable
             return resource;
         }
 
-        _owned.Add(resource);
+        _ownedItems.Add(resource);
         return resource;
     }
 
@@ -81,10 +81,10 @@ public sealed class ViewLifetime : IDisposable
         _closed = true;
         _closing.Cancel();
 
-        var owned = _owned.ToArray();
-        _owned.Clear();
+        var ownedItems = _ownedItems.ToArray();
+        _ownedItems.Clear();
 
-        foreach (var resource in owned)
+        foreach (var resource in ownedItems)
         {
             resource.Dispose();
         }

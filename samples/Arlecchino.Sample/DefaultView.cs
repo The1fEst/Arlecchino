@@ -19,7 +19,7 @@ public sealed class DefaultView : IArlecchinoView
     private readonly CommandRegistry _commands;
     private readonly ViewCommand[] _own;
 
-    private int _selected;
+    private int _selectedIndex;
 
     public DefaultView(Surface surface, ArlecchinoState state, CommandRegistry commands)
     {
@@ -52,12 +52,12 @@ public sealed class DefaultView : IArlecchinoView
     {
         _surface.SkipLine();
         _surface.AppendLine("A R L E C C H I N O", Theme.Header, Align.Center);
-        _surface.AppendLine("a terminal UI framework", Theme.Muted, Align.Center, new(0, 0, 0, 2));
+        _surface.AppendLine("a terminal UI framework", Theme.Secondary, Align.Center, new(0, 0, 0, 2));
 
         for (var i = 0; i < _commands.Commands.Count; i++)
         {
             var command = _commands.Commands[i];
-            var style = i == _selected ? Theme.Selected : Theme.Info;
+            var style = i == _selectedIndex ? Theme.Selection : Theme.Info;
             _surface.AppendLine($"{command.Icon}  {command.Label,-24}{command.Binding}",
                 style,
                 Align.Center,
@@ -77,13 +77,13 @@ public sealed class DefaultView : IArlecchinoView
         switch (key.Key)
         {
             case ConsoleKey.UpArrow:
-                _selected = Math.Max(0, _selected - 1);
+                _selectedIndex = Math.Max(0, _selectedIndex - 1);
                 return ViewRoute.None;
             case ConsoleKey.DownArrow:
-                _selected = Math.Min(_commands.Commands.Count - 1, _selected + 1);
+                _selectedIndex = Math.Min(_commands.Commands.Count - 1, _selectedIndex + 1);
                 return ViewRoute.None;
             case ConsoleKey.Enter:
-                return _commands.Commands[_selected].Execute();
+                return _commands.Commands[_selectedIndex].Execute();
             default:
                 return ViewRoute.None;
         }
@@ -94,13 +94,13 @@ public sealed class DefaultView : IArlecchinoView
         switch (mouse.Action)
         {
             case MouseAction.ScrolledUp:
-                _selected = Math.Max(0, _selected - 1);
+                _selectedIndex = Math.Max(0, _selectedIndex - 1);
                 return ViewRoute.None;
             case MouseAction.ScrolledDown:
-                _selected = Math.Min(_commands.Commands.Count - 1, _selected + 1);
+                _selectedIndex = Math.Min(_commands.Commands.Count - 1, _selectedIndex + 1);
                 return ViewRoute.None;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left:
-                return _commands.Commands[_selected].Execute();
+                return _commands.Commands[_selectedIndex].Execute();
             default:
                 return ViewRoute.None;
         }

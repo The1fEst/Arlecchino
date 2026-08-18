@@ -21,7 +21,7 @@ public static class PictureFormats
     /// </summary>
     public const int DefaultPixels = 32 * 1024 * 1024;
 
-    private static readonly IPictureFormat[] Known =
+    private static readonly IPictureFormat[] Formats =
     [
         new Png(),
         new Jpeg(),
@@ -32,14 +32,14 @@ public static class PictureFormats
     ];
 
     /// <summary>Every format that is read, in the order a file is offered to them.</summary>
-    public static IReadOnlyList<IPictureFormat> All => Known;
+    public static IReadOnlyList<IPictureFormat> All => Formats;
 
     /// <summary>Which format the file is.</summary>
     /// <param name="head">The head of a file; the signatures are all short.</param>
     /// <returns>The format, or <c>null</c> when none of them claims it.</returns>
     public static IPictureFormat? For(ReadOnlySpan<byte> head)
     {
-        foreach (var format in Known)
+        foreach (var format in Formats)
         {
             if (format.Starts(head))
             {

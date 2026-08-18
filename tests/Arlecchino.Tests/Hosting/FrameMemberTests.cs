@@ -35,8 +35,8 @@ public sealed class FrameMemberTests
     [Fact]
     public void AnAtomIsNamedByTheTypeItTurnsOutToBeRatherThanTheBaseItIsCheckedIn()
     {
-        Atom<int> tracked = new TrackedAtom<int>(0);
+        Atom<int> atom = new TrackedAtom<int>(0);
 
-        Assert.Equal("Writing TrackedAtom`1", FrameMembers.Writing(tracked));
+        Assert.Equal("Writing TrackedAtom`1", FrameMembers.Writing(atom));
     }
 }

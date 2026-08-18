@@ -26,13 +26,13 @@ public sealed class PassthroughTests
         surface.Passthrough(1, 2, Payload);
         surface.Build();
 
-        var written = terminal.Written;
+        var output = terminal.WrittenText;
 
-        Assert.Contains(Payload, written, StringComparison.Ordinal);
+        Assert.Contains(Payload, output, StringComparison.Ordinal);
         Assert.True(
-            written.IndexOf("under", StringComparison.Ordinal) < written.IndexOf(Payload, StringComparison.Ordinal),
+            output.IndexOf("under", StringComparison.Ordinal) < output.IndexOf(Payload, StringComparison.Ordinal),
             "the cells are written before the payload");
-        Assert.Contains($"\e[2;3H{Payload}", written, StringComparison.Ordinal);
+        Assert.Contains($"\e[2;3H{Payload}", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class PassthroughTests
 
         Frame(surface, Payload);
 
-        Assert.DoesNotContain(Payload, terminal.Written, StringComparison.Ordinal);
+        Assert.DoesNotContain(Payload, terminal.WrittenText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public sealed class PassthroughTests
 
         Frame(surface, Other);
 
-        Assert.Contains(Other, terminal.Written, StringComparison.Ordinal);
+        Assert.Contains(Other, terminal.WrittenText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public sealed class PassthroughTests
         surface.StartFrame();
         surface.Build();
 
-        Assert.DoesNotContain(Payload, terminal.Written, StringComparison.Ordinal);
+        Assert.DoesNotContain(Payload, terminal.WrittenText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public sealed class PassthroughTests
         surface.Passthrough(0, 0, "");
         surface.Build();
 
-        Assert.Equal("", FrameText.WithoutStyles(terminal.Written).Trim());
+        Assert.Equal("", FrameText.WithoutStyles(terminal.WrittenText).Trim());
     }
 
     private static void Frame(Surface surface, string payload)

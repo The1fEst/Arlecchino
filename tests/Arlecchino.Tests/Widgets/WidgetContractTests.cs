@@ -61,8 +61,7 @@ public sealed class WidgetContractTests
         var offenders = new List<string>();
 
         foreach (var type in typeof(IArlecchinoWidget).Assembly.GetTypes()
-                     .Where(static type => type.IsClass &&
-                                           !type.IsAbstract &&
+                     .Where(static type => type is { IsClass: true, IsAbstract: false } &&
                                            typeof(IArlecchinoWidget).IsAssignableFrom(type)))
         {
             var extra = type
@@ -83,8 +82,7 @@ public sealed class WidgetContractTests
         var offenders = new List<string>();
 
         foreach (var type in typeof(IArlecchinoWidget).Assembly.GetTypes()
-                     .Where(static type => type.IsClass &&
-                                           !type.IsAbstract &&
+                     .Where(static type => type is { IsClass: true, IsAbstract: false } &&
                                            typeof(IArlecchinoWidget).IsAssignableFrom(type)))
         {
             var draw = type.GetMethod(
@@ -115,7 +113,7 @@ public sealed class WidgetContractTests
 
         surface.Build();
 
-        Assert.StartsWith("drawn", FrameText.Lines(terminal.Written)[0], StringComparison.Ordinal);
+        Assert.StartsWith("drawn", FrameText.Lines(terminal.WrittenText)[0], StringComparison.Ordinal);
         Assert.Equal(1, rest.Top);
         Assert.Equal(3, rest.Height);
     }
@@ -174,7 +172,7 @@ public sealed class WidgetContractTests
     private sealed class Badge : IArlecchinoInteractiveWidget
     {
         private readonly ArlecchinoKeymap _keymap;
-        private SurfaceRegion _drawn;
+        private SurfaceRegion _drawnRegion;
 
         public Badge(ArlecchinoKeymap keymap) => _keymap = keymap;
 
@@ -183,8 +181,8 @@ public sealed class WidgetContractTests
 
         public SurfaceRegion Draw(SurfaceRegion region)
         {
-            _drawn = region;
-            region.WriteLine(0, Label(), IsFocused ? Theme.Active : Theme.Muted);
+            _drawnRegion = region;
+            region.WriteLine(0, Label(), IsFocused ? Theme.Active : Theme.Secondary);
 
             return region.Rows(1, region.Height - 1);
         }
@@ -193,7 +191,7 @@ public sealed class WidgetContractTests
             _keymap.Confirm.Matches(key) ? FocusResult.Handled : FocusResult.Ignored;
 
         public FocusResult HandleMouse(MouseEvent mouse) =>
-            mouse.IsLeftClick && _drawn.Contains(mouse.Row, mouse.Column)
+            mouse.IsLeftClick && _drawnRegion.Contains(mouse.Row, mouse.Column)
                 ? FocusResult.Handled
                 : FocusResult.Ignored;
     }

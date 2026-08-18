@@ -29,16 +29,16 @@ public static class PastedText
     public static string FirstLine(string text, Func<char, bool> accepts)
     {
         var line = FirstLine(text);
-        var kept = new StringBuilder(line.Length);
+        var keptText = new StringBuilder(line.Length);
 
         foreach (var character in line)
         {
             if (accepts(character))
             {
-                kept.Append(character);
+                keptText.Append(character);
             }
         }
 
-        return kept.ToString();
+        return keptText.ToString();
     }
 }

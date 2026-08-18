@@ -21,12 +21,12 @@ public sealed class PaneTreeTests
     [Fact]
     public void OnePaneIsHandedTheWholeRegion()
     {
-        var only = new Probe();
+        var pane = new Probe();
 
-        Leaf(only.Draw).Draw(Frame(80, 24));
+        Leaf(pane.Draw).Draw(Frame(80, 24));
 
-        Assert.Equal(80, only.Region.Width);
-        Assert.Equal(24, only.Region.Height);
+        Assert.Equal(80, pane.Region.Width);
+        Assert.Equal(24, pane.Region.Height);
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public sealed class PaneTreeTests
                     Leaf(panes[4].Draw)))
             .Draw(Frame(100, 30));
 
-        var covered = new HashSet<(int Row, int Column)>();
+        var cells = new HashSet<(int Row, int Column)>();
 
         foreach (var pane in panes)
         {
@@ -215,12 +215,12 @@ public sealed class PaneTreeTests
             {
                 for (var column = pane.Region.Left; column < pane.Region.Right; column++)
                 {
-                    Assert.True(covered.Add((row, column)), $"cell {row},{column} belongs to two panes");
+                    Assert.True(cells.Add((row, column)), $"cell {row},{column} belongs to two panes");
                 }
             }
         }
 
-        Assert.Equal(100 * 30, covered.Count);
+        Assert.Equal(100 * 30, cells.Count);
     }
 
     [Fact]
@@ -297,7 +297,7 @@ public sealed class PaneTreeTests
         surface.Build();
 
         Assert.True(body.Region.IsEmpty);
-        Assert.DoesNotContain("invisible", FrameText.WithoutStyles(terminal.Written), StringComparison.Ordinal);
+        Assert.DoesNotContain("invisible", FrameText.WithoutStyles(terminal.WrittenText), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -325,7 +325,7 @@ public sealed class PaneTreeTests
 
         surface.Build();
 
-        Assert.Contains("ready", FrameText.Lines(terminal.Written)[^1], StringComparison.Ordinal);
+        Assert.Contains("ready", FrameText.Lines(terminal.WrittenText)[^1], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -353,7 +353,7 @@ public sealed class PaneTreeTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Contains("log", lines[0], StringComparison.Ordinal);
         Assert.Contains("inside", lines[1], StringComparison.Ordinal);
@@ -368,12 +368,12 @@ public sealed class PaneTreeTests
     {
         using var colours = new ColorSupportScope(ColorSupport.TrueColor);
 
-        var focused = Styles(new() { IsFocused = true });
-        var unfocused = Styles(new() { IsFocused = false });
+        var withFocus = Styles(new() { IsFocused = true });
+        var withoutFocus = Styles(new() { IsFocused = false });
 
-        Assert.Contains(Theme.Active.Ansi, focused, StringComparison.Ordinal);
-        Assert.DoesNotContain(Theme.Active.Ansi, unfocused, StringComparison.Ordinal);
-        Assert.Contains(Theme.Info.Ansi, unfocused, StringComparison.Ordinal);
+        Assert.Contains(Theme.Active.Ansi, withFocus, StringComparison.Ordinal);
+        Assert.DoesNotContain(Theme.Active.Ansi, withoutFocus, StringComparison.Ordinal);
+        Assert.Contains(Theme.Info.Ansi, withoutFocus, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -447,7 +447,7 @@ public sealed class PaneTreeTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Contains('┬', lines[0]);
         Assert.Contains('┴', lines[3]);
@@ -468,7 +468,7 @@ public sealed class PaneTreeTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.DoesNotContain('┬', lines[0]);
         Assert.Equal(2, lines[0].Count(static symbol => symbol == '╭'));
@@ -523,10 +523,10 @@ public sealed class PaneTreeTests
         layout.Draw(surface.Frame);
         surface.Build();
 
-        var written = terminal.Written;
-        var shared = written.IndexOf('┬');
+        var output = terminal.WrittenText;
+        var border = output.IndexOf('┬');
 
-        return FrameText.StylesIn(written[..shared]).LastOrDefault() ?? "";
+        return FrameText.StylesIn(output[..border]).LastOrDefault() ?? "";
     }
 
     private static SurfaceRegion Frame(int width, int height)
@@ -553,7 +553,7 @@ public sealed class PaneTreeTests
 
         surface.Build();
 
-        return terminal.Written;
+        return terminal.WrittenText;
     }
 
     private sealed class Badge : IArlecchinoInteractiveWidget

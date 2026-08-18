@@ -21,17 +21,17 @@ public sealed class EmptyAndZeroInputTests
     [Fact]
     public void WrapWithNoRoomAtAll()
     {
-        var wrapped = TextWidth.Wrap("some text that has to go somewhere", 0);
+        var lines = TextWidth.Wrap("some text that has to go somewhere", 0);
 
-        Assert.NotNull(wrapped);
+        Assert.NotNull(lines);
     }
 
     [Fact]
     public void WrapWithNegativeWidth()
     {
-        var wrapped = TextWidth.Wrap("some text", -5);
+        var lines = TextWidth.Wrap("some text", -5);
 
-        Assert.NotNull(wrapped);
+        Assert.NotNull(lines);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class EmptyAndZeroInputTests
         using var app = new TestApplication();
         var runs = 0;
 
-        using var scheduled = app.Services.GetService(typeof(Ticker)) is Ticker ticker
+        using var tick = app.Services.GetService(typeof(Ticker)) is Ticker ticker
             ? ticker.Every(TimeSpan.Zero, () => runs++)
             : null;
 
@@ -179,7 +179,7 @@ public sealed class EmptyAndZeroInputTests
         table.Draw(surface.Frame);
         surface.Build();
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 
     [Fact]
@@ -199,6 +199,6 @@ public sealed class EmptyAndZeroInputTests
         tree.Draw(surface.Frame);
         surface.Build();
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 }

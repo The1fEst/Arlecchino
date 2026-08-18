@@ -145,22 +145,22 @@ public class Screen
     /// <returns>A task that completes once drawing has stopped.</returns>
     public Task Run(CancellationToken stoppingToken)
     {
-        var finished = new TaskCompletionSource();
+        var ending = new TaskCompletionSource();
 
         var thread = new Thread(() =>
         {
             try
             {
                 Loop(stoppingToken);
-                finished.SetResult();
+                ending.SetResult();
             }
             catch (OperationCanceledException)
             {
-                finished.SetResult();
+                ending.SetResult();
             }
             catch (Exception exception)
             {
-                finished.SetException(exception);
+                ending.SetException(exception);
             }
         })
         {
@@ -169,7 +169,7 @@ public class Screen
         };
 
         thread.Start();
-        return finished.Task;
+        return ending.Task;
     }
 
     private void Loop(CancellationToken stoppingToken)
@@ -180,7 +180,7 @@ public class Screen
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            var started = Stopwatch.GetTimestamp();
+            var beginning = Stopwatch.GetTimestamp();
 
             _pending.Drain(_router);
             _ticker.Run(TickFailed);
@@ -190,7 +190,7 @@ public class Screen
                 DrawFrame();
             }
 
-            var left = interval - Stopwatch.GetElapsedTime(started);
+            var left = interval - Stopwatch.GetElapsedTime(beginning);
 
             if (left > TimeSpan.Zero)
             {
@@ -388,9 +388,9 @@ public class Screen
     {
         var top = Math.Max(0, (_surface.FrameHeight - 5) / 2);
 
-        _surface.AppendLine(_strings.TerminalTooSmall(), Theme.Selected, Align.Center, new(0, top, 0, 0));
+        _surface.AppendLine(_strings.TerminalTooSmall(), Theme.Selection, Align.Center, new(0, top, 0, 0));
         _surface.AppendLine(_strings.TerminalSize(_surface.FrameWidth, _surface.FrameHeight), Theme.Error, Align.Center, new(0, 0, 0, 1));
-        _surface.AppendLine(_strings.TerminalNeeded(), Theme.Default, Align.Center);
+        _surface.AppendLine(_strings.TerminalMinimum(), Theme.Default, Align.Center);
         _surface.AppendLine(_strings.TerminalSize(_options.MinimumWidth, _options.MinimumHeight), Theme.Default, Align.Center);
     }
 }

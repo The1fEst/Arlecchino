@@ -17,14 +17,14 @@ namespace Arlecchino.Tests.Input;
 
 public sealed class HostedInputTests
 {
-    private static readonly List<string> Logged = [];
+    private static readonly List<string> Lines = [];
 
     private static (ServiceProvider Provider, FakeTerminal Terminal) CreateHost(bool mouse)
     {
         var terminal = new FakeTerminal(80, 24);
         var services = new ServiceCollection();
 
-        Logged.Clear();
+        Lines.Clear();
         services.AddLogging(builder => builder.AddProvider(new CapturingProvider()));
         services.AddSingleton<IArlecchinoTerminal>(terminal);
         services.AddSingleton<IHostApplicationLifetime, NullLifetime>();
@@ -97,18 +97,18 @@ public sealed class HostedInputTests
         using var stopping = new CancellationTokenSource();
         await service.StartAsync(stopping.Token);
 
-        var first = await WaitFor(() => terminal.Written, text => text.Length > 0);
+        var first = await WaitFor(() => terminal.WrittenText, text => text.Length > 0);
         terminal.Clear();
 
         screen.RedrawEverything();
 
-        var again = await WaitFor(() => terminal.Written, text => text.Length >= first.Length);
+        var second = await WaitFor(() => terminal.WrittenText, text => text.Length >= first.Length);
 
         await service.StopAsync(stopping.Token);
 
         Assert.Equal(
             FrameText.WithoutStyles(first).TrimEnd(),
-            FrameText.WithoutStyles(again).TrimEnd());
+            FrameText.WithoutStyles(second).TrimEnd());
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public sealed class HostedInputTests
 
         using var stopping = new CancellationTokenSource();
         await service.StartAsync(stopping.Token);
-        await WaitFor(() => terminal.Written.Length, written => written > 0);
+        await WaitFor(() => terminal.WrittenText.Length, output => output > 0);
 
         Assert.True(terminal.IsFullScreen);
         Assert.True(terminal.IsMouseEnabled);
@@ -146,20 +146,20 @@ public sealed class HostedInputTests
         using var stopping = new CancellationTokenSource();
         await service.StartAsync(stopping.Token);
 
-        await WaitFor(() => terminal.Written.Length, written => written > 0);
+        await WaitFor(() => terminal.WrittenText.Length, output => output > 0);
         terminal.Clear();
 
         FrameThread.Post(() => state.Output = "changed");
 
-        var written = await WaitFor(() => terminal.Written, text => text.Contains("changed", StringComparison.Ordinal));
+        var output = await WaitFor(() => terminal.WrittenText, text => text.Contains("changed", StringComparison.Ordinal));
 
         await service.StopAsync(stopping.Token);
 
         Assert.True(
-            written.Contains("changed", StringComparison.Ordinal),
+            output.Contains("changed", StringComparison.Ordinal),
             $"repaint requested: {provider.GetRequiredService<Repaint>().IsRequested}, " +
             $"loop done: {service.ExecuteTask?.IsCompleted}, " +
-            $"written: {written.Length}, log: {string.Join(" || ", Logged)}");
+            $"written: {output.Length}, log: {string.Join(" || ", Lines)}");
     }
 
     private sealed class CapturingProvider : ILoggerProvider
@@ -180,7 +180,7 @@ public sealed class HostedInputTests
                 TState state,
                 Exception? exception,
                 Func<TState, Exception?, string> formatter) =>
-                Logged.Add($"{logLevel}: {formatter(state, exception)} {exception}");
+                Lines.Add($"{logLevel}: {formatter(state, exception)} {exception}");
         }
     }
 

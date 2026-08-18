@@ -177,13 +177,13 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
         Verify();
 
-        var removed = Recording ? _items.GetRange(index, count).ToArray() : [];
+        var removedItems = Recording ? _items.GetRange(index, count).ToArray() : [];
 
         _items.RemoveRange(index, count);
 
-        if (removed.Length > 0)
+        if (removedItems.Length > 0)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, index, removed));
+            AtomChanges.NotifyRecorded(new Removed(this, index, removedItems));
         }
 
         Notify();
@@ -374,41 +374,41 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     {
         private readonly AtomsList<T> _list;
         private readonly int _index;
-        private readonly T _before;
-        private readonly T _after;
+        private readonly T _oldValue;
+        private readonly T _newValue;
 
-        public Replaced(AtomsList<T> list, int index, T before, T after)
+        public Replaced(AtomsList<T> list, int index, T oldValue, T newValue)
         {
             _list = list;
             _index = index;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _list;
 
-        public void Undo() => _list.SetSilently(_index, _before);
+        public void Undo() => _list.SetSilently(_index, _oldValue);
 
-        public void Redo() => _list.SetSilently(_index, _after);
+        public void Redo() => _list.SetSilently(_index, _newValue);
     }
 
     private sealed class Swapped : IAtomEdit
     {
         private readonly AtomsList<T> _list;
-        private readonly T[] _before;
-        private readonly T[] _after;
+        private readonly T[] _oldValue;
+        private readonly T[] _newValue;
 
-        public Swapped(AtomsList<T> list, T[] before, T[] after)
+        public Swapped(AtomsList<T> list, T[] oldValue, T[] newValue)
         {
             _list = list;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _list;
 
-        public void Undo() => _list.ResetSilently(_before);
+        public void Undo() => _list.ResetSilently(_oldValue);
 
-        public void Redo() => _list.ResetSilently(_after);
+        public void Redo() => _list.ResetSilently(_newValue);
     }
 }

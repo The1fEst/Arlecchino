@@ -12,67 +12,67 @@ public sealed class AtomsStackTests
     [Fact]
     public void WhatGoesOnTopComesOffFirst()
     {
-        var been = new LocalAtomsStack<string>();
+        var stack = new LocalAtomsStack<string>();
 
-        been.Push("first");
-        been.Push("second");
-        been.Push("third");
+        stack.Push("first");
+        stack.Push("second");
+        stack.Push("third");
 
-        Assert.Equal(["third", "second", "first"], been.Value);
-        Assert.Equal("third", been.Peek());
-        Assert.Equal("third", been.Pop());
-        Assert.Equal("second", been.Pop());
-        Assert.Equal(1, been.Count);
+        Assert.Equal(["third", "second", "first"], stack.Value);
+        Assert.Equal("third", stack.Peek());
+        Assert.Equal("third", stack.Pop());
+        Assert.Equal("second", stack.Pop());
+        Assert.Equal(1, stack.Count);
     }
 
     [Fact]
     public void SeveralGoingOnAtOnceLeaveTheLastOnTop()
     {
-        var been = new LocalAtomsStack<int>([0]);
-        var heard = 0;
+        var stack = new LocalAtomsStack<int>([0]);
+        var changes = 0;
 
-        using var subscription = been.Subscribe(() => heard++);
+        using var subscription = stack.Subscribe(() => changes++);
 
-        been.Push([1, 2, 3]);
+        stack.Push([1, 2, 3]);
 
-        Assert.Equal(1, heard);
-        Assert.Equal([3, 2, 1, 0], been.Value);
-        Assert.Equal(3, been.Peek());
+        Assert.Equal(1, changes);
+        Assert.Equal([3, 2, 1, 0], stack.Value);
+        Assert.Equal(3, stack.Peek());
 
-        been.Push([]);
+        stack.Push([]);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
     public void AnEmptyStackAnswersRatherThanThrowsWhenAskedNicely()
     {
-        var been = new LocalAtomsStack<string>();
+        var stack = new LocalAtomsStack<string>();
 
-        Assert.True(been.IsEmpty);
-        Assert.False(been.TryPop(out _));
-        Assert.False(been.TryPeek(out _));
-        Assert.Throws<InvalidOperationException>(been.Pop);
-        Assert.Throws<InvalidOperationException>(been.Peek);
+        Assert.True(stack.IsEmpty);
+        Assert.False(stack.TryPop(out _));
+        Assert.False(stack.TryPeek(out _));
+        Assert.Throws<InvalidOperationException>(stack.Pop);
+        Assert.Throws<InvalidOperationException>(stack.Peek);
 
-        been.Push("only");
+        stack.Push("only");
 
-        Assert.True(been.TryPeek(out var peeked));
+        Assert.True(stack.TryPeek(out var peeked));
         Assert.Equal("only", peeked);
-        Assert.True(been.TryPop(out var taken));
+        Assert.True(stack.TryPop(out var taken));
         Assert.Equal("only", taken);
-        Assert.True(been.IsEmpty);
+        Assert.True(stack.IsEmpty);
     }
 
     [Fact]
     public void AChangeAsksForAFrame()
     {
         using var repaint = new Repaint();
-        var been = new LocalAtomsStack<string>();
+        var stack = new LocalAtomsStack<string>();
 
         repaint.TakeRequested();
 
-        been.Push("here");
+        stack.Push("here");
 
         Assert.True(repaint.IsRequested);
     }
@@ -81,28 +81,28 @@ public sealed class AtomsStackTests
     public void WhatWasTakenOffGoesBackOnTop()
     {
         using var history = new AtomHistory();
-        var been = new TrackedAtomsStack<string>(["newest", "oldest"]);
+        var stack = new TrackedAtomsStack<string>(["newest", "oldest"]);
 
-        been.Push("newer still");
+        stack.Push("newer still");
 
-        Assert.Equal(["newer still", "newest", "oldest"], been.Value);
+        Assert.Equal(["newer still", "newest", "oldest"], stack.Value);
 
-        been.Pop();
-        been.Pop();
+        stack.Pop();
+        stack.Pop();
 
-        Assert.Equal(["oldest"], been.Value);
-
-        history.Undo();
-
-        Assert.Equal(["newest", "oldest"], been.Value);
+        Assert.Equal(["oldest"], stack.Value);
 
         history.Undo();
 
-        Assert.Equal(["newer still", "newest", "oldest"], been.Value);
+        Assert.Equal(["newest", "oldest"], stack.Value);
 
         history.Undo();
 
-        Assert.Equal(["newest", "oldest"], been.Value);
+        Assert.Equal(["newer still", "newest", "oldest"], stack.Value);
+
+        history.Undo();
+
+        Assert.Equal(["newest", "oldest"], stack.Value);
         Assert.False(history.CanUndo);
     }
 
@@ -110,10 +110,10 @@ public sealed class AtomsStackTests
     public void ALocalStackStaysOffTheHistory()
     {
         using var history = new AtomHistory();
-        var been = new LocalAtomsStack<string>();
+        var stack = new LocalAtomsStack<string>();
 
-        been.Push("here");
-        been.Pop();
+        stack.Push("here");
+        stack.Pop();
 
         Assert.False(history.CanUndo);
     }
@@ -121,70 +121,70 @@ public sealed class AtomsStackTests
     [Fact]
     public void ARebuiltStackIsGivenTopFirst()
     {
-        var been = new LocalAtomsStack<string>(["home"]);
-        var heard = 0;
+        var stack = new LocalAtomsStack<string>(["home"]);
+        var changes = 0;
 
-        using var subscription = been.Subscribe(() => heard++);
+        using var subscription = stack.Subscribe(() => changes++);
 
-        been.Reset(["deepest", "middle", "outermost"]);
+        stack.Reset(["deepest", "middle", "outermost"]);
 
-        Assert.Equal("deepest", been.Peek());
-        Assert.Equal(["deepest", "middle", "outermost"], been.Value);
-        Assert.Equal(1, heard);
+        Assert.Equal("deepest", stack.Peek());
+        Assert.Equal(["deepest", "middle", "outermost"], stack.Value);
+        Assert.Equal(1, changes);
 
-        been.Reset(["deepest", "middle", "outermost"]);
+        stack.Reset(["deepest", "middle", "outermost"]);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
     public void ItIsWalkedFromTheTopDown()
     {
-        var been = new LocalAtomsStack<string>(["top", "bottom"]);
-        var walked = new List<string>();
+        var stack = new LocalAtomsStack<string>(["top", "bottom"]);
+        var visits = new List<string>();
 
-        foreach (var item in been)
+        foreach (var item in stack)
         {
-            walked.Add(item);
+            visits.Add(item);
         }
 
-        Assert.Equal(["top", "bottom"], walked);
+        Assert.Equal(["top", "bottom"], visits);
     }
 
     [Fact]
     public void ADerivedValueFollowsIt()
     {
-        var been = new LocalAtomsStack<string>();
-        var here = new Computed<string>(() => been.TryPeek(out var item) ? item : "nowhere");
+        var stack = new LocalAtomsStack<string>();
+        var depth = new Computed<string>(() => stack.TryPeek(out var item) ? item : "nowhere");
 
-        Assert.Equal("nowhere", here.Value);
+        Assert.Equal("nowhere", depth.Value);
 
-        been.Push("home");
+        stack.Push("home");
 
-        Assert.Equal("home", here.Value);
+        Assert.Equal("home", depth.Value);
 
-        been.Pop();
+        stack.Pop();
 
-        Assert.Equal("nowhere", here.Value);
+        Assert.Equal("nowhere", depth.Value);
     }
 
     [Fact]
     public void ClearingAndRebuildingAreOneStepEach()
     {
         using var history = new AtomHistory();
-        var been = new TrackedAtomsStack<int>([2, 1]);
+        var stack = new TrackedAtomsStack<int>([2, 1]);
 
-        been.Clear();
+        stack.Clear();
 
-        Assert.Empty(been.Value);
+        Assert.Empty(stack.Value);
         Assert.Equal(1, history.Depth);
 
-        been.Clear();
+        stack.Clear();
 
         Assert.Equal(1, history.Depth);
 
         history.Undo();
 
-        Assert.Equal([2, 1], been.Value);
+        Assert.Equal([2, 1], stack.Value);
     }
 }

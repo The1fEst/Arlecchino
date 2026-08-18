@@ -137,11 +137,11 @@ internal sealed class ArlecchinoHostedService : BackgroundService
             return;
         }
 
-        var answered = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
+        var reply = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
 
         Log.TerminalAnswered(
             _logger,
-            answered,
+            reply,
             TerminalCapabilities.Sixel,
             TerminalCapabilities.Kitty,
             Glyphs.CellWidth,

@@ -4,18 +4,18 @@ namespace Arlecchino.Input;
 
 internal sealed class WindowsInputTranslator
 {
-    private const uint MouseMoved = 0x0001;
-    private const uint MouseWheeled = 0x0004;
+    private const uint MouseMove = 0x0001;
+    private const uint MouseWheel = 0x0004;
 
     private const uint LeftButton = 0x0001;
     private const uint RightButton = 0x0002;
     private const uint MiddleButton = 0x0004;
 
-    private const uint RightAltPressed = 0x0001;
-    private const uint LeftAltPressed = 0x0002;
-    private const uint RightControlPressed = 0x0004;
-    private const uint LeftControlPressed = 0x0008;
-    private const uint ShiftPressed = 0x0010;
+    private const uint RightAlt = 0x0001;
+    private const uint LeftAlt = 0x0002;
+    private const uint RightControl = 0x0004;
+    private const uint LeftControl = 0x0008;
+    private const uint ShiftKey = 0x0010;
 
     private uint _heldButtons;
 
@@ -33,9 +33,9 @@ internal sealed class WindowsInputTranslator
     private static KeyModifiers Held(ushort character, uint controlKeyState)
     {
         var modifiers = ToModifiers(controlKeyState);
-        var typed = (char)character;
+        var typedCharacter = (char)character;
 
-        return modifiers == KeyModifiers.Shift && typed != '\0' && !char.IsControl(typed)
+        return modifiers == KeyModifiers.Shift && typedCharacter != '\0' && !char.IsControl(typedCharacter)
             ? KeyModifiers.None
             : modifiers;
     }
@@ -49,7 +49,7 @@ internal sealed class WindowsInputTranslator
     {
         var modifiers = ToModifiers(controlKeyState);
 
-        if ((eventFlags & MouseWheeled) != 0)
+        if ((eventFlags & MouseWheel) != 0)
         {
             var up = (int)buttonState >> 16 > 0;
             mouse = new(up ? MouseAction.ScrolledUp : MouseAction.ScrolledDown,
@@ -60,31 +60,31 @@ internal sealed class WindowsInputTranslator
             return true;
         }
 
-        var held = buttonState & (LeftButton | RightButton | MiddleButton);
+        var heldButtons = buttonState & (LeftButton | RightButton | MiddleButton);
 
-        if ((eventFlags & MouseMoved) != 0)
+        if ((eventFlags & MouseMove) != 0)
         {
-            var dragging = held != 0;
+            var dragging = heldButtons != 0;
             mouse = dragging
-                ? new(MouseAction.Moved, ToButton(held), row, column, modifiers)
+                ? new(MouseAction.Moved, ToButton(heldButtons), row, column, modifiers)
                 : default;
-            _heldButtons = held;
+            _heldButtons = heldButtons;
             return dragging;
         }
 
-        var pressed = held & ~_heldButtons;
-        var released = _heldButtons & ~held;
-        _heldButtons = held;
+        var pressedButtons = heldButtons & ~_heldButtons;
+        var releasedButtons = _heldButtons & ~heldButtons;
+        _heldButtons = heldButtons;
 
-        if (pressed != 0)
+        if (pressedButtons != 0)
         {
-            mouse = new(MouseAction.Pressed, ToButton(pressed), row, column, modifiers);
+            mouse = new(MouseAction.Pressed, ToButton(pressedButtons), row, column, modifiers);
             return true;
         }
 
-        if (released != 0)
+        if (releasedButtons != 0)
         {
-            mouse = new(MouseAction.Released, ToButton(released), row, column, modifiers);
+            mouse = new(MouseAction.Released, ToButton(releasedButtons), row, column, modifiers);
             return true;
         }
 
@@ -104,17 +104,17 @@ internal sealed class WindowsInputTranslator
     {
         var modifiers = default(KeyModifiers);
 
-        if ((state & ShiftPressed) != 0)
+        if ((state & ShiftKey) != 0)
         {
             modifiers |= KeyModifiers.Shift;
         }
 
-        if ((state & (LeftAltPressed | RightAltPressed)) != 0)
+        if ((state & (LeftAlt | RightAlt)) != 0)
         {
             modifiers |= KeyModifiers.Alt;
         }
 
-        if ((state & (LeftControlPressed | RightControlPressed)) != 0)
+        if ((state & (LeftControl | RightControl)) != 0)
         {
             modifiers |= KeyModifiers.Control;
         }

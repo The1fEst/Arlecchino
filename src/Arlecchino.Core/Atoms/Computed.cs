@@ -110,12 +110,12 @@ public sealed class Computed<T> : IReadableAtom<T>
 
     private sealed class Subscription : IDisposable
     {
-        private readonly Computed<T> _computed;
+        private readonly Computed<T> _source;
         private Action? _listener;
 
-        public Subscription(Computed<T> computed, Action listener)
+        public Subscription(Computed<T> source, Action listener)
         {
-            _computed = computed;
+            _source = source;
             _listener = listener;
         }
 
@@ -126,7 +126,7 @@ public sealed class Computed<T> : IReadableAtom<T>
                 return;
             }
 
-            _computed.Unsubscribe(_listener);
+            _source.Unsubscribe(_listener);
             _listener = null;
         }
     }

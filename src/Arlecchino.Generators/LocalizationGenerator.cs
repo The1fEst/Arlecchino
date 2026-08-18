@@ -46,30 +46,30 @@ public sealed partial class LocalizationGenerator : IIncrementalGenerator
         (ImmutableArray<LocalizationSource> Files, (string Folder, string Language, string Namespace) Settings) input)
     {
         var (files, settings) = input;
-        var wanted = files
+        var sources = files
             .Where(source => InFolder(source.Path, settings.Folder))
             .OrderBy(static source => source.Path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        if (wanted.Length == 0)
+        if (sources.Length == 0)
         {
             return;
         }
 
         var localizations = new List<LocalizationFile>();
 
-        foreach (var source in wanted)
+        foreach (var source in sources)
         {
-            var parsed = Parse(source);
+            var file = Parse(source);
 
-            foreach (var error in parsed.Errors)
+            foreach (var error in file.Errors)
             {
                 context.ReportDiagnostic(Diagnostic.Create(LocalizationDiagnostics.InvalidToml, Location.None, error));
             }
 
-            if (parsed.Errors.Count == 0)
+            if (file.Errors.Count == 0)
             {
-                localizations.Add(parsed);
+                localizations.Add(file);
             }
         }
 
@@ -121,15 +121,15 @@ public sealed partial class LocalizationGenerator : IIncrementalGenerator
         LocalizationFile standard,
         IEnumerable<LocalizationFile> localizations)
     {
-        var known = new HashSet<string>(standard.Entries.Select(static entry => entry.Key), StringComparer.Ordinal);
+        var standardKeys = new HashSet<string>(standard.Entries.Select(static entry => entry.Key), StringComparer.Ordinal);
 
         foreach (var translation in localizations.Where(localization => !ReferenceEquals(localization, standard)))
         {
-            var carried = new HashSet<string>(
+            var translationKeys = new HashSet<string>(
                 translation.Entries.Select(static entry => entry.Key),
                 StringComparer.Ordinal);
 
-            foreach (var entry in translation.Entries.Where(entry => !known.Contains(entry.Key)))
+            foreach (var entry in translation.Entries.Where(entry => !standardKeys.Contains(entry.Key)))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     LocalizationDiagnostics.UnknownTranslationKey,
@@ -138,7 +138,7 @@ public sealed partial class LocalizationGenerator : IIncrementalGenerator
                     entry.Key));
             }
 
-            foreach (var key in known.Where(key => !carried.Contains(key)))
+            foreach (var key in standardKeys.Where(key => !translationKeys.Contains(key)))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
                     LocalizationDiagnostics.MissingTranslationKey,

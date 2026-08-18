@@ -132,12 +132,12 @@ public sealed class HelpViewTests
     public void CancelGoesBackToWhereItWasOpenedFrom()
     {
         using var app = new TestApplication();
-        var before = app.Navigator.CurrentRoute;
+        var start = app.Navigator.CurrentRoute;
 
         app.Press(ConsoleKey.F1);
         app.Press(ConsoleKey.Escape);
 
-        Assert.Equal(before, app.Navigator.CurrentRoute);
+        Assert.Equal(start, app.Navigator.CurrentRoute);
     }
 
     [Fact]

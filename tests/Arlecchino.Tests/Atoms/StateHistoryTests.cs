@@ -12,14 +12,15 @@ public sealed class StateHistoryTests
     public void StatesOptOutOfTheHistoryOneAtATime()
     {
         using var history = new AtomHistory();
-        var tracked = new TrackedAtom<string>("");
-        var untracked = new LocalAtom<string>("");
+        var atom = new TrackedAtom<string>("");
+        var plain = new LocalAtom<string>("");
 
-
-        untracked.Value = "ignored";
         Assert.False(history.CanUndo);
 
-        tracked.Value = "kept";
+        plain.Value = "ignored";
+        Assert.False(history.CanUndo);
+
+        atom.Value = "kept";
         Assert.True(history.CanUndo);
     }
 
@@ -28,6 +29,8 @@ public sealed class StateHistoryTests
     {
         using var history = new AtomHistory();
         var name = new TrackedAtom<string>("start");
+
+        Assert.False(history.CanUndo);
 
         name.Value = "first";
         name.Value = "second";
@@ -55,9 +58,12 @@ public sealed class StateHistoryTests
         using var history = new AtomHistory();
         var count = new TrackedAtom<int>(0);
 
+        Assert.Equal(0, history.Depth);
+
         count.Value = 1;
         history.Undo();
 
+        Assert.Equal(0, count.Value);
         Assert.Equal(0, history.Depth);
         Assert.True(history.CanRedo);
     }
@@ -67,6 +73,8 @@ public sealed class StateHistoryTests
     {
         using var history = new AtomHistory();
         var count = new TrackedAtom<int>(0);
+
+        Assert.False(history.CanRedo);
 
         count.Value = 1;
         history.Undo();

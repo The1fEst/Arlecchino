@@ -47,7 +47,7 @@ public sealed class FilePickerStartTests : IDisposable
 
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(Path.Combine(_root.FullName, "omega.sav"), Picked);
+        Assert.Equal(Path.Combine(_root.FullName, "omega.sav"), Choice);
     }
 
     [Fact]
@@ -58,13 +58,13 @@ public sealed class FilePickerStartTests : IDisposable
         Assert.DoesNotContain("away.sav", app.Frame(), StringComparison.Ordinal);
     }
 
-    private string Picked { get; set; } = "";
+    private string Choice { get; set; } = "";
 
     private TestApplication Show(string startAt)
     {
         var app = new TestApplication(100, 30);
 
-        app.State.FilePicker = new("Pick", PickFolder: false, startAt, ViewRoute.None, picked => Picked = picked);
+        app.State.FilePicker = new("Pick", PickFolder: false, startAt, ViewRoute.None, choice => Choice = choice);
         app.Navigator.Apply(Routes.FilePicker);
 
         return app;

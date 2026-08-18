@@ -39,7 +39,7 @@ public sealed class PostedAsyncWorkTests
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim(app.Repaint.Request);
         var thread = 0;
-        var after = 0;
+        var ending = 0;
 
         FrameThread.Post(async () =>
         {
@@ -47,14 +47,14 @@ public sealed class PostedAsyncWorkTests
 
             await Task.Delay(1);
 
-            after = Environment.CurrentManagedThreadId;
+            ending = Environment.CurrentManagedThreadId;
             app.State.Output = "back";
         });
 
         Until(app, () => app.State.Output.Length > 0);
 
         Assert.Equal("back", app.State.Output);
-        Assert.Equal(thread, after);
+        Assert.Equal(thread, ending);
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public sealed class PostedAsyncWorkTests
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim(app.Repaint.Request);
         using var cancelling = new CancellationTokenSource();
-        using var ended = new ManualResetEventSlim();
+        using var finish = new ManualResetEventSlim();
 
         FrameThread.Post(async () =>
         {
@@ -127,14 +127,14 @@ public sealed class PostedAsyncWorkTests
             }
             finally
             {
-                ended.Set();
+                finish.Set();
             }
         });
 
         app.Frame();
         cancelling.Cancel();
 
-        Until(app, () => ended.IsSet);
+        Until(app, () => finish.IsSet);
 
         Assert.Equal("", app.State.Output);
     }

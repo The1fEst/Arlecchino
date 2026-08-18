@@ -24,7 +24,7 @@ public sealed class PaneFlowTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Equal("", lines[0].Trim());
         Assert.StartsWith("first", lines[1], StringComparison.Ordinal);
@@ -49,12 +49,12 @@ public sealed class PaneFlowTests
                         flow.AppendLine("fEst", Theme.Default);
                     },
                     static () => "left"),
-                Leaf(static region => region.WriteLine(0, "right", Theme.Muted), static () => "right"))
+                Leaf(static region => region.WriteLine(0, "right", Theme.Secondary), static () => "right"))
             .Draw(surface.Frame);
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Contains("left", lines[0], StringComparison.Ordinal);
         Assert.Contains("right", lines[0], StringComparison.Ordinal);
@@ -79,7 +79,7 @@ public sealed class PaneFlowTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.StartsWith("row 2", lines[2], StringComparison.Ordinal);
         Assert.Equal("", lines[3].Trim());
@@ -101,7 +101,7 @@ public sealed class PaneFlowTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.StartsWith("title", lines[0], StringComparison.Ordinal);
         Assert.Equal("----------", lines[1]);
@@ -139,7 +139,7 @@ public sealed class PaneFlowTests
 
         surface.Build();
 
-        Assert.StartsWith("second", FrameText.Lines(terminal.Written)[0], StringComparison.Ordinal);
+        Assert.StartsWith("second", FrameText.Lines(terminal.WrittenText)[0], StringComparison.Ordinal);
         Assert.Equal(1, flow.Row);
     }
 
@@ -171,7 +171,7 @@ public sealed class PaneFlowTests
 
         surface.Build();
 
-        var lines = FrameText.Lines(terminal.Written);
+        var lines = FrameText.Lines(terminal.WrittenText);
 
         Assert.Equal("    mid", lines[0].TrimEnd());
         Assert.Equal("        end", lines[1]);

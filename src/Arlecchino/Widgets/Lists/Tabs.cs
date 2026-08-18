@@ -19,7 +19,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
 
     private readonly ArlecchinoKeymap _keymap;
 
-    private SurfaceRegion _drawn;
+    private SurfaceRegion _drawnRegion;
     private int[] _starts = [];
 
     /// <summary>Creates the strip.</summary>
@@ -36,7 +36,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     public Action<int>? OnSelected { get; init; }
 
     /// <summary>Index of the current tab.</summary>
-    public int Selected { get; private set; }
+    public int SelectedIndex { get; private set; }
 
     /// <summary>Whether the strip has focus, which decides how strongly the current tab is drawn.</summary>
     public bool IsFocused { get; set; }
@@ -45,14 +45,15 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// <param name="index">Tab to switch to.</param>
     public void Select(int index)
     {
-        var clamped = Math.Clamp(index, 0, Math.Max(0, Titles.Count - 1));
-        if (clamped == Selected)
+        var tab = Math.Clamp(index, 0, Math.Max(0, Titles.Count - 1));
+
+        if (tab == SelectedIndex)
         {
             return;
         }
 
-        Selected = clamped;
-        OnSelected?.Invoke(Selected);
+        SelectedIndex = tab;
+        OnSelected?.Invoke(SelectedIndex);
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// <returns>The region below the strip.</returns>
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        _drawn = region;
+        _drawnRegion = region;
 
         if (region.IsEmpty)
         {
@@ -79,9 +80,9 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
             var label = $"{new string(' ', TabPadding)}{Titles[i]()}{new string(' ', TabPadding)}";
             _starts[i] = column;
 
-            var style = i == Selected
-                ? IsFocused ? Theme.ActiveSelected : Theme.Selected
-                : Theme.Muted;
+            var style = i == SelectedIndex
+                ? IsFocused ? Theme.ActiveSelection : Theme.Selection
+                : Theme.Secondary;
 
             region.Write(0, column, label, style);
             column += TextWidth.Of(label) + 1;
@@ -97,7 +98,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     {
         if (_keymap.MoveLeft.Matches(key))
         {
-            Select(Selected - 1);
+            Select(SelectedIndex - 1);
             return FocusResult.Handled;
         }
 
@@ -106,7 +107,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
             return FocusResult.Ignored;
         }
 
-        Select(Selected + 1);
+        Select(SelectedIndex + 1);
         return FocusResult.Handled;
     }
 
@@ -118,15 +119,15 @@ public sealed class Tabs : IArlecchinoInteractiveWidget
     /// <returns>What became of the event.</returns>
     public FocusResult HandleMouse(MouseEvent mouse)
     {
-        if (_drawn.IsEmpty ||
-            !_drawn.Contains(mouse.Row, mouse.Column) ||
+        if (_drawnRegion.IsEmpty ||
+            !_drawnRegion.Contains(mouse.Row, mouse.Column) ||
             mouse.Action != MouseAction.Pressed ||
             mouse.Button != MouseButton.Left)
         {
             return FocusResult.Ignored;
         }
 
-        var (_, column) = _drawn.ToLocal(mouse.Row, mouse.Column);
+        var (_, column) = _drawnRegion.ToLocal(mouse.Row, mouse.Column);
 
         for (var i = _starts.Length - 1; i >= 0; i--)
         {

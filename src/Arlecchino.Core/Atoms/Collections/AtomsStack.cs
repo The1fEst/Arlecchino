@@ -213,18 +213,18 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     {
         Verify();
 
-        var taken = _items[0];
+        var item = _items[0];
 
         _items.RemoveAt(0);
 
         if (Recording)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, 0, [taken]));
+            AtomChanges.NotifyRecorded(new Removed(this, 0, [item]));
         }
 
         Notify();
 
-        return taken;
+        return item;
     }
 
     private bool Holds(IReadOnlyList<T> items)
@@ -327,20 +327,20 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     private sealed class Swapped : IAtomEdit
     {
         private readonly AtomsStack<T> _stack;
-        private readonly T[] _before;
-        private readonly T[] _after;
+        private readonly T[] _oldValue;
+        private readonly T[] _newValue;
 
-        public Swapped(AtomsStack<T> stack, T[] before, T[] after)
+        public Swapped(AtomsStack<T> stack, T[] oldValue, T[] newValue)
         {
             _stack = stack;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _stack;
 
-        public void Undo() => _stack.ResetSilently(_before);
+        public void Undo() => _stack.ResetSilently(_oldValue);
 
-        public void Redo() => _stack.ResetSilently(_after);
+        public void Redo() => _stack.ResetSilently(_newValue);
     }
 }

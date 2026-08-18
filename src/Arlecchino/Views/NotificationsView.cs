@@ -23,7 +23,7 @@ internal sealed class NotificationsView : IArlecchinoView
     public const string Route = "Notifications";
 
     private const int BarCells = 12;
-    private const char BarFilled = '█';
+    private const char BarCell = '█';
     private const char BarEmpty = '░';
 
     private readonly Surface _surface;
@@ -61,11 +61,11 @@ internal sealed class NotificationsView : IArlecchinoView
         var (header, rest) = content.SplitTop(2);
 
         header.WriteLine(0, _strings.NotificationsTitle(), Theme.Header);
-        header.WriteLine(1, _strings.NotificationsCount(entries.Count), Theme.Muted);
+        header.WriteLine(1, _strings.NotificationsCount(entries.Count), Theme.Secondary);
 
         if (entries.Count == 0)
         {
-            rest.WriteLine(0, _strings.NotificationsEmpty(), Theme.Muted);
+            rest.WriteLine(0, _strings.NotificationsEmpty(), Theme.Secondary);
             return;
         }
 
@@ -151,16 +151,16 @@ internal sealed class NotificationsView : IArlecchinoView
     /// <returns>The row.</returns>
     private static string Describe(Notification entry)
     {
-        var stamp = entry.Since.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        var stamp = entry.RaisedAt.ToLocalTime().ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
-        if (entry.Filled() is not { } share)
+        if (entry.Fraction() is not { } progress)
         {
             return $" {stamp}  {entry.Line}";
         }
 
-        var filled = (int)Math.Round(share * BarCells);
-        var bar = new string(BarFilled, filled) + new string(BarEmpty, Math.Max(0, BarCells - filled));
+        var cells = (int)Math.Round(progress * BarCells);
+        var bar = new string(BarCell, cells) + new string(BarEmpty, Math.Max(0, BarCells - cells));
 
-        return $" {stamp}  {bar} {share * 100:0}%  {entry.Line}";
+        return $" {stamp}  {bar} {progress * 100:0}%  {entry.Line}";
     }
 }

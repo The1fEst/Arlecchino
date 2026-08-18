@@ -34,12 +34,12 @@ internal sealed class LogPaint
         var entries = log.Buffer.Snapshot();
         var height = Math.Clamp(_surface.FrameHeight / 2, LeastRows, Math.Max(LeastRows, _surface.FrameHeight - 2));
         var box = _surface.Frame.Rows(_surface.FrameHeight - height, height);
-        var inside = box.Border(Theme.Info, _strings.LogTitle(entries.Count)).Inset(new Margin(1, 0, 1, 0));
-        var rows = Math.Max(0, inside.Height - 1);
+        var content = box.Border(Theme.Info, _strings.LogTitle(entries.Count)).Inset(new Margin(1, 0, 1, 0));
+        var rows = Math.Max(0, content.Height - 1);
 
         if (entries.Count == 0)
         {
-            inside.WriteLine(0, _strings.LogEmpty(), Theme.Muted);
+            content.WriteLine(0, _strings.LogEmpty(), Theme.Secondary);
         }
 
         log.Scroll = Math.Min(log.Scroll, Math.Max(0, entries.Count - rows));
@@ -52,14 +52,14 @@ internal sealed class LogPaint
             var entry = entries[first + row];
             var line = $"{entry.Time:HH:mm:ss} {Name(entry.Level)} {entry.Category}: {entry.Message}";
 
-            inside.Write(
+            content.Write(
                 row,
                 0,
-                TextWidth.PadRight(TextWidth.Truncate(line, inside.Width), inside.Width),
+                TextWidth.PadRight(TextWidth.Truncate(line, content.Width), content.Width),
                 Style(entry.Level));
         }
 
-        inside.WriteLine(inside.Height - 1, TextWidth.Truncate(_strings.LogHints(), inside.Width), Theme.Muted);
+        content.WriteLine(content.Height - 1, TextWidth.Truncate(_strings.LogHints(), content.Width), Theme.Secondary);
     }
 
     private static string Name(LogLevel level) => level switch
@@ -77,7 +77,7 @@ internal sealed class LogPaint
     {
         LogLevel.Warning => Theme.Warning,
         LogLevel.Error or LogLevel.Critical => Theme.Error,
-        LogLevel.Trace or LogLevel.Debug => Theme.Muted,
+        LogLevel.Trace or LogLevel.Debug => Theme.Secondary,
         _ => Theme.Default,
     };
 }

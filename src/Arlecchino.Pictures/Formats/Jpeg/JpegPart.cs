@@ -44,5 +44,5 @@ internal sealed class JpegPart
     internal int PlaneWidth { get; set; }
 
     /// <summary>The first coefficient of the last block, which the next one is written against.</summary>
-    internal int Predicted { get; set; }
+    internal int Prediction { get; set; }
 }

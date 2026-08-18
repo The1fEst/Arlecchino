@@ -104,10 +104,10 @@ internal static class BmpPacked
             return;
         }
 
-        var into = ((header.TopDown ? row : header.Height - 1 - row) * header.Width) + column;
+        var offset = ((header.TopDown ? row : header.Height - 1 - row) * header.Width) + column;
 
-        pixels[into] = new(palette[at], palette[at + 1], palette[at + 2]);
+        pixels[offset] = new(palette[at], palette[at + 1], palette[at + 2]);
     }
 
-    private static int Nibble(byte packed, int step) => (step & 1) == 0 ? packed >> 4 : packed & 0x0F;
+    private static int Nibble(byte pair, int step) => (step & 1) == 0 ? pair >> 4 : pair & 0x0F;
 }

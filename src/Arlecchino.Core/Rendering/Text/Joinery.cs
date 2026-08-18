@@ -84,36 +84,36 @@ public sealed class Joinery
     /// then writes the titles over the top edges they belong to. Anything falling outside the region
     /// is left undrawn rather than clamped into it.
     /// </summary>
-    /// <param name="into">Where to paint; coordinates recorded are the surface's own.</param>
+    /// <param name="region">Where to paint; coordinates recorded are the surface's own.</param>
     /// <param name="style">How lines recorded without a style of their own are drawn.</param>
-    public void Draw(SurfaceRegion into, IArlecchinoColor style)
+    public void Draw(SurfaceRegion region, IArlecchinoColor style)
     {
         foreach (var ((row, column), joint) in _joints)
         {
-            var local = (Row: row - into.Top, Column: column - into.Left);
+            var local = (Row: row - region.Top, Column: column - region.Left);
 
-            if (local.Row < 0 || local.Row >= into.Height || local.Column < 0 || local.Column >= into.Width)
+            if (local.Row < 0 || local.Row >= region.Height || local.Column < 0 || local.Column >= region.Width)
             {
                 continue;
             }
 
-            into.Write(local.Row, local.Column, Glyphs[joint.Flags].ToString(), joint.Style ?? style);
+            region.Write(local.Row, local.Column, Glyphs[joint.Flags].ToString(), joint.Style ?? style);
         }
 
         foreach (var (row, column, title, titled) in _titles)
         {
-            var local = (Row: row - into.Top, Column: column - into.Left);
+            var local = (Row: row - region.Top, Column: column - region.Left);
 
-            if (local.Row < 0 || local.Row >= into.Height || local.Column < 0 || local.Column >= into.Width)
+            if (local.Row < 0 || local.Row >= region.Height || local.Column < 0 || local.Column >= region.Width)
             {
                 continue;
             }
 
-            var room = into.Width - local.Column - 2;
+            var room = region.Width - local.Column - 2;
 
             if (room > 0)
             {
-                into.Write(local.Row, local.Column, $" {TextWidth.Truncate(title, room)} ", titled ?? style);
+                region.Write(local.Row, local.Column, $" {TextWidth.Truncate(title, room)} ", titled ?? style);
             }
         }
     }

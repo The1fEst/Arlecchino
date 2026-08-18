@@ -37,7 +37,7 @@ public sealed class MouseTests
     [Fact]
     public void WhatARealMouseSentIsReadBackAsWhereItWasPointed()
     {
-        const string Caught =
+        const string Report =
             "\e[<0;17;6M\e[<0;17;6m" +
             "\e[<65;24;5M\e[<64;24;5M" +
             "\e[<0;12;3M\e[<32;13;3M\e[<32;14;4M\e[<0;14;4m";
@@ -45,13 +45,13 @@ public sealed class MouseTests
         var events = new List<MouseEvent>();
         var index = 0;
 
-        while (index < Caught.Length)
+        while (index < Report.Length)
         {
-            var end = Caught.IndexOf('M', index) is var press && press >= 0 ? press : Caught.Length;
-            var release = Caught.IndexOf('m', index);
+            var end = Report.IndexOf('M', index) is var press && press >= 0 ? press : Report.Length;
+            var release = Report.IndexOf('m', index);
             var stop = release >= 0 && release < end ? release : end;
 
-            Assert.True(EscapeSequenceParser.TryParseMouse(Caught[(index + 2)..(stop + 1)], out var mouse));
+            Assert.True(EscapeSequenceParser.TryParseMouse(Report[(index + 2)..(stop + 1)], out var mouse));
             events.Add(mouse);
             index = stop + 1;
         }

@@ -46,11 +46,11 @@ public static class ArlecchinoServiceCollectionExtensions
         services.TryAddSingleton<IArlecchinoTerminal, SystemTerminal>();
         services.AddSingleton(static provider =>
         {
-            var configured = provider.GetRequiredService<ArlecchinoOptions>();
+            var options = provider.GetRequiredService<ArlecchinoOptions>();
             return new Surface(provider.GetRequiredService<IArlecchinoTerminal>())
             {
-                HorizontalPadding = configured.HorizontalPadding,
-                VerticalPadding = configured.VerticalPadding,
+                HorizontalPadding = options.HorizontalPadding,
+                VerticalPadding = options.VerticalPadding,
             };
         });
         services.AddSingleton(static provider =>

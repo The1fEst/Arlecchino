@@ -36,20 +36,20 @@ public sealed class KeyBindingFallbackTests
     /// What a terminal really hands back for the punctuation: a slash, a minus and a full stop arrive under
     /// the keypad's names, so a binding on either name answers to both.
     /// </summary>
-    /// <param name="written">The key the binding was written on.</param>
-    /// <param name="pressed">The key the terminal reported.</param>
+    /// <param name="output">The key the binding was written on.</param>
+    /// <param name="press">The key the terminal reported.</param>
     /// <param name="types">The character both of them type.</param>
     [Theory]
     [InlineData(ConsoleKey.Oem2, ConsoleKey.Divide, '/')]
     [InlineData(ConsoleKey.OemMinus, ConsoleKey.Subtract, '-')]
     [InlineData(ConsoleKey.OemPeriod, ConsoleKey.Decimal, '.')]
-    public void AKeyWithTwoNamesAnswersToEither(ConsoleKey written, ConsoleKey pressed, char types)
+    public void AKeyWithTwoNamesAnswersToEither(ConsoleKey output, ConsoleKey press, char types)
     {
-        Assert.True(new KeyBinding(written).Matches(new(pressed, default, types)));
-        Assert.True(new KeyBinding(pressed).Matches(new(written, default, types)));
+        Assert.True(new KeyBinding(output).Matches(new(press, default, types)));
+        Assert.True(new KeyBinding(press).Matches(new(output, default, types)));
 
-        Assert.Equal(types.ToString(), new KeyBinding(written).ToString());
-        Assert.Equal(types.ToString(), new KeyBinding(pressed).ToString());
+        Assert.Equal(types.ToString(), new KeyBinding(output).ToString());
+        Assert.Equal(types.ToString(), new KeyBinding(press).ToString());
     }
 
     /// <summary>The pair that types two different characters stays two keys.</summary>

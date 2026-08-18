@@ -38,10 +38,10 @@ internal sealed class JpegFrame
     internal int Eighths { get; private set; } = 8;
 
     /// <summary>How wide the picture comes out at the size it is being read.</summary>
-    internal int Shown => Part(Width);
+    internal int OutputWidth => Part(Width);
 
     /// <summary>How tall the picture comes out at the size it is being read.</summary>
-    internal int Deep => Part(Height);
+    internal int OutputHeight => Part(Height);
 
     /// <summary>The first coefficient the scan carries.</summary>
     internal int First { get; private set; }
@@ -50,7 +50,7 @@ internal sealed class JpegFrame
     internal int Last { get; private set; } = 63;
 
     /// <summary>Which bit of a coefficient the scans so far have reached, or nought for the first of them.</summary>
-    internal int Reached { get; private set; }
+    internal int Bit { get; private set; }
 
     /// <summary>Which bit of a coefficient this scan carries.</summary>
     internal int Carrying { get; private set; }
@@ -59,7 +59,7 @@ internal sealed class JpegFrame
     internal List<JpegPart> Parts { get; } = [];
 
     /// <summary>The components this scan carries, which of a progressive file may be one of them.</summary>
-    internal List<JpegPart> Scanned { get; } = [];
+    internal List<JpegPart> InScan { get; } = [];
 
     /// <summary>The quantization tables, in the order the coefficients are read.</summary>
     internal int[]?[] Divisors { get; } = new int[]?[4];
@@ -87,21 +87,21 @@ internal sealed class JpegFrame
         Height = BinaryPrimitives.ReadUInt16BigEndian(body.Slice(1, 2));
         Width = BinaryPrimitives.ReadUInt16BigEndian(body.Slice(3, 2));
 
-        var counted = body[5];
+        var count = body[5];
 
-        if (body[0] != 8 || counted is not (1 or 3) || body.Length < 6 + (counted * 3))
+        if (body[0] != 8 || count is not (1 or 3) || body.Length < 6 + (count * 3))
         {
             return false;
         }
 
-        if (Width <= 0 || Height <= 0 || (long)Width * Height > limits.Most)
+        if (Width <= 0 || Height <= 0 || (long)Width * Height > limits.MostPixels)
         {
             return false;
         }
 
-        Eighths = Smallest(limits.Enough);
+        Eighths = Smallest(limits.EnoughPixels);
 
-        for (var index = 0; index < counted; index++)
+        for (var index = 0; index < count; index++)
         {
             var at = 6 + (index * 3);
             var part = new JpegPart
@@ -130,18 +130,18 @@ internal sealed class JpegFrame
     /// The smallest of the four sizes a JPEG can be read at that still holds as many pixels as the
     /// caller says it has a use for. Asking for nothing in particular reads all of it.
     /// </summary>
-    /// <param name="enough">How many pixels the caller has a use for.</param>
+    /// <param name="enoughPixels">How many pixels the caller has a use for.</param>
     /// <returns>Eighths of the full size: one, two, four or eight.</returns>
-    private int Smallest(int enough)
+    private int Smallest(int enoughPixels)
     {
-        if (enough <= 0)
+        if (enoughPixels <= 0)
         {
             return 8;
         }
 
         var eighths = 8;
 
-        while (eighths > 1 && (long)Part(Width, eighths / 2) * Part(Height, eighths / 2) >= enough)
+        while (eighths > 1 && (long)Part(Width, eighths / 2) * Part(Height, eighths / 2) >= enoughPixels)
         {
             eighths /= 2;
         }
@@ -165,19 +165,19 @@ internal sealed class JpegFrame
             var kind = body[at] >> 4;
             var slot = body[at] & 0x0F;
             var counts = body.Slice(at + 1, 16).ToArray();
-            var counted = 0;
+            var total = 0;
 
             foreach (var count in counts)
             {
-                counted += count;
+                total += count;
             }
 
-            if (slot > 3 || kind > 1 || at + 17 + counted > body.Length)
+            if (slot > 3 || kind > 1 || at + 17 + total > body.Length)
             {
                 return false;
             }
 
-            var table = new JpegHuffman(counts, body.Slice(at + 17, counted).ToArray());
+            var table = new JpegHuffman(counts, body.Slice(at + 17, total).ToArray());
 
             if (kind == 0)
             {
@@ -188,7 +188,7 @@ internal sealed class JpegFrame
                 AcTables[slot] = table;
             }
 
-            at += 17 + counted;
+            at += 17 + total;
         }
 
         return true;
@@ -241,19 +241,19 @@ internal sealed class JpegFrame
             return false;
         }
 
-        var counted = body[0];
+        var count = body[0];
 
-        if (counted < 1 || counted > Parts.Count || body.Length < 1 + (counted * 2) + 3)
+        if (count < 1 || count > Parts.Count || body.Length < 1 + (count * 2) + 3)
         {
             return false;
         }
 
-        Scanned.Clear();
+        InScan.Clear();
 
-        for (var index = 0; index < counted; index++)
+        for (var index = 0; index < count; index++)
         {
-            var named = body[1 + (index * 2)];
-            var part = Parts.Find(one => one.Id == named);
+            var id = body[1 + (index * 2)];
+            var part = Parts.Find(one => one.Id == id);
 
             if (part is null)
             {
@@ -268,22 +268,22 @@ internal sealed class JpegFrame
                 return false;
             }
 
-            Scanned.Add(part);
+            InScan.Add(part);
         }
 
-        var spectral = 1 + (counted * 2);
+        var spectral = 1 + (count * 2);
 
         First = body[spectral];
         Last = body[spectral + 1];
-        Reached = body[spectral + 2] >> 4;
+        Bit = body[spectral + 2] >> 4;
         Carrying = body[spectral + 2] & 0x0F;
 
         if (!Progressive)
         {
-            return counted == Parts.Count && First == 0 && Last == 63 && Reached == 0 && Carrying == 0;
+            return count == Parts.Count && First == 0 && Last == 63 && Bit == 0 && Carrying == 0;
         }
 
-        return First <= Last && Last <= 63 && Carrying <= 13 && (First != 0 || counted == Parts.Count);
+        return First <= Last && Last <= 63 && Carrying <= 13 && (First != 0 || count == Parts.Count);
     }
 
     /// <summary>Reads the Adobe segment, the one place a file says its colors are not the usual ones.</summary>

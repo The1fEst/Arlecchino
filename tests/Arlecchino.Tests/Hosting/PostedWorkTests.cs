@@ -72,16 +72,16 @@ public sealed class PostedWorkTests
     public async Task ActionsPostedFromAnotherThreadAreRunOnTheFrame()
     {
         using var app = new TestApplication();
-        var posted = 0;
+        var work = 0;
 
         await Task.WhenAll(
-            Task.Run(() => FrameThread.Post(() => posted++)),
-            Task.Run(() => FrameThread.Post(() => posted++)),
-            Task.Run(() => FrameThread.Post(() => posted++)));
+            Task.Run(() => FrameThread.Post(() => work++)),
+            Task.Run(() => FrameThread.Post(() => work++)),
+            Task.Run(() => FrameThread.Post(() => work++)));
 
         app.Frame();
 
-        Assert.Equal(3, posted);
+        Assert.Equal(3, work);
     }
 
     [Fact]

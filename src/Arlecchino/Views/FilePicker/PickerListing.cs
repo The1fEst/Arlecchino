@@ -78,16 +78,16 @@ internal sealed class PickerListing
     /// Where browsing starts: the folder asked for, or the one holding the file asked for. Anything that is
     /// no longer there falls back to the drives.
     /// </summary>
-    /// <param name="requested">What the request asked for.</param>
+    /// <param name="folder">What the request asked for.</param>
     /// <returns>The folder to list, or an empty string for the drives.</returns>
-    public static string StartingFolder(string requested)
+    public static string StartingFolder(string folder)
     {
-        if (Directory.Exists(requested))
+        if (Directory.Exists(folder))
         {
-            return requested;
+            return folder;
         }
 
-        return File.Exists(requested) ? Path.GetDirectoryName(requested) ?? "" : "";
+        return File.Exists(folder) ? Path.GetDirectoryName(folder) ?? "" : "";
     }
 
     private void Load()

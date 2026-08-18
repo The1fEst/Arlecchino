@@ -128,10 +128,10 @@ internal sealed class StepKeys
 
         if (_keymap.Confirm.Matches(key))
         {
-            var picked = modal.Value;
+            var option = modal.Value;
 
             _state.CloseModal();
-            modal.OnPicked(picked);
+            modal.OnPicked(option);
 
             return;
         }

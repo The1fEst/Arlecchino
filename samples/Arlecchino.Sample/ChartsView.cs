@@ -52,7 +52,7 @@ public sealed class ChartsView : IArlecchinoView
         Value = static mirror => mirror.Megabytes,
         Items = Mirrors,
         Caption = static value => value.ToString("0", CultureInfo.InvariantCulture),
-        ItemStyle = static mirror => mirror.Megabytes < 100m ? Theme.Muted : Theme.Active,
+        ItemStyle = static mirror => mirror.Megabytes < 100m ? Theme.Secondary : Theme.Active,
     };
 
     private readonly Sparkline _downloads = new()
@@ -126,7 +126,7 @@ public sealed class ChartsView : IArlecchinoView
     {
         var (name, rest) = region.Rows(row, 1).SplitLeft(9);
 
-        name.WriteLine(0, label, Theme.Muted);
+        name.WriteLine(0, label, Theme.Secondary);
         widget.Draw(rest);
     }
 

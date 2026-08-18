@@ -49,7 +49,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     private readonly ArlecchinoKeymap _keymap;
     private readonly List<(TreeNode<T> Node, int Depth)> _visible = [];
 
-    private SurfaceRegion _drawn;
+    private SurfaceRegion _drawnRegion;
     private ScrollWindow _window;
 
     /// <summary>Creates the tree.</summary>
@@ -81,7 +81,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     public IReadOnlyList<TreeNode<T>> Roots { get; set; } = [];
 
     /// <summary>Index of the selected row, counted over the rows that are showing rather than over all nodes.</summary>
-    public int Selected { get; set; }
+    public int SelectedIndex { get; set; }
 
     /// <summary>Whether the tree has focus, which decides how strongly the selection is drawn.</summary>
     public bool IsFocused { get; set; }
@@ -92,7 +92,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
         get
         {
             Flatten();
-            return _visible.Count == 0 ? null : _visible[Math.Clamp(Selected, 0, _visible.Count - 1)].Node;
+            return _visible.Count == 0 ? null : _visible[Math.Clamp(SelectedIndex, 0, _visible.Count - 1)].Node;
         }
     }
 
@@ -114,7 +114,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// <returns>An empty region: the tree uses every row it is handed.</returns>
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        _drawn = region;
+        _drawnRegion = region;
 
         if (region.IsEmpty)
         {
@@ -122,8 +122,8 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
         }
 
         Flatten();
-        Selected = Math.Clamp(Selected, 0, Math.Max(0, _visible.Count - 1));
-        _window = ScrollWindow.Around(Selected, _visible.Count, region.Height);
+        SelectedIndex = Math.Clamp(SelectedIndex, 0, Math.Max(0, _visible.Count - 1));
+        _window = ScrollWindow.Around(SelectedIndex, _visible.Count, region.Height);
 
         var barred = ScrollBar.IsNeeded(_visible.Count, region.Height);
         var textWidth = barred ? Math.Max(0, region.Width - 1) : region.Width;
@@ -170,11 +170,11 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
         }
         else if (_keymap.First.Matches(key))
         {
-            Selected = 0;
+            SelectedIndex = 0;
         }
         else if (_keymap.Last.Matches(key))
         {
-            Selected = Math.Max(0, _visible.Count - 1);
+            SelectedIndex = Math.Max(0, _visible.Count - 1);
         }
         else if (_keymap.MoveRight.Matches(key))
         {
@@ -204,7 +204,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     /// <returns>What became of the event, including a route when a leaf was activated.</returns>
     public FocusResult HandleMouse(MouseEvent mouse)
     {
-        if (_drawn.IsEmpty || !_drawn.Contains(mouse.Row, mouse.Column))
+        if (_drawnRegion.IsEmpty || !_drawnRegion.Contains(mouse.Row, mouse.Column))
         {
             return FocusResult.Ignored;
         }
@@ -228,7 +228,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     {
         Flatten();
 
-        var (row, column) = _drawn.ToLocal(mouse.Row, mouse.Column);
+        var (row, column) = _drawnRegion.ToLocal(mouse.Row, mouse.Column);
         var index = _window.First + row;
 
         if (index < 0 || index >= _visible.Count)
@@ -236,8 +236,8 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
             return FocusResult.Handled;
         }
 
-        var wasSelected = index == Selected;
-        Selected = index;
+        var wasSelected = index == SelectedIndex;
+        SelectedIndex = index;
 
         var (node, depth) = _visible[index];
         var onMarker = column >= depth * IndentWidth && column < depth * IndentWidth + IndentWidth;
@@ -298,16 +298,16 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
             return;
         }
 
-        var depth = _visible[Math.Clamp(Selected, 0, _visible.Count - 1)].Depth;
+        var depth = _visible[Math.Clamp(SelectedIndex, 0, _visible.Count - 1)].Depth;
 
-        for (var index = Selected - 1; index >= 0; index--)
+        for (var index = SelectedIndex - 1; index >= 0; index--)
         {
             if (_visible[index].Depth >= depth)
             {
                 continue;
             }
 
-            Selected = index;
+            SelectedIndex = index;
             return;
         }
     }
@@ -325,7 +325,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
     private void Move(int delta)
     {
         Flatten();
-        Selected = Math.Clamp(Selected + delta, 0, Math.Max(0, _visible.Count - 1));
+        SelectedIndex = Math.Clamp(SelectedIndex + delta, 0, Math.Max(0, _visible.Count - 1));
     }
 
     private void Flatten()
@@ -358,11 +358,11 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget
 
     private IArlecchinoColor StyleOf(TreeNode<T> node, int index)
     {
-        if (index != Selected)
+        if (index != SelectedIndex)
         {
             return ItemStyle?.Invoke(node.Value) ?? Theme.Default;
         }
 
-        return IsFocused ? Theme.ActiveSelected : Theme.Selected;
+        return IsFocused ? Theme.ActiveSelection : Theme.Selection;
     }
 }

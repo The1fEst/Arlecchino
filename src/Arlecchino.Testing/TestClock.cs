@@ -8,11 +8,11 @@ namespace Arlecchino.Testing;
 /// </summary>
 public sealed class TestClock : TimeProvider
 {
-    private DateTimeOffset _now = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+    private DateTimeOffset _moment = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
     /// <summary>The time the clock reads now.</summary>
     /// <returns>The current time.</returns>
-    public override DateTimeOffset GetUtcNow() => _now;
+    public override DateTimeOffset GetUtcNow() => _moment;
 
     /// <summary>Moves the clock forward.</summary>
     /// <param name="amount">How far ahead; a negative amount leaves the clock where it is.</param>
@@ -20,7 +20,7 @@ public sealed class TestClock : TimeProvider
     {
         if (amount > TimeSpan.Zero)
         {
-            _now += amount;
+            _moment += amount;
         }
     }
 }

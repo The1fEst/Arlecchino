@@ -41,8 +41,8 @@ public static class ScrollBar
         var column = region.Width - 1;
         var thumbRows = Math.Max(1, rows * rows / total);
         var lastStart = rows - thumbRows;
-        var scrolled = total - rows;
-        var thumbStart = Math.Clamp(first * lastStart / scrolled, 0, lastStart);
+        var bar = total - rows;
+        var thumbStart = Math.Clamp(first * lastStart / bar, 0, lastStart);
 
         for (var row = 0; row < rows; row++)
         {
@@ -50,7 +50,7 @@ public static class ScrollBar
             region.Write(row,
                 column,
                 onThumb ? ThumbCell.ToString() : TrackCell.ToString(),
-                onThumb ? style ?? Theme.Active : Theme.Muted);
+                onThumb ? style ?? Theme.Active : Theme.Secondary);
         }
     }
 }

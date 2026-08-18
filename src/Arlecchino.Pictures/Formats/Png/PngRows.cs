@@ -18,12 +18,12 @@ internal static class PngRows
 
     /// <summary>Reads every row of the picture.</summary>
     /// <param name="header">What the picture is.</param>
-    /// <param name="deflated">The joined <c>IDAT</c> chunks.</param>
+    /// <param name="stream">The joined <c>IDAT</c> chunks.</param>
     /// <param name="palette">The palette, when the color type wants one.</param>
     /// <returns>The pixels, or <c>null</c> when the rows ran out or named a color that is not there.</returns>
-    internal static Raster? Read(PngHeader header, Stream deflated, byte[]? palette)
+    internal static Raster? Read(PngHeader header, Stream stream, byte[]? palette)
     {
-        using var inflate = new ZLibStream(deflated, CompressionMode.Decompress);
+        using var inflate = new ZLibStream(stream, CompressionMode.Decompress);
 
         var pixels = new Rgb[header.Width * header.Height];
 
@@ -36,17 +36,15 @@ internal static class PngRows
 
         for (var pass = 0; pass < 7; pass++)
         {
-            var read = Pass(
-                inflate,
-                header,
-                palette,
-                pixels,
-                ColumnStart[pass],
-                RowStart[pass],
-                ColumnStep[pass],
-                RowStep[pass]);
-
-            if (!read)
+            if (!Pass(
+                    inflate,
+                    header,
+                    palette,
+                    pixels,
+                    ColumnStart[pass],
+                    RowStart[pass],
+                    ColumnStep[pass],
+                    RowStep[pass]))
             {
                 return null;
             }
@@ -89,7 +87,7 @@ internal static class PngRows
         var stride = ((width * header.Channels * header.Depth) + 7) / 8;
         var step = Math.Max(1, ((header.Channels * header.Depth) + 7) / 8);
         var line = new byte[stride];
-        var above = new byte[stride];
+        var previousRow = new byte[stride];
 
         for (var row = 0; row < height; row++)
         {
@@ -100,16 +98,16 @@ internal static class PngRows
                 return false;
             }
 
-            Unfilter(filter, line, above, step);
+            Unfilter(filter, line, previousRow, step);
 
-            var into = ((rowStart + (row * rowStep)) * header.Width) + columnStart;
+            var offset = ((rowStart + (row * rowStep)) * header.Width) + columnStart;
 
-            if (!PngSamples.Row(line, header, palette, pixels, into, columnStep, width))
+            if (!PngSamples.Row(line, header, palette, pixels, offset, columnStep, width))
             {
                 return false;
             }
 
-            (above, line) = (line, above);
+            (previousRow, line) = (line, previousRow);
         }
 
         return true;
@@ -117,18 +115,18 @@ internal static class PngRows
 
     private static bool Filled(Stream inflate, byte[] line)
     {
-        var read = 0;
+        var at = 0;
 
-        while (read < line.Length)
+        while (at < line.Length)
         {
-            var got = inflate.Read(line, read, line.Length - read);
+            var count = inflate.Read(line, at, line.Length - at);
 
-            if (got == 0)
+            if (count == 0)
             {
                 return false;
             }
 
-            read += got;
+            at += count;
         }
 
         return true;
@@ -140,9 +138,9 @@ internal static class PngRows
     /// </summary>
     /// <param name="filter">Which filter the row was written with.</param>
     /// <param name="line">The row, undone in place.</param>
-    /// <param name="above">The row above, already undone.</param>
+    /// <param name="previousRow">The row above, already undone.</param>
     /// <param name="step">How many bytes back the pixel to the left stands.</param>
-    private static void Unfilter(int filter, byte[] line, byte[] above, int step)
+    private static void Unfilter(int filter, byte[] line, byte[] previousRow, int step)
     {
         switch (filter)
         {
@@ -157,7 +155,7 @@ internal static class PngRows
             case 2:
                 for (var index = 0; index < line.Length; index++)
                 {
-                    line[index] += above[index];
+                    line[index] += previousRow[index];
                 }
 
                 break;
@@ -165,12 +163,12 @@ internal static class PngRows
             case 3:
                 for (var index = 0; index < step && index < line.Length; index++)
                 {
-                    line[index] += (byte)(above[index] / 2);
+                    line[index] += (byte)(previousRow[index] / 2);
                 }
 
                 for (var index = step; index < line.Length; index++)
                 {
-                    line[index] += (byte)((line[index - step] + above[index]) / 2);
+                    line[index] += (byte)((line[index - step] + previousRow[index]) / 2);
                 }
 
                 break;
@@ -178,25 +176,25 @@ internal static class PngRows
             case 4:
                 for (var index = 0; index < step && index < line.Length; index++)
                 {
-                    line[index] += above[index];
+                    line[index] += previousRow[index];
                 }
 
                 for (var index = step; index < line.Length; index++)
                 {
-                    line[index] += Paeth(line[index - step], above[index], above[index - step]);
+                    line[index] += Paeth(line[index - step], previousRow[index], previousRow[index - step]);
                 }
 
                 break;
         }
     }
 
-    private static byte Paeth(int left, int above, int corner)
+    private static byte Paeth(int left, int upper, int corner)
     {
-        var guess = left + above - corner;
+        var guess = left + upper - corner;
         var toLeft = Math.Abs(guess - left);
-        var toAbove = Math.Abs(guess - above);
+        var toUpper = Math.Abs(guess - upper);
         var toCorner = Math.Abs(guess - corner);
 
-        return (byte)(toLeft <= toAbove && toLeft <= toCorner ? left : toAbove <= toCorner ? above : corner);
+        return (byte)(toLeft <= toUpper && toLeft <= toCorner ? left : toUpper <= toCorner ? upper : corner);
     }
 }

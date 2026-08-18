@@ -14,41 +14,41 @@ public sealed class ChoiceModalTests
     public void ArrowsMoveAndEnterPicks()
     {
         using var app = new TestApplication();
-        var picked = "";
+        var choice = "";
 
-        app.State.RequestChoice("Pick", Options, value => picked = value);
+        app.State.RequestChoice("Pick", Options, value => choice = value);
 
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("beta", picked);
+        Assert.Equal("beta", choice);
     }
 
     [Fact]
     public void CurrentOptionStartsSelected()
     {
         using var app = new TestApplication();
-        var picked = "";
+        var choice = "";
 
-        app.State.RequestChoice("Pick", Options, value => picked = value, current: "gamma");
+        app.State.RequestChoice("Pick", Options, value => choice = value, current: "gamma");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("gamma", picked);
+        Assert.Equal("gamma", choice);
     }
 
     [Fact]
     public void TypingFiltersAndResetsTheSelection()
     {
         using var app = new TestApplication();
-        var picked = "";
+        var choice = "";
 
-        app.State.RequestChoice("Pick", Options, value => picked = value);
+        app.State.RequestChoice("Pick", Options, value => choice = value);
 
         app.Press(ConsoleKey.DownArrow);
         app.Type("ga");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("gamma", picked);
+        Assert.Equal("gamma", choice);
     }
 
     [Fact]
@@ -100,9 +100,9 @@ public sealed class ChoiceModalTests
     public void SpaceMarksAndEnterReturnsSelectionInOptionOrder()
     {
         using var app = new TestApplication();
-        string[] picked = [];
+        string[] choice = [];
 
-        app.State.RequestMultiChoice("Columns", Options, [], value => picked = [.. value]);
+        app.State.RequestMultiChoice("Columns", Options, [], value => choice = [.. value]);
 
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.DownArrow);
@@ -112,7 +112,7 @@ public sealed class ChoiceModalTests
         app.Press(ConsoleKey.Spacebar);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(["alpha", "gamma"], picked);
+        Assert.Equal(["alpha", "gamma"], choice);
     }
 
     [Fact]
@@ -132,16 +132,16 @@ public sealed class ChoiceModalTests
     public void MarksSurviveFiltering()
     {
         using var app = new TestApplication();
-        string[] picked = [];
+        string[] choice = [];
 
-        app.State.RequestMultiChoice("Columns", Options, [], value => picked = [.. value]);
+        app.State.RequestMultiChoice("Columns", Options, [], value => choice = [.. value]);
 
         app.Press(ConsoleKey.Spacebar);
         app.Type("ga");
         app.Press(ConsoleKey.Spacebar);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(["alpha", "gamma"], picked);
+        Assert.Equal(["alpha", "gamma"], choice);
     }
 
     [Fact]

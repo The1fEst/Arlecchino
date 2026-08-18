@@ -57,7 +57,7 @@ public sealed class TextWidthTests
         surface.AppendLine(Wide + "|", Theme.Default);
         surface.Build();
 
-        var line = FrameText.Lines(terminal.Written)[0];
+        var line = FrameText.Lines(terminal.WrittenText)[0];
         Assert.Equal("日本語|", line.TrimEnd());
         Assert.Equal(20, TextWidth.Of(line));
     }
@@ -73,7 +73,7 @@ public sealed class TextWidthTests
         surface.WriteAt(0, 1, "x", Theme.Default);
         surface.Build();
 
-        var line = FrameText.Lines(terminal.Written)[0];
+        var line = FrameText.Lines(terminal.WrittenText)[0];
         Assert.Equal(" x本語", line.TrimEnd());
         Assert.Equal(10, TextWidth.Of(line));
     }
@@ -88,7 +88,7 @@ public sealed class TextWidthTests
         surface.WriteAt(0, 4, Emoji, Theme.Default);
         surface.Build();
 
-        Assert.Equal(5, TextWidth.Of(FrameText.Lines(terminal.Written)[0]));
+        Assert.Equal(5, TextWidth.Of(FrameText.Lines(terminal.WrittenText)[0]));
     }
 
     [Fact]

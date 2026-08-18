@@ -48,11 +48,11 @@ internal static class Program
     /// <returns>The bytes, quoted and legible.</returns>
     internal static string Escaped(string text)
     {
-        var escaped = new StringBuilder("\"");
+        var builder = new StringBuilder("\"");
 
         foreach (var character in text)
         {
-            escaped.Append(character switch
+            builder.Append(character switch
             {
                 '\e' => "\\e",
                 '\r' => "\\r",
@@ -63,7 +63,7 @@ internal static class Program
             });
         }
 
-        return escaped.Append('"').ToString();
+        return builder.Append('"').ToString();
     }
 
     /// <summary>

@@ -6,16 +6,16 @@ namespace Arlecchino.Tests.Input;
 
 public sealed class WindowsInputTranslatorTests
 {
-    private const uint Moved = 0x0001;
-    private const uint Wheeled = 0x0004;
+    private const uint MouseMove = 0x0001;
+    private const uint MouseWheel = 0x0004;
 
     private const uint Left = 0x0001;
     private const uint Right = 0x0002;
     private const uint Middle = 0x0004;
 
-    private const uint AltHeld = 0x0002;
-    private const uint ControlHeld = 0x0008;
-    private const uint ShiftHeld = 0x0010;
+    private const uint AltKey = 0x0002;
+    private const uint ControlKey = 0x0008;
+    private const uint ShiftKey = 0x0010;
 
     private const uint WheelUp = 0x00780000;
     private const uint WheelDown = 0xFF880000;
@@ -25,7 +25,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void KeyCarriesCharacterKeyAndModifiers()
     {
-        var key = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.A, 'a', ControlHeld | ShiftHeld);
+        var key = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.A, 'a', ControlKey | ShiftKey);
 
         Assert.Equal('a', key.Character);
         Assert.Equal(ConsoleKey.A, key.Key);
@@ -35,13 +35,13 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void ShiftThatOnlyTypedTheCharacterIsNotHeld()
     {
-        var colon = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Oem1, ':', ShiftHeld);
+        var colon = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Oem1, ':', ShiftKey);
 
         Assert.Equal(':', colon.Character);
         Assert.Equal(ConsoleKey.Oem1, colon.Key);
         Assert.Equal(KeyModifiers.None, colon.Modifiers);
 
-        var capital = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.J, 'J', ShiftHeld);
+        var capital = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.J, 'J', ShiftKey);
 
         Assert.Equal(KeyModifiers.None, capital.Modifiers);
     }
@@ -49,11 +49,11 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void ShiftOnAKeyThatTypesNothingIsHeld()
     {
-        var function = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.F6, '\0', ShiftHeld);
+        var function = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.F6, '\0', ShiftKey);
 
         Assert.Equal(KeyModifiers.Shift, function.Modifiers);
 
-        var tab = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Tab, '\t', ShiftHeld);
+        var tab = WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Tab, '\t', ShiftKey);
 
         Assert.Equal(KeyModifiers.Shift, tab.Modifiers);
     }
@@ -100,7 +100,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void MovementWithAButtonHeldIsADrag()
     {
-        Assert.True(_translator.TryTranslateMouse(2, 3, Left, 0, Moved, out var mouse));
+        Assert.True(_translator.TryTranslateMouse(2, 3, Left, 0, MouseMove, out var mouse));
 
         Assert.Equal(MouseAction.Moved, mouse.Action);
         Assert.Equal(MouseButton.Left, mouse.Button);
@@ -109,13 +109,13 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void MovementWithNoButtonIsNotAnEvent()
     {
-        Assert.False(_translator.TryTranslateMouse(2, 3, 0, 0, Moved, out _));
+        Assert.False(_translator.TryTranslateMouse(2, 3, 0, 0, MouseMove, out _));
     }
 
     [Fact]
     public void ADragDoesNotTurnIntoAPressWhenTheButtonStaysDown()
     {
-        _translator.TryTranslateMouse(0, 0, Left, 0, Moved, out _);
+        _translator.TryTranslateMouse(0, 0, Left, 0, MouseMove, out _);
 
         Assert.False(_translator.TryTranslateMouse(1, 1, Left, 0, 0, out _));
     }
@@ -123,7 +123,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void ReleaseAfterADragIsStillAReleaseOfThatButton()
     {
-        _translator.TryTranslateMouse(0, 0, Left, 0, Moved, out _);
+        _translator.TryTranslateMouse(0, 0, Left, 0, MouseMove, out _);
 
         Assert.True(_translator.TryTranslateMouse(1, 1, 0, 0, 0, out var mouse));
 
@@ -134,7 +134,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void WheelAwayFromTheUserScrollsUp()
     {
-        Assert.True(_translator.TryTranslateMouse(0, 0, WheelUp, 0, Wheeled, out var mouse));
+        Assert.True(_translator.TryTranslateMouse(0, 0, WheelUp, 0, MouseWheel, out var mouse));
 
         Assert.Equal(MouseAction.ScrolledUp, mouse.Action);
         Assert.Equal(MouseButton.None, mouse.Button);
@@ -143,7 +143,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void WheelTowardsTheUserScrollsDown()
     {
-        Assert.True(_translator.TryTranslateMouse(0, 0, WheelDown, 0, Wheeled, out var mouse));
+        Assert.True(_translator.TryTranslateMouse(0, 0, WheelDown, 0, MouseWheel, out var mouse));
 
         Assert.Equal(MouseAction.ScrolledDown, mouse.Action);
     }
@@ -151,7 +151,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void WheelDoesNotCountAsAHeldButton()
     {
-        _translator.TryTranslateMouse(0, 0, WheelUp, 0, Wheeled, out _);
+        _translator.TryTranslateMouse(0, 0, WheelUp, 0, MouseWheel, out _);
 
         Assert.True(_translator.TryTranslateMouse(0, 0, Left, 0, 0, out var mouse));
 
@@ -161,7 +161,7 @@ public sealed class WindowsInputTranslatorTests
     [Fact]
     public void MouseEventsCarryTheModifiersThatWereHeld()
     {
-        Assert.True(_translator.TryTranslateMouse(0, 0, Left, AltHeld | ShiftHeld, 0, out var mouse));
+        Assert.True(_translator.TryTranslateMouse(0, 0, Left, AltKey | ShiftKey, 0, out var mouse));
 
         Assert.Equal(KeyModifiers.Alt | KeyModifiers.Shift, mouse.Modifiers);
     }

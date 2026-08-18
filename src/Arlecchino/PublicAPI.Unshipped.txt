@@ -1,1 +1,63 @@
 #nullable enable
+*REMOVED*Arlecchino.Commands.CommandRegistry.Send(Arlecchino.Input.KeyPress pressed) -> Arlecchino.Navigation.ViewRoute
+*REMOVED*Arlecchino.Commands.CommandRegistry.TryFind(Arlecchino.Input.KeyPress pressed, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
+*REMOVED*Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset since, Arlecchino.Diagnostics.NotificationLevel level, string! text) -> void
+*REMOVED*Arlecchino.Diagnostics.Notification.Since.get -> System.DateTimeOffset
+*REMOVED*Arlecchino.Diagnostics.Notification.Filled() -> double?
+*REMOVED*Arlecchino.Editing.CompletionAsk.After.get -> string!
+*REMOVED*Arlecchino.Widgets.Lists.Table<T>.SortedBy.get -> int
+*REMOVED*Arlecchino.Hosting.ArlecchinoStrings.TerminalNeeded.get -> System.Func<string!>!
+*REMOVED*Arlecchino.Hosting.ArlecchinoStrings.TerminalNeeded.set -> void
+*REMOVED*Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onConfirmed) -> void
+*REMOVED*Arlecchino.State.ArlecchinoState.RequestMultiChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Collections.Generic.IReadOnlyList<string!>! selected, System.Action<System.Collections.Generic.IReadOnlyList<string!>!>! onSubmit) -> void
+*REMOVED*static Arlecchino.Widgets.Lists.ScrollWindow.Around(int selected, int itemCount, int rows) -> Arlecchino.Widgets.Lists.ScrollWindow
+*REMOVED*Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! option) -> bool
+*REMOVED*Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! option) -> void
+*REMOVED*abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void
+*REMOVED*Arlecchino.Editing.CompletionAsk.Before.get -> string!
+*REMOVED*Arlecchino.Editing.TextCompleter.Chosen.get -> int
+*REMOVED*Arlecchino.Forms.Form.Selected.get -> int
+*REMOVED*Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.get -> System.Collections.Generic.HashSet<string!>!
+*REMOVED*Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.init -> void
+*REMOVED*Arlecchino.Widgets.Lists.ListBox<T>.Selected.get -> int
+*REMOVED*Arlecchino.Widgets.Lists.ListBox<T>.Selected.set -> void
+*REMOVED*Arlecchino.Widgets.Lists.Table<T>.Selected.get -> int
+*REMOVED*Arlecchino.Widgets.Lists.Table<T>.Selected.set -> void
+*REMOVED*Arlecchino.Widgets.Lists.Tabs.Selected.get -> int
+*REMOVED*Arlecchino.Widgets.Lists.Tree<T>.Selected.get -> int
+*REMOVED*Arlecchino.Widgets.Lists.Tree<T>.Selected.set -> void
+*REMOVED*Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+*REMOVED*Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+*REMOVED*Arlecchino.Widgets.Text.EntryLook.Selected.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+*REMOVED*Arlecchino.Widgets.Text.EntryLook.Selected.init -> void
+Arlecchino.Commands.CommandRegistry.Send(Arlecchino.Input.KeyPress press) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Commands.CommandRegistry.TryFind(Arlecchino.Input.KeyPress press, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
+Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset raisedAt, Arlecchino.Diagnostics.NotificationLevel level, string! text) -> void
+Arlecchino.Diagnostics.Notification.RaisedAt.get -> System.DateTimeOffset
+Arlecchino.Diagnostics.Notification.Fraction() -> double?
+Arlecchino.Editing.CompletionAsk.Prefix.get -> string!
+Arlecchino.Widgets.Lists.Table<T>.SortedColumn.get -> int
+Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.set -> void
+Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onYes) -> void
+Arlecchino.State.ArlecchinoState.RequestMultiChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Collections.Generic.IReadOnlyList<string!>! selectedKeys, System.Action<System.Collections.Generic.IReadOnlyList<string!>!>! onSubmit) -> void
+static Arlecchino.Widgets.Lists.ScrollWindow.Around(int selectedIndex, int itemCount, int rows) -> Arlecchino.Widgets.Lists.ScrollWindow
+Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! choice) -> bool
+Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! choice) -> void
+abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! choice) -> void
+Arlecchino.Editing.CompletionAsk.Suffix.get -> string!
+Arlecchino.Editing.TextCompleter.ChosenIndex.get -> int
+Arlecchino.Forms.Form.SelectedIndex.get -> int
+Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedKeys.get -> System.Collections.Generic.HashSet<string!>!
+Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedKeys.init -> void
+Arlecchino.Widgets.Lists.ListBox<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.ListBox<T>.SelectedIndex.set -> void
+Arlecchino.Widgets.Lists.Table<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.Table<T>.SelectedIndex.set -> void
+Arlecchino.Widgets.Lists.Tabs.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.Tree<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.Tree<T>.SelectedIndex.set -> void
+Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selection, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selection, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.Selection.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Selection.init -> void

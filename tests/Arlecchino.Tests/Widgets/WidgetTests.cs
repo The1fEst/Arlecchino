@@ -26,7 +26,7 @@ public sealed class WidgetTests
     private static string[] Render(Surface surface, FakeTerminal terminal)
     {
         surface.Build();
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 
     [Fact]
@@ -43,9 +43,11 @@ public sealed class WidgetTests
     public void ListBoxDrawsItemsAndScrollsAroundTheSelection()
     {
         var (surface, terminal) = CreateSurface(12, 3);
-        var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c", "d", "e"] };
+        var list = new ListBox<string>(Keymap)
+        {
+            Render = static item => item, Items = ["a", "b", "c", "d", "e"], SelectedIndex = 4,
+        };
 
-        list.Selected = 4;
         list.Draw(surface.Frame);
 
         var lines = Render(surface, terminal);
@@ -76,14 +78,14 @@ public sealed class WidgetTests
         Assert.Equal('█', atBottom[2][^1]);
     }
 
-    private static string[] DrawScrollingList(int selected)
+    private static string[] DrawScrollingList(int selectedIndex)
     {
         var (surface, terminal) = CreateSurface(12, 3);
         var list = new ListBox<string>(Keymap)
         {
             Render = static item => item,
             Items = ["a", "b", "c", "d", "e", "f", "g", "h", "i"],
-            Selected = selected,
+            SelectedIndex = selectedIndex,
         };
 
         list.Draw(surface.Frame);
@@ -111,13 +113,13 @@ public sealed class WidgetTests
         var list = new ListBox<string>(Keymap) { Render = static item => item, Items = ["a", "b", "c"] };
 
         Assert.Equal(FocusResult.Handled, list.Handle(new(ConsoleKey.DownArrow)));
-        Assert.Equal(1, list.Selected);
+        Assert.Equal(1, list.SelectedIndex);
 
         list.Handle(new(ConsoleKey.End));
-        Assert.Equal(2, list.Selected);
+        Assert.Equal(2, list.SelectedIndex);
 
         list.Handle(new(ConsoleKey.Home));
-        Assert.Equal(0, list.Selected);
+        Assert.Equal(0, list.SelectedIndex);
 
         Assert.Equal(FocusResult.Ignored, list.Handle(new(ConsoleKey.F5)));
     }
@@ -125,22 +127,22 @@ public sealed class WidgetTests
     [Fact]
     public void ListBoxActivatesTheSelectedItem()
     {
-        var picked = "";
+        var choice = "";
         var list = new ListBox<string>(Keymap)
         {
             Render = static item => item,
             Items = ["a", "b"],
             OnActivate = item =>
             {
-                picked = item;
+                choice = item;
                 return new("Somewhere");
             },
+            SelectedIndex = 1,
         };
 
-        list.Selected = 1;
         var result = list.Handle(new(ConsoleKey.Enter));
 
-        Assert.Equal("b", picked);
+        Assert.Equal("b", choice);
         Assert.Equal(new("Somewhere"), result.Route);
     }
 
@@ -154,10 +156,10 @@ public sealed class WidgetTests
         list.Draw(region);
 
         list.HandleMouse(new(MouseAction.ScrolledDown, MouseButton.None, 0, 0, default));
-        Assert.Equal(1, list.Selected);
+        Assert.Equal(1, list.SelectedIndex);
 
         list.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 2, 0, default));
-        Assert.Equal(2, list.Selected);
+        Assert.Equal(2, list.SelectedIndex);
 
         Assert.Equal(FocusResult.Ignored,
             list.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 40, 0, default)));
@@ -224,7 +226,7 @@ public sealed class WidgetTests
 
         table.SortBy(0);
 
-        Assert.Equal(-1, table.SortedBy);
+        Assert.Equal(-1, table.SortedColumn);
         Assert.Equal(3, table.SelectedRow);
     }
 
@@ -267,19 +269,19 @@ public sealed class WidgetTests
     [Fact]
     public void TabsMoveWithArrowsAndReportTheChange()
     {
-        var selected = new List<int>();
+        var selectedIndex = new List<int>();
         var tabs = new Tabs(Keymap)
         {
             Titles = [static () => "One", static () => "Two", static () => "Three"],
-            OnSelected = selected.Add,
+            OnSelected = selectedIndex.Add,
         };
 
         tabs.Handle(new(ConsoleKey.RightArrow));
         tabs.Handle(new(ConsoleKey.RightArrow));
         tabs.Handle(new(ConsoleKey.LeftArrow));
 
-        Assert.Equal([1, 2, 1], selected);
-        Assert.Equal(1, tabs.Selected);
+        Assert.Equal([1, 2, 1], selectedIndex);
+        Assert.Equal(1, tabs.SelectedIndex);
     }
 
     [Fact]
@@ -294,7 +296,7 @@ public sealed class WidgetTests
         tabs.Draw(surface.Frame);
         tabs.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 0, 8, default));
 
-        Assert.Equal(1, tabs.Selected);
+        Assert.Equal(1, tabs.SelectedIndex);
     }
 
     [Fact]

@@ -38,7 +38,7 @@ public sealed class BrandPaletteTests
         using var colours = new ColorSupportScope(ColorSupport.None);
 
         Assert.Equal("", ThemePalette.Arlecchino.Header.Ansi);
-        Assert.Equal("", ThemePalette.Arlecchino.ActiveSelected.Ansi);
+        Assert.Equal("", ThemePalette.Arlecchino.ActiveSelection.Ansi);
     }
 
     [Fact]
@@ -48,15 +48,15 @@ public sealed class BrandPaletteTests
 
         TermColor[] overText =
         [
-            palette.Default, palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted,
+            palette.Default, palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Secondary,
             palette.Active
         ];
 
         Assert.All(overText, colour => Assert.Equal(TerminalColor.Default, colour.Background));
         Assert.All(overText, colour => Assert.Null(colour.ExactBackground));
 
-        Assert.NotEqual(TerminalColor.Default, palette.Selected.Background);
-        Assert.NotEqual(TerminalColor.Default, palette.ActiveSelected.Background);
+        Assert.NotEqual(TerminalColor.Default, palette.Selection.Background);
+        Assert.NotEqual(TerminalColor.Default, palette.ActiveSelection.Background);
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public sealed class BrandPaletteTests
 
         TermColor[] entries =
         [
-            palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Muted, palette.Input,
-            palette.Selected, palette.Active, palette.ActiveSelected, palette.Warning, palette.Error
+            palette.Header, palette.TableHeader, palette.Accent, palette.Info, palette.Secondary, palette.Input,
+            palette.Selection, palette.Active, palette.ActiveSelection, palette.Warning, palette.Error
         ];
 
         Assert.All(entries.Where(static colour => colour.ExactForeground is not null),

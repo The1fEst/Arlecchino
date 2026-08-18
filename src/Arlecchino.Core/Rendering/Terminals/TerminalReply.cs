@@ -9,21 +9,21 @@ namespace Arlecchino.Rendering.Terminals;
 internal static class TerminalReply
 {
     /// <summary>Finds the characters that no answer accounts for.</summary>
-    /// <param name="heard">Everything that was read while the probe waited.</param>
-    /// <returns>Where each typed character sits in <paramref name="heard"/>, in the order it was read.</returns>
-    public static IReadOnlyList<int> Typing(string heard)
+    /// <param name="reply">Everything that was read while the probe waited.</param>
+    /// <returns>Where each typed character sits in <paramref name="reply"/>, in the order it was read.</returns>
+    public static IReadOnlyList<int> Typing(string reply)
     {
-        var typed = new List<int>();
+        var places = new List<int>();
         var reading = Reading.Ground;
         var spoken = false;
 
-        for (var at = 0; at < heard.Length; at++)
+        for (var at = 0; at < reply.Length; at++)
         {
-            var letter = heard[at];
+            var letter = reply[at];
 
             if (reading == Reading.Ground && letter != '\e' && (spoken || letter != '\\'))
             {
-                typed.Add(at);
+                places.Add(at);
 
                 continue;
             }
@@ -32,7 +32,7 @@ internal static class TerminalReply
             reading = Next(reading, letter);
         }
 
-        return typed;
+        return places;
     }
 
     private static Reading Next(Reading reading, char letter) => reading switch

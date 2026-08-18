@@ -41,22 +41,22 @@ public static class TerminalProbe
     /// it before the mouse and paste modes go on.
     /// </summary>
     /// <param name="terminal">The terminal to ask.</param>
-    /// <param name="within">How long to wait for the last answer before giving up.</param>
+    /// <param name="timeout">How long to wait for the last answer before giving up.</param>
     /// <returns>
     /// <c>true</c> when the terminal said anything at all. What it said is in
     /// <see cref="TerminalCapabilities.Sixel"/>, <see cref="TerminalCapabilities.Kitty"/> and
     /// <see cref="Glyphs.CellWidth"/>; a <c>false</c> here is how you tell a terminal that cannot draw
     /// pictures from one that never replied.
     /// </returns>
-    public static bool Ask(IArlecchinoTerminal terminal, TimeSpan within)
+    public static bool Ask(IArlecchinoTerminal terminal, TimeSpan timeout)
     {
         terminal.Write(KittyQuery + CellSizeQuery + TextAreaQuery + BackgroundQuery + AttributesQuery);
 
-        var heard = Listen(terminal, within);
+        var reply = Listen(terminal, timeout);
 
-        Install(Read(heard, terminal.Width, terminal.Height));
+        Install(Read(reply, terminal.Width, terminal.Height));
 
-        return heard.Length > 0;
+        return reply.Length > 0;
     }
 
     private static void Install(TerminalAnswers answers)
@@ -77,15 +77,15 @@ public static class TerminalProbe
         Glyphs.CellHeight = answers.CellHeight;
     }
 
-    private static string Listen(IArlecchinoTerminal terminal, TimeSpan within)
+    private static string Listen(IArlecchinoTerminal terminal, TimeSpan timeout)
     {
-        var heard = new StringBuilder();
-        var until = DateTime.UtcNow + within;
+        var buffer = new StringBuilder();
+        var deadline = DateTime.UtcNow + timeout;
 
-        var read = new List<KeyPress>();
+        var presses = new List<KeyPress>();
         var fenced = false;
 
-        while (DateTime.UtcNow < until)
+        while (DateTime.UtcNow < deadline)
         {
             if (!terminal.KeyAvailable)
             {
@@ -100,15 +100,15 @@ public static class TerminalProbe
 
             var key = terminal.ReadKey();
 
-            read.Add(key);
-            heard.Append(key.Character);
+            presses.Add(key);
+            buffer.Append(key.Character);
 
-            fenced = fenced || Fenced(heard);
+            fenced = fenced || Fenced(buffer);
         }
 
         if (!fenced)
         {
-            foreach (var key in read)
+            foreach (var key in presses)
             {
                 terminal.Unread(key);
             }
@@ -116,36 +116,36 @@ public static class TerminalProbe
             return "";
         }
 
-        var said = heard.ToString();
+        var reply = buffer.ToString();
 
-        foreach (var at in TerminalReply.Typing(said))
+        foreach (var at in TerminalReply.Typing(reply))
         {
-            terminal.Unread(read[at]);
+            terminal.Unread(presses[at]);
         }
 
-        return said;
+        return reply;
     }
 
-    private static bool Fenced(StringBuilder heard) =>
-        heard.Length > 0 && heard[^1] == 'c' && heard.ToString().Contains("\e[?", StringComparison.Ordinal);
+    private static bool Fenced(StringBuilder buffer) =>
+        buffer.Length > 0 && buffer[^1] == 'c' && buffer.ToString().Contains("\e[?", StringComparison.Ordinal);
 
-    internal static TerminalAnswers Read(string heard, int columns, int rows)
+    internal static TerminalAnswers Read(string reply, int columns, int rows)
     {
-        var kitty = heard.Contains("_Gi=31;OK", StringComparison.Ordinal);
-        var (cellWidth, cellHeight) = CellSize(heard, columns, rows);
+        var kitty = reply.Contains("_Gi=31;OK", StringComparison.Ordinal);
+        var (cellWidth, cellHeight) = CellSize(reply, columns, rows);
 
-        return new(Sixel(heard), kitty, cellWidth, cellHeight, Background(heard));
+        return new(Sixel(reply), kitty, cellWidth, cellHeight, Background(reply));
     }
 
     /// <summary>
     /// Reads the answer to <c>OSC 11</c>, the color behind the text, written as <c>rgb:</c> and three hex
     /// groups. Each group is scaled from however many digits it turned out to have.
     /// </summary>
-    /// <param name="heard">Everything the terminal said.</param>
+    /// <param name="reply">Everything the terminal said.</param>
     /// <returns>The color, or <c>null</c> when it did not say.</returns>
-    private static Rgb? Background(string heard)
+    private static Rgb? Background(string reply)
     {
-        var at = heard.IndexOf("]11;rgb:", StringComparison.Ordinal);
+        var at = reply.IndexOf("]11;rgb:", StringComparison.Ordinal);
 
         if (at < 0)
         {
@@ -159,7 +159,7 @@ public static class TerminalProbe
         {
             if (channel > 0)
             {
-                if (reading >= heard.Length || heard[reading] != '/')
+                if (reading >= reply.Length || reply[reading] != '/')
                 {
                     return null;
                 }
@@ -167,7 +167,7 @@ public static class TerminalProbe
                 reading++;
             }
 
-            if (!TryChannel(heard, ref reading, out channels[channel]))
+            if (!TryChannel(reply, ref reading, out channels[channel]))
             {
                 return null;
             }
@@ -176,14 +176,14 @@ public static class TerminalProbe
         return new(channels[0], channels[1], channels[2]);
     }
 
-    private static bool TryChannel(string heard, ref int at, out byte channel)
+    private static bool TryChannel(string reply, ref int at, out byte channel)
     {
         var value = 0;
         var digits = 0;
 
-        while (at < heard.Length && Uri.IsHexDigit(heard[at]) && digits < 4)
+        while (at < reply.Length && Uri.IsHexDigit(reply[at]) && digits < 4)
         {
-            value = (value * 16) + Uri.FromHex(heard[at++]);
+            value = (value * 16) + Uri.FromHex(reply[at++]);
             digits++;
         }
 
@@ -199,23 +199,23 @@ public static class TerminalProbe
         return digits > 0;
     }
 
-    private static bool Sixel(string heard)
+    private static bool Sixel(string reply)
     {
-        var at = heard.IndexOf("\e[?", StringComparison.Ordinal);
+        var at = reply.IndexOf("\e[?", StringComparison.Ordinal);
 
         if (at < 0)
         {
             return false;
         }
 
-        var end = heard.IndexOf('c', at);
+        var end = reply.IndexOf('c', at);
 
         if (end < 0)
         {
             return false;
         }
 
-        foreach (var attribute in heard[(at + 3)..end].Split(';'))
+        foreach (var attribute in reply[(at + 3)..end].Split(';'))
         {
             if (attribute == "4")
             {
@@ -226,16 +226,16 @@ public static class TerminalProbe
         return false;
     }
 
-    private static (int Width, int Height) CellSize(string heard, int columns, int rows)
+    private static (int Width, int Height) CellSize(string reply, int columns, int rows)
     {
-        var (cellHeight, cellWidth) = Report(heard, "\e[6;");
+        var (cellHeight, cellWidth) = Report(reply, "\e[6;");
 
         if (cellWidth > 0 && cellHeight > 0)
         {
             return (cellWidth, cellHeight);
         }
 
-        var (areaHeight, areaWidth) = Report(heard, "\e[4;");
+        var (areaHeight, areaWidth) = Report(reply, "\e[4;");
 
         if (areaWidth > 0 && areaHeight > 0 && columns > 0 && rows > 0)
         {
@@ -245,9 +245,9 @@ public static class TerminalProbe
         return (0, 0);
     }
 
-    private static (int First, int Second) Report(string heard, string opening)
+    private static (int First, int Second) Report(string reply, string opening)
     {
-        var at = heard.IndexOf(opening, StringComparison.Ordinal);
+        var at = reply.IndexOf(opening, StringComparison.Ordinal);
 
         if (at < 0)
         {
@@ -255,28 +255,28 @@ public static class TerminalProbe
         }
 
         var reading = at + opening.Length;
-        var first = Number(heard, ref reading);
+        var first = Number(reply, ref reading);
 
-        if (reading >= heard.Length || heard[reading] != ';')
+        if (reading >= reply.Length || reply[reading] != ';')
         {
             return (0, 0);
         }
 
         reading++;
 
-        var second = Number(heard, ref reading);
+        var second = Number(reply, ref reading);
 
-        return reading < heard.Length && heard[reading] == 't' ? (first, second) : (0, 0);
+        return reading < reply.Length && reply[reading] == 't' ? (first, second) : (0, 0);
     }
 
-    private static int Number(string heard, ref int at)
+    private static int Number(string reply, ref int at)
     {
         var value = 0;
         var digits = 0;
 
-        while (at < heard.Length && char.IsAsciiDigit(heard[at]))
+        while (at < reply.Length && char.IsAsciiDigit(reply[at]))
         {
-            value = (value * 10) + (heard[at++] - '0');
+            value = (value * 10) + (reply[at++] - '0');
             digits++;
         }
 

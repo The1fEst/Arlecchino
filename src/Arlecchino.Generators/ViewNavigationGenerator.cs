@@ -51,16 +51,16 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                     return;
                 }
 
-                var declared = views.OfType<ViewModel>().ToArray();
+                var models = views.OfType<ViewModel>().ToArray();
 
-                var named = declared
+                var routes = models
                     .GroupBy(static view => view.RouteName)
                     .Select(group => ReportDuplicates(ctx, group))
                     .OrderBy(static view => view.RouteName == "Default" ? 0 : 1)
                     .ThenBy(static view => view.RouteName, StringComparer.Ordinal)
                     .ToArray();
 
-                foreach (var view in named)
+                foreach (var view in routes)
                 {
                     if (!view.HasPublicConstructor)
                     {
@@ -71,7 +71,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                     }
                 }
 
-                var viewModels = named.Where(static view => view.HasPublicConstructor).ToArray();
+                var viewModels = routes.Where(static view => view.HasPublicConstructor).ToArray();
 
                 if (!settings.NamespaceWasChosen)
                 {
@@ -124,7 +124,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
 
     private static ViewModel ReportDuplicates(SourceProductionContext context, IGrouping<string, ViewModel> group)
     {
-        var kept = group.First();
+        var first = group.First();
 
         foreach (var ignored in group.Skip(1))
         {
@@ -132,11 +132,11 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
                 ViewDiagnostics.DuplicateRoute,
                 ignored.Location,
                 ignored.TypeName,
-                kept.TypeName,
+                first.TypeName,
                 group.Key));
         }
 
-        return kept;
+        return first;
     }
 
     private static bool ImplementsView(INamedTypeSymbol symbol)
@@ -225,7 +225,7 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
     {
         if (views.Count == 0)
         {
-            return string.Join("\n", ["        view = null;", "        return false;"]);
+            return string.Join("\n", "        view = null;", "        return false;");
         }
 
         var cases = views.SelectMany(static view => new[]

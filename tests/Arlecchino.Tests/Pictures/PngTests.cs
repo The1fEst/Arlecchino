@@ -133,7 +133,7 @@ public sealed class PngTests
                 [0, 3, 4],
             ],
             depth: 8,
-            interlaced: 1));
+            interlacing: 1));
 
         Assert.NotNull(raster);
         Assert.Equal(1, raster.Pixels[0].Red);
@@ -204,7 +204,7 @@ public sealed class PngTests
     /// <param name="rows">Each row, filter byte first.</param>
     /// <param name="palette">The palette, when the color type wants one.</param>
     /// <param name="depth">Bits a channel.</param>
-    /// <param name="interlaced">Whether it claims to be interlaced.</param>
+    /// <param name="interlacing">Whether it claims to be interlaced.</param>
     /// <returns>The file.</returns>
     private static byte[] Written(
         int width,
@@ -213,7 +213,7 @@ public sealed class PngTests
         byte[][] rows,
         byte[]? palette = null,
         byte depth = 8,
-        byte interlaced = 0)
+        byte interlacing = 0)
     {
         var file = new MemoryStream();
 
@@ -225,7 +225,7 @@ public sealed class PngTests
         BigEndian(header, 4, height);
         header[8] = depth;
         header[9] = (byte)colour;
-        header[12] = interlaced;
+        header[12] = interlacing;
 
         Chunk(file, "IHDR", header);
 
@@ -241,14 +241,14 @@ public sealed class PngTests
             raw.Write(row);
         }
 
-        var deflated = new MemoryStream();
+        var stream = new MemoryStream();
 
-        using (var zip = new ZLibStream(deflated, CompressionMode.Compress, leaveOpen: true))
+        using (var zip = new ZLibStream(stream, CompressionMode.Compress, leaveOpen: true))
         {
             zip.Write(raw.ToArray());
         }
 
-        Chunk(file, "IDAT", deflated.ToArray());
+        Chunk(file, "IDAT", stream.ToArray());
         Chunk(file, "IEND", []);
 
         return file.ToArray();
@@ -266,11 +266,11 @@ public sealed class PngTests
         file.Write("\0\0\0\0"u8);
     }
 
-    private static void BigEndian(IList<byte> into, int at, int value)
+    private static void BigEndian(IList<byte> bytes, int at, int value)
     {
-        into[at] = (byte)(value >> 24);
-        into[at + 1] = (byte)(value >> 16);
-        into[at + 2] = (byte)(value >> 8);
-        into[at + 3] = (byte)value;
+        bytes[at] = (byte)(value >> 24);
+        bytes[at + 1] = (byte)(value >> 16);
+        bytes[at + 2] = (byte)(value >> 8);
+        bytes[at + 3] = (byte)value;
     }
 }

@@ -340,8 +340,8 @@ public class ArlecchinoState
     /// selected, so a stray <c>Enter</c> cancels rather than deletes.
     /// </summary>
     /// <param name="title">The question.</param>
-    /// <param name="onConfirmed">Called only when the answer was yes.</param>
-    public void RequestConfirmation(string title, Action onConfirmed)
+    /// <param name="onYes">Called only when the answer was yes.</param>
+    public void RequestConfirmation(string title, Action onYes)
     {
         Modal = new ToggleModal
         {
@@ -351,7 +351,7 @@ public class ArlecchinoState
             {
                 if (answer)
                 {
-                    onConfirmed();
+                    onYes();
                 }
             },
         };
@@ -379,19 +379,19 @@ public class ArlecchinoState
     /// </summary>
     /// <param name="title">Title of the dialog.</param>
     /// <param name="options">What to choose from.</param>
-    /// <param name="selected">Options marked to begin with.</param>
+    /// <param name="selectedKeys">Options marked to begin with.</param>
     /// <param name="onSubmit">Called with everything marked.</param>
     public void RequestMultiChoice(
         string title,
         IReadOnlyList<string> options,
-        IReadOnlyList<string> selected,
+        IReadOnlyList<string> selectedKeys,
         Action<IReadOnlyList<string>> onSubmit)
     {
         Modal = new MultiChoiceModal
         {
             Title = title,
             Options = options,
-            Selected = new(selected, StringComparer.Ordinal),
+            SelectedKeys = new(selectedKeys, StringComparer.Ordinal),
             OnSubmit = onSubmit,
         };
     }

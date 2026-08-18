@@ -85,32 +85,32 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     /// <param name="items">What to put in. Adding none, or only what is there, changes nothing.</param>
     public void Add(IReadOnlyList<T> items)
     {
-        var added = new List<T>(items.Count);
-        var seen = new HashSet<T>(_items.Comparer);
+        var addedItems = new List<T>(items.Count);
+        var seenItems = new HashSet<T>(_items.Comparer);
 
         foreach (var item in items)
         {
-            if (!_items.Contains(item) && seen.Add(item))
+            if (!_items.Contains(item) && seenItems.Add(item))
             {
-                added.Add(item);
+                addedItems.Add(item);
             }
         }
 
-        if (added.Count == 0)
+        if (addedItems.Count == 0)
         {
             return;
         }
 
         Verify();
 
-        foreach (var item in added)
+        foreach (var item in addedItems)
         {
             _items.Add(item);
         }
 
         if (Recording)
         {
-            AtomChanges.NotifyRecorded(new Added(this, [.. added]));
+            AtomChanges.NotifyRecorded(new Added(this, [.. addedItems]));
         }
 
         Notify();
@@ -243,14 +243,14 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
             }
         }
 
-        var given = new HashSet<T>(_items.Comparer);
+        var givenItems = new HashSet<T>(_items.Comparer);
 
         foreach (var item in items)
         {
-            given.Add(item);
+            givenItems.Add(item);
         }
 
-        return given.Count == _items.Count;
+        return givenItems.Count == _items.Count;
     }
 
     private void Track()
@@ -373,20 +373,20 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     private sealed class Swapped : IAtomEdit
     {
         private readonly AtomsSet<T> _set;
-        private readonly T[] _before;
-        private readonly T[] _after;
+        private readonly T[] _oldValue;
+        private readonly T[] _newValue;
 
-        public Swapped(AtomsSet<T> set, T[] before, T[] after)
+        public Swapped(AtomsSet<T> set, T[] oldValue, T[] newValue)
         {
             _set = set;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _set;
 
-        public void Undo() => _set.ResetSilently(_before);
+        public void Undo() => _set.ResetSilently(_oldValue);
 
-        public void Redo() => _set.ResetSilently(_after);
+        public void Redo() => _set.ResetSilently(_newValue);
     }
 }

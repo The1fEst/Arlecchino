@@ -17,7 +17,7 @@ internal sealed class ValuePaint
     private const int TrackCells = 24;
     private const int SwatchRows = 2;
     private const int ChipGap = 3;
-    private const char Filled = '█';
+    private const char FilledCell = '█';
     private const char Empty = '░';
 
     private readonly ArlecchinoStrings _strings;
@@ -36,12 +36,12 @@ internal sealed class ValuePaint
     /// <param name="modal">The dialog.</param>
     public void Slider(SliderModal modal)
     {
-        var filled = Math.Clamp((int)Math.Round(modal.Fraction * TrackCells), 0, TrackCells);
+        var cells = Math.Clamp((int)Math.Round(modal.Fraction * TrackCells), 0, TrackCells);
 
         List<Piece[]> body =
         [
             [
-                new(Track(filled), Theme.Active),
+                new(Track(cells), Theme.Active),
                 new($"  {modal.Display(modal.Value)}", Theme.Accent),
             ],
         ];
@@ -62,9 +62,9 @@ internal sealed class ValuePaint
         List<Piece[]> body =
         [
             [
-                new(yes, modal.Value ? Theme.ActiveSelected : Theme.Muted),
+                new(yes, modal.Value ? Theme.ActiveSelection : Theme.Secondary),
                 new(new(' ', ChipGap), Theme.Default),
-                new(no, modal.Value ? Theme.Muted : Theme.ActiveSelected),
+                new(no, modal.Value ? Theme.Secondary : Theme.ActiveSelection),
             ],
         ];
 
@@ -90,7 +90,7 @@ internal sealed class ValuePaint
         {
             if (index > 0)
             {
-                pieces.Add(new(modal.Separator, Theme.Muted));
+                pieces.Add(new(modal.Separator, Theme.Secondary));
             }
 
             pieces.Add(new(texts[index], index == modal.Segment ? Theme.Input : Theme.Default));
@@ -128,9 +128,9 @@ internal sealed class ValuePaint
 
             body.Add(
             [
-                new(TextWidth.PadRight(labels[(int)channel], labelWidth + 2), lit ? Theme.Accent : Theme.Muted),
-                new(Track(maximum > 0 ? value * TrackCells / maximum : 0), lit ? Theme.Active : Theme.Muted),
-                new($"  {value,3}", lit ? Theme.Accent : Theme.Muted),
+                new(TextWidth.PadRight(labels[(int)channel], labelWidth + 2), lit ? Theme.Accent : Theme.Secondary),
+                new(Track(maximum > 0 ? value * TrackCells / maximum : 0), lit ? Theme.Active : Theme.Secondary),
+                new($"  {value,3}", lit ? Theme.Accent : Theme.Secondary),
             ]);
         }
 
@@ -155,23 +155,23 @@ internal sealed class ValuePaint
     /// The bar of an entry that reports how far along it is, drawn as pieces rather than by the widget
     /// because a dialog is laid out line by line.
     /// </summary>
-    /// <param name="share">How full it is, from <c>0</c> to <c>1</c>.</param>
+    /// <param name="progress">How full it is, from <c>0</c> to <c>1</c>.</param>
     /// <param name="width">How wide the box is.</param>
     /// <returns>The pieces that make up the row.</returns>
-    public static Piece[] Bar(double share, int width)
+    public static Piece[] Bar(double progress, int width)
     {
-        var readout = $" {share * 100:0}%";
+        var readout = $" {progress * 100:0}%";
         var track = Math.Max(1, width - TextWidth.Of(readout));
-        var filled = (int)Math.Round(share * track);
+        var cells = (int)Math.Round(progress * track);
 
         return
         [
-            new(new(Filled, filled), Theme.Active),
-            new(new(Empty, Math.Max(0, track - filled)), Theme.Muted),
+            new(new(FilledCell, cells), Theme.Active),
+            new(new(Empty, Math.Max(0, track - cells)), Theme.Secondary),
             new(readout, Theme.Accent),
         ];
     }
 
-    private static string Track(int filled) =>
-        $"[{new string(Filled, filled)}{new string(Empty, TrackCells - filled)}]";
+    private static string Track(int cells) =>
+        $"[{new string(FilledCell, cells)}{new string(Empty, TrackCells - cells)}]";
 }

@@ -41,21 +41,21 @@ public static class EntryKeys
         Action<string> copy,
         KeyPress key)
     {
-        var selected = TextEditing.Selected(entry);
+        var selectedText = TextEditing.Selected(entry);
 
         if (keymap.Copy.Matches(key))
         {
-            copy(selected.Length > 0 ? selected : entry.Text);
+            copy(selectedText.Length > 0 ? selectedText : entry.Text);
 
             return true;
         }
 
-        if (!keymap.Cut.Matches(key) || selected.Length == 0)
+        if (!keymap.Cut.Matches(key) || selectedText.Length == 0)
         {
             return false;
         }
 
-        copy(selected);
+        copy(selectedText);
         TextEditing.EraseSelection(entry);
 
         return true;

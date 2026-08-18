@@ -15,7 +15,7 @@ namespace Arlecchino.Tools;
 internal static class Ship
 {
     private const string Header = "#nullable enable";
-    private const string Gone = "*REMOVED*";
+    private const string Removal = "*REMOVED*";
     private const string Calendar = @"^(\d{4}\.(?:[1-9]|1[0-2]))\.([1-9][0-9]*)$";
 
     private static readonly string[] Packages =
@@ -87,10 +87,10 @@ internal static class Ship
     {
         var today = DateTime.Now;
         var month = FormattableString.Invariant($"{today.Year}.{today.Month}");
-        var written = Regex.Match(current, Calendar);
+        var match = Regex.Match(current, Calendar);
 
-        var build = written.Success && written.Groups[1].Value == month
-            ? int.Parse(written.Groups[2].Value, CultureInfo.InvariantCulture) + 1
+        var build = match.Success && match.Groups[1].Value == month
+            ? int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture) + 1
             : 1;
 
         return FormattableString.Invariant($"{month}.{build}");
@@ -101,32 +101,32 @@ internal static class Ship
         var folder = Path.Combine(Program.Root(), "src", package);
         var shippedPath = Path.Combine(folder, "PublicAPI.Shipped.txt");
         var unshippedPath = Path.Combine(folder, "PublicAPI.Unshipped.txt");
-        var unshipped = Entries(unshippedPath);
+        var entries = Entries(unshippedPath);
 
-        if (unshipped.Count == 0)
+        if (entries.Count == 0)
         {
             Console.WriteLine($"{package}: nothing to ship");
 
             return;
         }
 
-        var removed = unshipped
-            .Where(static entry => entry.StartsWith(Gone, StringComparison.Ordinal))
-            .Select(static entry => entry[Gone.Length..])
+        var removals = entries
+            .Where(static entry => entry.StartsWith(Removal, StringComparison.Ordinal))
+            .Select(static entry => entry[Removal.Length..])
             .ToHashSet(StringComparer.Ordinal);
 
-        var added = unshipped.Where(static entry => !entry.StartsWith(Gone, StringComparison.Ordinal)).ToList();
+        var additions = entries.Where(static entry => !entry.StartsWith(Removal, StringComparison.Ordinal)).ToList();
 
-        var shipped = Entries(shippedPath)
-            .Where(entry => !removed.Contains(entry))
-            .Concat(added)
+        var total = Entries(shippedPath)
+            .Where(entry => !removals.Contains(entry))
+            .Concat(additions)
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static entry => entry, StringComparer.Ordinal);
 
-        File.WriteAllLines(shippedPath, new[] { Header }.Concat(shipped));
+        File.WriteAllLines(shippedPath, new[] { Header }.Concat(total));
         File.WriteAllLines(unshippedPath, [Header]);
 
-        Console.WriteLine($"{package}: shipped {added.Count} added, {removed.Count} removed");
+        Console.WriteLine($"{package}: shipped {additions.Count} added, {removals.Count} removed");
     }
 
     private static List<string> Entries(string path) =>

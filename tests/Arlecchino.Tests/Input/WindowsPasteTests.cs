@@ -58,10 +58,10 @@ public sealed class WindowsPasteTests
     [Fact]
     public void AWrappedRunCarriesTheMarkersAReaderLooksFor()
     {
-        var wrapped = string.Concat(WindowsPaste.Wrapped([Typed('l'), Typed('s'), Typed('\r')])
+        var lines = string.Concat(WindowsPaste.Wrapped([Typed('l'), Typed('s'), Typed('\r')])
             .Select(static key => key.Character));
 
-        Assert.Equal("\e[200~ls\r\e[201~", wrapped);
+        Assert.Equal("\e[200~ls\r\e[201~", lines);
     }
 
     [Fact]

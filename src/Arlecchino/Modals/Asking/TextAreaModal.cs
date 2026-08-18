@@ -80,10 +80,10 @@ public sealed class TextAreaModal : Modal, ITextEntry
     /// <returns>The index of the first character on it.</returns>
     public int StartOf(int row)
     {
-        var wanted = Math.Clamp(row, 0, _lines.Length - 1);
+        var room = Math.Clamp(row, 0, _lines.Length - 1);
         var start = 0;
 
-        for (var index = 0; index < wanted; index++)
+        for (var index = 0; index < room; index++)
         {
             start += _lines[index].Length + 1;
         }
@@ -162,9 +162,9 @@ public sealed class TextAreaModal : Modal, ITextEntry
 
     private int Placed(int row, int column)
     {
-        var wanted = Math.Clamp(row, 0, _lines.Length - 1);
+        var room = Math.Clamp(row, 0, _lines.Length - 1);
 
-        return StartOf(wanted) + Math.Clamp(column, 0, _lines[wanted].Length);
+        return StartOf(room) + Math.Clamp(column, 0, _lines[room].Length);
     }
 
     private void Put(int caret, bool collapse)

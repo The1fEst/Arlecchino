@@ -280,35 +280,35 @@ public sealed class TerminalInputReader
 
     private void ReadPaste()
     {
-        var pasted = new StringBuilder();
+        var pastedText = new StringBuilder();
 
         while (WaitForKey())
         {
-            pasted.Append(_terminal.ReadKey().Character);
+            pastedText.Append(_terminal.ReadKey().Character);
 
-            if (!EndsPaste(pasted))
+            if (!EndsPaste(pastedText))
             {
                 continue;
             }
 
-            pasted.Length -= PasteEnd.Length;
-            SendPaste(pasted.ToString());
+            pastedText.Length -= PasteEnd.Length;
+            SendPaste(pastedText.ToString());
             return;
         }
 
-        SendPaste(pasted.ToString());
+        SendPaste(pastedText.ToString());
     }
 
-    private static bool EndsPaste(StringBuilder pasted)
+    private static bool EndsPaste(StringBuilder pastedText)
     {
-        if (pasted.Length < PasteEnd.Length)
+        if (pastedText.Length < PasteEnd.Length)
         {
             return false;
         }
 
         for (var i = 0; i < PasteEnd.Length; i++)
         {
-            if (pasted[pasted.Length - PasteEnd.Length + i] != PasteEnd[i])
+            if (pastedText[pastedText.Length - PasteEnd.Length + i] != PasteEnd[i])
             {
                 return false;
             }

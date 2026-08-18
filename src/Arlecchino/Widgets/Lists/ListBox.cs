@@ -21,7 +21,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
 
     private readonly ArlecchinoKeymap _keymap;
 
-    private SurfaceRegion _drawn;
+    private SurfaceRegion _drawnRegion;
     private ScrollWindow _window;
 
     /// <summary>Creates the list.</summary>
@@ -53,13 +53,13 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     public IReadOnlyList<T> Items { get; set; } = [];
 
     /// <summary>Index of the selected row.</summary>
-    public int Selected { get; set; }
+    public int SelectedIndex { get; set; }
 
     /// <summary>Whether the list has focus, which decides how strongly the selection is drawn.</summary>
     public bool IsFocused { get; set; }
 
     /// <summary>The selected item, or the type's default when the list is empty.</summary>
-    public T? SelectedItem => Items.Count == 0 ? default : Items[Math.Clamp(Selected, 0, Items.Count - 1)];
+    public T? SelectedItem => Items.Count == 0 ? default : Items[Math.Clamp(SelectedIndex, 0, Items.Count - 1)];
 
     /// <summary>
     /// Draws the rows around the selection and remembers where they landed, which is what lets clicks
@@ -70,15 +70,15 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     /// <returns>An empty region: the list uses every row it is handed.</returns>
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        _drawn = region;
+        _drawnRegion = region;
 
         if (region.IsEmpty)
         {
             return region;
         }
 
-        Selected = Math.Clamp(Selected, 0, Math.Max(0, Items.Count - 1));
-        _window = ScrollWindow.Around(Selected, Items.Count, region.Height);
+        SelectedIndex = Math.Clamp(SelectedIndex, 0, Math.Max(0, Items.Count - 1));
+        _window = ScrollWindow.Around(SelectedIndex, Items.Count, region.Height);
 
         var barred = ScrollBar.IsNeeded(Items.Count, region.Height);
         var textWidth = barred ? Math.Max(0, region.Width - 1) : region.Width;
@@ -99,7 +99,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
             {
                 PaintRow(region.Rows(row, 1).Inset(new Margin(0, 0, region.Width - textWidth, 0)),
                     item,
-                    index == Selected);
+                    index == SelectedIndex);
 
                 continue;
             }
@@ -140,11 +140,11 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
         }
         else if (_keymap.First.Matches(key))
         {
-            Selected = 0;
+            SelectedIndex = 0;
         }
         else if (_keymap.Last.Matches(key))
         {
-            Selected = Math.Max(0, Items.Count - 1);
+            SelectedIndex = Math.Max(0, Items.Count - 1);
         }
         else if (_keymap.Confirm.Matches(key))
         {
@@ -166,7 +166,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
     /// <returns>What became of the event, including a route when a row was activated.</returns>
     public FocusResult HandleMouse(MouseEvent mouse)
     {
-        if (_drawn.IsEmpty || !_drawn.Contains(mouse.Row, mouse.Column))
+        if (_drawnRegion.IsEmpty || !_drawnRegion.Contains(mouse.Row, mouse.Column))
         {
             return FocusResult.Ignored;
         }
@@ -180,7 +180,7 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
                 Move(1);
                 return FocusResult.Handled;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left:
-                var (row, _) = _drawn.ToLocal(mouse.Row, mouse.Column);
+                var (row, _) = _drawnRegion.ToLocal(mouse.Row, mouse.Column);
                 var index = _window.First + row;
 
                 if (index < 0 || index >= Items.Count)
@@ -188,8 +188,8 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
                     return FocusResult.Handled;
                 }
 
-                var wasSelected = index == Selected;
-                Selected = index;
+                var wasSelected = index == SelectedIndex;
+                SelectedIndex = index;
                 return wasSelected ? Activate() : FocusResult.Handled;
             default:
                 return FocusResult.Ignored;
@@ -202,15 +202,15 @@ public sealed class ListBox<T> : IArlecchinoInteractiveWidget
             : FocusResult.Handled;
 
     private void Move(int delta) =>
-        Selected = Math.Clamp(Selected + delta, 0, Math.Max(0, Items.Count - 1));
+        SelectedIndex = Math.Clamp(SelectedIndex + delta, 0, Math.Max(0, Items.Count - 1));
 
     private IArlecchinoColor StyleOf(T item, int index)
     {
-        if (index != Selected)
+        if (index != SelectedIndex)
         {
             return ItemStyle?.Invoke(item) ?? Theme.Default;
         }
 
-        return IsFocused ? Theme.ActiveSelected : Theme.Selected;
+        return IsFocused ? Theme.ActiveSelection : Theme.Selection;
     }
 }

@@ -166,15 +166,15 @@ internal static class EscapeSequenceParser
         }
 
         var code = parameters[0];
-        var named = KeyOfCode(code);
+        var consoleKey = KeyOfCode(code);
 
-        if (named == default && !IsTypeable(code))
+        if (consoleKey == default && !IsTypeable(code))
         {
             return true;
         }
 
         var character = IsTypeable(code) && !char.IsControl((char)code) ? (char)code : '\0';
-        key = new(named, modifiers, character);
+        key = new(consoleKey, modifiers, character);
         return true;
     }
 

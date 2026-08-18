@@ -43,13 +43,13 @@ public sealed class Form : IArlecchinoInteractiveWidget
     public required IReadOnlyList<Field> Fields { get; init; }
 
     /// <summary>Index of the selected field.</summary>
-    public int Selected { get; private set; }
+    public int SelectedIndex { get; private set; }
 
     /// <summary>Whether the form has focus, which decides how strongly the selection is drawn.</summary>
     public bool IsFocused { get; set; } = true;
 
     /// <summary>The selected field, or <c>null</c> when the form has none.</summary>
-    public Field? Current => Fields.Count == 0 ? null : Fields[Math.Clamp(Selected, 0, Fields.Count - 1)];
+    public Field? Current => Fields.Count == 0 ? null : Fields[Math.Clamp(SelectedIndex, 0, Fields.Count - 1)];
 
     /// <summary>
     /// Draws the fields with their labels aligned, scrolled, so the selection stays in view, and returns
@@ -65,7 +65,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
             return region;
         }
 
-        Selected = Math.Clamp(Selected, 0, Fields.Count - 1);
+        SelectedIndex = Math.Clamp(SelectedIndex, 0, Fields.Count - 1);
 
         var labelWidth = 0;
         foreach (var field in Fields)
@@ -78,7 +78,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
 
         var helpRows = (Current?.Help().Length ?? 0) > 0 ? 1 : 0;
         var fieldRows = Math.Max(1, region.Height - helpRows);
-        var first = Math.Clamp(Selected - fieldRows / 2, 0, Math.Max(0, Fields.Count - fieldRows));
+        var first = Math.Clamp(SelectedIndex - fieldRows / 2, 0, Math.Max(0, Fields.Count - fieldRows));
 
         _lastRows = region;
         _fieldOfRow.Clear();
@@ -96,12 +96,12 @@ public sealed class Form : IArlecchinoInteractiveWidget
             _fieldOfRow[row] = index;
             row++;
 
-            if (index != Selected || helpRows == 0 || row >= region.Height)
+            if (index != SelectedIndex || helpRows == 0 || row >= region.Height)
             {
                 continue;
             }
 
-            region.Write(row, 2, field.Help(), Theme.Muted);
+            region.Write(row, 2, field.Help(), Theme.Secondary);
             row++;
         }
 
@@ -125,13 +125,13 @@ public sealed class Form : IArlecchinoInteractiveWidget
 
         if (_keymap.MoveUp.Matches(key))
         {
-            Selected = Math.Max(0, Selected - 1);
+            SelectedIndex = Math.Max(0, SelectedIndex - 1);
             return FocusResult.Handled;
         }
 
         if (_keymap.MoveDown.Matches(key))
         {
-            Selected = Math.Min(Fields.Count - 1, Selected + 1);
+            SelectedIndex = Math.Min(Fields.Count - 1, SelectedIndex + 1);
             return FocusResult.Handled;
         }
 
@@ -165,10 +165,10 @@ public sealed class Form : IArlecchinoInteractiveWidget
         switch (mouse.Action)
         {
             case MouseAction.ScrolledUp:
-                Selected = Math.Max(0, Selected - 1);
+                SelectedIndex = Math.Max(0, SelectedIndex - 1);
                 return FocusResult.Handled;
             case MouseAction.ScrolledDown:
-                Selected = Math.Min(Fields.Count - 1, Selected + 1);
+                SelectedIndex = Math.Min(Fields.Count - 1, SelectedIndex + 1);
                 return FocusResult.Handled;
             case MouseAction.Pressed when mouse.Button == MouseButton.Left:
                 return FocusResult.Navigate(ClickAt(mouse));
@@ -203,8 +203,8 @@ public sealed class Form : IArlecchinoInteractiveWidget
             return ViewRoute.None;
         }
 
-        var wasSelected = index == Selected;
-        Selected = index;
+        var wasSelected = index == SelectedIndex;
+        SelectedIndex = index;
 
         return wasSelected ? Activate() : ViewRoute.None;
     }
@@ -227,14 +227,14 @@ public sealed class Form : IArlecchinoInteractiveWidget
 
     private TermColor StyleOf(Field field, int index)
     {
-        if (index == Selected)
+        if (index == SelectedIndex)
         {
-            return !IsFocused ? Theme.Muted : field.IsEnabled() ? Theme.Selected : Theme.Warning;
+            return !IsFocused ? Theme.Secondary : field.IsEnabled() ? Theme.Selection : Theme.Warning;
         }
 
         if (field.IsAction)
         {
-            return field.IsEnabled() ? Theme.Active : Theme.Muted;
+            return field.IsEnabled() ? Theme.Active : Theme.Secondary;
         }
 
         return Theme.Default;

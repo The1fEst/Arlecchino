@@ -24,7 +24,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
 
     private KeyBinding(KeyStroke first, KeyStroke? second, KeyStroke[]? alternatives) : this(first.Key, first.Modifiers)
     {
-        Typed = first.Typed;
+        Character = first.Character;
         _second = second;
         _alternatives = alternatives;
     }
@@ -33,14 +33,14 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// A binding on a character rather than on a key, which is the only dependable way to name punctuation.
     /// It answers wherever that character can be typed, and the key screen writes the character itself.
     /// </summary>
-    /// <param name="typed">The character to answer to.</param>
-    public KeyBinding(char typed) : this(default(ConsoleKey)) => Typed = typed;
+    /// <param name="character">The character to answer to.</param>
+    public KeyBinding(char character) : this(default(ConsoleKey)) => Character = character;
 
     /// <summary>The character this binding answers to, or <c>'\0'</c> when it is a binding on a key.</summary>
-    public char Typed { get; }
+    public char Character { get; }
 
     /// <summary>The combination the binding is named after, and the one it is written from.</summary>
-    public KeyStroke First => Typed == '\0' ? new(Key, Modifiers) : new(Typed);
+    public KeyStroke First => Character == '\0' ? new(Key, Modifiers) : new(Character);
 
     /// <summary>
     /// The other combinations that trigger the same thing, in the order they were added. They are matched but
@@ -52,7 +52,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     public KeyStroke? Second => _second;
 
     /// <summary>Whether this binding is unset and therefore matches nothing.</summary>
-    public bool IsNone => Key == default && Typed == '\0';
+    public bool IsNone => Key == default && Character == '\0';
 
     /// <summary>
     /// Whether this takes two keystrokes rather than one. A chord spends one combination on a leader and
@@ -98,14 +98,14 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
             return null;
         }
 
-        var moved = new KeyStroke[present.Length];
+        var strokes = new KeyStroke[present.Length];
 
         for (var i = 0; i < present.Length; i++)
         {
-            moved[i] = present[i].Replacing(from, to);
+            strokes[i] = present[i].Replacing(from, to);
         }
 
-        return moved;
+        return strokes;
     }
 
     /// <summary>
@@ -113,28 +113,28 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// binding is one keystroke, since a chord is opened rather than matched; an alternative counts either
     /// way.
     /// </summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <returns><c>true</c> when the press should trigger this binding on its own.</returns>
-    public bool Matches(KeyPress pressed) => (!IsChord && First.Matches(pressed)) || MatchesAlternative(pressed);
+    public bool Matches(KeyPress press) => (!IsChord && First.Matches(press)) || MatchesAlternative(press);
 
     /// <summary>
     /// Whether a key press is the first half of this chord. A binding of one keystroke opens nothing:
     /// it either matches or it does not.
     /// </summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <returns><c>true</c> when the chord has been started and the next key will finish it.</returns>
-    public bool Opens(KeyPress pressed) => IsChord && First.Matches(pressed);
+    public bool Opens(KeyPress press) => IsChord && First.Matches(press);
 
     /// <summary>Whether a key press is the second half of this chord.</summary>
-    /// <param name="pressed">The key that was pressed.</param>
+    /// <param name="press">The key that was pressed.</param>
     /// <returns><c>true</c> when the chord is complete.</returns>
-    public bool Closes(KeyPress pressed) => _second is { } second && second.Matches(pressed);
+    public bool Closes(KeyPress press) => _second is { } second && second.Matches(press);
 
-    private bool MatchesAlternative(KeyPress pressed)
+    private bool MatchesAlternative(KeyPress press)
     {
         foreach (var alternative in Alternatives)
         {
-            if (alternative.Matches(pressed))
+            if (alternative.Matches(press))
             {
                 return true;
             }
@@ -151,7 +151,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
     /// <returns><c>true</c> when both are made of the same keystrokes.</returns>
     public bool Equals(KeyBinding other)
     {
-        if (Key != other.Key || Modifiers != other.Modifiers || Typed != other.Typed || _second != other._second)
+        if (Key != other.Key || Modifiers != other.Modifiers || Character != other.Character || _second != other._second)
         {
             return false;
         }
@@ -183,7 +183,7 @@ public readonly record struct KeyBinding(ConsoleKey Key, KeyModifiers Modifiers 
 
         hash.Add(Key);
         hash.Add(Modifiers);
-        hash.Add(Typed);
+        hash.Add(Character);
         hash.Add(_second);
 
         foreach (var alternative in Alternatives)

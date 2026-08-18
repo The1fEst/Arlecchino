@@ -180,9 +180,9 @@ public sealed class GeneratorTests
             .RunGenerators(compilation);
 
         var result = driver.GetRunResult();
-        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+        var output = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
 
-        return (generated, result.Diagnostics);
+        return (output, result.Diagnostics);
     }
 
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunStores(
@@ -211,9 +211,9 @@ public sealed class GeneratorTests
             .RunGenerators(compilation);
 
         var result = driver.GetRunResult();
-        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+        var output = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
 
-        return (generated, result.Diagnostics);
+        return (output, result.Diagnostics);
     }
 
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) Run(
@@ -244,9 +244,9 @@ public sealed class GeneratorTests
             .RunGenerators(compilation);
 
         var result = driver.GetRunResult();
-        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+        var output = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
 
-        return (generated, result.Diagnostics);
+        return (output, result.Diagnostics);
     }
 
     private static IEnumerable<MetadataReference> LoadedReferences()
@@ -309,12 +309,12 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, diagnostics) = Run(source);
+        var (output, diagnostics) = Run(source);
         var duplicate = Assert.Single(diagnostics, item => item.Id == "ARL001");
 
         Assert.Equal(DiagnosticSeverity.Warning, duplicate.Severity);
         Assert.Contains("Mods", duplicate.GetMessage(), StringComparison.Ordinal);
-        Assert.Single(FindAll(generated, "ViewRoute Mods ="));
+        Assert.Single(FindAll(output, "ViewRoute Mods ="));
     }
 
     [Fact]
@@ -335,11 +335,11 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, diagnostics) = Run(source);
-        var reported = Assert.Single(diagnostics, item => item.Id == "ARL002");
+        var (output, diagnostics) = Run(source);
+        var diagnostic = Assert.Single(diagnostics, item => item.Id == "ARL002");
 
-        Assert.Contains("HiddenView", reported.GetMessage(), StringComparison.Ordinal);
-        Assert.DoesNotContain("new HiddenView(", generated, StringComparison.Ordinal);
+        Assert.Contains("HiddenView", diagnostic.GetMessage(), StringComparison.Ordinal);
+        Assert.DoesNotContain("new HiddenView(", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -362,9 +362,9 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = Run(source);
+        var (output, _) = Run(source);
 
-        Assert.Contains("new Screens.ModsView(", generated, StringComparison.Ordinal);
+        Assert.Contains("new Screens.ModsView(", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -387,9 +387,9 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = Run(source);
+        var (output, _) = Run(source);
 
-        Assert.DoesNotContain("HiddenView", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("HiddenView", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -408,9 +408,9 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = RunStores(source);
+        var (output, _) = RunStores(source);
 
-        Assert.DoesNotContain("HiddenStore", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("HiddenStore", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -430,9 +430,9 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = RunStores(source);
+        var (output, _) = RunStores(source);
 
-        Assert.Contains("new Owner.SettingsStore()", generated, StringComparison.Ordinal);
+        Assert.Contains("new Owner.SettingsStore()", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -449,20 +449,20 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, diagnostics) = RunStores(source);
+        var (output, diagnostics) = RunStores(source);
 
         Assert.Single(diagnostics, item => item.Id == "ARL005");
-        Assert.DoesNotContain("HiddenStore", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("HiddenStore", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void MissingViewNamespaceIsReportedAsInformation()
     {
         var (source, diagnostics) = Run(TwoViews, viewNamespace: null);
-        var reported = Assert.Single(diagnostics, item => item.Id == "ARL003");
+        var diagnostic = Assert.Single(diagnostics, item => item.Id == "ARL003");
 
-        Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
-        Assert.Contains("Sample.Navigation", reported.GetMessage(), StringComparison.Ordinal);
+        Assert.Equal(DiagnosticSeverity.Info, diagnostic.Severity);
+        Assert.Contains("Sample.Navigation", diagnostic.GetMessage(), StringComparison.Ordinal);
         Assert.Contains("namespace Sample.Navigation;", source, StringComparison.Ordinal);
     }
 
@@ -485,10 +485,10 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = Run(source);
+        var (output, _) = Run(source);
 
-        Assert.Contains("using Arlecchino.Rendering;", generated, StringComparison.Ordinal);
-        Assert.Contains("new ModsView(services.GetRequiredService<Surface>())", generated, StringComparison.Ordinal);
+        Assert.Contains("using Arlecchino.Rendering;", output, StringComparison.Ordinal);
+        Assert.Contains("new ModsView(services.GetRequiredService<Surface>())", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -508,10 +508,10 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = Run(source);
+        var (output, _) = Run(source);
 
-        Assert.Contains("using Sample.Screens;", generated, StringComparison.Ordinal);
-        Assert.Contains("view = new ModsView()", generated, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Screens;", output, StringComparison.Ordinal);
+        Assert.Contains("view = new ModsView()", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -525,32 +525,32 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, diagnostics) = Run(source);
+        var (output, diagnostics) = Run(source);
 
         Assert.Contains("public static ArlecchinoBuilder AddGeneratedViews(this ArlecchinoBuilder builder)",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.Contains("public static ViewRoute None => ViewRoute.None;", generated, StringComparison.Ordinal);
-        Assert.DoesNotContain("switch (route.Name)", generated, StringComparison.Ordinal);
+        Assert.Contains("public static ViewRoute None => ViewRoute.None;", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("switch (route.Name)", output, StringComparison.Ordinal);
 
-        var reported = Assert.Single(diagnostics, item => item.Id == "ARL004");
-        Assert.Equal(DiagnosticSeverity.Info, reported.Severity);
+        var diagnostic = Assert.Single(diagnostics, item => item.Id == "ARL004");
+        Assert.Equal(DiagnosticSeverity.Info, diagnostic.Severity);
     }
 
     [Fact]
     public void AStoreThatLoadsItselfIsAlsoRegisteredForTheHostToStart()
     {
-        var (generated, diagnostics) = RunStores(AsyncStore);
+        var (output, diagnostics) = RunStores(AsyncStore);
 
         Assert.Contains(
             "builder.Services.AddSingleton(static services => new CatalogStore());",
-            generated,
+            output,
             StringComparison.Ordinal);
 
         Assert.Contains(
             "builder.Services.AddSingleton<global::Arlecchino.Atoms.ArlecchinoAsyncStore>(" +
             "static services => services.GetRequiredService<CatalogStore>());",
-            generated,
+            output,
             StringComparison.Ordinal);
 
         Assert.Empty(diagnostics);
@@ -559,17 +559,17 @@ public sealed class GeneratorTests
     [Fact]
     public void StoresAreRegisteredWithTheLifetimeTheirMarkerAsksFor()
     {
-        var (generated, diagnostics) = RunStores(TwoStores);
+        var (output, diagnostics) = RunStores(TwoStores);
 
-        Assert.Contains("namespace Sample.Views;", generated, StringComparison.Ordinal);
-        Assert.Contains("using Sample.Stores;", generated, StringComparison.Ordinal);
+        Assert.Contains("namespace Sample.Views;", output, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Stores;", output, StringComparison.Ordinal);
         Assert.Contains(
             "builder.Services.AddSingleton(static services => new SettingsStore());",
-            generated,
+            output,
             StringComparison.Ordinal);
         Assert.Contains(
             "builder.Services.AddScoped(static services => new DraftStore(services.GetRequiredService<Surface>()));",
-            generated,
+            output,
             StringComparison.Ordinal);
         Assert.Empty(diagnostics);
     }
@@ -577,21 +577,21 @@ public sealed class GeneratorTests
     [Fact]
     public void StoreRegistrationIsGeneratedEvenWhenNoStoreExistsYet()
     {
-        var (generated, _) = RunStores(TwoViews);
+        var (output, _) = RunStores(TwoViews);
 
         Assert.Contains(
             "public static ArlecchinoBuilder AddGeneratedStores(this ArlecchinoBuilder builder)",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void NoStoresAreGeneratedWhenTheProjectTurnsThemOff()
     {
-        var (generated, _) = RunStores(TwoStores, generate: "false");
+        var (output, _) = RunStores(TwoStores, generate: "false");
 
-        Assert.Equal("", generated);
+        Assert.Equal("", output);
     }
 
     [Fact]
@@ -609,65 +609,65 @@ public sealed class GeneratorTests
             """;
 
         var (_, diagnostics) = RunStores(source);
-        var reported = Assert.Single(diagnostics, item => item.Id == "ARL005");
+        var diagnostic = Assert.Single(diagnostics, item => item.Id == "ARL005");
 
-        Assert.Contains("HiddenStore", reported.GetMessage(), StringComparison.Ordinal);
+        Assert.Contains("HiddenStore", diagnostic.GetMessage(), StringComparison.Ordinal);
     }
 
     [Fact]
     public void WidgetsOfTheProjectAreRegisteredAsSingletons()
     {
-        var (generated, diagnostics) = RunWidgets(ThreeWidgets);
+        var (output, diagnostics) = RunWidgets(ThreeWidgets);
 
-        Assert.Contains("using Sample.Panels;", generated, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Panels;", output, StringComparison.Ordinal);
         Assert.Contains(
             "builder.Services.AddSingleton(static services => new ClockWidget(services.GetRequiredService<ArlecchinoKeymap>()));",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.DoesNotContain("LabelWidget", generated, StringComparison.Ordinal);
-        Assert.DoesNotContain("GaugeWidget", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("LabelWidget", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("GaugeWidget", output, StringComparison.Ordinal);
 
-        var skipped = MessagesOf(diagnostics, "ARL007");
+        var empty = MessagesOf(diagnostics, "ARL007");
 
-        Assert.Equal(2, skipped.Count);
-        Assert.Contains(skipped, message => message.Contains("required members", StringComparison.Ordinal));
-        Assert.Contains(skipped, message => message.Contains("generic", StringComparison.Ordinal));
+        Assert.Equal(2, empty.Count);
+        Assert.Contains(empty, message => message.Contains("required members", StringComparison.Ordinal));
+        Assert.Contains(empty, message => message.Contains("generic", StringComparison.Ordinal));
     }
 
     [Fact]
     public void WidgetRegistrationIsGeneratedEvenWhenNoWidgetExistsYet()
     {
-        var (generated, _) = RunWidgets(TwoViews);
+        var (output, _) = RunWidgets(TwoViews);
 
         Assert.Contains(
             "public static ArlecchinoBuilder AddGeneratedWidgets(this ArlecchinoBuilder builder)",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void NoWidgetsAreGeneratedWhenTheProjectTurnsThemOff()
     {
-        var (generated, _) = RunWidgets(ThreeWidgets, generate: "false");
+        var (output, _) = RunWidgets(ThreeWidgets, generate: "false");
 
-        Assert.Equal("", generated);
+        Assert.Equal("", output);
     }
 
     [Fact]
     public void CommandsOfTheProjectAreRegisteredWithTheirDependencies()
     {
-        var (generated, diagnostics) = RunCommands(TwoCommands);
+        var (output, diagnostics) = RunCommands(TwoCommands);
 
-        Assert.Contains("namespace Sample.Views;", generated, StringComparison.Ordinal);
-        Assert.Contains("using Sample.Actions;", generated, StringComparison.Ordinal);
+        Assert.Contains("namespace Sample.Views;", output, StringComparison.Ordinal);
+        Assert.Contains("using Sample.Actions;", output, StringComparison.Ordinal);
         Assert.Contains(
             "builder.Services.AddSingleton<IArlecchinoCommand>(static services => new QuitCommand());",
-            generated,
+            output,
             StringComparison.Ordinal);
         Assert.Contains(
             "builder.Services.AddSingleton<IArlecchinoCommand>(static services => new ClearCommand(services.GetRequiredService<Surface>()));",
-            generated,
+            output,
             StringComparison.Ordinal);
         Assert.Empty(diagnostics);
     }
@@ -675,21 +675,21 @@ public sealed class GeneratorTests
     [Fact]
     public void CommandRegistrationIsGeneratedEvenWhenNoCommandExistsYet()
     {
-        var (generated, _) = RunCommands(TwoViews);
+        var (output, _) = RunCommands(TwoViews);
 
         Assert.Contains(
             "public static ArlecchinoBuilder AddGeneratedCommands(this ArlecchinoBuilder builder)",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.DoesNotContain("builder.Services.Add", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("builder.Services.Add", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void NoCommandsAreGeneratedWhenTheProjectTurnsThemOff()
     {
-        var (generated, _) = RunCommands(TwoCommands, generate: "false");
+        var (output, _) = RunCommands(TwoCommands, generate: "false");
 
-        Assert.Equal("", generated);
+        Assert.Equal("", output);
     }
 
     [Fact]
@@ -713,20 +713,20 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, diagnostics) = RunCommands(source);
+        var (output, diagnostics) = RunCommands(source);
 
         Assert.Single(diagnostics, item => item.Id == "ARL006");
-        Assert.DoesNotContain("HiddenCommand", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("HiddenCommand", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void CommandsAreRegisteredInAStableOrder()
     {
-        var (generated, _) = RunCommands(TwoCommands);
+        var (output, _) = RunCommands(TwoCommands);
 
         Assert.True(
-            generated.IndexOf("ClearCommand", StringComparison.Ordinal) <
-            generated.IndexOf("QuitCommand", StringComparison.Ordinal));
+            output.IndexOf("ClearCommand", StringComparison.Ordinal) <
+            output.IndexOf("QuitCommand", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -752,10 +752,10 @@ public sealed class GeneratorTests
             }
             """;
 
-        var (generated, _) = Run(source);
+        var (output, _) = Run(source);
 
-        Assert.DoesNotContain("ViewRoute Base =", generated, StringComparison.Ordinal);
-        Assert.Contains("ViewRoute Real =", generated, StringComparison.Ordinal);
+        Assert.DoesNotContain("ViewRoute Base =", output, StringComparison.Ordinal);
+        Assert.Contains("ViewRoute Real =", output, StringComparison.Ordinal);
     }
 
     private static List<string> MessagesOf(ImmutableArray<Diagnostic> diagnostics, string id)
@@ -776,13 +776,13 @@ public sealed class GeneratorTests
     [Fact]
     public void LocalizationBecomesAnEnumOfNames()
     {
-        var (generated, diagnostics) = RunLocalization(Words);
+        var (output, diagnostics) = RunLocalization(Words);
 
         Assert.Empty(diagnostics);
-        Assert.Contains("public enum LocString", generated, StringComparison.Ordinal);
-        Assert.Contains("Copy = 0,", generated, StringComparison.Ordinal);
-        Assert.Contains("CopyManyTitle = 1,", generated, StringComparison.Ordinal);
-        Assert.Contains("<c>Copy {0} items</c>", generated, StringComparison.Ordinal);
+        Assert.Contains("public enum LocString", output, StringComparison.Ordinal);
+        Assert.Contains("Copy = 0,", output, StringComparison.Ordinal);
+        Assert.Contains("CopyManyTitle = 1,", output, StringComparison.Ordinal);
+        Assert.Contains("<c>Copy {0} items</c>", output, StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -793,15 +793,15 @@ public sealed class GeneratorTests
     [Fact]
     public void LocalizationBringsTheFactoriesThatNameAKey()
     {
-        var (generated, _) = RunLocalization(Words);
+        var (output, _) = RunLocalization(Words);
 
-        Assert.Contains("public static class Bind", generated, StringComparison.Ordinal);
+        Assert.Contains("public static class Bind", output, StringComparison.Ordinal);
         Assert.Contains("ViewCommand To(KeyBinding binding, LocString name, Action run)",
-            generated,
+            output,
             StringComparison.Ordinal);
-        Assert.Contains("ViewCommand Going(", generated, StringComparison.Ordinal);
-        Assert.Contains("ViewCommand When(", generated, StringComparison.Ordinal);
-        Assert.Contains("Label = () => Localization.Loc(name)", generated, StringComparison.Ordinal);
+        Assert.Contains("ViewCommand Going(", output, StringComparison.Ordinal);
+        Assert.Contains("ViewCommand When(", output, StringComparison.Ordinal);
+        Assert.Contains("Label = () => Localization.Loc(name)", output, StringComparison.Ordinal);
     }
 
     /// <summary>A localization missing the default language is an error rather than a silent miss.</summary>
@@ -816,21 +816,21 @@ public sealed class GeneratorTests
             Copy = "Copier"
             """);
 
-        Assert.Contains(diagnostics, static found => found.Id == "ARL022");
+        Assert.Contains(diagnostics, static single => single.Id == "ARL022");
     }
 
     private static List<int> FindAll(string text, string needle)
     {
-        var found = new List<int>();
+        var single = new List<int>();
         var index = text.IndexOf(needle, StringComparison.Ordinal);
 
         while (index >= 0)
         {
-            found.Add(index);
+            single.Add(index);
             index = text.IndexOf(needle, index + needle.Length, StringComparison.Ordinal);
         }
 
-        return found;
+        return single;
     }
 
     private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunLocalization(string toml)
@@ -851,9 +851,9 @@ public sealed class GeneratorTests
             .RunGenerators(compilation);
 
         var result = driver.GetRunResult();
-        var generated = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
+        var output = result.GeneratedTrees.Length == 0 ? "" : result.GeneratedTrees[0].ToString();
 
-        return (generated, result.Diagnostics);
+        return (output, result.Diagnostics);
     }
 
     private sealed class Toml : AdditionalText

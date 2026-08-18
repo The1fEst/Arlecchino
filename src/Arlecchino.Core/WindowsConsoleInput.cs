@@ -45,10 +45,10 @@ internal sealed partial class WindowsConsoleInput
                 return null;
             }
 
-            var wanted = (mode | EnableMouseInput | EnableWindowInput | EnableExtendedFlags | EnableProcessedInput) &
-                         ~(EnableQuickEdit | EnableLineInput | EnableEchoInput);
+            var raw = (mode | EnableMouseInput | EnableWindowInput | EnableExtendedFlags | EnableProcessedInput) &
+                      ~(EnableQuickEdit | EnableLineInput | EnableEchoInput);
 
-            return SetConsoleMode(input, wanted) ? new WindowsConsoleInput(input, mode) : null;
+            return SetConsoleMode(input, raw) ? new WindowsConsoleInput(input, mode) : null;
         }
         catch (DllNotFoundException)
         {
@@ -115,7 +115,7 @@ internal sealed partial class WindowsConsoleInput
 
         switch (record.EventType)
         {
-            case KeyEventType when record.Key.KeyDown != 0:
+            case KeyEventType when record.Key.IsKeyDown != 0:
                 Take(Pressed(record.Key));
                 return true;
             case MouseEventType:
@@ -151,7 +151,7 @@ internal sealed partial class WindowsConsoleInput
                 continue;
             }
 
-            if (record.EventType != KeyEventType || record.Key.KeyDown == 0)
+            if (record.EventType != KeyEventType || record.Key.IsKeyDown == 0)
             {
                 continue;
             }
@@ -205,7 +205,7 @@ internal sealed partial class WindowsConsoleInput
     [StructLayout(LayoutKind.Sequential)]
     private struct KeyEventRecord
     {
-        public int KeyDown;
+        public int IsKeyDown;
         public ushort RepeatCount;
         public ushort VirtualKeyCode;
         public ushort VirtualScanCode;
@@ -266,7 +266,7 @@ internal sealed partial class WindowsConsoleInput
 
     [LibraryImport("kernel32.dll", EntryPoint = "ReadConsoleInputW", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool ReadConsoleInput(IntPtr handle, out InputRecord record, uint length, out uint read);
+    private static partial bool ReadConsoleInput(IntPtr handle, out InputRecord record, uint length, out uint count);
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

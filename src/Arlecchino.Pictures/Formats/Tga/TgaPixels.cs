@@ -33,11 +33,11 @@ internal static class TgaPixels
             }
 
             var color = Color(bytes[from..], size);
-            var into = (first + index) * 3;
+            var offset = (first + index) * 3;
 
-            colors[into] = color.Red;
-            colors[into + 1] = color.Green;
-            colors[into + 2] = color.Blue;
+            colors[offset] = color.Red;
+            colors[offset + 1] = color.Green;
+            colors[offset + 2] = color.Blue;
         }
 
         return colors;
@@ -67,7 +67,7 @@ internal static class TgaPixels
         for (var row = 0; row < height; row++)
         {
             var from = row * width * size;
-            var into = (topDown ? row : height - 1 - row) * width;
+            var offset = (topDown ? row : height - 1 - row) * width;
 
             for (var column = 0; column < width; column++)
             {
@@ -82,12 +82,12 @@ internal static class TgaPixels
                         return null;
                     }
 
-                    pixels[into + column] = new(palette[entry], palette[entry + 1], palette[entry + 2]);
+                    pixels[offset + column] = new(palette[entry], palette[entry + 1], palette[entry + 2]);
 
                     continue;
                 }
 
-                pixels[into + column] = Color(raw.AsSpan(at), depth);
+                pixels[offset + column] = Color(raw.AsSpan(at), depth);
             }
         }
 
@@ -106,9 +106,9 @@ internal static class TgaPixels
             return new(bytes[2], bytes[1], bytes[0]);
         }
 
-        var packed = BinaryPrimitives.ReadUInt16LittleEndian(bytes);
+        var header = BinaryPrimitives.ReadUInt16LittleEndian(bytes);
 
-        return new(Five((packed >> 10) & 0x1F), Five((packed >> 5) & 0x1F), Five(packed & 0x1F));
+        return new(Five((header >> 10) & 0x1F), Five((header >> 5) & 0x1F), Five(header & 0x1F));
     }
 
     private static byte Five(int value) => (byte)((value << 3) | (value >> 2));

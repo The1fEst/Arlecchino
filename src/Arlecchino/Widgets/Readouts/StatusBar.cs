@@ -37,16 +37,16 @@ public sealed class StatusBar : IArlecchinoWidget
             return region;
         }
 
-        var painted = Style ?? Theme.Muted;
+        var style = Style ?? Theme.Secondary;
         var left = Join(Left);
         var right = Join(Right);
 
-        region.Write(0, 0, TextWidth.Truncate(left, region.Width), painted);
+        region.Write(0, 0, TextWidth.Truncate(left, region.Width), style);
 
         var column = region.Width - TextWidth.Of(right);
         if (column > TextWidth.Of(left) + ItemSeparator.Length)
         {
-            region.Write(0, column, right, painted);
+            region.Write(0, column, right, style);
         }
 
         return region.Rows(1, region.Height - 1);

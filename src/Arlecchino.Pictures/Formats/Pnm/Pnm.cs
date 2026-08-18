@@ -38,7 +38,7 @@ public sealed class Pnm : IPictureFormat
             return null;
         }
 
-        if (width <= 0 || height <= 0 || levels is <= 0 or > 65535 || (long)width * height > limits.Most)
+        if (width <= 0 || height <= 0 || levels is <= 0 or > 65535 || (long)width * height > limits.MostPixels)
         {
             return null;
         }

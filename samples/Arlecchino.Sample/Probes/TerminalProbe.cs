@@ -19,14 +19,14 @@ internal static class TerminalProbe
 
         Console.Out.Flush();
 
-        var heard = new StringBuilder();
-        var until = DateTime.UtcNow.AddMilliseconds(milliseconds);
+        var characters = new StringBuilder();
+        var deadline = DateTime.UtcNow.AddMilliseconds(milliseconds);
 
-        while (DateTime.UtcNow < until)
+        while (DateTime.UtcNow < deadline)
         {
             if (Console.KeyAvailable)
             {
-                heard.Append(Console.ReadKey(true).KeyChar);
+                characters.Append(Console.ReadKey(true).KeyChar);
                 continue;
             }
 
@@ -34,8 +34,8 @@ internal static class TerminalProbe
         }
 
         Console.WriteLine();
-        Console.WriteLine($"Heard {heard.Length} characters:");
-        Console.WriteLine(heard.ToString()
+        Console.WriteLine($"Heard {characters.Length} characters:");
+        Console.WriteLine(characters.ToString()
             .Replace("\e", "<ESC>", StringComparison.Ordinal)
             .Replace("\a", "<BEL>", StringComparison.Ordinal));
     }

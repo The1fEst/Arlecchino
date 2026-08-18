@@ -20,35 +20,35 @@ internal static class JpegProgressive
 
         foreach (var part in frame.Parts)
         {
-            part.Predicted = 0;
+            part.Prediction = 0;
         }
 
-        var single = frame.Scanned.Count == 1;
-        var across = single ? Wide(frame, frame.Scanned[0]) : (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
-        var down = single ? Tall(frame, frame.Scanned[0]) : (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
-        var since = 0;
+        var single = frame.InScan.Count == 1;
+        var blockColumns = single ? Wide(frame, frame.InScan[0]) : (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
+        var down = single ? Tall(frame, frame.InScan[0]) : (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
+        var sinceRestart = 0;
 
-        for (var unit = 0; unit < across * down && !bits.Ended; unit++, since++)
+        for (var unit = 0; unit < blockColumns * down && !bits.Ended; unit++, sinceRestart++)
         {
-            if (frame.Restart > 0 && since == frame.Restart)
+            if (frame.Restart > 0 && sinceRestart == frame.Restart)
             {
                 bits.Restart();
 
-                since = 0;
+                sinceRestart = 0;
                 run = 0;
 
                 foreach (var part in frame.Parts)
                 {
-                    part.Predicted = 0;
+                    part.Prediction = 0;
                 }
             }
 
             if (single)
             {
-                var part = frame.Scanned[0];
-                var into = (((unit / across) * part.BlocksWide) + (unit % across)) * 64;
+                var part = frame.InScan[0];
+                var offset = (((unit / blockColumns) * part.BlocksWide) + (unit % blockColumns)) * 64;
 
-                if (!Block(ref bits, frame, part, into, ref run))
+                if (!Block(ref bits, frame, part, offset, ref run))
                 {
                     return -1;
                 }
@@ -56,13 +56,13 @@ internal static class JpegProgressive
                 continue;
             }
 
-            foreach (var part in frame.Scanned)
+            foreach (var part in frame.InScan)
             {
                 for (var row = 0; row < part.Tall; row++)
                 {
                     for (var column = 0; column < part.Wide; column++)
                     {
-                        var block = ((((unit / across) * part.Tall) + row) * part.BlocksWide) + ((unit % across) * part.Wide) + column;
+                        var block = ((((unit / blockColumns) * part.Tall) + row) * part.BlocksWide) + ((unit % blockColumns) * part.Wide) + column;
 
                         if (!Block(ref bits, frame, part, block * 64, ref run))
                         {
@@ -86,29 +86,29 @@ internal static class JpegProgressive
     /// <param name="bits">The bits of the scan.</param>
     /// <param name="frame">What the segments so far have said.</param>
     /// <param name="part">Which component the block belongs to.</param>
-    /// <param name="into">Where the block stands among the coefficients of the component.</param>
+    /// <param name="offset">Where the block stands among the coefficients of the component.</param>
     /// <param name="run">How many blocks are known to be finished already.</param>
     /// <returns><c>false</c> when a table is missing or a code is not in one.</returns>
-    private static bool Block(ref JpegBits bits, JpegFrame frame, JpegPart part, int into, ref int run)
+    private static bool Block(ref JpegBits bits, JpegFrame frame, JpegPart part, int offset, ref int run)
     {
-        if (into < 0 || into + 64 > part.Blocks.Length)
+        if (offset < 0 || offset + 64 > part.Blocks.Length)
         {
             return false;
         }
 
         if (frame.First == 0)
         {
-            return frame.Reached == 0
-                ? FirstDc(ref bits, frame, part, into)
-                : RefinedDc(ref bits, frame, part, into);
+            return frame.Bit == 0
+                ? FirstDc(ref bits, frame, part, offset)
+                : RefinedDc(ref bits, frame, part, offset);
         }
 
-        return frame.Reached == 0
-            ? FirstAc(ref bits, frame, part, into, ref run)
-            : RefinedAc(ref bits, frame, part, into, ref run);
+        return frame.Bit == 0
+            ? FirstAc(ref bits, frame, part, offset, ref run)
+            : RefinedAc(ref bits, frame, part, offset, ref run);
     }
 
-    private static bool FirstDc(ref JpegBits bits, JpegFrame frame, JpegPart part, int into)
+    private static bool FirstDc(ref JpegBits bits, JpegFrame frame, JpegPart part, int offset)
     {
         var table = frame.DcTables[part.Dc];
 
@@ -124,23 +124,23 @@ internal static class JpegProgressive
             return false;
         }
 
-        part.Predicted += size == 0 ? 0 : JpegCoefficients.Signed(bits.Read(size), size);
-        part.Blocks[into] = part.Predicted << frame.Carrying;
+        part.Prediction += size == 0 ? 0 : JpegCoefficients.Signed(bits.Read(size), size);
+        part.Blocks[offset] = part.Prediction << frame.Carrying;
 
         return true;
     }
 
-    private static bool RefinedDc(ref JpegBits bits, JpegFrame frame, JpegPart part, int into)
+    private static bool RefinedDc(ref JpegBits bits, JpegFrame frame, JpegPart part, int offset)
     {
         if (bits.Bit() != 0)
         {
-            part.Blocks[into] |= 1 << frame.Carrying;
+            part.Blocks[offset] |= 1 << frame.Carrying;
         }
 
         return true;
     }
 
-    private static bool FirstAc(ref JpegBits bits, JpegFrame frame, JpegPart part, int into, ref int run)
+    private static bool FirstAc(ref JpegBits bits, JpegFrame frame, JpegPart part, int offset, ref int run)
     {
         if (run > 0)
         {
@@ -191,7 +191,7 @@ internal static class JpegProgressive
                 break;
             }
 
-            part.Blocks[into + index] =
+            part.Blocks[offset + index] =
                 JpegCoefficients.Signed(bits.Read(size), size) << frame.Carrying;
             index++;
         }
@@ -206,10 +206,10 @@ internal static class JpegProgressive
     /// <param name="bits">The bits of the scan.</param>
     /// <param name="frame">What the segments so far have said.</param>
     /// <param name="part">Which component the block belongs to.</param>
-    /// <param name="into">Where the block stands among the coefficients of the component.</param>
+    /// <param name="offset">Where the block stands among the coefficients of the component.</param>
     /// <param name="run">How many blocks are known to hold nothing new.</param>
     /// <returns><c>false</c> when a table is missing or a code is not in one.</returns>
-    private static bool RefinedAc(ref JpegBits bits, JpegFrame frame, JpegPart part, int into, ref int run)
+    private static bool RefinedAc(ref JpegBits bits, JpegFrame frame, JpegPart part, int offset, ref int run)
     {
         var table = frame.AcTables[part.Ac];
 
@@ -253,7 +253,7 @@ internal static class JpegProgressive
 
                 while (index <= frame.Last)
                 {
-                    var coefficient = into + index;
+                    var coefficient = offset + index;
 
                     if (part.Blocks[coefficient] != 0)
                     {
@@ -288,7 +288,7 @@ internal static class JpegProgressive
 
         while (index <= frame.Last)
         {
-            var coefficient = into + index;
+            var coefficient = offset + index;
 
             if (part.Blocks[coefficient] != 0)
             {

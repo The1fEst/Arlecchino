@@ -61,15 +61,15 @@ public sealed class InputThreadingTests
     public void EverythingReadIsRoutedInOrder()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestText("Name", "", null, value => submitted = value);
+        app.State.RequestText("Name", "", null, value => result = value);
         app.Terminal.EnqueueText("fEst\r");
         app.Services.GetRequiredService<TerminalInputReader>().ReadPending();
 
         app.DrainInput();
 
-        Assert.Equal("fEst", submitted);
+        Assert.Equal("fEst", result);
     }
 
     [Fact]

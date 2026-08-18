@@ -53,7 +53,7 @@ public sealed class FilterEditingTests
         app.Type("gam");
         app.Press(ConsoleKey.Insert, KeyModifiers.Control);
 
-        Assert.Equal("gam", app.Terminal.Copied);
+        Assert.Equal("gam", app.Terminal.CopiedText);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public sealed class FilterEditingTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Shift);
         app.Press(ConsoleKey.Delete, KeyModifiers.Shift);
 
-        Assert.Equal("ma", app.Terminal.Copied);
+        Assert.Equal("ma", app.Terminal.CopiedText);
         Assert.Equal("gam", ((ChoiceModal)app.State.Modal!).Text);
     }
 
@@ -97,14 +97,14 @@ public sealed class FilterEditingTests
     public void AnEmptyFilterLeavesTheRowsTheirKeys()
     {
         using var app = new TestApplication();
-        var picked = "";
+        var choice = "";
 
-        app.State.RequestChoice("Pick", Options, value => picked = value);
+        app.State.RequestChoice("Pick", Options, value => choice = value);
 
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("beta", picked);
+        Assert.Equal("beta", choice);
     }
 
     /// <summary>

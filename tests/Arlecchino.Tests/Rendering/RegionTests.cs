@@ -22,7 +22,7 @@ public sealed class RegionTests
     private static string[] Render(Surface surface, FakeTerminal terminal)
     {
         surface.Build();
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public sealed class RegionTests
     public void BorderDrawsAFrameAndReturnsTheInside()
     {
         var (surface, terminal) = CreateSurface();
-        var inside = new SurfaceRegion(surface, 0, 0, 12, 4).Border(Theme.Info, "Hi");
+        var content = new SurfaceRegion(surface, 0, 0, 12, 4).Border(Theme.Info, "Hi");
 
-        inside.Write(0, 0, "body", Theme.Default);
+        content.Write(0, 0, "body", Theme.Default);
 
         var lines = Render(surface, terminal);
         Assert.Equal("╭─ Hi ─────╮", lines[0].TrimEnd());
@@ -104,8 +104,8 @@ public sealed class RegionTests
         Assert.Equal("╰──────────╯", lines[3].TrimEnd());
         Assert.Equal(12, TextWidth.Of(lines[0].TrimEnd()));
         Assert.Equal(12, TextWidth.Of(lines[3].TrimEnd()));
-        Assert.Equal(10, inside.Width);
-        Assert.Equal(2, inside.Height);
+        Assert.Equal(10, content.Width);
+        Assert.Equal(2, content.Height);
     }
 
     [Fact]

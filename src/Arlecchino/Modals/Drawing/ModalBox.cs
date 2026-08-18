@@ -71,33 +71,33 @@ internal sealed class ModalBox
         inner = Math.Max(inner, TextWidth.Of(footer) + 2);
 
         var box = Centered(inner, body.Count + 2);
-        var inside = box.Border(Theme.Info, title).Inset(new Margin(1, 0, 1, 0));
+        var content = box.Border(Theme.Info, title).Inset(new Margin(1, 0, 1, 0));
 
         for (var row = 0; row < body.Count; row++)
         {
-            Line(inside, row, body[row]);
+            Line(content, row, body[row]);
         }
 
         Divider(box, body.Count);
-        inside.WriteLine(body.Count + 1, footer, Theme.Muted);
+        content.WriteLine(body.Count + 1, footer, Theme.Secondary);
 
-        return (box, inside);
+        return (box, content);
     }
 
-    private static void Line(SurfaceRegion inside, int row, Piece[] pieces)
+    private static void Line(SurfaceRegion content, int row, Piece[] pieces)
     {
         var offset = 0;
 
         foreach (var piece in pieces)
         {
-            if (offset >= inside.Width)
+            if (offset >= content.Width)
             {
                 return;
             }
 
-            var text = TextWidth.Truncate(piece.Text, inside.Width - offset);
+            var text = TextWidth.Truncate(piece.Text, content.Width - offset);
 
-            inside.Write(row, offset, text, piece.Style);
+            content.Write(row, offset, text, piece.Style);
             offset += TextWidth.Of(text);
         }
     }

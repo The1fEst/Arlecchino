@@ -14,17 +14,17 @@ public sealed class FormHostView : IArlecchinoView
         _surface = surface;
     }
 
-    public static Form? Hosted { get; set; }
+    public static Form? Form { get; set; }
 
     public static SurfaceRegion Rows { get; private set; }
 
     public void Draw()
     {
         Rows = _surface.Content;
-        Hosted?.Draw(Rows);
+        Form?.Draw(Rows);
     }
 
-    public ViewRoute Handle(KeyPress key) => Hosted?.Handle(key).Route ?? ViewRoute.None;
+    public ViewRoute Handle(KeyPress key) => Form?.Handle(key).Route ?? ViewRoute.None;
 
-    public ViewRoute HandleMouse(MouseEvent mouse) => Hosted?.HandleMouse(mouse).Route ?? ViewRoute.None;
+    public ViewRoute HandleMouse(MouseEvent mouse) => Form?.HandleMouse(mouse).Route ?? ViewRoute.None;
 }

@@ -49,8 +49,8 @@ public sealed class LayoutTests
 
         var whole = app.Surface.Content;
 
-        Assert.Equal(whole.Top + 1, FramedView.Seen.Top);
-        Assert.Equal(whole.Height - 2, FramedView.Seen.Height);
+        Assert.Equal(whole.Top + 1, FramedView.Region.Top);
+        Assert.Equal(whole.Height - 2, FramedView.Region.Height);
     }
 
     /// <summary>A screen that wants the whole terminal says so and is drawn without the frame.</summary>
@@ -80,14 +80,14 @@ public sealed class LayoutTests
 
         var lines = app.FrameLines();
 
-        FramedLayout.Clicked = 0;
-        FramedView.Clicked = 0;
+        FramedLayout.Clicks = 0;
+        FramedView.Clicks = 0;
 
         app.Click(Row(lines, "the band"), 3);
         app.Click(Row(lines, "framed view"), 3);
 
-        Assert.Equal(1, FramedLayout.Clicked);
-        Assert.Equal(1, FramedView.Clicked);
+        Assert.Equal(1, FramedLayout.Clicks);
+        Assert.Equal(1, FramedView.Clicks);
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public sealed class LayoutTests
         app.Frame();
 
         var layout = FramedLayout.Instance!;
-        var drawn = layout.Drawn;
+        var frame = layout.Draws;
 
         app.Navigator.Apply(ViewKind.Whole);
         app.Frame();
@@ -111,7 +111,7 @@ public sealed class LayoutTests
         app.Frame();
 
         Assert.Same(layout, FramedLayout.Instance);
-        Assert.True(layout.Drawn > drawn, "the same layout kept drawing across the views");
+        Assert.True(layout.Draws > frame, "the same layout kept drawing across the views");
     }
 
     private static int Row(string[] lines, string text)
@@ -152,17 +152,17 @@ public sealed class FramedLayout : IArlecchinoLayout
 
     public static FramedLayout? Instance { get; private set; }
 
-    public static int Clicked { get; set; }
+    public static int Clicks { get; set; }
 
-    public int Drawn { get; private set; }
+    public int Draws { get; private set; }
 
     public void Draw(SurfaceRegion frame, Action<SurfaceRegion> body)
     {
-        Drawn++;
+        Draws++;
         _band = frame.Rows(0, 1);
 
         frame.WriteLine(0, "the band", Theme.Header);
-        frame.WriteLine(frame.Height - 1, "the bar", Theme.Muted);
+        frame.WriteLine(frame.Height - 1, "the bar", Theme.Secondary);
 
         body(frame.Rows(1, frame.Height - 2));
     }
@@ -174,7 +174,7 @@ public sealed class FramedLayout : IArlecchinoLayout
             return false;
         }
 
-        Clicked++;
+        Clicks++;
 
         return true;
     }
@@ -190,13 +190,13 @@ public sealed class FramedView : IArlecchinoView
         _surface = surface;
     }
 
-    public static SurfaceRegion Seen { get; private set; }
+    public static SurfaceRegion Region { get; private set; }
 
-    public static int Clicked { get; set; }
+    public static int Clicks { get; set; }
 
     public void Draw()
     {
-        Seen = _surface.Content;
+        Region = _surface.Content;
         _surface.Content.WriteLine(0, "framed view", Theme.Default);
     }
 
@@ -207,7 +207,7 @@ public sealed class FramedView : IArlecchinoView
 
     public ViewRoute HandleMouse(MouseEvent mouse)
     {
-        Clicked++;
+        Clicks++;
 
         return ViewRoute.None;
     }

@@ -15,27 +15,27 @@ public sealed class TreeTests
 
     private static Tree<string> CreateTree()
     {
-        var tree = new Tree<string>(Keymap) { Render = static value => value };
-
-        tree.Roots =
-        [
-            new()
-            {
-                Value = "cars",
-                Children =
-                [
-                    new() { Value = "bmw" },
-                    new()
-                    {
-                        Value = "nissan",
-                        Children = [new() { Value = "skyline" }],
-                    },
-                ],
-            },
-            new() { Value = "tracks" },
-        ];
-
-        return tree;
+        return new(Keymap)
+        {
+            Render = static value => value,
+            Roots =
+            [
+                new()
+                {
+                    Value = "cars",
+                    Children =
+                    [
+                        new() { Value = "bmw" },
+                        new()
+                        {
+                            Value = "nissan",
+                            Children = [new() { Value = "skyline" }],
+                        },
+                    ],
+                },
+                new() { Value = "tracks" },
+            ],
+        };
     }
 
     private static string[] Render(Tree<string> tree, int width = 24, int height = 8)
@@ -47,7 +47,7 @@ public sealed class TreeTests
         tree.Draw(surface.Frame);
         surface.Build();
 
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 
     [Fact]
@@ -117,14 +117,14 @@ public sealed class TreeTests
     [Fact]
     public void ConfirmTogglesABranchAndActivatesALeaf()
     {
-        var activated = "";
+        var label = "";
         var tree = CreateTree();
         tree = new(Keymap)
         {
             Render = static value => value,
             OnActivate = node =>
             {
-                activated = node.Value;
+                label = node.Value;
                 return new("Leaf");
             },
             Roots = tree.Roots,
@@ -132,25 +132,25 @@ public sealed class TreeTests
 
         tree.Handle(new(ConsoleKey.Enter));
         Assert.Equal(4, CountRows(tree));
-        Assert.Equal("", activated);
+        Assert.Equal("", label);
 
         tree.Handle(new(ConsoleKey.DownArrow));
         var result = tree.Handle(new(ConsoleKey.Enter));
 
-        Assert.Equal("bmw", activated);
+        Assert.Equal("bmw", label);
         Assert.Equal(new("Leaf"), result.Route);
     }
 
     [Fact]
     public void ClickingTheMarkerTogglesWithoutActivating()
     {
-        var activated = false;
+        var label = false;
         var tree = new Tree<string>(Keymap)
         {
             Render = static value => value,
             OnActivate = _ =>
             {
-                activated = true;
+                label = true;
                 return ViewRoute.None;
             },
             Roots = CreateTree().Roots,
@@ -160,7 +160,7 @@ public sealed class TreeTests
         tree.HandleMouse(new(MouseAction.Pressed, MouseButton.Left, 0, 0, default));
 
         Assert.Equal(4, CountRows(tree));
-        Assert.False(activated);
+        Assert.False(label);
     }
 
     [Fact]
@@ -177,17 +177,17 @@ public sealed class TreeTests
     [Fact]
     public void ExpandingReportsSoLazyChildrenCanBeLoaded()
     {
-        var loaded = "";
+        var children = "";
         var tree = new Tree<string>(Keymap)
         {
             Render = static value => value,
-            OnExpanding = node => loaded = node.Value,
+            OnExpanding = node => children = node.Value,
             Roots = CreateTree().Roots,
         };
 
         tree.Handle(new(ConsoleKey.RightArrow));
 
-        Assert.Equal("cars", loaded);
+        Assert.Equal("cars", children);
     }
 
     private static int CountRows(Tree<string> tree)

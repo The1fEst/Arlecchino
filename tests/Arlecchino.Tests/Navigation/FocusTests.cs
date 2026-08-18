@@ -234,14 +234,14 @@ public sealed class FocusTests
             Fields = [Field.Text(static () => "Name", new TrackedAtom<string>(""))],
         };
 
-        FormHostView.Hosted = form;
+        FormHostView.Form = form;
         app.Navigator.Apply(ViewKind.FormHost);
 
-        var focused = app.RawStyles();
+        var withFocus = app.RawStyles();
         form.IsFocused = false;
-        var blurred = app.RawStyles();
+        var withoutFocus = app.RawStyles();
 
-        Assert.NotEqual(focused, blurred);
+        Assert.NotEqual(withFocus, withoutFocus);
     }
 
     [Fact]
@@ -256,15 +256,15 @@ public sealed class FocusTests
             static _ => { });
         app.Navigator.Apply(Routes.FilePicker);
 
-        var listFocused = app.RawStyles();
+        var listStyles = app.RawStyles();
 
         app.Press(ConsoleKey.Tab);
-        var sidebarFocused = app.RawStyles();
+        var sidebarStyles = app.RawStyles();
 
-        Assert.NotEqual(listFocused, sidebarFocused);
+        Assert.NotEqual(listStyles, sidebarStyles);
 
         app.Press(ConsoleKey.Tab);
-        Assert.Equal(listFocused, app.RawStyles());
+        Assert.Equal(listStyles, app.RawStyles());
     }
 
     private sealed class HintingPane : IArlecchinoFocusable

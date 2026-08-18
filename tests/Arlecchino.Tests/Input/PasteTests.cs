@@ -74,6 +74,6 @@ public sealed class PasteTests
         app.State.RequestText("Name", "secret-token", null, static _ => { });
         app.Press(ConsoleKey.Insert, KeyModifiers.Control);
 
-        Assert.Equal("secret-token", app.Terminal.Copied);
+        Assert.Equal("secret-token", app.Terminal.CopiedText);
     }
 }

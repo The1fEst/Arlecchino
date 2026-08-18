@@ -57,7 +57,7 @@ public sealed class BoundaryTests
         surface.WriteAt(2, 8, "over the edge", Theme.Default);
         surface.Build();
 
-        Assert.Equal(4, FrameText.Lines(terminal.Written).Length);
+        Assert.Equal(4, FrameText.Lines(terminal.WrittenText).Length);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public sealed class BoundaryTests
 
         surface.Build();
 
-        Assert.DoesNotContain("invisible", FrameText.WithoutStyles(terminal.Written), StringComparison.Ordinal);
+        Assert.DoesNotContain("invisible", FrameText.WithoutStyles(terminal.WrittenText), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public sealed class BoundaryTests
         form.Draw(surface.Frame);
         surface.Build();
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 
     [Fact]
@@ -130,11 +130,11 @@ public sealed class BoundaryTests
     public void ARouteWithAnEmptyName()
     {
         using var app = new TestApplication();
-        var before = app.Navigator.CurrentRoute;
+        var start = app.Navigator.CurrentRoute;
 
         app.Navigator.Apply(new(""));
 
-        Assert.Equal(before, app.Navigator.CurrentRoute);
+        Assert.Equal(start, app.Navigator.CurrentRoute);
     }
 
     [Fact]

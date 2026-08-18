@@ -89,20 +89,20 @@ public abstract class Atom<T> : IReadableAtom<T>
     private sealed class Edit : IAtomEdit
     {
         private readonly Atom<T> _state;
-        private readonly T _before;
-        private readonly T _after;
+        private readonly T _oldValue;
+        private readonly T _newValue;
 
-        public Edit(Atom<T> state, T before, T after)
+        public Edit(Atom<T> state, T oldValue, T newValue)
         {
             _state = state;
-            _before = before;
-            _after = after;
+            _oldValue = oldValue;
+            _newValue = newValue;
         }
 
         public object Owner => _state;
 
-        public void Undo() => _state.Write(_before, recordHistory: false);
+        public void Undo() => _state.Write(_oldValue, recordHistory: false);
 
-        public void Redo() => _state.Write(_after, recordHistory: false);
+        public void Redo() => _state.Write(_newValue, recordHistory: false);
     }
 }

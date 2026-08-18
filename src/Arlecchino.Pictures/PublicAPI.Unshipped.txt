@@ -1,1 +1,13 @@
 #nullable enable
+*REMOVED*Arlecchino.Pictures.PictureLimits.Deconstruct(out int Most, out int Enough) -> void
+*REMOVED*Arlecchino.Pictures.PictureLimits.Enough.get -> int
+*REMOVED*Arlecchino.Pictures.PictureLimits.Enough.init -> void
+*REMOVED*Arlecchino.Pictures.PictureLimits.Most.get -> int
+*REMOVED*Arlecchino.Pictures.PictureLimits.Most.init -> void
+*REMOVED*Arlecchino.Pictures.PictureLimits.PictureLimits(int Most, int Enough) -> void
+Arlecchino.Pictures.PictureLimits.Deconstruct(out int MostPixels, out int EnoughPixels) -> void
+Arlecchino.Pictures.PictureLimits.EnoughPixels.get -> int
+Arlecchino.Pictures.PictureLimits.EnoughPixels.init -> void
+Arlecchino.Pictures.PictureLimits.MostPixels.get -> int
+Arlecchino.Pictures.PictureLimits.MostPixels.init -> void
+Arlecchino.Pictures.PictureLimits.PictureLimits(int MostPixels, int EnoughPixels) -> void

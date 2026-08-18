@@ -49,14 +49,14 @@ public sealed class DateModal : SegmentedModal
     {
         CommitTypedDigits();
 
-        var shifted = Segment switch
+        var target = Segment switch
         {
             YearSegment => Value.AddYears(delta),
             MonthSegment => Value.AddMonths(delta),
             _ => Value.AddDays(delta),
         };
 
-        Value = Clamp(shifted);
+        Value = Clamp(target);
     }
 
     /// <summary>Four digits for the year, two for the rest.</summary>

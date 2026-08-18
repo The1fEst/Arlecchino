@@ -21,7 +21,7 @@ namespace Arlecchino.Tools;
 internal static class Terminal
 {
     private const string Socket = "arlecchino-terminal";
-    private const string Copied = "what the application put on the clipboard";
+    private const string CopiedText = "what the application put on the clipboard";
     private const string Block = "two words";
     private const string Letters = "xyz";
 
@@ -35,9 +35,9 @@ internal static class Terminal
             return Explain();
         }
 
-        if (args is ["--in-pane", var check, var into, ..])
+        if (args is ["--in-pane", var check, var file, ..])
         {
-            return InPane(check, into);
+            return InPane(check, file);
         }
 
         if (Which("tmux") is "")
@@ -47,18 +47,18 @@ internal static class Terminal
             return 2;
         }
 
-        var wanted = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
+        var name = args.FirstOrDefault(static argument => !argument.StartsWith('-')) ?? "";
         var checks = new (string Name, Func<string, string> Check)[]
             {
                 ("probe", Probe),
                 ("clipboard", Clipboard),
                 ("paste", Paste),
-            }.Where(one => wanted.Length == 0 || one.Name.Contains(wanted, StringComparison.Ordinal))
+            }.Where(one => name.Length == 0 || one.Name.Contains(name, StringComparison.Ordinal))
             .ToArray();
 
         if (checks.Length == 0)
         {
-            Console.WriteLine($"no check matches '{wanted}'");
+            Console.WriteLine($"no check matches '{name}'");
 
             return 1;
         }
@@ -68,13 +68,13 @@ internal static class Terminal
 
         try
         {
-            foreach (var (name, run) in checks)
+            foreach (var (title, run) in checks)
             {
                 var complaint = run(folder.FullName);
 
                 Console.WriteLine(complaint is ""
-                    ? $"  ok    {name}"
-                    : $"  DIFF  {name}   {complaint}");
+                    ? $"  ok    {title}"
+                    : $"  DIFF  {title}   {complaint}");
 
                 wrong += complaint is "" ? 0 : 1;
             }
@@ -116,32 +116,32 @@ internal static class Terminal
     /// <returns>The complaint, or an empty string.</returns>
     private static string Probe(string folder)
     {
-        var learned = Path.Combine(folder, "probe");
+        var answers = Path.Combine(folder, "probe");
 
-        Open("probe", learned);
+        Open("probe", answers);
 
-        if (Wait($"{learned}.asking") is "")
+        if (Wait($"{answers}.asking") is "")
         {
             return "the application never started asking";
         }
 
         Tmux("send-keys", Letters);
 
-        var said = Wait(learned);
+        var reply = Wait(answers);
 
-        if (said is "")
+        if (reply is "")
         {
             return "the application never finished asking";
         }
 
-        if (!said.Contains("asked:yes", StringComparison.Ordinal))
+        if (!reply.Contains("asked:yes", StringComparison.Ordinal))
         {
-            return $"it did not get through the asking: {said}";
+            return $"it did not get through the asking: {reply}";
         }
 
-        return said.Contains($"typed:{Letters}", StringComparison.Ordinal)
+        return reply.Contains($"typed:{Letters}", StringComparison.Ordinal)
             ? ""
-            : $"what was typed while it asked did not arrive whole: {said}";
+            : $"what was typed while it asked did not arrive whole: {reply}";
     }
 
     /// <summary>
@@ -152,18 +152,18 @@ internal static class Terminal
     /// <returns>The complaint, or an empty string.</returns>
     private static string Clipboard(string folder)
     {
-        var done = Path.Combine(folder, "clipboard");
+        var marker = Path.Combine(folder, "clipboard");
 
-        Open("clipboard", done, "set-clipboard on");
+        Open("clipboard", marker, "set-clipboard on");
 
-        if (Wait(done) is "")
+        if (Wait(marker) is "")
         {
             return "the application never copied anything";
         }
 
         var buffer = Tmux("show-buffer").TrimEnd('\n');
 
-        return buffer == Copied ? "" : $"the terminal's buffer holds {Program.Escaped(buffer)}";
+        return buffer == CopiedText ? "" : $"the terminal's buffer holds {Program.Escaped(buffer)}";
     }
 
     /// <summary>
@@ -174,11 +174,11 @@ internal static class Terminal
     /// <returns>The complaint, or an empty string.</returns>
     private static string Paste(string folder)
     {
-        var heard = Path.Combine(folder, "paste");
+        var log = Path.Combine(folder, "paste");
 
-        Open("paste", heard);
+        Open("paste", log);
 
-        if (Wait($"{heard}.ready") is "")
+        if (Wait($"{log}.ready") is "")
         {
             return "the application never started listening";
         }
@@ -186,11 +186,11 @@ internal static class Terminal
         Tmux("set-buffer", Block);
         Tmux("paste-buffer", "-p");
 
-        var said = Wait(heard);
+        var reply = Wait(log);
 
-        return said == $"pasted:{Block}"
+        return reply == $"pasted:{Block}"
             ? ""
-            : $"the application heard {Program.Escaped(said)} instead of the block that was pasted";
+            : $"the application heard {Program.Escaped(reply)} instead of the block that was pasted";
     }
 
     /// <summary>
@@ -198,14 +198,14 @@ internal static class Terminal
     /// framework the way an application does, writes down what happened, and leaves.
     /// </summary>
     /// <param name="check">Which of the three to run.</param>
-    /// <param name="into">The file to write what happened to.</param>
+    /// <param name="file">The file to write what happened to.</param>
     /// <returns>Zero.</returns>
-    private static int InPane(string check, string into)
+    private static int InPane(string check, string file)
     {
         if (check == "clipboard")
         {
-            new SystemTerminal().CopyToClipboard(Copied);
-            File.WriteAllText(into, "copied");
+            new SystemTerminal().CopyToClipboard(CopiedText);
+            File.WriteAllText(file, "copied");
             Thread.Sleep(TimeSpan.FromSeconds(20));
 
             return 0;
@@ -229,26 +229,26 @@ internal static class Terminal
 
         var host = builder.Build();
 
-        File.WriteAllText($"{into}.asking", "asking");
+        File.WriteAllText($"{file}.asking", "asking");
         host.Start();
-        File.WriteAllText($"{into}.ready", "ready");
+        File.WriteAllText($"{file}.ready", "ready");
 
-        Until(() => asking ? recorder.Typed.Length >= Letters.Length : recorder.Pasted.Length > 0);
+        Until(() => asking ? recorder.Characters.Length >= Letters.Length : recorder.PastedText.Length > 0);
 
-        File.WriteAllText(into,
+        File.WriteAllText(file,
             asking
                 ? string.Create(
                     CultureInfo.InvariantCulture,
                     $"asked:yes sixel:{TerminalCapabilities.Sixel} kitty:{TerminalCapabilities.Kitty} " +
-                    $"cells:{TerminalCapabilities.CellSizeKnown} typed:{recorder.Typed}")
-                : $"pasted:{recorder.Pasted}");
+                    $"cells:{TerminalCapabilities.CellSizeKnown} typed:{recorder.Characters}")
+                : $"pasted:{recorder.PastedText}");
 
         host.StopAsync().GetAwaiter().GetResult();
 
         return 0;
     }
 
-    private static void Open(string check, string into, string clipboard = "set-clipboard off")
+    private static void Open(string check, string file, string clipboard = "set-clipboard off")
     {
         Tmux("kill-session", "-t", Socket);
         Tmux(
@@ -269,16 +269,16 @@ internal static class Terminal
             "terminal",
             "--in-pane",
             check,
-            into);
+            file);
 
         Tmux("set-option", "-s", clipboard.Split(' ')[0], clipboard.Split(' ')[1]);
     }
 
-    private static void Until(Func<bool> done)
+    private static void Until(Func<bool> marker)
     {
         for (var attempt = 0; attempt < 100; attempt++)
         {
-            if (done())
+            if (marker())
             {
                 return;
             }
@@ -347,21 +347,21 @@ internal static class Terminal
             return "";
         }
 
-        var found = process.StandardOutput.ReadToEnd().Trim();
+        var output = process.StandardOutput.ReadToEnd().Trim();
         process.StandardError.ReadToEnd();
         process.WaitForExit();
 
-        return process.ExitCode == 0 ? found : "";
+        return process.ExitCode == 0 ? output : "";
     }
 
     /// <summary>A screen that draws nothing and remembers what it was given.</summary>
     private sealed class Recorder : IArlecchinoView
     {
-        private readonly List<char> _typed = [];
+        private readonly List<char> _characters = [];
 
-        internal string Typed => new([.. _typed]);
+        internal string Characters => new([.. _characters]);
 
-        internal string Pasted { get; private set; } = "";
+        internal string PastedText { get; private set; } = "";
 
         public void Draw() { }
 
@@ -369,7 +369,7 @@ internal static class Terminal
         {
             if (!char.IsControl(key.Character))
             {
-                _typed.Add(key.Character);
+                _characters.Add(key.Character);
             }
 
             return ViewRoute.None;
@@ -377,7 +377,7 @@ internal static class Terminal
 
         public ViewRoute HandlePaste(string text)
         {
-            Pasted = text;
+            PastedText = text;
 
             return ViewRoute.None;
         }

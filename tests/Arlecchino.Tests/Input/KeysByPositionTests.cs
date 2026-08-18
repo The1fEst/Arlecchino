@@ -75,9 +75,9 @@ public sealed class KeysByPositionTests
         Assert.Contains("Ж", app.Frame(), StringComparison.Ordinal);
     }
 
-    private static void Press(TestApplication app, char typed, ConsoleKey key, KeyModifiers modifiers = default)
+    private static void Press(TestApplication app, char character, ConsoleKey key, KeyModifiers modifiers = default)
     {
-        app.Terminal.Enqueue(new(key, modifiers, typed));
+        app.Terminal.Enqueue(new(key, modifiers, character));
 
         ((TerminalInputReader)app.Services.GetService(typeof(TerminalInputReader))!).ReadPending();
 

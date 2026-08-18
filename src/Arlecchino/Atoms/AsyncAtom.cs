@@ -101,7 +101,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
     {
         try
         {
-            var loaded = await load(running.Token).ConfigureAwait(false);
+            var value = await load(running.Token).ConfigureAwait(false);
 
             if (running.IsCancellationRequested)
             {
@@ -110,7 +110,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
 
             FrameThread.Post(() =>
             {
-                _value.Value = loaded;
+                _value.Value = value;
                 _status.Value = LoadStatus.Loaded;
             });
         }

@@ -33,7 +33,7 @@ public sealed class DiffRenderingTests
 
         DrawLine(surface, "hello");
 
-        Assert.Equal(Height, FrameText.Lines(terminal.Written).Length);
+        Assert.Equal(Height, FrameText.Lines(terminal.WrittenText).Length);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public sealed class DiffRenderingTests
         terminal.Clear();
         DrawLine(surface, "hello");
 
-        Assert.Equal("", terminal.Written);
+        Assert.Equal("", terminal.WrittenText);
     }
 
     [Fact]
@@ -57,9 +57,9 @@ public sealed class DiffRenderingTests
         terminal.Clear();
         DrawLine(surface, "hellp");
 
-        Assert.Contains("\e[1;5H", terminal.Written, StringComparison.Ordinal);
-        Assert.Contains("p", terminal.Written, StringComparison.Ordinal);
-        Assert.DoesNotContain("hell", terminal.Written, StringComparison.Ordinal);
+        Assert.Contains("\e[1;5H", terminal.WrittenText, StringComparison.Ordinal);
+        Assert.Contains("p", terminal.WrittenText, StringComparison.Ordinal);
+        Assert.DoesNotContain("hell", terminal.WrittenText, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public sealed class DiffRenderingTests
         terminal.Clear();
         DrawLine(surface, "baaaaaab");
 
-        Assert.Single(FrameText.CursorJumpsIn(terminal.Written));
+        Assert.Single(FrameText.CursorJumpsIn(terminal.WrittenText));
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public sealed class DiffRenderingTests
         surface.WriteAt(3, 0, "y", Theme.Default);
         surface.Build();
 
-        Assert.Equal(2, FrameText.CursorJumpsIn(terminal.Written).Count);
+        Assert.Equal(2, FrameText.CursorJumpsIn(terminal.WrittenText).Count);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public sealed class DiffRenderingTests
         terminal.Clear();
         DrawLine(surface, "hello");
 
-        Assert.Equal(Height, FrameText.Lines(terminal.Written).Length);
+        Assert.Equal(Height, FrameText.Lines(terminal.WrittenText).Length);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public sealed class DiffRenderingTests
         surface.ForgetPreviousFrame();
         DrawLine(surface, "hello");
 
-        Assert.Equal(Height, FrameText.Lines(terminal.Written).Length);
+        Assert.Equal(Height, FrameText.Lines(terminal.WrittenText).Length);
     }
 
     [Fact]

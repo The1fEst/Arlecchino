@@ -24,11 +24,11 @@ public sealed class PictureTests
 
         picture.Show([Red, Blue], 1, 2);
 
-        var written = Draw(picture, 1, 1);
+        var output = Draw(picture, 1, 1);
 
-        Assert.Contains("38;2;255;0;0", written, StringComparison.Ordinal);
-        Assert.Contains("48;2;0;0;255", written, StringComparison.Ordinal);
-        Assert.Contains('▀', written);
+        Assert.Contains("38;2;255;0;0", output, StringComparison.Ordinal);
+        Assert.Contains("48;2;0;0;255", output, StringComparison.Ordinal);
+        Assert.Contains('▀', output);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public sealed class PictureTests
         picture.Show(new Rgb[100 * 50], 100, 50);
 
         var lines = FrameText.Lines(Draw(picture, 40, 40));
-        var drawn = 0;
+        var frame = 0;
 
         foreach (var line in lines)
         {
@@ -48,11 +48,11 @@ public sealed class PictureTests
                 continue;
             }
 
-            drawn++;
+            frame++;
             Assert.Equal(40, line.TrimEnd().Length);
         }
 
-        Assert.Equal(10, drawn);
+        Assert.Equal(10, frame);
     }
 
     [Fact]
@@ -149,9 +149,9 @@ public sealed class PictureTests
 
         picture.Show(new Rgb[2 * 8], 2, 8);
 
-        var written = Draw(picture, 9, 4);
+        var output = Draw(picture, 9, 4);
 
-        Assert.Contains(Theme.Info.Ansi, written, StringComparison.Ordinal);
+        Assert.Contains(Theme.Info.Ansi, output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -161,13 +161,13 @@ public sealed class PictureTests
 
         picture.Show([Red, Blue], 1, 2);
 
-        var written = Draw(picture, 4, 2);
+        var output = Draw(picture, 4, 2);
 
-        Assert.Contains("\e_Ga=T,q=2,f=24,i=", written, StringComparison.Ordinal);
-        Assert.Contains(",s=1,v=2,c=2,r=2,m=0;", written, StringComparison.Ordinal);
-        Assert.Contains(Convert.ToBase64String([255, 0, 0, 0, 0, 255]), written, StringComparison.Ordinal);
-        Assert.EndsWith("\e\\", written.TrimEnd(), StringComparison.Ordinal);
-        Assert.DoesNotContain('▀', written);
+        Assert.Contains("\e_Ga=T,q=2,f=24,i=", output, StringComparison.Ordinal);
+        Assert.Contains(",s=1,v=2,c=2,r=2,m=0;", output, StringComparison.Ordinal);
+        Assert.Contains(Convert.ToBase64String([255, 0, 0, 0, 0, 255]), output, StringComparison.Ordinal);
+        Assert.EndsWith("\e\\", output.TrimEnd(), StringComparison.Ordinal);
+        Assert.DoesNotContain('▀', output);
     }
 
     /// <summary>
@@ -181,10 +181,10 @@ public sealed class PictureTests
 
         picture.Show(new Rgb[2000 * 1000], 2000, 1000);
 
-        var written = Draw(picture, 40, 10);
+        var output = Draw(picture, 40, 10);
 
-        Assert.Contains($",s={40 * Glyphs.CellWidth},v={10 * Glyphs.CellHeight},c=40,r=10,", written, StringComparison.Ordinal);
-        Assert.True(written.Length < 2000 * 1000, $"the payload is {written.Length} bytes");
+        Assert.Contains($",s={40 * Glyphs.CellWidth},v={10 * Glyphs.CellHeight},c=40,r=10,", output, StringComparison.Ordinal);
+        Assert.True(output.Length < 2000 * 1000, $"the payload is {output.Length} bytes");
     }
 
     /// <summary>
@@ -202,11 +202,11 @@ public sealed class PictureTests
 
         Assert.True(size.Success, "the payload states no size");
 
-        var across = int.Parse(size.Groups[1].Value, CultureInfo.InvariantCulture);
+        var columns = int.Parse(size.Groups[1].Value, CultureInfo.InvariantCulture);
         var down = int.Parse(size.Groups[2].Value, CultureInfo.InvariantCulture);
 
-        Assert.True(across * down <= 8 * 1024, $"{across}×{down} is past the ceiling");
-        Assert.True(across > down, "the shape of the picture is kept");
+        Assert.True(columns * down <= 8 * 1024, $"{columns}×{down} is past the ceiling");
+        Assert.True(columns > down, "the shape of the picture is kept");
     }
 
     /// <summary>A picture smaller than its cells is sent as it is, for the terminal to enlarge.</summary>
@@ -243,9 +243,9 @@ public sealed class PictureTests
         picture.Show([Red, Blue], 1, 2);
 
         var image = Image(Draw(picture, 4, 2));
-        var written = Undrawn(picture, 4, 2, picture.Clear);
+        var output = Undrawn(picture, 4, 2, picture.Clear);
 
-        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", written, StringComparison.Ordinal);
+        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -256,9 +256,9 @@ public sealed class PictureTests
         picture.Show([Red, Blue], 1, 2);
 
         var image = Image(Draw(picture, 4, 2));
-        var written = Undrawn(picture, 4, 2, () => picture.Protocol = ImageProtocol.Blocks);
+        var output = Undrawn(picture, 4, 2, () => picture.Protocol = ImageProtocol.Blocks);
 
-        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", written, StringComparison.Ordinal);
+        Assert.Contains($"\e_Ga=d,d=i,i={image},q=2\e\\", output, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -275,14 +275,14 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        var drawn = terminal.Written.Length;
+        var frame = terminal.WrittenText.Length;
 
         surface.ForgetPreviousFrame();
         surface.StartFrame();
         picture.Draw(surface.Frame);
         surface.Build();
 
-        Assert.Contains("\e_G", terminal.Written[drawn..], StringComparison.Ordinal);
+        Assert.Contains("\e_G", terminal.WrittenText[frame..], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -300,13 +300,13 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        var drawn = terminal.Written.Length;
+        var frame = terminal.WrittenText.Length;
 
         surface.StartFrame();
         picture.Draw(surface.Frame);
         surface.Build();
 
-        Assert.Contains("\e_G", terminal.Written[drawn..], StringComparison.Ordinal);
+        Assert.Contains("\e_G", terminal.WrittenText[frame..], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -323,19 +323,19 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        var drawn = terminal.Written.Length;
+        var frame = terminal.WrittenText.Length;
 
         surface.StartFrame();
         picture.Draw(surface.Frame);
         surface.Build();
 
-        Assert.Equal(drawn, terminal.Written.Length);
+        Assert.Equal(frame, terminal.WrittenText.Length);
     }
 
     [Fact]
     public void TheLastBandOfAnUndrawPaintsOnlyTheRowsThePictureHad()
     {
-        var was = (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight);
+        var original = (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
         {
@@ -347,21 +347,21 @@ public sealed class PictureTests
 
             picture.Show([Red], 1, 1);
 
-            var written = Undrawn(picture, 1, 1, picture.Clear);
+            var output = Undrawn(picture, 1, 1, picture.Clear);
 
-            Assert.Contains("!1~-", written, StringComparison.Ordinal);
-            Assert.Contains("!1B-", written, StringComparison.Ordinal);
+            Assert.Contains("!1~-", output, StringComparison.Ordinal);
+            Assert.Contains("!1B-", output, StringComparison.Ordinal);
         }
         finally
         {
-            (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+            (TerminalCapabilities.Background, Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
     [Fact]
     public void WhatIsUndrawnIsPaintedOverBeforeTheFrameIsDrawnOverIt()
     {
-        var was = TerminalCapabilities.Background;
+        var original = TerminalCapabilities.Background;
 
         try
         {
@@ -377,22 +377,22 @@ public sealed class PictureTests
             picture.Draw(surface.Frame);
             surface.Build();
 
-            var drawn = terminal.Written.Length;
+            var frame = terminal.WrittenText.Length;
 
             surface.StartFrame();
             surface.Frame.Write(0, 0, "kept", Theme.Default);
             surface.Build();
 
-            var written = terminal.Written[drawn..];
+            var output = terminal.WrittenText[frame..];
 
             Assert.True(
-                written.IndexOf("\eP", StringComparison.Ordinal) <
-                written.IndexOf("kept", StringComparison.Ordinal),
+                output.IndexOf("\eP", StringComparison.Ordinal) <
+                output.IndexOf("kept", StringComparison.Ordinal),
                 "the undraw has to go out before the cells it paints over");
         }
         finally
         {
-            TerminalCapabilities.Background = was;
+            TerminalCapabilities.Background = original;
         }
     }
 
@@ -409,22 +409,22 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        var drawn = terminal.Written.Length;
-        var image = Image(terminal.Written);
+        var frame = terminal.WrittenText.Length;
+        var image = Image(terminal.WrittenText);
 
         surface.StartFrame();
         surface.Build();
 
         Assert.Contains(
             $"\e_Ga=d,d=i,i={image},q=2\e\\",
-            terminal.Written[drawn..],
+            terminal.WrittenText[frame..],
             StringComparison.Ordinal);
     }
 
     [Fact]
     public void ClearingASixelPicturePaintsOverItInTheColourTheTerminalNamed()
     {
-        var was = TerminalCapabilities.Background;
+        var original = TerminalCapabilities.Background;
 
         try
         {
@@ -434,21 +434,21 @@ public sealed class PictureTests
 
             picture.Show([Red, Blue], 1, 2);
 
-            var written = Undrawn(picture, 4, 2, picture.Clear);
+            var output = Undrawn(picture, 4, 2, picture.Clear);
 
-            Assert.Contains("#0;2;100;100;100", written, StringComparison.Ordinal);
-            Assert.Contains('~', written);
+            Assert.Contains("#0;2;100;100;100", output, StringComparison.Ordinal);
+            Assert.Contains('~', output);
         }
         finally
         {
-            TerminalCapabilities.Background = was;
+            TerminalCapabilities.Background = original;
         }
     }
 
     [Fact]
     public void ASixelPictureIsLeftWhereItIsWhenTheTerminalNeverSaidItsColour()
     {
-        var was = TerminalCapabilities.Background;
+        var original = TerminalCapabilities.Background;
 
         try
         {
@@ -464,7 +464,7 @@ public sealed class PictureTests
         }
         finally
         {
-            TerminalCapabilities.Background = was;
+            TerminalCapabilities.Background = original;
         }
     }
 
@@ -486,12 +486,12 @@ public sealed class PictureTests
 
         picture.Show(new Rgb[64 * 64], 64, 64);
 
-        var written = Draw(picture, 20, 10);
-        var chunks = written.Split("\e_G").Length - 1;
+        var output = Draw(picture, 20, 10);
+        var chunks = output.Split("\e_G").Length - 1;
 
         Assert.Equal(4, chunks);
-        Assert.Equal(3, Occurrences(written, "m=1;"));
-        Assert.Equal(1, Occurrences(written, "m=0;"));
+        Assert.Equal(3, Occurrences(output, "m=1;"));
+        Assert.Equal(1, Occurrences(output, "m=0;"));
     }
 
     [Fact]
@@ -507,7 +507,7 @@ public sealed class PictureTests
     [Fact]
     public void TheApplicationsOwnChoiceIsWhatItFallsBackTo()
     {
-        var was = Glyphs.Picture;
+        var original = Glyphs.Picture;
 
         try
         {
@@ -521,7 +521,7 @@ public sealed class PictureTests
         }
         finally
         {
-            Glyphs.Picture = was;
+            Glyphs.Picture = original;
         }
     }
 
@@ -532,13 +532,13 @@ public sealed class PictureTests
 
         picture.Show([Red, Blue], 1, 2);
 
-        var written = Draw(picture, 2, 2);
+        var output = Draw(picture, 2, 2);
 
-        Assert.Contains($"\ePq\"1;1;{2 * Glyphs.CellWidth};{2 * Glyphs.CellHeight}", written, StringComparison.Ordinal);
-        Assert.Contains(";2;100;0;0", written, StringComparison.Ordinal);
-        Assert.Contains(";2;0;0;100", written, StringComparison.Ordinal);
-        Assert.EndsWith("\e\\", written.TrimEnd(), StringComparison.Ordinal);
-        Assert.DoesNotContain('▀', written);
+        Assert.Contains($"\ePq\"1;1;{2 * Glyphs.CellWidth};{2 * Glyphs.CellHeight}", output, StringComparison.Ordinal);
+        Assert.Contains(";2;100;0;0", output, StringComparison.Ordinal);
+        Assert.Contains(";2;0;0;100", output, StringComparison.Ordinal);
+        Assert.EndsWith("\e\\", output.TrimEnd(), StringComparison.Ordinal);
+        Assert.DoesNotContain('▀', output);
     }
 
     [Fact]
@@ -565,16 +565,16 @@ public sealed class PictureTests
 
         picture.Show(pixels, 64, 64);
 
-        var written = Draw(picture, 32, 16);
+        var output = Draw(picture, 32, 16);
 
-        Assert.Contains("#255;2;", written, StringComparison.Ordinal);
-        Assert.DoesNotContain("#256", written, StringComparison.Ordinal);
+        Assert.Contains("#255;2;", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("#256", output, StringComparison.Ordinal);
     }
 
     [Fact]
     public void ShrinkingAPictureAveragesThePixelsCoveredRatherThanDroppingThem()
     {
-        var was = (Glyphs.CellWidth, Glyphs.CellHeight);
+        var original = (Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
         {
@@ -589,7 +589,7 @@ public sealed class PictureTests
         }
         finally
         {
-            (Glyphs.CellWidth, Glyphs.CellHeight) = was;
+            (Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
@@ -616,16 +616,16 @@ public sealed class PictureTests
 
         picture.Show([Red], 1, 1);
 
-        var written = Draw(picture, 1, 1);
+        var output = Draw(picture, 1, 1);
 
-        Assert.Equal((Glyphs.CellHeight + 5) / 6, Occurrences(written, "-"));
-        Assert.Contains('!', written);
+        Assert.Equal((Glyphs.CellHeight + 5) / 6, Occurrences(output, "-"));
+        Assert.Contains('!', output);
     }
 
     [Fact]
     public void ACellIsAsManyPixelsAsTheApplicationSays()
     {
-        var was = Glyphs.CellWidth;
+        var original = Glyphs.CellWidth;
 
         try
         {
@@ -639,33 +639,33 @@ public sealed class PictureTests
         }
         finally
         {
-            Glyphs.CellWidth = was;
+            Glyphs.CellWidth = original;
         }
     }
 
-    private static string Image(string written)
+    private static string Image(string output)
     {
-        var at = written.IndexOf("i=", StringComparison.Ordinal) + 2;
-        var end = written.IndexOf(',', at);
+        var at = output.IndexOf("i=", StringComparison.Ordinal) + 2;
+        var end = output.IndexOf(',', at);
 
-        return written[at..end];
+        return output[at..end];
     }
 
-    private static int Occurrences(string text, string what)
+    private static int Occurrences(string text, string label)
     {
-        var found = 0;
-        var at = text.IndexOf(what, StringComparison.Ordinal);
+        var match = 0;
+        var at = text.IndexOf(label, StringComparison.Ordinal);
 
         while (at >= 0)
         {
-            found++;
-            at = text.IndexOf(what, at + what.Length, StringComparison.Ordinal);
+            match++;
+            at = text.IndexOf(label, at + label.Length, StringComparison.Ordinal);
         }
 
-        return found;
+        return match;
     }
 
-    private static string Undrawn(Picture picture, int width, int height, Action between)
+    private static string Undrawn(Picture picture, int width, int height, Action act)
     {
         using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
         var terminal = new FakeTerminal(width, height);
@@ -675,15 +675,15 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        var drawn = terminal.Written.Length;
+        var frame = terminal.WrittenText.Length;
 
-        between();
+        act();
 
         surface.StartFrame();
         picture.Draw(surface.Frame);
         surface.Build();
 
-        return terminal.Written[drawn..];
+        return terminal.WrittenText[frame..];
     }
 
     private static string Draw(Picture picture, int width, int height)
@@ -696,6 +696,6 @@ public sealed class PictureTests
         picture.Draw(surface.Frame);
         surface.Build();
 
-        return terminal.Written;
+        return terminal.WrittenText;
     }
 }

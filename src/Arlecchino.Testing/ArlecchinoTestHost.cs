@@ -201,7 +201,7 @@ public sealed class ArlecchinoTestHost : IDisposable
     {
         Terminal.Clear();
         _provider.GetRequiredService<Screen>().DrawOnce();
-        return FrameText.StylesIn(Terminal.Written);
+        return FrameText.StylesIn(Terminal.WrittenText);
     }
 
     /// <summary>Whether a frame holds some text anywhere. Text split across rows will not be found.</summary>

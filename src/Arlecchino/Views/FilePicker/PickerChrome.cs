@@ -51,22 +51,22 @@ internal sealed class PickerChrome
 
         if (titleColumn + TextWidth.Of(title) < toolbar.Width)
         {
-            toolbar.Write(0, titleColumn, title, Theme.Muted);
+            toolbar.Write(0, titleColumn, title, Theme.Secondary);
         }
 
         var label = $"{_strings.Search()}:";
-        var wanted = TextWidth.Of(label) + TextWidth.Of(filter.Text) + 2;
-        var searchColumn = Math.Max(titleColumn + TextWidth.Of(title) + 2, toolbar.Width - wanted);
-        var written = filter.Text.Length > 0 ? Theme.Info : Theme.Muted;
+        var searchWidth = TextWidth.Of(label) + TextWidth.Of(filter.Text) + 2;
+        var searchColumn = Math.Max(titleColumn + TextWidth.Of(title) + 2, toolbar.Width - searchWidth);
+        var style = filter.Text.Length > 0 ? Theme.Info : Theme.Secondary;
 
-        toolbar.Write(0, searchColumn, label, written);
+        toolbar.Write(0, searchColumn, label, style);
         EntryRow.Draw(
             toolbar,
             0,
             searchColumn + TextWidth.Of(label) + 1,
             Math.Max(0, toolbar.Width - searchColumn - TextWidth.Of(label) - 1),
             filter,
-            new(written, Theme.Selected, Theme.Caret));
+            new(style, Theme.Selection, Theme.Caret));
     }
 
     /// <summary>Draws the row below the panes.</summary>
@@ -74,9 +74,9 @@ internal sealed class PickerChrome
     /// <param name="count">How many rows the listing has.</param>
     public void Status(SurfaceRegion status, int count)
     {
-        var counted = _strings.ItemCount(count);
+        var caption = _strings.ItemCount(count);
 
-        status.Write(0, 1, counted, Theme.Muted);
+        status.Write(0, 1, caption, Theme.Secondary);
 
         var legend = string.Join("   ",
             $"{_keymap.MoveUp}{_keymap.MoveDown} {_strings.HintMove()}",
@@ -90,9 +90,9 @@ internal sealed class PickerChrome
 
         var column = status.Width - TextWidth.Of(legend) - 1;
 
-        if (column > TextWidth.Of(counted) + 3)
+        if (column > TextWidth.Of(caption) + 3)
         {
-            status.Write(0, column, legend, Theme.Muted);
+            status.Write(0, column, legend, Theme.Secondary);
         }
     }
 
@@ -103,12 +103,12 @@ internal sealed class PickerChrome
     {
         var column = sidebarWidth + 1;
 
-        browser.Write(0, column, "┬", Theme.Muted);
-        browser.Write(browser.Height - 1, column, "┴", Theme.Muted);
+        browser.Write(0, column, "┬", Theme.Secondary);
+        browser.Write(browser.Height - 1, column, "┴", Theme.Secondary);
 
         for (var row = 1; row < browser.Height - 1; row++)
         {
-            browser.Write(row, column, "│", Theme.Muted);
+            browser.Write(row, column, "│", Theme.Secondary);
         }
     }
 }

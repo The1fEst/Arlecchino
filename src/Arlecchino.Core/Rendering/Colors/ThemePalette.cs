@@ -29,12 +29,12 @@ public sealed class ThemePalette
         TableHeader = new() { Foreground = TerminalColor.BrightBlue, Style = TextStyle.Bold },
         Accent = new() { Foreground = TerminalColor.BrightWhite },
         Info = new() { Foreground = TerminalColor.Cyan },
-        Muted = new() { Foreground = TerminalColor.BrightBlack },
+        Secondary = new() { Foreground = TerminalColor.BrightBlack },
         Input = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Blue },
         Caret = new() { Foreground = TerminalColor.Black, Background = TerminalColor.White },
-        Selected = new() { Background = TerminalColor.BrightBlack },
+        Selection = new() { Background = TerminalColor.BrightBlack },
         Active = new() { Foreground = TerminalColor.Green },
-        ActiveSelected = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Green },
+        ActiveSelection = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Green },
         Warning = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Yellow },
         Error = new() { Foreground = TerminalColor.Black, Background = TerminalColor.Red },
     };
@@ -67,7 +67,7 @@ public sealed class ThemePalette
         { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash };
 
     /// <summary>Secondary text such as hints and footers. Ash.</summary>
-    public TermColor Muted { get; init; } = new()
+    public TermColor Secondary { get; init; } = new()
         { Foreground = TerminalColor.BrightBlack, ExactForeground = Ash };
 
     /// <summary>The editable part of a text field. Ink on bone.</summary>
@@ -92,7 +92,7 @@ public sealed class ThemePalette
     };
 
     /// <summary>The cursor row of an unfocused pane. Bone on the hairline gray.</summary>
-    public TermColor Selected { get; init; } = new()
+    public TermColor Selection { get; init; } = new()
     {
         Foreground = TerminalColor.White,
         ExactForeground = Bone,
@@ -105,7 +105,7 @@ public sealed class ThemePalette
         { Foreground = TerminalColor.BrightRed, ExactForeground = Crimson };
 
     /// <summary>The cursor row of the focused pane. Ink on ash, so it is never read as a failure.</summary>
-    public TermColor ActiveSelected { get; init; } = new()
+    public TermColor ActiveSelection { get; init; } = new()
     {
         Foreground = TerminalColor.Black,
         ExactForeground = Ink,

@@ -25,7 +25,7 @@ internal static class JpegCoefficients
     /// Which coefficients matter at each of the four sizes a block is read at, in the order they are
     /// read. The rest are neither cleared nor laid back out.
     /// </summary>
-    internal static readonly int[][] Wanted = Needed();
+    internal static readonly int[][] Places = Needed();
 
     /// <summary>
     /// Reads a coefficient the way a JPEG writes one: the bits are the distance from the smallest value
@@ -41,23 +41,23 @@ internal static class JpegCoefficients
     /// <returns>The lists, by how many samples a side of the block comes out as.</returns>
     private static int[][] Needed()
     {
-        var wanted = new int[9][];
+        var lists = new int[9][];
 
         foreach (var side in new[] { 1, 2, 4, 8 })
         {
-            var kept = new List<int>(side * side);
+            var places = new List<int>(side * side);
 
             for (var index = 0; index < Diagonal.Length; index++)
             {
                 if (Diagonal[index] % 8 < side && Diagonal[index] / 8 < side)
                 {
-                    kept.Add(index);
+                    places.Add(index);
                 }
             }
 
-            wanted[side] = [.. kept];
+            lists[side] = [.. places];
         }
 
-        return wanted;
+        return lists;
     }
 }

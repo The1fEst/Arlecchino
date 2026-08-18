@@ -15,34 +15,34 @@ internal static class JpegScan
     /// <returns><c>false</c> when a table is missing or the bits name a code that is not in one.</returns>
     internal static bool Read(ReadOnlySpan<byte> bytes, int at, JpegFrame frame)
     {
-        var across = (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
-        var down = (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
+        var blockColumns = (frame.Width + (frame.Wide * 8) - 1) / (frame.Wide * 8);
+        var blockRows = (frame.Height + (frame.Tall * 8) - 1) / (frame.Tall * 8);
 
         var side = frame.Eighths;
 
         foreach (var part in frame.Parts)
         {
-            part.PlaneWidth = across * part.Wide * side;
-            part.Plane = new byte[part.PlaneWidth * down * part.Tall * side];
-            part.Predicted = 0;
+            part.PlaneWidth = blockColumns * part.Wide * side;
+            part.Plane = new byte[part.PlaneWidth * blockRows * part.Tall * side];
+            part.Prediction = 0;
         }
 
         var bits = new JpegBits(bytes, at);
         var coefficients = new int[64];
         var blocks = new JpegBlocks();
-        var since = 0;
+        var sinceRestart = 0;
 
-        for (var unit = 0; unit < across * down && !bits.Ended; unit++, since++)
+        for (var unit = 0; unit < blockColumns * blockRows && !bits.Ended; unit++, sinceRestart++)
         {
-            if (frame.Restart > 0 && since == frame.Restart)
+            if (frame.Restart > 0 && sinceRestart == frame.Restart)
             {
                 bits.Restart();
 
-                since = 0;
+                sinceRestart = 0;
 
                 foreach (var part in frame.Parts)
                 {
-                    part.Predicted = 0;
+                    part.Prediction = 0;
                 }
             }
 
@@ -70,8 +70,8 @@ internal static class JpegScan
                             divisors,
                             part.Plane,
                             part.PlaneWidth,
-                            (((unit % across) * part.Wide) + column) * side,
-                            (((unit / across) * part.Tall) + row) * side,
+                            (((unit % blockColumns) * part.Wide) + column) * side,
+                            (((unit / blockColumns) * part.Tall) + row) * side,
                             side);
                     }
                 }
@@ -97,9 +97,9 @@ internal static class JpegScan
             return false;
         }
 
-        foreach (var wanted in JpegCoefficients.Wanted[frame.Eighths])
+        foreach (var place in JpegCoefficients.Places[frame.Eighths])
         {
-            coefficients[wanted] = 0;
+            coefficients[place] = 0;
         }
 
         var size = first.Read(ref bits);
@@ -109,8 +109,8 @@ internal static class JpegScan
             return false;
         }
 
-        part.Predicted += size == 0 ? 0 : JpegCoefficients.Signed(bits.Read(size), size);
-        coefficients[0] = part.Predicted;
+        part.Prediction += size == 0 ? 0 : JpegCoefficients.Signed(bits.Read(size), size);
+        coefficients[0] = part.Prediction;
 
         var index = 1;
 

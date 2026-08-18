@@ -106,14 +106,14 @@ public sealed class RobustnessTests
     public void AValidatorThatRefusesEverythingKeepsTheModalOpen()
     {
         using var app = new TestApplication();
-        var submitted = 0;
+        var result = 0;
 
-        app.State.RequestText("Name", "x", static _ => "never good enough", _ => submitted++);
+        app.State.RequestText("Name", "x", static _ => "never good enough", _ => result++);
 
         app.Press(ConsoleKey.Enter);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(0, submitted);
+        Assert.Equal(0, result);
         Assert.NotNull(app.State.Modal);
         Assert.Contains("never good enough", app.Frame(), StringComparison.Ordinal);
     }

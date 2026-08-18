@@ -22,11 +22,11 @@ public readonly record struct ScrollWindow(int First, int Count)
     /// Places the window with the selection in the middle, sliding it back at the ends of the list, so the
     /// rows are always filled rather than trailing off into blanks.
     /// </summary>
-    /// <param name="selected">Index that has to stay visible.</param>
+    /// <param name="selectedIndex">Index that has to stay visible.</param>
     /// <param name="itemCount">Length of the full list.</param>
     /// <param name="rows">How many rows there are to draw into.</param>
     /// <returns>The slice to draw; empty when there is nothing to show or nowhere to show it.</returns>
-    public static ScrollWindow Around(int selected, int itemCount, int rows)
+    public static ScrollWindow Around(int selectedIndex, int itemCount, int rows)
     {
         if (itemCount <= 0 || rows <= 0)
         {
@@ -34,7 +34,7 @@ public readonly record struct ScrollWindow(int First, int Count)
         }
 
         var visible = Math.Min(rows, itemCount);
-        var first = Math.Clamp(selected - visible / 2, 0, Math.Max(0, itemCount - visible));
+        var first = Math.Clamp(selectedIndex - visible / 2, 0, Math.Max(0, itemCount - visible));
 
         return new(first, visible);
     }

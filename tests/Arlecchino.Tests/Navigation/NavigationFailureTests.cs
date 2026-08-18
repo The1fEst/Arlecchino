@@ -15,11 +15,11 @@ public sealed class NavigationFailureTests
     public void AScreenThatCannotBeBuiltLeavesTheApplicationWhereItWas()
     {
         using var app = Application();
-        var before = app.Navigator.CurrentRoute;
+        var start = app.Navigator.CurrentRoute;
 
         Assert.Throws<InvalidOperationException>(() => app.Navigator.Apply(new("Broken")));
 
-        Assert.Equal(before, app.Navigator.CurrentRoute);
+        Assert.Equal(start, app.Navigator.CurrentRoute);
         Assert.Contains("probe", app.Frame(), StringComparison.Ordinal);
     }
 

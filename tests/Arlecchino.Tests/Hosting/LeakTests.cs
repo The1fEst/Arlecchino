@@ -19,7 +19,7 @@ public sealed class LeakTests
     [Fact]
     public void SubscriptionsDoNotPileUpAsScreensComeAndGo()
     {
-        WatchingView.Notified = 0;
+        WatchingView.Notices = 0;
 
         using var app = new TestApplication(60,
             20,
@@ -37,18 +37,18 @@ public sealed class LeakTests
         }
 
         app.Navigator.Apply(new("Watching"));
-        WatchingView.Notified = 0;
+        WatchingView.Notices = 0;
 
         counter.Count.Value++;
 
-        Assert.Equal(1, WatchingView.Notified);
+        Assert.Equal(1, WatchingView.Notices);
     }
 
     [Fact]
     public void AScopedStoreIsDisposedWithTheScreenThatAskedForIt()
     {
-        DraftStore.Created = 0;
-        DraftStore.Disposed = 0;
+        DraftStore.Creations = 0;
+        DraftStore.Disposals = 0;
 
         using var app = new TestApplication(60,
             20,
@@ -62,8 +62,8 @@ public sealed class LeakTests
             app.Navigator.Apply(ViewKind.Probe);
         }
 
-        Assert.Equal(Visits, DraftStore.Created);
-        Assert.Equal(Visits, DraftStore.Disposed);
+        Assert.Equal(Visits, DraftStore.Creations);
+        Assert.Equal(Visits, DraftStore.Disposals);
     }
 
     [Fact]
@@ -95,13 +95,13 @@ public sealed class LeakTests
 
     public sealed class DraftStore : IArlecchinoScopedStore, IDisposable
     {
-        public DraftStore() => Created++;
+        public DraftStore() => Creations++;
 
-        public static int Created { get; set; }
+        public static int Creations { get; set; }
 
-        public static int Disposed { get; set; }
+        public static int Disposals { get; set; }
 
-        public void Dispose() => Disposed++;
+        public void Dispose() => Disposals++;
     }
 
     public sealed class WatchingView : IArlecchinoView
@@ -111,10 +111,10 @@ public sealed class LeakTests
         public WatchingView(Surface surface, CounterStore counter, ViewLifetime lifetime)
         {
             _surface = surface;
-            lifetime.Track(counter.Count.Subscribe(static () => Notified++));
+            lifetime.Track(counter.Count.Subscribe(static () => Notices++));
         }
 
-        public static int Notified { get; set; }
+        public static int Notices { get; set; }
 
         public void Draw() => _surface.AppendLine("watching", Theme.Default);
 

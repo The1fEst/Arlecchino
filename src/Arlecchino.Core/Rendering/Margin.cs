@@ -11,6 +11,6 @@ namespace Arlecchino.Rendering;
 public readonly record struct Margin(int Left, int Top, int Right, int Bottom)
 {
     /// <summary>The same amount of space on all four sides.</summary>
-    /// <param name="all">Cells kept free on every side.</param>
-    public Margin(int all) : this(all, all, all, all) { }
+    /// <param name="size">Cells kept free on every side.</param>
+    public Margin(int size) : this(size, size, size, size) { }
 }

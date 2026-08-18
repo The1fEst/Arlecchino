@@ -24,7 +24,7 @@ public sealed class ScrollPaneTests
     private static string[] Render(Surface surface, FakeTerminal terminal)
     {
         surface.Build();
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 
     private static ScrollPane PaneOf(int lines) => new(Keymap)
@@ -137,16 +137,16 @@ public sealed class ScrollPaneTests
 
         pane.Draw(region);
 
-        var outside = pane.HandleMouse(
+        var outer = pane.HandleMouse(
             new(MouseAction.ScrolledDown, MouseButton.None, region.Bottom + 1, region.Left, default));
 
-        Assert.False(outside.WasHandled);
+        Assert.False(outer.WasHandled);
         Assert.Equal(0, pane.Offset);
 
-        var inside = pane.HandleMouse(
+        var content = pane.HandleMouse(
             new(MouseAction.ScrolledDown, MouseButton.None, region.Top, region.Left, default));
 
-        Assert.True(inside.WasHandled);
+        Assert.True(content.WasHandled);
         Assert.Equal(1, pane.Offset);
     }
 }

@@ -1,1 +1,5 @@
 #nullable enable
+*REMOVED*Arlecchino.Testing.FakeTerminal.Copied.get -> string?
+*REMOVED*Arlecchino.Testing.FakeTerminal.Written.get -> string!
+Arlecchino.Testing.FakeTerminal.CopiedText.get -> string?
+Arlecchino.Testing.FakeTerminal.WrittenText.get -> string!

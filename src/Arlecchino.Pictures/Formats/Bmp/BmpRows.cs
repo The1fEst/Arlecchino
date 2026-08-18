@@ -39,7 +39,7 @@ internal static class BmpRows
         for (var row = 0; row < header.Height; row++)
         {
             var from = offset + (row * stride);
-            var into = (header.TopDown ? row : header.Height - 1 - row) * header.Width;
+            var target = (header.TopDown ? row : header.Height - 1 - row) * header.Width;
 
             for (var column = 0; column < header.Width; column++)
             {
@@ -48,7 +48,7 @@ internal static class BmpRows
                     return null;
                 }
 
-                pixels[into + column] = pixel;
+                pixels[target + column] = pixel;
             }
         }
 
@@ -131,9 +131,9 @@ internal static class BmpRows
             return 0;
         }
 
-        var taken = (value & mask) >> BitOperations.TrailingZeroCount(mask);
+        var bits = (value & mask) >> BitOperations.TrailingZeroCount(mask);
         var deepest = (1u << BitOperations.PopCount(mask)) - 1;
 
-        return (byte)(taken * 255 / deepest);
+        return (byte)(bits * 255 / deepest);
     }
 }

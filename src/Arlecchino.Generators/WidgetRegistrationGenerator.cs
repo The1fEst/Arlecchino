@@ -49,21 +49,21 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
                     return;
                 }
 
-                var declared = widgets
+                var models = widgets
                     .OfType<WidgetModel>()
                     .OrderBy(static widget => widget.TypeName, StringComparer.Ordinal)
                     .ToArray();
 
-                foreach (var widget in declared.Where(static widget => widget.Obstacle.Length > 0))
+                foreach (var widget in models.Where(static widget => widget.Obstacle.Length > 0))
                 {
                     ctx.ReportDiagnostic(Diagnostic.Create(
-                        WidgetDiagnostics.CannotBeBuilt,
+                        WidgetDiagnostics.NotBuildable,
                         widget.Location,
                         widget.TypeName,
                         widget.Obstacle));
                 }
 
-                var buildable = declared.Where(static widget => widget.Obstacle.Length == 0).ToArray();
+                var buildable = models.Where(static widget => widget.Obstacle.Length == 0).ToArray();
 
                 ctx.AddSource("ArlecchinoWidgetRegistration.g.cs",
                     SourceText.From(Generate(buildable, settings.WidgetNamespace), Encoding.UTF8));

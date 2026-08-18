@@ -108,7 +108,7 @@ public sealed class AreaChartTests
     [Fact]
     public void TheApplicationsOwnChoiceIsWhatItFallsBackTo()
     {
-        var was = Glyphs.Graph;
+        var original = Glyphs.Graph;
 
         try
         {
@@ -121,7 +121,7 @@ public sealed class AreaChartTests
         }
         finally
         {
-            Glyphs.Graph = was;
+            Glyphs.Graph = original;
         }
     }
 
@@ -170,7 +170,7 @@ public sealed class AreaChartTests
     public void ASmallerPaletteQuantisesTheBlendRatherThanLosingIt()
     {
         int rich;
-        int quantised;
+        int steps;
 
         using (new ColorSupportScope(ColorSupport.TrueColor))
         {
@@ -179,10 +179,10 @@ public sealed class AreaChartTests
 
         using (new ColorSupportScope(ColorSupport.Palette))
         {
-            quantised = ChartColours(Banded());
+            steps = ChartColours(Banded());
         }
 
-        Assert.InRange(quantised, Banded().Bands.Count - 1, rich - 1);
+        Assert.InRange(steps, Banded().Bands.Count - 1, rich - 1);
     }
 
     [Fact]
@@ -217,7 +217,7 @@ public sealed class AreaChartTests
         chart.Draw(surface.Frame);
         surface.Build();
 
-        return FrameText.StylesIn(terminal.Written).Distinct().Count();
+        return FrameText.StylesIn(terminal.WrittenText).Distinct().Count();
     }
 
     private static string[] Draw(AreaChart chart, int width, int height)
@@ -229,6 +229,6 @@ public sealed class AreaChartTests
         chart.Draw(surface.Frame);
         surface.Build();
 
-        return FrameText.Lines(terminal.Written);
+        return FrameText.Lines(terminal.WrittenText);
     }
 }

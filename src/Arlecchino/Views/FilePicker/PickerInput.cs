@@ -96,7 +96,7 @@ internal sealed class PickerInput
 
         if (_keymap.Confirm.Matches(key) && entries.Count > 0)
         {
-            return FocusResult.Navigate(_open(entries[_table.Selected]));
+            return FocusResult.Navigate(_open(entries[_table.SelectedIndex]));
         }
 
         if (_keymap.Erase.Matches(key) && _listing.Filter.Text.Length == 0)
@@ -108,7 +108,7 @@ internal sealed class PickerInput
 
         if (Filtering(key))
         {
-            _table.Selected = 0;
+            _table.SelectedIndex = 0;
 
             return FocusResult.Handled;
         }
@@ -122,14 +122,14 @@ internal sealed class PickerInput
         {
             Leave();
         }
-        else if (_keymap.MoveRight.Matches(key) && entries.Count > 0 && entries[_table.Selected].IsDirectory)
+        else if (_keymap.MoveRight.Matches(key) && entries.Count > 0 && entries[_table.SelectedIndex].IsDirectory)
         {
-            GoTo(entries[_table.Selected].FullPath);
+            GoTo(entries[_table.SelectedIndex].FullPath);
         }
         else if (_keyText.Resolve(key) is { } typed)
         {
             TextEditing.Insert(_listing.Filter, typed);
-            _table.Selected = 0;
+            _table.SelectedIndex = 0;
         }
         else
         {
@@ -146,7 +146,7 @@ internal sealed class PickerInput
     public void Paste(string text)
     {
         TextEditing.InsertText(_listing.Filter, PastedText.FirstLine(text));
-        _table.Selected = 0;
+        _table.SelectedIndex = 0;
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ internal sealed class PickerInput
     {
         _listing.GoTo(path);
         _places.SyncTo(path);
-        _table.Selected = 0;
+        _table.SelectedIndex = 0;
         _focus(true);
     }
 
@@ -175,19 +175,19 @@ internal sealed class PickerInput
 
         if (_keymap.MoveUp.Matches(key))
         {
-            _table.Selected = Math.Max(0, _table.Selected - 1);
+            _table.SelectedIndex = Math.Max(0, _table.SelectedIndex - 1);
         }
         else if (_keymap.MoveDown.Matches(key))
         {
-            _table.Selected = Math.Min(last, _table.Selected + 1);
+            _table.SelectedIndex = Math.Min(last, _table.SelectedIndex + 1);
         }
         else if (_keymap.JumpUp.Matches(key))
         {
-            _table.Selected = Math.Max(0, _table.Selected - PageRows);
+            _table.SelectedIndex = Math.Max(0, _table.SelectedIndex - PageRows);
         }
         else if (_keymap.JumpDown.Matches(key))
         {
-            _table.Selected = Math.Min(last, _table.Selected + PageRows);
+            _table.SelectedIndex = Math.Min(last, _table.SelectedIndex + PageRows);
         }
         else
         {
@@ -208,11 +208,11 @@ internal sealed class PickerInput
     {
         if (_keymap.First.Matches(key))
         {
-            _table.Selected = 0;
+            _table.SelectedIndex = 0;
         }
         else if (_keymap.Last.Matches(key))
         {
-            _table.Selected = Math.Max(0, count - 1);
+            _table.SelectedIndex = Math.Max(0, count - 1);
         }
         else
         {
@@ -233,6 +233,6 @@ internal sealed class PickerInput
 
         _listing.Up();
         _places.SyncTo(_listing.Folder);
-        _table.Selected = 0;
+        _table.SelectedIndex = 0;
     }
 }

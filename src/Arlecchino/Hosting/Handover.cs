@@ -19,7 +19,7 @@ public sealed class Handover
     private readonly TerminalModes _modes;
     private readonly Screen _screen;
 
-    private int _away;
+    private int _awayCount;
     private int _reading;
 
     /// <summary>Puts the handover over one terminal.</summary>
@@ -34,7 +34,7 @@ public sealed class Handover
     }
 
     /// <summary>Whether another program has the terminal at this moment.</summary>
-    public bool IsAway => Volatile.Read(ref _away) == 1;
+    public bool IsAway => Volatile.Read(ref _awayCount) == 1;
 
     /// <summary>
     /// Runs a program with the terminal to itself and waits for it to end. None of its three streams is
@@ -77,7 +77,7 @@ public sealed class Handover
 
         var ours = _modes.AreOn;
 
-        Volatile.Write(ref _away, 1);
+        Volatile.Write(ref _awayCount, 1);
         WaitForTheReader();
         _modes.Leave();
 
@@ -94,7 +94,7 @@ public sealed class Handover
                 _modes.Enter();
             }
 
-            Volatile.Write(ref _away, 0);
+            Volatile.Write(ref _awayCount, 0);
 
             _screen.RedrawEverything();
         }
@@ -118,9 +118,9 @@ public sealed class Handover
     /// </summary>
     private void WaitForTheReader()
     {
-        var started = Stopwatch.GetTimestamp();
+        var startedAt = Stopwatch.GetTimestamp();
 
-        while (Volatile.Read(ref _reading) == 1 && Stopwatch.GetElapsedTime(started) < Parking)
+        while (Volatile.Read(ref _reading) == 1 && Stopwatch.GetElapsedTime(startedAt) < Parking)
         {
             Thread.Sleep(PollInterval);
         }

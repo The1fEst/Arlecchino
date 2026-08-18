@@ -59,7 +59,7 @@ public sealed class CollectionChangeTests
         table.Handle(new(ConsoleKey.DownArrow));
         Draw(surface, table);
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public sealed class CollectionChangeTests
         tree.Handle(new(ConsoleKey.DownArrow));
         Draw(surface, tree);
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public sealed class CollectionChangeTests
 
         Draw(surface, list);
 
-        Assert.Contains("alpha", FrameText.WithoutStyles(terminal.Written), StringComparison.Ordinal);
+        Assert.Contains("alpha", FrameText.WithoutStyles(terminal.WrittenText), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public sealed class CollectionChangeTests
 
         Draw(surface, table);
 
-        Assert.NotNull(FrameText.Lines(terminal.Written));
+        Assert.NotNull(FrameText.Lines(terminal.WrittenText));
     }
 
     [Fact]
@@ -139,10 +139,10 @@ public sealed class CollectionChangeTests
         app.Navigator.Apply(new("Vanishing"));
         app.Frame();
 
-        var logged = app.Services.GetService(typeof(LogBuffer)) as LogBuffer;
-        Assert.NotNull(logged);
+        var buffer = app.Services.GetService(typeof(LogBuffer)) as LogBuffer;
+        Assert.NotNull(buffer);
 
-        Assert.Contains(logged.Snapshot(),
+        Assert.Contains(buffer.Snapshot(),
             entry => entry.Message.Contains("shrank while it was being drawn", StringComparison.Ordinal));
     }
 

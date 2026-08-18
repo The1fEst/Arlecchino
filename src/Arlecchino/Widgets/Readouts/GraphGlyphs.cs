@@ -57,16 +57,16 @@ internal sealed class BrailleGlyphs : GraphGlyphs
 
         for (var dot = 0; dot < 4; dot++)
         {
-            var lit = inverted ? dot : 3 - dot;
+            var glyph = inverted ? dot : 3 - dot;
 
             if (dot < left)
             {
-                bits |= lit switch { 0 => 0x01, 1 => 0x02, 2 => 0x04, _ => 0x40 };
+                bits |= glyph switch { 0 => 0x01, 1 => 0x02, 2 => 0x04, _ => 0x40 };
             }
 
             if (dot < right)
             {
-                bits |= lit switch { 0 => 0x08, 1 => 0x10, 2 => 0x20, _ => 0x80 };
+                bits |= glyph switch { 0 => 0x08, 1 => 0x10, 2 => 0x20, _ => 0x80 };
             }
         }
 

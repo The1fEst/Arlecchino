@@ -66,7 +66,7 @@ public class RenderBenchmarks
     public void ScrollList()
     {
         _surface.StartFrame();
-        _list.Selected = (_list.Selected + 1) % _items.Length;
+        _list.SelectedIndex = (_list.SelectedIndex + 1) % _items.Length;
         _list.Draw(_surface.Frame);
         _surface.Build();
     }
@@ -101,7 +101,7 @@ public class RenderBenchmarks
 
         public bool MouseAvailable => false;
 
-        public int WrittenLength { get; private set; }
+        private int WrittenLength { get; set; }
 
         public void Write(string text) => WrittenLength += text.Length;
 

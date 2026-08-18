@@ -15,9 +15,9 @@ public sealed class AtomsListTests
     public void ChangingTheListTellsWhoeverIsListening()
     {
         var rows = new LocalAtomsList<string>(["alpha"]);
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = rows.Subscribe(() => heard++);
+        using var subscription = rows.Subscribe(() => changes++);
 
         rows.Add("beta");
         rows.Insert(0, "start");
@@ -26,7 +26,7 @@ public sealed class AtomsListTests
         rows.Remove("beta");
         rows.Clear();
 
-        Assert.Equal(6, heard);
+        Assert.Equal(6, changes);
         Assert.Empty(rows.Value);
     }
 
@@ -66,13 +66,13 @@ public sealed class AtomsListTests
     public void AddingSeveralItemsIsOneChange()
     {
         var rows = new LocalAtomsList<int>([1]);
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = rows.Subscribe(() => heard++);
+        using var subscription = rows.Subscribe(() => changes++);
 
         rows.Add([2, 3, 4]);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
         Assert.Equal([1, 2, 3, 4], rows.Value);
     }
 
@@ -80,21 +80,21 @@ public sealed class AtomsListTests
     public void ChangingNothingNotifiesNobody()
     {
         var rows = new LocalAtomsList<string>(["alpha", "beta"]);
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = rows.Subscribe(() => heard++);
+        using var subscription = rows.Subscribe(() => changes++);
 
         rows.Add([]);
         rows.Remove("gamma");
         rows[0] = "alpha";
         rows.Reset(["alpha", "beta"]);
 
-        Assert.Equal(0, heard);
+        Assert.Equal(0, changes);
 
         rows.Clear();
         rows.Clear();
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
@@ -153,19 +153,19 @@ public sealed class AtomsListTests
     public void ItIsWalkedWithoutCopyingIt()
     {
         var rows = new LocalAtomsList<string>(["alpha", "beta"]);
-        var walked = new List<string>();
+        var visits = new List<string>();
 
         foreach (var row in rows)
         {
-            walked.Add(row);
+            visits.Add(row);
         }
 
         foreach (var row in rows.Value)
         {
-            walked.Add(row);
+            visits.Add(row);
         }
 
-        Assert.Equal(["alpha", "beta", "alpha", "beta"], walked);
+        Assert.Equal(["alpha", "beta", "alpha", "beta"], visits);
     }
 
     [Fact]
@@ -209,18 +209,18 @@ public sealed class AtomsListTests
     public void ARangeGoesOutAsOneChange()
     {
         var rows = new LocalAtomsList<int>([0, 1, 2, 3, 4]);
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = rows.Subscribe(() => heard++);
+        using var subscription = rows.Subscribe(() => changes++);
 
         rows.RemoveRange(0, 3);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
         Assert.Equal([3, 4], rows.Value);
 
         rows.RemoveRange(0, 0);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
@@ -275,21 +275,21 @@ public sealed class AtomsListTests
     public void ATrackedAtomsListGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var kept = new TrackedAtomsList<string>();
+        var survivors = new TrackedAtomsList<string>();
         var ignored = new LocalAtomsList<string>();
 
         ignored.Add("nothing to undo");
 
         Assert.False(history.CanUndo);
 
-        kept.Add("alpha");
+        survivors.Add("alpha");
 
         Assert.True(history.CanUndo);
         Assert.True(history.Undo());
-        Assert.Empty(kept.Value);
+        Assert.Empty(survivors.Value);
 
         Assert.True(history.Redo());
-        Assert.Equal(["alpha"], kept.Value);
+        Assert.Equal(["alpha"], survivors.Value);
     }
 
     [Fact]
@@ -361,9 +361,9 @@ public sealed class AtomsListTests
 
         using var drawing = FrameThread.Claim();
 
-        var thrown = Refused(() => rows.Add("alpha"));
+        var failure = Refused(() => rows.Add("alpha"));
 
-        Assert.Contains("LocalAtomsList`1", thrown.Message, StringComparison.Ordinal);
+        Assert.Contains("LocalAtomsList`1", failure.Message, StringComparison.Ordinal);
         Assert.Empty(rows.Value);
     }
 
@@ -402,7 +402,7 @@ public sealed class AtomsListTests
 
     private static InvalidOperationException Refused(Action change)
     {
-        Exception? thrown = null;
+        Exception? failure = null;
 
         var changing = new Thread(() =>
         {
@@ -412,13 +412,13 @@ public sealed class AtomsListTests
             }
             catch (Exception exception)
             {
-                thrown = exception;
+                failure = exception;
             }
         });
 
         changing.Start();
         changing.Join();
 
-        return Assert.IsType<InvalidOperationException>(thrown);
+        return Assert.IsType<InvalidOperationException>(failure);
     }
 }

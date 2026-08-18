@@ -111,7 +111,7 @@ public sealed class CompletionTests
         TextEditing.Insert(entry, 'i');
 
         Assert.Empty(completer.Words);
-        Assert.Equal(-1, completer.Chosen);
+        Assert.Equal(-1, completer.ChosenIndex);
     }
 
     [Fact]
@@ -122,11 +122,11 @@ public sealed class CompletionTests
 
         completer.Complete(true);
 
-        Assert.Equal(-1, completer.Chosen);
+        Assert.Equal(-1, completer.ChosenIndex);
 
         completer.Complete(true);
 
-        Assert.Equal(0, completer.Chosen);
+        Assert.Equal(0, completer.ChosenIndex);
     }
 
     [Fact]
@@ -183,14 +183,14 @@ public sealed class CompletionTests
     public void AWordThatHasToBeLookedUpArrivesOnALaterFrame()
     {
         var entry = new TextEntry { Text = "co" };
-        var told = new TaskCompletionSource<IReadOnlyList<string>>();
-        var completer = new TextCompleter(entry, new Later(told.Task), new SpaceWords(), Keys);
+        var asks = new TaskCompletionSource<IReadOnlyList<string>>();
+        var completer = new TextCompleter(entry, new Later(asks.Task), new SpaceWords(), Keys);
 
         completer.Complete(true);
 
         Assert.Equal("co", entry.Text);
 
-        told.SetResult(["commit"]);
+        asks.SetResult(["commit"]);
         Waited(() => entry.Text == "commit");
 
         Assert.Equal("commit", entry.Text);
@@ -200,13 +200,13 @@ public sealed class CompletionTests
     public void AnAnswerIsThrownAwayWhenTheLineHasMovedOn()
     {
         var entry = new TextEntry { Text = "co" };
-        var told = new TaskCompletionSource<IReadOnlyList<string>>();
-        var completer = new TextCompleter(entry, new Later(told.Task), new SpaceWords(), Keys);
+        var asks = new TaskCompletionSource<IReadOnlyList<string>>();
+        var completer = new TextCompleter(entry, new Later(asks.Task), new SpaceWords(), Keys);
 
         completer.Complete(true);
         TextEditing.Insert(entry, 'x');
 
-        told.SetResult(["commit"]);
+        asks.SetResult(["commit"]);
         Waited(() => false);
 
         Assert.Equal("cox", entry.Text);

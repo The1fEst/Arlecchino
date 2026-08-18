@@ -25,7 +25,7 @@ public sealed class TypingScreenTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Alt);
 
         Assert.Equal(ViewKind.Typed, app.Navigator.CurrentRoute);
-        Assert.Contains(ConsoleKey.LeftArrow, TypedView.Seen);
+        Assert.Contains(ConsoleKey.LeftArrow, TypedView.Keys);
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public sealed class TypingScreenTests
         app.Press(ConsoleKey.LeftArrow, KeyModifiers.Alt);
 
         Assert.Equal(ViewKind.Probe, app.Navigator.CurrentRoute);
-        Assert.DoesNotContain(ConsoleKey.LeftArrow, TypedView.Seen);
+        Assert.DoesNotContain(ConsoleKey.LeftArrow, TypedView.Keys);
     }
 
     [Fact]
@@ -49,12 +49,12 @@ public sealed class TypingScreenTests
         app.Press(ConsoleKey.RightArrow, KeyModifiers.Alt);
 
         Assert.Equal(ViewKind.Typed, app.Navigator.CurrentRoute);
-        Assert.Contains(ConsoleKey.RightArrow, TypedView.Seen);
+        Assert.Contains(ConsoleKey.RightArrow, TypedView.Keys);
     }
 
     private static TestApplication Typing(bool typing)
     {
-        TypedView.Seen.Clear();
+        TypedView.Keys.Clear();
         TypedView.Typing = typing;
 
         return new();
@@ -71,7 +71,7 @@ public sealed class TypedView : IArlecchinoView
         _surface = surface;
     }
 
-    public static List<ConsoleKey> Seen { get; } = [];
+    public static List<ConsoleKey> Keys { get; } = [];
 
     public static bool Typing { get; set; }
 
@@ -84,7 +84,7 @@ public sealed class TypedView : IArlecchinoView
 
     public ViewRoute Handle(KeyPress key)
     {
-        Seen.Add(key.Key);
+        Keys.Add(key.Key);
 
         return ViewRoute.None;
     }

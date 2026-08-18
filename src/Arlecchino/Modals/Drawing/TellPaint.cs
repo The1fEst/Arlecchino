@@ -50,10 +50,10 @@ internal sealed class TellPaint
     {
         var body = Wrapped(modal.Text);
 
-        if (modal.Entry.Filled() is { } share)
+        if (modal.Entry.Fraction() is { } progress)
         {
             body.Add([new("", Theme.Default)]);
-            body.Add(ValuePaint.Bar(share, Width()));
+            body.Add(ValuePaint.Bar(progress, Width()));
         }
 
         if (modal.Actions.Count == 0)
@@ -101,7 +101,7 @@ internal sealed class TellPaint
             var label = $" {modal.Actions[index].Label()} ";
             var width = TextWidth.Of(label);
 
-            pieces.Add(new(label, index == modal.Index ? Theme.ActiveSelected : Theme.Muted));
+            pieces.Add(new(label, index == modal.Index ? Theme.ActiveSelection : Theme.Secondary));
             offsets.Add((column, width));
 
             column += width;

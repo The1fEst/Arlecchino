@@ -51,10 +51,10 @@ public sealed class SessionTapeTests
     [Fact]
     public void TwoDifferentTapesAreTwoDifferentSessions()
     {
-        var typed = new SessionTape().Type(":pro").Shot();
+        var keys = new SessionTape().Type(":pro").Shot();
         var other = new SessionTape().Type(":zzz").Shot();
 
-        Assert.NotEqual(Play(typed), Play(other));
+        Assert.NotEqual(Play(keys), Play(other));
     }
 
     [Fact]
@@ -69,12 +69,12 @@ public sealed class SessionTapeTests
             .Wait(250)
             .Shot();
 
-        var written = tape.ToString();
-        var reread = SessionTape.Read(written);
+        var output = tape.ToString();
+        var reread = SessionTape.Read(output);
 
         Assert.Equal(8, tape.Count);
         Assert.Equal(tape.Count, reread.Count);
-        Assert.Equal(written, reread.ToString());
+        Assert.Equal(output, reread.ToString());
     }
 
     [Fact]
@@ -89,11 +89,11 @@ public sealed class SessionTapeTests
         clock.Advance(TimeSpan.FromMilliseconds(150));
         tape.Shot();
 
-        var written = tape.ToString();
+        var output = tape.ToString();
 
-        Assert.Contains("400 mouse Pressed Left 2 3", written, StringComparison.Ordinal);
-        Assert.Contains("150 frame", written, StringComparison.Ordinal);
-        Assert.Equal(written, SessionTape.Read(written).ToString());
+        Assert.Contains("400 mouse Pressed Left 2 3", output, StringComparison.Ordinal);
+        Assert.Contains("150 frame", output, StringComparison.Ordinal);
+        Assert.Equal(output, SessionTape.Read(output).ToString());
     }
 
     [Fact]
@@ -127,12 +127,12 @@ public sealed class SessionTapeTests
             .Key(ConsoleKey.Escape)
             .Shot();
 
-    private static List<string> Play(SessionTape tape, Action<ArlecchinoTestHost>? before = null)
+    private static List<string> Play(SessionTape tape, Action<ArlecchinoTestHost>? start = null)
     {
         using var host = new ArlecchinoTestHost(configure: static builder =>
             builder.AddGeneratedViews().StartAt(ViewKind.Probe).AddCommand<ProbeCommand>());
 
-        before?.Invoke(host);
+        start?.Invoke(host);
 
         return tape.Play(host);
     }

@@ -13,13 +13,13 @@ public sealed class TextModalTests
     public void TypingBuildsTheTextAndEnterSubmitsIt()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestText("Name", "", null, value => submitted = value);
+        app.State.RequestText("Name", "", null, value => result = value);
         app.Type("abc");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("abc", submitted);
+        Assert.Equal("abc", result);
         Assert.Null(app.State.Modal);
     }
 
@@ -38,13 +38,13 @@ public sealed class TextModalTests
     public void EscapeCancelsWithoutSubmitting()
     {
         using var app = new TestApplication();
-        var submitted = false;
+        var result = false;
 
-        app.State.RequestText("Name", "x", null, _ => submitted = true);
+        app.State.RequestText("Name", "x", null, _ => result = true);
         app.Press(ConsoleKey.Escape);
 
         Assert.Null(app.State.Modal);
-        Assert.False(submitted);
+        Assert.False(result);
     }
 
     [Fact]
@@ -75,9 +75,9 @@ public sealed class TextModalTests
     public void PasswordIsMaskedInTheFrameButNotInTheResult()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestPassword("Passphrase", value => submitted = value);
+        app.State.RequestPassword("Passphrase", value => result = value);
         app.Type("secret");
 
         var frame = app.Frame();
@@ -85,16 +85,16 @@ public sealed class TextModalTests
         Assert.DoesNotContain("secret", frame, StringComparison.Ordinal);
 
         app.Press(ConsoleKey.Enter);
-        Assert.Equal("secret", submitted);
+        Assert.Equal("secret", result);
     }
 
     [Fact]
     public void EmailIsRejectedUntilItLooksLikeAnAddress()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestEmail("Email", "", value => submitted = value);
+        app.State.RequestEmail("Email", "", value => result = value);
         app.Type("nope");
         app.Press(ConsoleKey.Enter);
 
@@ -104,25 +104,25 @@ public sealed class TextModalTests
         app.Type("@example.com");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("nope@example.com", submitted);
+        Assert.Equal("nope@example.com", result);
     }
 
     [Fact]
     public void LinkIsRejectedUntilItParsesAsHttp()
     {
         using var app = new TestApplication();
-        var submitted = "";
+        var result = "";
 
-        app.State.RequestUrl("Homepage", "", value => submitted = value);
+        app.State.RequestUrl("Homepage", "", value => result = value);
         app.Type("ftp://example.com");
         app.Press(ConsoleKey.Enter);
 
         Assert.NotNull(app.State.Modal);
 
-        app.State.RequestUrl("Homepage", "https://example.com", value => submitted = value);
+        app.State.RequestUrl("Homepage", "https://example.com", value => result = value);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("https://example.com", submitted);
+        Assert.Equal("https://example.com", result);
     }
 
     [Fact]

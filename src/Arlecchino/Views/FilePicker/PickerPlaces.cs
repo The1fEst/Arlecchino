@@ -27,14 +27,14 @@ internal sealed class PickerPlaces
     {
         _strings = strings;
         _rows = Built(request);
-        Selected = _rows.FindIndex(static row => row.Path is not null);
+        SelectedIndex = _rows.FindIndex(static row => row.Path is not null);
     }
 
     /// <summary>Which shortcut the cursor is on.</summary>
-    public int Selected { get; private set; }
+    public int SelectedIndex { get; private set; }
 
     /// <summary>Where the shortcut under the cursor leads, or <c>null</c> when it is a heading.</summary>
-    public string? Current => At(Selected);
+    public string? Current => At(SelectedIndex);
 
     /// <summary>Where the shortcut on a row leads, or <c>null</c> when there is none.</summary>
     /// <param name="row">Row on screen, counted from the top of the pane.</param>
@@ -48,7 +48,7 @@ internal sealed class PickerPlaces
             return null;
         }
 
-        Selected = index;
+        SelectedIndex = index;
 
         return path;
     }
@@ -57,7 +57,7 @@ internal sealed class PickerPlaces
     /// <param name="delta">Which way to step.</param>
     public void Move(int delta)
     {
-        var next = Selected;
+        var next = SelectedIndex;
 
         foreach (var _ in _rows)
         {
@@ -73,7 +73,7 @@ internal sealed class PickerPlaces
                 continue;
             }
 
-            Selected = next;
+            SelectedIndex = next;
 
             return;
         }
@@ -90,7 +90,7 @@ internal sealed class PickerPlaces
                 continue;
             }
 
-            Selected = index;
+            SelectedIndex = index;
 
             return;
         }
@@ -101,7 +101,7 @@ internal sealed class PickerPlaces
     /// <param name="focused">Whether the pane has the keyboard.</param>
     public void Draw(SurfaceRegion sidebar, bool focused)
     {
-        var start = Math.Clamp(Selected - sidebar.Height / 2, 0, Math.Max(0, _rows.Count - sidebar.Height));
+        var start = Math.Clamp(SelectedIndex - sidebar.Height / 2, 0, Math.Max(0, _rows.Count - sidebar.Height));
 
         _firstVisible = start;
 
@@ -111,13 +111,13 @@ internal sealed class PickerPlaces
 
             if (row.Path is null)
             {
-                sidebar.Write(offset, 0, PickerText.Pad(row.Label, sidebar.Width), Theme.Muted);
+                sidebar.Write(offset, 0, PickerText.Pad(row.Label, sidebar.Width), Theme.Secondary);
 
                 continue;
             }
 
-            var style = start + offset == Selected
-                ? focused ? Theme.ActiveSelected : Theme.Selected
+            var style = start + offset == SelectedIndex
+                ? focused ? Theme.ActiveSelection : Theme.Selection
                 : Theme.Default;
 
             sidebar.Write(offset, 0, PickerText.Pad($" {row.Icon} {row.Label}", sidebar.Width), style);

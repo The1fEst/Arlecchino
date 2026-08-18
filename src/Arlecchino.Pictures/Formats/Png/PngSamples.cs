@@ -16,7 +16,7 @@ internal static class PngSamples
     /// <param name="header">What the picture is.</param>
     /// <param name="palette">The palette, when the color type wants one.</param>
     /// <param name="pixels">Where the row is read into.</param>
-    /// <param name="into">Where the row begins among them.</param>
+    /// <param name="offset">Where the row begins among them.</param>
     /// <param name="step">How far apart the pixels of this pass stand.</param>
     /// <param name="width">How many pixels the row holds.</param>
     /// <returns><c>false</c> when a palette entry is named that the palette does not hold.</returns>
@@ -25,7 +25,7 @@ internal static class PngSamples
         in PngHeader header,
         byte[]? palette,
         Rgb[] pixels,
-        int into,
+        int offset,
         int step,
         int width)
     {
@@ -37,7 +37,7 @@ internal static class PngSamples
             {
                 var at = column * channels * 2;
 
-                pixels[into + (column * step)] = header.Color is 0 or 4
+                pixels[offset + (column * step)] = header.Color is 0 or 4
                     ? new(line[at], line[at], line[at])
                     : new(line[at], line[at + 2], line[at + 4]);
             }
@@ -54,7 +54,7 @@ internal static class PngSamples
                     return false;
                 }
 
-                pixels[into + (column * step)] = pixel;
+                pixels[offset + (column * step)] = pixel;
             }
 
             return true;
@@ -66,7 +66,7 @@ internal static class PngSamples
             {
                 var at = column * channels;
 
-                pixels[into + (column * step)] = new(line[at], line[at + 1], line[at + 2]);
+                pixels[offset + (column * step)] = new(line[at], line[at + 1], line[at + 2]);
             }
 
             return true;
@@ -78,7 +78,7 @@ internal static class PngSamples
             {
                 var gray = line[column * channels];
 
-                pixels[into + (column * step)] = new(gray, gray, gray);
+                pixels[offset + (column * step)] = new(gray, gray, gray);
             }
 
             return true;
@@ -93,7 +93,7 @@ internal static class PngSamples
                 return false;
             }
 
-            pixels[into + (column * step)] = new(palette[entry], palette[entry + 1], palette[entry + 2]);
+            pixels[offset + (column * step)] = new(palette[entry], palette[entry + 1], palette[entry + 2]);
         }
 
         return true;

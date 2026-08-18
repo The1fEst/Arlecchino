@@ -125,28 +125,28 @@ public sealed class TerminalProbeTests
     [Fact]
     public void AskingATerminalThatSaysNothingLeavesEverythingAlone()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth, Glyphs.CellHeight);
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
         {
             var terminal = new FakeTerminal(80, 24);
 
             Assert.False(TerminalProbe.Ask(terminal, TimeSpan.FromMilliseconds(5)));
-            Assert.Equal(was.CellWidth, Glyphs.CellWidth);
-            Assert.Contains("\e[c", terminal.Written, StringComparison.Ordinal);
-            Assert.Contains("a=q", terminal.Written, StringComparison.Ordinal);
-            Assert.Contains("\e[16t", terminal.Written, StringComparison.Ordinal);
+            Assert.Equal(original.CellWidth, Glyphs.CellWidth);
+            Assert.Contains("\e[c", terminal.WrittenText, StringComparison.Ordinal);
+            Assert.Contains("a=q", terminal.WrittenText, StringComparison.Ordinal);
+            Assert.Contains("\e[16t", terminal.WrittenText, StringComparison.Ordinal);
         }
         finally
         {
-            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
     [Fact]
     public void ASizeThatWasReportedIsToldApartFromTheStandingGuess()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
             TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
@@ -156,7 +156,7 @@ public sealed class TerminalProbeTests
             TerminalProbe.Ask(silent, TimeSpan.FromMilliseconds(5));
 
             Assert.False(TerminalCapabilities.CellSizeKnown);
-            Assert.Equal(was.CellWidth, Glyphs.CellWidth);
+            Assert.Equal(original.CellWidth, Glyphs.CellWidth);
 
             var talking = new FakeTerminal(80, 24);
 
@@ -170,14 +170,14 @@ public sealed class TerminalProbeTests
         finally
         {
             (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
-                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
     [Fact]
     public void AKeyPressedDuringTheWaitIsHandedBackRatherThanEaten()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth);
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth);
 
         try
         {
@@ -193,14 +193,14 @@ public sealed class TerminalProbeTests
         }
         finally
         {
-            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth) = was;
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty, Glyphs.CellWidth) = original;
         }
     }
 
     [Fact]
     public void KeysTypedInBetweenTheAnswersAreHandedBackToo()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
             TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
@@ -221,7 +221,7 @@ public sealed class TerminalProbeTests
         finally
         {
             (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
-                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
@@ -244,7 +244,7 @@ public sealed class TerminalProbeTests
     [Fact]
     public void RubbishInFrontOfTheAnswersDoesNotThrowThemAway()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
             TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight);
 
         try
@@ -262,14 +262,14 @@ public sealed class TerminalProbeTests
         finally
         {
             (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty,
-                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = was;
+                TerminalCapabilities.CellSizeKnown, Glyphs.CellWidth, Glyphs.CellHeight) = original;
         }
     }
 
     [Fact]
     public void AutoTakesTheBestOfWhatWasAdmittedTo()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty);
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty);
 
         try
         {
@@ -287,14 +287,14 @@ public sealed class TerminalProbeTests
         }
         finally
         {
-            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty) = was;
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty) = original;
         }
     }
 
     [Fact]
     public void ANamedProtocolIsNeverSecondGuessed()
     {
-        var was = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty);
+        var original = (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty);
 
         try
         {
@@ -305,7 +305,7 @@ public sealed class TerminalProbeTests
         }
         finally
         {
-            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty) = was;
+            (TerminalCapabilities.Sixel, TerminalCapabilities.Kitty) = original;
         }
     }
 }

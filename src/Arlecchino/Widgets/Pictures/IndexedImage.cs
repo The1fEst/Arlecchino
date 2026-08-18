@@ -37,65 +37,67 @@ internal sealed class IndexedImage
     /// <param name="pixels">The picture.</param>
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
-    /// <param name="across">How wide the result should be.</param>
-    /// <param name="down">How tall the result should be.</param>
+    /// <param name="newWidth">How wide the result should be.</param>
+    /// <param name="newHeight">How tall the result should be.</param>
     /// <param name="colors">How many colors the palette may hold.</param>
     /// <returns>The picture as entries in a palette of its own.</returns>
-    public static IndexedImage From(Rgb[] pixels, int width, int height, int across, int down, int colors)
+    public static IndexedImage From(Rgb[] pixels, int width, int height, int newWidth, int newHeight, int colors)
     {
-        var (scaled, wide, tall) = PictureScale.To(pixels, width, height, across, down);
-        var counted = new int[Buckets];
+        var (result, wide, tall) = PictureScale.To(pixels, width, height, newWidth, newHeight);
+        var bucketCounts = new int[Buckets];
         var reds = new int[Buckets];
         var greens = new int[Buckets];
         var blues = new int[Buckets];
         var distinct = 0;
 
-        foreach (var pixel in scaled)
+        foreach (var pixel in result)
         {
             var bucket = Bucket(pixel);
 
-            if (counted[bucket] == 0)
+            if (bucketCounts[bucket] == 0)
             {
                 distinct++;
             }
 
-            counted[bucket]++;
+            bucketCounts[bucket]++;
             reds[bucket] += pixel.Red;
             greens[bucket] += pixel.Green;
             blues[bucket] += pixel.Blue;
         }
 
         var keys = new int[distinct];
-        var counts = new int[distinct];
+        var colorCounts = new int[distinct];
         var at = 0;
 
-        for (var bucket = 0; bucket < counted.Length; bucket++)
+        for (var bucket = 0; bucket < bucketCounts.Length; bucket++)
         {
-            if (counted[bucket] == 0)
+            if (bucketCounts[bucket] == 0)
             {
                 continue;
             }
 
-            keys[at] = ((reds[bucket] / counted[bucket]) << 16) | ((greens[bucket] / counted[bucket]) << 8) | (blues[bucket] / counted[bucket]);
+            keys[at] = ((reds[bucket] / bucketCounts[bucket]) << 16) |
+                       ((greens[bucket] / bucketCounts[bucket]) << 8) |
+                       (blues[bucket] / bucketCounts[bucket]);
 
-            counts[at] = counted[bucket];
+            colorCounts[at] = bucketCounts[bucket];
             at++;
         }
 
-        var palette = MedianCut(keys, counts, colors);
+        var palette = MedianCut(keys, colorCounts, colors);
         var nearest = new byte[Buckets];
-        var known = new bool[Buckets];
-        var indexes = new byte[scaled.Length];
+        var knownBuckets = new bool[Buckets];
+        var indexes = new byte[result.Length];
 
-        for (var index = 0; index < scaled.Length; index++)
+        for (var index = 0; index < result.Length; index++)
         {
-            var pixel = scaled[index];
+            var pixel = result[index];
             var bucket = Bucket(pixel);
 
-            if (!known[bucket])
+            if (!knownBuckets[bucket])
             {
                 nearest[bucket] = Nearest(palette, Key(pixel));
-                known[bucket] = true;
+                knownBuckets[bucket] = true;
             }
 
             indexes[index] = nearest[bucket];
@@ -104,7 +106,7 @@ internal sealed class IndexedImage
         return new(palette, indexes, wide, tall);
     }
 
-    private static Rgb[] MedianCut(int[] keys, int[] counts, int colors)
+    private static Rgb[] MedianCut(int[] keys, int[] colorCounts, int colors)
     {
         var boxes = new List<(int Start, int Length)> { (0, keys.Length) };
 
@@ -140,9 +142,9 @@ internal sealed class IndexedImage
 
             var box = boxes[pick];
 
-            Array.Sort(keys, counts, box.Start, box.Length, Channel.At(shift));
+            Array.Sort(keys, colorCounts, box.Start, box.Length, Channel.At(shift));
 
-            var half = Half(counts, box);
+            var half = Half(colorCounts, box);
 
             boxes[pick] = (box.Start, half - box.Start);
             boxes.Insert(pick + 1, (half, box.Start + box.Length - half));
@@ -152,7 +154,7 @@ internal sealed class IndexedImage
 
         for (var index = 0; index < boxes.Count; index++)
         {
-            palette[index] = Average(keys, counts, boxes[index]);
+            palette[index] = Average(keys, colorCounts, boxes[index]);
         }
 
         return palette;
@@ -188,22 +190,22 @@ internal sealed class IndexedImage
         return (span, shift);
     }
 
-    private static int Half(int[] counts, (int Start, int Length) box)
+    private static int Half(int[] colorCounts, (int Start, int Length) box)
     {
         var total = 0L;
 
         for (var index = box.Start; index < box.Start + box.Length; index++)
         {
-            total += counts[index];
+            total += colorCounts[index];
         }
 
-        var seen = 0L;
+        var running = 0L;
 
         for (var index = box.Start; index < box.Start + box.Length - 1; index++)
         {
-            seen += counts[index];
+            running += colorCounts[index];
 
-            if (seen * 2 >= total)
+            if (running * 2 >= total)
             {
                 return index + 1;
             }
@@ -212,7 +214,7 @@ internal sealed class IndexedImage
         return box.Start + box.Length - 1;
     }
 
-    private static Rgb Average(int[] keys, int[] counts, (int Start, int Length) box)
+    private static Rgb Average(int[] keys, int[] colorCounts, (int Start, int Length) box)
     {
         var red = 0L;
         var green = 0L;
@@ -221,7 +223,7 @@ internal sealed class IndexedImage
 
         for (var index = box.Start; index < box.Start + box.Length; index++)
         {
-            var weight = counts[index];
+            var weight = colorCounts[index];
 
             red += ((keys[index] >> 16) & 0xFF) * (long)weight;
             green += ((keys[index] >> 8) & 0xFF) * (long)weight;
@@ -248,17 +250,17 @@ internal sealed class IndexedImage
         for (var index = 0; index < palette.Length; index++)
         {
             var color = palette[index];
-            var apart = Square(red - color.Red) + Square(green - color.Green) + Square(blue - color.Blue);
+            var distance = Square(red - color.Red) + Square(green - color.Green) + Square(blue - color.Blue);
 
-            if (apart >= closest)
+            if (distance >= closest)
             {
                 continue;
             }
 
-            closest = apart;
+            closest = distance;
             best = index;
 
-            if (apart == 0)
+            if (distance == 0)
             {
                 break;
             }

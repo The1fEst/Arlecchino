@@ -32,18 +32,18 @@ public sealed class AtomsQueueTests
     public void SeveralJoiningAtOnceIsOneChange()
     {
         var waiting = new LocalAtomsQueue<int>([1]);
-        var heard = 0;
+        var changes = 0;
 
-        using var subscription = waiting.Subscribe(() => heard++);
+        using var subscription = waiting.Subscribe(() => changes++);
 
         waiting.Enqueue([2, 3, 4]);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
         Assert.Equal([1, 2, 3, 4], waiting.Value);
 
         waiting.Enqueue([]);
 
-        Assert.Equal(1, heard);
+        Assert.Equal(1, changes);
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public sealed class AtomsQueueTests
 
         Assert.True(waiting.TryPeek(out var peeked));
         Assert.Equal("only", peeked);
-        Assert.True(waiting.TryDequeue(out var taken));
-        Assert.Equal("only", taken);
+        Assert.True(waiting.TryDequeue(out var item));
+        Assert.Equal("only", item);
         Assert.True(waiting.IsEmpty);
     }
 
@@ -85,9 +85,9 @@ public sealed class AtomsQueueTests
         using var history = new AtomHistory();
         var waiting = new TrackedAtomsQueue<string>(["first", "second"]);
 
-        var taken = waiting.Dequeue();
+        var item = waiting.Dequeue();
 
-        Assert.Equal("first", taken);
+        Assert.Equal("first", item);
         Assert.Equal(["second"], waiting.Value);
 
         history.Undo();
@@ -154,14 +154,14 @@ public sealed class AtomsQueueTests
     public void ItIsWalkedFrontFirst()
     {
         var waiting = new LocalAtomsQueue<string>(["first", "second"]);
-        var walked = new List<string>();
+        var visits = new List<string>();
 
         foreach (var item in waiting)
         {
-            walked.Add(item);
+            visits.Add(item);
         }
 
-        Assert.Equal(["first", "second"], walked);
+        Assert.Equal(["first", "second"], visits);
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public sealed class AtomsQueueTests
 
         using var drawing = FrameThread.Claim();
 
-        Exception? thrown = null;
+        Exception? failure = null;
         var changing = new Thread(() =>
         {
             try
@@ -194,14 +194,14 @@ public sealed class AtomsQueueTests
             }
             catch (Exception exception)
             {
-                thrown = exception;
+                failure = exception;
             }
         });
 
         changing.Start();
         changing.Join();
 
-        Assert.IsType<InvalidOperationException>(thrown);
+        Assert.IsType<InvalidOperationException>(failure);
         Assert.Empty(waiting.Value);
     }
 }

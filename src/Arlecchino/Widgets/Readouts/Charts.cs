@@ -210,9 +210,9 @@ public sealed class AreaChart : IArlecchinoWidget
             return 0;
         }
 
-        var within = (share - floor) / (ceiling - floor) * levels;
+        var level = (share - floor) / (ceiling - floor) * levels;
 
-        return Math.Clamp((int)Math.Ceiling(within), 1, levels);
+        return Math.Clamp((int)Math.Ceiling(level), 1, levels);
     }
 
     private IArlecchinoColor ColorOf(decimal ceiling, decimal low, decimal span)
@@ -225,42 +225,42 @@ public sealed class AreaChart : IArlecchinoWidget
         }
 
         var value = low + (span * ceiling);
-        var found = -1;
+        var bandIndex = -1;
 
         for (var index = 0; index < Bands.Count && Bands[index].From <= value; index++)
         {
-            found = index;
+            bandIndex = index;
         }
 
-        if (found < 0)
+        if (bandIndex < 0)
         {
             return fallback;
         }
 
-        var below = Bands[found];
+        var lower = Bands[bandIndex];
 
-        if (found == Bands.Count - 1 ||
-            below.Style is not TermColor from ||
-            Bands[found + 1].Style is not TermColor to)
+        if (bandIndex == Bands.Count - 1 ||
+            lower.Style is not TermColor from ||
+            Bands[bandIndex + 1].Style is not TermColor to)
         {
-            return below.Style;
+            return lower.Style;
         }
 
-        var above = Bands[found + 1];
-        var reached = above.From > below.From ? (value - below.From) / (above.From - below.From) : 0m;
+        var upper = Bands[bandIndex + 1];
+        var share = upper.From > lower.From ? (value - lower.From) / (upper.From - lower.From) : 0m;
 
-        return Blend(from, to, Math.Clamp(reached, 0m, 1m));
+        return Blend(from, to, Math.Clamp(share, 0m, 1m));
     }
 
-    private static TermColor Blend(TermColor from, TermColor to, decimal reached) =>
+    private static TermColor Blend(TermColor from, TermColor to, decimal share) =>
         from.ExactForeground is { } start && to.ExactForeground is { } end
             ? new()
             {
-                Foreground = reached < 0.5m ? from.Foreground : to.Foreground,
+                Foreground = share < 0.5m ? from.Foreground : to.Foreground,
                 ExactForeground = new(
-                    (byte)(start.Red + ((end.Red - start.Red) * reached)),
-                    (byte)(start.Green + ((end.Green - start.Green) * reached)),
-                    (byte)(start.Blue + ((end.Blue - start.Blue) * reached))),
+                    (byte)(start.Red + ((end.Red - start.Red) * share)),
+                    (byte)(start.Green + ((end.Green - start.Green) * share)),
+                    (byte)(start.Blue + ((end.Blue - start.Blue) * share))),
             }
             : from;
 
@@ -371,23 +371,23 @@ public sealed class BarChart<T> : IArlecchinoWidget
             }
         }
 
-        var labelled = LabelWidth > 0
+        var labelWidth = LabelWidth > 0
             ? LabelWidth
             : Math.Min(widest, Math.Max(1, region.Width / LabelShare));
-        var track = Math.Max(0, region.Width - labelled - 1 - (readout == 0 ? 0 : readout + 1));
+        var track = Math.Max(0, region.Width - labelWidth - 1 - (readout == 0 ? 0 : readout + 1));
 
         for (var row = 0; row < rows; row++)
         {
             var share = highest > 0 ? Math.Clamp(values[row] / highest, 0m, 1m) : 0m;
-            var filled = (int)Math.Round(share * track);
+            var cells = (int)Math.Round(share * track);
 
-            region.Write(row, 0, TextWidth.PadRight(TextWidth.Truncate(labels[row], labelled), labelled), Theme.Default);
-            region.Write(row, labelled + 1, new(FilledCell, filled), ItemStyle?.Invoke(Items[row]) ?? Theme.Active);
-            region.Write(row, labelled + 1 + filled, new(EmptyCell, track - filled), Theme.Muted);
+            region.Write(row, 0, TextWidth.PadRight(TextWidth.Truncate(labels[row], labelWidth), labelWidth), Theme.Default);
+            region.Write(row, labelWidth + 1, new(FilledCell, cells), ItemStyle?.Invoke(Items[row]) ?? Theme.Active);
+            region.Write(row, labelWidth + 1 + cells, new(EmptyCell, track - cells), Theme.Secondary);
 
             if (readout > 0)
             {
-                region.Write(row, labelled + 1 + track + 1, TextWidth.PadLeft(captions[row], readout), Theme.Accent);
+                region.Write(row, labelWidth + 1 + track + 1, TextWidth.PadLeft(captions[row], readout), Theme.Accent);
             }
         }
 
@@ -464,24 +464,24 @@ public sealed class Gauge : IArlecchinoWidget
 
         var caption = Caption?.Invoke(Value) ?? "";
         var track = Math.Max(0, region.Width - (caption.Length == 0 ? 0 : TextWidth.Of(caption) + 1));
-        var filled = (int)Math.Round(Fraction * track);
-        var written = 0;
+        var cells = (int)Math.Round(Fraction * track);
+        var column = 0;
 
-        while (written < filled)
+        while (column < cells)
         {
-            var band = BandAt(ValueAt(written, track));
-            var run = written + 1;
+            var band = BandAt(ValueAt(column, track));
+            var run = column + 1;
 
-            while (run < filled && BandAt(ValueAt(run, track)) == band)
+            while (run < cells && BandAt(ValueAt(run, track)) == band)
             {
                 run++;
             }
 
-            region.Write(0, written, new(FilledCell, run - written), band >= 0 ? Bands[band].Style : Style ?? Theme.Active);
-            written = run;
+            region.Write(0, column, new(FilledCell, run - column), band >= 0 ? Bands[band].Style : Style ?? Theme.Active);
+            column = run;
         }
 
-        region.Write(0, filled, new(EmptyCell, Math.Max(0, track - filled)), Theme.Muted);
+        region.Write(0, cells, new(EmptyCell, Math.Max(0, track - cells)), Theme.Secondary);
 
         if (caption.Length > 0)
         {
@@ -496,13 +496,13 @@ public sealed class Gauge : IArlecchinoWidget
 
     private int BandAt(decimal value)
     {
-        var found = -1;
+        var bandIndex = -1;
 
         for (var index = 0; index < Bands.Count && Bands[index].From <= value; index++)
         {
-            found = index;
+            bandIndex = index;
         }
 
-        return found;
+        return bandIndex;
     }
 }

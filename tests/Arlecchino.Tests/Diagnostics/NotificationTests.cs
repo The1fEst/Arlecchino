@@ -219,7 +219,7 @@ public sealed class NotificationTests
         app.Press(ConsoleKey.Enter);
 
         Assert.Contains("50%", app.Frame(), StringComparison.Ordinal);
-        Assert.Equal(0.5, entry.Filled());
+        Assert.Equal(0.5, entry.Fraction());
     }
 
     [Fact]
@@ -338,7 +338,7 @@ public sealed class NotificationTests
         using var app = new TestApplication();
         using var drawing = FrameThread.Claim();
 
-        Exception? thrown = null;
+        Exception? failure = null;
 
         var background = new Thread(() =>
         {
@@ -346,16 +346,16 @@ public sealed class NotificationTests
             {
                 app.State.Notifications.Notify("from a worker");
             }
-            catch (Exception failure)
+            catch (Exception error)
             {
-                thrown = failure;
+                failure = error;
             }
         });
 
         background.Start();
         background.Join();
 
-        Assert.IsType<InvalidOperationException>(thrown);
+        Assert.IsType<InvalidOperationException>(failure);
         Assert.Empty(app.State.Notifications.Entries);
     }
 

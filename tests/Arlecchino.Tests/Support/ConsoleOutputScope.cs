@@ -13,7 +13,7 @@ public sealed class ConsoleOutputScope : IDisposable
         Console.SetOut(_writer);
     }
 
-    public string Written => _writer.GetStringBuilder().ToString();
+    public string WrittenText => _writer.GetStringBuilder().ToString();
 
     public void Clear() => _writer.GetStringBuilder().Clear();
 

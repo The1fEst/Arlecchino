@@ -16,7 +16,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     private readonly ConcurrentQueue<KeyPress> _keys = new();
     private readonly ConcurrentQueue<KeyPress> _unread = new();
     private readonly ConcurrentQueue<MouseEvent> _mouse = new();
-    private readonly StringBuilder _written = new();
+    private readonly StringBuilder _writtenText = new();
     private int _width;
     private int _height;
 
@@ -53,7 +53,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     }
 
     /// <summary>
-    /// What the screen holds, rather than the cursor jumps and short runs <see cref="Written"/> collected to
+    /// What the screen holds, rather than the cursor jumps and short runs <see cref="WrittenText"/> collected to
     /// get it there. It survives <see cref="Clear"/>, as a real screen does.
     /// </summary>
     public ScreenGrid Screen { get; }
@@ -68,7 +68,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public bool IsPasteEnabled { get; private set; }
 
     /// <summary>The last text copied, or <c>null</c> when nothing has been.</summary>
-    public string? Copied { get; private set; }
+    public string? CopiedText { get; private set; }
 
     /// <summary>Whether any queued key is still waiting.</summary>
     public bool KeyAvailable => !_unread.IsEmpty || !_keys.IsEmpty;
@@ -77,7 +77,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     public bool MouseAvailable => !_mouse.IsEmpty;
 
     /// <summary>Everything written so far, escape sequences included.</summary>
-    public string Written => _written.ToString();
+    public string WrittenText => _writtenText.ToString();
 
     /// <summary>Queues a key press to be read.</summary>
     /// <param name="key">The key press.</param>
@@ -120,7 +120,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     /// <param name="text">What was written.</param>
     public void Write(string text)
     {
-        _written.Append(text);
+        _writtenText.Append(text);
         Screen.Apply(text);
     }
 
@@ -164,12 +164,12 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 
     /// <summary>Keeps what was copied instead of reaching a real clipboard.</summary>
     /// <param name="text">What was copied.</param>
-    public void CopyToClipboard(string text) => Copied = text;
+    public void CopyToClipboard(string text) => CopiedText = text;
 
     /// <summary>
     /// Throws away what has been written, so the next assertion sees one frame rather than all of them.
     /// </summary>
-    public void Clear() => _written.Clear();
+    public void Clear() => _writtenText.Clear();
 
     /// <summary>
     /// Holds the screen against the frame that was just composed, on every frame any test builds. A cell the

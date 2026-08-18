@@ -59,7 +59,7 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.Write("frame");
 
-        Assert.Equal("frame", output.Written);
+        Assert.Equal("frame", output.WrittenText);
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.EnterFullScreen();
 
-        Assert.Equal(Expected("\e[?1049h\e[?25l"), output.Written);
+        Assert.Equal(Expected("\e[?1049h\e[?25l"), output.WrittenText);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.LeaveFullScreen();
 
-        Assert.StartsWith(Expected("\e[?1049l\e[?25h"), output.Written);
+        Assert.StartsWith(Expected("\e[?1049l\e[?25h"), output.WrittenText);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public sealed class SystemTerminalTests : IDisposable
         _terminal.EnablePaste();
         _terminal.DisablePaste();
 
-        Assert.Equal(Expected("\e[?2004h\e[?2004l"), output.Written);
+        Assert.Equal(Expected("\e[?2004h\e[?2004l"), output.WrittenText);
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public sealed class SystemTerminalTests : IDisposable
         _terminal.EnableMouse();
         _terminal.DisableMouse();
 
-        Assert.Equal(Expected("\e[?1000h\e[?1002h\e[?1006h\e[?1006l\e[?1002l\e[?1000l"), output.Written);
+        Assert.Equal(Expected("\e[?1000h\e[?1002h\e[?1006h\e[?1006l\e[?1002l\e[?1000l"), output.WrittenText);
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public sealed class SystemTerminalTests : IDisposable
         _terminal.EnableMouse();
         _terminal.DisableMouse();
 
-        Assert.Equal(string.Empty, output.Written);
+        Assert.Equal(string.Empty, output.WrittenText);
     }
 
     [Fact]
@@ -136,8 +136,8 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.CopyToClipboard("привет");
 
-        var encoded = Convert.ToBase64String("привет"u8);
-        Assert.Equal(Expected($"\e]52;c;{encoded}\a"), output.Written);
+        var sequence = Convert.ToBase64String("привет"u8);
+        Assert.Equal(Expected($"\e]52;c;{sequence}\a"), output.WrittenText);
     }
 
     [Fact]
@@ -147,7 +147,7 @@ public sealed class SystemTerminalTests : IDisposable
 
         _terminal.CopyToClipboard(string.Empty);
 
-        Assert.Equal(Expected("\e]52;c;\a"), output.Written);
+        Assert.Equal(Expected("\e]52;c;\a"), output.WrittenText);
     }
 
     private string Expected(string sequences) => _terminal.EscapeSequencesWork ? sequences : string.Empty;

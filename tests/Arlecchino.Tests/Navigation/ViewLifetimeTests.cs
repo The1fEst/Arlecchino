@@ -37,11 +37,11 @@ public sealed class ViewLifetimeTests
         app.Navigator.Apply(new("Loading"));
         var view = LoadingView.Last!;
 
-        Assert.False(view.Watched.IsDisposed);
+        Assert.False(view.Watcher.IsDisposed);
 
         app.Navigator.Apply(ViewKind.Probe);
 
-        Assert.True(view.Watched.IsDisposed);
+        Assert.True(view.Watcher.IsDisposed);
     }
 
     [Fact]
@@ -52,11 +52,11 @@ public sealed class ViewLifetimeTests
         app.Navigator.Apply(new("Loading"));
         var view = LoadingView.Last!;
         var started = new TaskCompletionSource();
-        var observed = CancellationToken.None;
+        var token = CancellationToken.None;
 
-        view.Rows.Load(async token =>
+        view.Rows.Load(async given =>
         {
-            observed = token;
+            token = given;
             started.SetResult();
             await Task.Delay(Timeout.Infinite, token);
             return "never";
@@ -65,12 +65,12 @@ public sealed class ViewLifetimeTests
         await started.Task;
         app.Navigator.Apply(ViewKind.Probe);
 
-        Assert.True(observed.IsCancellationRequested);
+        Assert.True(token.IsCancellationRequested);
         Assert.False(view.Rows.IsLoading);
     }
 }
 
-public sealed class Watched : IDisposable
+public sealed class Watcher : IDisposable
 {
     public bool IsDisposed { get; private set; }
 
@@ -88,7 +88,7 @@ public sealed class LoadingView : IArlecchinoView
         _surface = surface;
         Lifetime = lifetime;
         Rows = lifetime.Loading<string>();
-        Watched = lifetime.Track(new Watched());
+        Watcher = lifetime.Track(new Watcher());
         Last = this;
     }
 
@@ -96,7 +96,7 @@ public sealed class LoadingView : IArlecchinoView
 
     public AsyncAtom<string> Rows { get; }
 
-    public Watched Watched { get; }
+    public Watcher Watcher { get; }
 
     public void Draw() => _surface.AppendLine("loading", Theme.Default);
 

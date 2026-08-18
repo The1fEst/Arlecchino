@@ -30,24 +30,24 @@ public sealed class PostedAtomTests
     public void APostedValueNotifiesLikeAnyOtherWrite()
     {
         var name = new LocalAtom<string>("");
-        var seen = new List<string>();
+        var sightings = new List<string>();
 
-        using var subscription = name.Subscribe(() => seen.Add(name.Value));
+        using var subscription = name.Subscribe(() => sightings.Add(name.Value));
         using var drawing = FrameThread.Claim();
 
         FromAnotherThread(() => name.Post("loaded"));
         FrameThread.RunPending(static _ => { });
 
-        Assert.Equal(["loaded"], seen);
+        Assert.Equal(["loaded"], sightings);
     }
 
     [Fact]
     public void PostedValuesArriveInTheOrderTheyWerePosted()
     {
         var count = new LocalAtom<int>(0);
-        var seen = new List<int>();
+        var sightings = new List<int>();
 
-        using var subscription = count.Subscribe(() => seen.Add(count.Value));
+        using var subscription = count.Subscribe(() => sightings.Add(count.Value));
         using var drawing = FrameThread.Claim();
 
         FromAnotherThread(() =>
@@ -59,7 +59,7 @@ public sealed class PostedAtomTests
 
         FrameThread.RunPending(static _ => { });
 
-        Assert.Equal([1, 2, 3], seen);
+        Assert.Equal([1, 2, 3], sightings);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public sealed class PostedAtomTests
 
         using var drawing = FrameThread.Claim();
 
-        Exception? refused = null;
+        Exception? failure = null;
 
         FromAnotherThread(() =>
         {
@@ -97,7 +97,7 @@ public sealed class PostedAtomTests
             }
             catch (Exception exception)
             {
-                refused = exception;
+                failure = exception;
             }
 
             value.Post(2);
@@ -105,7 +105,7 @@ public sealed class PostedAtomTests
 
         FrameThread.RunPending(static _ => { });
 
-        Assert.IsType<InvalidOperationException>(refused);
+        Assert.IsType<InvalidOperationException>(failure);
         Assert.Equal(2, value.Value);
     }
 
