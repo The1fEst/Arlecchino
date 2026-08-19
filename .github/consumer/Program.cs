@@ -66,7 +66,7 @@ public sealed class CountWidget : IArlecchinoWidget
 
     public SurfaceRegion Draw(SurfaceRegion region)
     {
-        region.WriteLine(0, _history.Visits.Value.ToString(), Theme.Muted);
+        region.WriteLine(0, _history.Visits.Value.ToString(), Theme.Secondary);
 
         return region.Rows(1, region.Height - 1);
     }
