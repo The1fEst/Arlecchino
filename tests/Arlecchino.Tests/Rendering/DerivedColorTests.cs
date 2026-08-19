@@ -123,6 +123,44 @@ public sealed class DerivedColorTests
     }
 
     /// <summary>
+    /// A raised surface is the terminal's own color raised, not a gray one put over it. It keeps the hue
+    /// exactly and most of the chroma, the rest going where <c>sRGB</c> cannot hold it at the new lightness.
+    /// </summary>
+    [Fact]
+    public void ARaisedSurfaceKeepsTheColorOfWhatItIsRaisedFrom()
+    {
+        var green = new Rgb(0x00, 0x80, 0x00);
+        var terminal = Oklch.Of(green);
+        var surface = Oklch.Of(Shade.Lifted(green, 0.070d));
+
+        Assert.True(surface.Chroma > terminal.Chroma * 0.8d);
+        Assert.InRange(HueGap(surface.Hue, terminal.Hue), 0d, 2d);
+    }
+
+    /// <summary>
+    /// A surface never crosses the lightness at which the theme turns over. A background near that point
+    /// would otherwise carry a panel of one theme and a bar of the other, and the text flip between them.
+    /// </summary>
+    /// <param name="red">Red channel of the terminal's background.</param>
+    /// <param name="green">Green channel.</param>
+    /// <param name="blue">Blue channel.</param>
+    [Theory]
+    [InlineData(0x00, 0x80, 0x00)]
+    [InlineData(0x80, 0x80, 0x80)]
+    [InlineData(0x14, 0x13, 0x17)]
+    [InlineData(0xFF, 0xFF, 0xFF)]
+    [InlineData(0x00, 0xFF, 0x00)]
+    public void ASurfaceStaysOnItsOwnSideOfThePivot(byte red, byte green, byte blue)
+    {
+        var terminal = new Rgb(red, green, blue);
+
+        foreach (var step in new[] { -0.005d, 0.011d, 0.031d, 0.070d, 0.105d })
+        {
+            Assert.Equal(Contrast.IsDark(terminal), Contrast.IsDark(Shade.Lifted(terminal, step)));
+        }
+    }
+
+    /// <summary>
     /// A background near the middle has no room for a ladder written for black, so the ladder is brought
     /// down to what there is. Without it the top steps land on the same color and the design goes flat.
     /// </summary>
@@ -147,6 +185,71 @@ public sealed class DerivedColorTests
     {
         Assert.Equal(14.91d, Shade.Scaled(14.91d, 3.30d, 14.91d, Paper), 6);
         Assert.Equal(14.91d, Shade.Scaled(14.91d, 3.30d, 14.91d, Ink), 6);
+    }
+
+    /// <summary>
+    /// A terminal theme is left alone. Every one in wide use is near enough gray that a design drawn for
+    /// gray still suits it, and solarized dark is the most colored of them.
+    /// </summary>
+    /// <param name="red">Red channel of the theme's background.</param>
+    /// <param name="green">Green channel.</param>
+    /// <param name="blue">Blue channel.</param>
+    [Theory]
+    [InlineData(0x28, 0x28, 0x28)]
+    [InlineData(0x14, 0x13, 0x17)]
+    [InlineData(0x28, 0x2A, 0x36)]
+    [InlineData(0x2E, 0x34, 0x40)]
+    [InlineData(0x1E, 0x1E, 0x2E)]
+    [InlineData(0x00, 0x2B, 0x36)]
+    [InlineData(0xFD, 0xF6, 0xE3)]
+    [InlineData(0xFF, 0xFF, 0xFF)]
+    public void ATerminalThemeDoesNotTurnTheDesign(byte red, byte green, byte blue)
+    {
+        var theme = new Rgb(red, green, blue);
+
+        Assert.Equal(0d, Shade.Pull(theme), 6);
+        Assert.Equal(0d, Shade.Turn(theme, 29.3d, 40d), 6);
+    }
+
+    /// <summary>A background with a color of its own turns the design the whole way.</summary>
+    [Fact]
+    public void AColoredBackgroundTurnsTheDesignTheWholeWay()
+    {
+        var green = new Rgb(0x00, 0x80, 0x00);
+
+        var accent = (29.3d + Shade.Turn(green, 29.3d, 40d) + 720d) % 360d;
+
+        Assert.Equal(1d, Shade.Pull(green), 6);
+        Assert.Equal((Oklch.Of(green).Hue + 40d) % 360d, accent, 1);
+    }
+
+    /// <summary>
+    /// The whole wheel turns by one amount, so the colors of a design stay as far apart from each other as
+    /// they were drawn. An error and a warning that met would be worse than either sitting oddly.
+    /// </summary>
+    [Fact]
+    public void TheWheelTurnsWithoutClosingUp()
+    {
+        var green = new Rgb(0x00, 0x80, 0x00);
+        var turn = Shade.Turn(green, 29.3d, 40d);
+
+        var accent = (29.3d + turn + 720d) % 360d;
+        var warning = (70.0d + turn + 720d) % 360d;
+        var success = (160.3d + turn + 720d) % 360d;
+
+        Assert.Equal(70.0d - 29.3d, HueGap(accent, warning), 1);
+        Assert.Equal(160.3d - 70.0d, HueGap(warning, success), 1);
+    }
+
+    /// <summary>How far one hue stands from another, the short way round.</summary>
+    /// <param name="one">The first hue.</param>
+    /// <param name="other">The second.</param>
+    /// <returns>Degrees between them.</returns>
+    private static double HueGap(double one, double other)
+    {
+        var degrees = Math.Abs(one - other) % 360d;
+
+        return Math.Min(degrees, 360d - degrees);
     }
 
     /// <summary>A color too vivid for the screen is cut back in chroma, which is what keeps its hue.</summary>

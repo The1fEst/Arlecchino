@@ -52,6 +52,16 @@ from `1.0.0` on breaking the public API meant a new major. See
   flattens on it: `Shade.Scaled` brings the whole ladder down to the room there is, which keeps its steps
   apart where clamping would land three of them on white.
 
+- **`Shade.Pull` and `Shade.Turn`**, which say how much a background's own color should sway a design drawn
+  for a gray one, and how far to turn the design's hues so they sit at an angle from that background rather
+  than across from it. Turning the whole set by one amount keeps its colors as far apart from each other as
+  they were drawn, so an error and a warning never meet.
+
+  `Pull` is nothing under a chroma of 0.06 and everything over 0.16, which is not a guess: every terminal
+  theme in wide use falls under the first number — gruvbox at 0, dracula and nord near 0.02, solarized dark
+  highest at 0.049 — while a background somebody picked a color for starts around the second, a middling
+  green being 0.177. A design is therefore left exactly as drawn on every theme anyone actually runs.
+
 - **`ArlecchinoOptions.PaletteForBackground`**, which is handed the color the terminal turned out to be and
   answers with the palette to wear. It runs once, as the application starts and the terminal is asked, and
   a terminal that will not say leaves `Theme` as it was given.
