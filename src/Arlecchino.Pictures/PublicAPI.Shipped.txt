@@ -35,14 +35,14 @@ Arlecchino.Pictures.IPictureFormat.Read(System.ReadOnlySpan<byte> bytes, Arlecch
 Arlecchino.Pictures.IPictureFormat.Starts(System.ReadOnlySpan<byte> bytes) -> bool
 Arlecchino.Pictures.PictureFormats
 Arlecchino.Pictures.PictureLimits
-Arlecchino.Pictures.PictureLimits.Deconstruct(out int Most, out int Enough) -> void
-Arlecchino.Pictures.PictureLimits.Enough.get -> int
-Arlecchino.Pictures.PictureLimits.Enough.init -> void
+Arlecchino.Pictures.PictureLimits.Deconstruct(out int MostPixels, out int EnoughPixels) -> void
+Arlecchino.Pictures.PictureLimits.EnoughPixels.get -> int
+Arlecchino.Pictures.PictureLimits.EnoughPixels.init -> void
 Arlecchino.Pictures.PictureLimits.Equals(Arlecchino.Pictures.PictureLimits other) -> bool
-Arlecchino.Pictures.PictureLimits.Most.get -> int
-Arlecchino.Pictures.PictureLimits.Most.init -> void
+Arlecchino.Pictures.PictureLimits.MostPixels.get -> int
+Arlecchino.Pictures.PictureLimits.MostPixels.init -> void
 Arlecchino.Pictures.PictureLimits.PictureLimits() -> void
-Arlecchino.Pictures.PictureLimits.PictureLimits(int Most, int Enough) -> void
+Arlecchino.Pictures.PictureLimits.PictureLimits(int MostPixels, int EnoughPixels) -> void
 Arlecchino.Pictures.Raster
 Arlecchino.Pictures.Raster.<Clone>$() -> Arlecchino.Pictures.Raster!
 Arlecchino.Pictures.Raster.Deconstruct(out Arlecchino.Rendering.Colors.Rgb[]! Pixels, out int Width, out int Height) -> void

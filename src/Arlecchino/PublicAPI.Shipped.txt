@@ -28,8 +28,8 @@ Arlecchino.Commands.CommandKeys.IsWaiting.get -> bool
 Arlecchino.Commands.CommandRegistry
 Arlecchino.Commands.CommandRegistry.CommandRegistry(System.Collections.Generic.IEnumerable<Arlecchino.Commands.IArlecchinoCommand!>! commands) -> void
 Arlecchino.Commands.CommandRegistry.Commands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Commands.IArlecchinoCommand!>!
-Arlecchino.Commands.CommandRegistry.Send(Arlecchino.Input.KeyPress pressed) -> Arlecchino.Navigation.ViewRoute
-Arlecchino.Commands.CommandRegistry.TryFind(Arlecchino.Input.KeyPress pressed, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
+Arlecchino.Commands.CommandRegistry.Send(Arlecchino.Input.KeyPress press) -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Commands.CommandRegistry.TryFind(Arlecchino.Input.KeyPress press, out Arlecchino.Commands.IArlecchinoCommand? command) -> bool
 Arlecchino.Commands.IArlecchinoCommand
 Arlecchino.Commands.IArlecchinoCommand.Binding.get -> Arlecchino.Input.KeyBinding
 Arlecchino.Commands.IArlecchinoCommand.Execute() -> Arlecchino.Navigation.ViewRoute
@@ -75,16 +75,16 @@ Arlecchino.Diagnostics.Notification.Actions.set -> void
 Arlecchino.Diagnostics.Notification.Detail.get -> System.Func<string!>?
 Arlecchino.Diagnostics.Notification.Detail.set -> void
 Arlecchino.Diagnostics.Notification.EndedText.get -> string?
-Arlecchino.Diagnostics.Notification.Filled() -> double?
+Arlecchino.Diagnostics.Notification.Fraction() -> double?
 Arlecchino.Diagnostics.Notification.IsRunning.get -> bool
 Arlecchino.Diagnostics.Notification.Level.get -> Arlecchino.Diagnostics.NotificationLevel
 Arlecchino.Diagnostics.Notification.Line.get -> string!
-Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset since, Arlecchino.Diagnostics.NotificationLevel level, string! text) -> void
+Arlecchino.Diagnostics.Notification.Notification(System.DateTimeOffset raisedAt, Arlecchino.Diagnostics.NotificationLevel level, string! text) -> void
 Arlecchino.Diagnostics.Notification.Progress.get -> System.Func<double?>?
 Arlecchino.Diagnostics.Notification.Progress.init -> void
 Arlecchino.Diagnostics.Notification.ProgressText.get -> System.Func<string!>?
 Arlecchino.Diagnostics.Notification.ProgressText.init -> void
-Arlecchino.Diagnostics.Notification.Since.get -> System.DateTimeOffset
+Arlecchino.Diagnostics.Notification.RaisedAt.get -> System.DateTimeOffset
 Arlecchino.Diagnostics.Notification.Text.get -> string!
 Arlecchino.Diagnostics.Notification.Whole() -> string!
 Arlecchino.Diagnostics.NotificationAction
@@ -114,8 +114,6 @@ Arlecchino.Diagnostics.Notifications.Settle(Arlecchino.Diagnostics.Notification!
 Arlecchino.Diagnostics.Notifications.Withdraw(Arlecchino.Diagnostics.Notification! entry) -> void
 Arlecchino.Editing.CaretKeys
 Arlecchino.Editing.CompletionAsk
-Arlecchino.Editing.CompletionAsk.After.get -> string!
-Arlecchino.Editing.CompletionAsk.Before.get -> string!
 Arlecchino.Editing.CompletionAsk.CompletionAsk() -> void
 Arlecchino.Editing.CompletionAsk.CompletionAsk(string! Line, int Start, int Length) -> void
 Arlecchino.Editing.CompletionAsk.Deconstruct(out string! Line, out int Start, out int Length) -> void
@@ -124,8 +122,10 @@ Arlecchino.Editing.CompletionAsk.Length.get -> int
 Arlecchino.Editing.CompletionAsk.Length.init -> void
 Arlecchino.Editing.CompletionAsk.Line.get -> string!
 Arlecchino.Editing.CompletionAsk.Line.init -> void
+Arlecchino.Editing.CompletionAsk.Prefix.get -> string!
 Arlecchino.Editing.CompletionAsk.Start.get -> int
 Arlecchino.Editing.CompletionAsk.Start.init -> void
+Arlecchino.Editing.CompletionAsk.Suffix.get -> string!
 Arlecchino.Editing.CompletionAsk.Word.get -> string!
 Arlecchino.Editing.EntryKeys
 Arlecchino.Editing.EraseKeys
@@ -146,7 +146,7 @@ Arlecchino.Editing.SpaceWords
 Arlecchino.Editing.SpaceWords.Cut(string! text, int caret) -> Arlecchino.Editing.CompletionAsk
 Arlecchino.Editing.SpaceWords.SpaceWords() -> void
 Arlecchino.Editing.TextCompleter
-Arlecchino.Editing.TextCompleter.Chosen.get -> int
+Arlecchino.Editing.TextCompleter.ChosenIndex.get -> int
 Arlecchino.Editing.TextCompleter.Complete(bool forward) -> void
 Arlecchino.Editing.TextCompleter.Forget() -> void
 Arlecchino.Editing.TextCompleter.Handle(Arlecchino.Input.KeyPress key) -> bool
@@ -234,7 +234,7 @@ Arlecchino.Forms.Form.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchi
 Arlecchino.Forms.Form.Hints() -> (string! Key, string! Description)[]!
 Arlecchino.Forms.Form.IsFocused.get -> bool
 Arlecchino.Forms.Form.IsFocused.set -> void
-Arlecchino.Forms.Form.Selected.get -> int
+Arlecchino.Forms.Form.SelectedIndex.get -> int
 Arlecchino.Hosting.ArlecchinoBuilder
 Arlecchino.Hosting.ArlecchinoBuilder.AddCommand<TCommand>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.AddStartup<TStartup>() -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -377,6 +377,8 @@ Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.Rgb, Arlecchino.Rendering.Colors.ThemePalette!>?
+Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.StartRoute.get -> Arlecchino.Navigation.ViewRoute
@@ -500,6 +502,8 @@ Arlecchino.Hosting.ArlecchinoStrings.LogHints.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.LogHints.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.LogTitle.get -> System.Func<int, string!>!
 Arlecchino.Hosting.ArlecchinoStrings.LogTitle.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.LogWithoutProviders.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.LogWithoutProviders.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.ModalChoiceHints.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.ModalChoiceHints.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.ModalColorHints.get -> System.Func<string!>!
@@ -552,8 +556,8 @@ Arlecchino.Hosting.ArlecchinoStrings.OutOfRange.get -> System.Func<string!, stri
 Arlecchino.Hosting.ArlecchinoStrings.OutOfRange.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.SelectedCount.get -> System.Func<int, string!>!
 Arlecchino.Hosting.ArlecchinoStrings.SelectedCount.set -> void
-Arlecchino.Hosting.ArlecchinoStrings.TerminalNeeded.get -> System.Func<string!>!
-Arlecchino.Hosting.ArlecchinoStrings.TerminalNeeded.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.TerminalSize.get -> System.Func<int, int, string!>!
 Arlecchino.Hosting.ArlecchinoStrings.TerminalSize.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.TerminalTooSmall.get -> System.Func<string!>!
@@ -718,14 +722,14 @@ Arlecchino.Modals.Choosing.CommandModal.OnRow.init -> void
 Arlecchino.Modals.Choosing.CommandModal.Rows.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.Choosing.CommandModal.Rows.set -> void
 Arlecchino.Modals.Choosing.MultiChoiceModal
-Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! option) -> bool
+Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! choice) -> bool
 Arlecchino.Modals.Choosing.MultiChoiceModal.MultiChoiceModal() -> void
 Arlecchino.Modals.Choosing.MultiChoiceModal.OnSubmit.get -> System.Action<System.Collections.Generic.IReadOnlyList<string!>!>!
 Arlecchino.Modals.Choosing.MultiChoiceModal.OnSubmit.init -> void
-Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.get -> System.Collections.Generic.HashSet<string!>!
-Arlecchino.Modals.Choosing.MultiChoiceModal.Selected.init -> void
 Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedInOptionOrder() -> System.Collections.Generic.List<string!>!
-Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! option) -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedKeys.get -> System.Collections.Generic.HashSet<string!>!
+Arlecchino.Modals.Choosing.MultiChoiceModal.SelectedKeys.init -> void
+Arlecchino.Modals.Choosing.MultiChoiceModal.Toggle(string! choice) -> void
 Arlecchino.Modals.Choosing.OptionListModal
 Arlecchino.Modals.Choosing.OptionListModal.Anchor.get -> int
 Arlecchino.Modals.Choosing.OptionListModal.Anchor.set -> void
@@ -961,11 +965,11 @@ Arlecchino.State.ArlecchinoState.PickerLastFolder.set -> void
 Arlecchino.State.ArlecchinoState.PushModal(Arlecchino.Modals.Modal! modal) -> void
 Arlecchino.State.ArlecchinoState.RequestChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Action<string!>! onPicked, string! current = "") -> void
 Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Colors.Rgb initial, System.Action<Arlecchino.Rendering.Colors.Rgb>! onPicked) -> void
-Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onConfirmed) -> void
+Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onYes) -> void
 Arlecchino.State.ArlecchinoState.RequestDate(string! title, System.DateOnly initial, System.Action<System.DateOnly>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestEmail(string! title, string! initial, System.Action<string!>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestMessage(string! title, string! text, System.Action? onClosed = null) -> void
-Arlecchino.State.ArlecchinoState.RequestMultiChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Collections.Generic.IReadOnlyList<string!>! selected, System.Action<System.Collections.Generic.IReadOnlyList<string!>!>! onSubmit) -> void
+Arlecchino.State.ArlecchinoState.RequestMultiChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Collections.Generic.IReadOnlyList<string!>! selectedKeys, System.Action<System.Collections.Generic.IReadOnlyList<string!>!>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestNumber(string! title, decimal initial, decimal minimum, decimal maximum, System.Action<decimal>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestPassword(string! title, System.Action<string!>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestSlider(string! title, decimal initial, decimal minimum, decimal maximum, System.Action<decimal>! onSubmit) -> void
@@ -1024,8 +1028,8 @@ Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.get -> System.Action<Arlecchino.Ren
 Arlecchino.Widgets.Lists.ListBox<T>.PaintRow.init -> void
 Arlecchino.Widgets.Lists.ListBox<T>.Render.get -> System.Func<T, string!>!
 Arlecchino.Widgets.Lists.ListBox<T>.Render.init -> void
-Arlecchino.Widgets.Lists.ListBox<T>.Selected.get -> int
-Arlecchino.Widgets.Lists.ListBox<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.ListBox<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.ListBox<T>.SelectedIndex.set -> void
 Arlecchino.Widgets.Lists.ListBox<T>.SelectedItem.get -> T?
 Arlecchino.Widgets.Lists.ScrollBar
 Arlecchino.Widgets.Lists.ScrollPane
@@ -1068,11 +1072,11 @@ Arlecchino.Widgets.Lists.Table<T>.OnActivate.get -> System.Func<T, Arlecchino.Na
 Arlecchino.Widgets.Lists.Table<T>.OnActivate.init -> void
 Arlecchino.Widgets.Lists.Table<T>.Rows.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Widgets.Lists.Table<T>.Rows.set -> void
-Arlecchino.Widgets.Lists.Table<T>.Selected.get -> int
-Arlecchino.Widgets.Lists.Table<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.Table<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.Table<T>.SelectedIndex.set -> void
 Arlecchino.Widgets.Lists.Table<T>.SelectedRow.get -> T?
 Arlecchino.Widgets.Lists.Table<T>.SortBy(int column) -> void
-Arlecchino.Widgets.Lists.Table<T>.SortedBy.get -> int
+Arlecchino.Widgets.Lists.Table<T>.SortedColumn.get -> int
 Arlecchino.Widgets.Lists.Table<T>.SortsDescending.get -> bool
 Arlecchino.Widgets.Lists.Table<T>.Table(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.Lists.TableColumn<T>
@@ -1096,7 +1100,7 @@ Arlecchino.Widgets.Lists.Tabs.IsFocused.set -> void
 Arlecchino.Widgets.Lists.Tabs.OnSelected.get -> System.Action<int>?
 Arlecchino.Widgets.Lists.Tabs.OnSelected.init -> void
 Arlecchino.Widgets.Lists.Tabs.Select(int index) -> void
-Arlecchino.Widgets.Lists.Tabs.Selected.get -> int
+Arlecchino.Widgets.Lists.Tabs.SelectedIndex.get -> int
 Arlecchino.Widgets.Lists.Tabs.Tabs(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.Lists.Tabs.Titles.get -> System.Collections.Generic.IReadOnlyList<System.Func<string!>!>!
 Arlecchino.Widgets.Lists.Tabs.Titles.init -> void
@@ -1118,8 +1122,8 @@ Arlecchino.Widgets.Lists.Tree<T>.Render.get -> System.Func<T, string!>!
 Arlecchino.Widgets.Lists.Tree<T>.Render.init -> void
 Arlecchino.Widgets.Lists.Tree<T>.Roots.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Lists.TreeNode<T>!>!
 Arlecchino.Widgets.Lists.Tree<T>.Roots.set -> void
-Arlecchino.Widgets.Lists.Tree<T>.Selected.get -> int
-Arlecchino.Widgets.Lists.Tree<T>.Selected.set -> void
+Arlecchino.Widgets.Lists.Tree<T>.SelectedIndex.get -> int
+Arlecchino.Widgets.Lists.Tree<T>.SelectedIndex.set -> void
 Arlecchino.Widgets.Lists.Tree<T>.SelectedNode.get -> Arlecchino.Widgets.Lists.TreeNode<T>?
 Arlecchino.Widgets.Lists.Tree<T>.Tree(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
 Arlecchino.Widgets.Lists.TreeNode<T>
@@ -1269,18 +1273,18 @@ Arlecchino.Widgets.Readouts.TextView.TextView(Arlecchino.Hosting.ArlecchinoKeyma
 Arlecchino.Widgets.Text.EntryLook
 Arlecchino.Widgets.Text.EntryLook.Caret.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
 Arlecchino.Widgets.Text.EntryLook.Caret.init -> void
-Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.Deconstruct(out Arlecchino.Rendering.Colors.IArlecchinoColor! Text, out Arlecchino.Rendering.Colors.IArlecchinoColor! Selection, out Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
 Arlecchino.Widgets.Text.EntryLook.EntryLook() -> void
-Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selected, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
+Arlecchino.Widgets.Text.EntryLook.EntryLook(Arlecchino.Rendering.Colors.IArlecchinoColor! Text, Arlecchino.Rendering.Colors.IArlecchinoColor! Selection, Arlecchino.Rendering.Colors.IArlecchinoColor! Caret) -> void
 Arlecchino.Widgets.Text.EntryLook.Equals(Arlecchino.Widgets.Text.EntryLook other) -> bool
-Arlecchino.Widgets.Text.EntryLook.Selected.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
-Arlecchino.Widgets.Text.EntryLook.Selected.init -> void
+Arlecchino.Widgets.Text.EntryLook.Selection.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
+Arlecchino.Widgets.Text.EntryLook.Selection.init -> void
 Arlecchino.Widgets.Text.EntryLook.Text.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
 Arlecchino.Widgets.Text.EntryLook.Text.init -> void
 Arlecchino.Widgets.Text.EntryRow
 Arlecchino.Widgets.Text.EntryRuns
 abstract Arlecchino.Atoms.ArlecchinoAsyncStore.LoadAsync(System.Threading.CancellationToken token) -> System.Threading.Tasks.Task!
-abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! picked) -> void
+abstract Arlecchino.Modals.Choosing.OptionListModal.Take(Arlecchino.Modals.ModalFrame! frame, string! choice) -> void
 abstract Arlecchino.Modals.Modal.Draw(Arlecchino.Modals.ModalFrame! frame) -> void
 abstract Arlecchino.Modals.Modal.Handle(Arlecchino.Modals.ModalFrame! frame, Arlecchino.Input.KeyPress key) -> void
 abstract Arlecchino.Modals.Setting.SegmentedModal.Add(int delta) -> void
@@ -1437,7 +1441,7 @@ static Arlecchino.State.FilePickerRequest.operator !=(Arlecchino.State.FilePicke
 static Arlecchino.State.FilePickerRequest.operator ==(Arlecchino.State.FilePickerRequest? left, Arlecchino.State.FilePickerRequest? right) -> bool
 static Arlecchino.Widgets.Lists.ScrollBar.Draw(Arlecchino.Rendering.SurfaceRegion region, int first, int total, Arlecchino.Rendering.Colors.IArlecchinoColor? style = null) -> void
 static Arlecchino.Widgets.Lists.ScrollBar.IsNeeded(int total, int rows) -> bool
-static Arlecchino.Widgets.Lists.ScrollWindow.Around(int selected, int itemCount, int rows) -> Arlecchino.Widgets.Lists.ScrollWindow
+static Arlecchino.Widgets.Lists.ScrollWindow.Around(int selectedIndex, int itemCount, int rows) -> Arlecchino.Widgets.Lists.ScrollWindow
 static Arlecchino.Widgets.Lists.ScrollWindow.operator !=(Arlecchino.Widgets.Lists.ScrollWindow left, Arlecchino.Widgets.Lists.ScrollWindow right) -> bool
 static Arlecchino.Widgets.Lists.ScrollWindow.operator ==(Arlecchino.Widgets.Lists.ScrollWindow left, Arlecchino.Widgets.Lists.ScrollWindow right) -> bool
 static Arlecchino.Widgets.Readouts.GaugeBand.operator !=(Arlecchino.Widgets.Readouts.GaugeBand left, Arlecchino.Widgets.Readouts.GaugeBand right) -> bool

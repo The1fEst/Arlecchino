@@ -1,8 +1,1 @@
 #nullable enable
-*REMOVED*Arlecchino.Testing.FakeTerminal.Copied.get -> string?
-*REMOVED*Arlecchino.Testing.FakeTerminal.Written.get -> string!
-Arlecchino.Testing.FakeTerminal.AreControlKeysTaken.get -> bool
-Arlecchino.Testing.FakeTerminal.CopiedText.get -> string?
-Arlecchino.Testing.FakeTerminal.GiveBackControlKeys() -> void
-Arlecchino.Testing.FakeTerminal.TakeControlKeys() -> void
-Arlecchino.Testing.FakeTerminal.WrittenText.get -> string!

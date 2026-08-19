@@ -28,8 +28,9 @@ Arlecchino.Testing.ArlecchinoTestHost.Surface.get -> Arlecchino.Rendering.Surfac
 Arlecchino.Testing.ArlecchinoTestHost.Terminal.get -> Arlecchino.Testing.FakeTerminal!
 Arlecchino.Testing.ArlecchinoTestHost.Type(string! text) -> void
 Arlecchino.Testing.FakeTerminal
+Arlecchino.Testing.FakeTerminal.AreControlKeysTaken.get -> bool
 Arlecchino.Testing.FakeTerminal.Clear() -> void
-Arlecchino.Testing.FakeTerminal.Copied.get -> string?
+Arlecchino.Testing.FakeTerminal.CopiedText.get -> string?
 Arlecchino.Testing.FakeTerminal.CopyToClipboard(string! text) -> void
 Arlecchino.Testing.FakeTerminal.DisableMouse() -> void
 Arlecchino.Testing.FakeTerminal.DisablePaste() -> void
@@ -40,6 +41,7 @@ Arlecchino.Testing.FakeTerminal.EnqueueMouse(Arlecchino.Input.MouseEvent mouse) 
 Arlecchino.Testing.FakeTerminal.EnqueueText(string! text) -> void
 Arlecchino.Testing.FakeTerminal.EnterFullScreen() -> void
 Arlecchino.Testing.FakeTerminal.FakeTerminal(int width, int height) -> void
+Arlecchino.Testing.FakeTerminal.GiveBackControlKeys() -> void
 Arlecchino.Testing.FakeTerminal.Height.get -> int
 Arlecchino.Testing.FakeTerminal.Height.set -> void
 Arlecchino.Testing.FakeTerminal.IsFullScreen.get -> bool
@@ -51,11 +53,12 @@ Arlecchino.Testing.FakeTerminal.MouseAvailable.get -> bool
 Arlecchino.Testing.FakeTerminal.ReadKey() -> Arlecchino.Input.KeyPress
 Arlecchino.Testing.FakeTerminal.ReadMouse() -> Arlecchino.Input.MouseEvent
 Arlecchino.Testing.FakeTerminal.Screen.get -> Arlecchino.Testing.ScreenGrid!
+Arlecchino.Testing.FakeTerminal.TakeControlKeys() -> void
 Arlecchino.Testing.FakeTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.Testing.FakeTerminal.Width.get -> int
 Arlecchino.Testing.FakeTerminal.Width.set -> void
 Arlecchino.Testing.FakeTerminal.Write(string! text) -> void
-Arlecchino.Testing.FakeTerminal.Written.get -> string!
+Arlecchino.Testing.FakeTerminal.WrittenText.get -> string!
 Arlecchino.Testing.FrameText
 Arlecchino.Testing.ScreenGrid
 Arlecchino.Testing.ScreenGrid.Apply(string! output) -> void

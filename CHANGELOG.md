@@ -12,54 +12,16 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## Unreleased
+## 2026.8.5
 
-### Fixed
-
-- **A line written to the console no longer scrolls the frame out from under the drawing.** The default
-  host registers a logging provider that writes to standard output, so `Microsoft.Hosting.Lifetime`
-  announced itself over the first frame — and because that provider hands its lines to a thread of its
-  own, it was a race: some runs came up clean, some came up with every row three lines out of place and
-  stayed that way, since a frame is drawn as the difference from the last one and nothing had told it
-  the screen had moved. A stray `Console.WriteLine` from any library did the same.
-
-  `AddArlecchino` now stands in front of standard output and standard error. Text written there while a
-  frame is on the screen is logged under `stdout` or `stderr` — visible in the log overlay, escape
-  sequences taken out of it — and text written before the terminal is taken or after it is given back
-  goes to the console as it always did, so `--help`, a failure during startup, and the host's own
-  shutdown lines all still print. Nothing is removed: every provider the application registered keeps
-  running, whether it was added before `AddArlecchino` or after.
-
-  `builder.Logging.ClearProviders()` is no longer something to write. It was the way to keep a console
-  provider off the frame; now it is the way to end up with nothing in the log at all.
-
-  Arlecchino no longer registers a logging provider of its own. It had one so that `ILogger` reached the
-  overlay, and with the console caught that is a second road to the same place: a line logged through the
-  host's console provider would have been shown twice, once as the provider wrote it and once as it was
-  caught. The overlay now shows what is written to the console and nothing else. An application that has
-  no logging provider at all is told so in the overlay, and told to add one, rather than left looking at
-  a panel that stays empty whatever happens.
-
-- **`Ctrl+Shift+C` no longer stops a Windows application instead of copying.** Both it and `Ctrl+C` type
-  the same character, and the Windows console decided for itself which had been pressed: with processed
-  input on it raised the same signal for either, so the `Copy` binding never saw the key and the
-  application quit under the user's hand. The console is now handed the key rather than the verdict —
-  processed input is off while the application has the terminal — and `Ctrl+C` stops it from the input
-  router, where the Shift can be seen. The console gets it back the moment the terminal is lent to
-  another program, so what runs there is still stopped the way everything is stopped.
-
-  A terminal that keeps `Ctrl+Shift+C` for its own copying — Windows Terminal, WezTerm and kitty all do
-  by default — never passes it on, and there `Ctrl+Insert` is the binding that arrives.
-
-- **`CopyToClipboard` no longer goes nowhere in a terminal that has OSC 52 switched off.** The sequence
-  was the only way out, and a terminal that ignores it ignores it in silence, so a copy that never landed
-  looked from the inside exactly like one that did. It is still written first — over a remote session it
-  is the only thing that reaches the clipboard of whoever is watching — and the text now also goes down
-  the standard input of the first clipboard program the machine has: `pbcopy`, `termux-clipboard-set`,
-  `wl-copy`, `xclip`, `xsel`, tried in that order. A program that is not installed fails to start and
-  costs nothing, so a machine with none of them spends no time on this. Only Linux, macOS and the BSDs
-  run them; everywhere else, Windows included, is left to the sequence alone, having no such program to
-  pipe into.
+A release about names, about what a program says out loud, and about Windows, where what the terminal
+answers about itself was still being read as something a hand did. Every break below is a rename: the
+type, the shape and the meaning are what they were, and the compiler names the member that moved. A name
+that says what a thing is costs nothing to read, and one that says what was done to it — `Selected` for
+an index, `Muted` for a color, `Since` for a moment — costs a release to correct, so they are corrected
+together rather than a few at a time. Beside them, the console is caught rather than left to scroll the
+frame away, and a color can be worked out against the background the terminal turned out to be rather
+than against the one the design was drawn on.
 
 ### Added
 
@@ -97,15 +59,6 @@ from `1.0.0` on breaking the public API meant a new major. See
 - **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
   around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
   until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.
-
-## 2026.8.5
-
-A release about names, and about Windows, where what the terminal answers about itself was still being
-read as something a hand did. Nothing here changes what the framework does; what changes is what its
-members are called. A name that says what a thing is costs nothing to read, and one that says what was
-done to it — `Selected` for an index, `Muted` for a color, `Since` for a moment — costs a release to
-correct, so they are corrected together rather than a few at a time. Every break below is a rename: the
-type, the shape and the meaning are what they were, and the compiler names the member that moved.
 
 ### Changed
 
@@ -161,6 +114,51 @@ Everything else the sweep touched is inside the packages — locals, fields and 
 no caller can see — and needs nothing from an application.
 
 ### Fixed
+
+- **A line written to the console no longer scrolls the frame out from under the drawing.** The default
+  host registers a logging provider that writes to standard output, so `Microsoft.Hosting.Lifetime`
+  announced itself over the first frame — and because that provider hands its lines to a thread of its
+  own, it was a race: some runs came up clean, some came up with every row three lines out of place and
+  stayed that way, since a frame is drawn as the difference from the last one and nothing had told it
+  the screen had moved. A stray `Console.WriteLine` from any library did the same.
+
+  `AddArlecchino` now stands in front of standard output and standard error. Text written there while a
+  frame is on the screen is logged under `stdout` or `stderr` — visible in the log overlay, escape
+  sequences taken out of it — and text written before the terminal is taken or after it is given back
+  goes to the console as it always did, so `--help`, a failure during startup, and the host's own
+  shutdown lines all still print. Nothing is removed: every provider the application registered keeps
+  running, whether it was added before `AddArlecchino` or after.
+
+  `builder.Logging.ClearProviders()` is no longer something to write. It was the way to keep a console
+  provider off the frame; now it is the way to end up with nothing in the log at all.
+
+  Arlecchino no longer registers a logging provider of its own. It had one so that `ILogger` reached the
+  overlay, and with the console caught that is a second road to the same place: a line logged through the
+  host's console provider would have been shown twice, once as the provider wrote it and once as it was
+  caught. The overlay now shows what is written to the console and nothing else. An application that has
+  no logging provider at all is told so in the overlay, and told to add one, rather than left looking at
+  a panel that stays empty whatever happens.
+
+- **`Ctrl+Shift+C` no longer stops a Windows application instead of copying.** Both it and `Ctrl+C` type
+  the same character, and the Windows console decided for itself which had been pressed: with processed
+  input on it raised the same signal for either, so the `Copy` binding never saw the key and the
+  application quit under the user's hand. The console is now handed the key rather than the verdict —
+  processed input is off while the application has the terminal — and `Ctrl+C` stops it from the input
+  router, where the Shift can be seen. The console gets it back the moment the terminal is lent to
+  another program, so what runs there is still stopped the way everything is stopped.
+
+  A terminal that keeps `Ctrl+Shift+C` for its own copying — Windows Terminal, WezTerm and kitty all do
+  by default — never passes it on, and there `Ctrl+Insert` is the binding that arrives.
+
+- **`CopyToClipboard` no longer goes nowhere in a terminal that has OSC 52 switched off.** The sequence
+  was the only way out, and a terminal that ignores it ignores it in silence, so a copy that never landed
+  looked from the inside exactly like one that did. It is still written first — over a remote session it
+  is the only thing that reaches the clipboard of whoever is watching — and the text now also goes down
+  the standard input of the first clipboard program the machine has: `pbcopy`, `termux-clipboard-set`,
+  `wl-copy`, `xclip`, `xsel`, tried in that order. A program that is not installed fails to start and
+  costs nothing, so a machine with none of them spends no time on this. Only Linux, macOS and the BSDs
+  run them; everywhere else, Windows included, is left to the sequence alone, having no such program to
+  pipe into.
 
 - **What the terminal answers about itself no longer types itself into a Windows console.** The answer
   is relayed there character by character with no key named behind any of them, escape included, so
