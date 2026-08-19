@@ -81,9 +81,9 @@ spilled onto a neighbor:
 var frame = _surface.Frame.Inset(new Margin(2, 1, 3, 2));
 var (toolbar, rest) = frame.SplitTop(2);
 var (browser, status) = rest.SplitTop(rest.Height - 2);
-var (sidebar, list) = browser.Border(Theme.Muted).SplitLeft(22);
+var (sidebar, list) = browser.Border(Theme.Secondary).SplitLeft(22);
 
-sidebar.Write(0, 0, "Favorites", Theme.Muted);
+sidebar.Write(0, 0, "Favorites", Theme.Secondary);
 list.WriteLine(0, "Name", Theme.TableHeader);
 ```
 

@@ -321,9 +321,9 @@ public sealed class ConfirmModal : Modal
     {
         var box = frame.Screen.Rows(frame.Height / 3, 3);
 
-        box.Fill(Theme.Selected);
+        box.Fill(Theme.Selection);
         box.WriteLine(0, Question, Theme.Header, Align.Center);
-        box.WriteLine(2, "y / n", Theme.Muted, Align.Center);
+        box.WriteLine(2, "y / n", Theme.Secondary, Align.Center);
 
         Box = box;
     }

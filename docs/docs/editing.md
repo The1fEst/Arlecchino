@@ -107,7 +107,7 @@ Two small interfaces decide what is being finished:
 
 `SpaceWords` cuts at spaces, for a command line; `WholeLine` treats the line as one word, for a path
 or a name. What either hands back is a `CompletionAsk` — the line, where the word starts and how long
-it is, with `Word`, `Before` and `After` read off it. `Words` lists what was offered and `Chosen`
+it is, with `Word`, `Prefix` and `Suffix` read off it. `Words` lists what was offered and `ChosenIndex`
 says which one is filled in, for a caller that draws the candidates; `Forget` drops the offer.
 
 Suggesting is asynchronous and cancelled when the question changes, so a completer can read a folder
@@ -121,7 +121,7 @@ behind it, and the symbol the caret stands on drawn the other way round.
 ```csharp
 EntryRow.Draw(region, row: 0, column: 2, width: 40, entry, new EntryLook(
     Theme.Input,
-    Theme.Selected,
+    Theme.Selection,
     Theme.Caret));
 ```
 

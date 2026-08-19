@@ -31,7 +31,7 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 | `ItemStyle` | Optional per-row style |
 | `PaintRow` | Optional: draws the row itself, for rows that are not one color |
 | `OnActivate` | Runs on `Confirm` or a second click; returns a route |
-| `Selected` / `SelectedIndex` | Where the cursor is |
+| `SelectedIndex` | Where the cursor is |
 | `IsFocused` | Set by the [focus ring](focus.md) |
 
 ## Keys and clicks
@@ -50,7 +50,7 @@ All of them come from the [keymap](keyboard.md#the-keymap).
 
 ## Focused and unfocused
 
-The selected row is drawn `ActiveSelected` while the list has the focus and `Selected` while it does
+The selected row is drawn `ActiveSelection` while the list has the focus and `Selection` while it does
 not, so a list beside another pane still shows where its cursor is. Those two
 [roles](theming.md#roles) are chosen so that neither reads as an error.
 

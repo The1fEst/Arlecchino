@@ -19,12 +19,12 @@ palette then restyles the whole application, chrome included.
 | `TableHeader` | bone, bold | Column headers |
 | `Accent` | bone | Text that stands out without being alarming |
 | `Info` | ash | Box borders and structural lines |
-| `Muted` | ash | Hints, footers, secondary text |
+| `Secondary` | ash | Hints, footers, secondary text |
 | `Input` | ink on bone | The editable part of a text field |
 | `Caret` | black on white | The symbol the caret stands on in a [line of text](editing.md) |
-| `Selected` | bone on hairline | The cursor row of an unfocused pane, and what is selected in a line |
+| `Selection` | bone on hairline | The cursor row of an unfocused pane, and what is selected in a line |
 | `Active` | crimson | Something switched on or available |
-| `ActiveSelected` | ink on ash | The cursor row of the focused pane |
+| `ActiveSelection` | ink on ash | The cursor row of the focused pane |
 | `Warning` | ink on amber | The output line when it carries text |
 | `Error` | bone on crimson | Modal validation messages |
 
@@ -36,7 +36,7 @@ builder.Services
     .UseTheme(new ThemePalette
     {
         Header = new TermColor { Foreground = TerminalColor.BrightCyan, Style = TextStyle.Bold },
-        Selected = new TermColor { Background = TerminalColor.Blue },
+        Selection = new TermColor { Background = TerminalColor.Blue },
     });
 ```
 
@@ -81,8 +81,8 @@ Crimson is spent on one thing at a time: titles, `Active`, and `Error`. The curs
 
 | Role | Color | Reads as |
 |---|---|---|
-| `ActiveSelected` | ink on ash `#8A8189` | Where the cursor is |
-| `Selected` | bone on hairline `#2E2B33` | Where it was, in the pane without focus |
+| `ActiveSelection` | ink on ash `#8A8189` | Where the cursor is |
+| `Selection` | bone on hairline `#2E2B33` | Where it was, in the pane without focus |
 | `Warning` | ink on amber `#D08A2C` | Worth noticing — deprecated, drifted |
 | `Error` | bone on crimson `#C9382B` | Something is wrong |
 
@@ -96,6 +96,30 @@ builder.Services.AddArlecchino().UseTheme(ThemePalette.Basic);
 ```
 
 That is the whole of the way back. See [Migrating to 2.0](migrating-to-2.0.md).
+
+## A palette for the terminal you landed on
+
+A palette is written against a background nobody promised. `PaletteForBackground` is handed the color
+the terminal turned out to be and answers with the palette to wear:
+
+```csharp
+builder.Services.AddArlecchino(options =>
+    options.PaletteForBackground = background => new ThemePalette
+    {
+        Header = new RgbTermColor
+        {
+            Foreground = Shade.Against(background, hue: 25, chroma: 0.16, contrast: 7),
+            Style = TextStyle.Bold,
+        },
+        Secondary = new RgbTermColor { Foreground = Shade.Against(background, hue: 25, chroma: 0.02, contrast: 3) },
+        Selection = new RgbTermColor { Background = Shade.Lifted(background, 0.06) },
+    });
+```
+
+It runs once, as the application starts and the terminal is asked what color it is, so it costs nothing
+per frame. A terminal that will not say — one that ignores the OSC 11 query, or a redirected run —
+leaves `Theme` exactly as it was given, which means the palette above is the improvement and the plain
+one is the floor. The arithmetic behind `Shade` is on [Colors](colors.md#working-a-color-out-against-the-background).
 
 ## Writing a palette of your own
 

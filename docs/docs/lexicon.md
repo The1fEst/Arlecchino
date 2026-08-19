@@ -19,7 +19,7 @@ The words used throughout the documentation, with the page that explains each on
 | **Flow cursor** | The row the next `AppendLine` writes to. See [Layout](layout.md#flow-layout) |
 | **Clip** | A scope confining every write to a rectangle, whatever coordinates the writing code uses. See [Layout](layout.md#clipping-a-whole-stretch-of-drawing) |
 | **Column** | The unit width is measured in. A wide symbol is two. See [Text and width](text.md) |
-| **Role** | A named entry in the palette — `Header`, `Muted`, `Error`. Views pick roles, not colors. See [Theming](theming.md) |
+| **Role** | A named entry in the palette — `Header`, `Secondary`, `Error`. Views pick roles, not colors. See [Theming](theming.md) |
 | **Palette** | The object behind the roles. See [Theming](theming.md) |
 
 ## The application

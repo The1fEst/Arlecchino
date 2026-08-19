@@ -22,10 +22,20 @@ frames sit a handful of mode switches:
 | `?1000` `?1002` `?1006` — SGR mouse reporting | `UseMouse()` is on | `EnableMouse()` / `DisableMouse()` |
 | `?2004` — bracketed paste | On by default | `EnablePaste()` / `DisablePaste()` |
 | OSC 52 | `Ctrl+Insert` in a field | `CopyToClipboard(text)` |
+| Control keys taken and given back | The terminal is taken and handed back | `TakeControlKeys()` / `GiveBackControlKeys()` |
 
 OSC 52 is the reason a copy works over SSH: the sequence carries the text to whatever is *showing* the
 terminal, so it lands on the clipboard of the machine the user is sitting at. Terminals may refuse it
-and none acknowledge it, so there is nothing to report back.
+and none acknowledge it, so there is nothing to report back — which is why the text also goes down the
+standard input of the first clipboard program the machine has: `pbcopy`, `termux-clipboard-set`,
+`wl-copy`, `xclip`, `xsel`, tried in that order, and only on Linux, macOS and the BSDs. A program that
+is not installed fails to start and costs nothing.
+
+`TakeControlKeys` is what lets an application see `Ctrl+C` as a key rather than as a signal, and it
+matters on Windows, where the console decides for itself whether `Ctrl+C` and `Ctrl+Shift+C` are the
+same thing. Both members default to doing nothing, so a terminal of your own needs neither until it has
+something to say about them; the keys go back to the console the moment the terminal is lent to another
+program.
 
 When [color support](colors.md#what-the-terminal-can-actually-do) is `None`, no style sequence is
 emitted at all — not even the per-line reset — and the alternate screen is left alone. An application

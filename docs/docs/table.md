@@ -20,7 +20,7 @@ _mods = new Table<Mod>(options.Keymap)
                 Width = 6, AlignRight = true,
                 Sort = (first, second) => first.Files.CompareTo(second.Files) },
     ],
-    ItemStyle = mod => mod.Enabled ? Theme.Default : Theme.Muted,
+    ItemStyle = mod => mod.Enabled ? Theme.Default : Theme.Secondary,
     Rows = catalog,
 };
 ```

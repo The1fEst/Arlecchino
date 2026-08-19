@@ -23,7 +23,7 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 | Member | Meaning |
 |---|---|
 | `Titles` | One `Func<string>` per tab, so the strip follows the [language](localization.md) |
-| `Selected` | The index currently shown |
+| `SelectedIndex` | The index currently shown |
 | `OnSelected` | Fires only when the selection actually changes |
 | `IsFocused` | Set by the [focus ring](focus.md) |
 
@@ -43,7 +43,7 @@ public void Draw()
 {
     var rest = _tabs.Draw(_surface.Content);
 
-    if (_tabs.Selected == 0)
+    if (_tabs.SelectedIndex == 0)
     {
         _installed.Draw(rest);
     }

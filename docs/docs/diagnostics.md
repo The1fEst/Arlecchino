@@ -12,9 +12,10 @@ buffer behind an overlay, a list behind the output row, or the clipboard.
 
 ## The log overlay
 
-A console logger cannot work here. `AddArlecchino` therefore registers a logger provider of its own,
-which keeps the last lines in a `LogBuffer` in memory, and `Ctrl+L` — the `ToggleLog`
-[binding](keyboard.md#the-keymap) — shows them over the bottom half of the screen:
+A console logger cannot work here — a line written to standard output lands on the frame and scrolls it
+away. `AddArlecchino` therefore stands in front of standard output and standard error: while a frame is
+on the screen, text written there is caught into a `LogBuffer` in memory instead, and `Ctrl+L` — the
+`ToggleLog` [binding](keyboard.md#the-keymap) — shows it over the bottom half of the screen:
 
 ```
 ╭─ Log (7) ───────────────────────────────────────────╮
@@ -41,14 +42,25 @@ below its capacity.
 
 :::
 
-### Adding providers of your own
+### Where the lines come from
 
-`AddArlecchino` calls `AddLogging()`, so `ILogger` is always resolvable and a file or Seq provider goes
-in the usual way. Drop any provider that writes to standard output.
+Arlecchino registers no logging provider of its own. What the overlay draws is what a provider writes
+to the console, which the default host already does — `builder.Logging` keeps its console provider, and
+`ILogger` reaches the overlay through it rather than around it.
 
 ```csharp
-builder.Logging.ClearProviders();   // removes this one too, overlay included
+builder.Logging.ClearProviders();   // now the way to end up with nothing in the overlay at all
 ```
+
+That line used to be how a console provider was kept off the frame. It no longer is: the console is
+caught, so a provider writing to it is exactly how a line arrives. An application that has cleared every
+provider is told so in the overlay — `ArlecchinoStrings.LogWithoutProviders` is what it says — rather
+than left looking at a panel that stays empty whatever happens.
+
+A line caught off standard output is logged under `stdout`, one off standard error under `stderr`, with
+escape sequences taken out of it so nothing drawn into the overlay can move the frame around. Text
+written before the terminal is taken or after it is given back goes to the console as it always did:
+`--help`, a failure during startup, and the host's own shutdown lines all still print.
 
 ### What ends up in it
 
@@ -59,6 +71,7 @@ builder.Logging.ClearProviders();   // removes this one too, overlay included
 | `Screen` | A collection shrank mid-frame and cut a widget short |
 | `CommandConflicts` | A view command shadows an application command, or binds the same key twice |
 | Your application | Anything you log |
+| Anything at all | A stray `Console.WriteLine`, from your code or from a library that never knew it was in a terminal application |
 
 ## Notifications
 
@@ -145,7 +158,7 @@ foreach (var entry in _state.Notifications.Recent)
 
 `Line` is the single line to draw — what came of the work, what is happening now, or what was said, in
 that order — `Level` is how loud it is now, which is what it was raised as until the work it reports
-ends as something else, and `Filled()` is how full a bar for it should be, or `null` when there is
+ends as something else, and `Fraction()` is how full a bar for it should be, or `null` when there is
 nothing to draw.
 
 ## A report to attach to a bug

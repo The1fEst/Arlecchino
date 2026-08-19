@@ -107,8 +107,8 @@ public sealed class Badge : IArlecchinoInteractiveWidget
     public SurfaceRegion Draw(SurfaceRegion region)
     {
         _drawn = region;
-        var inner = region.Border(IsFocused ? Theme.Active : Theme.Muted);
-        inner.WriteLine(0, Label(), IsFocused ? Theme.ActiveSelected : Theme.Default, Align.Center);
+        var inner = region.Border(IsFocused ? Theme.Active : Theme.Secondary);
+        inner.WriteLine(0, Label(), IsFocused ? Theme.ActiveSelection : Theme.Default, Align.Center);
 
         return region.Rows(BorderedRows, region.Height - BorderedRows);
     }

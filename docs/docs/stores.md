@@ -151,7 +151,7 @@ public void Draw()
 {
     if (_settings.IsLoading)
     {
-        _surface.AppendLine("loading settings…", Theme.Muted, Align.Center);
+        _surface.AppendLine("loading settings…", Theme.Secondary, Align.Center);
         return;
     }
 

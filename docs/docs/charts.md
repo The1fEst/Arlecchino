@@ -137,7 +137,7 @@ private readonly BarChart<Mirror> _traffic = new()
     Value = static mirror => mirror.Megabytes,
     Items = _mirrors,
     Caption = static value => $"{value:0}",
-    ItemStyle = static mirror => mirror.Megabytes < 100m ? Theme.Muted : Theme.Active,
+    ItemStyle = static mirror => mirror.Megabytes < 100m ? Theme.Secondary : Theme.Active,
 };
 
 var rest = _traffic.Draw(region);

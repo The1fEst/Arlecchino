@@ -89,7 +89,7 @@ app.Press(ConsoleKey.DownArrow);
 app.Frame();
 
 Assert.Equal("Widebody kit", app.Screen.Line(3).Trim());
-Assert.Equal(Theme.Selected.Ansi, app.Screen.StyleAt(3, 2));
+Assert.Equal(Theme.Selection.Ansi, app.Screen.StyleAt(3, 2));
 ```
 
 | Member | Use |

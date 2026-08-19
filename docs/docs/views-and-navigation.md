@@ -112,7 +112,7 @@ public sealed class Chrome : IArlecchinoLayout
 
         body(frame.Rows(1, frame.Height - 2));
 
-        frame.WriteLine(frame.Height - 1, "F1 help · F10 quit", Theme.Muted);
+        frame.WriteLine(frame.Height - 1, "F1 help · F10 quit", Theme.Secondary);
     }
 }
 ```

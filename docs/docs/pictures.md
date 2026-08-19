@@ -53,10 +53,10 @@ decodes to nothing.
 
 | Limit | What it does |
 |---|---|
-| `Most` | The header is refused before anything is allocated against it. A file claiming more pixels than this is not read at all |
-| `Enough` | How many pixels the caller has a use for. A format that can read itself smaller does |
+| `MostPixels` | The header is refused before anything is allocated against it. A file claiming more pixels than this is not read at all |
+| `EnoughPixels` | How many pixels the caller has a use for. A format that can read itself smaller does |
 
-`Enough` is where the time goes on a photograph: a JPEG drawn into a pane is read at a quarter or an
+`EnoughPixels` is where the time goes on a photograph: a JPEG drawn into a pane is read at a quarter or an
 eighth of its side rather than in full. `PictureLimits.For(pixels)` builds a pair from the size the
 pane can actually show, and `PictureLimits.Default` is what the plain `Read` uses.
 

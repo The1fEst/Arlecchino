@@ -168,10 +168,11 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 | `LogTitle(count)` | `Log ({count})` — title of the [log overlay](hosting-and-options.md) |
 | `LogHints` | `↑↓ scroll · End latest · Backspace clear · Esc close` |
 | `LogEmpty` | `nothing logged yet` |
+| `LogWithoutProviders` | What the overlay says when the host has no logging provider left to write with |
 | `ViewFailed(message)` | `error: {message}` — shown when a view or a callback throws |
 | `TerminalTooSmall` | `Terminal window is too small` |
 | `TerminalSize(width, height)` | `{width} x {height}` |
-| `TerminalNeeded` | `needed at least` |
+| `TerminalMinimum` | `needed at least` |
 
 ## File picker
 

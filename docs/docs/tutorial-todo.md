@@ -154,7 +154,7 @@ public sealed class TasksView : IArlecchinoView
         _list = new(options.Keymap)
         {
             Render = static item => item.Done ? $"  [x] {item.Text}" : $"  [ ] {item.Text}",
-            ItemStyle = static item => item.Done ? Theme.Muted : Theme.Default,
+            ItemStyle = static item => item.Done ? Theme.Secondary : Theme.Default,
             IsFocused = true,
         };
 
@@ -184,14 +184,14 @@ public sealed class TasksView : IArlecchinoView
     public IReadOnlyList<ViewCommand> Commands() =>
     [
         ViewCommand.For(ConsoleKey.A, static () => "add", Add),
-        ViewCommand.For(ConsoleKey.Spacebar, static () => "done", () => _tasks.Toggle(_list.Selected)),
+        ViewCommand.For(ConsoleKey.Spacebar, static () => "done", () => _tasks.Toggle(_list.SelectedIndex)),
         ViewCommand.For(ConsoleKey.D, static () => "delete", Delete),
     ];
 
     private void DrawHeader(SurfaceRegion header)
     {
         header.WriteLine(0, "Todo", Theme.Header);
-        header.WriteLine(1, _tasks.Items.Value.Count == 0 ? "Nothing yet — press a" : "", Theme.Muted);
+        header.WriteLine(1, _tasks.Items.Value.Count == 0 ? "Nothing yet — press a" : "", Theme.Secondary);
     }
 
     private void Add() => _state.RequestText(
@@ -202,12 +202,12 @@ public sealed class TasksView : IArlecchinoView
 
     private void Delete()
     {
-        if (_list.SelectedItem is not { } item)
+        if (_list.SelectedIndexItem is not { } item)
         {
             return;
         }
 
-        _state.RequestConfirmation($"Delete {item.Text}?", () => _tasks.Remove(_list.Selected));
+        _state.RequestConfirmation($"Delete {item.Text}?", () => _tasks.Remove(_list.SelectedIndex));
     }
 }
 ```
@@ -247,7 +247,7 @@ underneath the field:
 
 ```csharp
 _state.RequestText("What needs doing?", "", Validate, _tasks.Add);
-_state.RequestConfirmation($"Delete {item.Text}?", () => _tasks.Remove(_list.Selected));
+_state.RequestConfirmation($"Delete {item.Text}?", () => _tasks.Remove(_list.SelectedIndex));
 ```
 
 `RequestConfirmation` starts on the negative answer, so a stray `Enter` cancels rather than deletes.

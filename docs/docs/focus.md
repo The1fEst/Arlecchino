@@ -83,7 +83,7 @@ public interface IArlecchinoFocusable
 ```
 
 `IsFocused` is set by the ring. Draw the element differently while it is `false` — that is what the
-`Selected` and `ActiveSelected` [roles](theming.md#roles) are for: the cursor row of the pane with the
+`Selection` and `ActiveSelection` [roles](theming.md#roles) are for: the cursor row of the pane with the
 focus and the cursor row of the pane without it.
 
 Only `IsFocused` and `Handle` have to be written. The other three have defaults that say *nothing to
