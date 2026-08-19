@@ -25,16 +25,17 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 
 | Member | Summary |
 |---|---|
-| [`Copied`](#copied) | The last text copied, or `null` when nothing has been. |
+| [`AreControlKeysTaken`](#arecontrolkeystaken) | Whether the application borrowed Ctrl+C and has not handed it back. |
+| [`CopiedText`](#copiedtext) | The last text copied, or `null` when nothing has been. |
 | [`Height`](#height) | Rows. Assigning simulates a resize. |
 | [`IsFullScreen`](#isfullscreen) | Whether the application took over the screen and has not given it back. |
 | [`IsMouseEnabled`](#ismouseenabled) | Whether the application asked for the mouse. |
 | [`IsPasteEnabled`](#ispasteenabled) | Whether the application asked for bracketed paste. |
 | [`KeyAvailable`](#keyavailable) | Whether any queued key is still waiting. |
 | [`MouseAvailable`](#mouseavailable) | Whether any queued mouse event is still waiting. |
-| [`Screen`](#screen) | What the screen holds, rather than the cursor jumps and short runs [`FakeTerminal.Written`](../arlecchino.testing/FakeTerminal.md#written) collected to get it there. It survives [`FakeTerminal.Clear`](../arlecchino.testing/FakeTerminal.md#clear), as a real screen does. |
+| [`Screen`](#screen) | What the screen holds, rather than the cursor jumps and short runs [`FakeTerminal.WrittenText`](../arlecchino.testing/FakeTerminal.md#writtentext) collected to get it there. It survives [`FakeTerminal.Clear`](../arlecchino.testing/FakeTerminal.md#clear), as a real screen does. |
 | [`Width`](#width) | Columns. Assigning simulates a resize. |
-| [`Written`](#written) | Everything written so far, escape sequences included. |
+| [`WrittenText`](#writtentext) | Everything written so far, escape sequences included. |
 
 ## Methods
 
@@ -50,9 +51,11 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 | [`EnqueueMouse(MouseEvent)`](#enqueuemouse-mouseevent) | Queues a mouse event to be read, the way a console that reports the mouse outside the key stream delivers one. |
 | [`EnqueueText(string)`](#enqueuetext-string) | Queues text one character at a time, as a terminal reports it, naming the key wherever `ReadKey` names one. An escape and the letter after it stay two presses. |
 | [`EnterFullScreen()`](#enterfullscreen) | Records that the screen was taken over. |
+| [`GiveBackControlKeys()`](#givebackcontrolkeys) | Records that Ctrl+C was handed back to the terminal. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Records that the screen was given back, which is what a test checks after a crash. |
 | [`ReadKey()`](#readkey) | Takes the next queued key, or nothing when the queue has run dry. |
 | [`ReadMouse()`](#readmouse) | Takes the next queued mouse event, or nothing when the queue has run dry. |
+| [`TakeControlKeys()`](#takecontrolkeys) | Records that Ctrl+C was borrowed, so it arrives as a key rather than as a signal. |
 | [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next read returns it. |
 | [`Write(string)`](#write-string) | Collects output instead of showing it, and applies it to [`FakeTerminal.Screen`](../arlecchino.testing/FakeTerminal.md#screen). |
 
@@ -75,10 +78,20 @@ Creates the terminal at a fixed size.
 
 ## Properties in detail
 
-### `Copied` {#copied}
+### `AreControlKeysTaken` {#arecontrolkeystaken}
 
 ```csharp
-public string? Copied { get; }
+public bool AreControlKeysTaken { get; }
+```
+
+Whether the application borrowed Ctrl+C and has not handed it back.
+
+**Type** `bool`
+
+### `CopiedText` {#copiedtext}
+
+```csharp
+public string? CopiedText { get; }
 ```
 
 The last text copied, or `null` when nothing has been.
@@ -151,7 +164,7 @@ Whether any queued mouse event is still waiting.
 public ScreenGrid Screen { get; }
 ```
 
-What the screen holds, rather than the cursor jumps and short runs [`FakeTerminal.Written`](../arlecchino.testing/FakeTerminal.md#written) collected to get it there. It survives [`FakeTerminal.Clear`](../arlecchino.testing/FakeTerminal.md#clear), as a real screen does.
+What the screen holds, rather than the cursor jumps and short runs [`FakeTerminal.WrittenText`](../arlecchino.testing/FakeTerminal.md#writtentext) collected to get it there. It survives [`FakeTerminal.Clear`](../arlecchino.testing/FakeTerminal.md#clear), as a real screen does.
 
 **Type** [`ScreenGrid`](../arlecchino.testing/ScreenGrid.md)
 
@@ -165,10 +178,10 @@ Columns. Assigning simulates a resize.
 
 **Type** `int`
 
-### `Written` {#written}
+### `WrittenText` {#writtentext}
 
 ```csharp
-public string Written { get; }
+public string WrittenText { get; }
 ```
 
 Everything written so far, escape sequences included.
@@ -281,6 +294,14 @@ public void EnterFullScreen();
 
 Records that the screen was taken over.
 
+### `GiveBackControlKeys()` {#givebackcontrolkeys}
+
+```csharp
+public void GiveBackControlKeys();
+```
+
+Records that Ctrl+C was handed back to the terminal.
+
 ### `LeaveFullScreen()` {#leavefullscreen}
 
 ```csharp
@@ -308,6 +329,14 @@ public MouseEvent ReadMouse();
 Takes the next queued mouse event, or nothing when the queue has run dry.
 
 **Returns** [`MouseEvent`](../arlecchino.input/MouseEvent.md) — The event.
+
+### `TakeControlKeys()` {#takecontrolkeys}
+
+```csharp
+public void TakeControlKeys();
+```
+
+Records that Ctrl+C was borrowed, so it arrives as a key rather than as a signal.
 
 ### `Unread(KeyPress)` {#unread-keypress}
 

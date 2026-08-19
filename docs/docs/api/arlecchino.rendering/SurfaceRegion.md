@@ -255,7 +255,7 @@ A smaller region inside this one.
 ### `Inset(int)` {#inset-int}
 
 ```csharp
-public SurfaceRegion Inset(int all);
+public SurfaceRegion Inset(int size);
 ```
 
 A smaller region with the same space kept free on every side.
@@ -264,7 +264,7 @@ A smaller region with the same space kept free on every side.
 
 | Name | Type | Description |
 |---|---|---|
-| `all` | `int` | Cells to keep free. |
+| `size` | `int` | Cells to keep free. |
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — The region that is left.
 

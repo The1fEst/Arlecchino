@@ -31,14 +31,14 @@ public sealed class Notification
 | [`Line`](#line) | The single line to draw: what came of it, what is happening now, or what was said. |
 | [`Progress`](#progress) | How far along the work is, from `0` to `1`, read every frame beside [`Notification.ProgressText`](../arlecchino.diagnostics/Notification.md#progresstext). A bar is drawn for it wherever the entry is shown; work whose size is not known answers `null` and gets the text alone. |
 | [`ProgressText`](#progresstext) | The line to show while something is still running, read every frame. Left alone for anything that is already over, which is most notifications. |
-| [`Since`](#since) | When the entry last had something new to say — raised, or ended. Work that ran for an hour is not stale the moment it finishes, so the timeouts are counted from here rather than from the moment it was raised. |
+| [`RaisedAt`](#raisedat) | When the entry last had something new to say — raised, or ended. Work that ran for an hour is not stale the moment it finishes, so the timeouts are counted from here rather than from the moment it was raised. |
 | [`Text`](#text) | What it was raised saying, kept as it was written. [`Notification.Line`](../arlecchino.diagnostics/Notification.md#line) is the line to draw, which is this one only while nothing newer has been said. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
-| [`Filled()`](#filled) | How full a bar for this entry should be, or `null` when there is nothing to draw. |
+| [`Fraction()`](#fraction) | How full a bar for this entry should be, or `null` when there is nothing to draw. |
 | [`Whole()`](#whole) | The full text to read: [`Notification.Detail`](../arlecchino.diagnostics/Notification.md#detail) when there is one, the line otherwise. |
 
 ## Constructors in detail
@@ -46,7 +46,7 @@ public sealed class Notification
 ### `Notification(DateTimeOffset, NotificationLevel, string)` {#notification-datetimeoffset-notificationlevel-string}
 
 ```csharp
-public Notification(DateTimeOffset since, NotificationLevel level, string text);
+public Notification(DateTimeOffset raisedAt, NotificationLevel level, string text);
 ```
 
 Raises an entry, which is as much as a plain message ever needs.
@@ -55,7 +55,7 @@ Raises an entry, which is as much as a plain message ever needs.
 
 | Name | Type | Description |
 |---|---|---|
-| `since` | `DateTimeOffset` | When it was raised. |
+| `raisedAt` | `DateTimeOffset` | When it was raised. |
 | `level` | [`NotificationLevel`](../arlecchino.diagnostics/NotificationLevel.md) | How loud it is. |
 | `text` | `string` | What it says in one line. |
 
@@ -141,10 +141,10 @@ The line to show while something is still running, read every frame. Left alone 
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 
-### `Since` {#since}
+### `RaisedAt` {#raisedat}
 
 ```csharp
-public DateTimeOffset Since { get; }
+public DateTimeOffset RaisedAt { get; }
 ```
 
 When the entry last had something new to say — raised, or ended. Work that ran for an hour is not stale the moment it finishes, so the timeouts are counted from here rather than from the moment it was raised.
@@ -163,10 +163,10 @@ What it was raised saying, kept as it was written. [`Notification.Line`](../arle
 
 ## Methods in detail
 
-### `Filled()` {#filled}
+### `Fraction()` {#fraction}
 
 ```csharp
-public Nullable<double> Filled();
+public Nullable<double> Fraction();
 ```
 
 How full a bar for this entry should be, or `null` when there is nothing to draw.

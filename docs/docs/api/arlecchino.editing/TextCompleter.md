@@ -23,7 +23,7 @@ public sealed class TextCompleter
 
 | Member | Summary |
 |---|---|
-| [`Chosen`](#chosen) | Which of [`TextCompleter.Words`](../arlecchino.editing/TextCompleter.md#words) is on the line now, or `-1` while the line holds only as much as they all agree on and none of them in particular. |
+| [`ChosenIndex`](#chosenindex) | Which of [`TextCompleter.Words`](../arlecchino.editing/TextCompleter.md#words) is on the line now, or `-1` while the line holds only as much as they all agree on and none of them in particular. |
 | [`Words`](#words) | What the last press found, for an application that draws them. It is empty while nothing has been offered and empties itself once the line has been typed into again. |
 
 ## Methods
@@ -59,10 +59,10 @@ Hangs completion on a line.
 
 ## Properties in detail
 
-### `Chosen` {#chosen}
+### `ChosenIndex` {#chosenindex}
 
 ```csharp
-public int Chosen { get; }
+public int ChosenIndex { get; }
 ```
 
 Which of [`TextCompleter.Words`](../arlecchino.editing/TextCompleter.md#words) is on the line now, or `-1` while the line holds only as much as they all agree on and none of them in particular.

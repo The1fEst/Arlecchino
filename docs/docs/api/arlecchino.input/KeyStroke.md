@@ -26,10 +26,10 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 
 | Member | Summary |
 |---|---|
+| [`Character`](#character) | The character this stroke answers to, or `'\0'` when it is a stroke on a key. |
 | [`IsNone`](#isnone) | Whether the stroke is unset and therefore stands for no key at all. |
 | [`Key`](#key) | The key itself. |
 | [`Modifiers`](#modifiers) | Modifiers that must be held, exactly. |
-| [`Typed`](#typed) | The character this stroke answers to, or `'\0'` when it is a stroke on a key. |
 
 ## Methods
 
@@ -45,7 +45,7 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 ### `KeyStroke(char)` {#keystroke-char}
 
 ```csharp
-public KeyStroke(char typed);
+public KeyStroke(char character);
 ```
 
 A stroke on a character rather than on a key, which is the only way to name punctuation. It answers on every layout that can type that character, whatever the keyboard does to produce it.
@@ -54,7 +54,7 @@ A stroke on a character rather than on a key, which is the only way to name punc
 
 | Name | Type | Description |
 |---|---|---|
-| `typed` | `char` | The character to answer to. |
+| `character` | `char` | The character to answer to. |
 
 ### `KeyStroke(ConsoleKey, KeyModifiers)` {#keystroke-consolekey-keymodifiers}
 
@@ -72,6 +72,16 @@ One key and the modifiers held with it, which is the smallest thing a binding ca
 | `Modifiers` | [`KeyModifiers`](../arlecchino.input/KeyModifiers.md) | Modifiers that must be held, exactly. |
 
 ## Properties in detail
+
+### `Character` {#character}
+
+```csharp
+public char Character { get; }
+```
+
+The character this stroke answers to, or `'\0'` when it is a stroke on a key.
+
+**Type** `char`
 
 ### `IsNone` {#isnone}
 
@@ -103,16 +113,6 @@ Modifiers that must be held, exactly.
 
 **Type** [`KeyModifiers`](../arlecchino.input/KeyModifiers.md)
 
-### `Typed` {#typed}
-
-```csharp
-public char Typed { get; }
-```
-
-The character this stroke answers to, or `'\0'` when it is a stroke on a key.
-
-**Type** `char`
-
 ## Methods in detail
 
 ### `Deconstruct(out ConsoleKey, out KeyModifiers)` {#deconstruct-out-consolekey-out-keymodifiers}
@@ -131,7 +131,7 @@ public void Deconstruct(out ConsoleKey Key, out KeyModifiers Modifiers);
 ### `Matches(KeyPress)` {#matches-keypress}
 
 ```csharp
-public bool Matches(KeyPress pressed);
+public bool Matches(KeyPress press);
 ```
 
 Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift.
@@ -140,7 +140,7 @@ Whether a key press is this stroke, by the key where one was reported and by the
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `bool` — `true` when the press is this combination.
 

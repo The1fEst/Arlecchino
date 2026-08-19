@@ -249,7 +249,7 @@ Asks for a color with a swatch and three sliders. Channels are whole numbers, so
 ### `RequestConfirmation(string, Action)` {#requestconfirmation-string-action}
 
 ```csharp
-public void RequestConfirmation(string title, Action onConfirmed);
+public void RequestConfirmation(string title, Action onYes);
 ```
 
 Asks a question that has to be confirmed before something happens. The negative answer starts selected, so a stray `Enter` cancels rather than deletes.
@@ -259,7 +259,7 @@ Asks a question that has to be confirmed before something happens. The negative 
 | Name | Type | Description |
 |---|---|---|
 | `title` | `string` | The question. |
-| `onConfirmed` | `Action` | Called only when the answer was yes. |
+| `onYes` | `Action` | Called only when the answer was yes. |
 
 ### `RequestDate(string, DateOnly, Action<DateOnly>)` {#requestdate-string-dateonly-action-dateonly}
 
@@ -315,7 +315,7 @@ Shows a message with nothing to fill in; any of the closing keys dismisses it.
 public void RequestMultiChoice(
     string title,
     IReadOnlyList<string> options,
-    IReadOnlyList<string> selected,
+    IReadOnlyList<string> selectedKeys,
     Action<IReadOnlyList<string>> onSubmit);
 ```
 
@@ -327,7 +327,7 @@ Asks for any number of options. Marks survive filtering, and the result comes ba
 |---|---|---|
 | `title` | `string` | Title of the dialog. |
 | `options` | `IReadOnlyList<T>`&lt;`string`&gt; | What to choose from. |
-| `selected` | `IReadOnlyList<T>`&lt;`string`&gt; | Options marked to begin with. |
+| `selectedKeys` | `IReadOnlyList<T>`&lt;`string`&gt; | Options marked to begin with. |
 | `onSubmit` | `Action<T>`&lt;`IReadOnlyList<T>`&lt;`string`&gt;&gt; | Called with everything marked. |
 
 ### `RequestNumber(string, decimal, decimal, decimal, Action<decimal>)` {#requestnumber-string-decimal-decimal-decimal-action-decimal}

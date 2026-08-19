@@ -31,7 +31,7 @@ public sealed class Tree<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, I
 | [`OnExpanding`](#onexpanding) | Called just before a branch opens, which is where its children can be filled in. It runs on the UI thread, so anything slow belongs in an [`AsyncAtom`](../arlecchino.atoms/AsyncAtom-1.md) instead. |
 | [`Render`](#render) | Turns a value into its label. The marker and the indent are added around it. |
 | [`Roots`](#roots) | The top-level nodes. |
-| [`Selected`](#selected) | Index of the selected row, counted over the rows that are showing rather than over all nodes. |
+| [`SelectedIndex`](#selectedindex) | Index of the selected row, counted over the rows that are showing rather than over all nodes. |
 | [`SelectedNode`](#selectednode) | The selected node, or `null` when the tree is empty. |
 
 ## Methods
@@ -128,10 +128,10 @@ The top-level nodes.
 
 **Type** `IReadOnlyList<T>`&lt;[`TreeNode`](../arlecchino.widgets.lists/TreeNode-1.md)&lt;`T`&gt;&gt;
 
-### `Selected` {#selected}
+### `SelectedIndex` {#selectedindex}
 
 ```csharp
-public int Selected { get; set; }
+public int SelectedIndex { get; set; }
 ```
 
 Index of the selected row, counted over the rows that are showing rather than over all nodes.

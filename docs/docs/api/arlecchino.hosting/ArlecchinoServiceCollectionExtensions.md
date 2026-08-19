@@ -17,7 +17,7 @@ public static class ArlecchinoServiceCollectionExtensions
 
 | Member | Summary |
 |---|---|
-| [`AddArlecchino(IServiceCollection, Action<ArlecchinoOptions>)`](#addarlecchino-iservicecollection-action-arlecchinooptions) | Registers everything an application needs and returns the builder that describes it. The look is installed here, before any thread has claimed the drawing, and a terminal already registered stands. |
+| [`AddArlecchino(IServiceCollection, Action<ArlecchinoOptions>)`](#addarlecchino-iservicecollection-action-arlecchinooptions) | Registers everything an application needs and returns the builder that describes it. The look and the hold on the console are installed here, before any thread has claimed the drawing, and a terminal already registered stands. |
 
 ## Methods in detail
 
@@ -29,7 +29,7 @@ public static ArlecchinoBuilder AddArlecchino(
     Action<ArlecchinoOptions>? configure = null);
 ```
 
-Registers everything an application needs and returns the builder that describes it. The look is installed here, before any thread has claimed the drawing, and a terminal already registered stands.
+Registers everything an application needs and returns the builder that describes it. The look and the hold on the console are installed here, before any thread has claimed the drawing, and a terminal already registered stands.
 
 **Parameters**
 

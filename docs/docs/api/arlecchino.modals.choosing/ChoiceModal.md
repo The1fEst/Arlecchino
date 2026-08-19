@@ -92,7 +92,7 @@ public override void Handle(ModalFrame frame, KeyPress key);
 ### `Take(ModalFrame, string)` {#take-modalframe-string}
 
 ```csharp
-public virtual void Take(ModalFrame frame, string picked);
+public virtual void Take(ModalFrame frame, string choice);
 ```
 
 **Parameters**
@@ -100,5 +100,5 @@ public virtual void Take(ModalFrame frame, string picked);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `picked` | `string` |  |
+| `choice` | `string` |  |
 

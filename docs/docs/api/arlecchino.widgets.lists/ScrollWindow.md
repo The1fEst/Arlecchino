@@ -91,7 +91,7 @@ Index of the last item shown. Reads as one before [`ScrollWindow.First`](../arle
 ### `Around(int, int, int)` {#around-int-int-int}
 
 ```csharp
-public static ScrollWindow Around(int selected, int itemCount, int rows);
+public static ScrollWindow Around(int selectedIndex, int itemCount, int rows);
 ```
 
 Places the window with the selection in the middle, sliding it back at the ends of the list, so the rows are always filled rather than trailing off into blanks.
@@ -100,7 +100,7 @@ Places the window with the selection in the middle, sliding it back at the ends 
 
 | Name | Type | Description |
 |---|---|---|
-| `selected` | `int` | Index that has to stay visible. |
+| `selectedIndex` | `int` | Index that has to stay visible. |
 | `itemCount` | `int` | Length of the full list. |
 | `rows` | `int` | How many rows there are to draw into. |
 

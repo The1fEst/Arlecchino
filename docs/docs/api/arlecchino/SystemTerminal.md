@@ -7,7 +7,7 @@ sidebar_label: "SystemTerminal"
 
 **Namespace:** `Arlecchino` &middot; **Assembly:** `Arlecchino.Core`
 
-The real console, registered by default and replaceable through `UseTerminal<T>()`. On Windows it turns virtual terminal output on and virtual terminal input off at startup.
+The real console, registered by default and replaceable through `UseTerminal<T>()`. On Windows it turns virtual terminal output on, virtual terminal input off, and borrows `Ctrl+C` while it has the terminal.
 
 ```csharp
 public sealed class SystemTerminal : IArlecchinoTerminal
@@ -34,17 +34,19 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 
 | Member | Summary |
 |---|---|
-| [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal itself, encoded as base64, which is the only way to reach the local clipboard over a remote session. Terminals with it switched off drop it silently. |
+| [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal as base64, the only way to the clipboard of whoever is watching a remote session, and then through `ClipboardPrograms`, which a silent terminal is not. |
 | [`DisableMouse()`](#disablemouse) | Stops mouse reporting and gives the console back the mode it had. |
 | [`DisablePaste()`](#disablepaste) | Turns bracketed paste off again. |
 | [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel: as SGR reports in the key stream, or record by record on Windows. Quick-edit mode is turned off while this is on. |
 | [`EnablePaste()`](#enablepaste) | Turns on bracketed paste. Terminals that do not know the mode ignore it. |
 | [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for, since asking it moves the function keys onto sequences the runtime reads as other keys. |
+| [`GiveBackControlKeys()`](#givebackcontrolkeys) | Gives `Ctrl+C` back to the console, which the shell and any program the terminal is lent to expect to have it. Doing so twice, or without having taken it, changes nothing. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and makes the cursor visible again. |
 | [`ReadKey()`](#readkey) | Takes the next key without echoing it. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
+| [`TakeControlKeys()`](#takecontrolkeys) | Takes `Ctrl+C` off the Windows console, which raises it as a signal — and raises the same signal for `Ctrl+Shift+C`, since both type the same character. Whether it was the console's is remembered, so it is given back as found. |
 | [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next read returns it. |
-| [`Write(string)`](#write-string) | Writes a composed frame. |
+| [`Write(string)`](#write-string) | Writes a composed frame, and everything else this terminal says, through the one writer it was given — or the console's own, when it was given none. |
 
 ## Constructors in detail
 
@@ -106,7 +108,7 @@ Window width, or a fixed width when output is redirected.
 public void CopyToClipboard(string text);
 ```
 
-Copies through the terminal itself, encoded as base64, which is the only way to reach the local clipboard over a remote session. Terminals with it switched off drop it silently.
+Copies through the terminal as base64, the only way to the clipboard of whoever is watching a remote session, and then through `ClipboardPrograms`, which a silent terminal is not.
 
 **Parameters**
 
@@ -154,6 +156,14 @@ public void EnterFullScreen();
 
 Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for, since asking it moves the function keys onto sequences the runtime reads as other keys.
 
+### `GiveBackControlKeys()` {#givebackcontrolkeys}
+
+```csharp
+public void GiveBackControlKeys();
+```
+
+Gives `Ctrl+C` back to the console, which the shell and any program the terminal is lent to expect to have it. Doing so twice, or without having taken it, changes nothing.
+
 ### `LeaveFullScreen()` {#leavefullscreen}
 
 ```csharp
@@ -188,6 +198,14 @@ Takes the next mouse event read from the console's event queue.
 |---|---|
 | `InvalidOperationException` | The mouse is not being read on this platform. |
 
+### `TakeControlKeys()` {#takecontrolkeys}
+
+```csharp
+public void TakeControlKeys();
+```
+
+Takes `Ctrl+C` off the Windows console, which raises it as a signal — and raises the same signal for `Ctrl+Shift+C`, since both type the same character. Whether it was the console's is remembered, so it is given back as found.
+
 ### `Unread(KeyPress)` {#unread-keypress}
 
 ```csharp
@@ -208,7 +226,7 @@ Puts a key back, so the next read returns it.
 public void Write(string text);
 ```
 
-Writes a composed frame.
+Writes a composed frame, and everything else this terminal says, through the one writer it was given — or the console's own, when it was given none.
 
 **Parameters**
 

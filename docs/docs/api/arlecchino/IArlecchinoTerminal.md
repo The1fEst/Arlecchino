@@ -34,9 +34,11 @@ public interface IArlecchinoTerminal
 | [`EnableMouse()`](#enablemouse) | Starts reporting mouse events, if the platform supports it. |
 | [`EnablePaste()`](#enablepaste) | Asks the terminal to wrap pasted text in markers, so a paste arrives as one block instead of looking like someone typing very fast. |
 | [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. |
+| [`GiveBackControlKeys()`](#givebackcontrolkeys) | Gives `Ctrl+C` back to the terminal, for the shell the application came from and for whatever program the terminal is lent to while it runs. |
 | [`LeaveFullScreen()`](#leavefullscreen) | Returns to the normal screen and shows the cursor again. |
 | [`ReadKey()`](#readkey) | Takes the next key, blocking until one arrives. |
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvailable`](../arlecchino/IArlecchinoTerminal.md#mouseavailable) is true. |
+| [`TakeControlKeys()`](#takecontrolkeys) | Takes `Ctrl+C` off the terminal, so it arrives as a key press rather than as a signal. The terminal cannot tell it from `Ctrl+Shift+C`, which types the same character; the application can. |
 | [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next [`IArlecchinoTerminal.ReadKey`](../arlecchino/IArlecchinoTerminal.md#readkey) returns it. It is for code that had to read a key to find out it did not want it. |
 | [`Write(string)`](#write-string) | Writes composed output. A frame arrives as one call. |
 
@@ -138,6 +140,14 @@ public void EnterFullScreen();
 
 Switches to the alternate screen and hides the cursor.
 
+### `GiveBackControlKeys()` {#givebackcontrolkeys}
+
+```csharp
+public void GiveBackControlKeys();
+```
+
+Gives `Ctrl+C` back to the terminal, for the shell the application came from and for whatever program the terminal is lent to while it runs.
+
 ### `LeaveFullScreen()` {#leavefullscreen}
 
 ```csharp
@@ -165,6 +175,14 @@ public MouseEvent ReadMouse();
 Takes the next mouse event. Only call it while [`IArlecchinoTerminal.MouseAvailable`](../arlecchino/IArlecchinoTerminal.md#mouseavailable) is true.
 
 **Returns** [`MouseEvent`](../arlecchino.input/MouseEvent.md) — What the mouse did, in frame cells.
+
+### `TakeControlKeys()` {#takecontrolkeys}
+
+```csharp
+public void TakeControlKeys();
+```
+
+Takes `Ctrl+C` off the terminal, so it arrives as a key press rather than as a signal. The terminal cannot tell it from `Ctrl+Shift+C`, which types the same character; the application can.
 
 ### `Unread(KeyPress)` {#unread-keypress}
 

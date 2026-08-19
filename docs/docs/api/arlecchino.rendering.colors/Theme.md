@@ -19,16 +19,16 @@ public static class Theme
 |---|---|
 | [`Accent`](#accent) | Text that should stand out from ordinary text. |
 | [`Active`](#active) | Something switched on, such as an enabled action. |
-| [`ActiveSelected`](#activeselected) | The row under the cursor in the focused pane. |
+| [`ActiveSelection`](#activeselection) | The row under the cursor in the focused pane. |
 | [`Caret`](#caret) | The symbol the caret stands on, written the other way round rather than beside. |
 | [`Default`](#default) | Ordinary text on the terminal's own background. |
 | [`Error`](#error) | Validation messages and failures. |
 | [`Header`](#header) | Screen titles. |
 | [`Info`](#info) | Box borders and other structural lines. |
 | [`Input`](#input) | The editable part of a text field. |
-| [`Muted`](#muted) | Secondary text: hints, footers, disabled rows. |
 | [`Palette`](#palette) | The colors behind the roles, process-wide, so two hosts in one process share one palette. It is swapped on the drawing thread and asks for a frame itself. |
-| [`Selected`](#selected) | The row under the cursor while its pane is not focused. |
+| [`Secondary`](#secondary) | Secondary text: hints, footers, disabled rows. |
+| [`Selection`](#selection) | The row under the cursor while its pane is not focused. |
 | [`TableHeader`](#tableheader) | Column headers of a table. |
 | [`Warning`](#warning) | Something the user should notice, such as the output line. |
 
@@ -54,10 +54,10 @@ Something switched on, such as an enabled action.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
-### `ActiveSelected` {#activeselected}
+### `ActiveSelection` {#activeselection}
 
 ```csharp
-public static TermColor ActiveSelected { get; }
+public static TermColor ActiveSelection { get; }
 ```
 
 The row under the cursor in the focused pane.
@@ -124,16 +124,6 @@ The editable part of a text field.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
-### `Muted` {#muted}
-
-```csharp
-public static TermColor Muted { get; }
-```
-
-Secondary text: hints, footers, disabled rows.
-
-**Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
-
 ### `Palette` {#palette}
 
 ```csharp
@@ -150,10 +140,20 @@ The colors behind the roles, process-wide, so two hosts in one process share one
 |---|---|
 | `InvalidOperationException` | Assigned from off the drawing thread. |
 
-### `Selected` {#selected}
+### `Secondary` {#secondary}
 
 ```csharp
-public static TermColor Selected { get; }
+public static TermColor Secondary { get; }
+```
+
+Secondary text: hints, footers, disabled rows.
+
+**Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
+
+### `Selection` {#selection}
+
+```csharp
+public static TermColor Selection { get; }
 ```
 
 The row under the cursor while its pane is not focused.

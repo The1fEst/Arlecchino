@@ -27,13 +27,13 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 | Member | Summary |
 |---|---|
 | [`Alternatives`](#alternatives) | The other combinations that trigger the same thing, in the order they were added. They are matched but never written, and each is a single press even where the binding itself is a chord. |
+| [`Character`](#character) | The character this binding answers to, or `'\0'` when it is a binding on a key. |
 | [`First`](#first) | The combination the binding is named after, and the one it is written from. |
 | [`IsChord`](#ischord) | Whether this takes two keystrokes rather than one. A chord spends one combination on a leader and hands back the whole alphabet behind it, which is how an application reaches past what a terminal gives it. |
 | [`IsNone`](#isnone) | Whether this binding is unset and therefore matches nothing. |
 | [`Key`](#key) | The key itself. |
 | [`Modifiers`](#modifiers) | Modifiers that must be held, exactly. |
 | [`Second`](#second) | The keystroke that finishes a chord, or `null` when the binding is one press. |
-| [`Typed`](#typed) | The character this binding answers to, or `'\0'` when it is a binding on a key. |
 
 ## Methods
 
@@ -55,7 +55,7 @@ public readonly struct KeyBinding : IEquatable<KeyBinding>
 ### `KeyBinding(char)` {#keybinding-char}
 
 ```csharp
-public KeyBinding(char typed);
+public KeyBinding(char character);
 ```
 
 A binding on a character rather than on a key, which is the only dependable way to name punctuation. It answers wherever that character can be typed, and the key screen writes the character itself.
@@ -64,7 +64,7 @@ A binding on a character rather than on a key, which is the only dependable way 
 
 | Name | Type | Description |
 |---|---|---|
-| `typed` | `char` | The character to answer to. |
+| `character` | `char` | The character to answer to. |
 
 ### `KeyBinding(ConsoleKey, KeyModifiers)` {#keybinding-consolekey-keymodifiers}
 
@@ -92,6 +92,16 @@ public IReadOnlyList<KeyStroke> Alternatives { get; }
 The other combinations that trigger the same thing, in the order they were added. They are matched but never written, and each is a single press even where the binding itself is a chord.
 
 **Type** `IReadOnlyList<T>`&lt;[`KeyStroke`](../arlecchino.input/KeyStroke.md)&gt;
+
+### `Character` {#character}
+
+```csharp
+public char Character { get; }
+```
+
+The character this binding answers to, or `'\0'` when it is a binding on a key.
+
+**Type** `char`
 
 ### `First` {#first}
 
@@ -153,16 +163,6 @@ The keystroke that finishes a chord, or `null` when the binding is one press.
 
 **Type** `Nullable<T>`&lt;[`KeyStroke`](../arlecchino.input/KeyStroke.md)&gt;
 
-### `Typed` {#typed}
-
-```csharp
-public char Typed { get; }
-```
-
-The character this binding answers to, or `'\0'` when it is a binding on a key.
-
-**Type** `char`
-
 ## Methods in detail
 
 ### `AddAlternative(ConsoleKey, KeyModifiers)` {#addalternative-consolekey-keymodifiers}
@@ -185,7 +185,7 @@ The same binding, with one more combination that triggers it, for the habits pla
 ### `Closes(KeyPress)` {#closes-keypress}
 
 ```csharp
-public bool Closes(KeyPress pressed);
+public bool Closes(KeyPress press);
 ```
 
 Whether a key press is the second half of this chord.
@@ -194,7 +194,7 @@ Whether a key press is the second half of this chord.
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `bool` — `true` when the chord is complete.
 
@@ -240,7 +240,7 @@ A hash over the same keystrokes equality compares.
 ### `Matches(KeyPress)` {#matches-keypress}
 
 ```csharp
-public bool Matches(KeyPress pressed);
+public bool Matches(KeyPress press);
 ```
 
 Whether one key press is this whole binding. The combination it is named after counts only when the binding is one keystroke, since a chord is opened rather than matched; an alternative counts either way.
@@ -249,14 +249,14 @@ Whether one key press is this whole binding. The combination it is named after c
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `bool` — `true` when the press should trigger this binding on its own.
 
 ### `Opens(KeyPress)` {#opens-keypress}
 
 ```csharp
-public bool Opens(KeyPress pressed);
+public bool Opens(KeyPress press);
 ```
 
 Whether a key press is the first half of this chord. A binding of one keystroke opens nothing: it either matches or it does not.
@@ -265,7 +265,7 @@ Whether a key press is the first half of this chord. A binding of one keystroke 
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** `bool` — `true` when the chord has been started and the next key will finish it.
 

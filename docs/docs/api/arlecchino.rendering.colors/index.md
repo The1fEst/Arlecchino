@@ -10,7 +10,9 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`Contrast`](Contrast.md) | How far apart two colors read, by the ratio the accessibility guidelines are written in. It runs from 1 for a color on itself to 21 for black on white. |
 | [`RgbTermColor`](RgbTermColor.md) | A style built from exact colors, for where the color itself is the point rather than a role in [`Theme`](../arlecchino.rendering.colors/Theme.md). It falls back to the nearest palette color where the terminal cannot do 24-bit. |
+| [`Shade`](Shade.md) | Colors worked out against the background they will be read on, so a palette is written as how far apart things should read rather than as a list of colors that only suit one terminal. |
 | [`TermColor`](TermColor.md) | A style built from the sixteen-color palette. This is what the roles on [`Theme`](../arlecchino.rendering.colors/Theme.md) are made of and what chrome should use, because those colors follow the terminal's own theme. |
 | [`Theme`](Theme.md) | The palette in use, reachable from anywhere that draws. Views pick a role here rather than a color, so swapping [`Theme.Palette`](../arlecchino.rendering.colors/Theme.md#palette) restyles the whole application, chrome included. |
 | [`ThemePalette`](ThemePalette.md) | The colors behind the roles in [`Theme`](../arlecchino.rendering.colors/Theme.md). Every role has a default, so a palette that overrides two of them is a valid palette — and what it does not override is the framework's own colors, described on [`ThemePalette.Arlecchino`](../arlecchino.rendering.colors/ThemePalette.md#arlecchino). |
@@ -19,6 +21,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
+| [`Oklch`](Oklch.md) | A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`Rgb`](../arlecchino.rendering.colors/Rgb.md) here leaves the color recognizably itself, which moving it in HSL does not. |
 | [`Rgb`](Rgb.md) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
 
 ## Interfaces

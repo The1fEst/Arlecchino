@@ -30,7 +30,7 @@ public sealed class ArlecchinoKeymap : IEquatable<ArlecchinoKeymap>
 | [`Complete`](#complete) | Finishes the word being typed, where the line has something to finish it from. `Tab` by default, the same key that moves to the next field: the line being typed into is asked first. |
 | [`CompleteBack`](#completeback) | Steps back through what was offered for the word. `Shift+Tab` by default. |
 | [`Confirm`](#confirm) | Accepts a dialog, opens a field, activates a row. `Enter` by default. |
-| [`Copy`](#copy) | Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application. |
+| [`Copy`](#copy) | Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application, and a terminal that keeps `Ctrl+Shift+C` for its own copying never passes it on. |
 | [`Cut`](#cut) | Cuts the selection to the clipboard, under both habits: `Shift+Delete` and `Ctrl+Shift+X`. |
 | [`DeleteForward`](#deleteforward) | Deletes the character after the caret. `Delete` by default. |
 | [`Erase`](#erase) | Deletes: a character, a filter, a typed segment, a field value. `Backspace` by default. |
@@ -137,7 +137,7 @@ Accepts a dialog, opens a field, activates a row. `Enter` by default.
 public KeyBinding Copy { get; init; }
 ```
 
-Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application.
+Copies what is being edited to the clipboard, under both habits: `Ctrl+Insert` and `Ctrl+Shift+C`. Plain `Ctrl+C` is left alone, since it stops the application, and a terminal that keeps `Ctrl+Shift+C` for its own copying never passes it on.
 
 **Type** [`KeyBinding`](../arlecchino.input/KeyBinding.md)
 

@@ -47,6 +47,7 @@ public sealed class ArlecchinoStrings
 | [`LogEmpty`](#logempty) | Shown in the log overlay while nothing has been logged. |
 | [`LogHints`](#loghints) | The key line under the log overlay. |
 | [`LogTitle`](#logtitle) | Title of the log overlay, with how many lines are held. |
+| [`LogWithoutProviders`](#logwithoutproviders) | Shown in the log overlay instead, when the host has no logging provider at all. The overlay shows what a provider writes to the console, so without one there is nothing for it to ever show. |
 | [`ModalChoiceHints`](#modalchoicehints) | Footer of a single-choice list. |
 | [`ModalColorHints`](#modalcolorhints) | Footer of the color picker. |
 | [`ModalCommandHints`](#modalcommandhints) | Footer of the command palette. |
@@ -73,7 +74,7 @@ public sealed class ArlecchinoStrings
 | [`NotificationsTitle`](#notificationstitle) | Title of the notifications screen. |
 | [`OutOfRange`](#outofrange) | Shown when a number is outside its bounds. The values arrive already formatted, affixes included. |
 | [`SelectedCount`](#selectedcount) | How many options are marked, shown in the title of a multi-choice list. |
-| [`TerminalNeeded`](#terminalneeded) | Introduces the required size in that notice. |
+| [`TerminalMinimum`](#terminalminimum) | Introduces the required size in that notice. |
 | [`TerminalSize`](#terminalsize) | Formats a window size, used for both the current and the required one. |
 | [`TerminalTooSmall`](#terminaltoosmall) | Headline of the notice that replaces the view in a too-small window. |
 | [`ViewFailed`](#viewfailed) | Shown on the output line when a view or a callback throws. The application keeps running, so this is what the user sees instead of a crash. |
@@ -328,6 +329,16 @@ public Func<int, string> LogTitle { get; set; }
 Title of the log overlay, with how many lines are held.
 
 **Type** `Func<T, TResult>`&lt;`int`, `string`&gt;
+
+### `LogWithoutProviders` {#logwithoutproviders}
+
+```csharp
+public Func<string> LogWithoutProviders { get; set; }
+```
+
+Shown in the log overlay instead, when the host has no logging provider at all. The overlay shows what a provider writes to the console, so without one there is nothing for it to ever show.
+
+**Type** `Func<TResult>`&lt;`string`&gt;
 
 ### `ModalChoiceHints` {#modalchoicehints}
 
@@ -589,10 +600,10 @@ How many options are marked, shown in the title of a multi-choice list.
 
 **Type** `Func<T, TResult>`&lt;`int`, `string`&gt;
 
-### `TerminalNeeded` {#terminalneeded}
+### `TerminalMinimum` {#terminalminimum}
 
 ```csharp
-public Func<string> TerminalNeeded { get; set; }
+public Func<string> TerminalMinimum { get; set; }
 ```
 
 Introduces the required size in that notice.

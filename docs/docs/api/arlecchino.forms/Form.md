@@ -28,7 +28,7 @@ public sealed class Form : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 | [`Current`](#current) | The selected field, or `null` when the form has none. |
 | [`Fields`](#fields) | The rows, top to bottom. |
 | [`IsFocused`](#isfocused) | Whether the form has focus, which decides how strongly the selection is drawn. |
-| [`Selected`](#selected) | Index of the selected field. |
+| [`SelectedIndex`](#selectedindex) | Index of the selected field. |
 
 ## Methods
 
@@ -94,10 +94,10 @@ Whether the form has focus, which decides how strongly the selection is drawn.
 
 **Type** `bool`
 
-### `Selected` {#selected}
+### `SelectedIndex` {#selectedindex}
 
 ```csharp
-public int Selected { get; }
+public int SelectedIndex { get; }
 ```
 
 Index of the selected field.

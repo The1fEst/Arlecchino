@@ -26,7 +26,7 @@ public readonly struct EntryLook : IEquatable<EntryLook>
 | Member | Summary |
 |---|---|
 | [`Caret`](#caret) | What the symbol under the caret is written in. |
-| [`Selected`](#selected) | What the selected part of it is written in. |
+| [`Selection`](#selection) | What the selected part of it is written in. |
 | [`Text`](#text) | What the line is written in. |
 
 ## Methods
@@ -40,7 +40,7 @@ public readonly struct EntryLook : IEquatable<EntryLook>
 ### `EntryLook(IArlecchinoColor, IArlecchinoColor, IArlecchinoColor)` {#entrylook-iarlecchinocolor-iarlecchinocolor-iarlecchinocolor}
 
 ```csharp
-public EntryLook(IArlecchinoColor Text, IArlecchinoColor Selected, IArlecchinoColor Caret);
+public EntryLook(IArlecchinoColor Text, IArlecchinoColor Selection, IArlecchinoColor Caret);
 ```
 
 How a line being typed into is written: the text itself, the part of it that is selected, and the one symbol the caret stands on, which is written the other way round.
@@ -50,7 +50,7 @@ How a line being typed into is written: the text itself, the part of it that is 
 | Name | Type | Description |
 |---|---|---|
 | `Text` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | What the line is written in. |
-| `Selected` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | What the selected part of it is written in. |
+| `Selection` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | What the selected part of it is written in. |
 | `Caret` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | What the symbol under the caret is written in. |
 
 ## Properties in detail
@@ -65,10 +65,10 @@ What the symbol under the caret is written in.
 
 **Type** [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md)
 
-### `Selected` {#selected}
+### `Selection` {#selection}
 
 ```csharp
-public IArlecchinoColor Selected { get; init; }
+public IArlecchinoColor Selection { get; init; }
 ```
 
 What the selected part of it is written in.
@@ -92,7 +92,7 @@ What the line is written in.
 ```csharp
 public void Deconstruct(
     out IArlecchinoColor Text,
-    out IArlecchinoColor Selected,
+    out IArlecchinoColor Selection,
     out IArlecchinoColor Caret);
 ```
 
@@ -101,6 +101,6 @@ public void Deconstruct(
 | Name | Type | Description |
 |---|---|---|
 | `Text` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) |  |
-| `Selected` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) |  |
+| `Selection` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) |  |
 | `Caret` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) |  |
 

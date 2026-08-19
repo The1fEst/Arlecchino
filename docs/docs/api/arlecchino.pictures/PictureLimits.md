@@ -26,8 +26,8 @@ public readonly struct PictureLimits : IEquatable<PictureLimits>
 | Member | Summary |
 |---|---|
 | [`Default`](#default) | What a caller gets by asking for nothing in particular: the whole picture, within reason. |
-| [`Enough`](#enough) | How many pixels the caller has a use for, or nought for as many as the picture holds. A decoder answers with at least this many where it can; the size it lands on is its own. |
-| [`Most`](#most) | How many pixels may be held at once, refusing anything larger. |
+| [`EnoughPixels`](#enoughpixels) | How many pixels the caller has a use for, or nought for as many as the picture holds. A decoder answers with at least this many where it can; the size it lands on is its own. |
+| [`MostPixels`](#mostpixels) | How many pixels may be held at once, refusing anything larger. |
 
 ## Methods
 
@@ -41,7 +41,7 @@ public readonly struct PictureLimits : IEquatable<PictureLimits>
 ### `PictureLimits(int, int)` {#picturelimits-int-int}
 
 ```csharp
-public PictureLimits(int Most, int Enough);
+public PictureLimits(int MostPixels, int EnoughPixels);
 ```
 
 What a caller will hold, and what it has a use for. A format that can read itself at a smaller size does so rather than decoding pixels that will never be drawn.
@@ -50,8 +50,8 @@ What a caller will hold, and what it has a use for. A format that can read itsel
 
 | Name | Type | Description |
 |---|---|---|
-| `Most` | `int` | How many pixels may be held at once, refusing anything larger. |
-| `Enough` | `int` | How many pixels the caller has a use for, or nought for as many as the picture holds. A decoder answers with at least this many where it can; the size it lands on is its own. |
+| `MostPixels` | `int` | How many pixels may be held at once, refusing anything larger. |
+| `EnoughPixels` | `int` | How many pixels the caller has a use for, or nought for as many as the picture holds. A decoder answers with at least this many where it can; the size it lands on is its own. |
 
 ## Properties in detail
 
@@ -65,20 +65,20 @@ What a caller gets by asking for nothing in particular: the whole picture, withi
 
 **Type** [`PictureLimits`](../arlecchino.pictures/PictureLimits.md)
 
-### `Enough` {#enough}
+### `EnoughPixels` {#enoughpixels}
 
 ```csharp
-public int Enough { get; init; }
+public int EnoughPixels { get; init; }
 ```
 
 How many pixels the caller has a use for, or nought for as many as the picture holds. A decoder answers with at least this many where it can; the size it lands on is its own.
 
 **Type** `int`
 
-### `Most` {#most}
+### `MostPixels` {#mostpixels}
 
 ```csharp
-public int Most { get; init; }
+public int MostPixels { get; init; }
 ```
 
 How many pixels may be held at once, refusing anything larger.
@@ -90,15 +90,15 @@ How many pixels may be held at once, refusing anything larger.
 ### `Deconstruct(out int, out int)` {#deconstruct-out-int-out-int}
 
 ```csharp
-public void Deconstruct(out int Most, out int Enough);
+public void Deconstruct(out int MostPixels, out int EnoughPixels);
 ```
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `Most` | `int` |  |
-| `Enough` | `int` |  |
+| `MostPixels` | `int` |  |
+| `EnoughPixels` | `int` |  |
 
 ### `For(int)` {#for-int}
 

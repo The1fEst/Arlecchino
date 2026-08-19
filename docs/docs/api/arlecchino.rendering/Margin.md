@@ -42,7 +42,7 @@ public readonly struct Margin : IEquatable<Margin>
 ### `Margin(int)` {#margin-int}
 
 ```csharp
-public Margin(int all);
+public Margin(int size);
 ```
 
 The same amount of space on all four sides.
@@ -51,7 +51,7 @@ The same amount of space on all four sides.
 
 | Name | Type | Description |
 |---|---|---|
-| `all` | `int` | Cells kept free on every side. |
+| `size` | `int` | Cells kept free on every side. |
 
 ### `Margin(int, int, int, int)` {#margin-int-int-int-int}
 

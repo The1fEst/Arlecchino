@@ -40,6 +40,7 @@ public sealed class ArlecchinoOptions
 | [`MouseInput`](#mouseinput) | Whether to report mouse events. Off by default, because with it on the terminal stops handling selection itself and copying text with the mouse no longer works the way the user expects. |
 | [`NotificationLifetime`](#notificationlifetime) | How long a notification stays in the list behind the output row — long enough to go and read what went past while the screen was busy. |
 | [`NotificationTimeout`](#notificationtimeout) | How long a notification stays on the output row. Once it is up the row goes quiet, and the message is only in the notifications screen. |
+| [`PaletteForBackground`](#paletteforbackground) | Works the palette out from the color the terminal turned out to have, which is asked for as the application starts. A terminal that does not answer keeps [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) as it was given. |
 | [`ShowOutputLine`](#showoutputline) | Whether to keep the last row for `ArlecchinoState.Output`. |
 | [`StartRoute`](#startroute) | Route shown on the first frame. For a start that depends on state, use a startup. |
 | [`Strings`](#strings) | Every piece of text the framework draws. |
@@ -229,6 +230,16 @@ public TimeSpan NotificationTimeout { get; set; }
 How long a notification stays on the output row. Once it is up the row goes quiet, and the message is only in the notifications screen.
 
 **Type** `TimeSpan`
+
+### `PaletteForBackground` {#paletteforbackground}
+
+```csharp
+public Func<Rgb, ThemePalette>? PaletteForBackground { get; set; }
+```
+
+Works the palette out from the color the terminal turned out to have, which is asked for as the application starts. A terminal that does not answer keeps [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) as it was given.
+
+**Type** `Func<T, TResult>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md), [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)&gt;
 
 ### `ShowOutputLine` {#showoutputline}
 

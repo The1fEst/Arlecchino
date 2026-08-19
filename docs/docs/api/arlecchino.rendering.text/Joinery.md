@@ -119,7 +119,7 @@ Records a rule down a region.
 ### `Draw(SurfaceRegion, IArlecchinoColor)` {#draw-surfaceregion-iarlecchinocolor}
 
 ```csharp
-public void Draw(SurfaceRegion into, IArlecchinoColor style);
+public void Draw(SurfaceRegion region, IArlecchinoColor style);
 ```
 
 Paints everything recorded, resolving each cell into the glyph its neighbors ask for, and then writes the titles over the top edges they belong to. Anything falling outside the region is left undrawn rather than clamped into it.
@@ -128,6 +128,6 @@ Paints everything recorded, resolving each cell into the glyph its neighbors ask
 
 | Name | Type | Description |
 |---|---|---|
-| `into` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) | Where to paint; coordinates recorded are the surface's own. |
+| `region` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) | Where to paint; coordinates recorded are the surface's own. |
 | `style` | [`IArlecchinoColor`](../arlecchino.rendering.colors/IArlecchinoColor.md) | How lines recorded without a style of their own are drawn. |
 

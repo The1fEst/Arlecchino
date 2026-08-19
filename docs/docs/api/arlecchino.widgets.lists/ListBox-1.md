@@ -34,7 +34,7 @@ public sealed class ListBox<T> :
 | [`OnActivate`](#onactivate) | What confirming an item does. Returning a route navigates; without this the list simply reports the key as handled. |
 | [`PaintRow`](#paintrow) | Draws a row itself, for a list whose rows are not one color. It is given one row to fill and told whether the cursor is on it, and [`ListBox.Render`](../arlecchino.widgets.lists/ListBox-1.md#render) goes unread while it is set. |
 | [`Render`](#render) | Turns an item into its row of text. Longer text is truncated by column, not by character. |
-| [`Selected`](#selected) | Index of the selected row. |
+| [`SelectedIndex`](#selectedindex) | Index of the selected row. |
 | [`SelectedItem`](#selecteditem) | The selected item, or the type's default when the list is empty. |
 
 ## Methods
@@ -129,10 +129,10 @@ Turns an item into its row of text. Longer text is truncated by column, not by c
 
 **Type** `Func<T, TResult>`&lt;`T`, `string`&gt;
 
-### `Selected` {#selected}
+### `SelectedIndex` {#selectedindex}
 
 ```csharp
-public int Selected { get; set; }
+public int SelectedIndex { get; set; }
 ```
 
 Index of the selected row.

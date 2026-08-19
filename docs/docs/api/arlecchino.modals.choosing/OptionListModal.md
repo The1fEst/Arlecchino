@@ -186,7 +186,7 @@ The options that pass the filter, in their original order.
 ### `Take(ModalFrame, string)` {#take-modalframe-string}
 
 ```csharp
-public abstract void Take(ModalFrame frame, string picked);
+public abstract void Take(ModalFrame frame, string choice);
 ```
 
 Acts on the row that was picked, which is what tells one kind of list from the other.
@@ -196,5 +196,5 @@ Acts on the row that was picked, which is what tells one kind of list from the o
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) | How to close, when picking closes. |
-| `picked` | `string` | The option. |
+| `choice` | `string` | The option. |
 

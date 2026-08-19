@@ -30,9 +30,9 @@ public sealed class Table<T> : IArlecchinoInteractiveWidget, IArlecchinoWidget, 
 | [`ItemStyle`](#itemstyle) | Colors a whole row. Ignored for the selected one. |
 | [`OnActivate`](#onactivate) | What confirming a row does. Returning a route navigates. |
 | [`Rows`](#rows) | What to show. Assigning re-applies the current sort. |
-| [`Selected`](#selected) | Index of the selected row within the sorted order, not within what was assigned. |
+| [`SelectedIndex`](#selectedindex) | Index of the selected row within the sorted order, not within what was assigned. |
 | [`SelectedRow`](#selectedrow) | The selected row, or the type's default when the table is empty. |
-| [`SortedBy`](#sortedby) | Index of the column being sorted by, or `-1` when the rows are in their original order. |
+| [`SortedColumn`](#sortedcolumn) | Index of the column being sorted by, or `-1` when the rows are in their original order. |
 | [`SortsDescending`](#sortsdescending) | Which way the sort runs. |
 
 ## Methods
@@ -118,10 +118,10 @@ What to show. Assigning re-applies the current sort.
 
 **Type** `IReadOnlyList<T>`&lt;`T`&gt;
 
-### `Selected` {#selected}
+### `SelectedIndex` {#selectedindex}
 
 ```csharp
-public int Selected { get; set; }
+public int SelectedIndex { get; set; }
 ```
 
 Index of the selected row within the sorted order, not within what was assigned.
@@ -138,10 +138,10 @@ The selected row, or the type's default when the table is empty.
 
 **Type** `T`
 
-### `SortedBy` {#sortedby}
+### `SortedColumn` {#sortedcolumn}
 
 ```csharp
-public int SortedBy { get; }
+public int SortedColumn { get; }
 ```
 
 Index of the column being sorted by, or `-1` when the rows are in their original order.

@@ -25,11 +25,11 @@ public readonly struct CompletionAsk : IEquatable<CompletionAsk>
 
 | Member | Summary |
 |---|---|
-| [`After`](#after) | Whatever follows the caret, which finishing the word leaves where it is. |
-| [`Before`](#before) | Whatever stands in front of the word. |
 | [`Length`](#length) | How long the word is. It ends where the caret is. |
 | [`Line`](#line) | The line as it stands. |
+| [`Prefix`](#prefix) | Whatever stands in front of the word. |
 | [`Start`](#start) | Where the word begins in it. |
+| [`Suffix`](#suffix) | Whatever follows the caret, which finishing the word leaves where it is. |
 | [`Word`](#word) | The word itself, which is empty where the caret stands after a space. |
 
 ## Methods
@@ -58,26 +58,6 @@ The half-typed word something is being asked to finish, and the line it stands i
 
 ## Properties in detail
 
-### `After` {#after}
-
-```csharp
-public string After { get; }
-```
-
-Whatever follows the caret, which finishing the word leaves where it is.
-
-**Type** `string`
-
-### `Before` {#before}
-
-```csharp
-public string Before { get; }
-```
-
-Whatever stands in front of the word.
-
-**Type** `string`
-
 ### `Length` {#length}
 
 ```csharp
@@ -98,6 +78,16 @@ The line as it stands.
 
 **Type** `string`
 
+### `Prefix` {#prefix}
+
+```csharp
+public string Prefix { get; }
+```
+
+Whatever stands in front of the word.
+
+**Type** `string`
+
 ### `Start` {#start}
 
 ```csharp
@@ -107,6 +97,16 @@ public int Start { get; init; }
 Where the word begins in it.
 
 **Type** `int`
+
+### `Suffix` {#suffix}
+
+```csharp
+public string Suffix { get; }
+```
+
+Whatever follows the caret, which finishing the word leaves where it is.
+
+**Type** `string`
 
 ### `Word` {#word}
 

@@ -27,7 +27,7 @@ public sealed class MultiChoiceModal : OptionListModal, ITextEntry
 | Member | Summary |
 |---|---|
 | [`OnSubmit`](#onsubmit) | Called with everything marked, in the order of the options. |
-| [`Selected`](#selected) | Options marked so far. |
+| [`SelectedKeys`](#selectedkeys) | Options marked so far. |
 
 ## Methods
 
@@ -66,10 +66,10 @@ Called with everything marked, in the order of the options.
 
 **Type** `Action<T>`&lt;`IReadOnlyList<T>`&lt;`string`&gt;&gt;
 
-### `Selected` {#selected}
+### `SelectedKeys` {#selectedkeys}
 
 ```csharp
-public HashSet<string> Selected { get; init; }
+public HashSet<string> SelectedKeys { get; init; }
 ```
 
 Options marked so far.
@@ -106,7 +106,7 @@ public override void Handle(ModalFrame frame, KeyPress key);
 ### `IsSelected(string)` {#isselected-string}
 
 ```csharp
-public bool IsSelected(string option);
+public bool IsSelected(string choice);
 ```
 
 Whether an option is marked.
@@ -115,7 +115,7 @@ Whether an option is marked.
 
 | Name | Type | Description |
 |---|---|---|
-| `option` | `string` | The option to check. |
+| `choice` | `string` | The option to check. |
 
 **Returns** `bool` — `true` when it is marked.
 
@@ -132,7 +132,7 @@ What is marked, in the order of the options rather than the order it was clicked
 ### `Take(ModalFrame, string)` {#take-modalframe-string}
 
 ```csharp
-public virtual void Take(ModalFrame frame, string picked);
+public virtual void Take(ModalFrame frame, string choice);
 ```
 
 **Parameters**
@@ -140,12 +140,12 @@ public virtual void Take(ModalFrame frame, string picked);
 | Name | Type | Description |
 |---|---|---|
 | `frame` | [`ModalFrame`](../arlecchino.modals/ModalFrame.md) |  |
-| `picked` | `string` |  |
+| `choice` | `string` |  |
 
 ### `Toggle(string)` {#toggle-string}
 
 ```csharp
-public void Toggle(string option);
+public void Toggle(string choice);
 ```
 
 Marks an option, or unmarks it when it already was.
@@ -154,5 +154,5 @@ Marks an option, or unmarks it when it already was.
 
 | Name | Type | Description |
 |---|---|---|
-| `option` | `string` | The option to flip. |
+| `choice` | `string` | The option to flip. |
 

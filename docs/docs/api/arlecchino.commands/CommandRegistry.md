@@ -65,7 +65,7 @@ The registered commands, in registration order.
 ### `Send(KeyPress)` {#send-keypress}
 
 ```csharp
-public ViewRoute Send(KeyPress pressed);
+public ViewRoute Send(KeyPress press);
 ```
 
 Runs the command a key belongs to, if any.
@@ -74,14 +74,14 @@ Runs the command a key belongs to, if any.
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 
 **Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — The route the command returned, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none).
 
 ### `TryFind(KeyPress, out IArlecchinoCommand)` {#tryfind-keypress-out-iarlecchinocommand}
 
 ```csharp
-public bool TryFind(KeyPress pressed, out IArlecchinoCommand? command);
+public bool TryFind(KeyPress press, out IArlecchinoCommand? command);
 ```
 
 Finds the command a key press belongs to.
@@ -90,7 +90,7 @@ Finds the command a key press belongs to.
 
 | Name | Type | Description |
 |---|---|---|
-| `pressed` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
+| `press` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key that was pressed. |
 | `command` | [`IArlecchinoCommand`](../arlecchino.commands/IArlecchinoCommand.md) | The command, when one claims the key. |
 
 **Returns** `bool` — `true` when a command claimed the key.

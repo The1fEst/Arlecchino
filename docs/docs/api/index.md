@@ -40,7 +40,7 @@ place to look a member up.
 | [Arlecchino.Pictures.Formats.Qoi](arlecchino.pictures.formats.qoi/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Pictures.Formats.Tga](arlecchino.pictures.formats.tga/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Rendering](arlecchino.rendering/index.md) | `Arlecchino.Core` | 5 |
-| [Arlecchino.Rendering.Colors](arlecchino.rendering.colors/index.md) | `Arlecchino.Core` | 9 |
+| [Arlecchino.Rendering.Colors](arlecchino.rendering.colors/index.md) | `Arlecchino.Core` | 12 |
 | [Arlecchino.Rendering.Terminals](arlecchino.rendering.terminals/index.md) | `Arlecchino.Core` | 3 |
 | [Arlecchino.Rendering.Text](arlecchino.rendering.text/index.md) | `Arlecchino.Core` | 4 |
 | [Arlecchino.State](arlecchino.state/index.md) | `Arlecchino` | 3 |

@@ -24,7 +24,7 @@ public static class TerminalProbe
 ### `Ask(IArlecchinoTerminal, TimeSpan)` {#ask-iarlecchinoterminal-timespan}
 
 ```csharp
-public static bool Ask(IArlecchinoTerminal terminal, TimeSpan within);
+public static bool Ask(IArlecchinoTerminal terminal, TimeSpan timeout);
 ```
 
 Asks, waits no longer than it is told, and installs what came back into [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md) and [`Glyphs`](../arlecchino.rendering.text/Glyphs.md), leaving unanswered questions alone. Call it before the mouse and paste modes go on.
@@ -34,7 +34,7 @@ Asks, waits no longer than it is told, and installs what came back into [`Termin
 | Name | Type | Description |
 |---|---|---|
 | `terminal` | [`IArlecchinoTerminal`](../arlecchino/IArlecchinoTerminal.md) | The terminal to ask. |
-| `within` | `TimeSpan` | How long to wait for the last answer before giving up. |
+| `timeout` | `TimeSpan` | How long to wait for the last answer before giving up. |
 
 **Returns** `bool` — `true` when the terminal said anything at all. What it said is in [`TerminalCapabilities.Sixel`](../arlecchino.rendering.terminals/TerminalCapabilities.md#sixel), [`TerminalCapabilities.Kitty`](../arlecchino.rendering.terminals/TerminalCapabilities.md#kitty) and [`Glyphs.CellWidth`](../arlecchino.rendering.text/Glyphs.md#cellwidth); a `false` here is how you tell a terminal that cannot draw pictures from one that never replied.
 

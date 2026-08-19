@@ -27,7 +27,7 @@ public sealed class Tabs : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArl
 |---|---|
 | [`IsFocused`](#isfocused) | Whether the strip has focus, which decides how strongly the current tab is drawn. |
 | [`OnSelected`](#onselected) | Called when the selection actually changes, not on every attempt to move. |
-| [`Selected`](#selected) | Index of the current tab. |
+| [`SelectedIndex`](#selectedindex) | Index of the current tab. |
 | [`Titles`](#titles) | The labels, as delegates, so a tab can show a count or a marker that changes. |
 
 ## Methods
@@ -83,10 +83,10 @@ Called when the selection actually changes, not on every attempt to move.
 
 **Type** `Action<T>`&lt;`int`&gt;
 
-### `Selected` {#selected}
+### `SelectedIndex` {#selectedindex}
 
 ```csharp
-public int Selected { get; }
+public int SelectedIndex { get; }
 ```
 
 Index of the current tab.

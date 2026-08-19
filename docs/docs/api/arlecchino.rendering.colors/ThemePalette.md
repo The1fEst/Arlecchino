@@ -25,7 +25,7 @@ public sealed class ThemePalette
 |---|---|
 | [`Accent`](#accent) | Text that stands out without being alarming. Bone. |
 | [`Active`](#active) | Something switched on or available. Crimson. |
-| [`ActiveSelected`](#activeselected) | The cursor row of the focused pane. Ink on ash, so it is never read as a failure. |
+| [`ActiveSelection`](#activeselection) | The cursor row of the focused pane. Ink on ash, so it is never read as a failure. |
 | [`Arlecchino`](#arlecchino) | The framework's own colors, on whatever background the terminal has. It is what a palette starts from, and [`ThemePalette.Basic`](../arlecchino.rendering.colors/ThemePalette.md#basic) is the way back to the sixteen plain colors. |
 | [`Basic`](#basic) | The terminal's own sixteen colors, with nothing exact behind them. It was the default before 2.0. |
 | [`Caret`](#caret) | The symbol the caret stands on, which is written the other way round rather than beside. Bone on crimson, so the caret is found at a glance without the text shifting to make room for it. |
@@ -34,8 +34,8 @@ public sealed class ThemePalette
 | [`Header`](#header) | Screen titles. Bold crimson. |
 | [`Info`](#info) | Borders and structural lines. Ash. |
 | [`Input`](#input) | The editable part of a text field. Ink on bone. |
-| [`Muted`](#muted) | Secondary text such as hints and footers. Ash. |
-| [`Selected`](#selected) | The cursor row of an unfocused pane. Bone on the hairline gray. |
+| [`Secondary`](#secondary) | Secondary text such as hints and footers. Ash. |
+| [`Selection`](#selection) | The cursor row of an unfocused pane. Bone on the hairline gray. |
 | [`TableHeader`](#tableheader) | Column headers. Bold bone. |
 | [`Warning`](#warning) | Something worth noticing. Ink on amber. |
 
@@ -69,10 +69,10 @@ Something switched on or available. Crimson.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
-### `ActiveSelected` {#activeselected}
+### `ActiveSelection` {#activeselection}
 
 ```csharp
-public TermColor ActiveSelected { get; init; }
+public TermColor ActiveSelection { get; init; }
 ```
 
 The cursor row of the focused pane. Ink on ash, so it is never read as a failure.
@@ -159,20 +159,20 @@ The editable part of a text field. Ink on bone.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
-### `Muted` {#muted}
+### `Secondary` {#secondary}
 
 ```csharp
-public TermColor Muted { get; init; }
+public TermColor Secondary { get; init; }
 ```
 
 Secondary text such as hints and footers. Ash.
 
 **Type** [`TermColor`](../arlecchino.rendering.colors/TermColor.md)
 
-### `Selected` {#selected}
+### `Selection` {#selection}
 
 ```csharp
-public TermColor Selected { get; init; }
+public TermColor Selection { get; init; }
 ```
 
 The cursor row of an unfocused pane. Bone on the hairline gray.
