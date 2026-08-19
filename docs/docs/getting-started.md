@@ -23,6 +23,8 @@ pixels a [picture](pictures.md) draws, and `Arlecchino.Testing` is the headless 
 ## The smallest app
 
 ```csharp
+using Arlecchino.Hosting;
+using Microsoft.Extensions.Hosting;
 using MyApp.Navigation;   // ViewKind and AddGeneratedViews are generated here
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -55,6 +57,7 @@ says so as `ARL004`. See [Source generator](source-generator.md) to put them som
 A view is a class implementing `IArlecchinoView`. Constructor parameters are resolved from the container:
 
 ```csharp
+using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
@@ -77,6 +80,10 @@ public class DefaultView : IArlecchinoView
     public (string Key, string Description)[] Hints() => [("a", "about")];
 }
 ```
+
+`ViewKind.About` in that `Handle` is a second view: the routes are generated from the views that exist,
+so until an `AboutView` sits beside this one the name is not there and the compiler says so. Return
+`ViewRoute.None` from every key while there is one view.
 
 `Draw` is called once per frame, `Handle` gets every key the framework did not consume itself, and the
 route it returns navigates. `Hints` fills the box in the bottom-right corner. `HandleMouse`,
