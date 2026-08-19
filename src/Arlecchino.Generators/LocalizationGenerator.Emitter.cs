@@ -88,7 +88,7 @@ public sealed partial class LocalizationGenerator
 
         if (translations.Length > 0)
         {
-            source.AppendLine("        var said = Language switch");
+            source.AppendLine("        var text = Language switch");
             source.AppendLine("        {");
 
             foreach (var translation in translations)
@@ -103,7 +103,7 @@ public sealed partial class LocalizationGenerator
             source.AppendLine("            _ => null,");
             source.AppendLine("        };");
             source.AppendLine();
-            source.AppendLine("        return said ?? Standard_(key);");
+            source.AppendLine("        return text ?? Standard_(key);");
         }
         else
         {
@@ -123,23 +123,23 @@ public sealed partial class LocalizationGenerator
 
         source.AppendLine();
         source.AppendLine("    /// <summary>The closest language there is text for, falling back to the default.</summary>");
-        source.AppendLine("    /// <param name=\"wanted\">What the machine asked for.</param>");
+        source.AppendLine("    /// <param name=\"culture\">The culture the machine asked for.</param>");
         source.AppendLine("    /// <returns>The one to draw in.</returns>");
-        source.AppendLine("    public static string Nearest(string? wanted)");
+        source.AppendLine("    public static string Nearest(string? culture)");
         source.AppendLine("    {");
-        source.AppendLine("        if (string.IsNullOrWhiteSpace(wanted))");
+        source.AppendLine("        if (string.IsNullOrWhiteSpace(culture))");
         source.AppendLine("        {");
         source.AppendLine("            return Standard;");
         source.AppendLine("        }");
         source.AppendLine();
-        source.AppendLine("        var asked = wanted!.Replace('_', '-').ToLowerInvariant();");
-        source.AppendLine("        var dash = asked.IndexOf('-');");
-        source.AppendLine("        var bare = dash >= 0 ? asked.Substring(0, dash) : asked;");
+        source.AppendLine("        var tag = culture!.Replace('_', '-').ToLowerInvariant();");
+        source.AppendLine("        var dash = tag.IndexOf('-');");
+        source.AppendLine("        var root = dash >= 0 ? tag.Substring(0, dash) : tag;");
         source.AppendLine();
         source.AppendLine("        foreach (var language in Languages)");
         source.AppendLine("        {");
-        source.AppendLine("            if (language.Equals(asked, StringComparison.OrdinalIgnoreCase) ||");
-        source.AppendLine("                language.Equals(bare, StringComparison.OrdinalIgnoreCase))");
+        source.AppendLine("            if (language.Equals(tag, StringComparison.OrdinalIgnoreCase) ||");
+        source.AppendLine("                language.Equals(root, StringComparison.OrdinalIgnoreCase))");
         source.AppendLine("            {");
         source.AppendLine("                return language;");
         source.AppendLine("            }");
@@ -179,12 +179,14 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("    /// <param name=\"run\">Where it goes.</param>");
         source.AppendLine("    /// <returns>The command.</returns>");
         source.AppendLine("    public static ViewCommand Going(");
-        source.AppendLine("        KeyBinding binding, LocString name, Func<ViewRoute> run) => new()");
-        source.AppendLine("    {");
-        source.AppendLine("        Binding = binding,");
-        source.AppendLine("        Label = () => Localization.Loc(name),");
-        source.AppendLine("        Run = run,");
-        source.AppendLine("    };");
+        source.AppendLine("        KeyBinding binding,");
+        source.AppendLine("        LocString name,");
+        source.AppendLine("        Func<ViewRoute> run) => new()");
+        source.AppendLine("        {");
+        source.AppendLine("            Binding = binding,");
+        source.AppendLine("            Label = () => Localization.Loc(name),");
+        source.AppendLine("            Run = run,");
+        source.AppendLine("        };");
         source.AppendLine();
         source.AppendLine("    /// <summary>A key that is only sometimes available.</summary>");
         source.AppendLine("    /// <param name=\"binding\">The key.</param>");
@@ -193,13 +195,16 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("    /// <param name=\"run\">What it does.</param>");
         source.AppendLine("    /// <returns>The command.</returns>");
         source.AppendLine("    public static ViewCommand When(");
-        source.AppendLine("        KeyBinding binding, LocString name, Func<bool> enabled, Func<ViewRoute> run) => new()");
-        source.AppendLine("    {");
-        source.AppendLine("        Binding = binding,");
-        source.AppendLine("        Label = () => Localization.Loc(name),");
-        source.AppendLine("        IsEnabled = enabled,");
-        source.AppendLine("        Run = run,");
-        source.AppendLine("    };");
+        source.AppendLine("        KeyBinding binding,");
+        source.AppendLine("        LocString name,");
+        source.AppendLine("        Func<bool> enabled,");
+        source.AppendLine("        Func<ViewRoute> run) => new()");
+        source.AppendLine("        {");
+        source.AppendLine("            Binding = binding,");
+        source.AppendLine("            Label = () => Localization.Loc(name),");
+        source.AppendLine("            IsEnabled = enabled,");
+        source.AppendLine("            Run = run,");
+        source.AppendLine("        };");
         source.AppendLine("}");
     }
 

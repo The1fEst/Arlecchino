@@ -156,9 +156,16 @@ public sealed class CommandRegistrationGenerator : IIncrementalGenerator
 
     private static string Body(IReadOnlyList<CommandModel> commands)
     {
+        const string opening = "        builder.Services.AddSingleton<IArlecchinoCommand>(static services => ";
+
         var registrations = commands.Select(static command =>
-            "        builder.Services.AddSingleton<IArlecchinoCommand>(static services => " +
-            $"{ConstructorBinding.CreateExpression(command.TypeName, command.ConstructorParameters)});");
+            opening +
+            ConstructorBinding.CreateExpression(
+                command.TypeName,
+                command.ConstructorParameters,
+                "        ",
+                opening.Length + ");".Length) +
+            ");");
 
         return string.Join("\n", (string[])[.. registrations, "        return builder;"]);
     }

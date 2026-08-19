@@ -110,6 +110,12 @@ than against the one the design was drawn on.
   `MostPixels` and `EnoughPixels`, positionally as well, so a call written out reads as the two counts it
   is. (`Arlecchino.Pictures`)
 
+- **The generated localization asks for a `culture`.** `Localization.Nearest(string? wanted)` is
+  `Nearest(string? culture)`, which is what the argument has always been; only a call that named it is
+  touched. The code the generators write is also laid out the way the repository lays out its own now — a
+  registration or a view whose constructor runs past the width is written with one argument to a line
+  rather than in one long line — so a diff of the generated sources reads as code and not as a wall.
+
 Everything else the sweep touched is inside the packages — locals, fields and the parameters of members
 no caller can see — and needs nothing from an application.
 

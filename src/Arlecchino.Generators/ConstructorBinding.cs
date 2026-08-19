@@ -7,6 +7,8 @@ namespace Arlecchino.Generators;
 
 internal static class ConstructorBinding
 {
+    private const int Longest = 120;
+
     public static IReadOnlyList<ParameterModel> Of(INamedTypeSymbol symbol)
     {
         var constructor = symbol.InstanceConstructors
@@ -28,17 +30,40 @@ internal static class ConstructorBinding
             .ToArray();
     }
 
-    public static string CreateExpression(string typeName, IReadOnlyList<ParameterModel> parameters)
+    /// <summary>
+    /// The expression that builds the type out of the container, on one line where it fits and with one
+    /// argument to a line where it does not. The width is the one the code style holds every line to.
+    /// </summary>
+    /// <param name="typeName">The type to build.</param>
+    /// <param name="parameters">What its constructor takes.</param>
+    /// <param name="indent">The indent the statement holding it starts at.</param>
+    /// <param name="column">The column the expression starts at, counting what stands to its left.</param>
+    /// <returns>The expression.</returns>
+    public static string CreateExpression(
+        string typeName,
+        IReadOnlyList<ParameterModel> parameters,
+        string indent = "",
+        int column = 0)
     {
         if (parameters.Count == 0)
         {
             return $"new {typeName}()";
         }
 
-        var services = parameters.Select(static parameter =>
-            $"services.GetRequiredService<{parameter.TypeName}>()");
+        var services = parameters
+            .Select(static parameter => $"services.GetRequiredService<{parameter.TypeName}>()")
+            .ToArray();
 
-        return $"new {typeName}({string.Join(", ", services)})";
+        var line = $"new {typeName}({string.Join(", ", services)})";
+
+        if (column + line.Length <= Longest)
+        {
+            return line;
+        }
+
+        var step = indent + "    ";
+
+        return $"new {typeName}(\n{step}{string.Join($",\n{step}", services)})";
     }
 }
 

@@ -183,9 +183,16 @@ public sealed class WidgetRegistrationGenerator : IIncrementalGenerator
 
     private static string Body(IReadOnlyList<WidgetModel> widgets)
     {
+        const string opening = "        builder.Services.AddSingleton(static services => ";
+
         var registrations = widgets.Select(static widget =>
-            "        builder.Services.AddSingleton(static services => " +
-            $"{ConstructorBinding.CreateExpression(widget.TypeName, widget.ConstructorParameters)});");
+            opening +
+            ConstructorBinding.CreateExpression(
+                widget.TypeName,
+                widget.ConstructorParameters,
+                "        ",
+                opening.Length + ");".Length) +
+            ");");
 
         return string.Join("\n", (string[])[.. registrations, "        return builder;"]);
     }

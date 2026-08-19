@@ -177,9 +177,14 @@ public sealed class StoreRegistrationGenerator : IIncrementalGenerator
     private static IEnumerable<string> Registration(StoreModel store)
     {
         var lifetime = store.IsScoped ? "Scoped" : "Singleton";
-        var expression = ConstructorBinding.CreateExpression(store.TypeName, store.ConstructorParameters);
+        var opening = $"        builder.Services.Add{lifetime}(static services => ";
+        var expression = ConstructorBinding.CreateExpression(
+            store.TypeName,
+            store.ConstructorParameters,
+            "        ",
+            opening.Length + ");".Length);
 
-        yield return $"        builder.Services.Add{lifetime}(static services => {expression});";
+        yield return $"{opening}{expression});";
 
         if (!store.IsAsync || store.IsScoped)
         {

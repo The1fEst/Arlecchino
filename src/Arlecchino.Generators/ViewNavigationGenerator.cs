@@ -231,7 +231,13 @@ public sealed class ViewNavigationGenerator : IIncrementalGenerator
         var cases = views.SelectMany(static view => new[]
         {
             $"""            case "{view.RouteName}":""",
-            $"                view = {ConstructorBinding.CreateExpression(view.TypeName, view.ConstructorParameters)};",
+            "                view = " +
+            ConstructorBinding.CreateExpression(
+                view.TypeName,
+                view.ConstructorParameters,
+                "                ",
+                "                view = ;".Length) +
+            ";",
             "                return true;",
         });
 

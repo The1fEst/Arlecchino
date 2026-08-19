@@ -621,7 +621,10 @@ public sealed class GeneratorTests
 
         Assert.Contains("using Sample.Panels;", output, StringComparison.Ordinal);
         Assert.Contains(
-            "builder.Services.AddSingleton(static services => new ClockWidget(services.GetRequiredService<ArlecchinoKeymap>()));",
+            """
+                    builder.Services.AddSingleton(static services => new ClockWidget(
+                        services.GetRequiredService<ArlecchinoKeymap>()));
+            """,
             output,
             StringComparison.Ordinal);
         Assert.DoesNotContain("LabelWidget", output, StringComparison.Ordinal);
@@ -666,7 +669,10 @@ public sealed class GeneratorTests
             output,
             StringComparison.Ordinal);
         Assert.Contains(
-            "builder.Services.AddSingleton<IArlecchinoCommand>(static services => new ClearCommand(services.GetRequiredService<Surface>()));",
+            """
+                    builder.Services.AddSingleton<IArlecchinoCommand>(static services => new ClearCommand(
+                        services.GetRequiredService<Surface>()));
+            """,
             output,
             StringComparison.Ordinal);
         Assert.Empty(diagnostics);
