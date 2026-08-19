@@ -3,7 +3,6 @@ using Arlecchino.Sample.Frames;
 using Arlecchino.Sample.Probes;
 using Arlecchino.Sample.Views;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 if (args is ["--frame", ..])
 {
@@ -24,8 +23,6 @@ if (args is ["--ask", ..])
 }
 
 var builder = Host.CreateApplicationBuilder(args);
-
-builder.Logging.ClearProviders();
 
 builder.Services
     .AddArlecchino(options =>

@@ -18,14 +18,22 @@ internal sealed class LogOverlay
     /// <summary>Creates the overlay state.</summary>
     /// <param name="buffer">The lines to show.</param>
     /// <param name="repaint">Asked for a frame when the overlay is opened, closed or scrolled.</param>
-    public LogOverlay(LogBuffer buffer, Repaint repaint)
+    /// <param name="providers">
+    /// Whether the host had a logging provider when Arlecchino was registered. An application with none
+    /// is told so, and told how to add one, rather than shown an overlay that stays empty for good.
+    /// </param>
+    public LogOverlay(LogBuffer buffer, Repaint repaint, bool providers)
     {
         Buffer = buffer;
+        HasProviders = providers;
         _repaint = repaint;
     }
 
     /// <summary>The lines being shown.</summary>
     public LogBuffer Buffer { get; }
+
+    /// <summary>Whether anything is registered that could write a line here.</summary>
+    public bool HasProviders { get; }
 
     /// <summary>Whether the overlay is showing.</summary>
     public bool IsVisible

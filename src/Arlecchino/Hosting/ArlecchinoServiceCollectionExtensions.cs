@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -21,8 +22,9 @@ namespace Arlecchino.Hosting;
 public static class ArlecchinoServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers everything an application needs and returns the builder that describes it. The look is
-    /// installed here, before any thread has claimed the drawing, and a terminal already registered stands.
+    /// Registers everything an application needs and returns the builder that describes it. The look and
+    /// the hold on the console are installed here, before any thread has claimed the drawing, and a
+    /// terminal already registered stands.
     /// </summary>
     /// <param name="services">The container being built.</param>
     /// <param name="configure">Adjusts the settings before anything reads them.</param>
@@ -31,6 +33,9 @@ public static class ArlecchinoServiceCollectionExtensions
     {
         var options = new ArlecchinoOptions();
         configure?.Invoke(options);
+
+        var strays = StrayOutput.TakeOverTheConsole();
+        var providers = services.Any(static registered => registered.ServiceType == typeof(ILoggerProvider));
 
         Theme.Palette = options.Theme;
         Glyphs.Graph = options.GraphSymbols;
@@ -44,7 +49,9 @@ public static class ArlecchinoServiceCollectionExtensions
 
         services.AddSingleton(options);
         services.AddSingleton(registrations);
-        services.TryAddSingleton<IArlecchinoTerminal, SystemTerminal>();
+        services.AddSingleton(strays);
+        services.TryAddSingleton<IArlecchinoTerminal>(static provider =>
+            new SystemTerminal(provider.GetRequiredService<StrayOutput>().Terminal));
         services.AddSingleton(static provider =>
         {
             var options = provider.GetRequiredService<ArlecchinoOptions>();
@@ -62,9 +69,18 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<ArlecchinoOptions>().Strings);
 
         services.AddSingleton<Repaint>();
-        services.AddSingleton<LogBuffer>();
-        services.AddSingleton<LogOverlay>();
-        services.AddSingleton<ILoggerProvider, ArlecchinoLoggerProvider>();
+        services.AddSingleton(static provider =>
+        {
+            var log = new LogBuffer(provider.GetRequiredService<Repaint>());
+
+            provider.GetRequiredService<StrayOutput>().SendTo(log, provider.GetRequiredService<TimeProvider>());
+
+            return log;
+        });
+        services.AddSingleton(provider => new LogOverlay(
+            provider.GetRequiredService<LogBuffer>(),
+            provider.GetRequiredService<Repaint>(),
+            providers));
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton<Ticker>();
         services.AddSingleton<Notifications>();
@@ -121,7 +137,8 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetService<IHostApplicationLifetime>()));
         services.AddSingleton(static provider => new TerminalModes(
             provider.GetRequiredService<IArlecchinoTerminal>(),
-            provider.GetRequiredService<ArlecchinoOptions>()));
+            provider.GetRequiredService<ArlecchinoOptions>(),
+            provider.GetRequiredService<StrayOutput>()));
         services.AddSingleton(static provider => new Handover(
             provider.GetRequiredService<IArlecchinoTerminal>(),
             provider.GetRequiredService<TerminalModes>(),

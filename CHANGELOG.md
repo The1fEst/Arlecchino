@@ -16,6 +16,30 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ### Fixed
 
+- **A line written to the console no longer scrolls the frame out from under the drawing.** The default
+  host registers a logging provider that writes to standard output, so `Microsoft.Hosting.Lifetime`
+  announced itself over the first frame — and because that provider hands its lines to a thread of its
+  own, it was a race: some runs came up clean, some came up with every row three lines out of place and
+  stayed that way, since a frame is drawn as the difference from the last one and nothing had told it
+  the screen had moved. A stray `Console.WriteLine` from any library did the same.
+
+  `AddArlecchino` now stands in front of standard output and standard error. Text written there while a
+  frame is on the screen is logged under `stdout` or `stderr` — visible in the log overlay, escape
+  sequences taken out of it — and text written before the terminal is taken or after it is given back
+  goes to the console as it always did, so `--help`, a failure during startup, and the host's own
+  shutdown lines all still print. Nothing is removed: every provider the application registered keeps
+  running, whether it was added before `AddArlecchino` or after.
+
+  `builder.Logging.ClearProviders()` is no longer something to write. It was the way to keep a console
+  provider off the frame; now it is the way to end up with nothing in the log at all.
+
+  Arlecchino no longer registers a logging provider of its own. It had one so that `ILogger` reached the
+  overlay, and with the console caught that is a second road to the same place: a line logged through the
+  host's console provider would have been shown twice, once as the provider wrote it and once as it was
+  caught. The overlay now shows what is written to the console and nothing else. An application that has
+  no logging provider at all is told so in the overlay, and told to add one, rather than left looking at
+  a panel that stays empty whatever happens.
+
 - **`Ctrl+Shift+C` no longer stops a Windows application instead of copying.** Both it and `Ctrl+C` type
   the same character, and the Windows console decided for itself which had been pressed: with processed
   input on it raised the same signal for either, so the `Copy` binding never saw the key and the
@@ -38,6 +62,10 @@ from `1.0.0` on breaking the public API meant a new major. See
   pipe into.
 
 ### Added
+
+- **`ArlecchinoStrings.LogWithoutProviders`**, what the log overlay says when the host has no logging
+  provider: the overlay draws what a provider writes to the console, so without one it would have nothing
+  to ever draw, and saying so beats an empty panel.
 
 - **`Oklch`, `Contrast` and `Shade`**, which work a color out against the background it will be read on
   rather than against the one it was drawn on. `Oklch` is the space where lightness, chroma and hue come

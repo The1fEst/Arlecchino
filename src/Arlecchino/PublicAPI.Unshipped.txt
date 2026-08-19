@@ -41,6 +41,8 @@ Arlecchino.Editing.TextCompleter.ChosenIndex.get -> int
 Arlecchino.Forms.Form.SelectedIndex.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.Rgb, Arlecchino.Rendering.Colors.ThemePalette!>?
 Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.set -> void
+Arlecchino.Hosting.ArlecchinoStrings.LogWithoutProviders.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.LogWithoutProviders.set -> void
 Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.TerminalMinimum.set -> void
 Arlecchino.Modals.Choosing.MultiChoiceModal.IsSelected(string! choice) -> bool

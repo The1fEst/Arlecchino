@@ -1,31 +1,29 @@
 using System;
+using Arlecchino.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace Arlecchino.Diagnostics;
+namespace Arlecchino.Testing;
 
 /// <summary>
-/// Sends logging into the overlay's buffer instead of the console. Registered by default, because a
-/// provider that writes to standard output would draw straight over the frame.
+/// Puts logging straight into the buffer the overlay draws from. An application reaches the overlay the
+/// long way round, through a provider that writes to the console and is caught there.
 /// </summary>
-internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
+internal sealed class TestLoggerProvider : ILoggerProvider
 {
     private readonly LogBuffer _buffer;
     private readonly TimeProvider _time;
 
     /// <summary>Creates the provider.</summary>
     /// <param name="buffer">Where the lines are kept.</param>
-    /// <param name="time">
-    /// Where the timestamps come from. Taken from the container rather than from the clock on the wall,
-    /// so a session played back from a tape stamps its lines the same way it did when it was recorded.
-    /// </param>
-    public ArlecchinoLoggerProvider(LogBuffer buffer, TimeProvider time)
+    /// <param name="time">Where the timestamps come from, so a test can hold the clock still.</param>
+    public TestLoggerProvider(LogBuffer buffer, TimeProvider time)
     {
         _buffer = buffer;
         _time = time;
     }
 
     /// <summary>Creates a logger for one category.</summary>
-    /// <param name="categoryName">Full category name; only its last part is shown.</param>
+    /// <param name="categoryName">Full category name; only its last part is kept.</param>
     /// <returns>The logger.</returns>
     public ILogger CreateLogger(string categoryName) => new BufferLogger(_buffer, ShortName(categoryName), _time);
 
@@ -42,7 +40,6 @@ internal sealed class ArlecchinoLoggerProvider : ILoggerProvider
     {
         private readonly LogBuffer _buffer;
         private readonly string _category;
-
         private readonly TimeProvider _time;
 
         public BufferLogger(LogBuffer buffer, string category, TimeProvider time)

@@ -39,7 +39,10 @@ internal sealed class LogPaint
 
         if (entries.Count == 0)
         {
-            content.WriteLine(0, _strings.LogEmpty(), Theme.Secondary);
+            content.WriteLine(
+                0,
+                TextWidth.Truncate(log.HasProviders ? _strings.LogEmpty() : _strings.LogWithoutProviders(), content.Width),
+                Theme.Secondary);
         }
 
         log.Scroll = Math.Min(log.Scroll, Math.Max(0, entries.Count - rows));

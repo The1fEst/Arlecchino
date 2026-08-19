@@ -177,6 +177,13 @@ public sealed class ArlecchinoStrings
     /// <summary>Shown in the log overlay while nothing has been logged.</summary>
     public Func<string> LogEmpty { get; set; } = static () => "nothing logged yet";
 
+    /// <summary>
+    /// Shown in the log overlay instead, when the host has no logging provider at all. The overlay shows
+    /// what a provider writes to the console, so without one there is nothing for it to ever show.
+    /// </summary>
+    public Func<string> LogWithoutProviders { get; set; } =
+        static () => "no logging provider is registered — add one, say builder.Logging.AddConsole()";
+
     /// <summary>The key line under the log overlay.</summary>
     public Func<string> LogHints { get; set; } =
         static () => "↑↓ scroll · End latest · Backspace clear · Esc close";

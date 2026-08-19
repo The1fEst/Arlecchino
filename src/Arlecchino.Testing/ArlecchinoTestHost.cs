@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
@@ -37,6 +38,7 @@ public sealed class ArlecchinoTestHost : IDisposable
         Clock = new();
         services.AddSingleton<IArlecchinoTerminal>(Terminal);
         services.AddSingleton<TimeProvider>(Clock);
+        services.AddSingleton<ILoggerProvider, TestLoggerProvider>();
 
         var builder = services
             .AddArlecchino(options =>

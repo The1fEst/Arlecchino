@@ -1,4 +1,5 @@
 using System.Threading;
+using Arlecchino.Diagnostics;
 
 namespace Arlecchino.Hosting;
 
@@ -10,16 +11,22 @@ internal sealed class TerminalModes
 {
     private readonly IArlecchinoTerminal _terminal;
     private readonly ArlecchinoOptions _options;
+    private readonly StrayOutput _strays;
 
     private int _left = 1;
 
     /// <summary>Takes the modes one terminal is put into.</summary>
     /// <param name="terminal">The terminal itself.</param>
     /// <param name="options">Which of the modes this application asked for.</param>
-    public TerminalModes(IArlecchinoTerminal terminal, ArlecchinoOptions options)
+    /// <param name="strays">
+    /// What holds the console. It catches from the moment the terminal is taken until it is given back,
+    /// which is exactly as long as a line written to the console would land on a frame.
+    /// </param>
+    public TerminalModes(IArlecchinoTerminal terminal, ArlecchinoOptions options, StrayOutput strays)
     {
         _terminal = terminal;
         _options = options;
+        _strays = strays;
     }
 
     /// <summary>Whether the terminal is in the modes this application wants it in.</summary>
@@ -29,6 +36,8 @@ internal sealed class TerminalModes
     public void Enter()
     {
         Interlocked.Exchange(ref _left, 0);
+
+        _strays.Hold();
 
         _terminal.TakeControlKeys();
 
@@ -68,5 +77,7 @@ internal sealed class TerminalModes
 
         _terminal.LeaveFullScreen();
         _terminal.GiveBackControlKeys();
+
+        _strays.Release();
     }
 }

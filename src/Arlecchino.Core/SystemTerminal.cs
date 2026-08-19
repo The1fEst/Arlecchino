@@ -26,6 +26,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     private const int RedirectedHeight = 34;
 
     private readonly bool _escapeSequencesWork;
+    private readonly TextWriter? _output;
     private readonly ConcurrentQueue<KeyPress> _unread = new();
 
     private volatile WindowsConsoleInput? _windowsInput;
@@ -38,7 +39,17 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     /// allows them. A console that refuses them drops color to <see cref="ColorSupport.None"/>.
     /// </summary>
     public SystemTerminal()
+        : this(output: null) { }
+
+    /// <summary>
+    /// Prepares the console the same way, and writes what it draws to a writer of someone else's
+    /// choosing. That is how a frame reaches the terminal while the console itself is being caught.
+    /// </summary>
+    /// <param name="output">Where frames and terminal sequences go, or <c>null</c> for the console's own.</param>
+    internal SystemTerminal(TextWriter? output)
     {
+        _output = output;
+
         try
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -80,9 +91,12 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     /// <summary>Whether a mouse event is waiting. Only ever true while the Windows mouse is on.</summary>
     public bool MouseAvailable => _windowsInput?.MouseAvailable ?? false;
 
-    /// <summary>Writes a composed frame.</summary>
+    /// <summary>
+    /// Writes a composed frame, and everything else this terminal says, through the one writer it was
+    /// given — or the console's own, when it was given none.
+    /// </summary>
     /// <param name="text">Text with escape sequences already embedded.</param>
-    public void Write(string text) => Console.Out.Write(text);
+    public void Write(string text) => (_output ?? Console.Out).Write(text);
 
     /// <summary>Takes the next key without echoing it.</summary>
     /// <returns>The key that was pressed.</returns>
@@ -110,7 +124,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1049h\e[?25l");
+            Write("\e[?1049h\e[?25l");
         }
     }
 
@@ -119,7 +133,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1049l\e[?25h");
+            Write("\e[?1049l\e[?25h");
         }
 
         try
@@ -149,7 +163,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1000h\e[?1002h\e[?1006h");
+            Write("\e[?1000h\e[?1002h\e[?1006h");
         }
     }
 
@@ -164,7 +178,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
 
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?1006l\e[?1002l\e[?1000l");
+            Write("\e[?1006l\e[?1002l\e[?1000l");
         }
     }
 
@@ -173,7 +187,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?2004h");
+            Write("\e[?2004h");
         }
     }
 
@@ -182,7 +196,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write("\e[?2004l");
+            Write("\e[?2004l");
         }
     }
 
@@ -220,7 +234,7 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         if (_escapeSequencesWork)
         {
-            Console.Out.Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
+            Write($"\e]52;c;{Convert.ToBase64String(Encoding.UTF8.GetBytes(text))}\a");
         }
 
         ClipboardPrograms.Write(text);
