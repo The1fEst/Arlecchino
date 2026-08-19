@@ -10,6 +10,7 @@ using Arlecchino.Diagnostics;
 using Arlecchino.Navigation;
 using Arlecchino.Input;
 using Arlecchino.Atoms;
+using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.Rendering.Terminals;
 
@@ -138,6 +139,11 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         }
 
         var reply = TerminalProbe.Ask(_terminal, _options.TerminalAnswer);
+
+        if (_options.PaletteForBackground is { } derive && TerminalCapabilities.Background is { } behind)
+        {
+            Theme.Palette = derive(behind);
+        }
 
         Log.TerminalAnswered(
             _logger,

@@ -39,6 +39,23 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ### Added
 
+- **`Oklch`, `Contrast` and `Shade`**, which work a color out against the background it will be read on
+  rather than against the one it was drawn on. `Oklch` is the space where lightness, chroma and hue come
+  apart, so a color can be made lighter without becoming a different color; `Contrast` is the ratio the
+  accessibility guidelines are written in, along with the luminance at which a background stops wanting
+  light text and starts wanting dark; `Shade.Against` solves for the lightness that reaches a wanted
+  contrast, keeping the hue and cutting the chroma only where sRGB cannot hold it.
+
+  Two of it are worth knowing about. The turn from a dark theme to a light one is at luminance 0.179 and
+  not at the half-way gray, that being where white and black are equally far off. And a background near
+  the middle can only reach about 5:1 in either direction, so a ladder written for a near-black terminal
+  flattens on it: `Shade.Scaled` brings the whole ladder down to the room there is, which keeps its steps
+  apart where clamping would land three of them on white.
+
+- **`ArlecchinoOptions.PaletteForBackground`**, which is handed the color the terminal turned out to be and
+  answers with the palette to wear. It runs once, as the application starts and the terminal is asked, and
+  a terminal that will not say leaves `Theme` as it was given.
+
 - **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
   around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
   until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.

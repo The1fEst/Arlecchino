@@ -8,19 +8,16 @@
 *REMOVED*Arlecchino.Input.KeyStroke.Matches(Arlecchino.Input.KeyPress pressed) -> bool
 *REMOVED*Arlecchino.Input.KeyStroke.Typed.get -> char
 *REMOVED*Arlecchino.Rendering.Colors.ThemePalette.ActiveSelected.get -> Arlecchino.Rendering.Colors.TermColor!
+*REMOVED*Arlecchino.Rendering.Colors.ThemePalette.ActiveSelected.init -> void
 *REMOVED*Arlecchino.Rendering.Colors.ThemePalette.Muted.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*Arlecchino.Rendering.Colors.ThemePalette.Muted.init -> void
-*REMOVED*static Arlecchino.Rendering.Colors.Theme.Muted.get -> Arlecchino.Rendering.Colors.TermColor!
-Arlecchino.Rendering.Colors.ThemePalette.Secondary.get -> Arlecchino.Rendering.Colors.TermColor!
-Arlecchino.Rendering.Colors.ThemePalette.Secondary.init -> void
-static Arlecchino.Rendering.Colors.Theme.Secondary.get -> Arlecchino.Rendering.Colors.TermColor!
-*REMOVED*Arlecchino.Rendering.Colors.ThemePalette.ActiveSelected.init -> void
 *REMOVED*Arlecchino.Rendering.Colors.ThemePalette.Selected.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*Arlecchino.Rendering.Colors.ThemePalette.Selected.init -> void
 *REMOVED*Arlecchino.Rendering.Margin.Margin(int all) -> void
 *REMOVED*Arlecchino.Rendering.SurfaceRegion.Inset(int all) -> Arlecchino.Rendering.SurfaceRegion
 *REMOVED*Arlecchino.Rendering.Text.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion into, Arlecchino.Rendering.Colors.IArlecchinoColor! style) -> void
 *REMOVED*static Arlecchino.Rendering.Colors.Theme.ActiveSelected.get -> Arlecchino.Rendering.Colors.TermColor!
+*REMOVED*static Arlecchino.Rendering.Colors.Theme.Muted.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*static Arlecchino.Rendering.Colors.Theme.Selected.get -> Arlecchino.Rendering.Colors.TermColor!
 *REMOVED*static Arlecchino.Rendering.Terminals.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan within) -> bool
 Arlecchino.IArlecchinoTerminal.GiveBackControlKeys() -> void
@@ -33,8 +30,26 @@ Arlecchino.Input.KeyBinding.Opens(Arlecchino.Input.KeyPress press) -> bool
 Arlecchino.Input.KeyStroke.Character.get -> char
 Arlecchino.Input.KeyStroke.KeyStroke(char character) -> void
 Arlecchino.Input.KeyStroke.Matches(Arlecchino.Input.KeyPress press) -> bool
+Arlecchino.Rendering.Colors.Contrast
+Arlecchino.Rendering.Colors.Oklch
+Arlecchino.Rendering.Colors.Oklch.Chroma.get -> double
+Arlecchino.Rendering.Colors.Oklch.Chroma.init -> void
+Arlecchino.Rendering.Colors.Oklch.Deconstruct(out double Lightness, out double Chroma, out double Hue) -> void
+Arlecchino.Rendering.Colors.Oklch.Equals(Arlecchino.Rendering.Colors.Oklch other) -> bool
+Arlecchino.Rendering.Colors.Oklch.FitsScreen.get -> bool
+Arlecchino.Rendering.Colors.Oklch.Hue.get -> double
+Arlecchino.Rendering.Colors.Oklch.Hue.init -> void
+Arlecchino.Rendering.Colors.Oklch.Lightness.get -> double
+Arlecchino.Rendering.Colors.Oklch.Lightness.init -> void
+Arlecchino.Rendering.Colors.Oklch.Oklch() -> void
+Arlecchino.Rendering.Colors.Oklch.Oklch(double Lightness, double Chroma, double Hue) -> void
+Arlecchino.Rendering.Colors.Oklch.ToRgb() -> Arlecchino.Rendering.Colors.Rgb
+Arlecchino.Rendering.Colors.Oklch.Trimmed() -> Arlecchino.Rendering.Colors.Oklch
+Arlecchino.Rendering.Colors.Shade
 Arlecchino.Rendering.Colors.ThemePalette.ActiveSelection.get -> Arlecchino.Rendering.Colors.TermColor!
 Arlecchino.Rendering.Colors.ThemePalette.ActiveSelection.init -> void
+Arlecchino.Rendering.Colors.ThemePalette.Secondary.get -> Arlecchino.Rendering.Colors.TermColor!
+Arlecchino.Rendering.Colors.ThemePalette.Secondary.init -> void
 Arlecchino.Rendering.Colors.ThemePalette.Selection.get -> Arlecchino.Rendering.Colors.TermColor!
 Arlecchino.Rendering.Colors.ThemePalette.Selection.init -> void
 Arlecchino.Rendering.Margin.Margin(int size) -> void
@@ -42,6 +57,22 @@ Arlecchino.Rendering.SurfaceRegion.Inset(int size) -> Arlecchino.Rendering.Surfa
 Arlecchino.Rendering.Text.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.Colors.IArlecchinoColor! style) -> void
 Arlecchino.SystemTerminal.GiveBackControlKeys() -> void
 Arlecchino.SystemTerminal.TakeControlKeys() -> void
+~override Arlecchino.Rendering.Colors.Oklch.Equals(object obj) -> bool
+override Arlecchino.Rendering.Colors.Oklch.GetHashCode() -> int
+override Arlecchino.Rendering.Colors.Oklch.ToString() -> string!
+static Arlecchino.Rendering.Colors.Contrast.Between(Arlecchino.Rendering.Colors.Rgb one, Arlecchino.Rendering.Colors.Rgb other) -> double
+static Arlecchino.Rendering.Colors.Contrast.IsDark(Arlecchino.Rendering.Colors.Rgb background) -> bool
+static Arlecchino.Rendering.Colors.Contrast.Luminance(Arlecchino.Rendering.Colors.Rgb color) -> double
+static Arlecchino.Rendering.Colors.Contrast.Reach(Arlecchino.Rendering.Colors.Rgb background) -> double
+static Arlecchino.Rendering.Colors.Oklch.Of(Arlecchino.Rendering.Colors.Rgb color) -> Arlecchino.Rendering.Colors.Oklch
+static Arlecchino.Rendering.Colors.Oklch.operator !=(Arlecchino.Rendering.Colors.Oklch left, Arlecchino.Rendering.Colors.Oklch right) -> bool
+static Arlecchino.Rendering.Colors.Oklch.operator ==(Arlecchino.Rendering.Colors.Oklch left, Arlecchino.Rendering.Colors.Oklch right) -> bool
+static Arlecchino.Rendering.Colors.Shade.Against(Arlecchino.Rendering.Colors.Rgb background, Arlecchino.Rendering.Colors.Rgb sample, double contrast) -> Arlecchino.Rendering.Colors.Rgb
+static Arlecchino.Rendering.Colors.Shade.Against(Arlecchino.Rendering.Colors.Rgb background, double hue, double chroma, double contrast) -> Arlecchino.Rendering.Colors.Rgb
+static Arlecchino.Rendering.Colors.Shade.Lifted(Arlecchino.Rendering.Colors.Rgb background, double step) -> Arlecchino.Rendering.Colors.Rgb
+static Arlecchino.Rendering.Colors.Shade.Scaled(double contrast, double lowest, double highest, Arlecchino.Rendering.Colors.Rgb background) -> double
 static Arlecchino.Rendering.Colors.Theme.ActiveSelection.get -> Arlecchino.Rendering.Colors.TermColor!
+static Arlecchino.Rendering.Colors.Theme.Secondary.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Selection.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Terminals.TerminalProbe.Ask(Arlecchino.IArlecchinoTerminal! terminal, System.TimeSpan timeout) -> bool
+static readonly Arlecchino.Rendering.Colors.Contrast.Pivot -> double
