@@ -100,7 +100,7 @@ internal sealed class ArlecchinoHostedService : BackgroundService
 
         foreach (var startup in _startups)
         {
-            _navigator.Apply(startup.Start());
+            _navigator.Apply(await startup.StartAsync());
         }
 
         TakeTerminal();

@@ -1,1 +1,2 @@
 #nullable enable
+Arlecchino.Hosting.IArlecchinoStartup.StartAsync() -> System.Threading.Tasks.Task<Arlecchino.Navigation.ViewRoute>!

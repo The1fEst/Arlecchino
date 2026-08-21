@@ -575,7 +575,6 @@ Arlecchino.Hosting.HintsShown.Always = 0 -> Arlecchino.Hosting.HintsShown
 Arlecchino.Hosting.HintsShown.Never = 2 -> Arlecchino.Hosting.HintsShown
 Arlecchino.Hosting.HintsShown.WhileWaiting = 1 -> Arlecchino.Hosting.HintsShown
 Arlecchino.Hosting.IArlecchinoStartup
-Arlecchino.Hosting.IArlecchinoStartup.Start() -> Arlecchino.Navigation.ViewRoute
 Arlecchino.Hosting.Ticker
 Arlecchino.Hosting.Ticker.After(System.TimeSpan delay, System.Action! action) -> System.IDisposable!
 Arlecchino.Hosting.Ticker.Every(System.TimeSpan interval, System.Action! action) -> System.IDisposable!

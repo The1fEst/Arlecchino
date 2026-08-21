@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Arlecchino.Navigation;
 
 namespace Arlecchino.Hosting;
@@ -13,5 +14,5 @@ public interface IArlecchinoStartup
     /// <see cref="ViewRoute.None"/> to leave that alone.
     /// </summary>
     /// <returns>Where to open, or none.</returns>
-    ViewRoute Start();
+    Task<ViewRoute> StartAsync();
 }
