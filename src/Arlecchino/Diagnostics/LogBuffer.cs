@@ -19,7 +19,13 @@ public sealed record LogEntry(DateTimeOffset Time, LogLevel Level, string Catego
 public sealed class LogBuffer
 {
     private readonly ConcurrentQueue<LogEntry> _entries = new();
-    private readonly object _trimming = new();
+
+#if NET9_0_OR_GREATER
+    private readonly System.Threading.Lock _trimmingLock = new();
+#else
+    private readonly object _trimmingLock = new();
+#endif
+
     private readonly Repaint _repaint;
 
     /// <summary>Creates the buffer.</summary>
@@ -48,7 +54,7 @@ public sealed class LogBuffer
     {
         _entries.Enqueue(entry);
 
-        lock (_trimming)
+        lock (_trimmingLock)
         {
             while (_entries.Count > Capacity && _entries.TryDequeue(out _)) { }
         }
@@ -64,7 +70,7 @@ public sealed class LogBuffer
             return;
         }
 
-        lock (_trimming)
+        lock (_trimmingLock)
         {
             while (_entries.TryDequeue(out _)) { }
         }
