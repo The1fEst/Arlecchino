@@ -85,6 +85,23 @@ than against the one the design was drawn on.
   hosted service no longer readies a history, and the diagnostic report no longer prints `undo depth` —
   all of it moved behind the call below.
 
+- **A kept file is read back, a step at a time.** A run that keeps its history indexes the file it finds
+  rather than throwing it away, and appends to it rather than writing over it. What memory holds is the
+  last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them, so a
+  history of any length costs one offset and one length per step.
+
+  ```csharp
+  builder.Services.UseHistory(options => options.Keep = true);
+  ```
+
+  A step names its atoms, and the atoms of this run answer to those names: a `HistoryAtom<T>` with a key
+  says so when it is created, the same way it says its steps. An atom nothing answers to, or a value of a
+  kind the file cannot read, ends the walk back rather than moving some atoms and not others.
+
+  `HistoryFile.Writes<T>` is `Handles<T>` and takes the reader beside the writer, since a kind of value
+  the file can write is one it has to read again. `Depth` and `CanUndo` count what the file holds, and
+  `Clear` forgets only what this run has in memory.
+
 - **`UseHistory`, which turns undo on.** Nothing records steps until it is called, and the atoms that
   could feed a history allocate nothing for one that is not there.
 

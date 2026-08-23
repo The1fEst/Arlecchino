@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Arlecchino.Atoms.History;
@@ -7,7 +8,7 @@ namespace Arlecchino.Atoms.History;
 /// <see cref="Atom{T}"/> is the one whose writes do not.
 /// </summary>
 /// <typeparam name="T">The kind of value held.</typeparam>
-public sealed class HistoryAtom<T> : Atom<T>
+public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
 {
     /// <summary>Creates an atom that keeps history.</summary>
     /// <param name="initial">The value to start with.</param>
@@ -23,6 +24,11 @@ public sealed class HistoryAtom<T> : Atom<T>
         : base(initial, comparer)
     {
         Key = key;
+
+        if (key is { Length: > 0 })
+        {
+            HistoryChanges.Name(key, this);
+        }
     }
 
     /// <summary>
@@ -30,6 +36,14 @@ public sealed class HistoryAtom<T> : Atom<T>
     /// memory. It is usually the store and the property: <c>"SettingsStore.Server"</c>.
     /// </summary>
     public string? Key { get; }
+
+    /// <inheritdoc />
+    public IAtomEdit? Restore(IValueReader reader)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+
+        return reader.Read<T>(out var undone, out var redone) ? new Edit(this, undone, redone) : null;
+    }
 
     /// <inheritdoc />
     protected override void OnWritten(T previous, T current)

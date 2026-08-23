@@ -23,16 +23,19 @@ Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.HistoryAtomsStack(Syst
 Arlecchino.Atoms.History.HistoryAtom<T>
 Arlecchino.Atoms.History.HistoryAtom<T>.HistoryAtom(T initial, string? key = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.History.HistoryAtom<T>.Key.get -> string?
+Arlecchino.Atoms.History.HistoryAtom<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.HistoryFile
+Arlecchino.Atoms.History.HistoryFile.Count.get -> int
 Arlecchino.Atoms.History.HistoryFile.Discard() -> void
+Arlecchino.Atoms.History.HistoryFile.Handles<T>(System.Action<System.Text.Json.Utf8JsonWriter!, T>! write, System.Func<System.Text.Json.JsonElement, T>! read) -> void
 Arlecchino.Atoms.History.HistoryFile.Dispose() -> void
 Arlecchino.Atoms.History.HistoryFile.Exists.get -> bool
 Arlecchino.Atoms.History.HistoryFile.HistoryFile(string? name = null, bool keep = false) -> void
 Arlecchino.Atoms.History.HistoryFile.Keep.get -> bool
 Arlecchino.Atoms.History.HistoryFile.Path.get -> string!
 Arlecchino.Atoms.History.HistoryFile.Prepare() -> void
+Arlecchino.Atoms.History.HistoryFile.Read(int step) -> System.Collections.Generic.List<Arlecchino.Atoms.History.IAtomEdit!>?
 Arlecchino.Atoms.History.HistoryFile.Write(System.Collections.Generic.IReadOnlyList<Arlecchino.Atoms.History.IAtomEdit!>! edits) -> bool
-Arlecchino.Atoms.History.HistoryFile.Writes<T>(System.Action<System.Text.Json.Utf8JsonWriter!, T>! write) -> void
 Arlecchino.Atoms.History.Hosting.HistoryOptions
 Arlecchino.Atoms.History.Hosting.HistoryOptions.Capacity.get -> int
 Arlecchino.Atoms.History.Hosting.HistoryOptions.Capacity.set -> void
@@ -46,6 +49,10 @@ Arlecchino.Atoms.History.IAtomEdit
 Arlecchino.Atoms.History.IAtomEdit.Owner.get -> object?
 Arlecchino.Atoms.History.IAtomEdit.Redo() -> void
 Arlecchino.Atoms.History.IAtomEdit.Undo() -> void
+Arlecchino.Atoms.History.IRestorableAtom
+Arlecchino.Atoms.History.IRestorableAtom.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
+Arlecchino.Atoms.History.IValueReader
+Arlecchino.Atoms.History.IValueReader.Read<T>(out T undone, out T redone) -> bool
 Arlecchino.Atoms.History.IValueWriter
 Arlecchino.Atoms.History.IValueWriter.Write<T>(T undone, T redone) -> bool
 Arlecchino.Atoms.History.IWritableAtomEdit

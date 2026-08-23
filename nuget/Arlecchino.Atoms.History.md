@@ -25,12 +25,16 @@ Turn it on where the container is built:
 builder.Services.UseHistory(options => options.Keep = true);
 ```
 
-`AtomHistory` collects the steps, bounded and one per application. `HistoryFile` writes them to a file
-beside the program, one step per line, thrown away on the way out and again on the way in — unless the
-application asks to keep it.
+`AtomHistory` collects the steps, one per application. `HistoryFile` writes them to a file beside the
+program, one step per line, thrown away on the way out and again on the way in — unless the application
+asks to keep it, in which case the next run indexes it and adds to it.
 
-The second argument to an atom names it in that file. A reference means nothing to the next run, so an
-atom without a name still undoes and redoes in memory; it simply is not written down.
+Memory holds the last `Capacity` steps. Older ones live in the file and are seeked to one at a time when
+an undo asks for them, so a long history costs an offset and a length per step rather than its values.
+
+The second argument to an atom names it in that file, and is how a step written by an earlier run finds
+its atom in this one. An atom without a name still undoes and redoes in memory; it simply is not written
+down.
 
 Nothing here is needed to use atoms, and `Arlecchino` does not reference this package: without
 `UseHistory` nothing records a step, and the atoms that could feed a history allocate nothing for one.

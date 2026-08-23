@@ -74,7 +74,9 @@ public sealed class HistoryFileTests : IDisposable
     public void AKindOfValueIsTaughtOnceForEveryAtomHoldingIt()
     {
         using var file = Scratch();
-        file.Writes<Uri>(static (writer, value) => writer.WriteStringValue(value.ToString()));
+        file.Handles<Uri>(
+            static (writer, value) => writer.WriteStringValue(value.ToString()),
+            static element => new Uri(element.GetString()!));
 
         using var history = new AtomHistory(file);
         var atom = new HistoryAtom<Uri>(new("https://one.example"), Key);
