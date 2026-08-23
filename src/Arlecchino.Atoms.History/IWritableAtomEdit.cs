@@ -6,8 +6,8 @@ namespace Arlecchino.Atoms.History;
 /// </summary>
 public interface IWritableAtomEdit : IAtomEdit
 {
-    /// <summary>What the atom is called in the file, or <c>null</c> for one that was never named.</summary>
-    string? Key { get; }
+    /// <summary>What the atom is called in the file.</summary>
+    string Key { get; }
 
     /// <summary>Hands both values over, typed.</summary>
     /// <param name="writer">Where the values go.</param>

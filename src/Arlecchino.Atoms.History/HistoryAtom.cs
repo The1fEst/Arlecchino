@@ -12,38 +12,33 @@ public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
 {
     /// <summary>Creates an atom that keeps history.</summary>
     /// <param name="initial">The value to start with.</param>
-    /// <param name="key">
-    /// What the atom is called in a <see cref="HistoryFile"/>. Omit it to keep the atom's steps in memory
-    /// only, which is what an atom whose value outlives nothing wants.
-    /// </param>
+    /// <param name="key">What the atom is called; see <see cref="Key"/>.</param>
     /// <param name="comparer">
     /// How to decide that writing to it changed nothing; the default comparer for <typeparamref name="T"/>
     /// is used when omitted.
     /// </param>
-    public HistoryAtom(T initial, string? key = null, IEqualityComparer<T>? comparer = null)
+    /// <exception cref="ArgumentException">The name is empty.</exception>
+    /// <exception cref="InvalidOperationException">The name is taken by an atom holding something else.</exception>
+    public HistoryAtom(T initial, string key, IEqualityComparer<T>? comparer = null)
         : base(initial, comparer)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+
         Key = key;
 
-        if (key is { Length: > 0 })
-        {
-            HistoryChanges.Name(key, this);
-        }
+        HistoryChanges.Name(key, typeof(T), this);
     }
 
     /// <summary>
-    /// What the atom is called in a <see cref="HistoryFile"/>, or <c>null</c> for one whose steps stay in
-    /// memory. It is usually the store and the property: <c>"SettingsStore.Server"</c>.
+    /// What the atom is called in a <see cref="HistoryFile"/>, written in full rather than worked out:
+    /// it is the name a later run finds its atom by, so it outlives any rename. Usually the store and the
+    /// property, as <c>"SettingsStore.Server"</c>.
     /// </summary>
-    public string? Key { get; }
+    public string Key { get; }
 
     /// <inheritdoc />
-    public IAtomEdit? Restore(IValueReader reader)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-
-        return reader.Read<T>(out var undone, out var redone) ? new Edit(this, undone, redone) : null;
-    }
+    public IAtomEdit? Restore(IValueReader reader) =>
+        reader.Read<T>(out var undone, out var redone) ? new Edit(this, undone, redone) : null;
 
     /// <inheritdoc />
     protected override void OnWritten(T previous, T current)
@@ -69,7 +64,7 @@ public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
 
         public object Owner => _atom;
 
-        public string? Key => _atom.Key;
+        public string Key => _atom.Key;
 
         public bool WriteTo(IValueWriter writer) => writer.Write(_oldValue, _newValue);
 

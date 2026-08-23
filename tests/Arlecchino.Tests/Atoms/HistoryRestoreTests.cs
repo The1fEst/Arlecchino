@@ -53,7 +53,9 @@ public sealed class HistoryRestoreTests : IDisposable
     public void StepsPastTheMemoryWindowAreReadBackFromTheFile()
     {
         using var file = new HistoryFile(Path.Combine(_folder, "kept.history"), keep: true);
-        using var history = new AtomHistory(file) { Capacity = 1 };
+        using var history = new AtomHistory(file);
+
+        history.Capacity = 1;
 
         var atom = new HistoryAtom<string>("0", Key);
 
@@ -121,13 +123,39 @@ public sealed class HistoryRestoreTests : IDisposable
         Assert.Equal("start", atom.Value);
     }
 
+    /// <summary>
+    /// A screen's store is rebuilt on the way back, so the same name claimed again by the same kind of
+    /// atom is how the slot is taken over, not a mistake.
+    /// </summary>
+    [Fact]
+    public void OneNameIsClaimedAgainByAnAtomHoldingTheSameKind()
+    {
+        _ = new HistoryAtom<string>("first", "Claimed.Twice");
+
+        var second = new HistoryAtom<string>("second", "Claimed.Twice");
+
+        Assert.Equal("second", second.Value);
+    }
+
+    [Fact]
+    public void OneNameCannotStandForTwoKindsOfValue()
+    {
+        _ = new HistoryAtom<string>("text", "Claimed.ByTwoKinds");
+
+        Assert.Throws<InvalidOperationException>(static () => new HistoryAtom<int>(0, "Claimed.ByTwoKinds"));
+    }
+
+    [Fact]
+    public void AnAtomWithoutANameIsRefused() =>
+        Assert.Throws<ArgumentException>(static () => new HistoryAtom<string>("", ""));
+
     [Fact]
     public void AScratchFileLeavesNothingForTheNextRun()
     {
         var path = Path.Combine(_folder, "scratch.history");
 
         using (var earlier = new HistoryFile(path))
-        using (var history = new AtomHistory(earlier))
+        using (new AtomHistory(earlier))
         {
             new HistoryAtom<string>("start", Key).Value = "changed";
         }

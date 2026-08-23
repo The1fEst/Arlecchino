@@ -13,8 +13,10 @@ are the same atoms with their changes written down, so an application can walk t
 ```csharp
 public sealed class SettingsStore : ArlecchinoAsyncStore
 {
-    public HistoryAtom<string> Server { get; } = new("127.0.0.1", "SettingsStore.Server");
-    public HistoryAtom<decimal> Port { get; } = new(40000, "SettingsStore.Port");
+    private const string HistoryKey = "Settings";
+
+    public HistoryAtom<string> Server { get; } = new("127.0.0.1", $"{HistoryKey}.Server");
+    public HistoryAtom<decimal> Port { get; } = new(40000, $"{HistoryKey}.Port");
     public Atom<string> Filter { get; } = new("");   // not on the stack, and not meant to be
 }
 ```
@@ -32,9 +34,13 @@ asks to keep it, in which case the next run indexes it and adds to it.
 Memory holds the last `Capacity` steps. Older ones live in the file and are seeked to one at a time when
 an undo asks for them, so a long history costs an offset and a length per step rather than its values.
 
-The second argument to an atom names it in that file, and is how a step written by an earlier run finds
-its atom in this one. An atom without a name still undoes and redoes in memory; it simply is not written
-down.
+The second argument names the atom, and is how a step written by an earlier run finds its atom in this
+one. It is written in full rather than worked out from the code around it, so that renaming a class or a
+property does not quietly orphan a history that was kept.
+
+A name stands for one piece of state: claiming it again with the same kind of atom takes the slot over,
+which is what a screen's store rebuilt on the way back relies on, while claiming it with another kind is
+refused.
 
 Nothing here is needed to use atoms, and `Arlecchino` does not reference this package: without
 `UseHistory` nothing records a step, and the atoms that could feed a history allocate nothing for one.

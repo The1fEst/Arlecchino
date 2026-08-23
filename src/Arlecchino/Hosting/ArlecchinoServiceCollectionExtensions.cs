@@ -14,6 +14,7 @@ using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 using Arlecchino.Views;
+
 namespace Arlecchino.Hosting;
 
 /// <summary>Registers Arlecchino with the host's container.</summary>

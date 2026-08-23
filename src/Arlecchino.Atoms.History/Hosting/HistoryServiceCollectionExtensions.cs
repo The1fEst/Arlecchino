@@ -22,8 +22,6 @@ public static class HistoryServiceCollectionExtensions
     /// <exception cref="InvalidOperationException">Called twice; there is one history per application.</exception>
     public static IServiceCollection UseHistory(this IServiceCollection services, Action<HistoryOptions>? configure = null)
     {
-        ArgumentNullException.ThrowIfNull(services);
-
         if (services.Any(static registered => registered.ServiceType == typeof(HistoryOptions)))
         {
             throw new InvalidOperationException(

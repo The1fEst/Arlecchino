@@ -94,9 +94,23 @@ than against the one the design was drawn on.
   builder.Services.UseHistory(options => options.Keep = true);
   ```
 
-  A step names its atoms, and the atoms of this run answer to those names: a `HistoryAtom<T>` with a key
-  says so when it is created, the same way it says its steps. An atom nothing answers to, or a value of a
+  A step names its atoms, and the atoms of this run answer to those names: a `HistoryAtom<T>` says its
+  name when it is created, the same way it says its steps. An atom nothing answers to, or a value of a
   kind the file cannot read, ends the walk back rather than moving some atoms and not others.
+
+  The name is required and written in full, rather than worked out from the file and property it sits in.
+  A name that follows a rename would quietly orphan a history that was kept, and this repository renames
+  freely. A store names its atoms from one constant:
+
+  ```csharp
+  private const string HistoryKey = "Settings";
+
+  public HistoryAtom<string> Server { get; } = new("127.0.0.1", $"{HistoryKey}.Server");
+  ```
+
+  Claiming a name again with the same kind of atom takes the slot over — a screen's store is rebuilt every
+  time it is navigated back to, so that is ordinary rather than a mistake. Claiming it with another kind
+  is refused, since a step written by one would not even parse into the other.
 
   `HistoryFile.Writes<T>` is `Handles<T>` and takes the reader beside the writer, since a kind of value
   the file can write is one it has to read again. `Depth` and `CanUndo` count what the file holds, and

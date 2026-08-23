@@ -65,7 +65,7 @@ public sealed class PostedAtomTests
     public void APostedEditIsUndoneLikeAnyOther()
     {
         using var history = new AtomHistory();
-        var name = new HistoryAtom<string>("before");
+        var name = new HistoryAtom<string>("before", "Posted.Text");
 
         using var drawing = FrameThread.Claim();
 

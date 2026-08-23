@@ -21,8 +21,8 @@ Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>.HistoryAtomsSet(System.C
 Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>
 Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.HistoryAtomsStack(System.Collections.Generic.IReadOnlyList<T>? initial = null) -> void
 Arlecchino.Atoms.History.HistoryAtom<T>
-Arlecchino.Atoms.History.HistoryAtom<T>.HistoryAtom(T initial, string? key = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
-Arlecchino.Atoms.History.HistoryAtom<T>.Key.get -> string?
+Arlecchino.Atoms.History.HistoryAtom<T>.HistoryAtom(T initial, string! key, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.History.HistoryAtom<T>.Key.get -> string!
 Arlecchino.Atoms.History.HistoryAtom<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.HistoryFile
 Arlecchino.Atoms.History.HistoryFile.Count.get -> int
@@ -56,7 +56,7 @@ Arlecchino.Atoms.History.IValueReader.Read<T>(out T undone, out T redone) -> boo
 Arlecchino.Atoms.History.IValueWriter
 Arlecchino.Atoms.History.IValueWriter.Write<T>(T undone, T redone) -> bool
 Arlecchino.Atoms.History.IWritableAtomEdit
-Arlecchino.Atoms.History.IWritableAtomEdit.Key.get -> string?
+Arlecchino.Atoms.History.IWritableAtomEdit.Key.get -> string!
 Arlecchino.Atoms.History.IWritableAtomEdit.WriteTo(Arlecchino.Atoms.History.IValueWriter! writer) -> bool
 const Arlecchino.Atoms.History.HistoryFile.DefaultName = "arlecchino.history" -> string!
 static Arlecchino.Atoms.History.Hosting.HistoryServiceCollectionExtensions.UseHistory(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Arlecchino.Atoms.History.Hosting.HistoryOptions!>? configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

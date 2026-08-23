@@ -35,7 +35,7 @@ public sealed class FrameMemberTests
     [Fact]
     public void AnAtomIsNamedByTheTypeItTurnsOutToBeRatherThanTheBaseItIsCheckedIn()
     {
-        Atom<int> atom = new HistoryAtom<int>(0);
+        Atom<int> atom = new HistoryAtom<int>(0, "FrameMember.Count");
 
         Assert.Equal("Writing HistoryAtom`1", FrameMembers.Writing(atom));
     }

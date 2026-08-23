@@ -9,10 +9,15 @@ namespace Arlecchino.Tests.Atoms;
 
 public sealed class StateTests
 {
+    private const string TextKey = "State.Text";
+    private const string CountKey = "State.Count";
+    private const string PriceKey = "State.Price";
+    private const string FlagKey = "State.Flag";
+
     [Fact]
     public void WritingNotifiesSubscribers()
     {
-        var name = new HistoryAtom<string>("");
+        var name = new HistoryAtom<string>("", TextKey);
         var sightings = new List<string>();
 
         using var subscription = name.Subscribe(() => sightings.Add(name.Value));
@@ -26,7 +31,7 @@ public sealed class StateTests
     [Fact]
     public void WritingTheSameValueChangesNothing()
     {
-        var count = new HistoryAtom<int>(1);
+        var count = new HistoryAtom<int>(1, CountKey);
         var notices = 0;
 
         using var subscription = count.Subscribe(() => notices++);
@@ -39,7 +44,7 @@ public sealed class StateTests
     [Fact]
     public void DisposingStopsNotifications()
     {
-        var count = new HistoryAtom<int>(0);
+        var count = new HistoryAtom<int>(0, CountKey);
         var notices = 0;
 
         var subscription = count.Subscribe(() => notices++);
@@ -91,8 +96,8 @@ public sealed class StateTests
     [Fact]
     public void ComputedTracksWhatItReads()
     {
-        var first = new HistoryAtom<string>("a");
-        var second = new HistoryAtom<string>("b");
+        var first = new HistoryAtom<string>("a", TextKey);
+        var second = new HistoryAtom<string>("b", TextKey);
         var pair = new Computed<string>(() => first.Value + second.Value);
 
         Assert.Equal("ab", pair.Value);
@@ -107,7 +112,7 @@ public sealed class StateTests
     [Fact]
     public void ComputedNotifiesItsOwnSubscribers()
     {
-        var length = new HistoryAtom<int>(1);
+        var length = new HistoryAtom<int>(1, CountKey);
         var doubling = new Computed<int>(() => length.Value * 2);
         var notices = 0;
 
@@ -122,7 +127,7 @@ public sealed class StateTests
     [Fact]
     public void ComputedChainsThroughOtherComputed()
     {
-        var price = new HistoryAtom<decimal>(100);
+        var price = new HistoryAtom<decimal>(100, PriceKey);
         var withTax = new Computed<decimal>(() => price.Value * 1.2m);
         var whole = new Computed<int>(() => (int)Math.Round(withTax.Value));
 
@@ -136,7 +141,7 @@ public sealed class StateTests
     public void WritingRequestsARepaint()
     {
         using var app = new TestApplication();
-        var flag = new HistoryAtom<bool>(false);
+        var flag = new HistoryAtom<bool>(false, FlagKey);
 
         app.Repaint.TakeRequested();
         flag.Value = true;

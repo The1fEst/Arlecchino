@@ -327,5 +327,4 @@ public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
         _items.AddRange(items);
         Notify();
     }
-
 }

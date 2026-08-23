@@ -10,6 +10,7 @@ namespace Arlecchino.Tests.Atoms;
 public sealed class HistoryFileTests : IDisposable
 {
     private const string Key = "Settings.Server";
+    private const string UriKey = "Settings.Home";
 
     private readonly string _folder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
@@ -33,9 +34,7 @@ public sealed class HistoryFileTests : IDisposable
     {
         using var file = Scratch();
         using var history = new AtomHistory(file);
-        var atom = new HistoryAtom<string>("start", Key);
-
-        atom.Value = "changed";
+        new HistoryAtom<string>("start", Key).Value = "changed";
 
         var edit = SingleEdit(file);
 
@@ -45,26 +44,11 @@ public sealed class HistoryFileTests : IDisposable
     }
 
     [Fact]
-    public void AStepOfAnAtomNobodyNamedIsLeftOut()
-    {
-        using var file = Scratch();
-        using var history = new AtomHistory(file);
-        var atom = new HistoryAtom<string>("start");
-
-        atom.Value = "changed";
-
-        Assert.True(history.CanUndo);
-        Assert.False(file.Exists);
-    }
-
-    [Fact]
     public void AValueOfAKindTheFileWasNeverTaughtIsLeftOut()
     {
         using var file = Scratch();
         using var history = new AtomHistory(file);
-        var atom = new HistoryAtom<Uri>(new("https://one.example"), Key);
-
-        atom.Value = new("https://two.example");
+        new HistoryAtom<Uri>(new("https://one.example"), UriKey).Value = new("https://two.example");
 
         Assert.True(history.CanUndo);
         Assert.False(file.Exists);
@@ -76,12 +60,10 @@ public sealed class HistoryFileTests : IDisposable
         using var file = Scratch();
         file.Handles<Uri>(
             static (writer, value) => writer.WriteStringValue(value.ToString()),
-            static element => new Uri(element.GetString()!));
+            static element => new(element.GetString()!));
 
         using var history = new AtomHistory(file);
-        var atom = new HistoryAtom<Uri>(new("https://one.example"), Key);
-
-        atom.Value = new("https://two.example");
+        new HistoryAtom<Uri>(new("https://one.example"), UriKey).Value = new("https://two.example");
 
         Assert.Equal("https://two.example/", SingleEdit(file).GetProperty("to").GetString());
     }
@@ -96,12 +78,12 @@ public sealed class HistoryFileTests : IDisposable
         using var file = Scratch();
         using var history = new AtomHistory(file);
         var server = new HistoryAtom<string>("start", Key);
-        var draft = new HistoryAtom<string>("start");
+        var home = new HistoryAtom<Uri>(new("https://one.example"), UriKey);
 
         using (history.Group())
         {
             server.Value = "changed";
-            draft.Value = "changed";
+            home.Value = new("https://two.example");
         }
 
         Assert.True(history.CanUndo);
@@ -115,8 +97,10 @@ public sealed class HistoryFileTests : IDisposable
         using var history = new AtomHistory(file);
         var atom = new HistoryAtom<string>("start", Key);
 
-        atom.Value = "first";
-        atom.Value = "second";
+        foreach (var step in new[] { "first", "second" })
+        {
+            atom.Value = step;
+        }
 
         Assert.Equal(2, File.ReadAllLines(file.Path).Length);
     }
@@ -126,9 +110,7 @@ public sealed class HistoryFileTests : IDisposable
     {
         using var file = Scratch();
         using var history = new AtomHistory(file);
-        var atom = new Atom<string>("start");
-
-        atom.Value = "changed";
+        new Atom<string>("start").Value = "changed";
 
         Assert.False(history.CanUndo);
         Assert.False(file.Exists);
@@ -162,7 +144,7 @@ public sealed class HistoryFileTests : IDisposable
     public void TheScratchFileGoesWhenTheRunDoes()
     {
         var file = Scratch();
-        using (var history = new AtomHistory(file))
+        using (new AtomHistory(file))
         {
             new HistoryAtom<string>("start", Key).Value = "changed";
         }
@@ -178,7 +160,7 @@ public sealed class HistoryFileTests : IDisposable
     public void AKeptFileOutlivesTheRun()
     {
         var file = new HistoryFile(Path.Combine(_folder, "kept.undo"), keep: true);
-        using (var history = new AtomHistory(file))
+        using (new AtomHistory(file))
         {
             new HistoryAtom<string>("start", Key).Value = "changed";
         }

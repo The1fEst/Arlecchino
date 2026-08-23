@@ -27,7 +27,7 @@ public sealed class RobustnessTests
     public void NestedUndoGroups()
     {
         using var app = new TestApplication();
-        var value = new HistoryAtom<int>(0);
+        var value = new HistoryAtom<int>(0, "Robustness.Count");
 
         using (app.History.Group())
         {

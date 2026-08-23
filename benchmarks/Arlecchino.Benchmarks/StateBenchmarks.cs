@@ -13,7 +13,7 @@ public class StateBenchmarks
 
     private readonly List<IDisposable> _subscriptions = [];
     private readonly Atom<int> _plain = new(0);
-    private readonly HistoryAtom<int> _trackedAtom = new(0);
+    private readonly HistoryAtom<int> _trackedAtom = new(0, "Benchmarks.Count");
     private readonly Atom<int> _watchedAtom = new(0);
     private readonly Atom<string> _first = new("first");
     private readonly Atom<string> _second = new("second");

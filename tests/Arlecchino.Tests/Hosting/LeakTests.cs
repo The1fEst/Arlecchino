@@ -89,7 +89,7 @@ public sealed class LeakTests
 
     public sealed class CounterStore : IArlecchinoStore
     {
-        public Atom<int> Count { get; } = new Atom<int>(0);
+        public Atom<int> Count { get; } = new(0);
     }
 
     public sealed class DraftStore : IArlecchinoScopedStore, IDisposable

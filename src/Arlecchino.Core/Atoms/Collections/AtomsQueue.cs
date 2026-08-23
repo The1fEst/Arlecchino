@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
@@ -267,5 +268,4 @@ public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>
         _items.AddRange(items);
         Notify();
     }
-
 }

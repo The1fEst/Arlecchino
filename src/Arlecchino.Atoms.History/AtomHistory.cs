@@ -149,7 +149,7 @@ public sealed class AtomHistory : IDisposable
 
         Undo(edits);
 
-        _redoStack.Push(new Step(edits, _floor));
+        _redoStack.Push(new(edits, _floor));
         return true;
     }
 

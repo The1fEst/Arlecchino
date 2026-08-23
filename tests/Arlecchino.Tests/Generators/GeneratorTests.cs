@@ -51,7 +51,7 @@ public sealed class GeneratorTests
 
         public sealed class SettingsStore : IArlecchinoStore
         {
-            public Atom<string> Profile { get; } = new HistoryAtom<string>("");
+            public Atom<string> Profile { get; } = new HistoryAtom<string>("", "SettingsStore.Profile");
         }
 
         public sealed class DraftStore : IArlecchinoScopedStore
@@ -425,7 +425,7 @@ public sealed class GeneratorTests
             {
                 public sealed class SettingsStore : IArlecchinoStore
                 {
-                    public Atom<string> Profile { get; } = new HistoryAtom<string>("");
+                    public Atom<string> Profile { get; } = new HistoryAtom<string>("", "SettingsStore.Profile");
                 }
             }
             """;

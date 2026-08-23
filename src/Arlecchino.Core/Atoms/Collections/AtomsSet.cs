@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
@@ -316,5 +317,4 @@ public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
-
 }

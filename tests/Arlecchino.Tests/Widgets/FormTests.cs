@@ -14,6 +14,9 @@ namespace Arlecchino.Tests.Widgets;
 
 public sealed class FormTests
 {
+    private const string TextKey = "Form.Text";
+    private const string FlagKey = "Form.Flag";
+
     private static Form CreateForm(
         TestApplication app,
         Atom<string> name,
@@ -40,7 +43,7 @@ public sealed class FormTests
     public void FieldsAreDrawnAsLabelAndValue()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new HistoryAtom<string>(""), new HistoryAtom<bool>(true)));
+        var frame = Show(app, CreateForm(app, new HistoryAtom<string>("", TextKey), new HistoryAtom<bool>(true, FlagKey)));
 
         Assert.Contains("Name = ", frame, StringComparison.Ordinal);
         Assert.Contains("Flag = Yes", frame, StringComparison.Ordinal);
@@ -51,7 +54,7 @@ public sealed class FormTests
     public void EmptyValuesFallBackToTheEmptyString()
     {
         using var app = new TestApplication();
-        var frame = Show(app, CreateForm(app, new HistoryAtom<string>(""), new HistoryAtom<bool>(false)));
+        var frame = Show(app, CreateForm(app, new HistoryAtom<string>("", TextKey), new HistoryAtom<bool>(false, FlagKey)));
 
         Assert.Contains($"Name = {app.Options.Strings.Empty()}", frame, StringComparison.Ordinal);
     }
@@ -60,7 +63,7 @@ public sealed class FormTests
     public void ArrowsMoveTheSelection()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new HistoryAtom<string>(""), new HistoryAtom<bool>(false));
+        var form = CreateForm(app, new HistoryAtom<string>("", TextKey), new HistoryAtom<bool>(false, FlagKey));
 
         Assert.Equal(0, form.SelectedIndex);
 
@@ -75,8 +78,8 @@ public sealed class FormTests
     public void ConfirmOpensTheModalOfTheField()
     {
         using var app = new TestApplication();
-        var name = new HistoryAtom<string>("");
-        var form = CreateForm(app, name, new HistoryAtom<bool>(false));
+        var name = new HistoryAtom<string>("", TextKey);
+        var form = CreateForm(app, name, new HistoryAtom<bool>(false, FlagKey));
 
         form.Handle(new(ConsoleKey.Enter));
 
@@ -92,8 +95,8 @@ public sealed class FormTests
     public void ToggleFieldWritesBackThroughItsModal()
     {
         using var app = new TestApplication();
-        var flag = new HistoryAtom<bool>(true);
-        var form = CreateForm(app, new HistoryAtom<string>(""), flag);
+        var flag = new HistoryAtom<bool>(true, FlagKey);
+        var form = CreateForm(app, new HistoryAtom<string>("", TextKey), flag);
 
         form.Handle(new(ConsoleKey.DownArrow));
         form.Handle(new(ConsoleKey.Enter));
@@ -110,8 +113,8 @@ public sealed class FormTests
     public void EraseResetsTheField()
     {
         using var app = new TestApplication();
-        var name = new HistoryAtom<string>("filled");
-        var form = CreateForm(app, name, new HistoryAtom<bool>(false));
+        var name = new HistoryAtom<string>("filled", TextKey);
+        var form = CreateForm(app, name, new HistoryAtom<bool>(false, FlagKey));
 
         form.Handle(new(ConsoleKey.Backspace));
 
@@ -122,7 +125,7 @@ public sealed class FormTests
     public void ActionRunsAndCanNavigate()
     {
         using var app = new TestApplication();
-        var form = CreateForm(app, new HistoryAtom<string>(""), new HistoryAtom<bool>(false), () => ViewKind.Other);
+        var form = CreateForm(app, new HistoryAtom<string>("", TextKey), new HistoryAtom<bool>(false, FlagKey), () => ViewKind.Other);
 
         form.Handle(new(ConsoleKey.DownArrow));
         form.Handle(new(ConsoleKey.DownArrow));
@@ -136,8 +139,8 @@ public sealed class FormTests
         using var app = new TestApplication();
         var ran = false;
         var form = CreateForm(app,
-            new HistoryAtom<string>(""),
-            new HistoryAtom<bool>(false),
+            new HistoryAtom<string>("", TextKey),
+            new HistoryAtom<bool>(false, FlagKey),
             () =>
             {
                 ran = true;
@@ -156,8 +159,8 @@ public sealed class FormTests
     public void ClickSelectsAndTheSecondClickActivates()
     {
         using var app = new TestApplication();
-        var name = new HistoryAtom<string>("");
-        var form = CreateForm(app, name, new HistoryAtom<bool>(false));
+        var name = new HistoryAtom<string>("", TextKey);
+        var form = CreateForm(app, name, new HistoryAtom<bool>(false, FlagKey));
 
         var lines = Show(app, form).Split("\r\n");
         var flagRow = Array.FindIndex(lines, line => line.Contains("Flag", StringComparison.Ordinal));
@@ -175,9 +178,9 @@ public sealed class FormTests
     public void EditingThroughAFieldCanBeUndone()
     {
         using var app = new TestApplication();
-        var name = new HistoryAtom<string>("before");
+        var name = new HistoryAtom<string>("before", TextKey);
 
-        var form = CreateForm(app, name, new HistoryAtom<bool>(false));
+        var form = CreateForm(app, name, new HistoryAtom<bool>(false, FlagKey));
 
         form.Handle(new(ConsoleKey.Enter));
         app.Type("after");
@@ -197,8 +200,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>(""), help: static () => "help for first"),
-                Field.Text(static () => "Second", new HistoryAtom<string>(""), help: static () => "help for second"),
+                Field.Text(static () => "First", new HistoryAtom<string>("", TextKey), help: static () => "help for first"),
+                Field.Text(static () => "Second", new HistoryAtom<string>("", TextKey), help: static () => "help for second"),
             ],
         };
 
@@ -216,8 +219,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>("one")),
-                Field.Text(static () => "Second", new HistoryAtom<string>("two")),
+                Field.Text(static () => "First", new HistoryAtom<string>("one", TextKey)),
+                Field.Text(static () => "Second", new HistoryAtom<string>("two", TextKey)),
             ],
         };
 
@@ -235,8 +238,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>(""), help: static () => "help for first"),
-                Field.Text(static () => "Second", new HistoryAtom<string>("")),
+                Field.Text(static () => "First", new HistoryAtom<string>("", TextKey), help: static () => "help for first"),
+                Field.Text(static () => "Second", new HistoryAtom<string>("", TextKey)),
             ],
         };
 
@@ -271,7 +274,7 @@ public sealed class FormTests
     public void PathFieldOpensTheFilePicker()
     {
         using var app = new TestApplication();
-        var folder = new HistoryAtom<string>("");
+        var folder = new HistoryAtom<string>("", TextKey);
         var form = new Form(app.State, app.Options)
         {
             Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],
@@ -287,7 +290,7 @@ public sealed class FormTests
     public void AnEmptyPathFieldOpensThePickerWhereItWasTold()
     {
         using var app = new TestApplication();
-        var folder = new HistoryAtom<string>("");
+        var folder = new HistoryAtom<string>("", TextKey);
 
         Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
 
@@ -298,7 +301,7 @@ public sealed class FormTests
     public void APathFieldThatHasAValueOpensThere()
     {
         using var app = new TestApplication();
-        var folder = new HistoryAtom<string>("D:/games/saves");
+        var folder = new HistoryAtom<string>("D:/games/saves", TextKey);
 
         Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
 
@@ -309,7 +312,7 @@ public sealed class FormTests
     public void WhereToStartIsAskedForWhenThePickerOpens()
     {
         using var app = new TestApplication();
-        var folder = new HistoryAtom<string>("");
+        var folder = new HistoryAtom<string>("", TextKey);
         var last = new[] { "D:/first" };
 
         var field = Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, () => last[0]);
@@ -328,7 +331,7 @@ public sealed class FormTests
     public void APathFieldWithNowhereToStartIsStillOpened()
     {
         using var app = new TestApplication();
-        var folder = new HistoryAtom<string>("");
+        var folder = new HistoryAtom<string>("", TextKey);
 
         Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true));
 

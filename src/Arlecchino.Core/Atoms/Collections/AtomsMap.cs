@@ -335,5 +335,4 @@ public class AtomsMap<TKey, TValue> : AtomsCollectionBase, IReadableAtom<IReadOn
 
         Notify();
     }
-
 }

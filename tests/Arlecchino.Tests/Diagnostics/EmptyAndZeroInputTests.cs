@@ -111,14 +111,15 @@ public sealed class EmptyAndZeroInputTests
     public void AHistoryAskedToKeepNothingKeepsOneStep()
     {
         using var app = new TestApplication();
-        var value = new HistoryAtom<int>(0);
+        var value = new HistoryAtom<int>(0, "Empty.Count");
 
         app.History.Capacity = 0;
         value.Value = 1;
         value.Value = 2;
 
         Assert.True(app.History.CanUndo);
-        Assert.Equal(1, app.History.Depth);
+        Assert.True(app.History.Undo());
+        Assert.Equal(1, value.Value);
     }
 
     [Fact]

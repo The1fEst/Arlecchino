@@ -60,17 +60,17 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
         Keep = keep;
 
         Handles<string>(static (writer, value) => writer.WriteStringValue(value), static element => element.GetString()!);
-        Handles<bool>(static (writer, value) => writer.WriteBooleanValue(value), static element => element.GetBoolean());
-        Handles<int>(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetInt32());
-        Handles<long>(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetInt64());
-        Handles<double>(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetDouble());
-        Handles<decimal>(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetDecimal());
-        Handles<Guid>(static (writer, value) => writer.WriteStringValue(value), static element => element.GetGuid());
-        Handles<DateTimeOffset>(static (writer, value) => writer.WriteStringValue(value), static element => element.GetDateTimeOffset());
-        Handles<DateOnly>(
+        Handles(static (writer, value) => writer.WriteBooleanValue(value), static element => element.GetBoolean());
+        Handles(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetInt32());
+        Handles(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetInt64());
+        Handles(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetDouble());
+        Handles(static (writer, value) => writer.WriteNumberValue(value), static element => element.GetDecimal());
+        Handles(static (writer, value) => writer.WriteStringValue(value), static element => element.GetGuid());
+        Handles(static (writer, value) => writer.WriteStringValue(value), static element => element.GetDateTimeOffset());
+        Handles(
             static (writer, value) => writer.WriteStringValue(value.ToString("O", CultureInfo.InvariantCulture)),
             static element => DateOnly.Parse(element.GetString()!, CultureInfo.InvariantCulture));
-        Handles<TimeOnly>(
+        Handles(
             static (writer, value) => writer.WriteStringValue(value.ToString("O", CultureInfo.InvariantCulture)),
             static element => TimeOnly.Parse(element.GetString()!, CultureInfo.InvariantCulture));
     }
@@ -105,9 +105,6 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
     /// <param name="read">Reads one value back from what was written.</param>
     public void Handles<T>(Action<Utf8JsonWriter, T> write, Func<JsonElement, T> read)
     {
-        ArgumentNullException.ThrowIfNull(write);
-        ArgumentNullException.ThrowIfNull(read);
-
         lock (_writing)
         {
             _writers[typeof(T)] = write;
@@ -216,8 +213,6 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
     /// <returns><c>true</c> when the step was written, <c>false</c> when it was skipped.</returns>
     public bool Write(IReadOnlyList<IAtomEdit> edits)
     {
-        ArgumentNullException.ThrowIfNull(edits);
-
         lock (_writing)
         {
             if (_disposed || edits.Count == 0 || !CanTake(edits))
@@ -403,14 +398,12 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
         {
             foreach (var edit in edits)
             {
-                if (edit is not IWritableAtomEdit writable ||
-                    writable.Key is not { Length: > 0 } key ||
-                    !writable.WriteTo(this))
+                if (edit is not IWritableAtomEdit writable || !writable.WriteTo(this))
                 {
                     return false;
                 }
 
-                _step.Add((writable, key));
+                _step.Add((writable, writable.Key));
             }
 
             return true;
@@ -446,8 +439,8 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
 
     private void Open()
     {
-        _stream ??= new FileStream(Path, FileMode.Append, FileAccess.Write, FileShare.Read);
-        _json ??= new Utf8JsonWriter(_stream);
+        _stream ??= new(Path, FileMode.Append, FileAccess.Write, FileShare.Read);
+        _json ??= new(_stream);
     }
 
     private void Close()

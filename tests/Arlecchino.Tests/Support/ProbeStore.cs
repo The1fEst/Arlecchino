@@ -5,7 +5,7 @@ namespace Arlecchino.Tests.Support;
 
 public sealed class ProbeStore : IArlecchinoStore
 {
-    public Atom<string> Name { get; } = new Atom<string>("probe");
+    public Atom<string> Name { get; } = new("probe");
 }
 
 public sealed class ScopedProbeStore : IArlecchinoScopedStore
