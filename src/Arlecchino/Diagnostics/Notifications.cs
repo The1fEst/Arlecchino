@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms.Collections;
 using Arlecchino.Hosting;
 
 namespace Arlecchino.Diagnostics;
@@ -126,7 +126,7 @@ public sealed class Notification
 /// </summary>
 public sealed class Notifications
 {
-    private readonly LocalAtomsList<Notification> _entries = new();
+    private readonly AtomsList<Notification> _entries = new();
     private readonly ArlecchinoOptions _options;
     private readonly TimeProvider _time;
 
@@ -242,7 +242,7 @@ public sealed class Notifications
     public void Settle(Notification entry, string text, NotificationLevel level = NotificationLevel.Information)
     {
         entry.Complete(text, level, _time.GetUtcNow());
-        _entries.Touch();
+        _entries.Refresh();
     }
 
     /// <summary>

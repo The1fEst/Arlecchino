@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms;
 using Arlecchino.Forms;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering.Colors;
@@ -17,7 +17,7 @@ public sealed class FieldTests
     public void ASecretIsShownAsDotsAndTypedInFull()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<string>("hunter2");
+        var value = new Atom<string>("hunter2");
         var field = Field.Secret(static () => "Password", value);
 
         Assert.Equal("•••••••", field.Value());
@@ -32,7 +32,7 @@ public sealed class FieldTests
     [Fact]
     public void ClearingASecretEmptiesIt()
     {
-        var value = new LocalAtom<string>("hunter2");
+        var value = new Atom<string>("hunter2");
 
         Field.Secret(static () => "Password", value).Reset!();
 
@@ -43,7 +43,7 @@ public sealed class FieldTests
     public void ANumberIsSteppedAndWrittenBack()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<decimal>(12);
+        var value = new Atom<decimal>(12);
         var field = Field.Number(static () => "Count", value, 0, 100);
 
         Assert.Equal("12", field.Value());
@@ -58,7 +58,7 @@ public sealed class FieldTests
     [Fact]
     public void ClearingANumberPutsItBackToTheLowestAllowed()
     {
-        var value = new LocalAtom<decimal>(80);
+        var value = new Atom<decimal>(80);
 
         Field.Number(static () => "Count", value, 5, 100).Reset!();
 
@@ -69,7 +69,7 @@ public sealed class FieldTests
     public void ASliderWritesWhatItWasDraggedTo()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<decimal>(50);
+        var value = new Atom<decimal>(50);
         var field = Field.Slider(static () => "Volume", value, 0, 100);
 
         field.Activate!(app.State);
@@ -83,7 +83,7 @@ public sealed class FieldTests
     public void AChoiceWritesWhatWasPicked()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<string>("alpha");
+        var value = new Atom<string>("alpha");
         var field = Field.Choice(static () => "Kind", _options, value);
 
         Assert.Equal("alpha", field.Value());
@@ -99,7 +99,7 @@ public sealed class FieldTests
     public void AMultiChoiceWritesEverythingThatWasTicked()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<IReadOnlyList<string>>(["alpha"]);
+        var value = new Atom<IReadOnlyList<string>>(["alpha"]);
         var field = Field.MultiChoice(static () => "Columns",
             _options,
             value,
@@ -118,7 +118,7 @@ public sealed class FieldTests
     [Fact]
     public void ClearingAMultiChoiceLeavesNothingTicked()
     {
-        var value = new LocalAtom<IReadOnlyList<string>>(["alpha", "beta"]);
+        var value = new Atom<IReadOnlyList<string>>(["alpha", "beta"]);
 
         Field.MultiChoice(static () => "Columns", _options, value, static choice => string.Join(", ", choice))
             .Reset!();
@@ -130,7 +130,7 @@ public sealed class FieldTests
     public void ADateIsShownAndWritten()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<DateOnly>(new(2026, 7, 26));
+        var value = new Atom<DateOnly>(new(2026, 7, 26));
         var field = Field.Date(static () => "When", value, static date => date.ToString("yyyy-MM-dd"));
 
         Assert.Contains("2026", field.Value(), StringComparison.Ordinal);
@@ -148,7 +148,7 @@ public sealed class FieldTests
     public void ATimeIsShownAndWritten()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<TimeOnly>(new(9, 30));
+        var value = new Atom<TimeOnly>(new(9, 30));
         var field = Field.Time(static () => "At", value, static time => time.ToString("HH:mm"));
 
         Assert.Contains("30", field.Value(), StringComparison.Ordinal);
@@ -164,7 +164,7 @@ public sealed class FieldTests
     public void AColourIsShownAsItsHexAndWritten()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<Rgb>(new(255, 0, 0));
+        var value = new Atom<Rgb>(new(255, 0, 0));
         var field = Field.Color(static () => "Accent", value);
 
         Assert.Contains("#", field.Value(), StringComparison.Ordinal);
@@ -178,7 +178,7 @@ public sealed class FieldTests
     [Fact]
     public void HelpIsEmptyUnlessItIsGiven()
     {
-        var value = new LocalAtom<string>("");
+        var value = new Atom<string>("");
 
         Assert.Equal("", Field.Text(static () => "Name", value).Help());
         Assert.Equal("the one on the badge",

@@ -1,34 +1,47 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
 
-namespace Arlecchino.Atoms;
+namespace Arlecchino.Atoms.History;
 
 /// <summary>
-/// Undo and redo over every <see cref="TrackedAtom{T}"/>, collecting from the moment it exists. The stack is
-/// bounded, and steps past <see cref="Capacity"/> fall off the far end.
+/// Undo and redo over every <see cref="HistoryAtom{T}"/> and history collection, collecting from the moment
+/// it exists. The stack is bounded, and steps past <see cref="Capacity"/> fall off the far end.
+///
+/// There is one of it per application, which is why it cannot be built from outside: atoms announce
+/// themselves to the whole process rather than to a history they were given, so a second one would collect
+/// the same edits into a second stack, and undoing on one would leave the other holding steps whose values
+/// no longer match what the atoms hold. The host registers it; take it from the container.
 /// </summary>
 public sealed class AtomHistory : IDisposable
 {
-    private readonly LinkedList<List<IAtomEdit>> _undoable = new();
-    private readonly Stack<List<IAtomEdit>> _redoable = new();
+    private readonly LinkedList<List<IAtomEdit>> _undoStack = new();
+    private readonly Stack<List<IAtomEdit>> _redoStack = new();
+
+    private readonly HistoryFile? _file;
 
     private int _capacity = 200;
     private List<IAtomEdit>? _group;
     private int _openGroups;
     private bool _isReplaying;
 
-    /// <summary>Starts collecting edits.</summary>
-    public AtomHistory()
+    /// <summary>Starts collecting edits, keeping them for as long as the process runs.</summary>
+    internal AtomHistory() : this(null) { }
+
+    /// <summary>Starts collecting edits, and writes down the ones it can.</summary>
+    /// <param name="file">
+    /// Where steps are written as they are made, or <c>null</c> to keep them in memory only. Only steps of
+    /// atoms carrying a <see cref="HistoryAtom{T}.Key"/> are written; see <see cref="HistoryFile"/>.
+    /// </param>
+    internal AtomHistory(HistoryFile? file)
     {
-        AtomChanges.Recorded += Record;
+        _file = file;
+
+        HistoryChanges.Recorded += Record;
     }
 
     /// <summary>
     /// How many steps to keep. Lowering it drops the oldest straight away; anything below one step is
-    /// treated as one, since a history that remembers nothing is what <see cref="LocalAtom{T}"/> is
-    /// for.
+    /// treated as one, since a history that remembers nothing is what a plain <c>Atom&lt;T&gt;</c> is for.
     /// </summary>
     public int Capacity
     {
@@ -41,13 +54,13 @@ public sealed class AtomHistory : IDisposable
     }
 
     /// <summary>Whether there is a step to undo.</summary>
-    public bool CanUndo => _undoable.Count > 0;
+    public bool CanUndo => _undoStack.Count > 0;
 
     /// <summary>Whether an undone step can be applied again.</summary>
-    public bool CanRedo => _redoable.Count > 0;
+    public bool CanRedo => _redoStack.Count > 0;
 
     /// <summary>How many steps are on the undo stack.</summary>
-    public int Depth => _undoable.Count;
+    public int Depth => _undoStack.Count;
 
     /// <summary>
     /// Collects everything written until the scope is disposed into a single undo step. A group opened
@@ -65,13 +78,13 @@ public sealed class AtomHistory : IDisposable
     /// <returns><c>false</c> when there was nothing to undo.</returns>
     public bool Undo()
     {
-        if (_undoable.Count == 0)
+        if (_undoStack.Count == 0)
         {
             return false;
         }
 
-        var step = _undoable.Last!.Value;
-        _undoable.RemoveLast();
+        var step = _undoStack.Last!.Value;
+        _undoStack.RemoveLast();
 
         Replay(() =>
         {
@@ -81,7 +94,7 @@ public sealed class AtomHistory : IDisposable
             }
         });
 
-        _redoable.Push(step);
+        _redoStack.Push(step);
         return true;
     }
 
@@ -89,12 +102,12 @@ public sealed class AtomHistory : IDisposable
     /// <returns><c>false</c> when there was nothing to redo.</returns>
     public bool Redo()
     {
-        if (_redoable.Count == 0)
+        if (_redoStack.Count == 0)
         {
             return false;
         }
 
-        var step = _redoable.Pop();
+        var step = _redoStack.Pop();
         Replay(() =>
         {
             foreach (var edit in step)
@@ -103,7 +116,7 @@ public sealed class AtomHistory : IDisposable
             }
         });
 
-        _undoable.AddLast(step);
+        _undoStack.AddLast(step);
         return true;
     }
 
@@ -113,12 +126,12 @@ public sealed class AtomHistory : IDisposable
     /// </summary>
     public void Clear()
     {
-        _undoable.Clear();
-        _redoable.Clear();
+        _undoStack.Clear();
+        _redoStack.Clear();
     }
 
     /// <summary>Stops collecting edits.</summary>
-    public void Dispose() => AtomChanges.Recorded -= Record;
+    public void Dispose() => HistoryChanges.Recorded -= Record;
 
     private void Record(IAtomEdit edit)
     {
@@ -133,21 +146,23 @@ public sealed class AtomHistory : IDisposable
             return;
         }
 
-        Remember([edit]);
+        Push([edit]);
     }
 
-    private void Remember(List<IAtomEdit> step)
+    private void Push(List<IAtomEdit> step)
     {
-        _undoable.AddLast(step);
-        _redoable.Clear();
+        _undoStack.AddLast(step);
+        _redoStack.Clear();
         DropOldest();
+
+        _file?.Write(step);
     }
 
     private void DropOldest()
     {
-        while (_undoable.Count > _capacity)
+        while (_undoStack.Count > _capacity)
         {
-            _undoable.RemoveFirst();
+            _undoStack.RemoveFirst();
         }
     }
 
@@ -181,7 +196,7 @@ public sealed class AtomHistory : IDisposable
             return;
         }
 
-        Remember(group);
+        Push(group);
     }
 
     private sealed class GroupScope : IDisposable

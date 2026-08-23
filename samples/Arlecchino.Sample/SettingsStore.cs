@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 
 namespace Arlecchino.Sample;
 
@@ -14,21 +14,21 @@ public sealed class SettingsStore : IArlecchinoStore
         IsComplete = new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
     }
 
-    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+    public Atom<string> Profile { get; } = new HistoryAtom<string>("", "SettingsStore.Profile");
 
-    public Atom<string> Passphrase { get; } = new TrackedAtom<string>("");
+    public Atom<string> Passphrase { get; } = new HistoryAtom<string>("");
 
-    public Atom<string> Theme { get; } = new TrackedAtom<string>("dark");
+    public Atom<string> Theme { get; } = new HistoryAtom<string>("dark", "SettingsStore.Theme");
 
-    public Atom<decimal> Volume { get; } = new TrackedAtom<decimal>(60);
+    public Atom<decimal> Volume { get; } = new HistoryAtom<decimal>(60, "SettingsStore.Volume");
 
-    public Atom<bool> Fullscreen { get; } = new TrackedAtom<bool>(true);
+    public Atom<bool> Fullscreen { get; } = new HistoryAtom<bool>(true, "SettingsStore.Fullscreen");
 
-    public Atom<IReadOnlyList<string>> Columns { get; } = new TrackedAtom<IReadOnlyList<string>>(["Name", "Size"]);
+    public Atom<IReadOnlyList<string>> Columns { get; } = new HistoryAtom<IReadOnlyList<string>>(["Name", "Size"]);
 
-    public Atom<DateOnly> Release { get; } = new TrackedAtom<DateOnly>(new(2026, 7, 25));
+    public Atom<DateOnly> Release { get; } = new HistoryAtom<DateOnly>(new(2026, 7, 25), "SettingsStore.Release");
 
-    public Atom<Rgb> Accent { get; } = new TrackedAtom<Rgb>(new(63, 169, 245));
+    public Atom<Rgb> Accent { get; } = new HistoryAtom<Rgb>(new(63, 169, 245));
 
     public Computed<string> Summary { get; }
 

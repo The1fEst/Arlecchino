@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Arlecchino.Atoms.Local;
 
 namespace Arlecchino.Atoms;
 
@@ -12,7 +11,7 @@ namespace Arlecchino.Atoms;
 /// <code>
 /// public sealed class SettingsStore : ArlecchinoAsyncStore
 /// {
-///     public TrackedAtom&lt;string&gt; Server { get; } = new("127.0.0.1");
+///     public HistoryAtom&lt;string&gt; Server { get; } = new("127.0.0.1", "SettingsStore.Server");
 ///
 ///     protected override async Task LoadAsync(CancellationToken token)
 ///     {
@@ -29,8 +28,8 @@ namespace Arlecchino.Atoms;
 public abstract class ArlecchinoAsyncStore : IArlecchinoStore
 {
     private readonly TaskCompletionSource _ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
-    private readonly LocalAtom<LoadStatus> _status = new(LoadStatus.Idle);
-    private readonly LocalAtom<Exception?> _error = new(null);
+    private readonly Atom<LoadStatus> _status = new(LoadStatus.Idle);
+    private readonly Atom<Exception?> _error = new(null);
 
     /// <summary>Creates the store.</summary>
     protected ArlecchinoAsyncStore()

@@ -1,26 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
 /// A list held as one piece of application state, changed in place. Every change notifies what reads the
-/// list, marks the frame stale and records an undo step.
+/// list and marks the frame stale.
 /// </summary>
-/// <seealso cref="TrackedAtomsList{T}"/>
-/// <seealso cref="LocalAtomsList{T}"/>
 /// <typeparam name="T">What the list holds.</typeparam>
-public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
+public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
 {
     private readonly List<T> _items;
     private readonly ReadOnlyCollection<T> _view;
     private readonly IEqualityComparer<T> _comparer;
-    private readonly Listeners _listeners = new();
-
-    private string? _member;
 
     /// <summary>Creates the list.</summary>
     /// <param name="initial">What it starts with; empty when omitted. It is copied, not held.</param>
@@ -28,15 +21,12 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// How <see cref="Remove"/> finds an item, and how writing to the indexer decides it changed
     /// nothing; the default comparer for <typeparamref name="T"/> is used when omitted.
     /// </param>
-    protected AtomsList(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
+    public AtomsList(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
     {
         _items = initial is null ? [] : [.. initial];
         _view = _items.AsReadOnly();
         _comparer = comparer ?? EqualityComparer<T>.Default;
     }
-
-    /// <summary>Whether changes of this list enter the undo history.</summary>
-    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// What the list holds now, as a live view rather than a copy. It is read-only all the way down, so
@@ -83,16 +73,14 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
             var previous = _items[index];
             _items[index] = value;
 
-            if (Recording)
+            if (IsObserved)
             {
-                AtomChanges.NotifyRecorded(new Replaced(this, index, previous, value));
+                OnReplaced(index, previous, value);
             }
 
             Notify();
         }
     }
-
-    private bool Recording => RecordsHistory && AtomChanges.IsRecording;
 
     /// <summary>Puts an item at the end.</summary>
     /// <param name="item">What to add.</param>
@@ -117,9 +105,9 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.AddRange(items);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, index, [.. items]));
+            OnInserted(index, [.. items]);
         }
 
         Notify();
@@ -134,9 +122,9 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.Insert(index, item);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, index, [item]));
+            OnInserted(index, [item]);
         }
 
         Notify();
@@ -177,13 +165,13 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 
         Verify();
 
-        var removedItems = Recording ? _items.GetRange(index, count).ToArray() : [];
+        var removedItems = IsObserved ? _items.GetRange(index, count).ToArray() : [];
 
         _items.RemoveRange(index, count);
 
         if (removedItems.Length > 0)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, index, removedItems));
+            OnRemoved(index, removedItems);
         }
 
         Notify();
@@ -197,7 +185,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// about it. Replace the item instead, unless its identity has to survive the change.
     /// </summary>
     /// <exception cref="InvalidOperationException">Called from off the drawing thread.</exception>
-    public void Touch()
+    public void Refresh()
     {
         Verify();
         Notify();
@@ -211,21 +199,21 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What the list should hold instead.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        if (Holds(items))
+        if (ContentsEqual(items))
         {
             return;
         }
 
         Verify();
 
-        var previous = _items.ToArray();
+        var previous = IsObserved ? _items.ToArray() : [];
 
         _items.Clear();
         _items.AddRange(items);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Swapped(this, previous, [.. items]));
+            OnReset(previous, [.. items]);
         }
 
         Notify();
@@ -249,11 +237,6 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         return -1;
     }
 
-    /// <summary>Calls back whenever the contents change.</summary>
-    /// <param name="listener">What to run on change.</param>
-    /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
-
     /// <summary>
     /// Walks what the list holds, so <c>foreach</c> over the list itself reads the way it does over a list.
     /// Reach for <see cref="Value"/> where a sequence is wanted, LINQ included.
@@ -266,7 +249,7 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         return _items.GetEnumerator();
     }
 
-    private bool Holds(IReadOnlyList<T> items)
+    private bool ContentsEqual(IReadOnlyList<T> items)
     {
         if (items.Count != _items.Count)
         {
@@ -284,45 +267,60 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         return true;
     }
 
-    private void Track()
-    {
-        if (AtomTracking.IsCapturing)
-        {
-            AtomTracking.NoteRead(Subscribe);
-        }
-    }
+    /// <summary>Called once items went in, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they went.</param>
+    /// <param name="items">What went in.</param>
+    protected virtual void OnInserted(int index, T[] items) { }
 
-    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
+    /// <summary>Called once items came out, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they were.</param>
+    /// <param name="items">What came out.</param>
+    protected virtual void OnRemoved(int index, T[] items) { }
 
-    private void Notify()
-    {
-        _listeners.Notify();
+    /// <summary>Called once an item was replaced, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Which one.</param>
+    /// <param name="previous">What was there.</param>
+    /// <param name="current">What is there now.</param>
+    protected virtual void OnReplaced(int index, T previous, T current) { }
 
-        AtomChanges.NotifyWritten();
-    }
+    /// <summary>Called once the contents were swapped wholesale, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="previous">What the list held.</param>
+    /// <param name="current">What it holds now.</param>
+    protected virtual void OnReset(T[] previous, T[] current) { }
 
-    private void InsertSilently(int index, T[] items)
+    /// <summary>Puts items in without reaching <see cref="OnInserted"/>.</summary>
+    /// <param name="index">Where they go.</param>
+    /// <param name="items">What to put in.</param>
+    protected void InsertSilently(int index, T[] items)
     {
         Verify();
         _items.InsertRange(index, items);
         Notify();
     }
 
-    private void RemoveSilently(int index, int count)
+    /// <summary>Takes items out without reaching <see cref="OnRemoved"/>.</summary>
+    /// <param name="index">Where to start.</param>
+    /// <param name="count">How many.</param>
+    protected void RemoveSilently(int index, int count)
     {
         Verify();
         _items.RemoveRange(index, count);
         Notify();
     }
 
-    private void SetSilently(int index, T item)
+    /// <summary>Replaces an item without reaching <see cref="OnReplaced"/>.</summary>
+    /// <param name="index">Which one.</param>
+    /// <param name="item">What to put there.</param>
+    protected void SetSilently(int index, T item)
     {
         Verify();
         _items[index] = item;
         Notify();
     }
 
-    private void ResetSilently(T[] items)
+    /// <summary>Swaps the contents without reaching <see cref="OnReset"/>.</summary>
+    /// <param name="items">What the list should hold.</param>
+    protected void ResetSilently(T[] items)
     {
         Verify();
         _items.Clear();
@@ -330,85 +328,4 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
         Notify();
     }
 
-    private sealed class Inserted : IAtomEdit
-    {
-        private readonly AtomsList<T> _list;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Inserted(AtomsList<T> list, int index, T[] items)
-        {
-            _list = list;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _list;
-
-        public void Undo() => _list.RemoveSilently(_index, _items.Length);
-
-        public void Redo() => _list.InsertSilently(_index, _items);
-    }
-
-    private sealed class Removed : IAtomEdit
-    {
-        private readonly AtomsList<T> _list;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Removed(AtomsList<T> list, int index, T[] items)
-        {
-            _list = list;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _list;
-
-        public void Undo() => _list.InsertSilently(_index, _items);
-
-        public void Redo() => _list.RemoveSilently(_index, _items.Length);
-    }
-
-    private sealed class Replaced : IAtomEdit
-    {
-        private readonly AtomsList<T> _list;
-        private readonly int _index;
-        private readonly T _oldValue;
-        private readonly T _newValue;
-
-        public Replaced(AtomsList<T> list, int index, T oldValue, T newValue)
-        {
-            _list = list;
-            _index = index;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _list;
-
-        public void Undo() => _list.SetSilently(_index, _oldValue);
-
-        public void Redo() => _list.SetSilently(_index, _newValue);
-    }
-
-    private sealed class Swapped : IAtomEdit
-    {
-        private readonly AtomsList<T> _list;
-        private readonly T[] _oldValue;
-        private readonly T[] _newValue;
-
-        public Swapped(AtomsList<T> list, T[] oldValue, T[] newValue)
-        {
-            _list = list;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _list;
-
-        public void Undo() => _list.ResetSilently(_oldValue);
-
-        public void Redo() => _list.ResetSilently(_newValue);
-    }
 }

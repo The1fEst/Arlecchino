@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.Collections;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Xunit;
 using Arlecchino.Tests.Support;
 
@@ -14,7 +15,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ChangingTheListTellsWhoeverIsListening()
     {
-        var rows = new LocalAtomsList<string>(["alpha"]);
+        var rows = new AtomsList<string>(["alpha"]);
         var changes = 0;
 
         using var subscription = rows.Subscribe(() => changes++);
@@ -34,7 +35,7 @@ public sealed class AtomsListTests
     public void AChangeAsksForAFrameTheWayAnAtomWriteDoes()
     {
         using var repaint = new Repaint();
-        var rows = new LocalAtomsList<string>();
+        var rows = new AtomsList<string>();
 
         repaint.TakeRequested();
 
@@ -49,7 +50,7 @@ public sealed class AtomsListTests
     public void AListInAPlainAtomIsWhatThisTypeIsFor()
     {
         using var repaint = new Repaint();
-        var mutable = new LocalAtom<List<string>>([]);
+        var mutable = new Atom<List<string>>([]);
 
         repaint.TakeRequested();
 
@@ -65,7 +66,7 @@ public sealed class AtomsListTests
     [Fact]
     public void AddingSeveralItemsIsOneChange()
     {
-        var rows = new LocalAtomsList<int>([1]);
+        var rows = new AtomsList<int>([1]);
         var changes = 0;
 
         using var subscription = rows.Subscribe(() => changes++);
@@ -79,7 +80,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ChangingNothingNotifiesNobody()
     {
-        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var rows = new AtomsList<string>(["alpha", "beta"]);
         var changes = 0;
 
         using var subscription = rows.Subscribe(() => changes++);
@@ -100,7 +101,7 @@ public sealed class AtomsListTests
     [Fact]
     public void WhatItHoldsCannotBeChangedBehindItsBack()
     {
-        var rows = new LocalAtomsList<string>(["alpha"]);
+        var rows = new AtomsList<string>(["alpha"]);
         var value = rows.Value;
 
         Assert.IsNotType<List<string>>(value);
@@ -115,7 +116,7 @@ public sealed class AtomsListTests
     public void ItIsCopiedOutOfWhatItWasGiven()
     {
         var initial = new List<string> { "alpha" };
-        var rows = new LocalAtomsList<string>(initial);
+        var rows = new AtomsList<string>(initial);
 
         initial.Add("beta");
 
@@ -125,7 +126,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ADerivedValueFollowsTheList()
     {
-        var rows = new LocalAtomsList<int>([1, 2]);
+        var rows = new AtomsList<int>([1, 2]);
         var total = new Computed<int>(() =>
         {
             var sum = 0;
@@ -152,7 +153,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ItIsWalkedWithoutCopyingIt()
     {
-        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var rows = new AtomsList<string>(["alpha", "beta"]);
         var visits = new List<string>();
 
         foreach (var row in rows)
@@ -171,7 +172,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ChangingItWhileWalkingItIsCaught()
     {
-        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var rows = new AtomsList<string>(["alpha", "beta"]);
 
         Assert.Throws<InvalidOperationException>(() =>
         {
@@ -193,7 +194,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ASnapshotIsWhatSurvivesBeingChangedUnderneath()
     {
-        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var rows = new AtomsList<string>(["alpha", "beta"]);
 
         string[] snapshot = [.. rows.Value];
 
@@ -208,7 +209,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ARangeGoesOutAsOneChange()
     {
-        var rows = new LocalAtomsList<int>([0, 1, 2, 3, 4]);
+        var rows = new AtomsList<int>([0, 1, 2, 3, 4]);
         var changes = 0;
 
         using var subscription = rows.Subscribe(() => changes++);
@@ -227,7 +228,7 @@ public sealed class AtomsListTests
     public void ATrimmedListIsFilledBackInWhereItWasCut()
     {
         using var history = new AtomHistory();
-        var rows = new TrackedAtomsList<string>(["one", "two", "three", "four"]);
+        var rows = new HistoryAtomsList<string>(["one", "two", "three", "four"]);
 
         rows.RemoveRange(1, 2);
 
@@ -246,7 +247,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ARangeOutsideTheListIsRefused()
     {
-        var rows = new LocalAtomsList<string>(["alpha", "beta"]);
+        var rows = new AtomsList<string>(["alpha", "beta"]);
 
         Assert.Throws<ArgumentOutOfRangeException>(() => rows.RemoveRange(1, 5));
         Assert.Throws<ArgumentOutOfRangeException>(() => rows.RemoveRange(-1, 1));
@@ -257,7 +258,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ReadingHowManyOrWhichIsEnoughToDependOnIt()
     {
-        var rows = new LocalAtomsList<string>(["alpha"]);
+        var rows = new AtomsList<string>(["alpha"]);
         var summary = new Computed<string>(() => $"{rows.Count}: {rows[0]}");
 
         Assert.Equal("1: alpha", summary.Value);
@@ -272,11 +273,11 @@ public sealed class AtomsListTests
     }
 
     [Fact]
-    public void ATrackedAtomsListGoesOnTheUndoStackAndALocalOneDoesNot()
+    public void AHistoryAtomsListGoesOnTheUndoStackAndAPlainOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new TrackedAtomsList<string>();
-        var ignored = new LocalAtomsList<string>();
+        var survivors = new HistoryAtomsList<string>();
+        var ignored = new AtomsList<string>();
 
         ignored.Add("nothing to undo");
 
@@ -296,7 +297,7 @@ public sealed class AtomsListTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var rows = new TrackedAtomsList<string>(["alpha", "beta"]);
+        var rows = new HistoryAtomsList<string>(["alpha", "beta"]);
 
         rows.Insert(1, "middle");
         rows[0] = "first";
@@ -327,7 +328,7 @@ public sealed class AtomsListTests
     public void APageAddedAtOnceComesBackAsAPage()
     {
         using var history = new AtomHistory();
-        var rows = new TrackedAtomsList<int>([0]);
+        var rows = new HistoryAtomsList<int>([0]);
 
         rows.Add([1, 2, 3]);
 
@@ -342,7 +343,7 @@ public sealed class AtomsListTests
     public void AListThatWasClearedIsFilledBackIn()
     {
         using var history = new AtomHistory();
-        var rows = new TrackedAtomsList<string>(["alpha", "beta"]);
+        var rows = new HistoryAtomsList<string>(["alpha", "beta"]);
 
         rows.Clear();
 
@@ -357,13 +358,13 @@ public sealed class AtomsListTests
     public void ItRefusesToBeChangedFromAnotherThread()
     {
         using var app = new TestApplication();
-        var rows = new LocalAtomsList<string>();
+        var rows = new AtomsList<string>();
 
         using var drawing = FrameThread.Claim();
 
         var failure = Refused(() => rows.Add("alpha"));
 
-        Assert.Contains("LocalAtomsList`1", failure.Message, StringComparison.Ordinal);
+        Assert.Contains("AtomsList`1", failure.Message, StringComparison.Ordinal);
         Assert.Empty(rows.Value);
     }
 
@@ -371,7 +372,7 @@ public sealed class AtomsListTests
     public void PostingIsHowBackgroundWorkFillsIt()
     {
         using var app = new TestApplication();
-        var rows = new LocalAtomsList<string>();
+        var rows = new AtomsList<string>();
 
         using var drawing = FrameThread.Claim();
 
@@ -390,7 +391,7 @@ public sealed class AtomsListTests
     [Fact]
     public void ItFindsAnItemTheWayItRemovesOne()
     {
-        var rows = new LocalAtomsList<string>(["Alpha"], StringComparer.OrdinalIgnoreCase);
+        var rows = new AtomsList<string>(["Alpha"], StringComparer.OrdinalIgnoreCase);
 
         Assert.Equal(0, rows.IndexOf("ALPHA"));
         Assert.Equal(-1, rows.IndexOf("beta"));

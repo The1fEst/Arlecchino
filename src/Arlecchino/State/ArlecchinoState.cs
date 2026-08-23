@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms.Collections;
 using Arlecchino.Diagnostics;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Modals;
@@ -30,7 +30,7 @@ public class ArlecchinoState
     private readonly Repaint _repaint;
     private readonly Notifications _notifications;
 
-    private readonly LocalAtomsList<Modal> _modals = new();
+    private readonly AtomsList<Modal> _modals = new();
 
     /// <summary>Creates the state.</summary>
     /// <param name="repaint">Signal raised whenever anything here changes.</param>

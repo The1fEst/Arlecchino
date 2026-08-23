@@ -1,2 +1,3 @@
 #nullable enable
+Arlecchino.Diagnostics.ArlecchinoReport.ArlecchinoReport(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.Navigation.Navigator! navigator, Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Rendering.Surface! surface) -> void
 Arlecchino.Hosting.IArlecchinoStartup.StartAsync() -> System.Threading.Tasks.Task<Arlecchino.Navigation.ViewRoute>!

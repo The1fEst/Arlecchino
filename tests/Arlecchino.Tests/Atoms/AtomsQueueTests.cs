@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.Collections;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Xunit;
 using Arlecchino.Tests.Support;
 
@@ -14,7 +15,7 @@ public sealed class AtomsQueueTests
     [Fact]
     public void WhatJoinsTheBackLeavesFromTheFront()
     {
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
 
         waiting.Enqueue("first");
         waiting.Enqueue("second");
@@ -31,7 +32,7 @@ public sealed class AtomsQueueTests
     [Fact]
     public void SeveralJoiningAtOnceIsOneChange()
     {
-        var waiting = new LocalAtomsQueue<int>([1]);
+        var waiting = new AtomsQueue<int>([1]);
         var changes = 0;
 
         using var subscription = waiting.Subscribe(() => changes++);
@@ -49,7 +50,7 @@ public sealed class AtomsQueueTests
     [Fact]
     public void AnEmptyQueueAnswersRatherThanThrowsWhenAskedNicely()
     {
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
 
         Assert.True(waiting.IsEmpty);
         Assert.False(waiting.TryDequeue(out _));
@@ -70,7 +71,7 @@ public sealed class AtomsQueueTests
     public void AChangeAsksForAFrame()
     {
         using var repaint = new Repaint();
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
 
         repaint.TakeRequested();
 
@@ -83,7 +84,7 @@ public sealed class AtomsQueueTests
     public void WhatWasTakenGoesBackToTheFront()
     {
         using var history = new AtomHistory();
-        var waiting = new TrackedAtomsQueue<string>(["first", "second"]);
+        var waiting = new HistoryAtomsQueue<string>(["first", "second"]);
 
         var item = waiting.Dequeue();
 
@@ -103,7 +104,7 @@ public sealed class AtomsQueueTests
     public void ALocalQueueStaysOffTheHistory()
     {
         using var history = new AtomHistory();
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
 
         waiting.Enqueue("work");
         waiting.Dequeue();
@@ -115,7 +116,7 @@ public sealed class AtomsQueueTests
     public void ARebuiltQueueIsOneStep()
     {
         using var history = new AtomHistory();
-        var waiting = new TrackedAtomsQueue<int>([1, 2]);
+        var waiting = new HistoryAtomsQueue<int>([1, 2]);
 
         waiting.Reset([9]);
 
@@ -134,7 +135,7 @@ public sealed class AtomsQueueTests
     public void DroppingWhatIsWaitingIsOneStep()
     {
         using var history = new AtomHistory();
-        var waiting = new TrackedAtomsQueue<string>(["first", "second"]);
+        var waiting = new HistoryAtomsQueue<string>(["first", "second"]);
 
         waiting.Clear();
 
@@ -153,7 +154,7 @@ public sealed class AtomsQueueTests
     [Fact]
     public void ItIsWalkedFrontFirst()
     {
-        var waiting = new LocalAtomsQueue<string>(["first", "second"]);
+        var waiting = new AtomsQueue<string>(["first", "second"]);
         var visits = new List<string>();
 
         foreach (var item in waiting)
@@ -167,7 +168,7 @@ public sealed class AtomsQueueTests
     [Fact]
     public void ADerivedValueFollowsIt()
     {
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
         var next = new Computed<string>(() => waiting.TryPeek(out var item) ? item : "idle");
 
         Assert.Equal("idle", next.Value);
@@ -181,7 +182,7 @@ public sealed class AtomsQueueTests
     public void ItRefusesToBeChangedFromAnotherThread()
     {
         using var app = new TestApplication();
-        var waiting = new LocalAtomsQueue<string>();
+        var waiting = new AtomsQueue<string>();
 
         using var drawing = FrameThread.Claim();
 

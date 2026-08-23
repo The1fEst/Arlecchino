@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using Arlecchino.Atoms;
 using Arlecchino.Hosting;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering;
@@ -24,7 +23,6 @@ public sealed class ArlecchinoReport
     private readonly ArlecchinoState _state;
     private readonly ArlecchinoOptions _options;
     private readonly Surface _surface;
-    private readonly AtomHistory _history;
 
     /// <summary>Creates the report. Resolved from the container like any other service.</summary>
     /// <param name="terminal">The terminal being drawn to.</param>
@@ -32,21 +30,18 @@ public sealed class ArlecchinoReport
     /// <param name="state">Modals and the output row.</param>
     /// <param name="options">How the application was configured.</param>
     /// <param name="surface">The frame, for its size.</param>
-    /// <param name="history">The undo stack, for its depth.</param>
     public ArlecchinoReport(
         IArlecchinoTerminal terminal,
         Navigator navigator,
         ArlecchinoState state,
         ArlecchinoOptions options,
-        Surface surface,
-        AtomHistory history)
+        Surface surface)
     {
         _terminal = terminal;
         _navigator = navigator;
         _state = state;
         _options = options;
         _surface = surface;
-        _history = history;
     }
 
     /// <summary>
@@ -84,7 +79,6 @@ public sealed class ArlecchinoReport
             _state.Modals.Count == 0
                 ? "none"
                 : string.Join(" over ", _state.Modals.Select(static modal => modal.GetType().Name)));
-        Line(report, "undo depth", _history.Depth.ToString(CultureInfo.InvariantCulture));
 
         Section(report, "Options");
         Line(report, "minimum size", $"{_options.MinimumWidth}×{_options.MinimumHeight}");

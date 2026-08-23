@@ -1,12 +1,11 @@
 using Arlecchino.State;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
 
 namespace Arlecchino.Tests.Support;
 
 public sealed class ProbeStore : IArlecchinoStore
 {
-    public Atom<string> Name { get; } = new LocalAtom<string>("probe");
+    public Atom<string> Name { get; } = new Atom<string>("probe");
 }
 
 public sealed class ScopedProbeStore : IArlecchinoScopedStore

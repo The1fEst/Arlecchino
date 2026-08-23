@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using Xunit;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 
 namespace Arlecchino.Tests.Atoms;
 
@@ -12,8 +11,8 @@ public sealed class StateHistoryTests
     public void StatesOptOutOfTheHistoryOneAtATime()
     {
         using var history = new AtomHistory();
-        var atom = new TrackedAtom<string>("");
-        var plain = new LocalAtom<string>("");
+        var atom = new HistoryAtom<string>("");
+        var plain = new Atom<string>("");
 
         Assert.False(history.CanUndo);
 
@@ -28,7 +27,7 @@ public sealed class StateHistoryTests
     public void UndoAndRedoWalkTheEdits()
     {
         using var history = new AtomHistory();
-        var name = new TrackedAtom<string>("start");
+        var name = new HistoryAtom<string>("start");
 
         Assert.False(history.CanUndo);
 
@@ -56,7 +55,7 @@ public sealed class StateHistoryTests
     public void UndoingDoesNotRecordItselfAsAnEdit()
     {
         using var history = new AtomHistory();
-        var count = new TrackedAtom<int>(0);
+        var count = new HistoryAtom<int>(0);
 
         Assert.Equal(0, history.Depth);
 
@@ -72,7 +71,7 @@ public sealed class StateHistoryTests
     public void WritingAfterUndoDropsTheRedoBranch()
     {
         using var history = new AtomHistory();
-        var count = new TrackedAtom<int>(0);
+        var count = new HistoryAtom<int>(0);
 
         Assert.False(history.CanRedo);
 
@@ -88,8 +87,8 @@ public sealed class StateHistoryTests
     public void GroupedEditsUndoTogether()
     {
         using var history = new AtomHistory();
-        var first = new TrackedAtom<string>("");
-        var second = new TrackedAtom<string>("");
+        var first = new HistoryAtom<string>("");
+        var second = new HistoryAtom<string>("");
 
         using (history.Group())
         {
@@ -110,7 +109,7 @@ public sealed class StateHistoryTests
     {
         using var history = new AtomHistory();
         history.Capacity = 3;
-        var text = new TrackedAtom<string>("");
+        var text = new HistoryAtom<string>("");
 
         for (var edit = 1; edit <= 10; edit++)
         {
@@ -128,7 +127,7 @@ public sealed class StateHistoryTests
     public void LoweringTheCapacityDropsWhatNoLongerFits()
     {
         using var history = new AtomHistory();
-        var text = new TrackedAtom<string>("");
+        var text = new HistoryAtom<string>("");
 
         for (var edit = 1; edit <= 5; edit++)
         {
@@ -145,7 +144,7 @@ public sealed class StateHistoryTests
     {
         using var history = new AtomHistory();
         history.Capacity = 2;
-        var text = new TrackedAtom<string>("");
+        var text = new HistoryAtom<string>("");
 
         for (var step = 1; step <= 3; step++)
         {
@@ -164,11 +163,11 @@ public sealed class StateHistoryTests
     {
         using var history = new AtomHistory();
         var owners = new List<object?>();
-        var count = new TrackedAtom<int>(0);
+        var count = new HistoryAtom<int>(0);
 
-        AtomChanges.Recorded += Collect;
+        HistoryChanges.Recorded += Collect;
         count.Value = 3;
-        AtomChanges.Recorded -= Collect;
+        HistoryChanges.Recorded -= Collect;
 
         Assert.Equal([count], owners);
 

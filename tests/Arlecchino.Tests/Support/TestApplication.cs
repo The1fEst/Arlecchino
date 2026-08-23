@@ -7,7 +7,7 @@ using Arlecchino.Rendering;
 using Arlecchino.State;
 using Arlecchino.Testing;
 using Arlecchino.Tests.Views;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.History;
 
 namespace Arlecchino.Tests.Support;
 

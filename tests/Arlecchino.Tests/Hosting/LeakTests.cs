@@ -1,6 +1,5 @@
 using System;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
 using Arlecchino.Navigation;
@@ -90,7 +89,7 @@ public sealed class LeakTests
 
     public sealed class CounterStore : IArlecchinoStore
     {
-        public Atom<int> Count { get; } = new LocalAtom<int>(0);
+        public Atom<int> Count { get; } = new Atom<int>(0);
     }
 
     public sealed class DraftStore : IArlecchinoScopedStore, IDisposable

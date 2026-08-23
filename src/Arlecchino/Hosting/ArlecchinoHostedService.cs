@@ -28,7 +28,6 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     private readonly Navigator _navigator;
     private readonly ArlecchinoOptions _options;
     private readonly IHostApplicationLifetime _lifetime;
-    private readonly AtomHistory _history;
     private readonly ILogger<ArlecchinoHostedService> _logger;
     private readonly IArlecchinoStartup[] _startups;
     private readonly ArlecchinoAsyncStore[] _stores;
@@ -49,7 +48,6 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// <param name="navigator">Holds the current view.</param>
     /// <param name="options">Settings gathered at startup.</param>
     /// <param name="lifetime">Used to stop the host on Ctrl+C or an unhandled error.</param>
-    /// <param name="history">Cleared before the first frame, so startup edits are not undoable.</param>
     /// <param name="logger">Where failures are reported, since the screen is not usable for that.</param>
     /// <param name="startups">Work to run before the first frame.</param>
     /// <param name="stores">Stores that load themselves; started as the application starts.</param>
@@ -62,7 +60,6 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         Navigator navigator,
         ArlecchinoOptions options,
         IHostApplicationLifetime lifetime,
-        AtomHistory history,
         ILogger<ArlecchinoHostedService> logger,
         IEnumerable<IArlecchinoStartup> startups,
         IEnumerable<ArlecchinoAsyncStore> stores,
@@ -72,7 +69,6 @@ internal sealed class ArlecchinoHostedService : BackgroundService
         _modes = modes;
         _handover = handover;
         _stores = [.. stores];
-        _history = history;
         _terminal = terminal;
         _screen = screen;
         _input = input;
@@ -91,8 +87,6 @@ internal sealed class ArlecchinoHostedService : BackgroundService
     /// <returns>A task that completes once the terminal has been restored.</returns>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _history.Clear();
-
         foreach (var store in _stores)
         {
             _ = store.RunAsync(StoreFailed, stoppingToken);

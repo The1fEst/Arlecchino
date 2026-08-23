@@ -184,8 +184,10 @@ public sealed class MouseTests
     [Fact]
     public void MouseIsOnlyTurnedOnWhenAsked()
     {
-        using var quiet = new TestApplication();
-        Assert.False(quiet.Terminal.IsMouseEnabled);
+        using (var quiet = new TestApplication())
+        {
+            Assert.False(quiet.Terminal.IsMouseEnabled);
+        }
 
         using var app = new TestApplication(configure: static builder => builder.UseMouse());
         Assert.True(app.Options.MouseInput);

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.Collections;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Xunit;
 
 namespace Arlecchino.Tests.Atoms;
@@ -12,7 +13,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void PuttingInWhatIsAlreadyThereChangesNothing()
     {
-        var set = new LocalAtomsSet<string>();
+        var set = new AtomsSet<string>();
         var changes = 0;
 
         using var subscription = set.Subscribe(() => changes++);
@@ -30,7 +31,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void TheTryingMembersSayWhetherAnythingHappened()
     {
-        var set = new LocalAtomsSet<string>();
+        var set = new AtomsSet<string>();
 
         Assert.True(set.TryAdd("alpha"));
         Assert.False(set.TryAdd("alpha"));
@@ -42,7 +43,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void SeveralGoingInAtOnceIsOneChange()
     {
-        var set = new LocalAtomsSet<string>(["alpha"]);
+        var set = new AtomsSet<string>(["alpha"]);
         var changes = 0;
 
         using var subscription = set.Subscribe(() => changes++);
@@ -62,7 +63,7 @@ public sealed class AtomsSetTests
     public void AChangeAsksForAFrame()
     {
         using var repaint = new Repaint();
-        var set = new LocalAtomsSet<string>();
+        var set = new AtomsSet<string>();
 
         repaint.TakeRequested();
 
@@ -74,7 +75,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void ItComparesTheWayItWasToldTo()
     {
-        var set = new LocalAtomsSet<string>(["Alpha"], StringComparer.OrdinalIgnoreCase);
+        var set = new AtomsSet<string>(["Alpha"], StringComparer.OrdinalIgnoreCase);
 
         Assert.True(set.Contains("ALPHA"));
         Assert.False(set.TryAdd("alpha"));
@@ -87,7 +88,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void WhatItHoldsCannotBeChangedBehindItsBack()
     {
-        var set = new LocalAtomsSet<string>(["alpha"]);
+        var set = new AtomsSet<string>(["alpha"]);
         var value = set.Value;
 
         Assert.IsNotType<HashSet<string>>(value);
@@ -104,7 +105,7 @@ public sealed class AtomsSetTests
     public void ItIsCopiedOutOfWhatItWasGiven()
     {
         var initial = new List<string> { "alpha" };
-        var set = new LocalAtomsSet<string>(initial);
+        var set = new AtomsSet<string>(initial);
 
         initial.Add("beta");
 
@@ -114,7 +115,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void ADerivedValueFollowsIt()
     {
-        var set = new LocalAtomsSet<string>();
+        var set = new AtomsSet<string>();
         var says = new Computed<string>(() => set.Contains("alpha") ? "marked" : "plain");
 
         Assert.Equal("plain", says.Value);
@@ -132,8 +133,8 @@ public sealed class AtomsSetTests
     public void ATrackedSetGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new TrackedAtomsSet<string>();
-        var ignored = new LocalAtomsSet<string>();
+        var survivors = new HistoryAtomsSet<string>();
+        var ignored = new AtomsSet<string>();
 
         ignored.Add("nothing to undo");
 
@@ -153,7 +154,7 @@ public sealed class AtomsSetTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var set = new TrackedAtomsSet<string>(["alpha"]);
+        var set = new HistoryAtomsSet<string>(["alpha"]);
 
         set.Add(["beta", "gamma"]);
         set.Remove("alpha");
@@ -179,7 +180,7 @@ public sealed class AtomsSetTests
     public void ClearingIsOneStepAndAnEmptySetChangesNothing()
     {
         using var history = new AtomHistory();
-        var set = new TrackedAtomsSet<string>(["alpha", "beta"]);
+        var set = new HistoryAtomsSet<string>(["alpha", "beta"]);
 
         set.Clear();
 
@@ -198,7 +199,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void ResettingToTheSameContentsChangesNothing()
     {
-        var set = new LocalAtomsSet<string>(["alpha", "beta"]);
+        var set = new AtomsSet<string>(["alpha", "beta"]);
         var changes = 0;
 
         using var subscription = set.Subscribe(() => changes++);
@@ -215,7 +216,7 @@ public sealed class AtomsSetTests
     [Fact]
     public void ItIsWalkedWithoutCopyingIt()
     {
-        var set = new LocalAtomsSet<int>([1, 2, 3]);
+        var set = new AtomsSet<int>([1, 2, 3]);
         var total = 0;
 
         foreach (var item in set)

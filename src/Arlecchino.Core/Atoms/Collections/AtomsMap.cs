@@ -2,26 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
 
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
 /// A map held as one piece of application state, changed in place the way <see cref="AtomsList{T}"/> is.
-/// Whether changes can be undone is decided by creating a <see cref="TrackedAtomsMap{TKey, TValue}"/> or a
-/// <see cref="LocalAtomsMap{TKey, TValue}"/>.
 /// </summary>
 /// <typeparam name="TKey">What the entries are looked up by.</typeparam>
 /// <typeparam name="TValue">What is kept against each key.</typeparam>
-public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
+public class AtomsMap<TKey, TValue> : AtomsCollectionBase, IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
     where TKey : notnull
 {
     private readonly Dictionary<TKey, TValue> _items;
     private readonly ReadOnlyDictionary<TKey, TValue> _view;
-    private readonly Listeners _listeners = new();
-
-    private string? _member;
 
     /// <summary>Creates the map.</summary>
     /// <param name="initial">What it starts with; empty when omitted. It is copied, not held.</param>
@@ -30,7 +23,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// omitted. Values are compared with their own default comparer, which is what decides that
     /// writing to one changed nothing.
     /// </param>
-    protected AtomsMap(IReadOnlyDictionary<TKey, TValue>? initial = null, IEqualityComparer<TKey>? comparer = null)
+    public AtomsMap(IReadOnlyDictionary<TKey, TValue>? initial = null, IEqualityComparer<TKey>? comparer = null)
     {
         _items = new(comparer);
         _view = _items.AsReadOnly();
@@ -45,9 +38,6 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
             _items[entry.Key] = entry.Value;
         }
     }
-
-    /// <summary>Whether changes of this map enter the undo history.</summary>
-    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// What the map holds now, as a live view rather than a copy. It is read-only all the way down, so every
@@ -102,16 +92,14 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
             _items[key] = value;
 
-            if (Recording)
+            if (IsObserved)
             {
-                AtomChanges.NotifyRecorded(new Replaced(this, key, previous, value));
+                OnReplaced(key, previous, value);
             }
 
             Notify();
         }
     }
-
-    private bool Recording => RecordsHistory && AtomChanges.IsRecording;
 
     private void Insert(TKey key, TValue value)
     {
@@ -119,9 +107,9 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
         _items[key] = value;
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Added(this, key, value));
+            OnAdded(key, value);
         }
 
         Notify();
@@ -176,9 +164,9 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
         _items.Remove(key);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, key, removed));
+            OnRemoved(key, removed);
         }
 
         Notify();
@@ -213,14 +201,14 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
     /// <param name="items">What the map should hold instead.</param>
     public void Reset(IReadOnlyDictionary<TKey, TValue> items)
     {
-        if (Holds(items))
+        if (ContentsEqual(items))
         {
             return;
         }
 
         Verify();
 
-        var previous = Snapshot();
+        var previous = IsObserved ? Snapshot() : [];
 
         _items.Clear();
 
@@ -229,9 +217,9 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
             _items[entry.Key] = entry.Value;
         }
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Swapped(this, previous, Snapshot()));
+            OnReset(previous, Snapshot());
         }
 
         Notify();
@@ -258,11 +246,6 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         return _items.TryGetValue(key, out value);
     }
 
-    /// <summary>Calls back whenever the contents change.</summary>
-    /// <param name="listener">What to run on change.</param>
-    /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
-
     /// <summary>
     /// Walks the entries, so <c>foreach</c> over the map itself reads the way it does over a dictionary.
     /// Reach for <see cref="Value"/> where a sequence is wanted, LINQ included.
@@ -279,7 +262,7 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 
     private KeyValuePair<TKey, TValue>[] Snapshot() => [.. _items];
 
-    private bool Holds(IReadOnlyDictionary<TKey, TValue> items)
+    private bool ContentsEqual(IReadOnlyDictionary<TKey, TValue> items)
     {
         if (items.Count != _items.Count)
         {
@@ -298,38 +281,49 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         return true;
     }
 
-    private void Track()
-    {
-        if (AtomTracking.IsCapturing)
-        {
-            AtomTracking.NoteRead(Subscribe);
-        }
-    }
+    /// <summary>Called once an entry went in under a key that held none, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="key">The key.</param>
+    /// <param name="value">What went in.</param>
+    protected virtual void OnAdded(TKey key, TValue value) { }
 
-    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
+    /// <summary>Called once an entry came out, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="key">The key.</param>
+    /// <param name="value">What came out.</param>
+    protected virtual void OnRemoved(TKey key, TValue value) { }
 
-    private void Notify()
-    {
-        _listeners.Notify();
+    /// <summary>Called once a value was replaced, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="key">The key.</param>
+    /// <param name="previous">What was kept there.</param>
+    /// <param name="current">What is kept there now.</param>
+    protected virtual void OnReplaced(TKey key, TValue previous, TValue current) { }
 
-        AtomChanges.NotifyWritten();
-    }
+    /// <summary>Called once the contents were swapped wholesale, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="previous">What the map held.</param>
+    /// <param name="current">What it holds now.</param>
+    protected virtual void OnReset(KeyValuePair<TKey, TValue>[] previous, KeyValuePair<TKey, TValue>[] current) { }
 
-    private void SetSilently(TKey key, TValue value)
+    /// <summary>Puts an entry in without reaching <see cref="OnAdded"/> or <see cref="OnReplaced"/>.</summary>
+    /// <param name="key">The key.</param>
+    /// <param name="value">What to keep there.</param>
+    protected void SetSilently(TKey key, TValue value)
     {
         Verify();
         _items[key] = value;
         Notify();
     }
 
-    private void RemoveSilently(TKey key)
+    /// <summary>Takes an entry out without reaching <see cref="OnRemoved"/>.</summary>
+    /// <param name="key">The key.</param>
+    protected void RemoveSilently(TKey key)
     {
         Verify();
         _items.Remove(key);
         Notify();
     }
 
-    private void ResetSilently(KeyValuePair<TKey, TValue>[] items)
+    /// <summary>Swaps the contents without reaching <see cref="OnReset"/>.</summary>
+    /// <param name="items">What the map should hold.</param>
+    protected void ResetSilently(KeyValuePair<TKey, TValue>[] items)
     {
         Verify();
         _items.Clear();
@@ -342,88 +336,4 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
         Notify();
     }
 
-    private sealed class Added : IAtomEdit
-    {
-        private readonly AtomsMap<TKey, TValue> _map;
-        private readonly TKey _key;
-        private readonly TValue _value;
-
-        public Added(AtomsMap<TKey, TValue> map, TKey key, TValue value)
-        {
-            _map = map;
-            _key = key;
-            _value = value;
-        }
-
-        public object Owner => _map;
-
-        public void Undo() => _map.RemoveSilently(_key);
-
-        public void Redo() => _map.SetSilently(_key, _value);
-    }
-
-    private sealed class Removed : IAtomEdit
-    {
-        private readonly AtomsMap<TKey, TValue> _map;
-        private readonly TKey _key;
-        private readonly TValue _value;
-
-        public Removed(AtomsMap<TKey, TValue> map, TKey key, TValue value)
-        {
-            _map = map;
-            _key = key;
-            _value = value;
-        }
-
-        public object Owner => _map;
-
-        public void Undo() => _map.SetSilently(_key, _value);
-
-        public void Redo() => _map.RemoveSilently(_key);
-    }
-
-    private sealed class Replaced : IAtomEdit
-    {
-        private readonly AtomsMap<TKey, TValue> _map;
-        private readonly TKey _key;
-        private readonly TValue _oldValue;
-        private readonly TValue _newValue;
-
-        public Replaced(AtomsMap<TKey, TValue> map, TKey key, TValue oldValue, TValue newValue)
-        {
-            _map = map;
-            _key = key;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _map;
-
-        public void Undo() => _map.SetSilently(_key, _oldValue);
-
-        public void Redo() => _map.SetSilently(_key, _newValue);
-    }
-
-    private sealed class Swapped : IAtomEdit
-    {
-        private readonly AtomsMap<TKey, TValue> _map;
-        private readonly KeyValuePair<TKey, TValue>[] _oldValue;
-        private readonly KeyValuePair<TKey, TValue>[] _newValue;
-
-        public Swapped(
-            AtomsMap<TKey, TValue> map,
-            KeyValuePair<TKey, TValue>[] oldValue,
-            KeyValuePair<TKey, TValue>[] newValue)
-        {
-            _map = map;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _map;
-
-        public void Undo() => _map.ResetSilently(_oldValue);
-
-        public void Redo() => _map.ResetSilently(_newValue);
-    }
 }

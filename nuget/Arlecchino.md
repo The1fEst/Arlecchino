@@ -97,13 +97,17 @@ Assert.Equal(ViewKind.About, app.Navigator.CurrentRoute);
 Work on a timer is tested the same way: `app.Advance(TimeSpan.FromSeconds(1))` moves the clock rather
 than sleeping, and the next frame shows what fell due.
 
-**Undo comes with the state.** State lives in atoms: writing one notifies whatever reads it and marks
-the frame stale, so nothing asks for a repaint by hand. Which edits can be taken back is decided by
-the type — a `TrackedAtom<T>` records its writes, a `LocalAtom<T>` does not — and `AtomHistory`,
-resolved from the container, walks them with `Undo` and `Redo`. Writes made inside `Group()` come
-back as one step, so a dialog that changes three fields is undone once. Many things at once are an
-`AtomsList<T>` or an `AtomsMap<TKey, TValue>`: they change in place — appended to, trimmed, keyed —
-and every call still notifies, still asks for a frame and still records a step of its own.
+**State lives in atoms.** Writing one notifies whatever reads it and marks the frame stale, so nothing
+asks for a repaint by hand. Many things at once are an `AtomsList<T>` or an
+`AtomsMap<TKey, TValue>`: they change in place — appended to, trimmed, keyed — and every call still
+notifies and still asks for a frame.
+
+**Undo is a package of its own.** `Arlecchino.Atoms.History` brings the atoms that record their writes,
+the stack that walks them with `Undo` and `Redo`, and a file the history is written to;
+`builder.Services.UseHistory()` turns it on. Which edits can be taken back is decided by the type — a
+`HistoryAtom<T>` records its writes, a plain `Atom<T>` does not — and writes made inside `Group()` come
+back as one step, so a dialog that changes three fields is undone once. An application that wants none
+of this does not take the package, and pays nothing for the atoms that could have fed it.
 
 **Logging does not draw over the frame.** An `ILogger` resolved from the container writes into a
 buffer the framework keeps, and `Ctrl+L` shows that buffer over the running application. The provider

@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
 using Xunit;
 using Arlecchino.Tests.Support;
 
@@ -140,7 +139,7 @@ public sealed class AsyncStoreTests
         private readonly SemaphoreSlim _release = new(0);
         private readonly SemaphoreSlim _finish = new(0);
 
-        public LocalAtom<string> Server { get; } = new("");
+        public Atom<string> Server { get; } = new("");
 
         public bool Fails { get; init; }
 

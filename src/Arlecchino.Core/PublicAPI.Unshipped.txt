@@ -1,1 +1,42 @@
 #nullable enable
+Arlecchino.Atoms.Atom<T>.Atom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.Atom<T>.WriteSilently(T value) -> void
+Arlecchino.Atoms.Collections.AtomsCollectionBase
+Arlecchino.Atoms.Collections.AtomsCollectionBase.AtomsCollectionBase() -> void
+Arlecchino.Atoms.Collections.AtomsCollectionBase.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.Collections.AtomsList<T>.InsertSilently(int index, T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.Refresh() -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.RemoveSilently(int index, int count) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.ResetSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.SetSilently(int index, T item) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.RemoveSilently(TKey key) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.ResetSilently(System.Collections.Generic.KeyValuePair<TKey, TValue>[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.SetSilently(TKey key, TValue value) -> void
+Arlecchino.Atoms.Collections.AtomsQueue<T>.InsertSilently(int index, T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsQueue<T>.RemoveSilently(int index, int count) -> void
+Arlecchino.Atoms.Collections.AtomsQueue<T>.ResetSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.AddSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.RemoveSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.ResetSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsStack<T>.InsertSilently(int index, T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsStack<T>.RemoveSilently(int index, int count) -> void
+Arlecchino.Atoms.Collections.AtomsStack<T>.ResetSilently(T[]! items) -> void
+virtual Arlecchino.Atoms.Atom<T>.OnWritten(T previous, T current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsCollectionBase.IsObserved.get -> bool
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnReplaced(int index, T previous, T current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnAdded(TKey key, TValue value) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnRemoved(TKey key, TValue value) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnReplaced(TKey key, TValue previous, TValue current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnReset(System.Collections.Generic.KeyValuePair<TKey, TValue>[]! previous, System.Collections.Generic.KeyValuePair<TKey, TValue>[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnAdded(T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnRemoved(T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnReset(T[]! previous, T[]! current) -> void

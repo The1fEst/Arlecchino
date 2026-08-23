@@ -2,36 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
-
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
 /// A queue held as one piece of application state, joined at the back and left from the front. It is touched
 /// only by the drawing thread, so background work hands its item over with <c>FrameThread.Post</c>.
 /// </summary>
-/// <seealso cref="TrackedAtomsQueue{T}"/>
-/// <seealso cref="LocalAtomsQueue{T}"/>
 /// <typeparam name="T">What waits in the queue.</typeparam>
-public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
+public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
 {
     private readonly List<T> _items;
     private readonly ReadOnlyCollection<T> _view;
-    private readonly Listeners _listeners = new();
-
-    private string? _member;
 
     /// <summary>Creates the queue.</summary>
     /// <param name="initial">What is already waiting, front first; empty when omitted. It is copied, not held.</param>
-    protected AtomsQueue(IReadOnlyList<T>? initial = null)
+    public AtomsQueue(IReadOnlyList<T>? initial = null)
     {
         _items = initial is null ? [] : [.. initial];
         _view = _items.AsReadOnly();
     }
-
-    /// <summary>Whether changes of this queue enter the undo history.</summary>
-    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// What is waiting now, front first, as a live view rather than a copy. It is read-only all the way
@@ -59,8 +48,6 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
     /// <summary>Whether nothing is waiting.</summary>
     public bool IsEmpty => Count == 0;
 
-    private bool Recording => RecordsHistory && AtomChanges.IsRecording;
-
     /// <summary>Puts something at the back.</summary>
     /// <param name="item">What to add.</param>
     public void Enqueue(T item)
@@ -69,9 +56,9 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.Add(item);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, _items.Count - 1, [item]));
+            OnInserted(_items.Count - 1, [item]);
         }
 
         Notify();
@@ -95,9 +82,9 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.AddRange(items);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, index, [.. items]));
+            OnInserted(index, [.. items]);
         }
 
         Notify();
@@ -167,30 +154,25 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What should be waiting instead, front first.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        if (Holds(items))
+        if (ContentsEqual(items))
         {
             return;
         }
 
         Verify();
 
-        var previous = _items.ToArray();
+        var previous = IsObserved ? _items.ToArray() : [];
 
         _items.Clear();
         _items.AddRange(items);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Swapped(this, previous, [.. items]));
+            OnReset(previous, [.. items]);
         }
 
         Notify();
     }
-
-    /// <summary>Calls back whenever what is waiting changes.</summary>
-    /// <param name="listener">What to run on change.</param>
-    /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
     /// <summary>
     /// Walks what is waiting, front first, so <c>foreach</c> over the queue itself reads the way it
@@ -213,9 +195,9 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.RemoveAt(0);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, 0, [item]));
+            OnRemoved(0, [item]);
         }
 
         Notify();
@@ -223,7 +205,7 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
         return item;
     }
 
-    private bool Holds(IReadOnlyList<T> items)
+    private bool ContentsEqual(IReadOnlyList<T> items)
     {
         if (items.Count != _items.Count)
         {
@@ -241,38 +223,44 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
         return true;
     }
 
-    private void Track()
-    {
-        if (AtomTracking.IsCapturing)
-        {
-            AtomTracking.NoteRead(Subscribe);
-        }
-    }
+    /// <summary>Called once items joined, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they joined, counting from the front.</param>
+    /// <param name="items">What joined, front first.</param>
+    protected virtual void OnInserted(int index, T[] items) { }
 
-    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
+    /// <summary>Called once items left, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they were, counting from the front.</param>
+    /// <param name="items">What left, front first.</param>
+    protected virtual void OnRemoved(int index, T[] items) { }
 
-    private void Notify()
-    {
-        _listeners.Notify();
+    /// <summary>Called once the contents were swapped wholesale, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="previous">What was waiting, front first.</param>
+    /// <param name="current">What is waiting now, front first.</param>
+    protected virtual void OnReset(T[] previous, T[] current) { }
 
-        AtomChanges.NotifyWritten();
-    }
-
-    private void InsertSilently(int index, T[] items)
+    /// <summary>Puts items in without reaching <see cref="OnInserted"/>.</summary>
+    /// <param name="index">Where they go, counting from the front.</param>
+    /// <param name="items">What to put in, front first.</param>
+    protected void InsertSilently(int index, T[] items)
     {
         Verify();
         _items.InsertRange(index, items);
         Notify();
     }
 
-    private void RemoveSilently(int index, int count)
+    /// <summary>Takes items out without reaching <see cref="OnRemoved"/>.</summary>
+    /// <param name="index">Where to start, counting from the front.</param>
+    /// <param name="count">How many.</param>
+    protected void RemoveSilently(int index, int count)
     {
         Verify();
         _items.RemoveRange(index, count);
         Notify();
     }
 
-    private void ResetSilently(T[] items)
+    /// <summary>Swaps the contents without reaching <see cref="OnReset"/>.</summary>
+    /// <param name="items">What the queue should hold, front first.</param>
+    protected void ResetSilently(T[] items)
     {
         Verify();
         _items.Clear();
@@ -280,63 +268,4 @@ public abstract class AtomsQueue<T> : IReadableAtom<IReadOnlyList<T>>
         Notify();
     }
 
-    private sealed class Inserted : IAtomEdit
-    {
-        private readonly AtomsQueue<T> _queue;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Inserted(AtomsQueue<T> queue, int index, T[] items)
-        {
-            _queue = queue;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _queue;
-
-        public void Undo() => _queue.RemoveSilently(_index, _items.Length);
-
-        public void Redo() => _queue.InsertSilently(_index, _items);
-    }
-
-    private sealed class Removed : IAtomEdit
-    {
-        private readonly AtomsQueue<T> _queue;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Removed(AtomsQueue<T> queue, int index, T[] items)
-        {
-            _queue = queue;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _queue;
-
-        public void Undo() => _queue.InsertSilently(_index, _items);
-
-        public void Redo() => _queue.RemoveSilently(_index, _items.Length);
-    }
-
-    private sealed class Swapped : IAtomEdit
-    {
-        private readonly AtomsQueue<T> _queue;
-        private readonly T[] _oldValue;
-        private readonly T[] _newValue;
-
-        public Swapped(AtomsQueue<T> queue, T[] oldValue, T[] newValue)
-        {
-            _queue = queue;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _queue;
-
-        public void Undo() => _queue.ResetSilently(_oldValue);
-
-        public void Redo() => _queue.ResetSilently(_newValue);
-    }
 }

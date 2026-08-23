@@ -14,8 +14,6 @@ using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 using Arlecchino.Views;
-using Arlecchino.Atoms;
-
 namespace Arlecchino.Hosting;
 
 /// <summary>Registers Arlecchino with the host's container.</summary>
@@ -84,7 +82,6 @@ public static class ArlecchinoServiceCollectionExtensions
         services.TryAddSingleton(TimeProvider.System);
         services.AddSingleton<Ticker>();
         services.AddSingleton<Notifications>();
-        services.AddSingleton<AtomHistory>();
         services.AddSingleton<ArlecchinoState>();
         services.AddSingleton<ArlecchinoReport>();
         services.AddScoped<ViewLifetime>();

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
 
 namespace Arlecchino.Processes;
 
@@ -13,13 +12,13 @@ public sealed record ProcessRow(int Id, string Name, long Memory, int Threads, T
 public sealed class ProcessTable : IArlecchinoStore
 {
     private readonly AsyncAtom<IReadOnlyList<ProcessRow>> _rows = new([]);
-    private readonly LocalAtom<string> _filter = new("");
+    private readonly Atom<string> _filter = new("");
 
     public AsyncAtom<IReadOnlyList<ProcessRow>> Rows => _rows;
 
     public Atom<string> Filter => _filter;
 
-    public Atom<ProcessRow?> SelectedRow { get; } = new LocalAtom<ProcessRow?>(null);
+    public Atom<ProcessRow?> SelectedRow { get; } = new(null);
 
     public DateTimeOffset LoadedAt { get; private set; }
 

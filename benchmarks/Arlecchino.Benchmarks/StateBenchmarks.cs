@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using Arlecchino.Atoms;
 using BenchmarkDotNet.Attributes;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 
 namespace Arlecchino.Benchmarks;
 
@@ -13,11 +12,11 @@ public class StateBenchmarks
     private const int Subscribers = 20;
 
     private readonly List<IDisposable> _subscriptions = [];
-    private readonly LocalAtom<int> _plain = new(0);
-    private readonly TrackedAtom<int> _trackedAtom = new(0);
-    private readonly LocalAtom<int> _watchedAtom = new(0);
-    private readonly LocalAtom<string> _first = new("first");
-    private readonly LocalAtom<string> _second = new("second");
+    private readonly Atom<int> _plain = new(0);
+    private readonly HistoryAtom<int> _trackedAtom = new(0);
+    private readonly Atom<int> _watchedAtom = new(0);
+    private readonly Atom<string> _first = new("first");
+    private readonly Atom<string> _second = new("second");
 
     private AtomHistory _history = null!;
     private Computed<int> _computedAtom = null!;

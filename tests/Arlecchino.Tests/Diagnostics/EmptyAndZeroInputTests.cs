@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 using Arlecchino.Hosting;
 using Arlecchino.Modals.Asking;
 using Arlecchino.Navigation;
@@ -111,7 +111,7 @@ public sealed class EmptyAndZeroInputTests
     public void AHistoryAskedToKeepNothingKeepsOneStep()
     {
         using var app = new TestApplication();
-        var value = new TrackedAtom<int>(0);
+        var value = new HistoryAtom<int>(0);
 
         app.History.Capacity = 0;
         value.Value = 1;

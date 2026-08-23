@@ -1,4 +1,4 @@
-namespace Arlecchino.Atoms;
+namespace Arlecchino.Atoms.History;
 
 /// <summary>
 /// One recorded change of one atom, as kept by <see cref="AtomHistory"/>. Replaying it does not

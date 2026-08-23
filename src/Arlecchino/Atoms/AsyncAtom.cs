@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Arlecchino.Atoms.Local;
 
 namespace Arlecchino.Atoms;
 
@@ -28,9 +27,9 @@ public enum LoadStatus : byte
 /// <typeparam name="T">What is being loaded.</typeparam>
 public sealed class AsyncAtom<T> : IReadableAtom<T?>
 {
-    private readonly LocalAtom<T?> _value;
-    private readonly LocalAtom<LoadStatus> _status = new(LoadStatus.Idle);
-    private readonly LocalAtom<Exception?> _error = new(null);
+    private readonly Atom<T?> _value;
+    private readonly Atom<LoadStatus> _status = new(LoadStatus.Idle);
+    private readonly Atom<Exception?> _error = new(null);
 
     private CancellationTokenSource? _running;
 

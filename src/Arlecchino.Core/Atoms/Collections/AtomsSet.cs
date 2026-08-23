@@ -1,25 +1,16 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
-
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
 /// A set held as one piece of application state, behaving as a <c>HashSet&lt;T&gt;</c> does: adding what is
 /// already there changes nothing. A walk of it is in no order, so sort it where the reader sees the order.
 /// </summary>
-/// <seealso cref="TrackedAtomsSet{T}"/>
-/// <seealso cref="LocalAtomsSet{T}"/>
 /// <typeparam name="T">What the set holds.</typeparam>
-public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
+public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
 {
     private readonly HashSet<T> _items;
     private readonly View _view;
-    private readonly Listeners _listeners = new();
-
-    private string? _member;
 
     /// <summary>Creates the set.</summary>
     /// <param name="initial">What it starts with; empty when omitted. It is copied, not held.</param>
@@ -27,7 +18,7 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     /// How items are compared; the default comparer for <typeparamref name="T"/> is used when
     /// omitted.
     /// </param>
-    protected AtomsSet(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
+    public AtomsSet(IReadOnlyList<T>? initial = null, IEqualityComparer<T>? comparer = null)
     {
         _items = new(comparer);
         _view = new(_items);
@@ -42,9 +33,6 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
             _items.Add(item);
         }
     }
-
-    /// <summary>Whether changes of this set enter the undo history.</summary>
-    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// What the set holds now, as a live view rather than a copy. It is read-only all the way down, so every
@@ -71,8 +59,6 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 
     /// <summary>Whether it holds nothing.</summary>
     public bool IsEmpty => Count == 0;
-
-    private bool Recording => RecordsHistory && AtomChanges.IsRecording;
 
     /// <summary>Puts something in. Putting in what is already there changes nothing.</summary>
     /// <param name="item">What to put in.</param>
@@ -108,9 +94,9 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
             _items.Add(item);
         }
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Added(this, [.. addedItems]));
+            OnAdded([.. addedItems]);
         }
 
         Notify();
@@ -130,9 +116,9 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 
         _items.Add(item);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Added(this, [item]));
+            OnAdded([item]);
         }
 
         Notify();
@@ -158,9 +144,9 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 
         _items.Remove(item);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, [item]));
+            OnRemoved([item]);
         }
 
         Notify();
@@ -189,14 +175,14 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
     /// <param name="items">What the set should hold instead.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        if (Holds(items))
+        if (ContentsEqual(items))
         {
             return;
         }
 
         Verify();
 
-        var previous = Snapshot();
+        var previous = IsObserved ? Snapshot() : [];
 
         _items.Clear();
 
@@ -205,18 +191,13 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
             _items.Add(item);
         }
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Swapped(this, previous, Snapshot()));
+            OnReset(previous, Snapshot());
         }
 
         Notify();
     }
-
-    /// <summary>Calls back whenever the contents change.</summary>
-    /// <param name="listener">What to run on change.</param>
-    /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
     /// <summary>
     /// Walks what the set holds, in no order it promises, so <c>foreach</c> over the set itself reads
@@ -233,7 +214,7 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 
     private T[] Snapshot() => [.. _items];
 
-    private bool Holds(IReadOnlyList<T> items)
+    private bool ContentsEqual(IReadOnlyList<T> items)
     {
         foreach (var item in items)
         {
@@ -253,24 +234,22 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
         return givenItems.Count == _items.Count;
     }
 
-    private void Track()
-    {
-        if (AtomTracking.IsCapturing)
-        {
-            AtomTracking.NoteRead(Subscribe);
-        }
-    }
+    /// <summary>Called once items went in, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="items">What went in, which is only what was not there already.</param>
+    protected virtual void OnAdded(T[] items) { }
 
-    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
+    /// <summary>Called once items came out, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="items">What came out.</param>
+    protected virtual void OnRemoved(T[] items) { }
 
-    private void Notify()
-    {
-        _listeners.Notify();
+    /// <summary>Called once the contents were swapped wholesale, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="previous">What the set held.</param>
+    /// <param name="current">What it holds now.</param>
+    protected virtual void OnReset(T[] previous, T[] current) { }
 
-        AtomChanges.NotifyWritten();
-    }
-
-    private void AddSilently(T[] items)
+    /// <summary>Puts items in without reaching <see cref="OnAdded"/>.</summary>
+    /// <param name="items">What to put in.</param>
+    protected void AddSilently(T[] items)
     {
         Verify();
 
@@ -282,7 +261,9 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
         Notify();
     }
 
-    private void RemoveSilently(T[] items)
+    /// <summary>Takes items out without reaching <see cref="OnRemoved"/>.</summary>
+    /// <param name="items">What to take out.</param>
+    protected void RemoveSilently(T[] items)
     {
         Verify();
 
@@ -294,7 +275,9 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
         Notify();
     }
 
-    private void ResetSilently(T[] items)
+    /// <summary>Swaps the contents without reaching <see cref="OnReset"/>.</summary>
+    /// <param name="items">What the set should hold.</param>
+    protected void ResetSilently(T[] items)
     {
         Verify();
         _items.Clear();
@@ -334,59 +317,4 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
-    private sealed class Added : IAtomEdit
-    {
-        private readonly AtomsSet<T> _set;
-        private readonly T[] _items;
-
-        public Added(AtomsSet<T> set, T[] items)
-        {
-            _set = set;
-            _items = items;
-        }
-
-        public object Owner => _set;
-
-        public void Undo() => _set.RemoveSilently(_items);
-
-        public void Redo() => _set.AddSilently(_items);
-    }
-
-    private sealed class Removed : IAtomEdit
-    {
-        private readonly AtomsSet<T> _set;
-        private readonly T[] _items;
-
-        public Removed(AtomsSet<T> set, T[] items)
-        {
-            _set = set;
-            _items = items;
-        }
-
-        public object Owner => _set;
-
-        public void Undo() => _set.AddSilently(_items);
-
-        public void Redo() => _set.RemoveSilently(_items);
-    }
-
-    private sealed class Swapped : IAtomEdit
-    {
-        private readonly AtomsSet<T> _set;
-        private readonly T[] _oldValue;
-        private readonly T[] _newValue;
-
-        public Swapped(AtomsSet<T> set, T[] oldValue, T[] newValue)
-        {
-            _set = set;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _set;
-
-        public void Undo() => _set.ResetSilently(_oldValue);
-
-        public void Redo() => _set.ResetSilently(_newValue);
-    }
 }

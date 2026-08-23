@@ -60,7 +60,104 @@ than against the one the design was drawn on.
   around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
   until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.
 
+- **`Arlecchino.Atoms.History`, a package of its own.** Undo left `Arlecchino.Core` entirely: a plain atom
+  now holds a value, tells what reads it and forgets what it held, and nothing in it mentions a history.
+  What records changes lives in the new package as a subclass — `HistoryAtom<T>`, and
+  `HistoryAtomsList/Map/Set/Stack/Queue<T>` — along with `AtomHistory` itself.
+
+  The base carries the seams this is built on rather than the machinery: `Atom<T>.OnWritten` and
+  `WriteSilently`, and on the collections an `IsObserved` gate beside `OnInserted`, `OnRemoved`,
+  `OnReplaced`, `OnReset` and the matching `InsertSilently`, `RemoveSilently`, `SetSilently` and
+  `ResetSilently`. None of them says anything about undo, and the base implementations do nothing, so an
+  application that never takes the package pays for none of it.
+
+  `LocalAtom<T>` and the five `LocalAtoms*` are gone, and `Atom<T>` and the five collections are no longer
+  abstract: the plain type is what "local" used to mean, so the word had nothing left to distinguish.
+  `TrackedAtom<T>` and the five `TrackedAtoms*` are gone too, renamed as above.
+
+  ```csharp
+  public HistoryAtom<string> Server { get; } = new("127.0.0.1", "SettingsStore.Server");
+  public Atom<string> Filter { get; } = new("");   // not on the stack, and not meant to be
+  ```
+
+  It is taken the way `Arlecchino.Pictures` is: `Arlecchino` does not reference it, so an application that
+  wants no undo does not carry it. `ArlecchinoOptions` lost `HistoryFileName` and `KeepHistoryFile`, the
+  hosted service no longer readies a history, and the diagnostic report no longer prints `undo depth` —
+  all of it moved behind the call below.
+
+- **`UseHistory`, which turns undo on.** Nothing records steps until it is called, and the atoms that
+  could feed a history allocate nothing for one that is not there.
+
+  ```csharp
+  builder.Services.UseHistory(options =>
+  {
+      options.Keep = true;                      // the file outlives the run
+      options.FileName = "history/session.undo";
+      options.Capacity = 1000;                  // steps kept before the oldest fall off
+  });
+  ```
+
+  It registers the stack, the file and a hosted service that readies both before the first frame; that
+  one goes to the front of the hosted services, since the frame loop is registered before this call.
+  Calling it twice throws: atoms announce their steps to the whole process, so a second history would
+  collect the same steps into a second stack. For the same reason `AtomHistory` can no longer be
+  constructed from outside the package — take it from the container.
+
+- **`HistoryFile`, which writes the undo history down.** The history lands in a file beside the program, one
+  JSON array of edits per line, so a run that is killed leaves everything up to the last complete line
+  readable rather than a truncated document that parses as nothing. It is a scratch file: it is thrown
+  away on the way out and again on the way in, the second being what clears up after a run that never
+  reached the first. Nothing is created until a step is actually recorded, so a run that changed nothing
+  leaves nothing.
+
+  What carries an atom across a run is a name, since a reference means nothing to the next one, and the
+  name sits on the atom it names:
+
+  ```csharp
+  public HistoryAtom<string> Server { get; } = new("127.0.0.1", "SettingsStore.Server");
+  ```
+
+  It is yours to choose and has to stay the same between runs, which usually makes it the store and the
+  property. An atom left unnamed still undoes and redoes in memory exactly as before — it simply is not
+  written down.
+
+  How a value is written is said once for the kind, not once for the atom. `string`, `bool`, `int`,
+  `long`, `double`, `decimal`, `Guid`, `DateOnly`, `TimeOnly` and `DateTimeOffset` are already known;
+  `HistoryFile.Writes<T>` is for a type of your own, and written by hand because a trimmed program has no
+  reflection to derive it with:
+
+  ```csharp
+  file.Writes<Rgb>(static (writer, value) => writer.WriteStringValue(value.Hex));
+  ```
+
+  A group holding one atom that cannot be written is left out whole rather than half, which on being read
+  back would move some atoms and not others. The collection atoms are not written at all: a step of theirs
+  is a position and a span, and a position means nothing once later edits have moved it.
+
+
 ### Changed
+
+- **There is one `AtomHistory` at a time, and a second is refused.** Atoms announce themselves to the
+  process rather than to a history they were handed, so two of them collect the same edits into two
+  stacks, and an undo on one leaves the other holding steps whose values the atoms no longer hold — a
+  later undo on it then writes something that was never there. The constructor now throws
+  `InvalidOperationException` while another is collecting, rather than letting the two shadow each other.
+  The host registers one; take it from the container. Disposing it lets the next take over, which is what
+  a test that builds an application per case relies on.
+
+- **The five collection atoms share `AtomsCollectionBase`.** Each carried its own listeners, its own
+  check that a change is being made on the drawing thread, and its own copy of the seam a subclass
+  watches through; `IsObserved` and `Subscribe` now live on the base, and so does the doc block that was
+  written out five times. `FrameMembers.Changing` takes that base rather than an
+  `IReadableAtom<IReadOnlyCollection<T>>`, since the base is what the five have in common.
+
+- **`AtomsList<T>.Touch()` is `Refresh()`.** Touching is what one does to a file's timestamp; what this
+  does is tell everything watching the list to read it again, because an item changed inside itself.
+
+- **An atom is named where it is created.** `HistoryAtom<T>` takes the name between the starting value and
+  the comparer — `HistoryAtom(T initial, string? key = null, IEqualityComparer<T>? comparer = null)` — so
+  the comparer is passed by name. `Atom<T>` takes no name: it is never on the undo stack, so there is
+  nothing of it to write down.
 
 - **A selection index is `SelectedIndex`.** `ListBox<T>`, `Table<T>`, `Tabs`, `Tree<T>` and `Form` all
   called it `Selected`, which reads as the item rather than as where the item sits — and `Table<T>` has a

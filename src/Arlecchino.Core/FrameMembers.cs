@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using Arlecchino.Atoms;
+using Arlecchino.Atoms.Collections;
 
 namespace Arlecchino;
 
@@ -31,13 +31,8 @@ internal static class FrameMembers
     /// <returns>The name to check under.</returns>
     public static string Writing<T>(IReadableAtom<T> atom) => $"Writing {atom.GetType().Name}";
 
-    /// <summary>
-    /// Names a collection atom being changed. Takes <see cref="IReadOnlyCollection{T}"/> rather than
-    /// <see cref="IReadOnlyList{T}"/> because that is what all five families have in common — a map
-    /// holds pairs and a set holds no order — and covariance carries each of them to it.
-    /// </summary>
-    /// <typeparam name="T">What the collection holds, inferred.</typeparam>
+    /// <summary>Names a collection atom being changed.</summary>
     /// <param name="atoms">The collection itself, named by the type it turns out to be.</param>
     /// <returns>The name to check under.</returns>
-    public static string Changing<T>(IReadableAtom<IReadOnlyCollection<T>> atoms) => $"Changing {atoms.GetType().Name}";
+    public static string Changing(AtomsCollectionBase atoms) => $"Changing {atoms.GetType().Name}";
 }

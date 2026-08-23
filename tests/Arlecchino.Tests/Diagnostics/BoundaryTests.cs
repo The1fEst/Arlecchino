@@ -1,5 +1,5 @@
 using System;
-using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms;
 using Arlecchino.Forms;
 using Arlecchino.Input;
 using Arlecchino.Modals.Telling;
@@ -82,7 +82,7 @@ public sealed class BoundaryTests
     public void AFormWithASingleDisabledField()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<string>("x");
+        var value = new Atom<string>("x");
         var form = new Form(app.State, app.Options)
         {
             Fields = [new() { Label = static () => "Name", Value = () => value.Value, IsEnabled = static () => false }],

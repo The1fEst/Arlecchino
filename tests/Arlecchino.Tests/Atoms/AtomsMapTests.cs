@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.Collections;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Xunit;
 using Arlecchino.Tests.Support;
 
@@ -14,7 +15,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ChangingTheMapTellsWhoeverIsListening()
     {
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
         var changes = 0;
 
         using var subscription = sizes.Subscribe(() => changes++);
@@ -40,7 +41,7 @@ public sealed class AtomsMapTests
     public void AChangeAsksForAFrameTheWayAnAtomWriteDoes()
     {
         using var repaint = new Repaint();
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
 
         repaint.TakeRequested();
 
@@ -54,7 +55,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ChangingNothingNotifiesNobody()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
         var changes = 0;
 
         using var subscription = sizes.Subscribe(() => changes++);
@@ -74,7 +75,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ItIsWalkedWithoutCopyingIt()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
         var total = 0;
 
         foreach (var entry in sizes)
@@ -93,7 +94,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void TakingEntriesOutWhileWalkingIsAllowedButPuttingThemInIsNot()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
 
         foreach (var entry in sizes)
         {
@@ -116,7 +117,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void AKeyThatIsAlreadyThereIsRefusedByAddButNotByTheIndexer()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
 
         Assert.Throws<ArgumentException>(() => sizes.Add("alpha", 2));
 
@@ -128,7 +129,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void TheTryingMembersAnswerInsteadOfThrowingOrGuessing()
     {
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
 
         Assert.True(sizes.TryAdd("alpha", 1));
         Assert.False(sizes.TryAdd("alpha", 2));
@@ -143,7 +144,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void TryingAndFailingChangesNothing()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
         var changes = 0;
 
         using var subscription = sizes.Subscribe(() => changes++);
@@ -157,7 +158,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ItLooksUpTheWayItWasToldTo()
     {
-        var sizes = new LocalAtomsMap<string, int>(
+        var sizes = new AtomsMap<string, int>(
             new Dictionary<string, int> { ["Alpha"] = 1 },
             StringComparer.OrdinalIgnoreCase);
 
@@ -172,7 +173,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void WhatItHoldsCannotBeChangedBehindItsBack()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
         var value = sizes.Value;
 
         Assert.IsNotType<Dictionary<string, int>>(value);
@@ -187,7 +188,7 @@ public sealed class AtomsMapTests
     public void ItIsCopiedOutOfWhatItWasGiven()
     {
         var initial = new Dictionary<string, int> { ["alpha"] = 1 };
-        var sizes = new LocalAtomsMap<string, int>(initial);
+        var sizes = new AtomsMap<string, int>(initial);
 
         initial["beta"] = 2;
 
@@ -197,7 +198,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ADerivedValueFollowsTheMap()
     {
-        var sizes = new LocalAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new AtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
         var total = new Computed<int>(() =>
         {
             var sum = 0;
@@ -224,7 +225,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void ReadingOneKeyIsEnoughToDependOnIt()
     {
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
         var reading = new Computed<string>(() => sizes.TryGetValue("alpha", out var held) ? $"{held}" : "none");
 
         Assert.Equal("none", reading.Value);
@@ -238,8 +239,8 @@ public sealed class AtomsMapTests
     public void ATrackedMapGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new TrackedAtomsMap<string, int>();
-        var ignored = new LocalAtomsMap<string, int>();
+        var survivors = new HistoryAtomsMap<string, int>();
+        var ignored = new AtomsMap<string, int>();
 
         Assert.False(history.CanUndo);
 
@@ -261,7 +262,7 @@ public sealed class AtomsMapTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var sizes = new TrackedAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new HistoryAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
 
         Assert.Equal(0, history.Depth);
 
@@ -294,7 +295,7 @@ public sealed class AtomsMapTests
     public void AMapThatWasClearedIsFilledBackIn()
     {
         using var history = new AtomHistory();
-        var sizes = new TrackedAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+        var sizes = new HistoryAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
 
         sizes.Clear();
 
@@ -309,13 +310,13 @@ public sealed class AtomsMapTests
     public void ItRefusesToBeChangedFromAnotherThread()
     {
         using var app = new TestApplication();
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
 
         using var drawing = FrameThread.Claim();
 
         var failure = Refused(() => sizes["alpha"] = 1);
 
-        Assert.Contains("LocalAtomsMap`2", failure.Message, StringComparison.Ordinal);
+        Assert.Contains("AtomsMap`2", failure.Message, StringComparison.Ordinal);
         Assert.Empty(sizes.Value);
     }
 
@@ -323,7 +324,7 @@ public sealed class AtomsMapTests
     public void PostingIsHowBackgroundWorkFillsIt()
     {
         using var app = new TestApplication();
-        var sizes = new LocalAtomsMap<string, int>();
+        var sizes = new AtomsMap<string, int>();
 
         using var drawing = FrameThread.Claim();
 
@@ -343,7 +344,7 @@ public sealed class AtomsMapTests
     [Fact]
     public void AKeyThatWasNotThereIsPutInWhateverTheValueTypeIs()
     {
-        var names = new LocalAtomsMap<int, string>();
+        var names = new AtomsMap<int, string>();
 
         Assert.Empty(names.Value);
 
@@ -357,7 +358,7 @@ public sealed class AtomsMapTests
     public void AKeyHeldAgainstNullIsReplacedRatherThanAdded()
     {
         using var history = new AtomHistory();
-        var names = new TrackedAtomsMap<int, string?>(new Dictionary<int, string?> { [1] = null });
+        var names = new HistoryAtomsMap<int, string?>(new Dictionary<int, string?> { [1] = null });
 
         Assert.Null(names[1]);
 

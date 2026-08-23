@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using Arlecchino.Atoms.Local;
+using Arlecchino.Atoms;
 using Arlecchino.Hosting;
 using Arlecchino.Modals.Telling;
 using Arlecchino.Navigation;
@@ -20,7 +20,7 @@ public sealed class FrameThreadTests
     [Fact]
     public void NothingIsCheckedUntilSomeoneIsDrawing()
     {
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         Assert.Equal(0, value.Value);
 
@@ -33,7 +33,7 @@ public sealed class FrameThreadTests
     [Fact]
     public void TheThreadThatClaimedDrawingMayWrite()
     {
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         using var drawing = FrameThread.Claim();
 
@@ -45,7 +45,7 @@ public sealed class FrameThreadTests
     [Fact]
     public void AnotherThreadWritingAnAtomIsToldWhereToPostIt()
     {
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         using var drawing = FrameThread.Claim();
 
@@ -261,7 +261,7 @@ public sealed class FrameThreadTests
     public void PostingFromAnotherThreadIsTheWayThrough()
     {
         using var app = new TestApplication();
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         using var drawing = FrameThread.Claim();
         var work = new Thread(() => FrameThread.Post(() => value.Value = 7));
@@ -277,7 +277,7 @@ public sealed class FrameThreadTests
     [Fact]
     public void GivingTheClaimUpLetsAnyThreadWriteAgain()
     {
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         using (FrameThread.Claim()) { }
 

@@ -8,7 +8,7 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Sample.Views;
 using Arlecchino.State;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.History;
 
 namespace Arlecchino.Sample;
 

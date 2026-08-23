@@ -6,7 +6,7 @@ using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Tests.Views;
 using Xunit;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 using Arlecchino.Tests.Support;
 
 namespace Arlecchino.Tests.Navigation;
@@ -231,7 +231,7 @@ public sealed class FocusTests
         using var app = new TestApplication();
         var form = new Form(app.State, app.Options)
         {
-            Fields = [Field.Text(static () => "Name", new TrackedAtom<string>(""))],
+            Fields = [Field.Text(static () => "Name", new HistoryAtom<string>(""))],
         };
 
         FormHostView.Form = form;

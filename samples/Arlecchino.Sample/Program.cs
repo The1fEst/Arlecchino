@@ -1,3 +1,4 @@
+using Arlecchino.Atoms.History.Hosting;
 using Arlecchino.Hosting;
 using Arlecchino.Sample.Frames;
 using Arlecchino.Sample.Probes;
@@ -23,6 +24,8 @@ if (args is ["--ask", ..])
 }
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.UseHistory();
 
 builder.Services
     .AddArlecchino(options =>

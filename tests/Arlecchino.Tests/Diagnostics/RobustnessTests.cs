@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
 using Xunit;
@@ -27,7 +27,7 @@ public sealed class RobustnessTests
     public void NestedUndoGroups()
     {
         using var app = new TestApplication();
-        var value = new TrackedAtom<int>(0);
+        var value = new HistoryAtom<int>(0);
 
         using (app.History.Group())
         {

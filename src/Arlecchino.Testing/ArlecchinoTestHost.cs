@@ -9,7 +9,8 @@ using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Terminals;
 using Arlecchino.State;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Hosting;
 
 namespace Arlecchino.Testing;
 
@@ -39,6 +40,7 @@ public sealed class ArlecchinoTestHost : IDisposable
         services.AddSingleton<IArlecchinoTerminal>(Terminal);
         services.AddSingleton<TimeProvider>(Clock);
         services.AddSingleton<ILoggerProvider, TestLoggerProvider>();
+        services.UseHistory();
 
         var builder = services
             .AddArlecchino(options =>

@@ -2,36 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
-
 namespace Arlecchino.Atoms.Collections;
 
 /// <summary>
 /// A stack held as one piece of application state, put on and taken off the top. <see cref="Value"/> reads
 /// from the top down, so <c>Value[0]</c> is what <see cref="Peek"/> answers.
 /// </summary>
-/// <seealso cref="TrackedAtomsStack{T}"/>
-/// <seealso cref="LocalAtomsStack{T}"/>
 /// <typeparam name="T">What the stack holds.</typeparam>
-public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
+public class AtomsStack<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
 {
     private readonly List<T> _items;
     private readonly ReadOnlyCollection<T> _view;
-    private readonly Listeners _listeners = new();
-
-    private string? _member;
 
     /// <summary>Creates the stack.</summary>
     /// <param name="initial">What is already on it, top first; empty when omitted. It is copied, not held.</param>
-    protected AtomsStack(IReadOnlyList<T>? initial = null)
+    public AtomsStack(IReadOnlyList<T>? initial = null)
     {
         _items = initial is null ? [] : [.. initial];
         _view = _items.AsReadOnly();
     }
-
-    /// <summary>Whether changes of this stack enter the undo history.</summary>
-    protected abstract bool RecordsHistory { get; }
 
     /// <summary>
     /// What is on the stack now, top first, as a live view rather than a copy. It is read-only all the way
@@ -59,8 +48,6 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     /// <summary>Whether nothing is on it.</summary>
     public bool IsEmpty => Count == 0;
 
-    private bool Recording => RecordsHistory && AtomChanges.IsRecording;
-
     /// <summary>Puts something on top.</summary>
     /// <param name="item">What to put on.</param>
     public void Push(T item)
@@ -69,9 +56,9 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.Insert(0, item);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, 0, [item]));
+            OnInserted(0, [item]);
         }
 
         Notify();
@@ -100,9 +87,9 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.InsertRange(0, topFirst);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Inserted(this, 0, topFirst));
+            OnInserted(0, topFirst);
         }
 
         Notify();
@@ -171,30 +158,25 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
     /// <param name="items">What should be on it instead, top first.</param>
     public void Reset(IReadOnlyList<T> items)
     {
-        if (Holds(items))
+        if (ContentsEqual(items))
         {
             return;
         }
 
         Verify();
 
-        var previous = _items.ToArray();
+        var previous = IsObserved ? _items.ToArray() : [];
 
         _items.Clear();
         _items.AddRange(items);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Swapped(this, previous, [.. items]));
+            OnReset(previous, [.. items]);
         }
 
         Notify();
     }
-
-    /// <summary>Calls back whenever what is on the stack changes.</summary>
-    /// <param name="listener">What to run on change.</param>
-    /// <returns>Dispose it to stop listening.</returns>
-    public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
     /// <summary>
     /// Walks the stack from the top down, so <c>foreach</c> over it reads the way it does over a
@@ -217,9 +199,9 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
 
         _items.RemoveAt(0);
 
-        if (Recording)
+        if (IsObserved)
         {
-            AtomChanges.NotifyRecorded(new Removed(this, 0, [item]));
+            OnRemoved(0, [item]);
         }
 
         Notify();
@@ -227,7 +209,7 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
         return item;
     }
 
-    private bool Holds(IReadOnlyList<T> items)
+    private bool ContentsEqual(IReadOnlyList<T> items)
     {
         if (items.Count != _items.Count)
         {
@@ -245,38 +227,44 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
         return true;
     }
 
-    private void Track()
-    {
-        if (AtomTracking.IsCapturing)
-        {
-            AtomTracking.NoteRead(Subscribe);
-        }
-    }
+    /// <summary>Called once items went on, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they went, counting from the top.</param>
+    /// <param name="items">What went on, top first.</param>
+    protected virtual void OnInserted(int index, T[] items) { }
 
-    private void Verify() => FrameThread.Verify(_member ??= FrameMembers.Changing(this));
+    /// <summary>Called once items came off, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="index">Where they were, counting from the top.</param>
+    /// <param name="items">What came off, top first.</param>
+    protected virtual void OnRemoved(int index, T[] items) { }
 
-    private void Notify()
-    {
-        _listeners.Notify();
+    /// <summary>Called once the contents were swapped wholesale, and only while <see cref="AtomsCollectionBase.IsObserved"/>.</summary>
+    /// <param name="previous">What was on the stack, top first.</param>
+    /// <param name="current">What is on it now, top first.</param>
+    protected virtual void OnReset(T[] previous, T[] current) { }
 
-        AtomChanges.NotifyWritten();
-    }
-
-    private void InsertSilently(int index, T[] items)
+    /// <summary>Puts items on without reaching <see cref="OnInserted"/>.</summary>
+    /// <param name="index">Where they go, counting from the top.</param>
+    /// <param name="items">What to put on, top first.</param>
+    protected void InsertSilently(int index, T[] items)
     {
         Verify();
         _items.InsertRange(index, items);
         Notify();
     }
 
-    private void RemoveSilently(int index, int count)
+    /// <summary>Takes items off without reaching <see cref="OnRemoved"/>.</summary>
+    /// <param name="index">Where to start, counting from the top.</param>
+    /// <param name="count">How many.</param>
+    protected void RemoveSilently(int index, int count)
     {
         Verify();
         _items.RemoveRange(index, count);
         Notify();
     }
 
-    private void ResetSilently(T[] items)
+    /// <summary>Swaps the contents without reaching <see cref="OnReset"/>.</summary>
+    /// <param name="items">What the stack should hold, top first.</param>
+    protected void ResetSilently(T[] items)
     {
         Verify();
         _items.Clear();
@@ -284,63 +272,4 @@ public abstract class AtomsStack<T> : IReadableAtom<IReadOnlyList<T>>
         Notify();
     }
 
-    private sealed class Inserted : IAtomEdit
-    {
-        private readonly AtomsStack<T> _stack;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Inserted(AtomsStack<T> stack, int index, T[] items)
-        {
-            _stack = stack;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _stack;
-
-        public void Undo() => _stack.RemoveSilently(_index, _items.Length);
-
-        public void Redo() => _stack.InsertSilently(_index, _items);
-    }
-
-    private sealed class Removed : IAtomEdit
-    {
-        private readonly AtomsStack<T> _stack;
-        private readonly int _index;
-        private readonly T[] _items;
-
-        public Removed(AtomsStack<T> stack, int index, T[] items)
-        {
-            _stack = stack;
-            _index = index;
-            _items = items;
-        }
-
-        public object Owner => _stack;
-
-        public void Undo() => _stack.InsertSilently(_index, _items);
-
-        public void Redo() => _stack.RemoveSilently(_index, _items.Length);
-    }
-
-    private sealed class Swapped : IAtomEdit
-    {
-        private readonly AtomsStack<T> _stack;
-        private readonly T[] _oldValue;
-        private readonly T[] _newValue;
-
-        public Swapped(AtomsStack<T> stack, T[] oldValue, T[] newValue)
-        {
-            _stack = stack;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public object Owner => _stack;
-
-        public void Undo() => _stack.ResetSilently(_oldValue);
-
-        public void Redo() => _stack.ResetSilently(_newValue);
-    }
 }

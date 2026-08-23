@@ -51,7 +51,7 @@ public sealed class GeneratorTests
 
         public sealed class SettingsStore : IArlecchinoStore
         {
-            public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+            public Atom<string> Profile { get; } = new HistoryAtom<string>("");
         }
 
         public sealed class DraftStore : IArlecchinoScopedStore
@@ -69,7 +69,7 @@ public sealed class GeneratorTests
 
         public sealed class CatalogStore : ArlecchinoAsyncStore
         {
-            public Atom<string> Name { get; } = new LocalAtom<string>("");
+            public Atom<string> Name { get; } = new("");
 
             protected override Task LoadAsync(CancellationToken token) => Task.CompletedTask;
         }
@@ -425,7 +425,7 @@ public sealed class GeneratorTests
             {
                 public sealed class SettingsStore : IArlecchinoStore
                 {
-                    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+                    public Atom<string> Profile { get; } = new HistoryAtom<string>("");
                 }
             }
             """;

@@ -24,5 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../Arlecchino/Arlecchino.csproj" />
+    <ProjectReference Include="../Arlecchino.Atoms.History/Arlecchino.Atoms.History.csproj" />
   </ItemGroup>
 </Project>

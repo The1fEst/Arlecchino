@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
 using Xunit;
 
 namespace Arlecchino.Tests.Atoms;
@@ -13,7 +12,7 @@ public sealed class PostedAtomTests
     [Fact]
     public void APostedValueLandsWhenTheFrameRunsWhatIsWaiting()
     {
-        var rows = new LocalAtom<int>(0);
+        var rows = new Atom<int>(0);
 
         using var drawing = FrameThread.Claim();
 
@@ -29,7 +28,7 @@ public sealed class PostedAtomTests
     [Fact]
     public void APostedValueNotifiesLikeAnyOtherWrite()
     {
-        var name = new LocalAtom<string>("");
+        var name = new Atom<string>("");
         var sightings = new List<string>();
 
         using var subscription = name.Subscribe(() => sightings.Add(name.Value));
@@ -44,7 +43,7 @@ public sealed class PostedAtomTests
     [Fact]
     public void PostedValuesArriveInTheOrderTheyWerePosted()
     {
-        var count = new LocalAtom<int>(0);
+        var count = new Atom<int>(0);
         var sightings = new List<int>();
 
         using var subscription = count.Subscribe(() => sightings.Add(count.Value));
@@ -66,7 +65,7 @@ public sealed class PostedAtomTests
     public void APostedEditIsUndoneLikeAnyOther()
     {
         using var history = new AtomHistory();
-        var name = new TrackedAtom<string>("before");
+        var name = new HistoryAtom<string>("before");
 
         using var drawing = FrameThread.Claim();
 
@@ -83,7 +82,7 @@ public sealed class PostedAtomTests
     [Fact]
     public void PostingIsHowAnAtomIsWrittenFromAnotherThreadAtAll()
     {
-        var value = new LocalAtom<int>(0);
+        var value = new Atom<int>(0);
 
         using var drawing = FrameThread.Claim();
 

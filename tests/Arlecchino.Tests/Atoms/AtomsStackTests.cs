@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.Collections;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Xunit;
 
 namespace Arlecchino.Tests.Atoms;
@@ -12,7 +13,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void WhatGoesOnTopComesOffFirst()
     {
-        var stack = new LocalAtomsStack<string>();
+        var stack = new AtomsStack<string>();
 
         stack.Push("first");
         stack.Push("second");
@@ -28,7 +29,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void SeveralGoingOnAtOnceLeaveTheLastOnTop()
     {
-        var stack = new LocalAtomsStack<int>([0]);
+        var stack = new AtomsStack<int>([0]);
         var changes = 0;
 
         using var subscription = stack.Subscribe(() => changes++);
@@ -47,7 +48,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void AnEmptyStackAnswersRatherThanThrowsWhenAskedNicely()
     {
-        var stack = new LocalAtomsStack<string>();
+        var stack = new AtomsStack<string>();
 
         Assert.True(stack.IsEmpty);
         Assert.False(stack.TryPop(out _));
@@ -68,7 +69,7 @@ public sealed class AtomsStackTests
     public void AChangeAsksForAFrame()
     {
         using var repaint = new Repaint();
-        var stack = new LocalAtomsStack<string>();
+        var stack = new AtomsStack<string>();
 
         repaint.TakeRequested();
 
@@ -81,7 +82,7 @@ public sealed class AtomsStackTests
     public void WhatWasTakenOffGoesBackOnTop()
     {
         using var history = new AtomHistory();
-        var stack = new TrackedAtomsStack<string>(["newest", "oldest"]);
+        var stack = new HistoryAtomsStack<string>(["newest", "oldest"]);
 
         stack.Push("newer still");
 
@@ -110,7 +111,7 @@ public sealed class AtomsStackTests
     public void ALocalStackStaysOffTheHistory()
     {
         using var history = new AtomHistory();
-        var stack = new LocalAtomsStack<string>();
+        var stack = new AtomsStack<string>();
 
         stack.Push("here");
         stack.Pop();
@@ -121,7 +122,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void ARebuiltStackIsGivenTopFirst()
     {
-        var stack = new LocalAtomsStack<string>(["home"]);
+        var stack = new AtomsStack<string>(["home"]);
         var changes = 0;
 
         using var subscription = stack.Subscribe(() => changes++);
@@ -140,7 +141,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void ItIsWalkedFromTheTopDown()
     {
-        var stack = new LocalAtomsStack<string>(["top", "bottom"]);
+        var stack = new AtomsStack<string>(["top", "bottom"]);
         var visits = new List<string>();
 
         foreach (var item in stack)
@@ -154,7 +155,7 @@ public sealed class AtomsStackTests
     [Fact]
     public void ADerivedValueFollowsIt()
     {
-        var stack = new LocalAtomsStack<string>();
+        var stack = new AtomsStack<string>();
         var depth = new Computed<string>(() => stack.TryPeek(out var item) ? item : "nowhere");
 
         Assert.Equal("nowhere", depth.Value);
@@ -172,7 +173,7 @@ public sealed class AtomsStackTests
     public void ClearingAndRebuildingAreOneStepEach()
     {
         using var history = new AtomHistory();
-        var stack = new TrackedAtomsStack<int>([2, 1]);
+        var stack = new HistoryAtomsStack<int>([2, 1]);
 
         stack.Clear();
 
