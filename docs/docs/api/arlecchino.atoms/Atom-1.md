@@ -7,10 +7,10 @@ sidebar_label: "Atom<T>"
 
 **Namespace:** `Arlecchino.Atoms` &middot; **Assembly:** `Arlecchino.Core`
 
-One piece of application state that notifies what reads it and marks the frame stale by itself. Whether an edit can be undone is decided by creating a [`TrackedAtom`](../arlecchino.atoms.tracked/TrackedAtom-1.md) or a [`LocalAtom`](../arlecchino.atoms.local/LocalAtom-1.md).
+One piece of application state that notifies what reads it and marks the frame stale by itself.
 
 ```csharp
-public abstract class Atom<T> : IReadableAtom<T>
+public class Atom<T> : IReadableAtom<T>
 ```
 
 **Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;
@@ -25,15 +25,16 @@ public abstract class Atom<T> : IReadableAtom<T>
 
 | Member | Summary |
 |---|---|
-| [`RecordsHistory`](#recordshistory) | Whether edits of this atom enter the undo history. |
-| [`Value`](#value) | The value. Writing an equal value changes nothing; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable. |
+| [`Value`](#value) | The value. Writing an equal value changes nothing; any other write notifies subscribers and asks for a repaint. |
 
 ## Methods
 
 | Member | Summary |
 |---|---|
+| [`OnWritten(T, T)`](#onwritten-t-t) | Called once the value has changed and before subscribers hear of it. The atom does nothing with it; it is where a subclass keeps a record of its own, and [`Atom.WriteSilently`](../arlecchino.atoms/Atom-1.md#writesilently-t) does not reach it. |
 | [`Post(T)`](#post-t) | Hands a value to the drawing thread, to be written just before the next frame in the order it was posted. Nothing is written when this returns, and atoms that must change together belong in one `FrameThread.Post`. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the value changes. |
+| [`WriteSilently(T)`](#writesilently-t) | Writes without reaching [`Atom.OnWritten`](../arlecchino.atoms/Atom-1.md#onwritten-t-t). It is how a subclass puts a value back: replaying what it recorded must not be recorded again. |
 
 ## Constructors in detail
 
@@ -54,27 +55,32 @@ Creates an atom holding a starting value.
 
 ## Properties in detail
 
-### `RecordsHistory` {#recordshistory}
-
-```csharp
-public abstract bool RecordsHistory { get; }
-```
-
-Whether edits of this atom enter the undo history.
-
-**Type** `bool`
-
 ### `Value` {#value}
 
 ```csharp
 public T Value { get; set; }
 ```
 
-The value. Writing an equal value changes nothing; any other write notifies subscribers, asks for a repaint, and records an undo step when the atom is undoable.
+The value. Writing an equal value changes nothing; any other write notifies subscribers and asks for a repaint.
 
 **Type** `T`
 
 ## Methods in detail
+
+### `OnWritten(T, T)` {#onwritten-t-t}
+
+```csharp
+public virtual void OnWritten(T previous, T current);
+```
+
+Called once the value has changed and before subscribers hear of it. The atom does nothing with it; it is where a subclass keeps a record of its own, and [`Atom.WriteSilently`](../arlecchino.atoms/Atom-1.md#writesilently-t) does not reach it.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `previous` | `T` | What the atom held. |
+| `current` | `T` | What it holds now. |
 
 ### `Post(T)` {#post-t}
 
@@ -105,4 +111,18 @@ Calls back whenever the value changes.
 | `listener` | `Action` | What to run on change. |
 
 **Returns** `IDisposable` — Dispose it to stop listening.
+
+### `WriteSilently(T)` {#writesilently-t}
+
+```csharp
+public void WriteSilently(T value);
+```
+
+Writes without reaching [`Atom.OnWritten`](../arlecchino.atoms/Atom-1.md#onwritten-t-t). It is how a subclass puts a value back: replaying what it recorded must not be recorded again.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `value` | `T` | The value to write. |
 

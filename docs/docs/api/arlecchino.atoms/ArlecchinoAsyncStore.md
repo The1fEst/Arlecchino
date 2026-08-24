@@ -12,7 +12,7 @@ A store that has to fetch something before it holds the truth. Override [`Arlecc
 ```csharp
 public sealed class SettingsStore : ArlecchinoAsyncStore
 {
-public TrackedAtom<string> Server { get; } = new("127.0.0.1");
+public HistoryAtom<string> Server { get; } = new("127.0.0.1", "SettingsStore.Server");
 
 protected override async Task LoadAsync(CancellationToken token)
 {

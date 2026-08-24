@@ -10,9 +10,10 @@ sidebar_label: "AtomsSet<T>"
 A set held as one piece of application state, behaving as a `HashSet<T>` does: adding what is already there changes nothing. A walk of it is in no order, so sort it where the reader sees the order.
 
 ```csharp
-public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
+public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
 ```
 
+**Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
 **Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlySet<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
@@ -27,7 +28,6 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 |---|---|
 | [`Count`](#count) | How many it holds. |
 | [`IsEmpty`](#isempty) | Whether it holds nothing. |
-| [`RecordsHistory`](#recordshistory) | Whether changes of this set enter the undo history. |
 | [`Value`](#value) | What the set holds now, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below. |
 
 ## Methods
@@ -36,12 +36,17 @@ public abstract class AtomsSet<T> : IReadableAtom<IReadOnlySet<T>>
 |---|---|
 | [`Add(T)`](#add-t) | Puts something in. Putting in what is already there changes nothing. |
 | [`Add(IReadOnlyList<T>)`](#add-ireadonlylist-t) | Puts several in at once. One notification, one frame and one undo step for however many of them were not there already. |
+| [`AddSilently(T[])`](#addsilently-t) | Puts items in without reaching [`AtomsSet.OnAdded`](../arlecchino.atoms.collections/AtomsSet-1.md#onadded-t). |
 | [`Clear()`](#clear) | Takes everything out. An empty set changes nothing. |
 | [`Contains(T)`](#contains-t) | Whether the set holds something. |
 | [`GetEnumerator()`](#getenumerator) | Walks what the set holds, in no order it promises, so `foreach` over the set itself reads the way it does over a `HashSet<T>`. Reach for [`AtomsSet.Value`](../arlecchino.atoms.collections/AtomsSet-1.md#value) where a sequence is what is wanted, LINQ included. |
+| [`OnAdded(T[])`](#onadded-t) | Called once items went in, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnRemoved(T[])`](#onremoved-t) | Called once items came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnReset(T[], T[])`](#onreset-t-t) | Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
 | [`Remove(T)`](#remove-t) | Takes something out, and does nothing when it is not there. |
+| [`RemoveSilently(T[])`](#removesilently-t) | Takes items out without reaching [`AtomsSet.OnRemoved`](../arlecchino.atoms.collections/AtomsSet-1.md#onremoved-t). |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the set that is worked out again rather than edited — what a new listing marks, what a filter leaves. Contents equal to what is already there change nothing. |
-| [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
+| [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsSet.OnReset`](../arlecchino.atoms.collections/AtomsSet-1.md#onreset-t-t). |
 | [`TryAdd(T)`](#tryadd-t) | Puts something in and says whether it was new. |
 | [`TryRemove(T)`](#tryremove-t) | Takes something out and says whether it was there. |
 
@@ -81,16 +86,6 @@ public bool IsEmpty { get; }
 ```
 
 Whether it holds nothing.
-
-**Type** `bool`
-
-### `RecordsHistory` {#recordshistory}
-
-```csharp
-public abstract bool RecordsHistory { get; }
-```
-
-Whether changes of this set enter the undo history.
 
 **Type** `bool`
 
@@ -134,6 +129,20 @@ Puts several in at once. One notification, one frame and one undo step for howev
 |---|---|---|
 | `items` | `IReadOnlyList<T>`&lt;`T`&gt; | What to put in. Adding none, or only what is there, changes nothing. |
 
+### `AddSilently(T[])` {#addsilently-t}
+
+```csharp
+public void AddSilently(T[] items);
+```
+
+Puts items in without reaching [`AtomsSet.OnAdded`](../arlecchino.atoms.collections/AtomsSet-1.md#onadded-t).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `items` | `T`\[\] | What to put in. |
+
 ### `Clear()` {#clear}
 
 ```csharp
@@ -168,6 +177,49 @@ Walks what the set holds, in no order it promises, so `foreach` over the set its
 
 **Returns** `Enumerator<T>`&lt;`T`&gt; — The enumerator, which throws when the set changes while it is being walked.
 
+### `OnAdded(T[])` {#onadded-t}
+
+```csharp
+public virtual void OnAdded(T[] items);
+```
+
+Called once items went in, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `items` | `T`\[\] | What went in, which is only what was not there already. |
+
+### `OnRemoved(T[])` {#onremoved-t}
+
+```csharp
+public virtual void OnRemoved(T[] items);
+```
+
+Called once items came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `items` | `T`\[\] | What came out. |
+
+### `OnReset(T[], T[])` {#onreset-t-t}
+
+```csharp
+public virtual void OnReset(T[] previous, T[] current);
+```
+
+Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `previous` | `T`\[\] | What the set held. |
+| `current` | `T`\[\] | What it holds now. |
+
 ### `Remove(T)` {#remove-t}
 
 ```csharp
@@ -181,6 +233,20 @@ Takes something out, and does nothing when it is not there.
 | Name | Type | Description |
 |---|---|---|
 | `item` | `T` | What to take out. |
+
+### `RemoveSilently(T[])` {#removesilently-t}
+
+```csharp
+public void RemoveSilently(T[] items);
+```
+
+Takes items out without reaching [`AtomsSet.OnRemoved`](../arlecchino.atoms.collections/AtomsSet-1.md#onremoved-t).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `items` | `T`\[\] | What to take out. |
 
 ### `Reset(IReadOnlyList<T>)` {#reset-ireadonlylist-t}
 
@@ -196,21 +262,19 @@ Replaces the contents in one go, for the set that is worked out again rather tha
 |---|---|---|
 | `items` | `IReadOnlyList<T>`&lt;`T`&gt; | What the set should hold instead. |
 
-### `Subscribe(Action)` {#subscribe-action}
+### `ResetSilently(T[])` {#resetsilently-t}
 
 ```csharp
-public IDisposable Subscribe(Action listener);
+public void ResetSilently(T[] items);
 ```
 
-Calls back whenever the contents change.
+Swaps the contents without reaching [`AtomsSet.OnReset`](../arlecchino.atoms.collections/AtomsSet-1.md#onreset-t-t).
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `listener` | `Action` | What to run on change. |
-
-**Returns** `IDisposable` — Dispose it to stop listening.
+| `items` | `T`\[\] | What the set should hold. |
 
 ### `TryAdd(T)` {#tryadd-t}
 

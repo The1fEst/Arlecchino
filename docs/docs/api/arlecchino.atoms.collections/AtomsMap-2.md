@@ -7,12 +7,15 @@ sidebar_label: "AtomsMap<TKey, TValue>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A map held as one piece of application state, changed in place the way [`AtomsList`](../arlecchino.atoms.collections/AtomsList-1.md) is. Whether changes can be undone is decided by creating a [`TrackedAtomsMap`](../arlecchino.atoms.tracked/TrackedAtomsMap-2.md) or a [`LocalAtomsMap`](../arlecchino.atoms.local/LocalAtomsMap-2.md).
+A map held as one piece of application state, changed in place the way [`AtomsList`](../arlecchino.atoms.collections/AtomsList-1.md) is.
 
 ```csharp
-public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
+public class AtomsMap<TKey, TValue> :
+    AtomsCollectionBase,
+    IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
 ```
 
+**Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
 **Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;
 
 ## Constructors
@@ -27,7 +30,6 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 |---|---|
 | [`Count`](#count) | How many entries there are. |
 | [`Item`](#item) | The value kept against a key. Reading a key the map does not hold throws, as a dictionary does; writing puts the entry there whether it was there before, and writing an equal value changes nothing. |
-| [`RecordsHistory`](#recordshistory) | Whether changes of this map enter the undo history. |
 | [`Value`](#value) | What the map holds now, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below. |
 
 ## Methods
@@ -38,9 +40,15 @@ public abstract class AtomsMap<TKey, TValue> : IReadableAtom<IReadOnlyDictionary
 | [`Clear()`](#clear) | Takes everything out. An empty map changes nothing. |
 | [`ContainsKey(TKey)`](#containskey-tkey) | Whether the map holds an entry under a key. |
 | [`GetEnumerator()`](#getenumerator) | Walks the entries, so `foreach` over the map itself reads the way it does over a dictionary. Reach for [`AtomsMap.Value`](../arlecchino.atoms.collections/AtomsMap-2.md#value) where a sequence is wanted, LINQ included. |
+| [`OnAdded(TKey, TValue)`](#onadded-tkey-tvalue) | Called once an entry went in under a key that held none, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnRemoved(TKey, TValue)`](#onremoved-tkey-tvalue) | Called once an entry came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnReplaced(TKey, TValue, TValue)`](#onreplaced-tkey-tvalue-tvalue) | Called once a value was replaced, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnReset(KeyValuePair<TKey, TValue>[], KeyValuePair<TKey, TValue>[])`](#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue) | Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
 | [`Remove(TKey)`](#remove-tkey) | Takes an entry out, and does nothing when the key is not there. |
+| [`RemoveSilently(TKey)`](#removesilently-tkey) | Takes an entry out without reaching [`AtomsMap.OnRemoved`](../arlecchino.atoms.collections/AtomsMap-2.md#onremoved-tkey-tvalue). |
 | [`Reset(IReadOnlyDictionary<TKey, TValue>)`](#reset-ireadonlydictionary-tkey-tvalue) | Replaces the contents in one go, for the map that is reloaded rather than edited — settings read again, a listing answered afresh. Contents equal to what is already there change nothing. |
-| [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
+| [`ResetSilently(KeyValuePair<TKey, TValue>[])`](#resetsilently-keyvaluepair-tkey-tvalue) | Swaps the contents without reaching [`AtomsMap.OnReset`](../arlecchino.atoms.collections/AtomsMap-2.md#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue). |
+| [`SetSilently(TKey, TValue)`](#setsilently-tkey-tvalue) | Puts an entry in without reaching [`AtomsMap.OnAdded`](../arlecchino.atoms.collections/AtomsMap-2.md#onadded-tkey-tvalue) or [`AtomsMap.OnReplaced`](../arlecchino.atoms.collections/AtomsMap-2.md#onreplaced-tkey-tvalue-tvalue). |
 | [`TryAdd(TKey, TValue)`](#tryadd-tkey-tvalue) | Puts an entry in unless the key is taken, and says which happened — [`AtomsMap.Add`](../arlecchino.atoms.collections/AtomsMap-2.md#add-tkey-tvalue) without the exception, for the case where losing the race with an earlier entry is an answer rather than a fault. |
 | [`TryGetValue(TKey, out TValue)`](#trygetvalue-tkey-out-tvalue) | Reads an entry without throwing when it is not there. |
 | [`TryRemove(TKey, out TValue)`](#tryremove-tkey-out-tvalue) | Takes an entry out and hands back what was kept under it, which is the reading and the removal in one step rather than a lookup followed by a hope. |
@@ -89,16 +97,6 @@ The value kept against a key. Reading a key the map does not hold throws, as a d
 | `key` | `TKey` | Which entry. |
 
 **Type** `TValue`
-
-### `RecordsHistory` {#recordshistory}
-
-```csharp
-public abstract bool RecordsHistory { get; }
-```
-
-Whether changes of this map enter the undo history.
-
-**Type** `bool`
 
 ### `Value` {#value}
 
@@ -161,6 +159,69 @@ Walks the entries, so `foreach` over the map itself reads the way it does over a
 
 **Returns** `Enumerator<TKey, TValue>`&lt;`TKey`, `TValue`&gt; — The enumerator, which throws when the map changes while it is being walked.
 
+### `OnAdded(TKey, TValue)` {#onadded-tkey-tvalue}
+
+```csharp
+public virtual void OnAdded(TKey key, TValue value);
+```
+
+Called once an entry went in under a key that held none, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `TKey` | The key. |
+| `value` | `TValue` | What went in. |
+
+### `OnRemoved(TKey, TValue)` {#onremoved-tkey-tvalue}
+
+```csharp
+public virtual void OnRemoved(TKey key, TValue value);
+```
+
+Called once an entry came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `TKey` | The key. |
+| `value` | `TValue` | What came out. |
+
+### `OnReplaced(TKey, TValue, TValue)` {#onreplaced-tkey-tvalue-tvalue}
+
+```csharp
+public virtual void OnReplaced(TKey key, TValue previous, TValue current);
+```
+
+Called once a value was replaced, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `TKey` | The key. |
+| `previous` | `TValue` | What was kept there. |
+| `current` | `TValue` | What is kept there now. |
+
+### `OnReset(KeyValuePair<TKey, TValue>[], KeyValuePair<TKey, TValue>[])` {#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue}
+
+```csharp
+public virtual void OnReset(
+    KeyValuePair<TKey, TValue>[] previous,
+    KeyValuePair<TKey, TValue>[] current);
+```
+
+Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `previous` | `KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;\[\] | What the map held. |
+| `current` | `KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;\[\] | What it holds now. |
+
 ### `Remove(TKey)` {#remove-tkey}
 
 ```csharp
@@ -174,6 +235,20 @@ Takes an entry out, and does nothing when the key is not there.
 | Name | Type | Description |
 |---|---|---|
 | `key` | `TKey` | Which entry. |
+
+### `RemoveSilently(TKey)` {#removesilently-tkey}
+
+```csharp
+public void RemoveSilently(TKey key);
+```
+
+Takes an entry out without reaching [`AtomsMap.OnRemoved`](../arlecchino.atoms.collections/AtomsMap-2.md#onremoved-tkey-tvalue).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `TKey` | The key. |
 
 ### `Reset(IReadOnlyDictionary<TKey, TValue>)` {#reset-ireadonlydictionary-tkey-tvalue}
 
@@ -189,21 +264,34 @@ Replaces the contents in one go, for the map that is reloaded rather than edited
 |---|---|---|
 | `items` | `IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt; | What the map should hold instead. |
 
-### `Subscribe(Action)` {#subscribe-action}
+### `ResetSilently(KeyValuePair<TKey, TValue>[])` {#resetsilently-keyvaluepair-tkey-tvalue}
 
 ```csharp
-public IDisposable Subscribe(Action listener);
+public void ResetSilently(KeyValuePair<TKey, TValue>[] items);
 ```
 
-Calls back whenever the contents change.
+Swaps the contents without reaching [`AtomsMap.OnReset`](../arlecchino.atoms.collections/AtomsMap-2.md#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue).
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `listener` | `Action` | What to run on change. |
+| `items` | `KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;\[\] | What the map should hold. |
 
-**Returns** `IDisposable` — Dispose it to stop listening.
+### `SetSilently(TKey, TValue)` {#setsilently-tkey-tvalue}
+
+```csharp
+public void SetSilently(TKey key, TValue value);
+```
+
+Puts an entry in without reaching [`AtomsMap.OnAdded`](../arlecchino.atoms.collections/AtomsMap-2.md#onadded-tkey-tvalue) or [`AtomsMap.OnReplaced`](../arlecchino.atoms.collections/AtomsMap-2.md#onreplaced-tkey-tvalue-tvalue).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `key` | `TKey` | The key. |
+| `value` | `TValue` | What to keep there. |
 
 ### `TryAdd(TKey, TValue)` {#tryadd-tkey-tvalue}
 

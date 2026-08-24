@@ -7,12 +7,13 @@ sidebar_label: "AtomsList<T>"
 
 **Namespace:** `Arlecchino.Atoms.Collections` &middot; **Assembly:** `Arlecchino.Core`
 
-A list held as one piece of application state, changed in place. Every change notifies what reads the list, marks the frame stale and records an undo step.
+A list held as one piece of application state, changed in place. Every change notifies what reads the list and marks the frame stale.
 
 ```csharp
-public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
+public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
 ```
 
+**Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
 **Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
@@ -27,7 +28,6 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 |---|---|
 | [`Count`](#count) | How many items there are. |
 | [`Item`](#item) | The item at a position. Writing an equal item changes nothing and notifies no one. |
-| [`RecordsHistory`](#recordshistory) | Whether changes of this list enter the undo history. |
 | [`Value`](#value) | What the list holds now, as a live view rather than a copy. It is read-only all the way down, so every change goes through the members below. |
 
 ## Methods
@@ -40,12 +40,19 @@ public abstract class AtomsList<T> : IReadableAtom<IReadOnlyList<T>>
 | [`GetEnumerator()`](#getenumerator) | Walks what the list holds, so `foreach` over the list itself reads the way it does over a list. Reach for [`AtomsList.Value`](../arlecchino.atoms.collections/AtomsList-1.md#value) where a sequence is wanted, LINQ included. |
 | [`IndexOf(T)`](#indexof-t) | Where an item is, or `-1` when the list does not hold it. |
 | [`Insert(int, T)`](#insert-int-t) | Puts an item at a position, moving the rest along. |
+| [`InsertSilently(int, T[])`](#insertsilently-int-t) | Puts items in without reaching [`AtomsList.OnInserted`](../arlecchino.atoms.collections/AtomsList-1.md#oninserted-int-t). |
+| [`OnInserted(int, T[])`](#oninserted-int-t) | Called once items went in, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnRemoved(int, T[])`](#onremoved-int-t) | Called once items came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnReplaced(int, T, T)`](#onreplaced-int-t-t) | Called once an item was replaced, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`OnReset(T[], T[])`](#onreset-t-t) | Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved). |
+| [`Refresh()`](#refresh) | Says that an item already in the list changed inside itself, so everything watching the list hears about it. Replace the item instead, unless its identity has to survive the change. |
 | [`Remove(T)`](#remove-t) | Takes out the first item equal to this one, and does nothing when there is none. |
 | [`RemoveAt(int)`](#removeat-int) | Takes out the item at a position. |
 | [`RemoveRange(int, int)`](#removerange-int-int) | Takes out several items in a row at once, with one notification, one frame and one undo step for the lot. Trimming a list one item at a time would come back the same way. |
+| [`RemoveSilently(int, int)`](#removesilently-int-int) | Takes items out without reaching [`AtomsList.OnRemoved`](../arlecchino.atoms.collections/AtomsList-1.md#onremoved-int-t). |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the case the list is not edited but reloaded — a query answered, a folder read again, a filter applied. Contents equal to what is already there change nothing. |
-| [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the contents change. |
-| [`Touch()`](#touch) | Says that an item already in the list changed inside itself, so everything watching the list hears about it. Replace the item instead, unless its identity has to survive the change. |
+| [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsList.OnReset`](../arlecchino.atoms.collections/AtomsList-1.md#onreset-t-t). |
+| [`SetSilently(int, T)`](#setsilently-int-t) | Replaces an item without reaching [`AtomsList.OnReplaced`](../arlecchino.atoms.collections/AtomsList-1.md#onreplaced-int-t-t). |
 
 ## Constructors in detail
 
@@ -91,16 +98,6 @@ The item at a position. Writing an equal item changes nothing and notifies no on
 | `index` | `int` | Which one. |
 
 **Type** `T`
-
-### `RecordsHistory` {#recordshistory}
-
-```csharp
-public abstract bool RecordsHistory { get; }
-```
-
-Whether changes of this list enter the undo history.
-
-**Type** `bool`
 
 ### `Value` {#value}
 
@@ -191,6 +188,96 @@ Puts an item at a position, moving the rest along.
 | `index` | `int` | Where it goes. |
 | `item` | `T` | What to insert. |
 
+### `InsertSilently(int, T[])` {#insertsilently-int-t}
+
+```csharp
+public void InsertSilently(int index, T[] items);
+```
+
+Puts items in without reaching [`AtomsList.OnInserted`](../arlecchino.atoms.collections/AtomsList-1.md#oninserted-int-t).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Where they go. |
+| `items` | `T`\[\] | What to put in. |
+
+### `OnInserted(int, T[])` {#oninserted-int-t}
+
+```csharp
+public virtual void OnInserted(int index, T[] items);
+```
+
+Called once items went in, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Where they went. |
+| `items` | `T`\[\] | What went in. |
+
+### `OnRemoved(int, T[])` {#onremoved-int-t}
+
+```csharp
+public virtual void OnRemoved(int index, T[] items);
+```
+
+Called once items came out, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Where they were. |
+| `items` | `T`\[\] | What came out. |
+
+### `OnReplaced(int, T, T)` {#onreplaced-int-t-t}
+
+```csharp
+public virtual void OnReplaced(int index, T previous, T current);
+```
+
+Called once an item was replaced, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Which one. |
+| `previous` | `T` | What was there. |
+| `current` | `T` | What is there now. |
+
+### `OnReset(T[], T[])` {#onreset-t-t}
+
+```csharp
+public virtual void OnReset(T[] previous, T[] current);
+```
+
+Called once the contents were swapped wholesale, and only while [`AtomsCollectionBase.IsObserved`](../arlecchino.atoms.collections/AtomsCollectionBase.md#isobserved).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `previous` | `T`\[\] | What the list held. |
+| `current` | `T`\[\] | What it holds now. |
+
+### `Refresh()` {#refresh}
+
+```csharp
+public void Refresh();
+```
+
+Says that an item already in the list changed inside itself, so everything watching the list hears about it. Replace the item instead, unless its identity has to survive the change.
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | Called from off the drawing thread. |
+
 ### `Remove(T)` {#remove-t}
 
 ```csharp
@@ -234,6 +321,21 @@ Takes out several items in a row at once, with one notification, one frame and o
 | `index` | `int` | Where to start. |
 | `count` | `int` | How many to take out. Taking none changes nothing. |
 
+### `RemoveSilently(int, int)` {#removesilently-int-int}
+
+```csharp
+public void RemoveSilently(int index, int count);
+```
+
+Takes items out without reaching [`AtomsList.OnRemoved`](../arlecchino.atoms.collections/AtomsList-1.md#onremoved-int-t).
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Where to start. |
+| `count` | `int` | How many. |
+
 ### `Reset(IReadOnlyList<T>)` {#reset-ireadonlylist-t}
 
 ```csharp
@@ -248,33 +350,32 @@ Replaces the contents in one go, for the case the list is not edited but reloade
 |---|---|---|
 | `items` | `IReadOnlyList<T>`&lt;`T`&gt; | What the list should hold instead. |
 
-### `Subscribe(Action)` {#subscribe-action}
+### `ResetSilently(T[])` {#resetsilently-t}
 
 ```csharp
-public IDisposable Subscribe(Action listener);
+public void ResetSilently(T[] items);
 ```
 
-Calls back whenever the contents change.
+Swaps the contents without reaching [`AtomsList.OnReset`](../arlecchino.atoms.collections/AtomsList-1.md#onreset-t-t).
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `listener` | `Action` | What to run on change. |
+| `items` | `T`\[\] | What the list should hold. |
 
-**Returns** `IDisposable` — Dispose it to stop listening.
-
-### `Touch()` {#touch}
+### `SetSilently(int, T)` {#setsilently-int-t}
 
 ```csharp
-public void Touch();
+public void SetSilently(int index, T item);
 ```
 
-Says that an item already in the list changed inside itself, so everything watching the list hears about it. Replace the item instead, unless its identity has to survive the change.
+Replaces an item without reaching [`AtomsList.OnReplaced`](../arlecchino.atoms.collections/AtomsList-1.md#onreplaced-int-t-t).
 
-**Exceptions**
+**Parameters**
 
-| Type | Thrown when |
-|---|---|
-| `InvalidOperationException` | Called from off the drawing thread. |
+| Name | Type | Description |
+|---|---|---|
+| `index` | `int` | Which one. |
+| `item` | `T` | What to put there. |
 

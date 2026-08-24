@@ -14,10 +14,8 @@ place to look a member up.
 | Namespace | Assembly | Types |
 |---|---|---|
 | [Arlecchino](arlecchino/index.md) | `Arlecchino.Core` | 6 |
-| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 10 |
-| [Arlecchino.Atoms.Collections](arlecchino.atoms.collections/index.md) | `Arlecchino.Core` | 5 |
-| [Arlecchino.Atoms.Local](arlecchino.atoms.local/index.md) | `Arlecchino.Core` | 6 |
-| [Arlecchino.Atoms.Tracked](arlecchino.atoms.tracked/index.md) | `Arlecchino.Core` | 6 |
+| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 8 |
+| [Arlecchino.Atoms.Collections](arlecchino.atoms.collections/index.md) | `Arlecchino.Core` | 6 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 4 |
 | [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 7 |
 | [Arlecchino.Editing](arlecchino.editing/index.md) | `Arlecchino` | 15 |

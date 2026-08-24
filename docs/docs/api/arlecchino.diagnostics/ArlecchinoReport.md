@@ -17,7 +17,7 @@ public sealed class ArlecchinoReport
 
 | Member | Summary |
 |---|---|
-| [`ArlecchinoReport(IArlecchinoTerminal, Navigator, ArlecchinoState, ArlecchinoOptions, Surface, AtomHistory)`](#arlecchinoreport-iarlecchinoterminal-navigator-arlecchinostate-arlecchinooptions-surface-atomhistory) | Creates the report. Resolved from the container like any other service. |
+| [`ArlecchinoReport(IArlecchinoTerminal, Navigator, ArlecchinoState, ArlecchinoOptions, Surface)`](#arlecchinoreport-iarlecchinoterminal-navigator-arlecchinostate-arlecchinooptions-surface) | Creates the report. Resolved from the container like any other service. |
 
 ## Methods
 
@@ -27,7 +27,7 @@ public sealed class ArlecchinoReport
 
 ## Constructors in detail
 
-### `ArlecchinoReport(IArlecchinoTerminal, Navigator, ArlecchinoState, ArlecchinoOptions, Surface, AtomHistory)` {#arlecchinoreport-iarlecchinoterminal-navigator-arlecchinostate-arlecchinooptions-surface-atomhistory}
+### `ArlecchinoReport(IArlecchinoTerminal, Navigator, ArlecchinoState, ArlecchinoOptions, Surface)` {#arlecchinoreport-iarlecchinoterminal-navigator-arlecchinostate-arlecchinooptions-surface}
 
 ```csharp
 public ArlecchinoReport(
@@ -35,8 +35,7 @@ public ArlecchinoReport(
     Navigator navigator,
     ArlecchinoState state,
     ArlecchinoOptions options,
-    Surface surface,
-    AtomHistory history);
+    Surface surface);
 ```
 
 Creates the report. Resolved from the container like any other service.
@@ -50,7 +49,6 @@ Creates the report. Resolved from the container like any other service.
 | `state` | [`ArlecchinoState`](../arlecchino.state/ArlecchinoState.md) | Modals and the output row. |
 | `options` | [`ArlecchinoOptions`](../arlecchino.hosting/ArlecchinoOptions.md) | How the application was configured. |
 | `surface` | [`Surface`](../arlecchino.rendering/Surface.md) | The frame, for its size. |
-| `history` | [`AtomHistory`](../arlecchino.atoms/AtomHistory.md) | The undo stack, for its depth. |
 
 ## Methods in detail
 

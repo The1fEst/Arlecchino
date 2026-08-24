@@ -17,17 +17,17 @@ public interface IArlecchinoStartup
 
 | Member | Summary |
 |---|---|
-| [`Start()`](#start) | Runs the work. Return a route to open somewhere other than the configured start, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) to leave that alone. |
+| [`StartAsync()`](#startasync) | Runs the work. Return a route to open somewhere other than the configured start, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) to leave that alone. |
 
 ## Methods in detail
 
-### `Start()` {#start}
+### `StartAsync()` {#startasync}
 
 ```csharp
-public ViewRoute Start();
+public Task<ViewRoute> StartAsync();
 ```
 
 Runs the work. Return a route to open somewhere other than the configured start, or [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) to leave that alone.
 
-**Returns** [`ViewRoute`](../arlecchino.navigation/ViewRoute.md) — Where to open, or none.
+**Returns** `Task<TResult>`&lt;[`ViewRoute`](../arlecchino.navigation/ViewRoute.md)&gt; — Where to open, or none.
 
