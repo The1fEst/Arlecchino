@@ -45,13 +45,10 @@ Arlecchino.Pictures.PictureLimits.PictureLimits() -> void
 Arlecchino.Pictures.PictureLimits.PictureLimits(int MostPixels, int EnoughPixels) -> void
 Arlecchino.Pictures.Raster
 Arlecchino.Pictures.Raster.<Clone>$() -> Arlecchino.Pictures.Raster!
-Arlecchino.Pictures.Raster.Deconstruct(out Arlecchino.Rendering.Colors.Rgb[]! Pixels, out int Width, out int Height) -> void
 Arlecchino.Pictures.Raster.Equals(Arlecchino.Pictures.Raster? other) -> bool
 Arlecchino.Pictures.Raster.Height.get -> int
 Arlecchino.Pictures.Raster.Height.init -> void
-Arlecchino.Pictures.Raster.Pixels.get -> Arlecchino.Rendering.Colors.Rgb[]!
 Arlecchino.Pictures.Raster.Pixels.init -> void
-Arlecchino.Pictures.Raster.Raster(Arlecchino.Rendering.Colors.Rgb[]! Pixels, int Width, int Height) -> void
 Arlecchino.Pictures.Raster.Width.get -> int
 Arlecchino.Pictures.Raster.Width.init -> void
 const Arlecchino.Pictures.PictureFormats.DefaultPixels = 33554432 -> int

@@ -15,7 +15,7 @@ public enum ColorSupport : byte
     /// </summary>
     None,
 
-    /// <summary>The sixteen ANSI colors; a <see cref="Rgb"/> is mapped to the nearest of them.</summary>
+    /// <summary>The sixteen ANSI colors; a <see cref="RGB"/> is mapped to the nearest of them.</summary>
     Palette,
 
     /// <summary>Full 24-bit color, so <see cref="RgbTermColor"/> emits exact values.</summary>

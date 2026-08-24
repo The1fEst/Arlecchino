@@ -19,7 +19,7 @@ namespace Arlecchino.Widgets.Pictures;
 /// </summary>
 public sealed class Picture : IArlecchinoWidget
 {
-    private Rgb[] _pixels = [];
+    private RGB[] _pixels = [];
     private PictureProtocol? _drawing;
     private int _version;
 
@@ -58,7 +58,7 @@ public sealed class Picture : IArlecchinoWidget
     /// <param name="pixels">The pixels, <paramref name="width"/> × <paramref name="height"/> of them.</param>
     /// <param name="width">How wide the picture is.</param>
     /// <param name="height">How tall the picture is.</param>
-    public void Show(ReadOnlySpan<Rgb> pixels, int width, int height)
+    public void Show(ReadOnlySpan<RGB> pixels, int width, int height)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(width);
         ArgumentOutOfRangeException.ThrowIfNegative(height);

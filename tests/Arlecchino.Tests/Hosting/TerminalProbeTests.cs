@@ -71,15 +71,15 @@ public sealed class TerminalProbeTests
     public void TheBackgroundIsReadWhateverWidthTheChannelsCameIn()
     {
         Assert.Equal(
-            new Rgb(0x12, 0x34, 0x56),
+            new RGB(0x12, 0x34, 0x56),
             TerminalProbe.Read("\e]11;rgb:1234/3456/5678\a\e[?62;22c", 80, 24).Background);
 
         Assert.Equal(
-            new Rgb(0x12, 0x34, 0x56),
+            new RGB(0x12, 0x34, 0x56),
             TerminalProbe.Read("\e]11;rgb:12/34/56\a\e[?62;22c", 80, 24).Background);
 
         Assert.Equal(
-            new Rgb(0x11, 0x22, 0x33),
+            new RGB(0x11, 0x22, 0x33),
             TerminalProbe.Read("\e]11;rgb:1/2/3\a\e[?62;22c", 80, 24).Background);
     }
 
@@ -257,7 +257,7 @@ public sealed class TerminalProbeTests
             Assert.True(TerminalCapabilities.Sixel);
             Assert.Equal(11, Glyphs.CellWidth);
             Assert.Equal(25, Glyphs.CellHeight);
-            Assert.Equal(new Rgb(0x20, 0x20, 0x22), TerminalCapabilities.Background);
+            Assert.Equal(new RGB(0x20, 0x20, 0x22), TerminalCapabilities.Background);
         }
         finally
         {

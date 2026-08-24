@@ -11,7 +11,7 @@ namespace Arlecchino.Rendering.Colors;
 /// <param name="Red">Red channel.</param>
 /// <param name="Green">Green channel.</param>
 /// <param name="Blue">Blue channel.</param>
-public readonly record struct Rgb(byte Red, byte Green, byte Blue)
+public readonly record struct RGB(byte Red, byte Green, byte Blue)
 {
     /// <summary>The color as <c>#RRGGBB</c>.</summary>
     public string Hex => $"#{Red:X2}{Green:X2}{Blue:X2}";
@@ -27,7 +27,7 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
     /// <param name="saturation">Percent, clamped to <c>0..100</c>.</param>
     /// <param name="lightness">Percent, clamped to <c>0..100</c>.</param>
     /// <returns>The matching color.</returns>
-    public static Rgb FromHsl(int hue, int saturation, int lightness)
+    public static RGB FromHsl(int hue, int saturation, int lightness)
     {
         var turns = ((hue % 360) + 360) % 360 / 360d;
         var chroma = Math.Clamp(saturation, 0, 100) / 100d;
@@ -83,7 +83,7 @@ public readonly record struct Rgb(byte Red, byte Green, byte Blue)
     /// <param name="text">The text to read.</param>
     /// <param name="color">The color, or <c>default</c> when the text is not six hex digits.</param>
     /// <returns><c>true</c> when the text was a color.</returns>
-    public static bool TryParseHex(string text, out Rgb color)
+    public static bool TryParseHex(string text, out RGB color)
     {
         var digits = text.StartsWith('#') ? text[1..] : text;
         color = default;

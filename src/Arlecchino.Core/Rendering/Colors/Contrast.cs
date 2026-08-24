@@ -17,14 +17,14 @@ public static class Contrast
     /// <summary>How much light a color sends back, weighted the way an eye weights the three channels.</summary>
     /// <param name="color">The color to measure.</param>
     /// <returns>Luminance, from 0 for black to 1 for white.</returns>
-    public static double Luminance(Rgb color) =>
+    public static double Luminance(RGB color) =>
         (0.2126d * Linear(color.Red)) + (0.7152d * Linear(color.Green)) + (0.0722d * Linear(color.Blue));
 
     /// <summary>The ratio between two colors, whichever way round they are given.</summary>
     /// <param name="one">The first color.</param>
     /// <param name="other">The second color.</param>
     /// <returns>The ratio, from 1 to 21.</returns>
-    public static double Between(Rgb one, Rgb other)
+    public static double Between(RGB one, RGB other)
     {
         var first = Luminance(one);
         var second = Luminance(other);
@@ -35,7 +35,7 @@ public static class Contrast
     /// <summary>Whether a background wants light text on it.</summary>
     /// <param name="background">The color behind the text.</param>
     /// <returns><c>true</c> when the background is the darker side of <see cref="Pivot"/>.</returns>
-    public static bool IsDark(Rgb background) => Luminance(background) < Pivot;
+    public static bool IsDark(RGB background) => Luminance(background) < Pivot;
 
     /// <summary>
     /// The most contrast this background can give in the one direction text goes on it. A mid-gray
@@ -43,7 +43,7 @@ public static class Contrast
     /// </summary>
     /// <param name="background">The color behind the text.</param>
     /// <returns>The ratio against white or black, whichever this background is further from.</returns>
-    public static double Reach(Rgb background) =>
+    public static double Reach(RGB background) =>
         IsDark(background)
             ? Between(new(0xFF, 0xFF, 0xFF), background)
             : Between(new(0x00, 0x00, 0x00), background);

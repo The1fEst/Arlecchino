@@ -62,7 +62,7 @@ internal static class TgaPixels
         bool topDown)
     {
         var size = depth == 8 ? 1 : depth <= 16 ? 2 : depth / 8;
-        var pixels = new Rgb[width * height];
+        var pixels = new RGB[width * height];
 
         for (var row = 0; row < height; row++)
         {
@@ -94,7 +94,7 @@ internal static class TgaPixels
         return new(pixels, width, height);
     }
 
-    private static Rgb Color(ReadOnlySpan<byte> bytes, int depth)
+    private static RGB Color(ReadOnlySpan<byte> bytes, int depth)
     {
         if (depth == 8)
         {

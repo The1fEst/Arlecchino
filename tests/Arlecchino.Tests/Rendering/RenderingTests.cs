@@ -18,9 +18,9 @@ public sealed class RenderingTests
     [InlineData(63, 169, 245)]
     public void HslRoundTripStaysWithinRoundingDistance(byte red, byte green, byte blue)
     {
-        var original = new Rgb(red, green, blue);
+        var original = new RGB(red, green, blue);
         var (hue, saturation, lightness) = original.ToHsl();
-        var color = Rgb.FromHsl(hue, saturation, lightness);
+        var color = RGB.FromHsl(hue, saturation, lightness);
 
         Assert.InRange(Math.Abs(color.Red - original.Red), 0, 3);
         Assert.InRange(Math.Abs(color.Green - original.Green), 0, 3);
@@ -30,15 +30,15 @@ public sealed class RenderingTests
     [Fact]
     public void HexIsParsedAndFormattedBack()
     {
-        Assert.True(Rgb.TryParseHex("#3FA9F5", out var color));
+        Assert.True(RGB.TryParseHex("#3FA9F5", out var color));
         Assert.Equal(new(63, 169, 245), color);
         Assert.Equal("#3FA9F5", color.Hex);
 
-        Assert.True(Rgb.TryParseHex("000000", out var black));
+        Assert.True(RGB.TryParseHex("000000", out var black));
         Assert.Equal(new(0, 0, 0), black);
 
-        Assert.False(Rgb.TryParseHex("#xyz", out _));
-        Assert.False(Rgb.TryParseHex("#FFF", out _));
+        Assert.False(RGB.TryParseHex("#xyz", out _));
+        Assert.False(RGB.TryParseHex("#FFF", out _));
     }
 
     [Fact]

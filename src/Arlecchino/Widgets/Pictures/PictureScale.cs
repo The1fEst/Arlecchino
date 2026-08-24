@@ -18,8 +18,8 @@ internal static class PictureScale
     /// <param name="newWidth">How wide it should be.</param>
     /// <param name="newHeight">How tall it should be.</param>
     /// <returns>The pixels to hand over, and how wide and tall they are.</returns>
-    internal static (Rgb[] Pixels, int Width, int Height) To(
-        Rgb[] pixels,
+    internal static (RGB[] Pixels, int Width, int Height) To(
+        RGB[] pixels,
         int width,
         int height,
         int newWidth,
@@ -33,7 +33,7 @@ internal static class PictureScale
             return (pixels, width, height);
         }
 
-        var result = new Rgb[newWidth * newHeight];
+        var result = new RGB[newWidth * newHeight];
 
         for (var row = 0; row < newHeight; row++)
         {

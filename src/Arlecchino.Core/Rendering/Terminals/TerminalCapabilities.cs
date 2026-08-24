@@ -10,7 +10,7 @@ namespace Arlecchino.Rendering.Terminals;
 /// </summary>
 public static class TerminalCapabilities
 {
-    private static readonly (TerminalColor Color, Rgb Value)[] PaletteColors =
+    private static readonly (TerminalColor Color, RGB Value)[] PaletteColors =
     [
         (TerminalColor.Black, new(0, 0, 0)),
         (TerminalColor.Red, new(205, 0, 0)),
@@ -58,7 +58,7 @@ public static class TerminalCapabilities
     /// The color behind the text, as the terminal reported it, or <c>null</c> when it did not say. Undrawing
     /// a sixel means painting over it, so a picture stays where it is until this is known.
     /// </summary>
-    public static Rgb? Background { get; set; }
+    public static RGB? Background { get; set; }
 
     /// <summary>
     /// Turns <see cref="ImageProtocol.Auto"/> into the best of what the terminal admitted to, kitty first,
@@ -116,7 +116,7 @@ public static class TerminalCapabilities
     /// </summary>
     /// <param name="color">The color to approximate.</param>
     /// <returns>The nearest of the sixteen ANSI colors.</returns>
-    public static TerminalColor NearestPaletteColor(Rgb color)
+    public static TerminalColor NearestPaletteColor(RGB color)
     {
         var nearest = TerminalColor.Default;
         var nearestDistance = int.MaxValue;

@@ -24,7 +24,7 @@ internal static class BmpPacked
             return null;
         }
 
-        var pixels = new Rgb[header.Width * header.Height];
+        var pixels = new RGB[header.Width * header.Height];
         var at = offset;
         var column = 0;
         var row = 0;
@@ -90,7 +90,7 @@ internal static class BmpPacked
         return new(pixels, header.Width, header.Height);
     }
 
-    private static void Put(Rgb[] pixels, in BmpInfo header, byte[] palette, int row, int column, int entry)
+    private static void Put(RGB[] pixels, in BmpInfo header, byte[] palette, int row, int column, int entry)
     {
         if (column < 0 || column >= header.Width || row < 0 || row >= header.Height)
         {

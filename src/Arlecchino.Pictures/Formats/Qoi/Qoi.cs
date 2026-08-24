@@ -45,10 +45,10 @@ public sealed class Qoi : IPictureFormat
 
     private static Raster? Decode(ReadOnlySpan<byte> body, int width, int height)
     {
-        var pixels = new Rgb[width * height];
-        var recent = new Rgb[64];
+        var pixels = new RGB[width * height];
+        var recent = new RGB[64];
         var alpha = new byte[64];
-        var color = new Rgb(0, 0, 0);
+        var color = new RGB(0, 0, 0);
         var opacity = (byte)255;
         var at = 0;
 
@@ -131,6 +131,6 @@ public sealed class Qoi : IPictureFormat
         return new(pixels, width, height);
     }
 
-    private static int Slot(Rgb color, byte opacity) =>
+    private static int Slot(RGB color, byte opacity) =>
         ((color.Red * 3) + (color.Green * 5) + (color.Blue * 7) + (opacity * 11)) % 64;
 }

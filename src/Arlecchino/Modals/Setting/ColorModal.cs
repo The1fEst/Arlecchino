@@ -19,7 +19,7 @@ public enum ColorChannel : byte
 }
 
 /// <summary>
-/// A color picked on three sliders: hue, saturation and lightness, converted to <see cref="Rgb"/> on the way
+/// A color picked on three sliders: hue, saturation and lightness, converted to <see cref="RGB"/> on the way
 /// out. Both directions round to whole units, so feeding a color back in can shift it by one.
 /// </summary>
 public sealed class ColorModal : Modal
@@ -46,10 +46,10 @@ public sealed class ColorModal : Modal
     public int LargeStep { get; init; } = 10;
 
     /// <summary>Called with the color that was confirmed.</summary>
-    public required Action<Rgb> OnPicked { get; init; }
+    public required Action<RGB> OnPicked { get; init; }
 
     /// <summary>The three sliders resolved into a color, as drawn in the swatch.</summary>
-    public Rgb Value => Rgb.FromHsl(Hue, Saturation, Lightness);
+    public RGB Value => RGB.FromHsl(Hue, Saturation, Lightness);
 
     /// <summary>Where each slider's row was drawn last frame, used to turn a click into a channel.</summary>
     public SurfaceRegion[] ChannelRows { get; set; } = [];
@@ -91,7 +91,7 @@ public sealed class ColorModal : Modal
 
     /// <summary>Loads a color into the three sliders, which is how an existing value is edited.</summary>
     /// <param name="color">The color to start from.</param>
-    public void SetValue(Rgb color)
+    public void SetValue(RGB color)
     {
         var (hue, saturation, lightness) = color.ToHsl();
         Hue = hue;

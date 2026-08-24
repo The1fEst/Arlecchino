@@ -19,7 +19,7 @@ public static class Shade
     /// <param name="chroma">How vivid to be, cut back where <c>sRGB</c> cannot hold it.</param>
     /// <param name="contrast">The contrast to reach, or as near as the background allows.</param>
     /// <returns>The color to write in.</returns>
-    public static Rgb Against(Rgb background, double hue, double chroma, double contrast)
+    public static RGB Against(RGB background, double hue, double chroma, double contrast)
     {
         var away = Contrast.IsDark(background);
         var edge = Oklch.Of(background).Lightness;
@@ -62,7 +62,7 @@ public static class Shade
     /// <param name="sample">The color whose hue and chroma to keep.</param>
     /// <param name="contrast">The contrast to reach.</param>
     /// <returns>The color to write in.</returns>
-    public static Rgb Against(Rgb background, Rgb sample, double contrast)
+    public static RGB Against(RGB background, RGB sample, double contrast)
     {
         var (_, chroma, hue) = Oklch.Of(sample);
 
@@ -76,7 +76,7 @@ public static class Shade
     /// <param name="background">The surface to lift off.</param>
     /// <param name="step">How far, in lightness, a whole surface being about 0.07.</param>
     /// <returns>The raised surface.</returns>
-    public static Rgb Lifted(Rgb background, double step) => Raised(background, Rise(background) * step);
+    public static RGB Lifted(RGB background, double step) => Raised(background, Rise(background) * step);
 
     /// <summary>
     /// Which way surfaces are raised off this background: lighter on a dark terminal, darker on a light one,
@@ -84,7 +84,7 @@ public static class Shade
     /// </summary>
     /// <param name="background">The color behind the text.</param>
     /// <returns><c>1</c> where a raised surface is the lighter one, <c>-1</c> where it is the darker.</returns>
-    public static double Rise(Rgb background)
+    public static double Rise(RGB background)
     {
         var toward = Contrast.IsDark(background) ? 1d : -1d;
         var crossed = Contrast.IsDark(Raised(background, toward * Tallest)) != Contrast.IsDark(background);
@@ -92,7 +92,7 @@ public static class Shade
         return crossed ? -toward : toward;
     }
 
-    private static Rgb Raised(Rgb background, double step)
+    private static RGB Raised(RGB background, double step)
     {
         var surface = Oklch.Of(background);
 
@@ -105,7 +105,7 @@ public static class Shade
     /// </summary>
     /// <param name="background">The color behind the text.</param>
     /// <returns>How far to follow the background, from 0 to 1.</returns>
-    public static double Pull(Rgb background) =>
+    public static double Pull(RGB background) =>
         Math.Clamp((Oklch.Of(background).Chroma - Quiet) / (Vivid - Quiet), 0d, 1d);
 
     /// <summary>
@@ -116,7 +116,7 @@ public static class Shade
     /// <param name="anchor">The hue of the design's own accent, which the turn is measured from.</param>
     /// <param name="offset">How far from the background the accent is to end up.</param>
     /// <returns>Degrees to add to every hue, which is nothing behind a near-neutral terminal.</returns>
-    public static double Turn(Rgb background, double anchor, double offset)
+    public static double Turn(RGB background, double anchor, double offset)
     {
         var hue = Oklch.Of(background).Hue;
         var degrees = ((((hue + offset) - anchor) % 360d) + 540d) % 360d - 180d;
@@ -132,8 +132,8 @@ public static class Shade
     /// <param name="lowest">The least contrast in the ladder, which is left where it is.</param>
     /// <param name="highest">The most contrast in the ladder.</param>
     /// <param name="background">The color everything is read on.</param>
-    /// <returns>The contrast to ask <see cref="Against(Rgb,double,double,double)"/> for.</returns>
-    public static double Scaled(double contrast, double lowest, double highest, Rgb background)
+    /// <returns>The contrast to ask <see cref="Against(RGB,double,double,double)"/> for.</returns>
+    public static double Scaled(double contrast, double lowest, double highest, RGB background)
     {
         var room = Contrast.Reach(background) * Headroom;
 

@@ -5,7 +5,7 @@ namespace Arlecchino.Rendering.Colors;
 
 /// <summary>
 /// A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness
-/// of an <see cref="Rgb"/> here leaves the color recognizably itself, which moving it in HSL does not.
+/// of an <see cref="RGB"/> here leaves the color recognizably itself, which moving it in HSL does not.
 /// </summary>
 /// <param name="Lightness">Perceived lightness, 0 for black and 1 for white.</param>
 /// <param name="Chroma">How far the color stands from gray, up to about 0.4 within <c>sRGB</c>.</param>
@@ -18,7 +18,7 @@ public readonly record struct Oklch(double Lightness, double Chroma, double Hue)
     /// <summary>Splits a color into the three.</summary>
     /// <param name="color">The color to read.</param>
     /// <returns>The same color, said the other way round.</returns>
-    public static Oklch Of(Rgb color)
+    public static Oklch Of(RGB color)
     {
         var red = Linear(color.Red);
         var green = Linear(color.Green);
@@ -90,7 +90,7 @@ public readonly record struct Oklch(double Lightness, double Chroma, double Hue)
 
     /// <summary>The color as the screen shows it, trimmed to <c>sRGB</c> on the way.</summary>
     /// <returns>The 24-bit color.</returns>
-    public Rgb ToRgb()
+    public RGB ToRgb()
     {
         var (red, green, blue) = Trimmed().Channels();
 

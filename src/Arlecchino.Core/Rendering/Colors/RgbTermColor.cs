@@ -12,10 +12,10 @@ public sealed class RgbTermColor : IArlecchinoColor
     private ColorSupport _ansiSupport;
 
     /// <summary>Color of the glyphs, or <c>null</c> to leave the foreground alone.</summary>
-    public Rgb? Foreground { get; init; }
+    public RGB? Foreground { get; init; }
 
     /// <summary>Color behind the glyphs, or <c>null</c> to leave the background alone.</summary>
-    public Rgb? Background { get; init; }
+    public RGB? Background { get; init; }
 
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
     public TextStyle Style { get; init; } = TextStyle.None;

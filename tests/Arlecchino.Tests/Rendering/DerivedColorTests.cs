@@ -10,9 +10,9 @@ namespace Arlecchino.Tests.Rendering;
 /// </summary>
 public sealed class DerivedColorTests
 {
-    private static readonly Rgb Ink = new(0x14, 0x13, 0x17);
-    private static readonly Rgb Paper = new(0xFF, 0xFF, 0xFF);
-    private static readonly Rgb Middle = new(0x80, 0x80, 0x80);
+    private static readonly RGB Ink = new(0x14, 0x13, 0x17);
+    private static readonly RGB Paper = new(0xFF, 0xFF, 0xFF);
+    private static readonly RGB Middle = new(0x80, 0x80, 0x80);
 
     [Theory]
     [InlineData(0x14, 0x13, 0x17)]
@@ -23,7 +23,7 @@ public sealed class DerivedColorTests
     [InlineData(0x4E, 0x7A, 0x63)]
     public void AColorComesBackFromTheOtherSpaceAsItself(byte red, byte green, byte blue)
     {
-        var color = new Rgb(red, green, blue);
+        var color = new RGB(red, green, blue);
 
         Assert.Equal(color, Oklch.Of(color).ToRgb());
     }
@@ -71,7 +71,7 @@ public sealed class DerivedColorTests
         byte green,
         byte blue)
     {
-        var design = new Rgb(red, green, blue);
+        var design = new RGB(red, green, blue);
         var answer = Shade.Against(Ink, hue, chroma, contrast);
 
         Assert.InRange(Math.Abs(answer.Red - design.Red), 0, 2);
@@ -86,7 +86,7 @@ public sealed class DerivedColorTests
     [Fact]
     public void AnAccentKeepsItsHueOnEitherBackground()
     {
-        var crimson = new Rgb(0xC9, 0x38, 0x2B);
+        var crimson = new RGB(0xC9, 0x38, 0x2B);
         var hue = Oklch.Of(crimson).Hue;
 
         var onInk = Oklch.Of(Shade.Against(Ink, crimson, 3.6d)).Hue;
@@ -129,7 +129,7 @@ public sealed class DerivedColorTests
     [Fact]
     public void ARaisedSurfaceKeepsTheColorOfWhatItIsRaisedFrom()
     {
-        var green = new Rgb(0x00, 0x80, 0x00);
+        var green = new RGB(0x00, 0x80, 0x00);
         var terminal = Oklch.Of(green);
         var surface = Oklch.Of(Shade.Lifted(green, 0.070d));
 
@@ -152,7 +152,7 @@ public sealed class DerivedColorTests
     [InlineData(0x00, 0xFF, 0x00)]
     public void ASurfaceStaysOnItsOwnSideOfThePivot(byte red, byte green, byte blue)
     {
-        var terminal = new Rgb(red, green, blue);
+        var terminal = new RGB(red, green, blue);
 
         foreach (var step in new[] { -0.005d, 0.011d, 0.031d, 0.070d, 0.105d })
         {
@@ -205,7 +205,7 @@ public sealed class DerivedColorTests
     [InlineData(0xFF, 0xFF, 0xFF)]
     public void ATerminalThemeDoesNotTurnTheDesign(byte red, byte green, byte blue)
     {
-        var theme = new Rgb(red, green, blue);
+        var theme = new RGB(red, green, blue);
 
         Assert.Equal(0d, Shade.Pull(theme), 6);
         Assert.Equal(0d, Shade.Turn(theme, 29.3d, 40d), 6);
@@ -215,7 +215,7 @@ public sealed class DerivedColorTests
     [Fact]
     public void AColoredBackgroundTurnsTheDesignTheWholeWay()
     {
-        var green = new Rgb(0x00, 0x80, 0x00);
+        var green = new RGB(0x00, 0x80, 0x00);
 
         var accent = (29.3d + Shade.Turn(green, 29.3d, 40d) + 720d) % 360d;
 
@@ -230,7 +230,7 @@ public sealed class DerivedColorTests
     [Fact]
     public void TheWheelTurnsWithoutClosingUp()
     {
-        var green = new Rgb(0x00, 0x80, 0x00);
+        var green = new RGB(0x00, 0x80, 0x00);
         var turn = Shade.Turn(green, 29.3d, 40d);
 
         var accent = (29.3d + turn + 720d) % 360d;

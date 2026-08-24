@@ -19,7 +19,7 @@ internal static class PnmBody
     /// <returns>The pixels, or <c>null</c> when the numbers run out.</returns>
     internal static Raster? Written(ReadOnlySpan<byte> bytes, int at, int kind, int width, int height, int levels)
     {
-        var pixels = new Rgb[width * height];
+        var pixels = new RGB[width * height];
 
         for (var index = 0; index < pixels.Length; index++)
         {
@@ -70,7 +70,7 @@ internal static class PnmBody
     /// <returns>The pixels, or <c>null</c> when the file is shorter than it says it is.</returns>
     internal static Raster? Raw(ReadOnlySpan<byte> bytes, int at, int kind, int width, int height, int levels)
     {
-        var pixels = new Rgb[width * height];
+        var pixels = new RGB[width * height];
 
         if (kind == 4)
         {
@@ -101,7 +101,7 @@ internal static class PnmBody
         return new(pixels, width, height);
     }
 
-    private static Raster? Bits(ReadOnlySpan<byte> bytes, int at, int width, int height, Rgb[] pixels)
+    private static Raster? Bits(ReadOnlySpan<byte> bytes, int at, int width, int height, RGB[] pixels)
     {
         var stride = (width + 7) / 8;
 
@@ -128,5 +128,5 @@ internal static class PnmBody
     private static byte Scaled(int value, int levels) =>
         (byte)Math.Min((((value * 255 * 2) + levels) / (levels * 2)), 255);
 
-    private static Rgb Gray(byte value) => new(value, value, value);
+    private static RGB Gray(byte value) => new(value, value, value);
 }

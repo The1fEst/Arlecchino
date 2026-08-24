@@ -21,7 +21,7 @@ internal readonly record struct TerminalAnswers(
     bool Kitty,
     int CellWidth,
     int CellHeight,
-    Rgb? Background);
+    RGB? Background);
 
 /// <summary>
 /// Asks the terminal what it can do, once, before the application starts reading keys. The questions end
@@ -143,7 +143,7 @@ public static class TerminalProbe
     /// </summary>
     /// <param name="reply">Everything the terminal said.</param>
     /// <returns>The color, or <c>null</c> when it did not say.</returns>
-    private static Rgb? Background(string reply)
+    private static RGB? Background(string reply)
     {
         var at = reply.IndexOf("]11;rgb:", StringComparison.Ordinal);
 

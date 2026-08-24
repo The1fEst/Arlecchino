@@ -269,7 +269,7 @@ public sealed class Field
     /// <param name="value">The atom to read and write.</param>
     /// <param name="help">A line shown under the field while it is selected.</param>
     /// <returns>The field.</returns>
-    public static Field Color(Func<string> label, Atom<Rgb> value, Func<string>? help = null) => new()
+    public static Field Color(Func<string> label, Atom<RGB> value, Func<string>? help = null) => new()
     {
         Label = label,
         Value = () => value.Value.Hex,

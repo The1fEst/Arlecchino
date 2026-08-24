@@ -6,4 +6,4 @@ namespace Arlecchino.Pictures;
 /// <param name="Pixels">The pixels, row by row from the top left.</param>
 /// <param name="Width">How wide it is.</param>
 /// <param name="Height">How tall it is.</param>
-public sealed record Raster(Rgb[] Pixels, int Width, int Height);
+public sealed record Raster(RGB[] Pixels, int Width, int Height);

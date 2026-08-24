@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Arlecchino.Rendering.Colors;
 using Arlecchino.Atoms;
 using Arlecchino.Atoms.History;
+using Arlecchino.Rendering.Colors;
 
 namespace Arlecchino.Sample;
 
@@ -31,7 +31,7 @@ public sealed class SettingsStore : IArlecchinoStore
 
     public Atom<DateOnly> Release { get; } = new HistoryAtom<DateOnly>(new(2026, 7, 25), $"{HistoryKey}.Release");
 
-    public Atom<Rgb> Accent { get; } = new HistoryAtom<Rgb>(new(63, 169, 245), $"{HistoryKey}.Accent");
+    public Atom<RGB> Accent { get; } = new HistoryAtom<RGB>(new(63, 169, 245), $"{HistoryKey}.Accent");
 
     public Computed<string> Summary { get; }
 

@@ -164,7 +164,7 @@ public sealed class FieldTests
     public void AColourIsShownAsItsHexAndWritten()
     {
         using var app = new TestApplication();
-        var value = new Atom<Rgb>(new(255, 0, 0));
+        var value = new Atom<RGB>(new(255, 0, 0));
         var field = Field.Color(static () => "Accent", value);
 
         Assert.Contains("#", field.Value(), StringComparison.Ordinal);

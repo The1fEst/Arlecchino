@@ -21,10 +21,10 @@ public sealed class TermColor : IArlecchinoColor
     /// An exact color for the glyphs, used where the terminal can do 24-bit. Set <see cref="Foreground"/> as
     /// well, and it becomes the chosen fallback rather than the nearest one arithmetic finds.
     /// </summary>
-    public Rgb? ExactForeground { get; init; }
+    public RGB? ExactForeground { get; init; }
 
     /// <summary>The same for what is behind the glyphs, falling back to <see cref="Background"/>.</summary>
-    public Rgb? ExactBackground { get; init; }
+    public RGB? ExactBackground { get; init; }
 
     /// <summary>Bold, italic, underline and dim, in any combination.</summary>
     public TextStyle Style { get; init; } = TextStyle.None;

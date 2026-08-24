@@ -14,8 +14,8 @@ namespace Arlecchino.Tests.Widgets;
 
 public sealed class PictureTests
 {
-    private static readonly Rgb Red = new(255, 0, 0);
-    private static readonly Rgb Blue = new(0, 0, 255);
+    private static readonly RGB Red = new(255, 0, 0);
+    private static readonly RGB Blue = new(0, 0, 255);
 
     [Fact]
     public void OneCellCarriesTwoPixels()
@@ -36,7 +36,7 @@ public sealed class PictureTests
     {
         var picture = new Picture();
 
-        picture.Show(new Rgb[100 * 50], 100, 50);
+        picture.Show(new RGB[100 * 50], 100, 50);
 
         var lines = FrameText.Lines(Draw(picture, 40, 40));
         var frame = 0;
@@ -60,7 +60,7 @@ public sealed class PictureTests
     {
         var picture = new Picture();
 
-        picture.Show(new Rgb[2 * 8], 2, 8);
+        picture.Show(new RGB[2 * 8], 2, 8);
 
         var lines = FrameText.Lines(Draw(picture, 9, 4));
 
@@ -147,7 +147,7 @@ public sealed class PictureTests
         using var truecolor = new ColorSupportScope(ColorSupport.TrueColor);
         var picture = new Picture { Background = Theme.Info };
 
-        picture.Show(new Rgb[2 * 8], 2, 8);
+        picture.Show(new RGB[2 * 8], 2, 8);
 
         var output = Draw(picture, 9, 4);
 
@@ -179,7 +179,7 @@ public sealed class PictureTests
     {
         var picture = new Picture { Protocol = ImageProtocol.Kitty };
 
-        picture.Show(new Rgb[2000 * 1000], 2000, 1000);
+        picture.Show(new RGB[2000 * 1000], 2000, 1000);
 
         var output = Draw(picture, 40, 10);
 
@@ -196,7 +196,7 @@ public sealed class PictureTests
     {
         var picture = new Picture { Protocol = ImageProtocol.Kitty, Detail = 8 * 1024 };
 
-        picture.Show(new Rgb[2000 * 1000], 2000, 1000);
+        picture.Show(new RGB[2000 * 1000], 2000, 1000);
 
         var size = Regex.Match(Draw(picture, 200, 50), @",s=(\d+),v=(\d+),");
 
@@ -215,7 +215,7 @@ public sealed class PictureTests
     {
         var picture = new Picture { Protocol = ImageProtocol.Kitty };
 
-        picture.Show(new Rgb[4 * 4], 4, 4);
+        picture.Show(new RGB[4 * 4], 4, 4);
 
         Assert.Contains(",s=4,v=4,", Draw(picture, 40, 10), StringComparison.Ordinal);
     }
@@ -484,7 +484,7 @@ public sealed class PictureTests
     {
         var picture = new Picture { Protocol = ImageProtocol.Kitty };
 
-        picture.Show(new Rgb[64 * 64], 64, 64);
+        picture.Show(new RGB[64 * 64], 64, 64);
 
         var output = Draw(picture, 20, 10);
         var chunks = output.Split("\e_G").Length - 1;
@@ -499,7 +499,7 @@ public sealed class PictureTests
     {
         var picture = new Picture { Protocol = ImageProtocol.Kitty };
 
-        picture.Show(new Rgb[2 * 8], 2, 8);
+        picture.Show(new RGB[2 * 8], 2, 8);
 
         Assert.Contains("\e[1;4H\e_G", Draw(picture, 9, 4), StringComparison.Ordinal);
     }
@@ -554,7 +554,7 @@ public sealed class PictureTests
     [Fact]
     public void SixelSpendsEveryRegisterOnAPictureWithMoreColoursThanThat()
     {
-        var pixels = new Rgb[64 * 64];
+        var pixels = new RGB[64 * 64];
 
         for (var index = 0; index < pixels.Length; index++)
         {

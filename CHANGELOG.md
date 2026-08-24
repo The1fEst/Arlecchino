@@ -158,7 +158,7 @@ than against the one the design was drawn on.
   reflection to derive it with:
 
   ```csharp
-  file.Writes<Rgb>(static (writer, value) => writer.WriteStringValue(value.Hex));
+  file.Writes<RGB>(static (writer, value) => writer.WriteStringValue(value.Hex));
   ```
 
   A group holding one atom that cannot be written is left out whole rather than half, which on being read
@@ -240,6 +240,13 @@ than against the one the design was drawn on.
   `Theme.ActiveSelected` are `Theme.Selection` and `Theme.ActiveSelection`, and the same two on
   `ThemePalette`; `EntryLook.Selected` is `EntryLook.Selection`. `Muted` says how a color was made rather
   than what it is for, so the role it fills names it: `Theme.Secondary`, `ThemePalette.Secondary`.
+
+- **A color is an `RGB`.** The three letters are read out as letters and stand for the three channels the
+  type holds, so `Rgb` spelled them as a word nobody says. The type, its members and its meaning are
+  what they were; every signature around it moves with the name — `RGB.FromHsl`, `RGB.TryParseHex`,
+  `Oklch.Of`, `Oklch.ToRgb`, `Contrast`, `Shade`, `TerminalCapabilities.Background` and
+  `NearestPaletteColor`, `TermColor.ExactForeground` and `ExactBackground`, `ArlecchinoState.RequestColor`
+  and `ColorModal`, and `Raster` with the format readers behind it in `Arlecchino.Pictures`.
 
 - **What a key typed is its `Character`, and what a handler is handed is a `press`.** `KeyStroke.Typed`
   and `KeyBinding.Typed` are `Character`, as is the constructor parameter behind them, matching the

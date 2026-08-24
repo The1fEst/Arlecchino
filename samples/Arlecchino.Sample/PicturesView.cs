@@ -107,14 +107,14 @@ public sealed class PicturesView : IArlecchinoView
 
     private ImageProtocol Protocol() => _picture.Protocol ?? Glyphs.Picture;
 
-    private static (Rgb[] Pixels, int Width, int Height) Card()
+    private static (RGB[] Pixels, int Width, int Height) Card()
     {
         using var stream = typeof(PicturesView).Assembly.GetManifestResourceStream(Resource) ?? throw new InvalidOperationException($"{Resource} was not built into the sample");
 
         return Png(stream);
     }
 
-    private static (Rgb[] Pixels, int Width, int Height) Png(Stream stream)
+    private static (RGB[] Pixels, int Width, int Height) Png(Stream stream)
     {
         using var reader = new BinaryReader(stream);
         using var pixelData = new MemoryStream();
@@ -165,7 +165,7 @@ public sealed class PicturesView : IArlecchinoView
         return Unfilter(pixelData, width, height, channels);
     }
 
-    private static (Rgb[] Pixels, int Width, int Height) Unfilter(
+    private static (RGB[] Pixels, int Width, int Height) Unfilter(
         Stream stream,
         int width,
         int height,
@@ -189,7 +189,7 @@ public sealed class PicturesView : IArlecchinoView
             at += count;
         }
 
-        var pixels = new Rgb[width * height];
+        var pixels = new RGB[width * height];
         var line = new byte[stride];
         var previousRow = new byte[stride];
 

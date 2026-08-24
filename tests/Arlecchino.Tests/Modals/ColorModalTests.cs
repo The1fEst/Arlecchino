@@ -86,7 +86,7 @@ public sealed class ColorModalTests
     public void EnterHandsBackTheEditedColor()
     {
         using var app = new TestApplication();
-        var choice = default(Rgb);
+        var choice = default(RGB);
 
         app.State.RequestColor("Accent", new(255, 0, 0), value => choice = value);
 

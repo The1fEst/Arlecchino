@@ -25,7 +25,7 @@ internal static class PngRows
     {
         using var inflate = new ZLibStream(stream, CompressionMode.Decompress);
 
-        var pixels = new Rgb[header.Width * header.Height];
+        var pixels = new RGB[header.Width * header.Height];
 
         if (!header.Interlaced)
         {
@@ -70,7 +70,7 @@ internal static class PngRows
         Stream inflate,
         in PngHeader header,
         byte[]? palette,
-        Rgb[] pixels,
+        RGB[] pixels,
         int columnStart,
         int rowStart,
         int columnStep,

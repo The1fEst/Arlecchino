@@ -66,7 +66,7 @@ internal abstract class PictureProtocol
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
     /// <param name="placement">Where it ended up and how large.</param>
-    public abstract void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement);
+    public abstract void Draw(SurfaceRegion region, RGB[] pixels, int width, int height, Placed placement);
 }
 
 /// <summary>
@@ -88,7 +88,7 @@ internal sealed class BlockPicture : PictureProtocol
     public override double PerCell(int cellWidth, int cellHeight) => PixelsPerCell;
 
     /// <inheritdoc/>
-    public override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement)
+    public override void Draw(SurfaceRegion region, RGB[] pixels, int width, int height, Placed placement)
     {
         Compose(pixels, width, height, placement);
 
@@ -113,7 +113,7 @@ internal sealed class BlockPicture : PictureProtocol
     /// <param name="width">Its width in pixels.</param>
     /// <param name="height">Its height in pixels.</param>
     /// <param name="placement">Where it ended up and how large.</param>
-    private void Compose(Rgb[] pixels, int width, int height, Placed placement)
+    private void Compose(RGB[] pixels, int width, int height, Placed placement)
     {
         if (_drawnAt == (placement.Columns, placement.Rows, placement.Version))
         {
@@ -142,7 +142,7 @@ internal sealed class BlockPicture : PictureProtocol
         _drawnAt = (placement.Columns, placement.Rows, placement.Version);
     }
 
-    private static Rgb At(Rgb[] pixels, int width, int height, int column, int columns, int row, int lines)
+    private static RGB At(RGB[] pixels, int width, int height, int column, int columns, int row, int lines)
     {
         var x = Math.Clamp(column * width / columns, 0, width - 1);
         var y = Math.Clamp(row * height / lines, 0, height - 1);
@@ -170,7 +170,7 @@ internal abstract class PixelPicture : PictureProtocol
     public sealed override double PerCell(int cellWidth, int cellHeight) => (double)cellHeight / cellWidth;
 
     /// <inheritdoc/>
-    public sealed override void Draw(SurfaceRegion region, Rgb[] pixels, int width, int height, Placed placement)
+    public sealed override void Draw(SurfaceRegion region, RGB[] pixels, int width, int height, Placed placement)
     {
         var state = (placement.Columns, placement.Rows, placement.CellWidth, placement.CellHeight, placement.Version);
 
@@ -193,7 +193,7 @@ internal abstract class PixelPicture : PictureProtocol
     /// <param name="height">Its height in pixels.</param>
     /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected abstract string Build(Rgb[] pixels, int width, int height, Placed placement);
+    protected abstract string Build(RGB[] pixels, int width, int height, Placed placement);
 
     /// <summary>Builds what removes it again, or an empty string when nothing can.</summary>
     /// <param name="placement">Where it ended up and how large.</param>
@@ -225,7 +225,7 @@ internal sealed class KittyPicture : PixelPicture
     /// <param name="height">Its height in pixels.</param>
     /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected override string Build(Rgb[] pixels, int width, int height, Placed placement)
+    protected override string Build(RGB[] pixels, int width, int height, Placed placement)
     {
         var pixelWidth = Math.Min(width, Math.Max(1, placement.Columns * placement.CellWidth));
         var pixelHeight = Math.Min(height, Math.Max(1, placement.Rows * placement.CellHeight));
@@ -313,7 +313,7 @@ internal sealed class SixelPicture : PixelPicture
     /// <param name="height">Its height in pixels.</param>
     /// <param name="placement">Where it ended up and how large.</param>
     /// <returns>The sequence to hand to the terminal.</returns>
-    protected override string Build(Rgb[] pixels, int width, int height, Placed placement)
+    protected override string Build(RGB[] pixels, int width, int height, Placed placement)
     {
         var image = IndexedImage.From(
             pixels,

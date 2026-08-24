@@ -59,7 +59,7 @@ allocates nothing.
 
 - **`Surface`, `SurfaceRegion`, `PaneFlow`** — the double-buffered grid, region arithmetic and the
   flow cursor, plus `WriteTableRow` and `ListWindow` for lists that scroll.
-- **`Theme`, `ThemePalette`, `TermColor`, `Rgb`** — one look per process, either of the two built-in
+- **`Theme`, `ThemePalette`, `TermColor`, `RGB`** — one look per process, either of the two built-in
   palettes or one of your own; colours are written once and degrade to what the terminal has.
 - **`TerminalCapabilities`** — truecolor, 256 colours or none, detected from `NO_COLOR`, `TERM` and
   `COLORTERM`, and overridable.

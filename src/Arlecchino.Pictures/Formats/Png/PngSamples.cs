@@ -24,7 +24,7 @@ internal static class PngSamples
         byte[] line,
         in PngHeader header,
         byte[]? palette,
-        Rgb[] pixels,
+        RGB[] pixels,
         int offset,
         int step,
         int width)
@@ -106,7 +106,7 @@ internal static class PngSamples
     /// <param name="palette">The palette, when the color type wants one.</param>
     /// <param name="pixel">The color, once it is known.</param>
     /// <returns><c>false</c> when a palette entry is named that the palette does not hold.</returns>
-    internal static bool Pixel(byte[] line, int column, in PngHeader header, byte[]? palette, out Rgb pixel)
+    internal static bool Pixel(byte[] line, int column, in PngHeader header, byte[]? palette, out RGB pixel)
     {
         var depth = header.Depth;
         var at = column * header.Channels;

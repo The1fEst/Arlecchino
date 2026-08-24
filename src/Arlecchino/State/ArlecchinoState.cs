@@ -226,7 +226,7 @@ public class ArlecchinoState
     /// <param name="title">Title of the dialog.</param>
     /// <param name="initial">Color the sliders start on.</param>
     /// <param name="onPicked">Called with the chosen color.</param>
-    public void RequestColor(string title, Rgb initial, Action<Rgb> onPicked)
+    public void RequestColor(string title, RGB initial, Action<RGB> onPicked)
     {
         var modal = new ColorModal
         {

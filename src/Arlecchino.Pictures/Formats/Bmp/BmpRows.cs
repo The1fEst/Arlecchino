@@ -34,7 +34,7 @@ internal static class BmpRows
         var red = header.Masks ? header.RedMask : Default(header.Bits, 0);
         var green = header.Masks ? header.GreenMask : Default(header.Bits, 1);
         var blue = header.Masks ? header.BlueMask : Default(header.Bits, 2);
-        var pixels = new Rgb[header.Width * header.Height];
+        var pixels = new RGB[header.Width * header.Height];
 
         for (var row = 0; row < header.Height; row++)
         {
@@ -64,7 +64,7 @@ internal static class BmpRows
         uint red,
         uint green,
         uint blue,
-        out Rgb pixel)
+        out RGB pixel)
     {
         pixel = default;
 

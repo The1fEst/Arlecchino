@@ -81,7 +81,7 @@ public sealed class ArlecchinoOptions
     /// Works the palette out from the color the terminal turned out to have, which is asked for as the
     /// application starts. A terminal that does not answer keeps <see cref="Theme"/> as it was given.
     /// </summary>
-    public Func<Rgb, ThemePalette>? PaletteForBackground { get; set; }
+    public Func<RGB, ThemePalette>? PaletteForBackground { get; set; }
 
     /// <summary>
     /// What graphs are drawn with. Installed into <see cref="Glyphs.Graph"/> on resolve, and settable

@@ -12,7 +12,7 @@ internal sealed class IndexedImage
 {
     private const int Buckets = 32 * 32 * 32;
 
-    private IndexedImage(Rgb[] palette, byte[] indexes, int width, int height)
+    private IndexedImage(RGB[] palette, byte[] indexes, int width, int height)
     {
         Palette = palette;
         Indexes = indexes;
@@ -20,7 +20,7 @@ internal sealed class IndexedImage
         Height = height;
     }
 
-    public Rgb[] Palette { get; }
+    public RGB[] Palette { get; }
 
     public int Width { get; }
 
@@ -41,7 +41,7 @@ internal sealed class IndexedImage
     /// <param name="newHeight">How tall the result should be.</param>
     /// <param name="colors">How many colors the palette may hold.</param>
     /// <returns>The picture as entries in a palette of its own.</returns>
-    public static IndexedImage From(Rgb[] pixels, int width, int height, int newWidth, int newHeight, int colors)
+    public static IndexedImage From(RGB[] pixels, int width, int height, int newWidth, int newHeight, int colors)
     {
         var (result, wide, tall) = PictureScale.To(pixels, width, height, newWidth, newHeight);
         var bucketCounts = new int[Buckets];
@@ -106,7 +106,7 @@ internal sealed class IndexedImage
         return new(palette, indexes, wide, tall);
     }
 
-    private static Rgb[] MedianCut(int[] keys, int[] colorCounts, int colors)
+    private static RGB[] MedianCut(int[] keys, int[] colorCounts, int colors)
     {
         var boxes = new List<(int Start, int Length)> { (0, keys.Length) };
 
@@ -150,7 +150,7 @@ internal sealed class IndexedImage
             boxes.Insert(pick + 1, (half, box.Start + box.Length - half));
         }
 
-        var palette = new Rgb[boxes.Count];
+        var palette = new RGB[boxes.Count];
 
         for (var index = 0; index < boxes.Count; index++)
         {
@@ -214,7 +214,7 @@ internal sealed class IndexedImage
         return box.Start + box.Length - 1;
     }
 
-    private static Rgb Average(int[] keys, int[] colorCounts, (int Start, int Length) box)
+    private static RGB Average(int[] keys, int[] colorCounts, (int Start, int Length) box)
     {
         var red = 0L;
         var green = 0L;
@@ -239,7 +239,7 @@ internal sealed class IndexedImage
         return new((byte)(red / total), (byte)(green / total), (byte)(blue / total));
     }
 
-    private static byte Nearest(Rgb[] palette, int key)
+    private static byte Nearest(RGB[] palette, int key)
     {
         var red = (key >> 16) & 0xFF;
         var green = (key >> 8) & 0xFF;
@@ -274,10 +274,10 @@ internal sealed class IndexedImage
     /// <summary>Which of the buckets a color falls into, at five bits for each of the three.</summary>
     /// <param name="pixel">The color.</param>
     /// <returns>The bucket.</returns>
-    private static int Bucket(Rgb pixel) =>
+    private static int Bucket(RGB pixel) =>
         ((pixel.Red >> 3) << 10) | ((pixel.Green >> 3) << 5) | (pixel.Blue >> 3);
 
-    private static int Key(Rgb pixel) => (pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue;
+    private static int Key(RGB pixel) => (pixel.Red << 16) | (pixel.Green << 8) | pixel.Blue;
 
     private sealed class Channel(int shift) : IComparer<int>
     {

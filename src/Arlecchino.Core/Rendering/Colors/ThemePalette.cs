@@ -7,12 +7,12 @@ namespace Arlecchino.Rendering.Colors;
 /// </summary>
 public sealed class ThemePalette
 {
-    private static readonly Rgb Crimson = new(0xC9, 0x38, 0x2B);
-    private static readonly Rgb Bone = new(0xED, 0xE6, 0xD9);
-    private static readonly Rgb Ink = new(0x14, 0x13, 0x17);
-    private static readonly Rgb Hairline = new(0x2E, 0x2B, 0x33);
-    private static readonly Rgb Ash = new(0x8A, 0x81, 0x89);
-    private static readonly Rgb Amber = new(0xD0, 0x8A, 0x2C);
+    private static readonly RGB Crimson = new(0xC9, 0x38, 0x2B);
+    private static readonly RGB Bone = new(0xED, 0xE6, 0xD9);
+    private static readonly RGB Ink = new(0x14, 0x13, 0x17);
+    private static readonly RGB Hairline = new(0x2E, 0x2B, 0x33);
+    private static readonly RGB Ash = new(0x8A, 0x81, 0x89);
+    private static readonly RGB Amber = new(0xD0, 0x8A, 0x2C);
 
     /// <summary>
     /// The framework's own colors, on whatever background the terminal has. It is what a palette starts

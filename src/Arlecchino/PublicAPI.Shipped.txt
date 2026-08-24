@@ -376,7 +376,6 @@ Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationLifetime.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.NotificationTimeout.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.Rgb, Arlecchino.Rendering.Colors.ThemePalette!>?
 Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.ShowOutputLine.set -> void
@@ -796,15 +795,12 @@ Arlecchino.Modals.Setting.ColorModal.Lightness.set -> void
 Arlecchino.Modals.Setting.ColorModal.MoveChannel(int delta) -> void
 Arlecchino.Modals.Setting.ColorModal.MoveToMaximum() -> void
 Arlecchino.Modals.Setting.ColorModal.MoveToMinimum() -> void
-Arlecchino.Modals.Setting.ColorModal.OnPicked.get -> System.Action<Arlecchino.Rendering.Colors.Rgb>!
 Arlecchino.Modals.Setting.ColorModal.OnPicked.init -> void
 Arlecchino.Modals.Setting.ColorModal.Saturation.get -> int
 Arlecchino.Modals.Setting.ColorModal.Saturation.set -> void
 Arlecchino.Modals.Setting.ColorModal.SetChannelFromFraction(Arlecchino.Modals.Setting.ColorChannel channel, decimal fraction) -> void
-Arlecchino.Modals.Setting.ColorModal.SetValue(Arlecchino.Rendering.Colors.Rgb color) -> void
 Arlecchino.Modals.Setting.ColorModal.Step.get -> int
 Arlecchino.Modals.Setting.ColorModal.Step.init -> void
-Arlecchino.Modals.Setting.ColorModal.Value.get -> Arlecchino.Rendering.Colors.Rgb
 Arlecchino.Modals.Setting.ColorModal.ValueOf(Arlecchino.Modals.Setting.ColorChannel channel) -> int
 Arlecchino.Modals.Setting.DateModal
 Arlecchino.Modals.Setting.DateModal.DateModal() -> void
@@ -962,7 +958,6 @@ Arlecchino.State.ArlecchinoState.PickerLastFolder.get -> string!
 Arlecchino.State.ArlecchinoState.PickerLastFolder.set -> void
 Arlecchino.State.ArlecchinoState.PushModal(Arlecchino.Modals.Modal! modal) -> void
 Arlecchino.State.ArlecchinoState.RequestChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Action<string!>! onPicked, string! current = "") -> void
-Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Colors.Rgb initial, System.Action<Arlecchino.Rendering.Colors.Rgb>! onPicked) -> void
 Arlecchino.State.ArlecchinoState.RequestConfirmation(string! title, System.Action! onYes) -> void
 Arlecchino.State.ArlecchinoState.RequestDate(string! title, System.DateOnly initial, System.Action<System.DateOnly>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestEmail(string! title, string! initial, System.Action<string!>! onSubmit) -> void
@@ -1146,7 +1141,6 @@ Arlecchino.Widgets.Pictures.Picture.PixelHeight.get -> int
 Arlecchino.Widgets.Pictures.Picture.PixelWidth.get -> int
 Arlecchino.Widgets.Pictures.Picture.Protocol.get -> Arlecchino.Rendering.Terminals.ImageProtocol?
 Arlecchino.Widgets.Pictures.Picture.Protocol.set -> void
-Arlecchino.Widgets.Pictures.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Colors.Rgb> pixels, int width, int height) -> void
 Arlecchino.Widgets.Readouts.AreaChart
 Arlecchino.Widgets.Readouts.AreaChart.AreaChart() -> void
 Arlecchino.Widgets.Readouts.AreaChart.Bands.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Widgets.Readouts.GaugeBand>!
@@ -1396,7 +1390,6 @@ static Arlecchino.Focus.FocusResult.operator !=(Arlecchino.Focus.FocusResult lef
 static Arlecchino.Focus.FocusResult.operator ==(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
 static Arlecchino.Forms.Field.Action(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run, System.Func<bool>? enabled = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Colors.Rgb>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Date(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.DateOnly>! value, System.Func<System.DateOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<System.Collections.Generic.IReadOnlyList<string!>!>! value, System.Func<System.Collections.Generic.IReadOnlyList<string!>!, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Forms.Field.Number(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!

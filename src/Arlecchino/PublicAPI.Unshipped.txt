@@ -1,3 +1,10 @@
 #nullable enable
 Arlecchino.Diagnostics.ArlecchinoReport.ArlecchinoReport(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.Navigation.Navigator! navigator, Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Rendering.Surface! surface) -> void
+Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.RGB, Arlecchino.Rendering.Colors.ThemePalette!>?
 Arlecchino.Hosting.IArlecchinoStartup.StartAsync() -> System.Threading.Tasks.Task<Arlecchino.Navigation.ViewRoute>!
+Arlecchino.Modals.Setting.ColorModal.OnPicked.get -> System.Action<Arlecchino.Rendering.Colors.RGB>!
+Arlecchino.Modals.Setting.ColorModal.SetValue(Arlecchino.Rendering.Colors.RGB color) -> void
+Arlecchino.Modals.Setting.ColorModal.Value.get -> Arlecchino.Rendering.Colors.RGB
+Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Colors.RGB initial, System.Action<Arlecchino.Rendering.Colors.RGB>! onPicked) -> void
+Arlecchino.Widgets.Pictures.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Colors.RGB> pixels, int width, int height) -> void
+static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Colors.RGB>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!

@@ -21,7 +21,7 @@ internal static class JpegColors
     /// <returns>The pixels.</returns>
     internal static Raster Read(JpegFrame frame)
     {
-        var pixels = new Rgb[frame.OutputWidth * frame.OutputHeight];
+        var pixels = new RGB[frame.OutputWidth * frame.OutputHeight];
         var gray = frame.Parts.Count == 1;
         var plain = frame.Transform == 0;
         var columns = Columns(frame);
@@ -103,7 +103,7 @@ internal static class JpegColors
     /// <param name="blueness">How far towards blue it stands.</param>
     /// <param name="redness">How far towards red it stands.</param>
     /// <returns>The color.</returns>
-    private static Rgb Color(byte brightness, byte blueness, byte redness)
+    private static RGB Color(byte brightness, byte blueness, byte redness)
     {
         var blue = blueness - 128;
         var red = redness - 128;
