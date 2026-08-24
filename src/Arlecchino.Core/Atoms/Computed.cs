@@ -108,6 +108,12 @@ public sealed class Computed<T> : IReadableAtom<T>
         _listeners = remaining;
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return _value?.ToString() ?? IReadableAtom.UndefinedValue;
+    }
+
     private sealed class Subscription : IDisposable
     {
         private readonly Computed<T> _source;

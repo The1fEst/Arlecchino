@@ -199,6 +199,26 @@ than against the one the design was drawn on.
   themselves written down, so a run that took a step back and then quit comes up holding what it held
   before that step was taken back.
 
+- **`IReadableAtom` without a type argument, and `IResettableAtom` beside it.** A widget that shows an
+  atom rarely needs to know what it holds — it needs to hear that it changed and to write it out — so
+  that much is now an interface of its own that `IReadableAtom<T>` and the five collections carry.
+  `Subscribe` moved onto it, and every atom writes itself out: `Atom<T>`, `Computed<T>`, `AsyncAtom<T>`
+  and the collections all override `ToString`, and one holding nothing reads as
+  `IReadableAtom.UndefinedValue`.
+
+  `IResettableAtom` is the second half, and it is deliberately not on every atom: an atom that keeps no
+  record of its own cannot tell the value it was built with from the one it holds now.
+
+- **`HistoryAtom<T>.TryReset()`**, which writes back what the atom held before the first edit the history
+  took. It is written rather than unwound, so the step it makes is itself the next one to be taken back,
+  and no other atom moves. The atom keeps its own beginning rather than looking for it on the stack, so a
+  first step that fell off the end of a full history is no loss; an atom nothing was ever written to
+  answers `false`, which a starting value cannot say for itself — every number is a number one could have
+  started at.
+
+- **`ArlecchinoStrings.NotAnAllowedValue`**, what a form field says when it refuses what was typed. A field says
+  which values it takes rather than why the rest are refused, so this is what stands in for the reason.
+
 
 ### Changed
 
@@ -284,6 +304,28 @@ than against the one the design was drawn on.
   touched. The code the generators write is also laid out the way the repository lays out its own now — a
   registration or a view whose constructor runs past the width is written with one argument to a line
   rather than in one long line — so a diff of the generated sources reads as code and not as a wall.
+
+- **A form field is built over its atom, and the form works out what to open.** `Field` held seven
+  delegates and answered every question through them — what to show, whether it was on, what confirming
+  it did — so the same atom was read through a lambda the field was handed and written through another,
+  and each factory spelled out which dialog to open. A field is now `Field<T>` over the atom itself:
+  the form reads the value off it, puts it back through `TryReset`, and opens the dialog from the shape
+  of the field rather than from a delegate it was given. The factories moved to `Fields`, one per kind,
+  and what a field says about itself is added on afterwards:
+
+  ```csharp
+  Fields.Text(() => "Profile", settings.Profile)
+      .WithValidation(text => !string.IsNullOrWhiteSpace(text))
+      .WithHelp(() => "shown in the title bar")
+  ```
+
+  `Validation` answers whether a value is allowed rather than handing back a message; `Items` is what a
+  value may be, which is what makes a row one that is picked from, and for a number it is the range it is
+  held between. The rows a value's own type cannot tell apart say which they are — `SecretField`,
+  `SliderField`, `PathField` — and a row with no atom at all is a button, which is what `ActionField` is.
+  `IField` is what the form holds, so rows over different kinds of value stand in one list. `IsEnabled` is
+  a plain `bool` that is written rather than a delegate that is asked, so a button that follows the state
+  of the form is subscribed to it.
 
 Everything else the sweep touched is inside the packages — locals, fields and the parameters of members
 no caller can see — and needs nothing from an application.

@@ -152,6 +152,12 @@ public sealed class ArlecchinoStrings
     public Func<string> NotAUrl { get; set; } = static () => "must be a http or https link";
 
     /// <summary>
+    /// Shown when a form field refuses what was typed. A field says which values it allows and not why
+    /// the rest are refused, so this is what stands in for the reason.
+    /// </summary>
+    public Func<string> NotAnAllowedValue { get; set; } = static () => "not allowed here";
+
+    /// <summary>
     /// Shown when a number is outside its bounds. The values arrive already formatted, affixes
     /// included.
     /// </summary>

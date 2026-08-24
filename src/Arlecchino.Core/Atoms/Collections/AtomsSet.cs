@@ -213,6 +213,12 @@ public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
         return _items.GetEnumerator();
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return string.Join(",", Snapshot());
+    }
+
     private T[] Snapshot() => [.. _items];
 
     private bool ContentsEqual(IReadOnlyList<T> items)

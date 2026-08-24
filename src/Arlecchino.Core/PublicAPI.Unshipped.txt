@@ -21,6 +21,11 @@ Arlecchino.Atoms.Collections.AtomsSet<T>.ResetSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.InsertSilently(int index, T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.RemoveSilently(int index, int count) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.ResetSilently(T[]! items) -> void
+Arlecchino.Atoms.IReadableAtom
+Arlecchino.Atoms.IReadableAtom.Subscribe(System.Action! listener) -> System.IDisposable!
+Arlecchino.Atoms.IReadableAtom<T>.ToString() -> string!
+Arlecchino.Atoms.IResettableAtom
+Arlecchino.Atoms.IResettableAtom.TryReset() -> bool
 Arlecchino.Rendering.Colors.Oklch.ToRgb() -> Arlecchino.Rendering.Colors.RGB
 Arlecchino.Rendering.Colors.RGB
 Arlecchino.Rendering.Colors.RGB.Blue.get -> byte
@@ -39,6 +44,14 @@ Arlecchino.Rendering.Colors.RgbTermColor.Background.get -> Arlecchino.Rendering.
 Arlecchino.Rendering.Colors.RgbTermColor.Foreground.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.TermColor.ExactBackground.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.TermColor.ExactForeground.get -> Arlecchino.Rendering.Colors.RGB?
+const Arlecchino.Atoms.IReadableAtom.UndefinedValue = "UNDEFINED" -> string!
+override Arlecchino.Atoms.Atom<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsList<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsQueue<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsSet<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsStack<T>.ToString() -> string!
+override Arlecchino.Atoms.Computed<T>.ToString() -> string!
 override Arlecchino.Rendering.Colors.RGB.GetHashCode() -> int
 override Arlecchino.Rendering.Colors.RGB.ToString() -> string!
 static Arlecchino.Rendering.Colors.Contrast.Between(Arlecchino.Rendering.Colors.RGB one, Arlecchino.Rendering.Colors.RGB other) -> double

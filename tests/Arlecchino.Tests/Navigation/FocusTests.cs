@@ -231,7 +231,7 @@ public sealed class FocusTests
         using var app = new TestApplication();
         var form = new Form(app.State, app.Options)
         {
-            Fields = [Field.Text(static () => "Name", new HistoryAtom<string>("", "Focus.Text"))],
+            Fields = [Fields.Text(static () => "Name", new HistoryAtom<string>("", "Focus.Text"))],
         };
 
         FormHostView.Form = form;

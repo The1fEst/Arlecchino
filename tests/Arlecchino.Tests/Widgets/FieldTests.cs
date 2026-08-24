@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
-using Arlecchino.Atoms;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Arlecchino.Forms;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering.Colors;
@@ -11,18 +11,29 @@ namespace Arlecchino.Tests.Widgets;
 
 public sealed class FieldTests
 {
+    private const string SecretKey = "Field.Secret";
+    private const string NumberKey = "Field.Number";
+    private const string HeldKey = "Field.Held";
+    private const string SliderKey = "Field.Slider";
+    private const string ChoiceKey = "Field.Choice";
+    private const string ColumnsKey = "Field.Columns";
+    private const string DateKey = "Field.Date";
+    private const string TimeKey = "Field.Time";
+    private const string ColorKey = "Field.Color";
+    private const string TextKey = "Field.Text";
+
     private static readonly string[] _options = ["alpha", "beta", "gamma"];
 
     [Fact]
     public void ASecretIsShownAsDotsAndTypedInFull()
     {
         using var app = new TestApplication();
-        var value = new Atom<string>("hunter2");
-        var field = Field.Secret(static () => "Password", value);
+        var value = new HistoryAtom<string>("hunter2", SecretKey);
+        var field = Fields.Secret(static () => "Password", value);
 
-        Assert.Equal("•••••••", field.Value());
+        Assert.Equal("•••••••", field.Template!());
 
-        field.Activate!(app.State);
+        Open(app, field);
         app.Type("opensesame");
         app.Press(ConsoleKey.Enter);
 
@@ -30,49 +41,44 @@ public sealed class FieldTests
     }
 
     [Fact]
-    public void ClearingASecretEmptiesIt()
-    {
-        var value = new Atom<string>("hunter2");
-
-        Field.Secret(static () => "Password", value).Reset!();
-
-        Assert.Equal("", value.Value);
-    }
-
-    [Fact]
     public void ANumberIsSteppedAndWrittenBack()
     {
         using var app = new TestApplication();
-        var value = new Atom<decimal>(12);
-        var field = Field.Number(static () => "Count", value, 0, 100);
+        var value = new HistoryAtom<decimal>(12, NumberKey);
 
-        Assert.Equal("12", field.Value());
+        Assert.Equal("12", value.ToString());
 
-        field.Activate!(app.State);
+        Open(app, Fields.Number(static () => "Count", value));
         app.Press(ConsoleKey.PageUp);
         app.Press(ConsoleKey.Enter);
 
         Assert.Equal(22, value.Value);
     }
 
+    /// <summary>
+    /// The values a number may hold stand for its range as well, which is the one place a form says what a
+    /// number is allowed to be.
+    /// </summary>
     [Fact]
-    public void ClearingANumberPutsItBackToTheLowestAllowed()
+    public void ANumberIsHeldBetweenTheEndsOfWhatItMayBe()
     {
-        var value = new Atom<decimal>(80);
+        using var app = new TestApplication();
+        var value = new HistoryAtom<decimal>(95, HeldKey);
 
-        Field.Number(static () => "Count", value, 5, 100).Reset!();
+        Open(app, Fields.Number(static () => "Count", value).WithItems(static () => [0, 100]));
+        app.Press(ConsoleKey.PageUp);
+        app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(5, value.Value);
+        Assert.Equal(100, value.Value);
     }
 
     [Fact]
     public void ASliderWritesWhatItWasDraggedTo()
     {
         using var app = new TestApplication();
-        var value = new Atom<decimal>(50);
-        var field = Field.Slider(static () => "Volume", value, 0, 100);
+        var value = new HistoryAtom<decimal>(50, SliderKey);
 
-        field.Activate!(app.State);
+        Open(app, Fields.Slider(static () => "Volume", value));
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.Enter);
 
@@ -83,12 +89,9 @@ public sealed class FieldTests
     public void AChoiceWritesWhatWasPicked()
     {
         using var app = new TestApplication();
-        var value = new Atom<string>("alpha");
-        var field = Field.Choice(static () => "Kind", _options, value);
+        var value = new HistoryAtom<string>("alpha", ChoiceKey);
 
-        Assert.Equal("alpha", field.Value());
-
-        field.Activate!(app.State);
+        Open(app, Fields.Choice(static () => "Kind", _options, value));
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.Enter);
 
@@ -99,15 +102,11 @@ public sealed class FieldTests
     public void AMultiChoiceWritesEverythingThatWasTicked()
     {
         using var app = new TestApplication();
-        var value = new Atom<IReadOnlyList<string>>(["alpha"]);
-        var field = Field.MultiChoice(static () => "Columns",
-            _options,
-            value,
-            static choice => string.Join(", ", choice));
+        var value = new HistoryAtomsList<string>(ColumnsKey, ["alpha"]);
 
-        Assert.Equal("alpha", field.Value());
+        Assert.Equal("alpha", value.ToString());
 
-        field.Activate!(app.State);
+        Open(app, Fields.MultiChoice(static () => "Columns", _options, value));
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.Spacebar);
         app.Press(ConsoleKey.Enter);
@@ -116,26 +115,14 @@ public sealed class FieldTests
     }
 
     [Fact]
-    public void ClearingAMultiChoiceLeavesNothingTicked()
-    {
-        var value = new Atom<IReadOnlyList<string>>(["alpha", "beta"]);
-
-        Field.MultiChoice(static () => "Columns", _options, value, static choice => string.Join(", ", choice))
-            .Reset!();
-
-        Assert.Empty(value.Value);
-    }
-
-    [Fact]
     public void ADateIsShownAndWritten()
     {
         using var app = new TestApplication();
-        var value = new Atom<DateOnly>(new(2026, 7, 26));
-        var field = Field.Date(static () => "When", value, static date => date.ToString("yyyy-MM-dd"));
+        var value = new HistoryAtom<DateOnly>(new(2026, 7, 26), DateKey);
 
-        Assert.Contains("2026", field.Value(), StringComparison.Ordinal);
+        Assert.Contains("2026", value.ToString(), StringComparison.Ordinal);
 
-        field.Activate!(app.State);
+        Open(app, Fields.Date(static () => "When", value));
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.UpArrow);
@@ -148,12 +135,11 @@ public sealed class FieldTests
     public void ATimeIsShownAndWritten()
     {
         using var app = new TestApplication();
-        var value = new Atom<TimeOnly>(new(9, 30));
-        var field = Field.Time(static () => "At", value, static time => time.ToString("HH:mm"));
+        var value = new HistoryAtom<TimeOnly>(new(9, 30), TimeKey);
 
-        Assert.Contains("30", field.Value(), StringComparison.Ordinal);
+        Assert.Contains("30", value.ToString(), StringComparison.Ordinal);
 
-        field.Activate!(app.State);
+        Open(app, Fields.Time(static () => "At", value));
         app.Press(ConsoleKey.UpArrow);
         app.Press(ConsoleKey.Enter);
 
@@ -164,37 +150,57 @@ public sealed class FieldTests
     public void AColourIsShownAsItsHexAndWritten()
     {
         using var app = new TestApplication();
-        var value = new Atom<RGB>(new(255, 0, 0));
-        var field = Field.Color(static () => "Accent", value);
+        var value = new HistoryAtom<RGB>(new(255, 0, 0), ColorKey);
 
-        Assert.Contains("#", field.Value(), StringComparison.Ordinal);
+        Assert.Contains("#", value.ToString(), StringComparison.Ordinal);
 
-        field.Activate!(app.State);
+        Open(app, Fields.Color(static () => "Accent", value));
         app.Press(ConsoleKey.Enter);
 
         Assert.Equal(new(255, 0, 0), value.Value);
     }
 
+    /// <summary>
+    /// A field says which values it takes rather than why the rest are refused, so the dialog stays open on
+    /// the one thing it can say.
+    /// </summary>
     [Fact]
-    public void HelpIsEmptyUnlessItIsGiven()
+    public void AValueTheFieldDoesNotAllowLeavesTheDialogOpen()
     {
-        var value = new Atom<string>("");
+        using var app = new TestApplication();
+        var value = new HistoryAtom<string>("", TextKey);
 
-        Assert.Equal("", Field.Text(static () => "Name", value).Help());
-        Assert.Equal("the one on the badge",
-            Field.Text(static () => "Name",
-                    value,
-                    help: static () => "the one on the badge")
-                .Help());
+        Open(app, Fields.Text(static () => "Name", value).WithValidation(static typed => typed.Length > 3));
+        app.Type("ab");
+        app.Press(ConsoleKey.Enter);
+
+        Assert.NotNull(app.State.Modal);
+        Assert.Equal("", value.Value);
     }
 
     [Fact]
-    public void AnActionFieldIsMarkedAsOneAndCarriesNoValue()
+    public void HelpIsNotThereUnlessItIsGiven()
     {
-        var field = Field.Action(static () => "Apply", static () => ViewRoute.None);
+        var value = new HistoryAtom<string>("", TextKey);
 
-        Assert.True(field.IsAction);
-        Assert.Equal("", field.Value());
-        Assert.Null(field.Reset);
+        Assert.Null(Fields.Text(static () => "Name", value).Help);
+        Assert.Equal("the one on the badge",
+            Fields.Text(static () => "Name", value).WithHelp(static () => "the one on the badge").Help!());
+    }
+
+    [Fact]
+    public void AButtonCarriesNoValueAndHasNothingToPutBack()
+    {
+        var field = Fields.Action(static () => "Apply", static () => ViewRoute.None);
+
+        Assert.Null(field.Value);
+        Assert.False(field.TryReset());
+    }
+
+    private static void Open(TestApplication app, IField field)
+    {
+        var form = new Form(app.State, app.Options) { Fields = [field] };
+
+        form.Handle(new(ConsoleKey.Enter));
     }
 }

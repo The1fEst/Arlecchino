@@ -258,6 +258,12 @@ public class AtomsMap<TKey, TValue> : AtomsCollectionBase, IReadableAtom<IReadOn
         return _items.GetEnumerator();
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return string.Join(",", Snapshot());
+    }
+
     private static Dictionary<TKey, TValue> Empty => [];
 
     private KeyValuePair<TKey, TValue>[] Snapshot() => [.. _items];

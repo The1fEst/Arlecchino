@@ -85,8 +85,10 @@ public sealed class BoundaryTests
         var value = new Atom<string>("x");
         var form = new Form(app.State, app.Options)
         {
-            Fields = [new() { Label = static () => "Name", Value = () => value.Value, IsEnabled = static () => false }],
+            Fields = [Fields.Text(static () => "Name", value)],
         };
+
+        form.Fields[0].IsEnabled = false;
 
         form.Handle(new(ConsoleKey.DownArrow));
         form.Handle(new(ConsoleKey.Enter, default, '\r'));

@@ -206,26 +206,8 @@ Arlecchino.Focus.IArlecchinoFocusable.Hints() -> (string! Key, string! Descripti
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.get -> bool
 Arlecchino.Focus.IArlecchinoFocusable.IsFocused.set -> void
 Arlecchino.Focus.IArlecchinoFocusable.MoveFocus(Arlecchino.Focus.FocusDirection direction) -> bool
-Arlecchino.Forms.Field
-Arlecchino.Forms.Field.Activate.get -> System.Func<Arlecchino.State.ArlecchinoState!, Arlecchino.Navigation.ViewRoute>?
-Arlecchino.Forms.Field.Activate.init -> void
-Arlecchino.Forms.Field.Field() -> void
-Arlecchino.Forms.Field.Help.get -> System.Func<string!>!
-Arlecchino.Forms.Field.Help.init -> void
-Arlecchino.Forms.Field.IsAction.get -> bool
-Arlecchino.Forms.Field.IsAction.init -> void
-Arlecchino.Forms.Field.IsEnabled.get -> System.Func<bool>!
-Arlecchino.Forms.Field.IsEnabled.init -> void
-Arlecchino.Forms.Field.Label.get -> System.Func<string!>!
-Arlecchino.Forms.Field.Label.init -> void
-Arlecchino.Forms.Field.Reset.get -> System.Action?
-Arlecchino.Forms.Field.Reset.init -> void
-Arlecchino.Forms.Field.Value.get -> System.Func<string!>!
-Arlecchino.Forms.Field.Value.init -> void
 Arlecchino.Forms.Form
-Arlecchino.Forms.Form.Current.get -> Arlecchino.Forms.Field?
 Arlecchino.Forms.Form.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
-Arlecchino.Forms.Form.Fields.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Forms.Field!>!
 Arlecchino.Forms.Form.Fields.init -> void
 Arlecchino.Forms.Form.Form(Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options) -> void
 Arlecchino.Forms.Form.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
@@ -1388,18 +1370,6 @@ static Arlecchino.Focus.FocusResult.Ignored.get -> Arlecchino.Focus.FocusResult
 static Arlecchino.Focus.FocusResult.Navigate(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Focus.FocusResult
 static Arlecchino.Focus.FocusResult.operator !=(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
 static Arlecchino.Focus.FocusResult.operator ==(Arlecchino.Focus.FocusResult left, Arlecchino.Focus.FocusResult right) -> bool
-static Arlecchino.Forms.Field.Action(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run, System.Func<bool>? enabled = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Date(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.DateOnly>! value, System.Func<System.DateOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<System.Collections.Generic.IReadOnlyList<string!>!>! value, System.Func<System.Collections.Generic.IReadOnlyList<string!>!, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Number(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.PathFrom(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder, System.Func<string!>! start, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Secret(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Slider(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value, decimal minimum, decimal maximum, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Text(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, System.Func<string!, string?>? validate = null, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Time(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.TimeOnly>! value, System.Func<System.TimeOnly, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
-static Arlecchino.Forms.Field.Toggle(System.Func<string!>! label, Arlecchino.Atoms.Atom<bool>! value, System.Func<bool, string!>! render, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
 static Arlecchino.Hosting.ArlecchinoKeymap.operator !=(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
 static Arlecchino.Hosting.ArlecchinoKeymap.operator ==(Arlecchino.Hosting.ArlecchinoKeymap? left, Arlecchino.Hosting.ArlecchinoKeymap? right) -> bool
 static Arlecchino.Hosting.ArlecchinoServiceCollectionExtensions.AddArlecchino(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, System.Action<Arlecchino.Hosting.ArlecchinoOptions!>? configure = null) -> Arlecchino.Hosting.ArlecchinoBuilder!

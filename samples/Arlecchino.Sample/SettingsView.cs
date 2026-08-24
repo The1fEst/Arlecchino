@@ -1,5 +1,5 @@
-using System.Globalization;
 using System;
+using System.Linq;
 using Arlecchino.Forms;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -20,6 +20,7 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
     private readonly ArlecchinoState _state;
     private readonly Form _form;
     private readonly IDisposable _watch;
+    private readonly IDisposable _complete;
 
     public SettingsView(Surface surface, SettingsStore settings, AtomHistory history, ArlecchinoState state, ArlecchinoOptions options)
     {
@@ -28,50 +29,36 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         _history = history;
         _state = state;
 
+        var apply = Fields.Action(static () => "Apply", Apply)
+            .WithHelp(static () => "enabled once profile and theme are set");
+
         _form = new(state, options)
         {
             Fields =
             [
-                Field.Text(static () => "Profile",
-                    settings.Profile,
-                    static text => text.Length == 0 ? "must not be empty" : null,
-                    static () => "shown in the title bar"),
-                Field.Secret(static () => "Passphrase",
-                    settings.Passphrase,
-                    static () => "never rendered in clear text"),
-                Field.Choice(static () => "Theme",
-                    ["dark", "light", "high contrast"],
-                    settings.Theme,
-                    static () => "color palette of the application"),
-                Field.Slider(static () => "Volume",
-                    settings.Volume,
-                    0,
-                    100,
-                    static () => "←→ inside the modal, or type a number"),
-                Field.Toggle(static () => "Fullscreen",
-                    settings.Fullscreen,
-                    static value => value ? "Yes" : "No"),
-                Field.MultiChoice(static () => "Columns",
-                    ["Name", "Date Modified", "Size", "Kind"],
-                    settings.Columns,
-                    static picked => string.Join(", ", picked)),
-                Field.Date(static () => "Release",
-                    settings.Release,
-                    static value => value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                Field.Color(static () => "Accent", settings.Accent),
-                Field.Path(static () => "Folder",
-                    settings.Profile,
-                    ViewKind.Settings,
-                    pickFolder: true,
-                    static () => "opens the file picker"),
-                Field.Action(static () => "Apply",
-                    Apply,
-                    () => settings.IsComplete.Value,
-                    static () => "enabled once profile and theme are set"),
+                Fields.Text(static () => "Profile", settings.Profile)
+                    .WithValidation(static text => !string.IsNullOrWhiteSpace(text))
+                    .WithHelp(static () => "shown in the title bar"),
+                Fields.Secret(static () => "Passphrase", settings.Passphrase)
+                    .WithHelp(static () => "never rendered in clear text"),
+                Fields.Choice(static () => "Theme", ["dark", "light", "high contrast"], settings.Theme)
+                    .WithHelp(static () => "color palette of the application"),
+                Fields.Slider(static () => "Volume", settings.Volume)
+                    .WithItems(static () => [.. Enumerable.Range(0, 101)])
+                    .WithHelp(static () => "←→ inside the modal, or type a number"),
+                Fields.Toggle(static () => "Fullscreen", settings.Fullscreen),
+                Fields.MultiChoice(static () => "Columns", ["Name", "Date Modified", "Size", "Kind"], settings.Columns),
+                Fields.Date(static () => "Release", settings.Release),
+                Fields.Color(static () => "Accent", settings.Accent),
+                Fields.Path(static () => "Folder", settings.Profile, ViewKind.Settings, pickFolder: true)
+                    .WithHelp(static () => "opens the file picker"),
+                apply,
             ],
         };
 
         _watch = settings.Summary.Subscribe(() => _state.Output = $"settings: {settings.Summary.Value}");
+        _complete = settings.IsComplete.Subscribe(() => apply.IsEnabled = settings.IsComplete.Value);
+        apply.IsEnabled = settings.IsComplete.Value;
     }
 
     public void Draw()
@@ -110,7 +97,11 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         ("Esc", "back"),
     ];
 
-    public void Dispose() => _watch.Dispose();
+    public void Dispose()
+    {
+        _watch.Dispose();
+        _complete.Dispose();
+    }
 
     private static ViewRoute Apply() => ViewKind.Default;
 }

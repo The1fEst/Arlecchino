@@ -34,6 +34,7 @@ Arlecchino.Atoms.History.HistoryAtom<T>
 Arlecchino.Atoms.History.HistoryAtom<T>.HistoryAtom(T initial, string! key, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.History.HistoryAtom<T>.Key.get -> string!
 Arlecchino.Atoms.History.HistoryAtom<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
+Arlecchino.Atoms.History.HistoryAtom<T>.TryReset() -> bool
 Arlecchino.Atoms.History.HistoryFile
 Arlecchino.Atoms.History.HistoryFile.Count.get -> int
 Arlecchino.Atoms.History.HistoryFile.Discard() -> void

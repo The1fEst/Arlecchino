@@ -22,13 +22,13 @@ public sealed class FormTests
         Atom<string> name,
         Atom<bool> flag,
         Func<ViewRoute>? action = null,
-        Func<bool>? enabled = null) => new(app.State, app.Options)
+        bool enabled = true) => new(app.State, app.Options)
     {
         Fields =
         [
-            Field.Text(static () => "Name", name),
-            Field.Toggle(static () => "Flag", flag, static value => value ? "Yes" : "No"),
-            Field.Action(static () => "Apply", action ?? (static () => ViewRoute.None), enabled),
+            Fields.Text(static () => "Name", name),
+            Fields.Toggle(static () => "Flag", flag),
+            new ActionField(static () => "Apply", action ?? (static () => ViewRoute.None)) { IsEnabled = enabled },
         ],
     };
 
@@ -110,15 +110,16 @@ public sealed class FormTests
     }
 
     [Fact]
-    public void EraseResetsTheField()
+    public void EraseTakesTheFieldBackToWhatItStartedAt()
     {
         using var app = new TestApplication();
-        var name = new HistoryAtom<string>("filled", TextKey);
+        var name = new HistoryAtom<string>("start", TextKey);
         var form = CreateForm(app, name, new HistoryAtom<bool>(false, FlagKey));
 
+        name.Value = "filled";
         form.Handle(new(ConsoleKey.Backspace));
 
-        Assert.Equal("", name.Value);
+        Assert.Equal("start", name.Value);
     }
 
     [Fact]
@@ -146,7 +147,7 @@ public sealed class FormTests
                 ran = true;
                 return ViewRoute.None;
             },
-            static () => false);
+            enabled: false);
 
         form.Handle(new(ConsoleKey.DownArrow));
         form.Handle(new(ConsoleKey.DownArrow));
@@ -200,8 +201,10 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>("", TextKey), help: static () => "help for first"),
-                Field.Text(static () => "Second", new HistoryAtom<string>("", TextKey), help: static () => "help for second"),
+                Fields.Text(static () => "First", new HistoryAtom<string>("", TextKey))
+                    .WithHelp(static () => "help for first"),
+                Fields.Text(static () => "Second", new HistoryAtom<string>("", TextKey))
+                    .WithHelp(static () => "help for second"),
             ],
         };
 
@@ -219,8 +222,8 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>("one", TextKey)),
-                Field.Text(static () => "Second", new HistoryAtom<string>("two", TextKey)),
+                Fields.Text(static () => "First", new HistoryAtom<string>("one", TextKey)),
+                Fields.Text(static () => "Second", new HistoryAtom<string>("two", TextKey)),
             ],
         };
 
@@ -238,8 +241,9 @@ public sealed class FormTests
         {
             Fields =
             [
-                Field.Text(static () => "First", new HistoryAtom<string>("", TextKey), help: static () => "help for first"),
-                Field.Text(static () => "Second", new HistoryAtom<string>("", TextKey)),
+                Fields.Text(static () => "First", new HistoryAtom<string>("", TextKey))
+                    .WithHelp(static () => "help for first"),
+                Fields.Text(static () => "Second", new HistoryAtom<string>("", TextKey)),
             ],
         };
 
@@ -277,7 +281,7 @@ public sealed class FormTests
         var folder = new HistoryAtom<string>("", TextKey);
         var form = new Form(app.State, app.Options)
         {
-            Fields = [Field.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],
+            Fields = [Fields.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)],
         };
 
         var result = form.Handle(new(ConsoleKey.Enter));
@@ -292,7 +296,9 @@ public sealed class FormTests
         using var app = new TestApplication();
         var folder = new HistoryAtom<string>("", TextKey);
 
-        Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
+        Open(app,
+            Fields.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)
+                .WithStart(static () => "D:/projects"));
 
         Assert.Equal("D:/projects", app.State.FilePicker!.InitialPath);
     }
@@ -303,7 +309,9 @@ public sealed class FormTests
         using var app = new TestApplication();
         var folder = new HistoryAtom<string>("D:/games/saves", TextKey);
 
-        Open(app, Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, static () => "D:/projects"));
+        Open(app,
+            Fields.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)
+                .WithStart(static () => "D:/projects"));
 
         Assert.Equal("D:/games/saves", app.State.FilePicker!.InitialPath);
     }
@@ -315,7 +323,8 @@ public sealed class FormTests
         var folder = new HistoryAtom<string>("", TextKey);
         var last = new[] { "D:/first" };
 
-        var field = Field.PathFrom(static () => "Folder", folder, ViewKind.Probe, true, () => last[0]);
+        var field = Fields.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true)
+            .WithStart(() => last[0]);
 
         Open(app, field);
         Assert.Equal("D:/first", app.State.FilePicker!.InitialPath);
@@ -333,12 +342,12 @@ public sealed class FormTests
         using var app = new TestApplication();
         var folder = new HistoryAtom<string>("", TextKey);
 
-        Open(app, Field.Path(static () => "Folder", folder, ViewKind.Probe, true));
+        Open(app, Fields.Path(static () => "Folder", folder, ViewKind.Probe, pickFolder: true));
 
         Assert.Equal("", app.State.FilePicker!.InitialPath);
     }
 
-    private static void Open(TestApplication app, Field field)
+    private static void Open(TestApplication app, IField field)
     {
         var form = new Form(app.State, app.Options) { Fields = [field] };
 

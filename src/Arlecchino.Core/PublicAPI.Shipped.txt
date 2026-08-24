@@ -84,7 +84,6 @@ Arlecchino.Atoms.Computed<T>.Value.get -> T
 Arlecchino.Atoms.IArlecchinoScopedStore
 Arlecchino.Atoms.IArlecchinoStore
 Arlecchino.Atoms.IReadableAtom<T>
-Arlecchino.Atoms.IReadableAtom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.IReadableAtom<T>.Value.get -> T
 Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal

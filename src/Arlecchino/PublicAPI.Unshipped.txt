@@ -1,10 +1,75 @@
 #nullable enable
 Arlecchino.Diagnostics.ArlecchinoReport.ArlecchinoReport(Arlecchino.IArlecchinoTerminal! terminal, Arlecchino.Navigation.Navigator! navigator, Arlecchino.State.ArlecchinoState! state, Arlecchino.Hosting.ArlecchinoOptions! options, Arlecchino.Rendering.Surface! surface) -> void
+Arlecchino.Forms.ActionField
+Arlecchino.Forms.ActionField.Action.get -> System.Func<Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Forms.ActionField.ActionField(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! action) -> void
+Arlecchino.Forms.ActionField.Help.get -> System.Func<string!>?
+Arlecchino.Forms.ActionField.IsEnabled.get -> bool
+Arlecchino.Forms.ActionField.IsEnabled.set -> void
+Arlecchino.Forms.ActionField.Label.get -> System.Func<string!>?
+Arlecchino.Forms.ActionField.Template.get -> System.Func<string!>?
+Arlecchino.Forms.ActionField.TryReset() -> bool
+Arlecchino.Forms.ActionField.Value.get -> Arlecchino.Atoms.IReadableAtom?
+Arlecchino.Forms.ActionField.WithHelp(System.Func<string!>! help) -> Arlecchino.Forms.ActionField!
+Arlecchino.Forms.Field<T>
+Arlecchino.Forms.Field<T>.Action.get -> System.Func<Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Forms.Field<T>.Field(Arlecchino.Atoms.IReadableAtom! value) -> void
+Arlecchino.Forms.Field<T>.Help.get -> System.Func<string!>?
+Arlecchino.Forms.Field<T>.IsEnabled.get -> bool
+Arlecchino.Forms.Field<T>.IsEnabled.set -> void
+Arlecchino.Forms.Field<T>.Items.get -> System.Func<System.Collections.Generic.IReadOnlyList<T>!>?
+Arlecchino.Forms.Field<T>.Label.get -> System.Func<string!>?
+Arlecchino.Forms.Field<T>.Template.get -> System.Func<string!>?
+Arlecchino.Forms.Field<T>.TryReset() -> bool
+Arlecchino.Forms.Field<T>.Validation.get -> System.Func<T, bool>?
+Arlecchino.Forms.Field<T>.Value.get -> Arlecchino.Atoms.IReadableAtom!
+Arlecchino.Forms.Field<T>.WithAction(System.Func<Arlecchino.Navigation.ViewRoute>! action) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Field<T>.WithHelp(System.Func<string!>! help) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Field<T>.WithItems(System.Func<T[]!>! items) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Field<T>.WithLabel(System.Func<string!>! label) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Field<T>.WithTemplate(System.Func<string!>! template) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Field<T>.WithValidation(System.Func<T, bool>! validation) -> Arlecchino.Forms.Field<T>!
+Arlecchino.Forms.Fields
+Arlecchino.Forms.Form.Current.get -> Arlecchino.Forms.IField?
+Arlecchino.Forms.Form.Fields.get -> System.Collections.Generic.IReadOnlyList<Arlecchino.Forms.IField!>!
+Arlecchino.Forms.IField
+Arlecchino.Forms.IField.Action.get -> System.Func<Arlecchino.Navigation.ViewRoute>?
+Arlecchino.Forms.IField.Help.get -> System.Func<string!>?
+Arlecchino.Forms.IField.IsEnabled.get -> bool
+Arlecchino.Forms.IField.IsEnabled.set -> void
+Arlecchino.Forms.IField.Label.get -> System.Func<string!>?
+Arlecchino.Forms.IField.Template.get -> System.Func<string!>?
+Arlecchino.Forms.IField.TryReset() -> bool
+Arlecchino.Forms.IField.Value.get -> Arlecchino.Atoms.IReadableAtom?
+Arlecchino.Forms.PathField
+Arlecchino.Forms.PathField.PathField(Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder) -> void
+Arlecchino.Forms.PathField.PickFolder.get -> bool
+Arlecchino.Forms.PathField.ReturnView.get -> Arlecchino.Navigation.ViewRoute
+Arlecchino.Forms.PathField.Start.get -> System.Func<string!>?
+Arlecchino.Forms.PathField.WithStart(System.Func<string!>! start) -> Arlecchino.Forms.PathField!
+Arlecchino.Forms.SecretField
+Arlecchino.Forms.SecretField.SecretField(Arlecchino.Atoms.Atom<string!>! value) -> void
+Arlecchino.Forms.SliderField
+Arlecchino.Forms.SliderField.SliderField(Arlecchino.Atoms.Atom<decimal>! value) -> void
 Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.RGB, Arlecchino.Rendering.Colors.ThemePalette!>?
+Arlecchino.Hosting.ArlecchinoStrings.NotAnAllowedValue.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.NotAnAllowedValue.set -> void
 Arlecchino.Hosting.IArlecchinoStartup.StartAsync() -> System.Threading.Tasks.Task<Arlecchino.Navigation.ViewRoute>!
 Arlecchino.Modals.Setting.ColorModal.OnPicked.get -> System.Action<Arlecchino.Rendering.Colors.RGB>!
 Arlecchino.Modals.Setting.ColorModal.SetValue(Arlecchino.Rendering.Colors.RGB color) -> void
 Arlecchino.Modals.Setting.ColorModal.Value.get -> Arlecchino.Rendering.Colors.RGB
 Arlecchino.State.ArlecchinoState.RequestColor(string! title, Arlecchino.Rendering.Colors.RGB initial, System.Action<Arlecchino.Rendering.Colors.RGB>! onPicked) -> void
 Arlecchino.Widgets.Pictures.Picture.Show(System.ReadOnlySpan<Arlecchino.Rendering.Colors.RGB> pixels, int width, int height) -> void
-static Arlecchino.Forms.Field.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Colors.RGB>! value, System.Func<string!>? help = null) -> Arlecchino.Forms.Field!
+override Arlecchino.Atoms.AsyncAtom<T>.ToString() -> string!
+static Arlecchino.Forms.Fields.Action(System.Func<string!>! label, System.Func<Arlecchino.Navigation.ViewRoute>! run) -> Arlecchino.Forms.ActionField!
+static Arlecchino.Forms.Fields.Choice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Atom<string!>! value) -> Arlecchino.Forms.Field<string!>!
+static Arlecchino.Forms.Fields.Color(System.Func<string!>! label, Arlecchino.Atoms.Atom<Arlecchino.Rendering.Colors.RGB>! value) -> Arlecchino.Forms.Field<Arlecchino.Rendering.Colors.RGB>!
+static Arlecchino.Forms.Fields.Date(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.DateOnly>! value) -> Arlecchino.Forms.Field<System.DateOnly>!
+static Arlecchino.Forms.Fields.MultiChoice(System.Func<string!>! label, System.Collections.Generic.IReadOnlyList<string!>! options, Arlecchino.Atoms.Collections.AtomsList<string!>! value) -> Arlecchino.Forms.Field<string!>!
+static Arlecchino.Forms.Fields.Number(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value) -> Arlecchino.Forms.Field<decimal>!
+static Arlecchino.Forms.Fields.Path(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value, Arlecchino.Navigation.ViewRoute returnView, bool pickFolder) -> Arlecchino.Forms.PathField!
+static Arlecchino.Forms.Fields.Secret(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value) -> Arlecchino.Forms.SecretField!
+static Arlecchino.Forms.Fields.Slider(System.Func<string!>! label, Arlecchino.Atoms.Atom<decimal>! value) -> Arlecchino.Forms.SliderField!
+static Arlecchino.Forms.Fields.Text(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value) -> Arlecchino.Forms.Field<string!>!
+static Arlecchino.Forms.Fields.Time(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.TimeOnly>! value) -> Arlecchino.Forms.Field<System.TimeOnly>!
+static Arlecchino.Forms.Fields.Toggle(System.Func<string!>! label, Arlecchino.Atoms.Atom<bool>! value) -> Arlecchino.Forms.Field<bool>!

@@ -176,4 +176,118 @@ public sealed class StateHistoryTests
 
         void Collect(IAtomEdit edit) => owners.Add(edit.Owner);
     }
+
+    [Fact]
+    public void AnAtomGoesBackToWhatItHeldBeforeItsFirstEdit()
+    {
+        var text = new HistoryAtom<string>("start", TextKey);
+        using var history = new AtomHistory();
+
+        text.Value = "first";
+        text.Value = "second";
+
+        Assert.True(text.TryReset());
+        Assert.Equal("start", text.Value);
+    }
+
+    /// <summary>
+    /// Going back is written rather than unwound, which is what keeps the stack a stack: the step it makes
+    /// is the next one to be taken back.
+    /// </summary>
+    [Fact]
+    public void GoingBackIsItselfAStepThatCanBeTakenBack()
+    {
+        var text = new HistoryAtom<string>("start", TextKey);
+        using var history = new AtomHistory();
+
+        text.Value = "first";
+        text.TryReset();
+
+        Assert.True(history.Undo());
+        Assert.Equal("first", text.Value);
+    }
+
+    [Fact]
+    public void GoingBackMovesOnlyTheAtomItWasAskedOf()
+    {
+        using var history = new AtomHistory();
+        var text = new HistoryAtom<string>("start", TextKey);
+        var count = new HistoryAtom<int>(0, CountKey);
+
+        text.Value = "changed";
+        count.Value = 7;
+
+        Assert.True(text.TryReset());
+        Assert.Equal(7, count.Value);
+    }
+
+    /// <summary>
+    /// The atom keeps its own beginning rather than looking for it on the stack, so the steps that fell off
+    /// the end are no loss.
+    /// </summary>
+    [Fact]
+    public void AnAtomStillGoesBackAfterItsFirstStepFellOffTheEnd()
+    {
+        using var history = new AtomHistory();
+        history.Capacity = 1;
+        var text = new HistoryAtom<string>("start", TextKey);
+
+        for (var edit = 1; edit <= 5; edit++)
+        {
+            text.Value = edit.ToString();
+        }
+
+        Assert.True(text.TryReset());
+        Assert.Equal("start", text.Value);
+    }
+
+    [Fact]
+    public void TakingStepsBackDoesNotMoveWhereTheAtomGoesBackTo()
+    {
+        var text = new HistoryAtom<string>("start", TextKey);
+        using var history = new AtomHistory();
+
+        text.Value = "first";
+        text.Value = "second";
+
+        history.Undo();
+        text.Value = "third";
+
+        Assert.True(text.TryReset());
+        Assert.Equal("start", text.Value);
+    }
+
+    [Fact]
+    public void AnAtomNothingWasWrittenToHasNowhereToGoBackTo()
+    {
+        using var history = new AtomHistory();
+        var text = new HistoryAtom<string>("start", TextKey);
+
+        Assert.False(text.TryReset());
+        Assert.Equal("start", text.Value);
+    }
+
+    /// <summary>
+    /// A number that was never edited has no beginning to go back to either, which a value standing for
+    /// "nothing recorded yet" cannot say: every number is a number one could have started at.
+    /// </summary>
+    [Fact]
+    public void ANumberNothingWasWrittenToHasNowhereToGoBackTo()
+    {
+        using var history = new AtomHistory();
+        var count = new HistoryAtom<int>(7, CountKey);
+
+        Assert.False(count.TryReset());
+        Assert.Equal(7, count.Value);
+    }
+
+    /// <summary>An atom whose writes no history heard has no beginning of one to go back to.</summary>
+    [Fact]
+    public void AnAtomWrittenWithNoHistoryListeningHasNowhereToGoBackTo()
+    {
+        var text = new HistoryAtom<string>("start", TextKey) { Value = "changed" };
+
+        Assert.False(text.TryReset());
+        Assert.Equal("changed", text.Value);
+    }
 }

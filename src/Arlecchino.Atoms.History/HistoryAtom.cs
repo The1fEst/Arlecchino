@@ -8,8 +8,10 @@ namespace Arlecchino.Atoms.History;
 /// <see cref="Atom{T}"/> is the one whose writes do not.
 /// </summary>
 /// <typeparam name="T">The kind of value held.</typeparam>
-public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
+public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom, IResettableAtom
 {
+    private Edit? _first;
+
     /// <summary>Creates an atom that keeps history.</summary>
     /// <param name="initial">The value to start with.</param>
     /// <param name="key">What the atom is called; see <see cref="Key"/>.</param>
@@ -40,13 +42,35 @@ public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
     public IAtomEdit? Restore(IValueReader reader) =>
         reader.Read<T>(out var undone, out var redone) ? new Edit(this, undone, redone) : null;
 
+    /// <summary>
+    /// Writes back what the atom held before the first edit the history took, as one more edit rather than
+    /// by unwinding the stack: the step it makes is itself undoable, and no other atom moves.
+    /// </summary>
+    /// <returns><c>false</c> when no edit of this atom was ever taken, leaving nowhere to go back to.</returns>
+    public bool TryReset()
+    {
+        if (_first is null)
+        {
+            return false;
+        }
+
+        Value = _first.OldValue;
+        return true;
+    }
+
     /// <inheritdoc />
     protected override void OnWritten(T previous, T current)
     {
-        if (HistoryChanges.IsRecording)
+        if (!HistoryChanges.IsRecording)
         {
-            HistoryChanges.NotifyRecorded(new Edit(this, previous, current));
+            return;
         }
+
+        var edit = new Edit(this, previous, current);
+
+        _first ??= edit;
+
+        HistoryChanges.NotifyRecorded(edit);
     }
 
     private sealed class Edit : IWritableAtomEdit
@@ -65,6 +89,8 @@ public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
         public object Owner => _atom;
 
         public string Key => _atom.Key;
+
+        public T OldValue => _oldValue;
 
         public bool WriteTo(IValueWriter writer) => writer.Write(_oldValue, _newValue);
 

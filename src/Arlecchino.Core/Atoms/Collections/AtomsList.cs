@@ -249,6 +249,12 @@ public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
         return _items.GetEnumerator();
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return string.Join(", ", _items);
+    }
+
     private bool ContentsEqual(IReadOnlyList<T> items)
     {
         if (items.Count != _items.Count)

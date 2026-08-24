@@ -96,6 +96,12 @@ public sealed class AsyncAtom<T> : IReadableAtom<T?>
         }
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return Value?.ToString() ?? IReadableAtom.UndefinedValue;
+    }
+
     private async Task RunAsync(Func<CancellationToken, Task<T>> load, CancellationTokenSource running)
     {
         try

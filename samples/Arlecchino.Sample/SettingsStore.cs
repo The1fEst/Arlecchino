@@ -1,7 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Arlecchino.Atoms;
+using Arlecchino.Atoms.Collections;
 using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 using Arlecchino.Rendering.Colors;
 
 namespace Arlecchino.Sample;
@@ -26,8 +27,7 @@ public sealed class SettingsStore : IArlecchinoStore
 
     public Atom<bool> Fullscreen { get; } = new HistoryAtom<bool>(true, $"{HistoryKey}.Fullscreen");
 
-    public Atom<IReadOnlyList<string>> Columns { get; } =
-        new HistoryAtom<IReadOnlyList<string>>(["Name", "Size"], $"{HistoryKey}.Columns");
+    public AtomsList<string> Columns { get; } = new HistoryAtomsList<string>($"{HistoryKey}.Columns", ["Name", "Size"]);
 
     public Atom<DateOnly> Release { get; } = new HistoryAtom<DateOnly>(new(2026, 7, 25), $"{HistoryKey}.Release");
 

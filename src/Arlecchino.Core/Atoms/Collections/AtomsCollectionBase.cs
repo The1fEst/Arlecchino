@@ -6,7 +6,7 @@ namespace Arlecchino.Atoms.Collections;
 /// What the five collection atoms have in common: who is listening, the check that a change is being
 /// made on the drawing thread, and the seam a subclass watches changes through.
 /// </summary>
-public abstract class AtomsCollectionBase
+public abstract class AtomsCollectionBase : IReadableAtom
 {
     private readonly Listeners _listeners = new();
 

@@ -188,6 +188,12 @@ public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>
         return _items.GetEnumerator();
     }
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return string.Join(",", _items);
+    }
+
     private T Take()
     {
         Verify();

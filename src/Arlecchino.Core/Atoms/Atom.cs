@@ -58,6 +58,12 @@ public class Atom<T> : IReadableAtom<T>
     /// <returns>Dispose it to stop listening.</returns>
     public IDisposable Subscribe(Action listener) => _listeners.Add(listener);
 
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        return Value?.ToString() ?? IReadableAtom.UndefinedValue;
+    }
+
     /// <summary>
     /// Called once the value has changed and before subscribers hear of it. The atom does nothing with it;
     /// it is where a subclass keeps a record of its own, and <see cref="WriteSilently"/> does not reach it.
