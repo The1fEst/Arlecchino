@@ -85,13 +85,13 @@ than against the one the design was drawn on.
   hosted service no longer readies a history, and the diagnostic report no longer prints `undo depth` —
   all of it moved behind the call below.
 
-- **A kept file is read back, a step at a time.** A run that keeps its history indexes the file it finds
-  rather than throwing it away, and appends to it rather than writing over it. What memory holds is the
-  last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them, so a
+- **A file that outlives the run is read back, a step at a time.** A run that resumes indexes the file it
+  finds rather than throwing it away, and appends to it rather than writing over it. What memory holds is
+  the last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them, so a
   history of any length costs one offset and one length per step.
 
   ```csharp
-  builder.Services.UseHistory(options => options.Keep = true);
+  builder.Services.UseHistory(options => options.Resume = true);
   ```
 
   A step names its atoms, and the atoms of this run answer to those names: a `HistoryAtom<T>` says its
@@ -122,7 +122,7 @@ than against the one the design was drawn on.
   ```csharp
   builder.Services.UseHistory(options =>
   {
-      options.Keep = true;                      // the file outlives the run
+      options.Resume = true;                    // come up where the last run left off
       options.FileName = "history/session.undo";
       options.Capacity = 1000;                  // steps kept before the oldest fall off
   });
@@ -162,8 +162,42 @@ than against the one the design was drawn on.
   ```
 
   A group holding one atom that cannot be written is left out whole rather than half, which on being read
-  back would move some atoms and not others. The collection atoms are not written at all: a step of theirs
-  is a position and a span, and a position means nothing once later edits have moved it.
+  back would move some atoms and not others.
+
+- **A collection is named the same way, and what is written for it is what it held.** The five history
+  collections take a `key` before what they start with, as required of them as it is of a `HistoryAtom<T>`,
+  and a step of theirs goes to the file as the contents either side of it rather than as the position and
+  span it changed. A position means nothing to a run holding something else — it would take a span out of
+  contents that never had it — while the whole of it says where the step lands whatever the stores started
+  the run with.
+
+  ```csharp
+  public HistoryAtomsList<string> Servers { get; } = new($"{HistoryKey}.Servers", ["127.0.0.1"]);
+  ```
+
+  Landing is the smallest change that gets there rather than a rewrite. A list keeps the ends it already
+  agrees on and moves only the middle; a set takes out what the step does not want and puts in what it
+  lacks; a map writes only the entries whose values differ. What reads the collection hears about what
+  moved, and an item the step never touched is the item that was already there rather than a copy read
+  back out of the file.
+
+  Copying a collection either side of every step is worth doing only for a step that will outlive the
+  run, so it is done only while a history is writing one down. A history kept in memory costs what it
+  cost before.
+
+- **`Resume`, which is what a run comes up in.** A named atom starts out holding what the file last saw it
+  hold rather than the value its store gives it. It is asked as the atom gives its name rather than once
+  at startup, since a screen's store is built when the screen is — it picks its state up then, on the way
+  back to it. This is also what decides that the file outlives the run, there being no other reason to
+  keep one, so it is one setting rather than two.
+
+  ```csharp
+  builder.Services.UseHistory(options => options.Resume = true);
+  ```
+
+  What the file remembers is the last change made rather than the last state seen: undo and redo are not
+  themselves written down, so a run that took a step back and then quit comes up holding what it held
+  before that step was taken back.
 
 
 ### Changed

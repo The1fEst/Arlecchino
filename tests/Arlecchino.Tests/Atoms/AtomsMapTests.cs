@@ -239,7 +239,7 @@ public sealed class AtomsMapTests
     public void ATrackedMapGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new HistoryAtomsMap<string, int>();
+        var survivors = new HistoryAtomsMap<string, int>("AtomsMapTests.Survivors");
         var ignored = new AtomsMap<string, int>();
 
         Assert.False(history.CanUndo);
@@ -262,7 +262,9 @@ public sealed class AtomsMapTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var sizes = new HistoryAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1 });
+        var sizes = new HistoryAtomsMap<string, int>(
+            "AtomsMapTests.Changed",
+            new Dictionary<string, int> { ["alpha"] = 1 });
 
         Assert.Equal(0, history.Depth);
 
@@ -295,7 +297,9 @@ public sealed class AtomsMapTests
     public void AMapThatWasClearedIsFilledBackIn()
     {
         using var history = new AtomHistory();
-        var sizes = new HistoryAtomsMap<string, int>(new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
+        var sizes = new HistoryAtomsMap<string, int>(
+            "AtomsMapTests.Cleared",
+            new Dictionary<string, int> { ["alpha"] = 1, ["beta"] = 2 });
 
         sizes.Clear();
 
@@ -358,7 +362,9 @@ public sealed class AtomsMapTests
     public void AKeyHeldAgainstNullIsReplacedRatherThanAdded()
     {
         using var history = new AtomHistory();
-        var names = new HistoryAtomsMap<int, string?>(new Dictionary<int, string?> { [1] = null });
+        var names = new HistoryAtomsMap<int, string?>(
+            "AtomsMapTests.Names",
+            new Dictionary<int, string?> { [1] = null });
 
         Assert.Null(names[1]);
 

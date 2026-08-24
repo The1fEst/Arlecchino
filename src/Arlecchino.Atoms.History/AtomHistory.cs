@@ -14,6 +14,12 @@ public sealed class AtomHistory : IDisposable
 
     private readonly HistoryFile? _file;
 
+    /// <summary>What tells the collections to copy what they hold, for as long as this history writes.</summary>
+    private readonly IDisposable? _writing;
+
+    /// <summary>What puts a named atom back to what the file holds, for as long as this history is up.</summary>
+    private readonly IDisposable? _resuming;
+
     private int _capacity = 200;
     private int _floor;
     private List<IAtomEdit>? _group;
@@ -26,12 +32,17 @@ public sealed class AtomHistory : IDisposable
     /// <summary>Starts collecting edits, and writes down the ones it can.</summary>
     /// <param name="file">
     /// Where steps are written as they are made, or <c>null</c> to keep them in memory only. Only steps of
-    /// atoms carrying a <see cref="HistoryAtom{T}.Key"/> are written; see <see cref="HistoryFile"/>.
+    /// atoms and collections that were given a name are written; see <see cref="HistoryFile"/>.
     /// </param>
-    internal AtomHistory(HistoryFile? file)
+    /// <param name="resume">
+    /// Whether a named atom takes back what the file last saw it hold, as it gives its name.
+    /// </param>
+    internal AtomHistory(HistoryFile? file, bool resume = false)
     {
         _file = file;
         _floor = file?.Count ?? 0;
+        _writing = file is null ? null : HistoryChanges.Writes();
+        _resuming = resume && file is not null ? HistoryChanges.Resumes(file.Resume) : null;
 
         HistoryChanges.Recorded += Record;
     }
@@ -125,7 +136,13 @@ public sealed class AtomHistory : IDisposable
     }
 
     /// <summary>Stops collecting edits.</summary>
-    public void Dispose() => HistoryChanges.Recorded -= Record;
+    public void Dispose()
+    {
+        HistoryChanges.Recorded -= Record;
+
+        _writing?.Dispose();
+        _resuming?.Dispose();
+    }
 
     /// <summary>
     /// Takes back a step the file holds and memory does not, seeking to it rather than loading what came

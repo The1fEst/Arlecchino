@@ -13,7 +13,7 @@ public static class HistoryServiceCollectionExtensions
     /// steps, and the atoms that could feed one allocate nothing for it.
     ///
     /// <code>
-    /// builder.Services.UseHistory(options => options.Keep = true);
+    /// builder.Services.UseHistory(options => options.Resume = true);
     /// </code>
     /// </summary>
     /// <param name="services">The container being built.</param>
@@ -37,13 +37,16 @@ public static class HistoryServiceCollectionExtensions
         {
             var settings = provider.GetRequiredService<HistoryOptions>();
 
-            return new HistoryFile(settings.FileName, settings.Keep);
+            return new HistoryFile(settings.FileName, settings.Resume);
         });
         services.AddSingleton(static provider =>
         {
             var settings = provider.GetRequiredService<HistoryOptions>();
 
-            return new AtomHistory(provider.GetRequiredService<HistoryFile>()) { Capacity = settings.Capacity };
+            return new AtomHistory(provider.GetRequiredService<HistoryFile>(), settings.Resume)
+            {
+                Capacity = settings.Capacity,
+            };
         });
 
         services.Insert(0, ServiceDescriptor.Singleton<IHostedService, HistoryStartup>());

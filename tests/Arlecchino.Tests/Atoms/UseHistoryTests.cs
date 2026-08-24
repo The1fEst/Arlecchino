@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,10 @@ public sealed class UseHistoryTests
         Assert.NotNull(provider.GetService<HistoryFile>());
     }
 
+    /// <summary>
+    /// Asking to resume is also what keeps the file, there being nothing to come up in without one, so it
+    /// is the setting the file takes its own from.
+    /// </summary>
     [Fact]
     public void TheSettingsReachTheStackAndTheFile()
     {
@@ -41,7 +46,7 @@ public sealed class UseHistoryTests
         services.UseHistory(options =>
         {
             options.FileName = "chosen.history";
-            options.Keep = true;
+            options.Resume = true;
             options.Capacity = 7;
         });
 
@@ -50,6 +55,50 @@ public sealed class UseHistoryTests
         Assert.Equal(7, provider.GetRequiredService<AtomHistory>().Capacity);
         Assert.True(provider.GetRequiredService<HistoryFile>().Keep);
         Assert.EndsWith("chosen.history", provider.GetRequiredService<HistoryFile>().Path, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// The stores are built after the host has started, so asking for state to be resumed has to still
+    /// be in force by then rather than having been a moment at startup.
+    /// </summary>
+    [Fact]
+    public async Task AskingForStateToBeResumedReachesTheAtomsTheStoresBuild()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+        Directory.CreateDirectory(folder);
+
+        try
+        {
+            var path = Path.Combine(folder, "resumed.history");
+
+            using (var earlier = new HistoryFile(path, keep: true))
+            using (new AtomHistory(earlier))
+            {
+                new HistoryAtom<string>("start", "Hosted.Server").Value = "changed";
+            }
+
+            var services = new ServiceCollection();
+
+            services.UseHistory(options =>
+            {
+                options.FileName = path;
+                options.Resume = true;
+            });
+
+            await using var provider = services.BuildServiceProvider();
+            var started = provider.GetServices<IHostedService>().First();
+
+            await started.StartAsync(CancellationToken.None);
+
+            using var history = provider.GetRequiredService<AtomHistory>();
+
+            Assert.Equal("changed", new HistoryAtom<string>("start", "Hosted.Server").Value);
+        }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     /// <summary>

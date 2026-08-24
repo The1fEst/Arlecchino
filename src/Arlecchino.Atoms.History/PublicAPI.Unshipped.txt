@@ -11,15 +11,25 @@ Arlecchino.Atoms.History.AtomHistory.Group() -> System.IDisposable!
 Arlecchino.Atoms.History.AtomHistory.Redo() -> bool
 Arlecchino.Atoms.History.AtomHistory.Undo() -> bool
 Arlecchino.Atoms.History.Collections.HistoryAtomsList<T>
-Arlecchino.Atoms.History.Collections.HistoryAtomsList<T>.HistoryAtomsList(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsList<T>.HistoryAtomsList(string! key, System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsList<T>.Key.get -> string!
+Arlecchino.Atoms.History.Collections.HistoryAtomsList<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.Collections.HistoryAtomsMap<TKey, TValue>
-Arlecchino.Atoms.History.Collections.HistoryAtomsMap<TKey, TValue>.HistoryAtomsMap(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>? initial = null, System.Collections.Generic.IEqualityComparer<TKey>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsMap<TKey, TValue>.HistoryAtomsMap(string! key, System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>? initial = null, System.Collections.Generic.IEqualityComparer<TKey>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsMap<TKey, TValue>.Key.get -> string!
+Arlecchino.Atoms.History.Collections.HistoryAtomsMap<TKey, TValue>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.Collections.HistoryAtomsQueue<T>
-Arlecchino.Atoms.History.Collections.HistoryAtomsQueue<T>.HistoryAtomsQueue(System.Collections.Generic.IReadOnlyList<T>? initial = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsQueue<T>.HistoryAtomsQueue(string! key, System.Collections.Generic.IReadOnlyList<T>? initial = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsQueue<T>.Key.get -> string!
+Arlecchino.Atoms.History.Collections.HistoryAtomsQueue<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>
-Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>.HistoryAtomsSet(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>.HistoryAtomsSet(string! key, System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>.Key.get -> string!
+Arlecchino.Atoms.History.Collections.HistoryAtomsSet<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>
-Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.HistoryAtomsStack(System.Collections.Generic.IReadOnlyList<T>? initial = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.HistoryAtomsStack(string! key, System.Collections.Generic.IReadOnlyList<T>? initial = null) -> void
+Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.Key.get -> string!
+Arlecchino.Atoms.History.Collections.HistoryAtomsStack<T>.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.HistoryAtom<T>
 Arlecchino.Atoms.History.HistoryAtom<T>.HistoryAtom(T initial, string! key, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.History.HistoryAtom<T>.Key.get -> string!
@@ -35,6 +45,7 @@ Arlecchino.Atoms.History.HistoryFile.Keep.get -> bool
 Arlecchino.Atoms.History.HistoryFile.Path.get -> string!
 Arlecchino.Atoms.History.HistoryFile.Prepare() -> void
 Arlecchino.Atoms.History.HistoryFile.Read(int step) -> System.Collections.Generic.List<Arlecchino.Atoms.History.IAtomEdit!>?
+Arlecchino.Atoms.History.HistoryFile.Resume(string! key, Arlecchino.Atoms.History.IRestorableAtom! atom) -> bool
 Arlecchino.Atoms.History.HistoryFile.Write(System.Collections.Generic.IReadOnlyList<Arlecchino.Atoms.History.IAtomEdit!>! edits) -> bool
 Arlecchino.Atoms.History.Hosting.HistoryOptions
 Arlecchino.Atoms.History.Hosting.HistoryOptions.Capacity.get -> int
@@ -42,8 +53,8 @@ Arlecchino.Atoms.History.Hosting.HistoryOptions.Capacity.set -> void
 Arlecchino.Atoms.History.Hosting.HistoryOptions.FileName.get -> string!
 Arlecchino.Atoms.History.Hosting.HistoryOptions.FileName.set -> void
 Arlecchino.Atoms.History.Hosting.HistoryOptions.HistoryOptions() -> void
-Arlecchino.Atoms.History.Hosting.HistoryOptions.Keep.get -> bool
-Arlecchino.Atoms.History.Hosting.HistoryOptions.Keep.set -> void
+Arlecchino.Atoms.History.Hosting.HistoryOptions.Resume.get -> bool
+Arlecchino.Atoms.History.Hosting.HistoryOptions.Resume.set -> void
 Arlecchino.Atoms.History.Hosting.HistoryServiceCollectionExtensions
 Arlecchino.Atoms.History.IAtomEdit
 Arlecchino.Atoms.History.IAtomEdit.Owner.get -> object?
@@ -53,8 +64,12 @@ Arlecchino.Atoms.History.IRestorableAtom
 Arlecchino.Atoms.History.IRestorableAtom.Restore(Arlecchino.Atoms.History.IValueReader! reader) -> Arlecchino.Atoms.History.IAtomEdit?
 Arlecchino.Atoms.History.IValueReader
 Arlecchino.Atoms.History.IValueReader.Read<T>(out T undone, out T redone) -> bool
+Arlecchino.Atoms.History.IValueReader.ReadEntries<TKey, TValue>(out System.Collections.Generic.KeyValuePair<TKey, TValue>[]! undone, out System.Collections.Generic.KeyValuePair<TKey, TValue>[]! redone) -> bool
+Arlecchino.Atoms.History.IValueReader.ReadItems<T>(out T[]! undone, out T[]! redone) -> bool
 Arlecchino.Atoms.History.IValueWriter
 Arlecchino.Atoms.History.IValueWriter.Write<T>(T undone, T redone) -> bool
+Arlecchino.Atoms.History.IValueWriter.WriteEntries<TKey, TValue>(System.Collections.Generic.KeyValuePair<TKey, TValue>[]! undone, System.Collections.Generic.KeyValuePair<TKey, TValue>[]! redone) -> bool
+Arlecchino.Atoms.History.IValueWriter.WriteItems<T>(T[]! undone, T[]! redone) -> bool
 Arlecchino.Atoms.History.IWritableAtomEdit
 Arlecchino.Atoms.History.IWritableAtomEdit.Key.get -> string!
 Arlecchino.Atoms.History.IWritableAtomEdit.WriteTo(Arlecchino.Atoms.History.IValueWriter! writer) -> bool

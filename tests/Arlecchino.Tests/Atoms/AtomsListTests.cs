@@ -228,7 +228,7 @@ public sealed class AtomsListTests
     public void ATrimmedListIsFilledBackInWhereItWasCut()
     {
         using var history = new AtomHistory();
-        var rows = new HistoryAtomsList<string>(["one", "two", "three", "four"]);
+        var rows = new HistoryAtomsList<string>("AtomsListTests.Trimmed", ["one", "two", "three", "four"]);
 
         rows.RemoveRange(1, 2);
 
@@ -276,7 +276,7 @@ public sealed class AtomsListTests
     public void AHistoryAtomsListGoesOnTheUndoStackAndAPlainOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new HistoryAtomsList<string>();
+        var survivors = new HistoryAtomsList<string>("AtomsListTests.Survivors");
         var ignored = new AtomsList<string>();
 
         ignored.Add("nothing to undo");
@@ -297,7 +297,7 @@ public sealed class AtomsListTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var rows = new HistoryAtomsList<string>(["alpha", "beta"]);
+        var rows = new HistoryAtomsList<string>("AtomsListTests.Changed", ["alpha", "beta"]);
 
         rows.Insert(1, "middle");
         rows[0] = "first";
@@ -328,7 +328,7 @@ public sealed class AtomsListTests
     public void APageAddedAtOnceComesBackAsAPage()
     {
         using var history = new AtomHistory();
-        var rows = new HistoryAtomsList<int>([0]);
+        var rows = new HistoryAtomsList<int>("AtomsListTests.Page", [0]);
 
         rows.Add([1, 2, 3]);
 
@@ -343,7 +343,7 @@ public sealed class AtomsListTests
     public void AListThatWasClearedIsFilledBackIn()
     {
         using var history = new AtomHistory();
-        var rows = new HistoryAtomsList<string>(["alpha", "beta"]);
+        var rows = new HistoryAtomsList<string>("AtomsListTests.Cleared", ["alpha", "beta"]);
 
         rows.Clear();
 

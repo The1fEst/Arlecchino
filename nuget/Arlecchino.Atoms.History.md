@@ -24,12 +24,13 @@ public sealed class SettingsStore : ArlecchinoAsyncStore
 Turn it on where the container is built:
 
 ```csharp
-builder.Services.UseHistory(options => options.Keep = true);
+builder.Services.UseHistory(options => options.Resume = true);
 ```
 
 `AtomHistory` collects the steps, one per application. `HistoryFile` writes them to a file beside the
 program, one step per line, thrown away on the way out and again on the way in — unless the application
-asks to keep it, in which case the next run indexes it and adds to it.
+asks to resume, in which case the file outlives the run: the next one indexes it, adds to it, and every
+named atom starts out holding what it last saw that atom hold.
 
 Memory holds the last `Capacity` steps. Older ones live in the file and are seeked to one at a time when
 an undo asks for them, so a long history costs an offset and a length per step rather than its values.

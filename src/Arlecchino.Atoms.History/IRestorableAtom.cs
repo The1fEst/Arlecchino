@@ -2,7 +2,7 @@ namespace Arlecchino.Atoms.History;
 
 /// <summary>
 /// An atom a step can be handed back to, which is how a <see cref="HistoryFile"/> written by an earlier
-/// run reaches the atoms of this one. Named atoms answer to their <see cref="HistoryAtom{T}.Key"/>.
+/// run reaches the atoms of this one. It answers to the name it was given.
 /// </summary>
 public interface IRestorableAtom
 {

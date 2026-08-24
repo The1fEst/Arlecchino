@@ -22,7 +22,7 @@ public sealed class HistoryAtom<T> : Atom<T>, IRestorableAtom
     public HistoryAtom(T initial, string key, IEqualityComparer<T>? comparer = null)
         : base(initial, comparer)
     {
-        ArgumentException.ThrowIfNullOrEmpty(key);
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
 
         Key = key;
 

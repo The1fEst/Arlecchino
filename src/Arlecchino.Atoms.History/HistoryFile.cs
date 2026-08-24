@@ -36,6 +36,12 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
     /// <summary>Where every step written down starts and how long it is, in the order they were made.</summary>
     private readonly List<(long Offset, int Length)> _steps = [];
 
+    /// <summary>
+    /// Which step last named each atom, for <see cref="Resume"/>. It is worked out on the first ask,
+    /// since a run that never resumes anything has no reason to read the file it appends to.
+    /// </summary>
+    private Dictionary<string, int>? _newest;
+
     private readonly List<(IWritableAtomEdit Edit, string Key)> _step = [];
 
     private Utf8JsonWriter? _json;
@@ -141,6 +147,63 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
         return true;
     }
 
+    /// <summary>Takes the contents a collection edit stands between, which the edit hands over typed.</summary>
+    /// <typeparam name="T">What the collection holds, supplied by the edit.</typeparam>
+    /// <param name="undone">The contents undoing lands on.</param>
+    /// <param name="redone">The contents redoing lands on.</param>
+    /// <returns><c>false</c> when this kind of item has no writer.</returns>
+    bool IValueWriter.WriteItems<T>(T[] undone, T[] redone)
+    {
+        if (!_writers.TryGetValue(typeof(T), out var stored))
+        {
+            return false;
+        }
+
+        if (_probing)
+        {
+            return true;
+        }
+
+        var write = (Action<Utf8JsonWriter, T>)stored;
+        var json = _json!;
+
+        WriteAll(json, "from", write, undone);
+        WriteAll(json, "to", write, redone);
+
+        return true;
+    }
+
+    /// <summary>Takes the entries a map edit stands between, which the edit hands over typed.</summary>
+    /// <typeparam name="TKey">What the entries are looked up by, supplied by the edit.</typeparam>
+    /// <typeparam name="TValue">What is kept against each key, supplied by the edit.</typeparam>
+    /// <param name="undone">The entries undoing lands on.</param>
+    /// <param name="redone">The entries redoing lands on.</param>
+    /// <returns><c>false</c> when either half of an entry has no writer.</returns>
+    bool IValueWriter.WriteEntries<TKey, TValue>(
+        KeyValuePair<TKey, TValue>[] undone,
+        KeyValuePair<TKey, TValue>[] redone)
+    {
+        if (!_writers.TryGetValue(typeof(TKey), out var storedKey) ||
+            !_writers.TryGetValue(typeof(TValue), out var storedValue))
+        {
+            return false;
+        }
+
+        if (_probing)
+        {
+            return true;
+        }
+
+        var writeKey = (Action<Utf8JsonWriter, TKey>)storedKey;
+        var writeValue = (Action<Utf8JsonWriter, TValue>)storedValue;
+        var json = _json!;
+
+        WriteAll(json, "from", writeKey, writeValue, undone);
+        WriteAll(json, "to", writeKey, writeValue, redone);
+
+        return true;
+    }
+
     /// <summary>Hands the two values of the edit being restored back to the atom that asked.</summary>
     /// <typeparam name="T">What the atom holds, supplied by the atom.</typeparam>
     /// <param name="undone">The value undoing puts back.</param>
@@ -164,6 +227,74 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
             redone = reader(_redone);
 
             return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>Hands the contents of the collection step being restored back to the collection that asked.</summary>
+    /// <typeparam name="T">What the collection holds, supplied by the collection.</typeparam>
+    /// <param name="undone">The contents undoing lands on.</param>
+    /// <param name="redone">The contents redoing lands on.</param>
+    /// <returns><c>false</c> when this kind of item has no reader, or the contents do not parse.</returns>
+    bool IValueReader.ReadItems<T>(out T[] undone, out T[] redone)
+    {
+        undone = [];
+        redone = [];
+
+        if (!_readers.TryGetValue(typeof(T), out var stored))
+        {
+            return false;
+        }
+
+        var readItem = (Func<JsonElement, T>)stored;
+
+        try
+        {
+            return ReadAll(_undone, readItem, out undone) && ReadAll(_redone, readItem, out redone);
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>Hands the entries of the map step being restored back to the map that asked.</summary>
+    /// <typeparam name="TKey">What the entries are looked up by, supplied by the map.</typeparam>
+    /// <typeparam name="TValue">What is kept against each key, supplied by the map.</typeparam>
+    /// <param name="undone">The entries undoing lands on.</param>
+    /// <param name="redone">The entries redoing lands on.</param>
+    /// <returns><c>false</c> when either half of an entry has no reader, or the entries do not parse.</returns>
+    bool IValueReader.ReadEntries<TKey, TValue>(
+        out KeyValuePair<TKey, TValue>[] undone,
+        out KeyValuePair<TKey, TValue>[] redone)
+    {
+        undone = [];
+        redone = [];
+
+        if (!_readers.TryGetValue(typeof(TKey), out var storedKey) ||
+            !_readers.TryGetValue(typeof(TValue), out var storedValue))
+        {
+            return false;
+        }
+
+        var readKey = (Func<JsonElement, TKey>)storedKey;
+        var readValue = (Func<JsonElement, TValue>)storedValue;
+
+        try
+        {
+            return ReadAll(_undone, readKey, readValue, out undone) &&
+                   ReadAll(_redone, readKey, readValue, out redone);
         }
         catch (FormatException)
         {
@@ -202,6 +333,7 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
             Close();
             TryDelete();
             _steps.Clear();
+            _newest = null;
         }
     }
 
@@ -233,13 +365,15 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
             _json.Reset();
             _steps.Add((offset, (int)(_stream.Position - offset - 1)));
 
+            Remember(_steps.Count - 1);
+
             return true;
         }
     }
 
     /// <summary>
     /// Reads one step back, seeking to it rather than holding the file in memory. The atoms it names are
-    /// the ones running now, found by their <see cref="HistoryAtom{T}.Key"/>.
+    /// the ones running now, found by the names they were given.
     /// </summary>
     /// <param name="step">Which step, counting from the oldest the file holds.</param>
     /// <returns>The edits, or <c>null</c> when the step is unreadable or names an atom nothing answers to.</returns>
@@ -247,32 +381,54 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
     {
         lock (_writing)
         {
-            if (step < 0 || step >= _steps.Count)
+            using var document = Parsed(step);
+
+            return document is null ? null : Rebuild(document.RootElement);
+        }
+    }
+
+    /// <summary>
+    /// Puts one atom back to what the file last saw it hold. It does not become a step, since what is
+    /// put back is what the file already says.
+    /// </summary>
+    /// <param name="key">What the atom is called.</param>
+    /// <param name="atom">The atom answering to that name.</param>
+    /// <returns><c>false</c> when no step names it, or the one that does cannot be read.</returns>
+    public bool Resume(string key, IRestorableAtom atom)
+    {
+        lock (_writing)
+        {
+            _newest ??= Newest();
+
+            if (!_newest.TryGetValue(key, out var step))
             {
-                return null;
+                return false;
             }
 
-            var (offset, length) = _steps[step];
-            var line = ArrayPool<byte>.Shared.Rent(length);
+            using var document = Parsed(step);
 
-            try
+            if (document is null)
             {
-                using var source = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                return false;
+            }
 
-                source.Seek(offset, SeekOrigin.Begin);
+            foreach (var written in document.RootElement.EnumerateArray())
+            {
+                if (!written.TryGetProperty("key", out var name) ||
+                    name.GetString() != key ||
+                    !written.TryGetProperty("from", out _undone) ||
+                    !written.TryGetProperty("to", out _redone) ||
+                    atom.Restore(this) is not { } edit)
+                {
+                    continue;
+                }
 
-                return source.ReadAtLeast(line.AsSpan(0, length), length, throwOnEndOfStream: false) < length
-                    ? null
-                    : Rebuild(line.AsSpan(0, length));
+                edit.Redo();
+
+                return true;
             }
-            catch (IOException)
-            {
-                return null;
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(line);
-            }
+
+            return false;
         }
     }
 
@@ -297,26 +453,198 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
         }
     }
 
+    private static void WriteAll<T>(Utf8JsonWriter json, string name, Action<Utf8JsonWriter, T> write, T[] values)
+    {
+        json.WriteStartArray(name);
+
+        foreach (var value in values)
+        {
+            write(json, value);
+        }
+
+        json.WriteEndArray();
+    }
+
+    private static void WriteAll<TKey, TValue>(
+        Utf8JsonWriter json,
+        string name,
+        Action<Utf8JsonWriter, TKey> writeKey,
+        Action<Utf8JsonWriter, TValue> writeValue,
+        KeyValuePair<TKey, TValue>[] entries)
+    {
+        json.WriteStartArray(name);
+
+        foreach (var entry in entries)
+        {
+            json.WriteStartObject();
+
+            json.WritePropertyName("key");
+            writeKey(json, entry.Key);
+
+            json.WritePropertyName("value");
+            writeValue(json, entry.Value);
+
+            json.WriteEndObject();
+        }
+
+        json.WriteEndArray();
+    }
+
+    private static bool ReadAll<T>(JsonElement writtenItems, Func<JsonElement, T> read, out T[] values)
+    {
+        values = [];
+
+        if (writtenItems.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        values = new T[writtenItems.GetArrayLength()];
+
+        var at = 0;
+
+        foreach (var item in writtenItems.EnumerateArray())
+        {
+            values[at++] = read(item);
+        }
+
+        return true;
+    }
+
+    private static bool ReadAll<TKey, TValue>(
+        JsonElement writtenEntries,
+        Func<JsonElement, TKey> readKey,
+        Func<JsonElement, TValue> readValue,
+        out KeyValuePair<TKey, TValue>[] entries)
+    {
+        entries = [];
+
+        if (writtenEntries.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        entries = new KeyValuePair<TKey, TValue>[writtenEntries.GetArrayLength()];
+
+        var at = 0;
+
+        foreach (var item in writtenEntries.EnumerateArray())
+        {
+            if (!item.TryGetProperty("key", out var key) || !item.TryGetProperty("value", out var value))
+            {
+                return false;
+            }
+
+            entries[at++] = new(readKey(key), readValue(value));
+        }
+
+        return true;
+    }
+
     private static string FullPath(string name) =>
         System.IO.Path.IsPathRooted(name) || name.Contains(System.IO.Path.DirectorySeparatorChar)
             ? name
             : System.IO.Path.Combine(AppContext.BaseDirectory, name);
 
     /// <summary>
+    /// Reads one step off the disk, seeking to it rather than holding the file in memory.
+    /// </summary>
+    /// <param name="step">Which step, counting from the oldest the file holds.</param>
+    /// <returns>The line as JSON, or <c>null</c> when the file no longer has it, or it does not parse.</returns>
+    private JsonDocument? Parsed(int step)
+    {
+        if (step < 0 || step >= _steps.Count)
+        {
+            return null;
+        }
+
+        var (offset, length) = _steps[step];
+        var line = ArrayPool<byte>.Shared.Rent(length);
+
+        try
+        {
+            using var source = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            source.Seek(offset, SeekOrigin.Begin);
+
+            return source.ReadAtLeast(line.AsSpan(0, length), length, throwOnEndOfStream: false) < length
+                ? null
+                : JsonDocument.Parse(line.AsSpan(0, length).ToArray());
+        }
+        catch (IOException)
+        {
+            return null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(line);
+        }
+    }
+
+    /// <summary>Notes which step the names just written sit at, for as long as they are being tracked.</summary>
+    /// <param name="step">The step they were written by.</param>
+    private void Remember(int step)
+    {
+        if (_newest is null)
+        {
+            return;
+        }
+
+        foreach (var (_, key) in _step)
+        {
+            _newest[key] = step;
+        }
+    }
+
+    /// <summary>Which step last named each atom, worked out once and kept up as steps are written.</summary>
+    /// <returns>The step every name was last written by.</returns>
+    private Dictionary<string, int> Newest()
+    {
+        var newest = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        for (var step = 0; step < _steps.Count; step++)
+        {
+            using var document = Parsed(step);
+
+            if (document is not { RootElement.ValueKind: JsonValueKind.Array })
+            {
+                continue;
+            }
+
+            foreach (var written in document.RootElement.EnumerateArray())
+            {
+                if (written.TryGetProperty("key", out var key) && key.GetString() is { Length: > 0 } name)
+                {
+                    newest[name] = step;
+                }
+            }
+        }
+
+        return newest;
+    }
+
+    /// <summary>
     /// Turns one line back into edits. A line naming an atom nothing answers to is dropped whole, since
     /// half of it would move some atoms and not others.
     /// </summary>
-    /// <param name="line">The bytes of the line, without its line feed.</param>
+    /// <param name="line">The line as JSON.</param>
     /// <returns>The edits, or <c>null</c> when the line could not be rebuilt.</returns>
-    private List<IAtomEdit>? Rebuild(ReadOnlySpan<byte> line)
+    private List<IAtomEdit>? Rebuild(JsonElement line)
     {
+        if (line.ValueKind != JsonValueKind.Array)
+        {
+            return null;
+        }
+
         try
         {
-            using var document = JsonDocument.Parse(line.ToArray());
-
             var edits = new List<IAtomEdit>();
 
-            foreach (var written in document.RootElement.EnumerateArray())
+            foreach (var written in line.EnumerateArray())
             {
                 if (!written.TryGetProperty("key", out var key) ||
                     key.GetString() is not { Length: > 0 } name ||
@@ -343,6 +671,7 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
     private void Index()
     {
         _steps.Clear();
+        _newest = null;
 
         if (!File.Exists(Path))
         {

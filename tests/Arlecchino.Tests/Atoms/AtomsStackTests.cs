@@ -82,7 +82,7 @@ public sealed class AtomsStackTests
     public void WhatWasTakenOffGoesBackOnTop()
     {
         using var history = new AtomHistory();
-        var stack = new HistoryAtomsStack<string>(["newest", "oldest"]);
+        var stack = new HistoryAtomsStack<string>("AtomsStackTests.Taken", ["newest", "oldest"]);
 
         stack.Push("newer still");
 
@@ -173,7 +173,7 @@ public sealed class AtomsStackTests
     public void ClearingAndRebuildingAreOneStepEach()
     {
         using var history = new AtomHistory();
-        var stack = new HistoryAtomsStack<int>([2, 1]);
+        var stack = new HistoryAtomsStack<int>("AtomsStackTests.Rebuilt", [2, 1]);
 
         stack.Clear();
 

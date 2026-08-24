@@ -1,12 +1,12 @@
 namespace Arlecchino.Atoms.History;
 
 /// <summary>
-/// An edit a <see cref="HistoryFile"/> can keep for longer than the run that made it. Edits of the
-/// collection atoms are a position and a span rather than a value, so they do not implement it.
+/// An edit a <see cref="HistoryFile"/> can keep for longer than the run that made it. An edit of an atom
+/// that was never named cannot be written, and says so from <see cref="WriteTo"/>.
 /// </summary>
 public interface IWritableAtomEdit : IAtomEdit
 {
-    /// <summary>What the atom is called in the file.</summary>
+    /// <summary>What the atom is called in the file. Read only once <see cref="WriteTo"/> has agreed.</summary>
     string Key { get; }
 
     /// <summary>Hands both values over, typed.</summary>

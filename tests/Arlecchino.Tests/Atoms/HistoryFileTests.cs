@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Xunit;
 using Arlecchino.Atoms;
 using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Collections;
 
 namespace Arlecchino.Tests.Atoms;
 
@@ -11,6 +13,8 @@ public sealed class HistoryFileTests : IDisposable
 {
     private const string Key = "Settings.Server";
     private const string UriKey = "Settings.Home";
+    private const string ListKey = "Settings.Rows";
+    private const string MapKey = "Settings.Sizes";
 
     private readonly string _folder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 
@@ -41,6 +45,45 @@ public sealed class HistoryFileTests : IDisposable
         Assert.Equal(Key, edit.GetProperty("key").GetString());
         Assert.Equal("start", edit.GetProperty("from").GetString());
         Assert.Equal("changed", edit.GetProperty("to").GetString());
+    }
+
+    /// <summary>
+    /// A collection is written in full either side of the step rather than as the difference it made. A
+    /// later run holds something else, and only the contents say where the step lands.
+    /// </summary>
+    [Fact]
+    public void AStepOfANamedListIsWrittenDownAsWhatItHeldEitherSideOfIt()
+    {
+        using var file = Scratch();
+        using var history = new AtomHistory(file);
+        var rows = new HistoryAtomsList<string>(ListKey, ["alpha", "beta"]);
+
+        Assert.False(file.Exists);
+
+        rows[1] = "second";
+
+        var edit = SingleEdit(file);
+
+        Assert.Equal(ListKey, edit.GetProperty("key").GetString());
+        Assert.Equal("""["alpha","beta"]""", edit.GetProperty("from").GetRawText());
+        Assert.Equal("""["alpha","second"]""", edit.GetProperty("to").GetRawText());
+    }
+
+    [Fact]
+    public void AStepOfANamedMapIsWrittenDownAsTheEntriesItHeldEitherSideOfIt()
+    {
+        using var file = Scratch();
+        using var history = new AtomHistory(file);
+        var sizes = new HistoryAtomsMap<string, int>(MapKey, new Dictionary<string, int> { ["alpha"] = 1 });
+
+        Assert.False(file.Exists);
+
+        sizes["alpha"] = 2;
+
+        var edit = SingleEdit(file);
+
+        Assert.Equal("""[{"key":"alpha","value":1}]""", edit.GetProperty("from").GetRawText());
+        Assert.Equal("""[{"key":"alpha","value":2}]""", edit.GetProperty("to").GetRawText());
     }
 
     [Fact]

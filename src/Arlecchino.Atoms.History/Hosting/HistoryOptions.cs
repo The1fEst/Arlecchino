@@ -7,10 +7,11 @@ public sealed class HistoryOptions
     public string FileName { get; set; } = HistoryFile.DefaultName;
 
     /// <summary>
-    /// Whether the file outlives the run. The default throws it away on the way out and again on the way
-    /// in, so it is only ever a scratch file of the run that is up.
+    /// Whether a named atom starts out holding what the file last saw it hold, rather than the value its
+    /// store gives it. It is also what keeps the file, there being no other reason to have one outlive
+    /// the run.
     /// </summary>
-    public bool Keep { get; set; }
+    public bool Resume { get; set; }
 
     /// <summary>How many steps to keep before the oldest fall off the far end.</summary>
     public int Capacity { get; set; } = 200;

@@ -133,7 +133,7 @@ public sealed class AtomsSetTests
     public void ATrackedSetGoesOnTheUndoStackAndALocalOneDoesNot()
     {
         using var history = new AtomHistory();
-        var survivors = new HistoryAtomsSet<string>();
+        var survivors = new HistoryAtomsSet<string>("AtomsSetTests.Survivors");
         var ignored = new AtomsSet<string>();
 
         ignored.Add("nothing to undo");
@@ -154,7 +154,7 @@ public sealed class AtomsSetTests
     public void EveryKindOfChangeComesBackAgain()
     {
         using var history = new AtomHistory();
-        var set = new HistoryAtomsSet<string>(["alpha"]);
+        var set = new HistoryAtomsSet<string>("AtomsSetTests.Changed", ["alpha"]);
 
         set.Add(["beta", "gamma"]);
         set.Remove("alpha");
@@ -180,7 +180,7 @@ public sealed class AtomsSetTests
     public void ClearingIsOneStepAndAnEmptySetChangesNothing()
     {
         using var history = new AtomHistory();
-        var set = new HistoryAtomsSet<string>(["alpha", "beta"]);
+        var set = new HistoryAtomsSet<string>("AtomsSetTests.Cleared", ["alpha", "beta"]);
 
         set.Clear();
 

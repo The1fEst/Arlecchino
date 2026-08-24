@@ -84,7 +84,7 @@ public sealed class AtomsQueueTests
     public void WhatWasTakenGoesBackToTheFront()
     {
         using var history = new AtomHistory();
-        var waiting = new HistoryAtomsQueue<string>(["first", "second"]);
+        var waiting = new HistoryAtomsQueue<string>("AtomsQueueTests.Taken", ["first", "second"]);
 
         var item = waiting.Dequeue();
 
@@ -116,7 +116,7 @@ public sealed class AtomsQueueTests
     public void ARebuiltQueueIsOneStep()
     {
         using var history = new AtomHistory();
-        var waiting = new HistoryAtomsQueue<int>([1, 2]);
+        var waiting = new HistoryAtomsQueue<int>("AtomsQueueTests.Rebuilt", [1, 2]);
 
         waiting.Reset([9]);
 
@@ -135,7 +135,7 @@ public sealed class AtomsQueueTests
     public void DroppingWhatIsWaitingIsOneStep()
     {
         using var history = new AtomHistory();
-        var waiting = new HistoryAtomsQueue<string>(["first", "second"]);
+        var waiting = new HistoryAtomsQueue<string>("AtomsQueueTests.Dropped", ["first", "second"]);
 
         waiting.Clear();
 
