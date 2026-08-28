@@ -10,6 +10,7 @@ Arlecchino.Testing.ArlecchinoTestHost.Frame() -> string!
 Arlecchino.Testing.ArlecchinoTestHost.FrameContains(string! text) -> bool
 Arlecchino.Testing.ArlecchinoTestHost.FrameLineContaining(string! text) -> string!
 Arlecchino.Testing.ArlecchinoTestHost.FrameLines() -> string![]!
+Arlecchino.Testing.ArlecchinoTestHost.History.get -> Arlecchino.Atoms.History.AtomHistory!
 Arlecchino.Testing.ArlecchinoTestHost.Navigator.get -> Arlecchino.Navigation.Navigator!
 Arlecchino.Testing.ArlecchinoTestHost.Options.get -> Arlecchino.Hosting.ArlecchinoOptions!
 Arlecchino.Testing.ArlecchinoTestHost.Press(System.ConsoleKey key, Arlecchino.Input.KeyModifiers modifiers = Arlecchino.Input.KeyModifiers.None) -> void

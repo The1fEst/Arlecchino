@@ -1,9 +1,14 @@
 #nullable enable
 Arlecchino.Atoms.Atom<T>
+Arlecchino.Atoms.Atom<T>.Atom(T initial, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.Atom<T>.Post(T value) -> void
 Arlecchino.Atoms.Atom<T>.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.Atom<T>.Value.get -> T
 Arlecchino.Atoms.Atom<T>.Value.set -> void
+Arlecchino.Atoms.Atom<T>.WriteSilently(T value) -> void
+Arlecchino.Atoms.Collections.AtomsCollectionBase
+Arlecchino.Atoms.Collections.AtomsCollectionBase.AtomsCollectionBase() -> void
+Arlecchino.Atoms.Collections.AtomsCollectionBase.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.Collections.AtomsList<T>
 Arlecchino.Atoms.Collections.AtomsList<T>.Add(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.Add(T item) -> void
@@ -13,10 +18,15 @@ Arlecchino.Atoms.Collections.AtomsList<T>.Count.get -> int
 Arlecchino.Atoms.Collections.AtomsList<T>.GetEnumerator() -> System.Collections.Generic.List<T>.Enumerator
 Arlecchino.Atoms.Collections.AtomsList<T>.IndexOf(T item) -> int
 Arlecchino.Atoms.Collections.AtomsList<T>.Insert(int index, T item) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.InsertSilently(int index, T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.Refresh() -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.Remove(T item) -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.RemoveAt(int index) -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.RemoveRange(int index, int count) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.RemoveSilently(int index, int count) -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.ResetSilently(T[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsList<T>.SetSilently(int index, T item) -> void
 Arlecchino.Atoms.Collections.AtomsList<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Atoms.Collections.AtomsList<T>.this[int index].get -> T
 Arlecchino.Atoms.Collections.AtomsList<T>.this[int index].set -> void
@@ -28,7 +38,10 @@ Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.ContainsKey(TKey key) -> boo
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.Count.get -> int
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.GetEnumerator() -> System.Collections.Generic.Dictionary<TKey, TValue>.Enumerator
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.Remove(TKey key) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.RemoveSilently(TKey key) -> void
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.Reset(System.Collections.Generic.IReadOnlyDictionary<TKey, TValue>! items) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.ResetSilently(System.Collections.Generic.KeyValuePair<TKey, TValue>[]! items) -> void
+Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.SetSilently(TKey key, TValue value) -> void
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.TryAdd(TKey key, TValue value) -> bool
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.TryGetValue(TKey key, out TValue value) -> bool
 Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.TryRemove(TKey key, out TValue value) -> bool
@@ -43,15 +56,19 @@ Arlecchino.Atoms.Collections.AtomsQueue<T>.Dequeue() -> T
 Arlecchino.Atoms.Collections.AtomsQueue<T>.Enqueue(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.Collections.AtomsQueue<T>.Enqueue(T item) -> void
 Arlecchino.Atoms.Collections.AtomsQueue<T>.GetEnumerator() -> System.Collections.Generic.List<T>.Enumerator
+Arlecchino.Atoms.Collections.AtomsQueue<T>.InsertSilently(int index, T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsQueue<T>.IsEmpty.get -> bool
 Arlecchino.Atoms.Collections.AtomsQueue<T>.Peek() -> T
+Arlecchino.Atoms.Collections.AtomsQueue<T>.RemoveSilently(int index, int count) -> void
 Arlecchino.Atoms.Collections.AtomsQueue<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.Collections.AtomsQueue<T>.ResetSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsQueue<T>.TryDequeue(out T item) -> bool
 Arlecchino.Atoms.Collections.AtomsQueue<T>.TryPeek(out T item) -> bool
 Arlecchino.Atoms.Collections.AtomsQueue<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
 Arlecchino.Atoms.Collections.AtomsSet<T>
 Arlecchino.Atoms.Collections.AtomsSet<T>.Add(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.Add(T item) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.AddSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.AtomsSet(System.Collections.Generic.IReadOnlyList<T>? initial = null, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.Clear() -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.Contains(T item) -> bool
@@ -59,7 +76,9 @@ Arlecchino.Atoms.Collections.AtomsSet<T>.Count.get -> int
 Arlecchino.Atoms.Collections.AtomsSet<T>.GetEnumerator() -> System.Collections.Generic.HashSet<T>.Enumerator
 Arlecchino.Atoms.Collections.AtomsSet<T>.IsEmpty.get -> bool
 Arlecchino.Atoms.Collections.AtomsSet<T>.Remove(T item) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.RemoveSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.Collections.AtomsSet<T>.ResetSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsSet<T>.TryAdd(T item) -> bool
 Arlecchino.Atoms.Collections.AtomsSet<T>.TryRemove(T item) -> bool
 Arlecchino.Atoms.Collections.AtomsSet<T>.Value.get -> System.Collections.Generic.IReadOnlySet<T>!
@@ -68,12 +87,15 @@ Arlecchino.Atoms.Collections.AtomsStack<T>.AtomsStack(System.Collections.Generic
 Arlecchino.Atoms.Collections.AtomsStack<T>.Clear() -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.Count.get -> int
 Arlecchino.Atoms.Collections.AtomsStack<T>.GetEnumerator() -> System.Collections.Generic.List<T>.Enumerator
+Arlecchino.Atoms.Collections.AtomsStack<T>.InsertSilently(int index, T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.IsEmpty.get -> bool
 Arlecchino.Atoms.Collections.AtomsStack<T>.Peek() -> T
 Arlecchino.Atoms.Collections.AtomsStack<T>.Pop() -> T
 Arlecchino.Atoms.Collections.AtomsStack<T>.Push(System.Collections.Generic.IReadOnlyList<T>! items) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.Push(T item) -> void
+Arlecchino.Atoms.Collections.AtomsStack<T>.RemoveSilently(int index, int count) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.Reset(System.Collections.Generic.IReadOnlyList<T>! items) -> void
+Arlecchino.Atoms.Collections.AtomsStack<T>.ResetSilently(T[]! items) -> void
 Arlecchino.Atoms.Collections.AtomsStack<T>.TryPeek(out T item) -> bool
 Arlecchino.Atoms.Collections.AtomsStack<T>.TryPop(out T item) -> bool
 Arlecchino.Atoms.Collections.AtomsStack<T>.Value.get -> System.Collections.Generic.IReadOnlyList<T>!
@@ -83,8 +105,13 @@ Arlecchino.Atoms.Computed<T>.Subscribe(System.Action! listener) -> System.IDispo
 Arlecchino.Atoms.Computed<T>.Value.get -> T
 Arlecchino.Atoms.IArlecchinoScopedStore
 Arlecchino.Atoms.IArlecchinoStore
+Arlecchino.Atoms.IReadableAtom
+Arlecchino.Atoms.IReadableAtom.Subscribe(System.Action! listener) -> System.IDisposable!
 Arlecchino.Atoms.IReadableAtom<T>
+Arlecchino.Atoms.IReadableAtom<T>.ToString() -> string!
 Arlecchino.Atoms.IReadableAtom<T>.Value.get -> T
+Arlecchino.Atoms.IResettableAtom
+Arlecchino.Atoms.IResettableAtom.TryReset() -> bool
 Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal
 Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
@@ -220,10 +247,26 @@ Arlecchino.Rendering.Colors.Oklch.Lightness.get -> double
 Arlecchino.Rendering.Colors.Oklch.Lightness.init -> void
 Arlecchino.Rendering.Colors.Oklch.Oklch() -> void
 Arlecchino.Rendering.Colors.Oklch.Oklch(double Lightness, double Chroma, double Hue) -> void
+Arlecchino.Rendering.Colors.Oklch.ToRgb() -> Arlecchino.Rendering.Colors.RGB
 Arlecchino.Rendering.Colors.Oklch.Trimmed() -> Arlecchino.Rendering.Colors.Oklch
+Arlecchino.Rendering.Colors.RGB
+Arlecchino.Rendering.Colors.RGB.Blue.get -> byte
+Arlecchino.Rendering.Colors.RGB.Blue.init -> void
+Arlecchino.Rendering.Colors.RGB.Deconstruct(out byte Red, out byte Green, out byte Blue) -> void
+Arlecchino.Rendering.Colors.RGB.Equals(Arlecchino.Rendering.Colors.RGB other) -> bool
+Arlecchino.Rendering.Colors.RGB.Green.get -> byte
+Arlecchino.Rendering.Colors.RGB.Green.init -> void
+Arlecchino.Rendering.Colors.RGB.Hex.get -> string!
+Arlecchino.Rendering.Colors.RGB.RGB() -> void
+Arlecchino.Rendering.Colors.RGB.RGB(byte Red, byte Green, byte Blue) -> void
+Arlecchino.Rendering.Colors.RGB.Red.get -> byte
+Arlecchino.Rendering.Colors.RGB.Red.init -> void
+Arlecchino.Rendering.Colors.RGB.ToHsl() -> (int Hue, int Saturation, int Lightness)
 Arlecchino.Rendering.Colors.RgbTermColor
 Arlecchino.Rendering.Colors.RgbTermColor.Ansi.get -> string!
+Arlecchino.Rendering.Colors.RgbTermColor.Background.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.RgbTermColor.Background.init -> void
+Arlecchino.Rendering.Colors.RgbTermColor.Foreground.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.RgbTermColor.Foreground.init -> void
 Arlecchino.Rendering.Colors.RgbTermColor.RgbTermColor() -> void
 Arlecchino.Rendering.Colors.RgbTermColor.Style.get -> Arlecchino.Rendering.Colors.TextStyle
@@ -233,7 +276,9 @@ Arlecchino.Rendering.Colors.TermColor
 Arlecchino.Rendering.Colors.TermColor.Ansi.get -> string!
 Arlecchino.Rendering.Colors.TermColor.Background.get -> Arlecchino.Rendering.Colors.TerminalColor
 Arlecchino.Rendering.Colors.TermColor.Background.init -> void
+Arlecchino.Rendering.Colors.TermColor.ExactBackground.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.TermColor.ExactBackground.init -> void
+Arlecchino.Rendering.Colors.TermColor.ExactForeground.get -> Arlecchino.Rendering.Colors.RGB?
 Arlecchino.Rendering.Colors.TermColor.ExactForeground.init -> void
 Arlecchino.Rendering.Colors.TermColor.Foreground.get -> Arlecchino.Rendering.Colors.TerminalColor
 Arlecchino.Rendering.Colors.TermColor.Foreground.init -> void
@@ -412,6 +457,14 @@ Arlecchino.SystemTerminal.TakeControlKeys() -> void
 Arlecchino.SystemTerminal.Unread(Arlecchino.Input.KeyPress key) -> void
 Arlecchino.SystemTerminal.Width.get -> int
 Arlecchino.SystemTerminal.Write(string! text) -> void
+const Arlecchino.Atoms.IReadableAtom.UndefinedValue = "UNDEFINED" -> string!
+override Arlecchino.Atoms.Atom<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsList<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsQueue<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsSet<T>.ToString() -> string!
+override Arlecchino.Atoms.Collections.AtomsStack<T>.ToString() -> string!
+override Arlecchino.Atoms.Computed<T>.ToString() -> string!
 override Arlecchino.Input.KeyBinding.GetHashCode() -> int
 override Arlecchino.Input.KeyBinding.ToString() -> string!
 override Arlecchino.Input.KeyPress.GetHashCode() -> int
@@ -420,6 +473,8 @@ override Arlecchino.Input.KeyStroke.ToString() -> string!
 override Arlecchino.Input.MouseEvent.GetHashCode() -> int
 override Arlecchino.Rendering.Colors.Oklch.GetHashCode() -> int
 override Arlecchino.Rendering.Colors.Oklch.ToString() -> string!
+override Arlecchino.Rendering.Colors.RGB.GetHashCode() -> int
+override Arlecchino.Rendering.Colors.RGB.ToString() -> string!
 override Arlecchino.Rendering.Colors.RgbTermColor.ToString() -> string!
 override Arlecchino.Rendering.Colors.TermColor.ToString() -> string!
 override Arlecchino.Rendering.Margin.GetHashCode() -> int
@@ -444,8 +499,24 @@ static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arle
 static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
 static Arlecchino.Input.MouseEvent.operator !=(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
 static Arlecchino.Input.MouseEvent.operator ==(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
+static Arlecchino.Rendering.Colors.Contrast.Between(Arlecchino.Rendering.Colors.RGB one, Arlecchino.Rendering.Colors.RGB other) -> double
+static Arlecchino.Rendering.Colors.Contrast.IsDark(Arlecchino.Rendering.Colors.RGB background) -> bool
+static Arlecchino.Rendering.Colors.Contrast.Luminance(Arlecchino.Rendering.Colors.RGB color) -> double
+static Arlecchino.Rendering.Colors.Contrast.Reach(Arlecchino.Rendering.Colors.RGB background) -> double
+static Arlecchino.Rendering.Colors.Oklch.Of(Arlecchino.Rendering.Colors.RGB color) -> Arlecchino.Rendering.Colors.Oklch
 static Arlecchino.Rendering.Colors.Oklch.operator !=(Arlecchino.Rendering.Colors.Oklch left, Arlecchino.Rendering.Colors.Oklch right) -> bool
 static Arlecchino.Rendering.Colors.Oklch.operator ==(Arlecchino.Rendering.Colors.Oklch left, Arlecchino.Rendering.Colors.Oklch right) -> bool
+static Arlecchino.Rendering.Colors.RGB.FromHsl(int hue, int saturation, int lightness) -> Arlecchino.Rendering.Colors.RGB
+static Arlecchino.Rendering.Colors.RGB.TryParseHex(string! text, out Arlecchino.Rendering.Colors.RGB color) -> bool
+static Arlecchino.Rendering.Colors.RGB.operator !=(Arlecchino.Rendering.Colors.RGB left, Arlecchino.Rendering.Colors.RGB right) -> bool
+static Arlecchino.Rendering.Colors.RGB.operator ==(Arlecchino.Rendering.Colors.RGB left, Arlecchino.Rendering.Colors.RGB right) -> bool
+static Arlecchino.Rendering.Colors.Shade.Against(Arlecchino.Rendering.Colors.RGB background, Arlecchino.Rendering.Colors.RGB sample, double contrast) -> Arlecchino.Rendering.Colors.RGB
+static Arlecchino.Rendering.Colors.Shade.Against(Arlecchino.Rendering.Colors.RGB background, double hue, double chroma, double contrast) -> Arlecchino.Rendering.Colors.RGB
+static Arlecchino.Rendering.Colors.Shade.Lifted(Arlecchino.Rendering.Colors.RGB background, double step) -> Arlecchino.Rendering.Colors.RGB
+static Arlecchino.Rendering.Colors.Shade.Pull(Arlecchino.Rendering.Colors.RGB background) -> double
+static Arlecchino.Rendering.Colors.Shade.Rise(Arlecchino.Rendering.Colors.RGB background) -> double
+static Arlecchino.Rendering.Colors.Shade.Scaled(double contrast, double lowest, double highest, Arlecchino.Rendering.Colors.RGB background) -> double
+static Arlecchino.Rendering.Colors.Shade.Turn(Arlecchino.Rendering.Colors.RGB background, double anchor, double offset) -> double
 static Arlecchino.Rendering.Colors.Theme.Accent.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.Active.get -> Arlecchino.Rendering.Colors.TermColor!
 static Arlecchino.Rendering.Colors.Theme.ActiveSelection.get -> Arlecchino.Rendering.Colors.TermColor!
@@ -467,6 +538,7 @@ static Arlecchino.Rendering.Margin.operator !=(Arlecchino.Rendering.Margin left,
 static Arlecchino.Rendering.Margin.operator ==(Arlecchino.Rendering.Margin left, Arlecchino.Rendering.Margin right) -> bool
 static Arlecchino.Rendering.SurfaceRegion.operator !=(Arlecchino.Rendering.SurfaceRegion left, Arlecchino.Rendering.SurfaceRegion right) -> bool
 static Arlecchino.Rendering.SurfaceRegion.operator ==(Arlecchino.Rendering.SurfaceRegion left, Arlecchino.Rendering.SurfaceRegion right) -> bool
+static Arlecchino.Rendering.Terminals.TerminalCapabilities.Background.get -> Arlecchino.Rendering.Colors.RGB?
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Background.set -> void
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.CellSizeKnown.get -> bool
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.CellSizeKnown.set -> void
@@ -476,6 +548,7 @@ static Arlecchino.Rendering.Terminals.TerminalCapabilities.DetectColor() -> Arle
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.DetectColor(string? noColor, string? term, string? colorTerm, string? windowsTerminalSession) -> Arlecchino.Rendering.Colors.ColorSupport
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Kitty.get -> bool
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Kitty.set -> void
+static Arlecchino.Rendering.Terminals.TerminalCapabilities.NearestPaletteColor(Arlecchino.Rendering.Colors.RGB color) -> Arlecchino.Rendering.Colors.TerminalColor
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Resolve(Arlecchino.Rendering.Terminals.ImageProtocol protocol) -> Arlecchino.Rendering.Terminals.ImageProtocol
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Sixel.get -> bool
 static Arlecchino.Rendering.Terminals.TerminalCapabilities.Sixel.set -> void
@@ -502,6 +575,25 @@ static Arlecchino.Rendering.Text.TextWidth.Truncate(string! text, int maxWidth) 
 static Arlecchino.Rendering.Text.TextWidth.TruncateStart(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.Wrap(string! text, int width) -> System.Collections.Generic.List<string!>!
 static readonly Arlecchino.Rendering.Colors.Contrast.Pivot -> double
+virtual Arlecchino.Atoms.Atom<T>.OnWritten(T previous, T current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsCollectionBase.IsObserved.get -> bool
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnReplaced(int index, T previous, T current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsList<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnAdded(TKey key, TValue value) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnRemoved(TKey key, TValue value) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnReplaced(TKey key, TValue previous, TValue current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsMap<TKey, TValue>.OnReset(System.Collections.Generic.KeyValuePair<TKey, TValue>[]! previous, System.Collections.Generic.KeyValuePair<TKey, TValue>[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsQueue<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnAdded(T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnRemoved(T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsSet<T>.OnReset(T[]! previous, T[]! current) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnInserted(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnRemoved(int index, T[]! items) -> void
+virtual Arlecchino.Atoms.Collections.AtomsStack<T>.OnReset(T[]! previous, T[]! current) -> void
 ~override Arlecchino.Input.KeyBinding.Equals(object obj) -> bool
 ~override Arlecchino.Input.KeyPress.Equals(object obj) -> bool
 ~override Arlecchino.Input.KeyPress.ToString() -> string
@@ -509,6 +601,7 @@ static readonly Arlecchino.Rendering.Colors.Contrast.Pivot -> double
 ~override Arlecchino.Input.MouseEvent.Equals(object obj) -> bool
 ~override Arlecchino.Input.MouseEvent.ToString() -> string
 ~override Arlecchino.Rendering.Colors.Oklch.Equals(object obj) -> bool
+~override Arlecchino.Rendering.Colors.RGB.Equals(object obj) -> bool
 ~override Arlecchino.Rendering.Margin.Equals(object obj) -> bool
 ~override Arlecchino.Rendering.Margin.ToString() -> string
 ~override Arlecchino.Rendering.SurfaceRegion.Equals(object obj) -> bool

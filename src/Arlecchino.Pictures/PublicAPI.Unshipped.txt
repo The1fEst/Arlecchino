@@ -1,4 +1,1 @@
 #nullable enable
-Arlecchino.Pictures.Raster.Deconstruct(out Arlecchino.Rendering.Colors.RGB[]! Pixels, out int Width, out int Height) -> void
-Arlecchino.Pictures.Raster.Pixels.get -> Arlecchino.Rendering.Colors.RGB[]!
-Arlecchino.Pictures.Raster.Raster(Arlecchino.Rendering.Colors.RGB[]! Pixels, int Width, int Height) -> void
