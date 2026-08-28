@@ -51,6 +51,7 @@ Arlecchino.Forms.SecretField
 Arlecchino.Forms.SecretField.SecretField(Arlecchino.Atoms.Atom<string!>! value) -> void
 Arlecchino.Forms.SliderField
 Arlecchino.Forms.SliderField.SliderField(Arlecchino.Atoms.Atom<decimal>! value) -> void
+Arlecchino.Hosting.ArlecchinoHost
 Arlecchino.Hosting.ArlecchinoOptions.PaletteForBackground.get -> System.Func<Arlecchino.Rendering.Colors.RGB, Arlecchino.Rendering.Colors.ThemePalette!>?
 Arlecchino.Hosting.ArlecchinoStrings.NotAnAllowedValue.get -> System.Func<string!>!
 Arlecchino.Hosting.ArlecchinoStrings.NotAnAllowedValue.set -> void
@@ -73,3 +74,4 @@ static Arlecchino.Forms.Fields.Slider(System.Func<string!>! label, Arlecchino.At
 static Arlecchino.Forms.Fields.Text(System.Func<string!>! label, Arlecchino.Atoms.Atom<string!>! value) -> Arlecchino.Forms.Field<string!>!
 static Arlecchino.Forms.Fields.Time(System.Func<string!>! label, Arlecchino.Atoms.Atom<System.TimeOnly>! value) -> Arlecchino.Forms.Field<System.TimeOnly>!
 static Arlecchino.Forms.Fields.Toggle(System.Func<string!>! label, Arlecchino.Atoms.Atom<bool>! value) -> Arlecchino.Forms.Field<bool>!
+static Arlecchino.Hosting.ArlecchinoHost.CreateBuilder(string![]? args = null) -> Microsoft.Extensions.Hosting.HostApplicationBuilder!

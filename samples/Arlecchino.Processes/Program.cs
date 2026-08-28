@@ -17,7 +17,7 @@ if (args is ["--frame", ..])
     return;
 }
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(options =>

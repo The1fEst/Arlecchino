@@ -213,7 +213,7 @@ internal static class Terminal
 
         var asking = check == "probe";
         var recorder = new Recorder();
-        var builder = Host.CreateApplicationBuilder();
+        var builder = ArlecchinoHost.CreateBuilder();
 
         builder.Logging.ClearProviders();
         builder.Services

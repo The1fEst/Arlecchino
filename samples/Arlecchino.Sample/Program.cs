@@ -23,7 +23,7 @@ if (args is ["--ask", ..])
     return;
 }
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services.UseHistory();
 
