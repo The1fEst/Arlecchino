@@ -50,7 +50,7 @@ How many steps to keep before the oldest fall off the far end.
 ### `FileName` {#filename}
 
 ```csharp
-public string FileName { get; set; }
+public string? FileName { get; set; }
 ```
 
 What the history file is called. It sits beside the program unless the name has a folder in it.

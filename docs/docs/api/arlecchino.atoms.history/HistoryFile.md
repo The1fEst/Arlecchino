@@ -52,7 +52,7 @@ public sealed class HistoryFile : IDisposable, IValueWriter, IValueReader
 ### `HistoryFile(string, bool)` {#historyfile-string-bool}
 
 ```csharp
-public HistoryFile(string? name = null, bool keep = false);
+public HistoryFile(string name, bool keep);
 ```
 
 Names the file. Nothing is created or removed until [`HistoryFile.Prepare`](../arlecchino.atoms.history/HistoryFile.md#prepare) or the first step.

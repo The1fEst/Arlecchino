@@ -45,7 +45,7 @@ Shared behavior lives in interfaces rather than being repeated per type:
 
 `NumericModal` is the abstract base of `NumberModal` and `SliderModal`, holding `Step`, `LargeStep`,
 `Decimals`, the affixes and the `FormatNumber` / `Display` formatting. `OptionListModal` is the base of
-`ChoiceModal` and `MultiChoiceModal`, holding `Options`, `Filter`, `Index` and `MatchingOptions()`.
+`ChoiceModal` and `MultiChoiceModal`, holding `Options`, `Text`, `Index` and `MatchingOptions()`.
 
 The framework renders and routes keys through those interfaces, so a text entry behaves the same
 whether it is free text or a number.
@@ -193,7 +193,7 @@ selection.
 _state.RequestMultiChoice(
     "Columns",
     ["Name", "Date Modified", "Size", "Kind"],
-    selected: ["Name", "Size"],
+    selectedKeys: ["Name", "Size"],
     picked => SetColumns(picked));
 ```
 

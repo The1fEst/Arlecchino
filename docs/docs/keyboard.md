@@ -16,7 +16,7 @@ The router resolves a key in this order:
 
 1. **An open modal.** The key goes to the modal and nothing else sees it.
 2. **The command-palette key** (`:` by default), when at least one command is registered.
-3. **History keys** — `Cmd+←` / `Cmd+→` on a Mac, `Alt+←` / `Alt+→` elsewhere.
+3. **History keys** — `Alt+←` / `Alt+→`.
 4. **Commands of the current view** — see [Commands](commands.md#commands-of-a-view).
 5. **Application commands with a modifier.**
 6. **`IArlecchinoView.Handle`** — everything else: typing, arrows, list filters.
@@ -69,9 +69,9 @@ Its `ToString()` is what the palette, the hints box and the file-picker legend d
 `Alt+←`, `Esc` — so a remapped key relabels itself everywhere it is shown. `Super` is named after the
 key cap the machine has: `Cmd+←` on a Mac, `Win+←` elsewhere.
 
-A binding can carry a second combination for actions the platforms disagree about. That is what
-`AlsoKey` and `AlsoModifiers` are for, and why `Copy` answers to both `Ctrl+Insert` and `Ctrl+Shift+C`.
-`ToString()` shows the first one, so hints stay short.
+A binding can carry further combinations for actions the platforms disagree about. That is what
+`AddAlternative` adds and `Alternatives` lists, and why `Copy` answers to both `Ctrl+Insert` and
+`Ctrl+Shift+C`. `ToString()` shows the first one, so hints stay short.
 
 A binding can also be a character rather than a key:
 
@@ -92,7 +92,7 @@ in the router:
 
 | Action | Default | Used by |
 |---|---|---|
-| `Back` / `Forward` | `Cmd+←` / `Cmd+→` on a Mac, `Alt+←` / `Alt+→` elsewhere — both work either way | History |
+| `Back` / `Forward` | `Alt+←` / `Alt+→` | History |
 | `Confirm` / `Cancel` | `Enter` / `Esc` | Every modal, the file picker |
 | `NextField` / `PreviousField` | `Tab` / `Shift+Tab` | [Focus rings](focus.md), segments, color channels, picker panes |
 | `MoveUp` / `MoveDown` / `MoveLeft` / `MoveRight` | arrows | Lists, sliders, number steps, segments |
@@ -107,7 +107,7 @@ in the router:
 | `SelectToStart` / `SelectToEnd` | `Shift+Home` / `Shift+End` | Lines of text |
 | `SelectAll` | `Ctrl+A` | Lines of text |
 | `Copy` | `Ctrl+Insert` or `Ctrl+Shift+C` | Text fields and the multi-line dialog |
-| `Cut` | `Shift+Delete` or `Ctrl+X` | What is selected in a line of text |
+| `Cut` | `Shift+Delete` or `Ctrl+Shift+X` | What is selected in a line of text |
 | `Complete` / `CompleteBack` | `Tab` / `Shift+Tab` | Finishing the word being typed, where a line offers it |
 | `Submit` | `Ctrl+Enter` | Confirms the [multi-line text dialog](modals.md), where `Enter` breaks the line |
 | `ToggleLog` | `Ctrl+L` | The [log overlay](diagnostics.md) |
@@ -126,10 +126,15 @@ builder.Services
     });
 ```
 
-`Back` and `Forward` are the two the machine underneath has an opinion about. Both are bound to
-Command *and* Alt out of the box, with the one that machine is likelier to send named first — so the
-hints box reads `Cmd+←` on a Mac and `Alt+←` everywhere else, and either modifier walks the history on
-either. Nothing else in the table moved: the rest is on Control, which every terminal sends.
+`Back` and `Forward` are on Alt out of the box, which every terminal sends. A Mac user who reaches for
+Command instead is served by adding it rather than by the framework guessing:
+
+```csharp
+Back = new KeyBinding(ConsoleKey.LeftArrow, KeyModifiers.Alt)
+    .AddAlternative(ConsoleKey.LeftArrow, KeyModifiers.Super),
+```
+
+The rest of the table is on Control.
 
 ### Moving a modifier
 
@@ -145,7 +150,7 @@ leaves the rest alone. `KeyBinding.Replacing` does the same for one binding, whi
 [view command](commands.md) built on `Alt` wants:
 
 ```csharp
-ViewCommand.For(_binding.Replacing(KeyModifiers.Alt, KeyModifiers.Super), "reload", Reload)
+ViewCommand.For(_binding.Replacing(KeyModifiers.Alt, KeyModifiers.Super), () => "reload", Reload)
 ```
 
 The command-palette key stays a character (`options.CommandPaletteKey`) rather than a binding: it is

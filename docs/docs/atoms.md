@@ -271,14 +271,17 @@ dotnet add package Arlecchino.Atoms.History
 ```csharp
 builder.Services.UseHistory(options =>
 {
-    options.Resume = true;                    // come up where the last run left off
-    options.FileName = "history/session.undo";
-    options.Capacity = 1000;                  // steps kept before the oldest fall off
+    options.FileName = "history/session.undo";   // omit it and the history is only in memory
+    options.Capacity = 1000;                     // steps kept before the oldest fall off
 });
 ```
 
-It registers `AtomHistory`, the file behind it, and the service that readies both before the first
-frame. Calling it twice throws: atoms announce their steps to the whole process, so a second history
+Naming a file is the whole of asking for one, and a file is kept in order to be come back to: a run
+started with one comes up where the last left off. Without a name nothing is written down and the stack
+lives as long as the process does.
+
+It registers `AtomHistory`, the file when there is one, and the service that readies both before the
+first frame. Calling it twice throws: atoms announce their steps to the whole process, so a second history
 would collect the same steps into a second stack. The constructor is internal to the package for the
 same reason — there is one history, and it comes from the container.
 
@@ -327,18 +330,15 @@ resolve `AtomHistory` yourself before making edits you intend to undo.
 
 ### A history that outlives the run
 
-`Resume` keeps the file between runs, and starts a named atom holding what the file last saw it hold
-rather than the value its store gives it. It is asked as the atom gives its name rather than once at
-startup, since a screen's store is built when the screen is — it picks its state up on the way back to
-it.
+A named atom starts out holding what the file last saw it hold rather than the value its store gives
+it. It is asked as the atom gives its name rather than once at startup, since a screen's store is built
+when the screen is — it picks its state up on the way back to it.
 
 The file is one JSON array of edits per line, written beside the program unless `FileName` has a folder
 in it, so a run that is killed leaves everything up to the last complete line readable. Memory holds the
-last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them. Without
-`Resume` the file is a scratch one, thrown away on the way out and again on the way in.
+last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them.
 
-What crosses a run is the key an atom was given, so an atom without one still undoes and redoes in
-memory and is simply not written down. Claiming a key again with the same kind of atom takes the slot
+What crosses a run is the key an atom was given. Claiming a key again with the same kind of atom takes the slot
 over — a screen's store is rebuilt every time it is navigated back to — while claiming it with another
 kind is refused, since a step written by one would not parse into the other.
 

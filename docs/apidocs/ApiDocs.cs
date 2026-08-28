@@ -29,12 +29,12 @@ internal sealed class ApiDocs
 
     private const int Margin = 100;
 
-    private const BindingFlags Declared =
+    private const BindingFlags DeclaredMembers =
         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
     private readonly string _output;
     private readonly Dictionary<string, XElement> _docs;
-    private readonly Dictionary<string, string> _shipped;
+    private readonly Dictionary<string, string> _declarations;
     private readonly List<(Assembly Assembly, Type Type)> _types;
     private readonly Dictionary<string, string> _pages;
     private readonly Dictionary<string, string> _anchors;
@@ -42,12 +42,12 @@ internal sealed class ApiDocs
     private ApiDocs(
         string output,
         Dictionary<string, XElement> docs,
-        Dictionary<string, string> shipped,
+        Dictionary<string, string> declarations,
         List<(Assembly Assembly, Type Type)> types)
     {
         _output = output;
         _docs = docs;
-        _shipped = shipped;
+        _declarations = declarations;
         _types = types;
         _pages = types.ToDictionary(entry => entry.Type.FullName!, entry => Page(entry.Type), StringComparer.Ordinal);
         _anchors = new Dictionary<string, string>(StringComparer.Ordinal);
@@ -92,11 +92,11 @@ internal sealed class ApiDocs
 
         probe.AddRange(Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll"));
 
-        var resolved = probe
+        var resolvedPaths = probe
             .GroupBy(Path.GetFileName, StringComparer.OrdinalIgnoreCase)
             .Select(copies => copies.First());
 
-        using var context = new MetadataLoadContext(new PathAssemblyResolver(resolved));
+        using var context = new MetadataLoadContext(new PathAssemblyResolver(resolvedPaths));
 
         var types = binaries
             .Select(context.LoadFromAssemblyPath)
@@ -106,7 +106,7 @@ internal sealed class ApiDocs
             .ThenBy(entry => entry.Type.Name, StringComparer.Ordinal)
             .ToList();
 
-        var generator = new ApiDocs(output, Documentation(documentation), Shipped(repo), types);
+        var generator = new ApiDocs(output, Documentation(documentation), Declarations(repo), types);
         generator.Write();
 
         return 0;
@@ -194,7 +194,7 @@ internal sealed class ApiDocs
     /// </summary>
     /// <param name="repo">The framework repository the assemblies were built from.</param>
     /// <returns>Each declaration by key, minus those two members would answer to.</returns>
-    private static Dictionary<string, string> Shipped(string repo)
+    private static Dictionary<string, string> Declarations(string repo)
     {
         var declarations = new Dictionary<string, string>(StringComparer.Ordinal);
         var ambiguous = new HashSet<string>(StringComparer.Ordinal);
@@ -521,13 +521,13 @@ internal sealed class ApiDocs
             return [];
         }
 
-        var constructors = type.GetConstructors(Declared).Where(Shown).OrderBy(c => c.GetParameters().Length).ToList();
-        var fields = type.GetFields(Declared).Where(Shown).Where(f => !Generated(f)).OrderBy(f => f.Name, StringComparer.Ordinal).ToList();
-        var properties = type.GetProperties(Declared).Where(Shown).Where(p => !Synthesized(p)).OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
-        var all = type.GetMethods(Declared).Where(Shown).Where(m => !Synthesized(m)).ToList();
+        var constructors = type.GetConstructors(DeclaredMembers).Where(Shown).OrderBy(c => c.GetParameters().Length).ToList();
+        var fields = type.GetFields(DeclaredMembers).Where(Shown).Where(f => !Generated(f)).OrderBy(f => f.Name, StringComparer.Ordinal).ToList();
+        var properties = type.GetProperties(DeclaredMembers).Where(Shown).Where(p => !Synthesized(p)).OrderBy(p => p.Name, StringComparer.Ordinal).ToList();
+        var all = type.GetMethods(DeclaredMembers).Where(Shown).Where(m => !Synthesized(m)).ToList();
         var methods = all.Where(m => !m.IsSpecialName).OrderBy(m => m.Name, StringComparer.Ordinal).ToList();
         var operators = all.Where(m => m.IsSpecialName && m.Name.StartsWith("op_", StringComparison.Ordinal)).ToList();
-        var events = type.GetEvents(Declared).Where(e => e.AddMethod is not null && Shown(e.AddMethod)).OrderBy(e => e.Name, StringComparer.Ordinal).ToList();
+        var events = type.GetEvents(DeclaredMembers).Where(e => e.AddMethod is not null && Shown(e.AddMethod)).OrderBy(e => e.Name, StringComparer.Ordinal).ToList();
 
         return
         [
@@ -913,16 +913,16 @@ internal sealed class ApiDocs
             parts.Add($"**Implements** {string.Join(", ", contracts.Select(Link))}");
         }
 
-        var derived = _types
+        var derivedTypes = _types
             .Select(entry => entry.Type)
             .Where(candidate => candidate.FullName != type.FullName)
             .Where(candidate => candidate.BaseType?.FullName == type.FullName ||
                                 (type.IsInterface && candidate.GetInterfaces().Any(i => i.FullName == type.FullName)))
             .ToList();
 
-        if (derived.Count is > 0 and <= 24)
+        if (derivedTypes.Count is > 0 and <= 24)
         {
-            parts.Add($"**{(type.IsInterface ? "Implemented by" : "Derived types")}** {string.Join(", ", derived.Select(Link))}");
+            parts.Add($"**{(type.IsInterface ? "Implemented by" : "Derived types")}** {string.Join(", ", derivedTypes.Select(Link))}");
         }
 
         return string.Join("  \n", parts);
@@ -942,7 +942,8 @@ internal sealed class ApiDocs
             : Rewrite(exact, constructor: false);
     }
 
-    private string Exact(string reflected) => _shipped.GetValueOrDefault(Key(reflected), reflected);
+    private string Exact(string reflectedDeclaration) =>
+        _declarations.GetValueOrDefault(Key(reflectedDeclaration), reflectedDeclaration);
 
     /// <summary>
     /// A property is two lines in the baseline, one per accessor, and one declaration on the page.

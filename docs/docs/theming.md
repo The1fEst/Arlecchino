@@ -1,7 +1,7 @@
 ---
 title: Theming
 sidebar_label: Theming
-description: Theme and ThemePalette — the twelve roles a view draws with, the framework's own palette, and how to swap it.
+description: Theme and ThemePalette — the thirteen roles a view draws with, the framework's own palette, and how to swap it.
 ---
 
 # Theming

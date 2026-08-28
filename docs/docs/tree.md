@@ -28,7 +28,7 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 
 ```csharp
 var roots = projects
-    .Select(project => new TreeNode<Project>(project))
+    .Select(project => new TreeNode<Project> { Value = project })
     .ToList();
 ```
 

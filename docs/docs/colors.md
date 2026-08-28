@@ -6,7 +6,7 @@ description: TermColor, RgbTermColor and RGB, and what TerminalCapabilities deci
 
 # Colors
 
-[Theming](theming.md) is about the twelve roles a view draws with. This page is about what a role is
+[Theming](theming.md) is about the thirteen roles a view draws with. This page is about what a role is
 made of, and what happens when the terminal cannot show it.
 
 ## IArlecchinoColor

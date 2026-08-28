@@ -41,22 +41,25 @@ service that readies both before the first frame:
 ```csharp
 builder.Services.UseHistory(options =>
 {
-    options.Resume = true;                    // come up where the last run left off
-    options.FileName = "history/session.undo";
-    options.Capacity = 1000;                  // steps kept before the oldest fall off
+    options.FileName = "history/session.undo";   // omit it and the history is only in memory
+    options.Capacity = 1000;                     // steps kept before the oldest fall off
 });
 ```
 
+Naming a file is the whole of asking for one, and a file is kept in order to be come back to — so there
+is no second setting saying whether to mean it. Without a name the stack lives as long as the process
+does and nothing is written down.
+
 The file is one JSON array of edits per line, so a run that is killed leaves everything up to the last
-complete line readable rather than a document that parses as nothing. A run that resumes indexes what it
-finds and appends to it; memory holds the last `Capacity` steps, and older ones are seeked to and rebuilt
-only when an undo asks for them, so a history of any length costs one offset and one length per step.
+complete line readable rather than a document that parses as nothing. A run indexes what it finds and
+appends to it; memory holds the last `Capacity` steps, and older ones are seeked to and rebuilt only
+when an undo asks for them, so a history of any length costs one offset and one length per step.
 
 What carries an atom across a run is the name it was given, since a reference means nothing to the next
 run. The name is required and written in full rather than worked out from the property it sits in — a
-name that followed a rename would quietly orphan a history that was kept. `Resume` then starts a named
-atom holding what the file last saw it hold, asked as the atom gives its name rather than once at
-startup, since a screen's store is built when the screen is.
+name that followed a rename would quietly orphan a history that was kept. A named atom then starts out
+holding what the file last saw it hold, asked as the atom gives its name rather than once at startup,
+since a screen's store is built when the screen is.
 
 Types the file already knows are `string`, `bool`, `int`, `long`, `double`, `decimal`, `Guid`,
 `DateOnly`, `TimeOnly` and `DateTimeOffset`; a type of your own is taught by hand, because a trimmed

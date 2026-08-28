@@ -43,7 +43,7 @@ public void Draw()
 {
     if (_mods.IsLoading)
     {
-        _surface.AppendLine($"{_spinner.Frame()} loading…", Theme.Secondary, Align.Center);
+        _surface.AppendLine($"{_spinner.Current} loading…", Theme.Secondary, Align.Center);
         return;
     }
 

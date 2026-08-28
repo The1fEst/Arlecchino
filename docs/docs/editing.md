@@ -80,9 +80,10 @@ public bool Handle(KeyPress key)
 }
 ```
 
-`SelectKeys` covers the arrows, the word keys, `Home` and `End` with Shift held, `Ctrl+A` and the
-cut; `CaretKeys` the same moves without it; `EraseKeys` the rub-outs. Order them as above: the
-selecting keys are the moving keys with a modifier, so they have to be asked first.
+`SelectKeys` covers the arrows, the word keys, `Home` and `End` with Shift held, and `Ctrl+A`;
+`CaretKeys` the same moves without it; `EraseKeys` the rub-outs. Order them as above: the selecting
+keys are the moving keys with a modifier, so they have to be asked first. Copying and cutting are
+`EntryKeys.Clipped`, which is handed the clipboard to write to and asked alongside these.
 
 ## Finishing the word
 

@@ -240,8 +240,8 @@ A share is clamped to `0..1`, and a count larger than the region gives the first
 the second half nothing.
 
 `CellsFromEnd` is what a status bar wants. Written as a share, a one-row bar is `0.96` on one terminal
-and wrong on the next; written as `Rows(PaneSize.CellsFromEnd(1), body, status)` it is the last row on
-all of them.
+and wrong on the next; written as `Branch(Rows, PaneSize.CellsFromEnd(1), body, status)` it is the last
+row on all of them.
 
 ### What goes in a pane
 

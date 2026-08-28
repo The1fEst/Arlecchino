@@ -19,7 +19,6 @@ builds the host is worth replacing even though the old one still compiles.
 | `TrackedAtomsList/Map/Set/Stack/Queue<T>` | `HistoryAtomsList/Map/Set/Stack/Queue<T>`, with a key |
 | `LocalAtomsList/Map/Set/Stack/Queue<T>` | `AtomsList/Map/Set/Stack/Queue<T>` |
 | `new AtomHistory(…)` | Take it from the container; the constructor is no longer public outside the package |
-| `ArlecchinoOptions.HistoryFileName`, `KeepHistoryFile` | `UseHistory(options => …)` — `FileName` and `Resume` |
 | `AtomsList<T>.Touch()` | `Refresh()` |
 | `Rgb` | `RGB`, and every signature around it moves with the name |
 | `Field` and its factories | `Fields.Text`, `Fields.Number`, … returning `Field<T>` over the atom |
@@ -61,15 +60,12 @@ announce their steps to the whole process and a second history would collect the
 second stack:
 
 ```csharp
-builder.Services.UseHistory(options => options.Resume = true);
+builder.Services.UseHistory(options => options.FileName = "session.undo");
 ```
 
-That call replaces what `ArlecchinoOptions` used to carry: `HistoryFileName` is `FileName`, and
-`KeepHistoryFile` is `Resume`, which now means both that the file outlives the run and that a named atom
-comes up holding what it last held. `Capacity` is how many steps stay in memory, 200 by default.
-
-An atom left without a key still undoes and redoes in memory exactly as it did — it is simply not
-written down.
+`FileName` is the whole of it: name a file and the history is written down, outlives the run and is what
+the next one comes up in; leave it unnamed and the history is kept in memory for as long as the process
+runs. `Capacity` is how many steps stay in memory, 200 by default.
 
 ## A startup answers with a `Task`
 
