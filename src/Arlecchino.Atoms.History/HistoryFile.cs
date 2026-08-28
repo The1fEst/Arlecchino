@@ -105,7 +105,6 @@ public sealed class HistoryFile : IDisposable
     {
         lock (_writing)
         {
-            _writer.Close();
             Index();
         }
     }
@@ -115,7 +114,6 @@ public sealed class HistoryFile : IDisposable
     {
         lock (_writing)
         {
-            _writer.Close();
             TryDelete();
             _steps.Clear();
             _newest = null;
@@ -215,8 +213,6 @@ public sealed class HistoryFile : IDisposable
             }
 
             _disposed = true;
-
-            _writer.Close();
         }
     }
 

@@ -108,10 +108,10 @@ before drawing anything at all. The breaks are named below and the compiler name
   JSON array of edits per line, so a run that is killed leaves everything up to the last complete line
   readable rather than a truncated document that parses as nothing. The file is there to be found again:
   it outlives the run that wrote it, and the next run indexes it rather than starting over. Nothing is
-  created until a step is actually recorded, so a run that changed nothing leaves nothing. It is held
-  open only as far as a file beside the program should be: a hand or a housekeeping job may remove it
-  while the application is up, which on Windows takes a share that allows deletion and not merely
-  reading.
+  created until a step is actually recorded, so a run that changed nothing leaves nothing. The file is
+  opened for the step being written and closed again rather than held for the run, so it can be read,
+  copied or removed while the application is up — a file kept open for writing is one Windows will not
+  let anything else read, and this one sits where a hand or a housekeeping job can reach it.
 
   What carries an atom across a run is a name, since a reference means nothing to the next one, and the
   name sits on the atom it names:

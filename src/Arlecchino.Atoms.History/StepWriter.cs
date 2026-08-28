@@ -25,7 +25,6 @@ internal sealed class StepWriter : IValueWriter
     private readonly List<string> _names = [];
 
     private Utf8JsonWriter? _json;
-    private FileStream? _stream;
     private bool _probing;
 
     /// <summary>What the step last written down was named by, one name per edit of it.</summary>
@@ -40,8 +39,8 @@ internal sealed class StepWriter : IValueWriter
     public void Handles<T>(Action<Utf8JsonWriter, T> write) => _writers[typeof(T)] = write;
 
     /// <summary>
-    /// Appends one step as a line. The file is opened by the first step that can be written, so a run
-    /// that recorded nothing leaves no file.
+    /// Appends one step as a line, opening the file for it and closing it again. A run that recorded
+    /// nothing leaves none, and one that is recording still lets it be read or removed.
     /// </summary>
     /// <param name="path">Where the file is.</param>
     /// <param name="edits">The edits of the step, in the order they were made.</param>
@@ -53,30 +52,32 @@ internal sealed class StepWriter : IValueWriter
             return null;
         }
 
-        _stream ??= new(path, FileMode.Append, FileAccess.Write, FileShare.Read | FileShare.Delete);
-        _json ??= new(_stream);
+        using var stream = new FileStream(
+            path,
+            FileMode.Append,
+            FileAccess.Write,
+            FileShare.ReadWrite | FileShare.Delete);
 
-        var offset = _stream.Position;
+        using var json = new Utf8JsonWriter(stream);
 
-        Compose();
+        _json = json;
 
-        _json.Flush();
-        _stream.WriteByte(LineFeed);
-        _stream.Flush();
+        try
+        {
+            var offset = stream.Position;
 
-        _json.Reset();
+            Compose();
 
-        return (offset, (int)(_stream.Position - offset - 1));
-    }
+            json.Flush();
+            stream.WriteByte(LineFeed);
+            stream.Flush();
 
-    /// <summary>Closes the file, leaving on disk everything that was flushed to it.</summary>
-    public void Close()
-    {
-        _json?.Dispose();
-        _json = null;
-
-        _stream?.Dispose();
-        _stream = null;
+            return (offset, (int)(stream.Position - offset - 1));
+        }
+        finally
+        {
+            _json = null;
+        }
     }
 
     /// <summary>Takes the two values of one edit, which the edit hands over typed.</summary>

@@ -203,18 +203,20 @@ public sealed class HistoryFileTests : IDisposable
     }
 
     /// <summary>
-    /// The file is held open for the whole run, where a hand or a housekeeping job can reach it.
-    /// Windows refuses the removal unless the share allows it, where Linux allows it either way.
+    /// The file sits where a hand or a housekeeping job reaches it, so a run recording into it must not
+    /// keep it open: Windows refuses a read or a removal while a writer holds one.
     /// </summary>
     [Fact]
-    public void TheFileCanBeRemovedWhileItIsBeingWrittenTo()
+    public void TheFileCanBeReadAndRemovedWhileItIsBeingWrittenTo()
     {
         using var file = Scratch();
         using var history = new AtomHistory(file);
 
         new HistoryAtom<string>("start", Key).Value = "changed";
 
-        Assert.True(file.Exists);
+        Assert.Single(File.ReadAllLines(file.Path));
+
+        using (new FileStream(file.Path, FileMode.Open, FileAccess.Read, FileShare.None)) { }
 
         File.Delete(file.Path);
 
