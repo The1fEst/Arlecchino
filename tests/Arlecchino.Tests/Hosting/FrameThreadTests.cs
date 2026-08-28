@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Arlecchino.Atoms;
 using Arlecchino.Hosting;
 using Arlecchino.Modals.Telling;
@@ -284,6 +286,42 @@ public sealed class FrameThreadTests
         value.Value = 3;
 
         Assert.Equal(3, value.Value);
+    }
+
+    /// <summary>
+    /// Work canceled before it ever suspends reaches the loop the same way as work canceled after, and a
+    /// screen navigated away from cancels every run it started — so this is the ordinary path, not a fault.
+    /// </summary>
+    [Fact]
+    public void WorkCanceledBeforeItSuspendsIsNotReportedAsAFailure()
+    {
+        using var drawing = FrameThread.Claim();
+        using var closing = new CancellationTokenSource();
+
+        closing.Cancel();
+
+        FrameThread.Post(() => Task.FromCanceled(closing.Token));
+
+        var failures = new List<Exception>();
+
+        FrameThread.RunPending(failures.Add);
+
+        Assert.Empty(failures);
+    }
+
+    /// <summary>Work that throws still reaches the loop, whether it suspended first or not.</summary>
+    [Fact]
+    public void WorkThatThrowsBeforeItSuspendsIsStillReported()
+    {
+        using var drawing = FrameThread.Claim();
+
+        FrameThread.Post(static () => Task.FromException(new InvalidOperationException("from the work")));
+
+        var failures = new List<Exception>();
+
+        FrameThread.RunPending(failures.Add);
+
+        Assert.Equal("from the work", Assert.Single(failures).Message);
     }
 
     private static string Member(string member) => FrameMembers.Of<ArlecchinoState>(member);

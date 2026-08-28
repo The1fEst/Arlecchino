@@ -278,6 +278,21 @@ before drawing anything at all. The breaks are named below and the compiler name
   for a row a factory does not cover.
 
 
+### Fixed
+
+- **Posted work that was canceled says nothing, whenever it was canceled.** `FrameThread.Post` followed
+  work two ways — the stretch after an `await` through a continuation that only fires on a fault, and
+  the stretch before one by reading the task straight back — and only the first of them let a
+  cancellation through in silence. Which one a run took came down to whether the work had already
+  finished by the time it handed control back, so the same navigation reported `error: A task was
+  canceled.` on the output row one time and nothing the next.
+
+  It is the frequent case that was loud: a screen that goes away cancels what it started, so work whose
+  token is already canceled when it begins finishes there and then. Cancellation is how a screen is left
+  rather than a failure of the work, and the output row is the application's to say something on. Both
+  stretches now report a fault and let a cancellation pass.
+
+
 ## 2026.8.5
 
 A release about names, about what a program says out loud, and about Windows, where what the terminal

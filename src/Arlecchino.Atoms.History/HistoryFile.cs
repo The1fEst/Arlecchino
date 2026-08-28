@@ -216,13 +216,7 @@ public sealed class HistoryFile : IDisposable
 
             _disposed = true;
 
-            Close();
             _writer.Close();
-
-            if (!Keep)
-            {
-                TryDelete();
-            }
         }
     }
 

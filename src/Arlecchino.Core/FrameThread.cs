@@ -80,7 +80,10 @@ public static class FrameThread
     {
         if (running.IsCompleted)
         {
-            running.GetAwaiter().GetResult();
+            if (running.IsFaulted)
+            {
+                running.GetAwaiter().GetResult();
+            }
 
             return;
         }
