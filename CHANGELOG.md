@@ -51,13 +51,13 @@ before drawing anything at all. The breaks are named below and the compiler name
   type needs the new `using`. `IAtomEdit` moved with the rest, from `Arlecchino.Atoms` to
   `Arlecchino.Atoms.History`. All of it is behind the call below.
 
-- **A file that outlives the run is read back, a step at a time.** A run that resumes indexes the file it
-  finds rather than throwing it away, and appends to it rather than writing over it. What memory holds is
-  the last `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them, so a
-  history of any length costs one offset and one length per step.
+- **A file that outlives the run is read back, a step at a time.** A run indexes the file it finds rather
+  than throwing it away, and appends to it rather than writing over it. What memory holds is the last
+  `Capacity` steps; older ones are seeked to and rebuilt only when an undo asks for them, so a history of
+  any length costs one offset and one length per step.
 
   ```csharp
-  builder.Services.UseHistory(options => options.Resume = true);
+  builder.Services.UseHistory(options => options.FileName = "session.undo");
   ```
 
   A step names its atoms, and the atoms of this run answer to those names: a `HistoryAtom<T>` says its
@@ -88,24 +88,27 @@ before drawing anything at all. The breaks are named below and the compiler name
   ```csharp
   builder.Services.UseHistory(options =>
   {
-      options.Resume = true;                    // come up where the last run left off
-      options.FileName = "history/session.undo";
-      options.Capacity = 1000;                  // steps kept before the oldest fall off
+      options.FileName = "history/session.undo";   // omit it and the history is only in memory
+      options.Capacity = 1000;                     // steps kept before the oldest fall off
   });
   ```
 
-  It registers the stack, the file and a hosted service that readies both before the first frame; that
-  one goes to the front of the hosted services, since the frame loop is registered before this call.
+  Naming a file is the whole of asking for one, and asking for one is the whole of coming up where the
+  last run left off: there is no second setting saying whether to mean it. Without a name the stack is
+  registered and nothing is written down.
+
+  It registers the stack, the file when there is one, and a hosted service that readies both before the
+  first frame; that one goes to the front of the hosted services, since the frame loop is registered
+  before this call.
   Calling it twice throws: atoms announce their steps to the whole process, so a second history would
   collect the same steps into a second stack. For the same reason `AtomHistory` can no longer be
   constructed from outside the package — take it from the container.
 
 - **`HistoryFile`, which writes the undo history down.** The history lands in a file beside the program, one
   JSON array of edits per line, so a run that is killed leaves everything up to the last complete line
-  readable rather than a truncated document that parses as nothing. It is a scratch file: it is thrown
-  away on the way out and again on the way in, the second being what clears up after a run that never
-  reached the first. Nothing is created until a step is actually recorded, so a run that changed nothing
-  leaves nothing.
+  readable rather than a truncated document that parses as nothing. The file is there to be found again:
+  it outlives the run that wrote it, and the next run indexes it rather than starting over. Nothing is
+  created until a step is actually recorded, so a run that changed nothing leaves nothing.
 
   What carries an atom across a run is a name, since a reference means nothing to the next one, and the
   name sits on the atom it names:
@@ -158,15 +161,11 @@ before drawing anything at all. The breaks are named below and the compiler name
   run, so it is done only while a history is writing one down. A history kept in memory costs what it
   cost before.
 
-- **`Resume`, which is what a run comes up in.** A named atom starts out holding what the file last saw it
+- **A run comes up in what the file last held.** A named atom starts out holding what the file last saw it
   hold rather than the value its store gives it. It is asked as the atom gives its name rather than once
   at startup, since a screen's store is built when the screen is — it picks its state up then, on the way
-  back to it. This is also what decides that the file outlives the run, there being no other reason to
-  keep one, so it is one setting rather than two.
-
-  ```csharp
-  builder.Services.UseHistory(options => options.Resume = true);
-  ```
+  back to it. Nothing switches this on: a file is kept in order to be come back to, so having one is the
+  asking.
 
   What the file remembers is the last change made rather than the last state seen: undo and redo are not
   themselves written down, so a run that took a step back and then quit comes up holding what it held

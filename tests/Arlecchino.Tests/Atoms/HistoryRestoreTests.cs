@@ -59,7 +59,7 @@ public sealed class HistoryRestoreTests : IDisposable
     [Fact]
     public void StepsPastTheMemoryWindowAreReadBackFromTheFile()
     {
-        using var file = new HistoryFile(Path.Combine(_folder, "kept.history"), keep: true);
+        using var file = new HistoryFile(Path.Combine(_folder, "kept.history"));
         using var history = new AtomHistory(file);
 
         history.Capacity = 1;
@@ -155,26 +155,6 @@ public sealed class HistoryRestoreTests : IDisposable
     [Fact]
     public void AnAtomWithoutANameIsRefused() =>
         Assert.Throws<ArgumentException>(static () => new HistoryAtom<string>("", ""));
-
-    [Fact]
-    public void AScratchFileLeavesNothingForTheNextRun()
-    {
-        var path = Path.Combine(_folder, "scratch.history");
-
-        using (var earlier = new HistoryFile(path))
-        using (new AtomHistory(earlier))
-        {
-            new HistoryAtom<string>("start", Key).Value = "changed";
-        }
-
-        using var file = new HistoryFile(path);
-        file.Prepare();
-
-        using var later = new AtomHistory(file);
-
-        Assert.Equal(0, file.Count);
-        Assert.False(later.CanUndo);
-    }
 
     [Fact]
     public void AKeptFileIsAddedToRatherThanWrittenOver()
@@ -334,7 +314,7 @@ public sealed class HistoryRestoreTests : IDisposable
             static () => new HistoryAtomsList<string>(ListKey, ["alpha"]).Add("beta"));
 
         using var file = Opened(path);
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
         var rows = new HistoryAtomsList<string>(ListKey, ["whatever the store says"]);
 
         Assert.Equal(["alpha", "beta"], rows.Value);
@@ -348,7 +328,7 @@ public sealed class HistoryRestoreTests : IDisposable
             static () => new HistoryAtomsMap<string, int>(MapKey).Add("alpha", 1));
 
         using var file = Opened(path);
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
         var sizes = new HistoryAtomsMap<string, int>(MapKey);
 
         Assert.Equal(1, sizes["alpha"]);
@@ -360,7 +340,7 @@ public sealed class HistoryRestoreTests : IDisposable
         var path = Kept();
 
         using var file = Opened(path);
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
 
         Assert.Equal("changed", new HistoryAtom<string>("start", Key).Value);
     }
@@ -370,7 +350,7 @@ public sealed class HistoryRestoreTests : IDisposable
     public void WhatTheRunItselfWroteIsPickedUpByTheNextAtomOfThatName()
     {
         using var file = Opened(Path.Combine(_folder, "kept.history"));
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
 
         new HistoryAtom<string>("start", Key).Value = "changed";
 
@@ -382,7 +362,7 @@ public sealed class HistoryRestoreTests : IDisposable
     {
         var path = Path.Combine(_folder, "kept.history");
 
-        using (var earlier = new HistoryFile(path, keep: true))
+        using (var earlier = new HistoryFile(path))
         using (new AtomHistory(earlier))
         {
             var atom = new HistoryAtom<string>("start", Key);
@@ -394,7 +374,7 @@ public sealed class HistoryRestoreTests : IDisposable
         }
 
         using var file = Opened(path);
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
 
         Assert.Equal("changed again", new HistoryAtom<string>("start", Key).Value);
     }
@@ -405,7 +385,7 @@ public sealed class HistoryRestoreTests : IDisposable
         var path = Kept();
 
         using var file = Opened(path);
-        using var history = new AtomHistory(file, resume: true);
+        using var history = new AtomHistory(file);
 
         _ = new HistoryAtom<string>("start", Key);
 
@@ -413,13 +393,16 @@ public sealed class HistoryRestoreTests : IDisposable
         Assert.Equal(1, history.Depth);
     }
 
+    /// <summary>
+    /// A history with no file behind it has nothing to come up in, so an atom starts out holding what its
+    /// store gave it however many runs edited it before.
+    /// </summary>
     [Fact]
-    public void WithoutBeingAskedToResumeAnAtomStartsOutAsItsStoreSaid()
+    public void WithoutAFileAnAtomStartsOutAsItsStoreSaid()
     {
-        var path = Kept();
+        _ = Kept();
 
-        using var file = Opened(path);
-        using var history = new AtomHistory(file);
+        using var history = new AtomHistory(null);
 
         Assert.Equal("start", new HistoryAtom<string>("start", Key).Value);
     }
@@ -432,7 +415,7 @@ public sealed class HistoryRestoreTests : IDisposable
     {
         var path = Path.Combine(_folder, name);
 
-        using var file = new HistoryFile(path, keep: true);
+        using var file = new HistoryFile(path);
         using var history = new AtomHistory(file);
 
         change();
@@ -446,7 +429,7 @@ public sealed class HistoryRestoreTests : IDisposable
     {
         var path = Path.Combine(_folder, "kept.history");
 
-        using var file = new HistoryFile(path, keep: true);
+        using var file = new HistoryFile(path);
         using var history = new AtomHistory(file);
 
         new HistoryAtom<string>("start", Key).Value = "changed";
@@ -456,7 +439,7 @@ public sealed class HistoryRestoreTests : IDisposable
 
     private static HistoryFile Opened(string path)
     {
-        var file = new HistoryFile(path, keep: true);
+        var file = new HistoryFile(path);
 
         file.Prepare();
 

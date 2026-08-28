@@ -160,31 +160,20 @@ public sealed class HistoryFileTests : IDisposable
     }
 
     [Fact]
-    public void PreparingThrowsAwayWhatAKilledRunLeftBehind()
-    {
-        var path = Path.Combine(_folder, "scratch.undo");
-        File.WriteAllText(path, "[{\"key\":\"stale\"}]\n");
-
-        using var file = new HistoryFile(path);
-        file.Prepare();
-
-        Assert.False(file.Exists);
-    }
-
-    [Fact]
-    public void PreparingLeavesAFileTheApplicationAskedToKeep()
+    public void PreparingIndexesWhatAnEarlierRunLeftBehind()
     {
         var path = Path.Combine(_folder, "kept.undo");
         File.WriteAllText(path, "[{\"key\":\"earlier\"}]\n");
 
-        using var file = new HistoryFile(path, keep: true);
+        using var file = new HistoryFile(path);
         file.Prepare();
 
         Assert.True(file.Exists);
+        Assert.Equal(1, file.Count);
     }
 
     [Fact]
-    public void TheScratchFileGoesWhenTheRunDoes()
+    public void TheFileOutlivesTheRunThatWroteIt()
     {
         var file = Scratch();
         using (new AtomHistory(file))
@@ -196,13 +185,13 @@ public sealed class HistoryFileTests : IDisposable
 
         file.Dispose();
 
-        Assert.False(file.Exists);
+        Assert.True(file.Exists);
     }
 
     [Fact]
     public void AKeptFileOutlivesTheRun()
     {
-        var file = new HistoryFile(Path.Combine(_folder, "kept.undo"), keep: true);
+        var file = new HistoryFile(Path.Combine(_folder, "kept.undo"));
         using (new AtomHistory(file))
         {
             new HistoryAtom<string>("start", Key).Value = "changed";

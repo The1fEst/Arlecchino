@@ -21,23 +21,7 @@ public sealed class UseHistoryTests
         Assert.Null(provider.GetService<AtomHistory>());
     }
 
-    [Fact]
-    public void TheCallBringsTheStackAndTheFileWithIt()
-    {
-        var services = new ServiceCollection();
-
-        services.UseHistory();
-
-        using var provider = services.BuildServiceProvider();
-
-        Assert.NotNull(provider.GetService<AtomHistory>());
-        Assert.NotNull(provider.GetService<HistoryFile>());
-    }
-
-    /// <summary>
-    /// Asking to resume is also what keeps the file, there being nothing to come up in without one, so it
-    /// is the setting the file takes its own from.
-    /// </summary>
+    /// <summary>Naming a file is what asks for one, and the rest of the settings reach the stack.</summary>
     [Fact]
     public void TheSettingsReachTheStackAndTheFile()
     {
@@ -46,15 +30,27 @@ public sealed class UseHistoryTests
         services.UseHistory(options =>
         {
             options.FileName = "chosen.history";
-            options.Resume = true;
             options.Capacity = 7;
         });
 
         using var provider = services.BuildServiceProvider();
 
         Assert.Equal(7, provider.GetRequiredService<AtomHistory>().Capacity);
-        Assert.True(provider.GetRequiredService<HistoryFile>().Keep);
         Assert.EndsWith("chosen.history", provider.GetRequiredService<HistoryFile>().Path, StringComparison.Ordinal);
+    }
+
+    /// <summary>Registers the stack and no file when the settings name none.</summary>
+    [Fact]
+    public void WithoutAFileNameTheHistoryIsOnlyInMemory()
+    {
+        var services = new ServiceCollection();
+
+        services.UseHistory();
+
+        using var provider = services.BuildServiceProvider();
+
+        Assert.NotNull(provider.GetService<AtomHistory>());
+        Assert.Null(provider.GetService<HistoryFile>());
     }
 
     /// <summary>
@@ -72,7 +68,7 @@ public sealed class UseHistoryTests
         {
             var path = Path.Combine(folder, "resumed.history");
 
-            using (var earlier = new HistoryFile(path, keep: true))
+            using (var earlier = new HistoryFile(path))
             using (new AtomHistory(earlier))
             {
                 new HistoryAtom<string>("start", "Hosted.Server").Value = "changed";
@@ -80,11 +76,7 @@ public sealed class UseHistoryTests
 
             var services = new ServiceCollection();
 
-            services.UseHistory(options =>
-            {
-                options.FileName = path;
-                options.Resume = true;
-            });
+            services.UseHistory(options => options.FileName = path);
 
             await using var provider = services.BuildServiceProvider();
             var started = provider.GetServices<IHostedService>().First();

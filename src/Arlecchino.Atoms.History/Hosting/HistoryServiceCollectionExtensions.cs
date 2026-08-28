@@ -9,11 +9,11 @@ namespace Arlecchino.Atoms.History.Hosting;
 public static class HistoryServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds undo and redo. Without this call an application has atoms and no history: nothing records
-    /// steps, and the atoms that could feed one allocate nothing for it.
+    /// Adds undo and redo; without this call nothing records a step. Naming a file makes the history
+    /// outlive the run, and without one it is kept in memory.
     ///
     /// <code>
-    /// builder.Services.UseHistory(options => options.Resume = true);
+    /// builder.Services.UseHistory(options => options.FileName = "session.undo");
     /// </code>
     /// </summary>
     /// <param name="services">The container being built.</param>
@@ -33,17 +33,18 @@ public static class HistoryServiceCollectionExtensions
         configure?.Invoke(options);
 
         services.AddSingleton(options);
+
+        if (!string.IsNullOrEmpty(options.FileName))
+        {
+            services.AddSingleton(static provider =>
+                new HistoryFile(provider.GetRequiredService<HistoryOptions>().FileName));
+        }
+
         services.AddSingleton(static provider =>
         {
             var settings = provider.GetRequiredService<HistoryOptions>();
 
-            return new HistoryFile(settings.FileName, settings.Resume);
-        });
-        services.AddSingleton(static provider =>
-        {
-            var settings = provider.GetRequiredService<HistoryOptions>();
-
-            return new AtomHistory(provider.GetRequiredService<HistoryFile>(), settings.Resume)
+            return new AtomHistory(provider.GetService<HistoryFile>())
             {
                 Capacity = settings.Capacity,
             };

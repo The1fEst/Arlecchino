@@ -31,18 +31,16 @@ public sealed class AtomHistory : IDisposable
 
     /// <summary>Starts collecting edits, and writes down the ones it can.</summary>
     /// <param name="file">
-    /// Where steps are written as they are made, or <c>null</c> to keep them in memory only. Only steps of
-    /// atoms and collections that were given a name are written; see <see cref="HistoryFile"/>.
+    /// Where steps are written as they are made, or <c>null</c> to keep them in memory only. A file also
+    /// answers for the atoms it names as they are created, so a run resumes where the last one left off.
+    /// Only steps of atoms and collections that were given a name are written; see <see cref="HistoryFile"/>.
     /// </param>
-    /// <param name="resume">
-    /// Whether a named atom takes back what the file last saw it hold, as it gives its name.
-    /// </param>
-    internal AtomHistory(HistoryFile? file, bool resume = false)
+    internal AtomHistory(HistoryFile? file)
     {
         _file = file;
         _floor = file?.Count ?? 0;
         _writing = file is null ? null : HistoryChanges.Writes();
-        _resuming = resume && file is not null ? HistoryChanges.Resumes(file.Resume) : null;
+        _resuming = file is null ? null : HistoryChanges.Resumes(file.Restore);
 
         HistoryChanges.Recorded += Record;
     }

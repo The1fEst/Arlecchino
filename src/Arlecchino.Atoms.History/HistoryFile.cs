@@ -31,8 +31,8 @@ public sealed class HistoryFile : IDisposable
     private readonly List<(long Offset, int Length)> _steps = [];
 
     /// <summary>
-    /// Which step last named each atom, for <see cref="Resume"/>. It is worked out on the first ask,
-    /// since a run that never resumes anything has no reason to read the file it appends to.
+    /// Which step last named each atom, for <see cref="Restore"/>. It is worked out on the first ask,
+    /// since a run that restores nothing has no reason to read the file it appends to.
     /// </summary>
     private Dictionary<string, int>? _newest;
 
@@ -43,14 +43,9 @@ public sealed class HistoryFile : IDisposable
     /// File name, placed beside the program. A name with a directory in it is used as it stands, for an
     /// application that keeps its history somewhere the program folder cannot be written to.
     /// </param>
-    /// <param name="keep">
-    /// Whether the file outlives the run. The default removes it on the way out, which makes it a scratch
-    /// file that only matters while the program is up.
-    /// </param>
-    public HistoryFile(string? name = null, bool keep = false)
+    public HistoryFile(string? name = null)
     {
         Path = FullPath(string.IsNullOrEmpty(name) ? DefaultName : name);
-        Keep = keep;
 
         Handles<string>(static (writer, value) => writer.WriteStringValue(value), static element => element.GetString()!);
         Handles(static (writer, value) => writer.WriteBooleanValue(value), static element => element.GetBoolean());
@@ -70,9 +65,6 @@ public sealed class HistoryFile : IDisposable
 
     /// <summary>Where the file is, whether it exists yet or not.</summary>
     public string Path { get; }
-
-    /// <summary>Whether the file outlives the run rather than being removed on the way out.</summary>
-    public bool Keep { get; }
 
     /// <summary>Whether anything has been written, which is also whether the file is there.</summary>
     public bool Exists => File.Exists(Path);
@@ -106,17 +98,11 @@ public sealed class HistoryFile : IDisposable
     }
 
     /// <summary>
-    /// Makes the file ready for a run. A scratch file is thrown away, since a killed run left it; a file
-    /// the application asked to keep is indexed instead, so its steps can be read back.
+    /// Makes the file ready for a run: what an earlier one left is indexed rather than thrown away, so
+    /// its steps can be read back and the atoms it names can come up holding what it last saw them hold.
     /// </summary>
     public void Prepare()
     {
-        if (!Keep)
-        {
-            Discard();
-            return;
-        }
-
         lock (_writing)
         {
             _writer.Close();
@@ -124,7 +110,7 @@ public sealed class HistoryFile : IDisposable
         }
     }
 
-    /// <summary>Closes and removes the file, whether the application asked to keep it or not.</summary>
+    /// <summary>Closes and removes the file, losing every step an earlier run wrote down.</summary>
     public void Discard()
     {
         lock (_writing)
@@ -182,7 +168,7 @@ public sealed class HistoryFile : IDisposable
     /// <param name="key">What the atom is called.</param>
     /// <param name="atom">The atom answering to that name.</param>
     /// <returns><c>false</c> when no step names it, or the one that does cannot be read.</returns>
-    public bool Resume(string key, IRestorableAtom atom)
+    public bool Restore(string key, IRestorableAtom atom)
     {
         lock (_writing)
         {
@@ -218,7 +204,7 @@ public sealed class HistoryFile : IDisposable
         }
     }
 
-    /// <summary>Closes the file, and removes it unless the application asked to keep it.</summary>
+    /// <summary>Closes the file, leaving it where it is for the next run to read.</summary>
     public void Dispose()
     {
         lock (_writing)
@@ -230,6 +216,7 @@ public sealed class HistoryFile : IDisposable
 
             _disposed = true;
 
+            Close();
             _writer.Close();
 
             if (!Keep)

@@ -5,15 +5,15 @@ using Microsoft.Extensions.Hosting;
 namespace Arlecchino.Atoms.History.Hosting;
 
 /// <summary>
-/// Throws away the scratch file a killed run left behind and empties the stack, so that what the stores
-/// wrote while loading is not the first thing an undo takes back. It runs before the first frame.
+/// Indexes what an earlier run wrote down and empties the stack, so that what the stores wrote while
+/// loading is not the first thing an undo takes back. It runs before the first frame.
 /// </summary>
 internal sealed class HistoryStartup : IHostedService
 {
     private readonly AtomHistory _history;
-    private readonly HistoryFile _file;
+    private readonly HistoryFile? _file;
 
-    public HistoryStartup(AtomHistory history, HistoryFile file)
+    public HistoryStartup(AtomHistory history, HistoryFile? file = null)
     {
         _history = history;
         _file = file;
@@ -21,7 +21,7 @@ internal sealed class HistoryStartup : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _file.Prepare();
+        _file?.Prepare();
         _history.Clear();
 
         return Task.CompletedTask;
