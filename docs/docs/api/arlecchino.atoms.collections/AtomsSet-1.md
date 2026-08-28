@@ -10,11 +10,11 @@ sidebar_label: "AtomsSet<T>"
 A set held as one piece of application state, behaving as a `HashSet<T>` does: adding what is already there changes nothing. A walk of it is in no order, so sort it where the reader sees the order.
 
 ```csharp
-public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
+public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom, IReadableAtom<IReadOnlySet<T>>
 ```
 
 **Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlySet<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlySet<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
 
@@ -47,6 +47,7 @@ public class AtomsSet<T> : AtomsCollectionBase, IReadableAtom<IReadOnlySet<T>>
 | [`RemoveSilently(T[])`](#removesilently-t) | Takes items out without reaching [`AtomsSet.OnRemoved`](../arlecchino.atoms.collections/AtomsSet-1.md#onremoved-t). |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the set that is worked out again rather than edited — what a new listing marks, what a filter leaves. Contents equal to what is already there change nothing. |
 | [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsSet.OnReset`](../arlecchino.atoms.collections/AtomsSet-1.md#onreset-t-t). |
+| [`ToString()`](#tostring) |  |
 | [`TryAdd(T)`](#tryadd-t) | Puts something in and says whether it was new. |
 | [`TryRemove(T)`](#tryremove-t) | Takes something out and says whether it was there. |
 
@@ -275,6 +276,14 @@ Swaps the contents without reaching [`AtomsSet.OnReset`](../arlecchino.atoms.col
 | Name | Type | Description |
 |---|---|---|
 | `items` | `T`\[\] | What the set should hold. |
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 
 ### `TryAdd(T)` {#tryadd-t}
 

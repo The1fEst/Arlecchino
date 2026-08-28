@@ -21,7 +21,9 @@ sidebar_position: 0
 |---|---|
 | [`IArlecchinoScopedStore`](IArlecchinoScopedStore.md) | A store that lives as long as the screen that asked for it: navigating away disposes the scope and with it the store, and navigating back builds a fresh one. Registered by `AddGeneratedStores()` exactly as an [`IArlecchinoStore`](../arlecchino.atoms/IArlecchinoStore.md) is, only scoped. |
 | [`IArlecchinoStore`](IArlecchinoStore.md) | A holder of application state: a class of atoms that outlive the screens reading them. Marking it is all the registration there is, and [`IArlecchinoScopedStore`](../arlecchino.atoms/IArlecchinoScopedStore.md) is the one for a single screen. |
+| [`IReadableAtom`](IReadableAtom.md) | What every atom has in common, whatever it holds: it can be listened to, and it can be written out. It is what a widget takes when it shows a value whose type it has no use for. |
 | [`IReadableAtom<T>`](IReadableAtom-1.md) | Something that holds a value and tells interested parties when it changes. Implemented by [`Atom`](../arlecchino.atoms/Atom-1.md) and [`Computed`](../arlecchino.atoms/Computed-1.md). |
+| [`IResettableAtom`](IResettableAtom.md) | An atom that knows where it began and can be put back there. One keeping no record of its own cannot tell the value it was built with from the one it holds. |
 
 ## Enums
 

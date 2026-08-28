@@ -11,6 +11,7 @@ sidebar_position: 0
 | Type | Summary |
 |---|---|
 | [`ArlecchinoBuilder`](ArlecchinoBuilder.md) | Configures an application while its services are being registered. Every method returns the builder, so a whole application is described in one chain at startup. |
+| [`ArlecchinoHost`](ArlecchinoHost.md) | Builds the host a terminal application runs on. |
 | [`ArlecchinoKeymap`](ArlecchinoKeymap.md) | Every key the framework itself reacts to, in one place. Replace the whole map through `UseKeymap`, or one binding at a time with `with`; each binding also relabels itself in the hints box and the palette. |
 | [`ArlecchinoOptions`](ArlecchinoOptions.md) | Everything the framework can be told about an application. Configure it in the `AddArlecchino` callback; most of it also has a builder call. |
 | [`ArlecchinoServiceCollectionExtensions`](ArlecchinoServiceCollectionExtensions.md) | Registers Arlecchino with the host's container. |

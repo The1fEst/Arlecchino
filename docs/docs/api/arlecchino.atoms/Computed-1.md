@@ -10,10 +10,10 @@ sidebar_label: "Computed<T>"
 A value derived from other atoms. It re-evaluates lazily and tracks whatever it read while doing so, including other computed values and branches taken only sometimes — reading `other.Value` inside the lambda is the subscription.
 
 ```csharp
-public sealed class Computed<T> : IReadableAtom<T>
+public sealed class Computed<T> : IReadableAtom<T>, IReadableAtom
 ```
 
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;, [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md)
 
 ## Constructors
 
@@ -32,6 +32,7 @@ public sealed class Computed<T> : IReadableAtom<T>
 | Member | Summary |
 |---|---|
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the derived value goes stale. |
+| [`ToString()`](#tostring) |  |
 
 ## Constructors in detail
 
@@ -78,4 +79,12 @@ Calls back whenever the derived value goes stale.
 | `listener` | `Action` | What to run on change. |
 
 **Returns** `IDisposable` — Dispose it to stop listening.
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 

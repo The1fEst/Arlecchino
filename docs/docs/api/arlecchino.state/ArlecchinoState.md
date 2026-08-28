@@ -39,7 +39,7 @@ public class ArlecchinoState
 | [`Invalidate()`](#invalidate) | Asks for a repaint. Needed only for changes the framework cannot see — a field mutated from outside, or data that arrived on a timer. |
 | [`PushModal(Modal)`](#pushmodal-modal) | Opens a dialog over whatever is already open, which is how a callback asks a follow-up question without losing what the user was in the middle of. Closing it uncovers the one underneath. |
 | [`RequestChoice(string, IReadOnlyList<string>, Action<string>, string)`](#requestchoice-string-ireadonlylist-string-action-string-string) | Asks for one option out of a list that can be filtered by typing. |
-| [`RequestColor(string, Rgb, Action<Rgb>)`](#requestcolor-string-rgb-action-rgb) | Asks for a color with a swatch and three sliders. Channels are whole numbers, so a color that goes in can come back shifted by a unit or two. |
+| [`RequestColor(string, RGB, Action<RGB>)`](#requestcolor-string-rgb-action-rgb) | Asks for a color with a swatch and three sliders. Channels are whole numbers, so a color that goes in can come back shifted by a unit or two. |
 | [`RequestConfirmation(string, Action)`](#requestconfirmation-string-action) | Asks a question that has to be confirmed before something happens. The negative answer starts selected, so a stray `Enter` cancels rather than deletes. |
 | [`RequestDate(string, DateOnly, Action<DateOnly>)`](#requestdate-string-dateonly-action-dateonly) | Asks for a date, edited one segment at a time. |
 | [`RequestEmail(string, string, Action<string>)`](#requestemail-string-string-action-string) | Asks for an email address, checked before the dialog will close. |
@@ -230,10 +230,10 @@ Asks for one option out of a list that can be filtered by typing.
 | `onPicked` | `Action<T>`&lt;`string`&gt; | Called with the chosen option. |
 | `current` | `string` | Option to start on; the first one when it is not in the list. |
 
-### `RequestColor(string, Rgb, Action<Rgb>)` {#requestcolor-string-rgb-action-rgb}
+### `RequestColor(string, RGB, Action<RGB>)` {#requestcolor-string-rgb-action-rgb}
 
 ```csharp
-public void RequestColor(string title, Rgb initial, Action<Rgb> onPicked);
+public void RequestColor(string title, RGB initial, Action<RGB> onPicked);
 ```
 
 Asks for a color with a swatch and three sliders. Channels are whole numbers, so a color that goes in can come back shifted by a unit or two.
@@ -243,8 +243,8 @@ Asks for a color with a swatch and three sliders. Channels are whole numbers, so
 | Name | Type | Description |
 |---|---|---|
 | `title` | `string` | Title of the dialog. |
-| `initial` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | Color the sliders start on. |
-| `onPicked` | `Action<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt; | Called with the chosen color. |
+| `initial` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | Color the sliders start on. |
+| `onPicked` | `Action<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt; | Called with the chosen color. |
 
 ### `RequestConfirmation(string, Action)` {#requestconfirmation-string-action}
 

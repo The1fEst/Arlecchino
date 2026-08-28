@@ -1,25 +1,25 @@
 ---
-title: "Rgb"
-sidebar_label: "Rgb"
+title: "RGB"
+sidebar_label: "RGB"
 ---
 
-# Rgb struct
+# RGB struct
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
 A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md).
 
 ```csharp
-public readonly struct Rgb : IEquatable<Rgb>
+public readonly struct RGB : IEquatable<RGB>
 ```
 
-**Implements** `IEquatable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Implements** `IEquatable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ## Constructors
 
 | Member | Summary |
 |---|---|
-| [`Rgb(byte, byte, byte)`](#rgb-byte-byte-byte) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
+| [`RGB(byte, byte, byte)`](#rgb-byte-byte-byte) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
 
 ## Properties
 
@@ -36,16 +36,16 @@ public readonly struct Rgb : IEquatable<Rgb>
 |---|---|
 | [`Deconstruct(out byte, out byte, out byte)`](#deconstruct-out-byte-out-byte-out-byte) |  |
 | [`FromHsl(int, int, int)`](#fromhsl-int-int-int) | Builds a color from hue, saturation and lightness — the form the color modal edits. |
-| [`ToHsl()`](#tohsl) | Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`Rgb.FromHsl`](../arlecchino.rendering.colors/Rgb.md#fromhsl-int-int-int) can shift a color by a unit or two. |
+| [`ToHsl()`](#tohsl) | Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`RGB.FromHsl`](../arlecchino.rendering.colors/RGB.md#fromhsl-int-int-int) can shift a color by a unit or two. |
 | [`ToString()`](#tostring) | Writes the color as its hexadecimal form. |
-| [`TryParseHex(string, out Rgb)`](#tryparsehex-string-out-rgb) | Reads a color written as `#RRGGBB` or `RRGGBB`. |
+| [`TryParseHex(string, out RGB)`](#tryparsehex-string-out-rgb) | Reads a color written as `#RRGGBB` or `RRGGBB`. |
 
 ## Constructors in detail
 
-### `Rgb(byte, byte, byte)` {#rgb-byte-byte-byte}
+### `RGB(byte, byte, byte)` {#rgb-byte-byte-byte}
 
 ```csharp
-public Rgb(byte Red, byte Green, byte Blue);
+public RGB(byte Red, byte Green, byte Blue);
 ```
 
 A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md).
@@ -119,7 +119,7 @@ public void Deconstruct(out byte Red, out byte Green, out byte Blue);
 ### `FromHsl(int, int, int)` {#fromhsl-int-int-int}
 
 ```csharp
-public static Rgb FromHsl(int hue, int saturation, int lightness);
+public static RGB FromHsl(int hue, int saturation, int lightness);
 ```
 
 Builds a color from hue, saturation and lightness — the form the color modal edits.
@@ -132,7 +132,7 @@ Builds a color from hue, saturation and lightness — the form the color modal e
 | `saturation` | `int` | Percent, clamped to `0..100`. |
 | `lightness` | `int` | Percent, clamped to `0..100`. |
 
-**Returns** [`Rgb`](../arlecchino.rendering.colors/Rgb.md) — The matching color.
+**Returns** [`RGB`](../arlecchino.rendering.colors/RGB.md) — The matching color.
 
 ### `ToHsl()` {#tohsl}
 
@@ -140,7 +140,7 @@ Builds a color from hue, saturation and lightness — the form the color modal e
 public ValueTuple<int, int, int> ToHsl();
 ```
 
-Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`Rgb.FromHsl`](../arlecchino.rendering.colors/Rgb.md#fromhsl-int-int-int) can shift a color by a unit or two.
+Splits the color back into hue, saturation and lightness. Channels are whole numbers, so a round trip through [`RGB.FromHsl`](../arlecchino.rendering.colors/RGB.md#fromhsl-int-int-int) can shift a color by a unit or two.
 
 **Returns** `ValueTuple<T1, T2, T3>`&lt;`int`, `int`, `int`&gt; — Hue in degrees, saturation and lightness in percent.
 
@@ -152,12 +152,12 @@ public override string ToString();
 
 Writes the color as its hexadecimal form.
 
-**Returns** `string` — [`Rgb.Hex`](../arlecchino.rendering.colors/Rgb.md#hex).
+**Returns** `string` — [`RGB.Hex`](../arlecchino.rendering.colors/RGB.md#hex).
 
-### `TryParseHex(string, out Rgb)` {#tryparsehex-string-out-rgb}
+### `TryParseHex(string, out RGB)` {#tryparsehex-string-out-rgb}
 
 ```csharp
-public static bool TryParseHex(string text, out Rgb color);
+public static bool TryParseHex(string text, out RGB color);
 ```
 
 Reads a color written as `#RRGGBB` or `RRGGBB`.
@@ -167,7 +167,7 @@ Reads a color written as `#RRGGBB` or `RRGGBB`.
 | Name | Type | Description |
 |---|---|---|
 | `text` | `string` | The text to read. |
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color, or `default` when the text is not six hex digits. |
+| `color` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color, or `default` when the text is not six hex digits. |
 
 **Returns** `bool` — `true` when the text was a color.
 

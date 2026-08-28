@@ -10,9 +10,10 @@ sidebar_label: "AtomsCollectionBase"
 What the five collection atoms have in common: who is listening, the check that a change is being made on the drawing thread, and the seam a subclass watches changes through.
 
 ```csharp
-public abstract class AtomsCollectionBase
+public abstract class AtomsCollectionBase : IReadableAtom
 ```
 
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md)  
 **Derived types** [`AtomsList`](../arlecchino.atoms.collections/AtomsList-1.md), [`AtomsMap`](../arlecchino.atoms.collections/AtomsMap-2.md), [`AtomsQueue`](../arlecchino.atoms.collections/AtomsQueue-1.md), [`AtomsSet`](../arlecchino.atoms.collections/AtomsSet-1.md), [`AtomsStack`](../arlecchino.atoms.collections/AtomsStack-1.md)
 
 ## Constructors

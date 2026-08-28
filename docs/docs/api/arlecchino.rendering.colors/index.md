@@ -21,8 +21,8 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`Oklch`](Oklch.md) | A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`Rgb`](../arlecchino.rendering.colors/Rgb.md) here leaves the color recognizably itself, which moving it in HSL does not. |
-| [`Rgb`](Rgb.md) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
+| [`Oklch`](Oklch.md) | A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`RGB`](../arlecchino.rendering.colors/RGB.md) here leaves the color recognizably itself, which moving it in HSL does not. |
+| [`RGB`](RGB.md) | A 24-bit color. Shown exactly only where the terminal supports true color; otherwise it is mapped to the nearest palette entry — see [`TerminalCapabilities`](../arlecchino.rendering.terminals/TerminalCapabilities.md). |
 
 ## Interfaces
 

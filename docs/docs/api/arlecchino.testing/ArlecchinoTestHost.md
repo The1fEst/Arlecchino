@@ -98,7 +98,7 @@ public AtomHistory History { get; }
 
 Undo history. It is resolved as the host is built, so edits are recorded from the start.
 
-**Type** `AtomHistory`
+**Type** [`AtomHistory`](../arlecchino.atoms.history/AtomHistory.md)
 
 ### `Navigator` {#navigator}
 

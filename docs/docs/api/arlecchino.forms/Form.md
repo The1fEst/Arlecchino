@@ -59,7 +59,7 @@ Creates the form.
 
 | Name | Type | Description |
 |---|---|---|
-| `state` | [`ArlecchinoState`](../arlecchino.state/ArlecchinoState.md) | Where fields open their dialogs. |
+| `state` | [`ArlecchinoState`](../arlecchino.state/ArlecchinoState.md) | Where the fields open their dialogs. |
 | `options` | [`ArlecchinoOptions`](../arlecchino.hosting/ArlecchinoOptions.md) | Supplies the keymap and the wording. |
 
 ## Properties in detail
@@ -67,22 +67,22 @@ Creates the form.
 ### `Current` {#current}
 
 ```csharp
-public Field? Current { get; }
+public IField? Current { get; }
 ```
 
 The selected field, or `null` when the form has none.
 
-**Type** [`Field`](../arlecchino.forms/Field.md)
+**Type** [`IField`](../arlecchino.forms/IField.md)
 
 ### `Fields` {#fields}
 
 ```csharp
-public IReadOnlyList<Field> Fields { get; init; }
+public IReadOnlyList<IField> Fields { get; init; }
 ```
 
 The rows, top to bottom.
 
-**Type** `IReadOnlyList<T>`&lt;[`Field`](../arlecchino.forms/Field.md)&gt;
+**Type** `IReadOnlyList<T>`&lt;[`IField`](../arlecchino.forms/IField.md)&gt;
 
 ### `IsFocused` {#isfocused}
 

@@ -14,14 +14,17 @@ place to look a member up.
 | Namespace | Assembly | Types |
 |---|---|---|
 | [Arlecchino](arlecchino/index.md) | `Arlecchino.Core` | 6 |
-| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 8 |
+| [Arlecchino.Atoms](arlecchino.atoms/index.md) | `Arlecchino` | 10 |
 | [Arlecchino.Atoms.Collections](arlecchino.atoms.collections/index.md) | `Arlecchino.Core` | 6 |
+| [Arlecchino.Atoms.History](arlecchino.atoms.history/index.md) | `Arlecchino.Atoms.History` | 8 |
+| [Arlecchino.Atoms.History.Collections](arlecchino.atoms.history.collections/index.md) | `Arlecchino.Atoms.History` | 5 |
+| [Arlecchino.Atoms.History.Hosting](arlecchino.atoms.history.hosting/index.md) | `Arlecchino.Atoms.History` | 2 |
 | [Arlecchino.Commands](arlecchino.commands/index.md) | `Arlecchino` | 4 |
 | [Arlecchino.Diagnostics](arlecchino.diagnostics/index.md) | `Arlecchino` | 7 |
 | [Arlecchino.Editing](arlecchino.editing/index.md) | `Arlecchino` | 15 |
 | [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 5 |
-| [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 2 |
-| [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 10 |
+| [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 8 |
+| [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 11 |
 | [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 10 |
 | [Arlecchino.Layout](arlecchino.layout/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Modals](arlecchino.modals/index.md) | `Arlecchino` | 3 |

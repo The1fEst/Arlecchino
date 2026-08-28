@@ -12,11 +12,12 @@ A map held as one piece of application state, changed in place the way [`AtomsLi
 ```csharp
 public class AtomsMap<TKey, TValue> :
     AtomsCollectionBase,
+    IReadableAtom,
     IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
 ```
 
 **Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;
 
 ## Constructors
 
@@ -49,6 +50,7 @@ public class AtomsMap<TKey, TValue> :
 | [`Reset(IReadOnlyDictionary<TKey, TValue>)`](#reset-ireadonlydictionary-tkey-tvalue) | Replaces the contents in one go, for the map that is reloaded rather than edited — settings read again, a listing answered afresh. Contents equal to what is already there change nothing. |
 | [`ResetSilently(KeyValuePair<TKey, TValue>[])`](#resetsilently-keyvaluepair-tkey-tvalue) | Swaps the contents without reaching [`AtomsMap.OnReset`](../arlecchino.atoms.collections/AtomsMap-2.md#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue). |
 | [`SetSilently(TKey, TValue)`](#setsilently-tkey-tvalue) | Puts an entry in without reaching [`AtomsMap.OnAdded`](../arlecchino.atoms.collections/AtomsMap-2.md#onadded-tkey-tvalue) or [`AtomsMap.OnReplaced`](../arlecchino.atoms.collections/AtomsMap-2.md#onreplaced-tkey-tvalue-tvalue). |
+| [`ToString()`](#tostring) |  |
 | [`TryAdd(TKey, TValue)`](#tryadd-tkey-tvalue) | Puts an entry in unless the key is taken, and says which happened — [`AtomsMap.Add`](../arlecchino.atoms.collections/AtomsMap-2.md#add-tkey-tvalue) without the exception, for the case where losing the race with an earlier entry is an answer rather than a fault. |
 | [`TryGetValue(TKey, out TValue)`](#trygetvalue-tkey-out-tvalue) | Reads an entry without throwing when it is not there. |
 | [`TryRemove(TKey, out TValue)`](#tryremove-tkey-out-tvalue) | Takes an entry out and hands back what was kept under it, which is the reading and the removal in one step rather than a lookup followed by a hope. |
@@ -292,6 +294,14 @@ Puts an entry in without reaching [`AtomsMap.OnAdded`](../arlecchino.atoms.colle
 |---|---|---|
 | `key` | `TKey` | The key. |
 | `value` | `TValue` | What to keep there. |
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 
 ### `TryAdd(TKey, TValue)` {#tryadd-tkey-tvalue}
 

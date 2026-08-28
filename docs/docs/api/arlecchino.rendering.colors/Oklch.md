@@ -7,7 +7,7 @@ sidebar_label: "Oklch"
 
 **Namespace:** `Arlecchino.Rendering.Colors` &middot; **Assembly:** `Arlecchino.Core`
 
-A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`Rgb`](../arlecchino.rendering.colors/Rgb.md) here leaves the color recognizably itself, which moving it in HSL does not.
+A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`RGB`](../arlecchino.rendering.colors/RGB.md) here leaves the color recognizably itself, which moving it in HSL does not.
 
 ```csharp
 public readonly struct Oklch : IEquatable<Oklch>
@@ -19,7 +19,7 @@ public readonly struct Oklch : IEquatable<Oklch>
 
 | Member | Summary |
 |---|---|
-| [`Oklch(double, double, double)`](#oklch-double-double-double) | A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`Rgb`](../arlecchino.rendering.colors/Rgb.md) here leaves the color recognizably itself, which moving it in HSL does not. |
+| [`Oklch(double, double, double)`](#oklch-double-double-double) | A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`RGB`](../arlecchino.rendering.colors/RGB.md) here leaves the color recognizably itself, which moving it in HSL does not. |
 
 ## Properties
 
@@ -35,7 +35,7 @@ public readonly struct Oklch : IEquatable<Oklch>
 | Member | Summary |
 |---|---|
 | [`Deconstruct(out double, out double, out double)`](#deconstruct-out-double-out-double-out-double) |  |
-| [`Of(Rgb)`](#of-rgb) | Splits a color into the three. |
+| [`Of(RGB)`](#of-rgb) | Splits a color into the three. |
 | [`ToRgb()`](#torgb) | The color as the screen shows it, trimmed to `sRGB` on the way. |
 | [`ToString()`](#tostring) | Writes the three parts out, which is what a log of a derived palette holds. |
 | [`Trimmed()`](#trimmed) | The same lightness and hue with the chroma cut back to the most `sRGB` holds. Cutting the chroma keeps the hue, where clamping the channels turns a color that is too vivid into a different color. |
@@ -48,7 +48,7 @@ public readonly struct Oklch : IEquatable<Oklch>
 public Oklch(double Lightness, double Chroma, double Hue);
 ```
 
-A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`Rgb`](../arlecchino.rendering.colors/Rgb.md) here leaves the color recognizably itself, which moving it in HSL does not.
+A color as lightness, chroma and hue, in the space where those three come apart. Moving the lightness of an [`RGB`](../arlecchino.rendering.colors/RGB.md) here leaves the color recognizably itself, which moving it in HSL does not.
 
 **Parameters**
 
@@ -116,10 +116,10 @@ public void Deconstruct(out double Lightness, out double Chroma, out double Hue)
 | `Chroma` | `double` |  |
 | `Hue` | `double` |  |
 
-### `Of(Rgb)` {#of-rgb}
+### `Of(RGB)` {#of-rgb}
 
 ```csharp
-public static Oklch Of(Rgb color);
+public static Oklch Of(RGB color);
 ```
 
 Splits a color into the three.
@@ -128,19 +128,19 @@ Splits a color into the three.
 
 | Name | Type | Description |
 |---|---|---|
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color to read. |
+| `color` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color to read. |
 
 **Returns** [`Oklch`](../arlecchino.rendering.colors/Oklch.md) — The same color, said the other way round.
 
 ### `ToRgb()` {#torgb}
 
 ```csharp
-public Rgb ToRgb();
+public RGB ToRgb();
 ```
 
 The color as the screen shows it, trimmed to `sRGB` on the way.
 
-**Returns** [`Rgb`](../arlecchino.rendering.colors/Rgb.md) — The 24-bit color.
+**Returns** [`RGB`](../arlecchino.rendering.colors/RGB.md) — The 24-bit color.
 
 ### `ToString()` {#tostring}
 

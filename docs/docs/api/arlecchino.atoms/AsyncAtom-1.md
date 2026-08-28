@@ -10,10 +10,10 @@ sidebar_label: "AsyncAtom<T>"
 A value produced by background work, with its progress exposed as state for a view to draw. Results are handed back on the drawing thread, and a new load cancels the one before it.
 
 ```csharp
-public sealed class AsyncAtom<T> : IReadableAtom<T>
+public sealed class AsyncAtom<T> : IReadableAtom<T>, IReadableAtom
 ```
 
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;, [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md)
 
 ## Constructors
 
@@ -38,6 +38,7 @@ public sealed class AsyncAtom<T> : IReadableAtom<T>
 | [`Load(Func<CancellationToken, Task<T>>)`](#load-func-cancellationtoken-task-t) | Starts work in the background, canceling whatever was already running. Returns at once; the result, or the failure, arrives later on the UI thread. |
 | [`Subscribe(Action)`](#subscribe-action) | Watches for a new value. Progress changes on their own do not notify. |
 | [`SubscribeToStatus(Action)`](#subscribetostatus-action) | Watches progress, which is what a spinner or an error line needs. |
+| [`ToString()`](#tostring) |  |
 
 ## Constructors in detail
 
@@ -152,4 +153,12 @@ Watches progress, which is what a spinner or an error line needs.
 | `listener` | `Action` | Called after the status changes. |
 
 **Returns** `IDisposable` — Dispose to stop listening.
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 

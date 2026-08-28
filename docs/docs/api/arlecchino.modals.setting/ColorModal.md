@@ -7,7 +7,7 @@ sidebar_label: "ColorModal"
 
 **Namespace:** `Arlecchino.Modals.Setting` &middot; **Assembly:** `Arlecchino`
 
-A color picked on three sliders: hue, saturation and lightness, converted to [`Rgb`](../arlecchino.rendering.colors/Rgb.md) on the way out. Both directions round to whole units, so feeding a color back in can shift it by one.
+A color picked on three sliders: hue, saturation and lightness, converted to [`RGB`](../arlecchino.rendering.colors/RGB.md) on the way out. Both directions round to whole units, so feeding a color back in can shift it by one.
 
 ```csharp
 public sealed class ColorModal : Modal
@@ -51,7 +51,7 @@ public sealed class ColorModal : Modal
 | [`MoveToMaximum()`](#movetomaximum) | Jumps the active slider to its right end. |
 | [`MoveToMinimum()`](#movetominimum) | Jumps the active slider to its left end. |
 | [`SetChannelFromFraction(ColorChannel, decimal)`](#setchannelfromfraction-colorchannel-decimal) | Places a slider's handle at a position along its track. |
-| [`SetValue(Rgb)`](#setvalue-rgb) | Loads a color into the three sliders, which is how an existing value is edited. |
+| [`SetValue(RGB)`](#setvalue-rgb) | Loads a color into the three sliders, which is how an existing value is edited. |
 | [`ValueOf(ColorChannel)`](#valueof-colorchannel) | Value of a slider, for drawing all three at once. |
 
 ## Constructors in detail
@@ -153,12 +153,12 @@ Distance from black toward white, in percent. Fifty is the pure color.
 ### `OnPicked` {#onpicked}
 
 ```csharp
-public Action<Rgb> OnPicked { get; init; }
+public Action<RGB> OnPicked { get; init; }
 ```
 
 Called with the color that was confirmed.
 
-**Type** `Action<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Action<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `Saturation` {#saturation}
 
@@ -183,12 +183,12 @@ How far the arrow keys move the active slider.
 ### `Value` {#value}
 
 ```csharp
-public Rgb Value { get; }
+public RGB Value { get; }
 ```
 
 The three sliders resolved into a color, as drawn in the swatch.
 
-**Type** [`Rgb`](../arlecchino.rendering.colors/Rgb.md)
+**Type** [`RGB`](../arlecchino.rendering.colors/RGB.md)
 
 ## Methods in detail
 
@@ -305,10 +305,10 @@ Places a slider's handle at a position along its track.
 | `channel` | [`ColorChannel`](../arlecchino.modals.setting/ColorChannel.md) | The slider to move. |
 | `fraction` | `decimal` | Position from `0` at the left end to `1` at the right; anything outside is pulled in. |
 
-### `SetValue(Rgb)` {#setvalue-rgb}
+### `SetValue(RGB)` {#setvalue-rgb}
 
 ```csharp
-public void SetValue(Rgb color);
+public void SetValue(RGB color);
 ```
 
 Loads a color into the three sliders, which is how an existing value is edited.
@@ -317,7 +317,7 @@ Loads a color into the three sliders, which is how an existing value is edited.
 
 | Name | Type | Description |
 |---|---|---|
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color to start from. |
+| `color` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color to start from. |
 
 ### `ValueOf(ColorChannel)` {#valueof-colorchannel}
 

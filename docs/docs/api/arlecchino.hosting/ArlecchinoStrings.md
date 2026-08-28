@@ -64,6 +64,7 @@ public sealed class ArlecchinoStrings
 | [`No`](#no) | The negative chip of a yes/no dialog. |
 | [`NotANumber`](#notanumber) | Shown when a number field holds something that will not parse. |
 | [`NotAUrl`](#notaurl) | Shown when a link field holds something that is not an http address. |
+| [`NotAnAllowedValue`](#notanallowedvalue) | Shown when a form field refuses what was typed. A field says which values it allows and not why the rest are refused, so this is what stands in for the reason. |
 | [`NotAnEmail`](#notanemail) | Shown when an email field holds something that is not an address. |
 | [`NothingMatches`](#nothingmatches) | Shown in place of a list when the filter matches nothing. |
 | [`NotificationsClear`](#notificationsclear) | Hint for throwing the list away. |
@@ -497,6 +498,16 @@ public Func<string> NotAUrl { get; set; }
 ```
 
 Shown when a link field holds something that is not an http address.
+
+**Type** `Func<TResult>`&lt;`string`&gt;
+
+### `NotAnAllowedValue` {#notanallowedvalue}
+
+```csharp
+public Func<string> NotAnAllowedValue { get; set; }
+```
+
+Shown when a form field refuses what was typed. A field says which values it allows and not why the rest are refused, so this is what stands in for the reason.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

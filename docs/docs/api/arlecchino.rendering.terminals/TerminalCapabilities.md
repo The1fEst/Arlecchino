@@ -29,7 +29,7 @@ public static class TerminalCapabilities
 |---|---|
 | [`DetectColor()`](#detectcolor) | Reads the environment and decides what the terminal can show. |
 | [`DetectColor(string, string, string, string)`](#detectcolor-string-string-string-string) | The same decision made from explicit values, which is what makes it testable. `NO_COLOR` or `TERM=dumb` mean no color at all; `truecolor`, `24bit` or a Windows Terminal session mean 24-bit; everything else falls back to the palette. |
-| [`NearestPaletteColor(Rgb)`](#nearestpalettecolor-rgb) | Picks the palette color closest to an exact one. This is the conversion [`RgbTermColor`](../arlecchino.rendering.colors/RgbTermColor.md) uses when the terminal cannot do 24-bit, available for your own rendering. |
+| [`NearestPaletteColor(RGB)`](#nearestpalettecolor-rgb) | Picks the palette color closest to an exact one. This is the conversion [`RgbTermColor`](../arlecchino.rendering.colors/RgbTermColor.md) uses when the terminal cannot do 24-bit, available for your own rendering. |
 | [`Resolve(ImageProtocol)`](#resolve-imageprotocol) | Turns [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) into the best of what the terminal admitted to, kitty first, and hands anything else back unchanged. With nothing detected it answers [`ImageProtocol.Blocks`](../arlecchino.rendering.terminals/ImageProtocol.md). |
 
 ## Properties in detail
@@ -37,12 +37,12 @@ public static class TerminalCapabilities
 ### `Background` {#background}
 
 ```csharp
-public static Nullable<Rgb> Background { get; set; }
+public static Nullable<RGB> Background { get; set; }
 ```
 
 The color behind the text, as the terminal reported it, or `null` when it did not say. Undrawing a sixel means painting over it, so a picture stays where it is until this is known.
 
-**Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Nullable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `CellSizeKnown` {#cellsizeknown}
 
@@ -119,10 +119,10 @@ The same decision made from explicit values, which is what makes it testable. `N
 
 **Returns** [`ColorSupport`](../arlecchino.rendering.colors/ColorSupport.md) — How much color those values imply the terminal supports.
 
-### `NearestPaletteColor(Rgb)` {#nearestpalettecolor-rgb}
+### `NearestPaletteColor(RGB)` {#nearestpalettecolor-rgb}
 
 ```csharp
-public static TerminalColor NearestPaletteColor(Rgb color);
+public static TerminalColor NearestPaletteColor(RGB color);
 ```
 
 Picks the palette color closest to an exact one. This is the conversion [`RgbTermColor`](../arlecchino.rendering.colors/RgbTermColor.md) uses when the terminal cannot do 24-bit, available for your own rendering.
@@ -131,7 +131,7 @@ Picks the palette color closest to an exact one. This is the conversion [`RgbTer
 
 | Name | Type | Description |
 |---|---|---|
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color to approximate. |
+| `color` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color to approximate. |
 
 **Returns** [`TerminalColor`](../arlecchino.rendering.colors/TerminalColor.md) — The nearest of the sixteen ANSI colors.
 

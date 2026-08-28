@@ -234,12 +234,12 @@ How long a notification stays on the output row. Once it is up the row goes quie
 ### `PaletteForBackground` {#paletteforbackground}
 
 ```csharp
-public Func<Rgb, ThemePalette>? PaletteForBackground { get; set; }
+public Func<RGB, ThemePalette>? PaletteForBackground { get; set; }
 ```
 
 Works the palette out from the color the terminal turned out to have, which is asked for as the application starts. A terminal that does not answer keeps [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) as it was given.
 
-**Type** `Func<T, TResult>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md), [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)&gt;
+**Type** `Func<T, TResult>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md), [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)&gt;
 
 ### `ShowOutputLine` {#showoutputline}
 

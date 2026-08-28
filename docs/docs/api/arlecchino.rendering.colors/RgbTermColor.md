@@ -59,22 +59,22 @@ The escape sequence for this style: 24-bit where the terminal supports it, the n
 ### `Background` {#background}
 
 ```csharp
-public Nullable<Rgb> Background { get; init; }
+public Nullable<RGB> Background { get; init; }
 ```
 
 Color behind the glyphs, or `null` to leave the background alone.
 
-**Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Nullable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `Foreground` {#foreground}
 
 ```csharp
-public Nullable<Rgb> Foreground { get; init; }
+public Nullable<RGB> Foreground { get; init; }
 ```
 
 Color of the glyphs, or `null` to leave the foreground alone.
 
-**Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Nullable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `Style` {#style}
 

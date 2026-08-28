@@ -10,11 +10,11 @@ sidebar_label: "AtomsQueue<T>"
 A queue held as one piece of application state, joined at the back and left from the front. It is touched only by the drawing thread, so background work hands its item over with `FrameThread.Post`.
 
 ```csharp
-public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
+public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom, IReadableAtom<IReadOnlyList<T>>
 ```
 
 **Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
 
@@ -47,6 +47,7 @@ public class AtomsQueue<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>
 | [`RemoveSilently(int, int)`](#removesilently-int-int) | Takes items out without reaching [`AtomsQueue.OnRemoved`](../arlecchino.atoms.collections/AtomsQueue-1.md#onremoved-int-t). |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces what is waiting in one go, for a queue that is rebuilt rather than worked through — a plan worked out again, a batch reordered. Contents equal to what is already there change nothing. |
 | [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsQueue.OnReset`](../arlecchino.atoms.collections/AtomsQueue-1.md#onreset-t-t). |
+| [`ToString()`](#tostring) |  |
 | [`TryDequeue(out T)`](#trydequeue-out-t) | Takes the one at the front without throwing when nothing is waiting. |
 | [`TryPeek(out T)`](#trypeek-out-t) | Reads the one at the front without taking it or throwing. |
 
@@ -268,6 +269,14 @@ Swaps the contents without reaching [`AtomsQueue.OnReset`](../arlecchino.atoms.c
 | Name | Type | Description |
 |---|---|---|
 | `items` | `T`\[\] | What the queue should hold, front first. |
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 
 ### `TryDequeue(out T)` {#trydequeue-out-t}
 

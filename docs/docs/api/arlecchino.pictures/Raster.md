@@ -19,7 +19,7 @@ public sealed class Raster : IEquatable<Raster>
 
 | Member | Summary |
 |---|---|
-| [`Raster(Rgb[], int, int)`](#raster-rgb-int-int) | What a picture turned out to hold, ready to be handed to a widget that draws pixels. |
+| [`Raster(RGB[], int, int)`](#raster-rgb-int-int) | What a picture turned out to hold, ready to be handed to a widget that draws pixels. |
 
 ## Properties
 
@@ -33,14 +33,14 @@ public sealed class Raster : IEquatable<Raster>
 
 | Member | Summary |
 |---|---|
-| [`Deconstruct(out Rgb[], out int, out int)`](#deconstruct-out-rgb-out-int-out-int) |  |
+| [`Deconstruct(out RGB[], out int, out int)`](#deconstruct-out-rgb-out-int-out-int) |  |
 
 ## Constructors in detail
 
-### `Raster(Rgb[], int, int)` {#raster-rgb-int-int}
+### `Raster(RGB[], int, int)` {#raster-rgb-int-int}
 
 ```csharp
-public Raster(Rgb[] Pixels, int Width, int Height);
+public Raster(RGB[] Pixels, int Width, int Height);
 ```
 
 What a picture turned out to hold, ready to be handed to a widget that draws pixels.
@@ -49,7 +49,7 @@ What a picture turned out to hold, ready to be handed to a widget that draws pix
 
 | Name | Type | Description |
 |---|---|---|
-| `Pixels` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md)\[\] | The pixels, row by row from the top left. |
+| `Pixels` | [`RGB`](../arlecchino.rendering.colors/RGB.md)\[\] | The pixels, row by row from the top left. |
 | `Width` | `int` | How wide it is. |
 | `Height` | `int` | How tall it is. |
 
@@ -68,12 +68,12 @@ How tall it is.
 ### `Pixels` {#pixels}
 
 ```csharp
-public Rgb[] Pixels { get; init; }
+public RGB[] Pixels { get; init; }
 ```
 
 The pixels, row by row from the top left.
 
-**Type** [`Rgb`](../arlecchino.rendering.colors/Rgb.md)\[\]
+**Type** [`RGB`](../arlecchino.rendering.colors/RGB.md)\[\]
 
 ### `Width` {#width}
 
@@ -87,17 +87,17 @@ How wide it is.
 
 ## Methods in detail
 
-### `Deconstruct(out Rgb[], out int, out int)` {#deconstruct-out-rgb-out-int-out-int}
+### `Deconstruct(out RGB[], out int, out int)` {#deconstruct-out-rgb-out-int-out-int}
 
 ```csharp
-public void Deconstruct(out Rgb[] Pixels, out int Width, out int Height);
+public void Deconstruct(out RGB[] Pixels, out int Width, out int Height);
 ```
 
 **Parameters**
 
 | Name | Type | Description |
 |---|---|---|
-| `Pixels` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md)\[\] |  |
+| `Pixels` | [`RGB`](../arlecchino.rendering.colors/RGB.md)\[\] |  |
 | `Width` | `int` |  |
 | `Height` | `int` |  |
 

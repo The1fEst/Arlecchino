@@ -23,10 +23,10 @@ public static class Contrast
 
 | Member | Summary |
 |---|---|
-| [`Between(Rgb, Rgb)`](#between-rgb-rgb) | The ratio between two colors, whichever way round they are given. |
-| [`IsDark(Rgb)`](#isdark-rgb) | Whether a background wants light text on it. |
-| [`Luminance(Rgb)`](#luminance-rgb) | How much light a color sends back, weighted the way an eye weights the three channels. |
-| [`Reach(Rgb)`](#reach-rgb) | The most contrast this background can give in the one direction text goes on it. A mid-gray background reaches about 5, so a ladder written for black cannot be had on it at any lightness. |
+| [`Between(RGB, RGB)`](#between-rgb-rgb) | The ratio between two colors, whichever way round they are given. |
+| [`IsDark(RGB)`](#isdark-rgb) | Whether a background wants light text on it. |
+| [`Luminance(RGB)`](#luminance-rgb) | How much light a color sends back, weighted the way an eye weights the three channels. |
+| [`Reach(RGB)`](#reach-rgb) | The most contrast this background can give in the one direction text goes on it. A mid-gray background reaches about 5, so a ladder written for black cannot be had on it at any lightness. |
 
 ## Fields in detail
 
@@ -42,10 +42,10 @@ The luminance at which a background is as far from white as it is from black. Be
 
 ## Methods in detail
 
-### `Between(Rgb, Rgb)` {#between-rgb-rgb}
+### `Between(RGB, RGB)` {#between-rgb-rgb}
 
 ```csharp
-public static double Between(Rgb one, Rgb other);
+public static double Between(RGB one, RGB other);
 ```
 
 The ratio between two colors, whichever way round they are given.
@@ -54,15 +54,15 @@ The ratio between two colors, whichever way round they are given.
 
 | Name | Type | Description |
 |---|---|---|
-| `one` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The first color. |
-| `other` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The second color. |
+| `one` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The first color. |
+| `other` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The second color. |
 
 **Returns** `double` — The ratio, from 1 to 21.
 
-### `IsDark(Rgb)` {#isdark-rgb}
+### `IsDark(RGB)` {#isdark-rgb}
 
 ```csharp
-public static bool IsDark(Rgb background);
+public static bool IsDark(RGB background);
 ```
 
 Whether a background wants light text on it.
@@ -71,14 +71,14 @@ Whether a background wants light text on it.
 
 | Name | Type | Description |
 |---|---|---|
-| `background` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color behind the text. |
+| `background` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color behind the text. |
 
 **Returns** `bool` — `true` when the background is the darker side of [`Contrast.Pivot`](../arlecchino.rendering.colors/Contrast.md#pivot).
 
-### `Luminance(Rgb)` {#luminance-rgb}
+### `Luminance(RGB)` {#luminance-rgb}
 
 ```csharp
-public static double Luminance(Rgb color);
+public static double Luminance(RGB color);
 ```
 
 How much light a color sends back, weighted the way an eye weights the three channels.
@@ -87,14 +87,14 @@ How much light a color sends back, weighted the way an eye weights the three cha
 
 | Name | Type | Description |
 |---|---|---|
-| `color` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color to measure. |
+| `color` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color to measure. |
 
 **Returns** `double` — Luminance, from 0 for black to 1 for white.
 
-### `Reach(Rgb)` {#reach-rgb}
+### `Reach(RGB)` {#reach-rgb}
 
 ```csharp
-public static double Reach(Rgb background);
+public static double Reach(RGB background);
 ```
 
 The most contrast this background can give in the one direction text goes on it. A mid-gray background reaches about 5, so a ladder written for black cannot be had on it at any lightness.
@@ -103,7 +103,7 @@ The most contrast this background can give in the one direction text goes on it.
 
 | Name | Type | Description |
 |---|---|---|
-| `background` | [`Rgb`](../arlecchino.rendering.colors/Rgb.md) | The color behind the text. |
+| `background` | [`RGB`](../arlecchino.rendering.colors/RGB.md) | The color behind the text. |
 
 **Returns** `double` — The ratio against white or black, whichever this background is further from.
 

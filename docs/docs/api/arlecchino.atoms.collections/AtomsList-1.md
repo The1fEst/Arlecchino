@@ -10,11 +10,11 @@ sidebar_label: "AtomsList<T>"
 A list held as one piece of application state, changed in place. Every change notifies what reads the list and marks the frame stale.
 
 ```csharp
-public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
+public class AtomsList<T> : AtomsCollectionBase, IReadableAtom, IReadableAtom<IReadOnlyList<T>>
 ```
 
 **Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
 
@@ -53,6 +53,7 @@ public class AtomsList<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces the contents in one go, for the case the list is not edited but reloaded — a query answered, a folder read again, a filter applied. Contents equal to what is already there change nothing. |
 | [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsList.OnReset`](../arlecchino.atoms.collections/AtomsList-1.md#onreset-t-t). |
 | [`SetSilently(int, T)`](#setsilently-int-t) | Replaces an item without reaching [`AtomsList.OnReplaced`](../arlecchino.atoms.collections/AtomsList-1.md#onreplaced-int-t-t). |
+| [`ToString()`](#tostring) |  |
 
 ## Constructors in detail
 
@@ -378,4 +379,12 @@ Replaces an item without reaching [`AtomsList.OnReplaced`](../arlecchino.atoms.c
 |---|---|---|
 | `index` | `int` | Which one. |
 | `item` | `T` | What to put there. |
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 

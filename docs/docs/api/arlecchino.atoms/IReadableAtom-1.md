@@ -10,8 +10,10 @@ sidebar_label: "IReadableAtom<T>"
 Something that holds a value and tells interested parties when it changes. Implemented by [`Atom`](../arlecchino.atoms/Atom-1.md) and [`Computed`](../arlecchino.atoms/Computed-1.md).
 
 ```csharp
-public interface IReadableAtom<T>
+public interface IReadableAtom<T> : IReadableAtom
 ```
+
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md)
 
 ## Properties
 
@@ -23,7 +25,7 @@ public interface IReadableAtom<T>
 
 | Member | Summary |
 |---|---|
-| [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the value changes. |
+| [`ToString()`](#tostring) | The value written out, which is what a widget shows when it is given no wording of its own. |
 
 ## Properties in detail
 
@@ -39,19 +41,13 @@ The current value. Reading it inside a [`Computed`](../arlecchino.atoms/Computed
 
 ## Methods in detail
 
-### `Subscribe(Action)` {#subscribe-action}
+### `ToString()` {#tostring}
 
 ```csharp
-public abstract IDisposable Subscribe(Action listener);
+public abstract string ToString();
 ```
 
-Calls back whenever the value changes.
+The value written out, which is what a widget shows when it is given no wording of its own.
 
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `listener` | `Action` | What to run on change. |
-
-**Returns** `IDisposable` — Dispose it to stop listening; a view that subscribes must do so when it goes away.
+**Returns** `string` — The text.
 

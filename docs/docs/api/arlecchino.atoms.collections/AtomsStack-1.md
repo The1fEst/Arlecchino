@@ -10,11 +10,11 @@ sidebar_label: "AtomsStack<T>"
 A stack held as one piece of application state, put on and taken off the top. [`AtomsStack.Value`](../arlecchino.atoms.collections/AtomsStack-1.md#value) reads from the top down, so `Value[0]` is what [`AtomsStack.Peek`](../arlecchino.atoms.collections/AtomsStack-1.md#peek) answers.
 
 ```csharp
-public class AtomsStack<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>>
+public class AtomsStack<T> : AtomsCollectionBase, IReadableAtom, IReadableAtom<IReadOnlyList<T>>
 ```
 
 **Inherits from** [`AtomsCollectionBase`](../arlecchino.atoms.collections/AtomsCollectionBase.md)  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
 
 ## Constructors
 
@@ -47,6 +47,7 @@ public class AtomsStack<T> : AtomsCollectionBase, IReadableAtom<IReadOnlyList<T>
 | [`RemoveSilently(int, int)`](#removesilently-int-int) | Takes items off without reaching [`AtomsStack.OnRemoved`](../arlecchino.atoms.collections/AtomsStack-1.md#onremoved-int-t). |
 | [`Reset(IReadOnlyList<T>)`](#reset-ireadonlylist-t) | Replaces what is on the stack in one go, for a stack that is rebuilt rather than unwound. Contents equal to what is already there change nothing. |
 | [`ResetSilently(T[])`](#resetsilently-t) | Swaps the contents without reaching [`AtomsStack.OnReset`](../arlecchino.atoms.collections/AtomsStack-1.md#onreset-t-t). |
+| [`ToString()`](#tostring) |  |
 | [`TryPeek(out T)`](#trypeek-out-t) | Reads the one on top without taking it or throwing. |
 | [`TryPop(out T)`](#trypop-out-t) | Takes the one on top without throwing when the stack is empty. |
 
@@ -268,6 +269,14 @@ Swaps the contents without reaching [`AtomsStack.OnReset`](../arlecchino.atoms.c
 | Name | Type | Description |
 |---|---|---|
 | `items` | `T`\[\] | What the stack should hold, top first. |
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 
 ### `TryPeek(out T)` {#trypeek-out-t}
 

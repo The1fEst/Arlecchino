@@ -71,22 +71,22 @@ Color behind the glyphs. [`TerminalColor.Default`](../arlecchino.rendering.color
 ### `ExactBackground` {#exactbackground}
 
 ```csharp
-public Nullable<Rgb> ExactBackground { get; init; }
+public Nullable<RGB> ExactBackground { get; init; }
 ```
 
 The same for what is behind the glyphs, falling back to [`TermColor.Background`](../arlecchino.rendering.colors/TermColor.md#background).
 
-**Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Nullable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `ExactForeground` {#exactforeground}
 
 ```csharp
-public Nullable<Rgb> ExactForeground { get; init; }
+public Nullable<RGB> ExactForeground { get; init; }
 ```
 
 An exact color for the glyphs, used where the terminal can do 24-bit. Set [`TermColor.Foreground`](../arlecchino.rendering.colors/TermColor.md#foreground) as well, and it becomes the chosen fallback rather than the nearest one arithmetic finds.
 
-**Type** `Nullable<T>`&lt;[`Rgb`](../arlecchino.rendering.colors/Rgb.md)&gt;
+**Type** `Nullable<T>`&lt;[`RGB`](../arlecchino.rendering.colors/RGB.md)&gt;
 
 ### `Foreground` {#foreground}
 

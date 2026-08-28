@@ -18,6 +18,6 @@ public enum ColorSupport : byte
 | Name | Value | Summary |
 |---|---:|---|
 | `None` | `0` | No color at all: styles emit nothing, not even the per-line reset. Chosen for `NO_COLOR`, `TERM=dumb`, or a Windows console that refused virtual terminal mode. |
-| `Palette` | `1` | The sixteen ANSI colors; a [`Rgb`](../arlecchino.rendering.colors/Rgb.md) is mapped to the nearest of them. |
+| `Palette` | `1` | The sixteen ANSI colors; a [`RGB`](../arlecchino.rendering.colors/RGB.md) is mapped to the nearest of them. |
 | `TrueColor` | `2` | Full 24-bit color, so [`RgbTermColor`](../arlecchino.rendering.colors/RgbTermColor.md) emits exact values. |
 

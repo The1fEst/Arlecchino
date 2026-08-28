@@ -10,10 +10,10 @@ sidebar_label: "Atom<T>"
 One piece of application state that notifies what reads it and marks the frame stale by itself.
 
 ```csharp
-public class Atom<T> : IReadableAtom<T>
+public class Atom<T> : IReadableAtom<T>, IReadableAtom
 ```
 
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`T`&gt;, [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md)
 
 ## Constructors
 
@@ -34,6 +34,7 @@ public class Atom<T> : IReadableAtom<T>
 | [`OnWritten(T, T)`](#onwritten-t-t) | Called once the value has changed and before subscribers hear of it. The atom does nothing with it; it is where a subclass keeps a record of its own, and [`Atom.WriteSilently`](../arlecchino.atoms/Atom-1.md#writesilently-t) does not reach it. |
 | [`Post(T)`](#post-t) | Hands a value to the drawing thread, to be written just before the next frame in the order it was posted. Nothing is written when this returns, and atoms that must change together belong in one `FrameThread.Post`. |
 | [`Subscribe(Action)`](#subscribe-action) | Calls back whenever the value changes. |
+| [`ToString()`](#tostring) |  |
 | [`WriteSilently(T)`](#writesilently-t) | Writes without reaching [`Atom.OnWritten`](../arlecchino.atoms/Atom-1.md#onwritten-t-t). It is how a subclass puts a value back: replaying what it recorded must not be recorded again. |
 
 ## Constructors in detail
@@ -111,6 +112,14 @@ Calls back whenever the value changes.
 | `listener` | `Action` | What to run on change. |
 
 **Returns** `IDisposable` — Dispose it to stop listening.
+
+### `ToString()` {#tostring}
+
+```csharp
+public virtual string ToString();
+```
+
+**Returns** `string`
 
 ### `WriteSilently(T)` {#writesilently-t}
 
