@@ -13,23 +13,26 @@ A stack whose changes go on the undo stack. A plain [`AtomsStack`](../arlecchino
 public sealed class HistoryAtomsStack<T> :
     AtomsStack<T>,
     IReadableAtom,
-    IReadableAtom<IReadOnlyList<T>>
+    IReadableAtom<IReadOnlyList<T>>,
+    IRestorableAtom,
+    IHistoryCollection<T>
 ```
 
 **Inherits from** [`AtomsStack`](../arlecchino.atoms.collections/AtomsStack-1.md)&lt;`T`&gt;  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyList<T>`&lt;`T`&gt;&gt;, [`IRestorableAtom`](../arlecchino.atoms.history/IRestorableAtom.md), `IHistoryCollection<T>`&lt;`T`&gt;
 
 ## Constructors
 
 | Member | Summary |
 |---|---|
-| [`HistoryAtomsStack(IReadOnlyList<T>)`](#historyatomsstack-ireadonlylist-t) | Creates a stack that keeps history. |
+| [`HistoryAtomsStack(string, IReadOnlyList<T>)`](#historyatomsstack-string-ireadonlylist-t) | Creates a stack that keeps history. |
 
 ## Properties
 
 | Member | Summary |
 |---|---|
 | [`IsObserved`](#isobserved) |  |
+| [`Key`](#key) | What the stack is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename. |
 
 ## Methods
 
@@ -38,13 +41,14 @@ public sealed class HistoryAtomsStack<T> :
 | [`OnInserted(int, T[])`](#oninserted-int-t) |  |
 | [`OnRemoved(int, T[])`](#onremoved-int-t) |  |
 | [`OnReset(T[], T[])`](#onreset-t-t) |  |
+| [`Restore(IValueReader)`](#restore-ivaluereader) |  |
 
 ## Constructors in detail
 
-### `HistoryAtomsStack(IReadOnlyList<T>)` {#historyatomsstack-ireadonlylist-t}
+### `HistoryAtomsStack(string, IReadOnlyList<T>)` {#historyatomsstack-string-ireadonlylist-t}
 
 ```csharp
-public HistoryAtomsStack(IReadOnlyList<T> initial);
+public HistoryAtomsStack(string key, IReadOnlyList<T> initial);
 ```
 
 Creates a stack that keeps history.
@@ -53,7 +57,14 @@ Creates a stack that keeps history.
 
 | Name | Type | Description |
 |---|---|---|
+| `key` | `string` | What the stack is called; see [`HistoryAtomsStack.Key`](../arlecchino.atoms.history.collections/HistoryAtomsStack-1.md#key). |
 | `initial` | `IReadOnlyList<T>`&lt;`T`&gt; | What is already on it, top first; empty when omitted. It is copied, not held. |
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | The name is taken by an atom holding something else. |
 
 ## Properties in detail
 
@@ -64,6 +75,16 @@ public virtual bool IsObserved { get; }
 ```
 
 **Type** `bool`
+
+### `Key` {#key}
+
+```csharp
+public string Key { get; }
+```
+
+What the stack is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename.
+
+**Type** `string`
 
 ## Methods in detail
 
@@ -105,4 +126,18 @@ public virtual void OnReset(T[] previous, T[] current);
 |---|---|---|
 | `previous` | `T`\[\] |  |
 | `current` | `T`\[\] |  |
+
+### `Restore(IValueReader)` {#restore-ivaluereader}
+
+```csharp
+public IAtomEdit Restore(IValueReader reader);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `reader` | [`IValueReader`](../arlecchino.atoms.history/IValueReader.md) |  |
+
+**Returns** [`IAtomEdit`](../arlecchino.atoms.history/IAtomEdit.md)
 

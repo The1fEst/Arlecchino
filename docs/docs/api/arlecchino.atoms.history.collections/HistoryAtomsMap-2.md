@@ -13,23 +13,26 @@ A map whose changes go on the undo stack. A plain [`AtomsMap`](../arlecchino.ato
 public sealed class HistoryAtomsMap<TKey, TValue> :
     AtomsMap<TKey, TValue>,
     IReadableAtom,
-    IReadableAtom<IReadOnlyDictionary<TKey, TValue>>
+    IReadableAtom<IReadOnlyDictionary<TKey, TValue>>,
+    IRestorableAtom,
+    IHistoryCollection<KeyValuePair<TKey, TValue>>
 ```
 
 **Inherits from** [`AtomsMap`](../arlecchino.atoms.collections/AtomsMap-2.md)&lt;`TKey`, `TValue`&gt;  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;, [`IRestorableAtom`](../arlecchino.atoms.history/IRestorableAtom.md), `IHistoryCollection<T>`&lt;`KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;&gt;
 
 ## Constructors
 
 | Member | Summary |
 |---|---|
-| [`HistoryAtomsMap(IReadOnlyDictionary<TKey, TValue>, IEqualityComparer<TKey>)`](#historyatomsmap-ireadonlydictionary-tkey-tvalue-iequalitycomparer-tkey) | Creates a map that keeps history. |
+| [`HistoryAtomsMap(string, IReadOnlyDictionary<TKey, TValue>, IEqualityComparer<TKey>)`](#historyatomsmap-string-ireadonlydictionary-tkey-tvalue-iequalitycomparer-tkey) | Creates a map that keeps history. |
 
 ## Properties
 
 | Member | Summary |
 |---|---|
 | [`IsObserved`](#isobserved) |  |
+| [`Key`](#key) | What the map is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename. |
 
 ## Methods
 
@@ -39,13 +42,17 @@ public sealed class HistoryAtomsMap<TKey, TValue> :
 | [`OnRemoved(TKey, TValue)`](#onremoved-tkey-tvalue) |  |
 | [`OnReplaced(TKey, TValue, TValue)`](#onreplaced-tkey-tvalue-tvalue) |  |
 | [`OnReset(KeyValuePair<TKey, TValue>[], KeyValuePair<TKey, TValue>[])`](#onreset-keyvaluepair-tkey-tvalue-keyvaluepair-tkey-tvalue) |  |
+| [`Restore(IValueReader)`](#restore-ivaluereader) |  |
 
 ## Constructors in detail
 
-### `HistoryAtomsMap(IReadOnlyDictionary<TKey, TValue>, IEqualityComparer<TKey>)` {#historyatomsmap-ireadonlydictionary-tkey-tvalue-iequalitycomparer-tkey}
+### `HistoryAtomsMap(string, IReadOnlyDictionary<TKey, TValue>, IEqualityComparer<TKey>)` {#historyatomsmap-string-ireadonlydictionary-tkey-tvalue-iequalitycomparer-tkey}
 
 ```csharp
-public HistoryAtomsMap(IReadOnlyDictionary<TKey, TValue> initial, IEqualityComparer<TKey> comparer);
+public HistoryAtomsMap(
+    string key,
+    IReadOnlyDictionary<TKey, TValue> initial,
+    IEqualityComparer<TKey> comparer);
 ```
 
 Creates a map that keeps history.
@@ -54,8 +61,15 @@ Creates a map that keeps history.
 
 | Name | Type | Description |
 |---|---|---|
+| `key` | `string` | What the map is called; see [`HistoryAtomsMap.Key`](../arlecchino.atoms.history.collections/HistoryAtomsMap-2.md#key). |
 | `initial` | `IReadOnlyDictionary<TKey, TValue>`&lt;`TKey`, `TValue`&gt; | What it starts with; empty when omitted. It is copied, not held. |
 | `comparer` | `IEqualityComparer<T>`&lt;`TKey`&gt; | How keys are compared. |
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | The name is taken by an atom holding something else. |
 
 ## Properties in detail
 
@@ -66,6 +80,16 @@ public virtual bool IsObserved { get; }
 ```
 
 **Type** `bool`
+
+### `Key` {#key}
+
+```csharp
+public string Key { get; }
+```
+
+What the map is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename.
+
+**Type** `string`
 
 ## Methods in detail
 
@@ -123,4 +147,18 @@ public virtual void OnReset(
 |---|---|---|
 | `previous` | `KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;\[\] |  |
 | `current` | `KeyValuePair<TKey, TValue>`&lt;`TKey`, `TValue`&gt;\[\] |  |
+
+### `Restore(IValueReader)` {#restore-ivaluereader}
+
+```csharp
+public IAtomEdit Restore(IValueReader reader);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `reader` | [`IValueReader`](../arlecchino.atoms.history/IValueReader.md) |  |
+
+**Returns** [`IAtomEdit`](../arlecchino.atoms.history/IAtomEdit.md)
 

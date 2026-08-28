@@ -24,8 +24,7 @@ public sealed class HistoryOptions
 | Member | Summary |
 |---|---|
 | [`Capacity`](#capacity) | How many steps to keep before the oldest fall off the far end. |
-| [`FileName`](#filename) | What the history file is called. It sits beside the program unless the name has a folder in it. |
-| [`Keep`](#keep) | Whether the file outlives the run. The default throws it away on the way out and again on the way in, so it is only ever a scratch file of the run that is up. |
+| [`FileName`](#filename) | What the history file is called, or `null` for a history kept in memory. A file sits beside the program, outlives the run, and is what the next one comes up in. |
 
 ## Constructors in detail
 
@@ -53,17 +52,7 @@ How many steps to keep before the oldest fall off the far end.
 public string? FileName { get; set; }
 ```
 
-What the history file is called. It sits beside the program unless the name has a folder in it.
+What the history file is called, or `null` for a history kept in memory. A file sits beside the program, outlives the run, and is what the next one comes up in.
 
 **Type** `string`
-
-### `Keep` {#keep}
-
-```csharp
-public bool Keep { get; set; }
-```
-
-Whether the file outlives the run. The default throws it away on the way out and again on the way in, so it is only ever a scratch file of the run that is up.
-
-**Type** `bool`
 

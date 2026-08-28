@@ -10,23 +10,29 @@ sidebar_label: "HistoryAtomsSet<T>"
 A set whose changes go on the undo stack. A plain [`AtomsSet`](../arlecchino.atoms.collections/AtomsSet-1.md) is the one whose changes do not.
 
 ```csharp
-public sealed class HistoryAtomsSet<T> : AtomsSet<T>, IReadableAtom, IReadableAtom<IReadOnlySet<T>>
+public sealed class HistoryAtomsSet<T> :
+    AtomsSet<T>,
+    IReadableAtom,
+    IReadableAtom<IReadOnlySet<T>>,
+    IRestorableAtom,
+    IHistoryCollection<T>
 ```
 
 **Inherits from** [`AtomsSet`](../arlecchino.atoms.collections/AtomsSet-1.md)&lt;`T`&gt;  
-**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlySet<T>`&lt;`T`&gt;&gt;
+**Implements** [`IReadableAtom`](../arlecchino.atoms/IReadableAtom.md), [`IReadableAtom`](../arlecchino.atoms/IReadableAtom-1.md)&lt;`IReadOnlySet<T>`&lt;`T`&gt;&gt;, [`IRestorableAtom`](../arlecchino.atoms.history/IRestorableAtom.md), `IHistoryCollection<T>`&lt;`T`&gt;
 
 ## Constructors
 
 | Member | Summary |
 |---|---|
-| [`HistoryAtomsSet(IReadOnlyList<T>, IEqualityComparer<T>)`](#historyatomsset-ireadonlylist-t-iequalitycomparer-t) | Creates a set that keeps history. |
+| [`HistoryAtomsSet(string, IReadOnlyList<T>, IEqualityComparer<T>)`](#historyatomsset-string-ireadonlylist-t-iequalitycomparer-t) | Creates a set that keeps history. |
 
 ## Properties
 
 | Member | Summary |
 |---|---|
 | [`IsObserved`](#isobserved) |  |
+| [`Key`](#key) | What the set is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename. |
 
 ## Methods
 
@@ -35,13 +41,14 @@ public sealed class HistoryAtomsSet<T> : AtomsSet<T>, IReadableAtom, IReadableAt
 | [`OnAdded(T[])`](#onadded-t) |  |
 | [`OnRemoved(T[])`](#onremoved-t) |  |
 | [`OnReset(T[], T[])`](#onreset-t-t) |  |
+| [`Restore(IValueReader)`](#restore-ivaluereader) |  |
 
 ## Constructors in detail
 
-### `HistoryAtomsSet(IReadOnlyList<T>, IEqualityComparer<T>)` {#historyatomsset-ireadonlylist-t-iequalitycomparer-t}
+### `HistoryAtomsSet(string, IReadOnlyList<T>, IEqualityComparer<T>)` {#historyatomsset-string-ireadonlylist-t-iequalitycomparer-t}
 
 ```csharp
-public HistoryAtomsSet(IReadOnlyList<T> initial, IEqualityComparer<T> comparer);
+public HistoryAtomsSet(string key, IReadOnlyList<T> initial, IEqualityComparer<T> comparer);
 ```
 
 Creates a set that keeps history.
@@ -50,8 +57,15 @@ Creates a set that keeps history.
 
 | Name | Type | Description |
 |---|---|---|
+| `key` | `string` | What the set is called; see [`HistoryAtomsSet.Key`](../arlecchino.atoms.history.collections/HistoryAtomsSet-1.md#key). |
 | `initial` | `IReadOnlyList<T>`&lt;`T`&gt; | What it starts with; empty when omitted. It is copied, not held. |
 | `comparer` | `IEqualityComparer<T>`&lt;`T`&gt; | How items are compared. |
+
+**Exceptions**
+
+| Type | Thrown when |
+|---|---|
+| `InvalidOperationException` | The name is taken by an atom holding something else. |
 
 ## Properties in detail
 
@@ -62,6 +76,16 @@ public virtual bool IsObserved { get; }
 ```
 
 **Type** `bool`
+
+### `Key` {#key}
+
+```csharp
+public string Key { get; }
+```
+
+What the set is called in a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md), written in full — usually the store and the property — so that it outlives a rename.
+
+**Type** `string`
 
 ## Methods in detail
 
@@ -101,4 +125,18 @@ public virtual void OnReset(T[] previous, T[] current);
 |---|---|---|
 | `previous` | `T`\[\] |  |
 | `current` | `T`\[\] |  |
+
+### `Restore(IValueReader)` {#restore-ivaluereader}
+
+```csharp
+public IAtomEdit Restore(IValueReader reader);
+```
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `reader` | [`IValueReader`](../arlecchino.atoms.history/IValueReader.md) |  |
+
+**Returns** [`IAtomEdit`](../arlecchino.atoms.history/IAtomEdit.md)
 

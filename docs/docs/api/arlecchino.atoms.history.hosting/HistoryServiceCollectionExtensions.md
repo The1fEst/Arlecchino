@@ -17,7 +17,7 @@ public static class HistoryServiceCollectionExtensions
 
 | Member | Summary |
 |---|---|
-| [`UseHistory(IServiceCollection, Action<HistoryOptions>)`](#usehistory-iservicecollection-action-historyoptions) | Adds undo and redo. Without this call an application has atoms and no history: nothing records steps, and the atoms that could feed one allocate nothing for it.  ```csharp builder.Services.UseHistory(options => options.Keep = true);  ``` |
+| [`UseHistory(IServiceCollection, Action<HistoryOptions>)`](#usehistory-iservicecollection-action-historyoptions) | Adds undo and redo; without this call nothing records a step. Naming a file makes the history outlive the run, and without one it is kept in memory.  ```csharp builder.Services.UseHistory(options => options.FileName = "session.undo");  ``` |
 
 ## Methods in detail
 
@@ -29,10 +29,10 @@ public static IServiceCollection UseHistory(
     Action<HistoryOptions>? configure = null);
 ```
 
-Adds undo and redo. Without this call an application has atoms and no history: nothing records steps, and the atoms that could feed one allocate nothing for it.
+Adds undo and redo; without this call nothing records a step. Naming a file makes the history outlive the run, and without one it is kept in memory.
 
 ```csharp
-builder.Services.UseHistory(options => options.Keep = true);
+builder.Services.UseHistory(options => options.FileName = "session.undo");
 
 ```
 

@@ -7,7 +7,7 @@ sidebar_label: "IWritableAtomEdit"
 
 **Namespace:** `Arlecchino.Atoms.History` &middot; **Assembly:** `Arlecchino.Atoms.History`
 
-An edit a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md) can keep for longer than the run that made it. Edits of the collection atoms are a position and a span rather than a value, so they do not implement it.
+An edit a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md) can keep for longer than the run that made it. An edit of an atom that was never named cannot be written, and says so from [`IWritableAtomEdit.WriteTo`](../arlecchino.atoms.history/IWritableAtomEdit.md#writeto-ivaluewriter).
 
 ```csharp
 public interface IWritableAtomEdit : IAtomEdit
@@ -19,7 +19,7 @@ public interface IWritableAtomEdit : IAtomEdit
 
 | Member | Summary |
 |---|---|
-| [`Key`](#key) | What the atom is called in the file. |
+| [`Key`](#key) | What the atom is called in the file. Read only once [`IWritableAtomEdit.WriteTo`](../arlecchino.atoms.history/IWritableAtomEdit.md#writeto-ivaluewriter) has agreed. |
 
 ## Methods
 
@@ -35,7 +35,7 @@ public interface IWritableAtomEdit : IAtomEdit
 public string Key { get; }
 ```
 
-What the atom is called in the file.
+What the atom is called in the file. Read only once [`IWritableAtomEdit.WriteTo`](../arlecchino.atoms.history/IWritableAtomEdit.md#writeto-ivaluewriter) has agreed.
 
 **Type** `string`
 

@@ -7,13 +7,13 @@ sidebar_label: "IRestorableAtom"
 
 **Namespace:** `Arlecchino.Atoms.History` &middot; **Assembly:** `Arlecchino.Atoms.History`
 
-An atom a step can be handed back to, which is how a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md) written by an earlier run reaches the atoms of this one. Named atoms answer to their [`HistoryAtom.Key`](../arlecchino.atoms.history/HistoryAtom-1.md#key).
+An atom a step can be handed back to, which is how a [`HistoryFile`](../arlecchino.atoms.history/HistoryFile.md) written by an earlier run reaches the atoms of this one. It answers to the name it was given.
 
 ```csharp
 public interface IRestorableAtom
 ```
 
-**Implemented by** [`HistoryAtom`](../arlecchino.atoms.history/HistoryAtom-1.md)
+**Implemented by** [`HistoryAtom`](../arlecchino.atoms.history/HistoryAtom-1.md), [`HistoryAtomsList`](../arlecchino.atoms.history.collections/HistoryAtomsList-1.md), [`HistoryAtomsMap`](../arlecchino.atoms.history.collections/HistoryAtomsMap-2.md), [`HistoryAtomsQueue`](../arlecchino.atoms.history.collections/HistoryAtomsQueue-1.md), [`HistoryAtomsSet`](../arlecchino.atoms.history.collections/HistoryAtomsSet-1.md), [`HistoryAtomsStack`](../arlecchino.atoms.history.collections/HistoryAtomsStack-1.md)
 
 ## Methods
 
