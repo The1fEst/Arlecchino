@@ -21,7 +21,7 @@ frames sit a handful of mode switches:
 | Normal screen, cursor shown | It stops, including on a crash | `LeaveFullScreen()` |
 | `?1000` `?1002` `?1006` — SGR mouse reporting | `UseMouse()` is on | `EnableMouse()` / `DisableMouse()` |
 | `?2004` — bracketed paste | On by default | `EnablePaste()` / `DisablePaste()` |
-| OSC 52 | `Ctrl+Insert` in a field | `CopyToClipboard(text)` |
+| OSC 52 | `Ctrl+Insert` or `Ctrl+Shift+C` in a field | `CopyToClipboard(text)` |
 | Control keys taken and given back | The terminal is taken and handed back | `TakeControlKeys()` / `GiveBackControlKeys()` |
 
 OSC 52 is the reason a copy works over SSH: the sequence carries the text to whatever is *showing* the
@@ -38,8 +38,10 @@ something to say about them; the keys go back to the console the moment the term
 program.
 
 When [color support](colors.md#what-the-terminal-can-actually-do) is `None`, no style sequence is
-emitted at all — not even the per-line reset — and the alternate screen is left alone. An application
-in that state prints plain text instead of spraying escape codes at a console that cannot read them.
+emitted at all — not even the per-line reset. An application in that state prints plain text instead of
+spraying escape codes at a console that cannot read them. The alternate screen is a separate question,
+answered by `UseAlternateScreen` rather than by color: `NO_COLOR` takes the colors away and leaves it
+on.
 
 ## What comes in
 
@@ -47,9 +49,9 @@ Arrows, function keys and mouse reports arrive as escape sequences, so an escape
 together with whatever follows it. `TerminalInputReader` is what does that:
 
 1. It collects the sequence.
-2. Mouse reports go to the escape-sequence parser inside the package and come back as
+2. Mouse reports go to the escape-sequence parser in `Arlecchino.Core` and come back as
    [`MouseEvent`](mouse.md).
-3. Cursor and function keys it decodes itself.
+3. Cursor and function keys go to the same parser, and come back as keys that have no character.
 4. Anything it does not recognize is replayed key by key — which is what makes a plain `Escape` work
    even though it starts the same way.
 

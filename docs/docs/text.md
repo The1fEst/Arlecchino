@@ -32,8 +32,8 @@ where it should.
 
 | Call | Meaning |
 |---|---|
-| `Truncate(text, width)` | Cuts to a column width on a symbol boundary |
-| `TruncateStart(text, width)` | The same from the other end, keeping the tail — what a field scrolled to the right shows |
+| `Truncate(text, maxWidth)` | Cuts to a column width on a symbol boundary |
+| `TruncateStart(text, maxWidth)` | The same from the other end, keeping the tail — what a field scrolled to the right shows |
 | `Wrap(text, width)` | Breaks into lines that fit, at spaces where there is one and mid-word only when a single word is wider than the space; existing line breaks are kept |
 
 ### Padding

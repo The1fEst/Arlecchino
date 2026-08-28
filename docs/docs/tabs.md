@@ -23,7 +23,8 @@ hands it, and `region` is the [region](layout.md) the view draws the widget into
 | Member | Meaning |
 |---|---|
 | `Titles` | One `Func<string>` per tab, so the strip follows the [language](localization.md) |
-| `SelectedIndex` | The index currently shown |
+| `SelectedIndex` | The index currently shown; read-only, since `Select` is what moves it |
+| `Select(index)` | Shows that tab, clamped to the strip, and raises `OnSelected` when it lands somewhere new |
 | `OnSelected` | Fires only when the selection actually changes |
 | `IsFocused` | Set by the [focus ring](focus.md) |
 
@@ -73,7 +74,8 @@ different widgets rather than different rows of the same one.
 
 ## A worked example
 
-`samples/Arlecchino.Sample` puts its widget gallery behind tabs, one page each:
+`samples/Arlecchino.Sample` draws the strip over its widget gallery — the tabs take focus and the keys
+above, though that screen draws the same panels whichever is selected:
 
 ```bash
 dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24

@@ -124,8 +124,8 @@ both on `p`.
 ## The command palette
 
 Pressing `:` opens a modal listing the commands of the current view first, then the application
-commands, as `key  label`. The next key either runs the matching command or, if nothing matches,
-closes the palette and writes `unknown command: <key>` to the output line. A click runs the command on
+commands, as `key  label`. The next key closes the palette whatever it is, and then either runs the
+command it matches or writes `unknown command: <key>` to the output line. A click runs the command on
 that row. `Esc` and `Enter` close it silently.
 
 Change the key with `options.CommandPaletteKey = '/'`. The palette does not open while no command is

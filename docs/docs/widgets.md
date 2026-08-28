@@ -21,7 +21,7 @@ public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFo
 | Widget | Contract |
 |---|---|
 | [`ListBox<T>`](lists.md), [`Table<T>`](table.md), [`Tree<T>`](tree.md), [`Tabs`](tabs.md), [`ScrollPane`](scrolling.md), [`TextView`](text-view.md), [`Form`](forms.md) | `IArlecchinoInteractiveWidget` |
-| [`ProgressBar`](status-bar.md#progressbar), [`StatusBar`](status-bar.md), [`Spinner`](status-bar.md#spinner), [`Sparkline`](charts.md#sparkline), [`BarChart<T>`](charts.md#barchart), [`Gauge`](charts.md#gauge) | `IArlecchinoWidget` |
+| [`ProgressBar`](status-bar.md#progressbar), [`StatusBar`](status-bar.md), [`Spinner`](status-bar.md#spinner), [`Sparkline`](charts.md#sparkline), [`BarChart<T>`](charts.md#barchart), [`AreaChart`](charts.md#areachart), [`Gauge`](charts.md#gauge), [`Picture`](pictures.md) | `IArlecchinoWidget` |
 
 ## Draw returns what is left
 
@@ -53,8 +53,8 @@ application, which is what keeps [localization](localization.md) working. Color 
 `ItemStyle` property rather than an argument to `Draw`, so the call is the same for every widget.
 
 An interactive one adds what [`IArlecchinoFocusable`](focus.md) asks for — `IsFocused`, `Handle`,
-`HandleMouse` — which is what lets it drop straight into a `FocusRing` and answer keys and clicks with
-the view routing nothing by hand.
+`HandleMouse`, and the `MoveFocus` and `Hints` that come with defaults — which is what lets it drop
+straight into a `FocusRing` and answer keys and clicks with the view routing nothing by hand.
 
 ## Widgets from the container
 
@@ -77,8 +77,8 @@ warning names the route — but the frame it cut short was still a frame nobody 
 
 ## Putting them together
 
-The sample has a screen wired exactly this way — tabs, a sortable table, a list, a progress bar and a
-status bar in one `FocusRing`:
+The sample has a screen of them — tabs, a sortable table and a list in one `FocusRing`, with a progress
+bar and a status bar drawn beside them, those two being widgets rather than focusable ones:
 
 ```bash
 dotnet run --project samples/Arlecchino.Sample -- --frame widgets 100x24
@@ -141,9 +141,6 @@ public sealed class Badge : IArlecchinoInteractiveWidget
 [`ScrollWindow.Around`](scrolling.md#scrollwindow) and [`ScrollBar`](scrolling.md#scrollbar) are public
 for the same reason: a list of your own scrolls exactly as `ListBox` does.
 
-:::note[What a widget cannot do yet]
-
-A widget cannot contain another focusable widget — a `FocusRing` does not nest, so a composite lays its
-parts out itself and routes to them by hand.
-
-:::
+A widget that holds focusable parts of its own gives them a `FocusRing` of their own: a ring is itself
+focusable, so rings nest. `MoveFocus` is what makes that work — the inner ring steps between its own
+parts and leaves the step at either end to the ring outside it. See [Focus](focus.md).

@@ -29,9 +29,9 @@ public sealed class PackagesView : IArlecchinoView
         _focus.Add(_table);
     }
 
-    public ViewRoute Handle(KeyPress key) => _focus.Handle(key).Route;
+    public ViewRoute Handle(KeyPress key) => _focus.Handle(key);
 
-    public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse).Route;
+    public ViewRoute HandleMouse(MouseEvent mouse) => _focus.HandleMouse(mouse);
 }
 ```
 

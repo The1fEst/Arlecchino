@@ -7,8 +7,8 @@ description: Requesting a path, the places sidebar, filters and keys.
 # File picker
 
 A file browser that ships with the framework: a places sidebar on the left, a
-Name / Date Modified / Size / Kind table on the right, a toolbar with history arrows and a filter
-field, and a status row with the item count and a key legend.
+Name / Date Modified / Size / Kind table on the right, a toolbar carrying the folder, the title and a
+filter field, and a status row with the item count and a key legend.
 
 It is registered by `AddArlecchino` under the route `Routes.FilePicker`, so nothing has to be wired up.
 
@@ -54,14 +54,15 @@ _state.FilePicker = new FilePickerRequest(
 };
 ```
 
-The request is cleared on pick and on cancel, and `ArlecchinoState.PickerLastFolder` is set to the folder the
-picker ended in — pass it as the next `InitialPath` to resume where the user left off.
+The request is cleared on pick and on cancel. Picking also sets `ArlecchinoState.PickerLastFolder` to the
+folder the picker ended in — pass it as the next `InitialPath` to resume where the user left off.
+Cancelling leaves it holding whatever the last pick did.
 
 ## Sidebar
 
-Above the standard entries come the request's own `Places`. Then Favorites — Desktop, Documents,
-Downloads, Pictures, Music, Videos, each skipped when the folder does not exist — and Locations: the
-home folder, `This computer`, and every ready drive. Section headers are not selectable.
+Favorites comes first, and the request's own `Places` are the top of it, above Desktop, Documents,
+Downloads, Pictures, Music and Videos — each of those skipped when the folder does not exist. Then
+Locations: the home folder, `This computer`, and every ready drive. Section headers are not selectable.
 
 ## Keys
 

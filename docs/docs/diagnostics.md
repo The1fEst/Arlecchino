@@ -193,11 +193,12 @@ public sealed class ReportCommand : IArlecchinoCommand
 ```
 
 What comes out is a page of `key: value` lines under four headings — the framework version and
-runtime, what the terminal said it can do, the screen being shown, and the modals above it:
+runtime, what the terminal said it can do, the screen being shown along with the modals over it, and
+the options the application was built with:
 
 ```
 [Arlecchino]
-version: 2026.8.1
+version: 2026.8.6
 runtime: .NET 10.0.10
 platform: Microsoft Windows 10.0.26200 (X64)
 
@@ -224,7 +225,7 @@ more than one they have to describe.
 | A view throws in `Draw` | Logged, reported on the output line, the rest of the frame still composed |
 | Posted work throws | Logged and reported; the remaining posted actions still run |
 | Scheduled work throws | Logged and reported; the rest of the schedule still runs |
-| A widget's collection shrinks mid-frame | The frame ends early and a warning names the route |
+| A widget's collection shrinks mid-frame | The widget stops early, the frame is drawn out, and a warning names the route |
 
 None of them take the process down. A dead process is harder to recover from than a broken screen, and
 harder to get a report out of.

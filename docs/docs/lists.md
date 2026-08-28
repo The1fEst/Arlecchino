@@ -1,7 +1,7 @@
 ---
 title: Lists
 sidebar_label: ListBox
-description: ListBox — a scrolling, selectable, clickable list of anything, and the widget the table and the tree are built on.
+description: ListBox — a scrolling, selectable, clickable list of anything, and the widget the table is built on.
 ---
 
 # ListBox
@@ -74,5 +74,7 @@ Change it from a view, a command or a callback, and hand changes that arrive fro
 
 ## What is built on it
 
-[`Table<T>`](table.md) and [`Tree<T>`](tree.md) both hold a `ListBox` and hand it the rows they
-computed, so movement, clicks, activation and the scroll bar are the same in all three.
+[`Table<T>`](table.md) holds a `ListBox` and hands it the rows it computed, so movement, clicks,
+activation and the scroll bar are the same in both. [`Tree<T>`](tree.md) does its own: it shares the
+[`ScrollWindow` and `ScrollBar`](scrolling.md) underneath, but binds `←` and `→` to collapsing and
+expanding a branch and answers no page keys.

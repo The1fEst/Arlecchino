@@ -36,8 +36,9 @@ reflows the text instead of cutting it off, and a frame that changed neither cos
 
 ## Keys
 
-`↑↓` move a row, `PgUp`/`PgDn` a page, `Home`/`End` go to the ends, and the wheel scrolls while the
-pointer is over it — all from the [keymap](keyboard.md#the-keymap), through the pane inside.
+`↑↓` move a row, `PgUp`/`PgDn` ten of them however tall the pane is, `Home`/`End` go to the ends, and
+the wheel scrolls while the pointer is over it — all from the [keymap](keyboard.md#the-keymap),
+through the pane inside.
 
 ## Reading rather than editing
 

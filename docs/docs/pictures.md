@@ -100,16 +100,18 @@ see. Set `Picture.Protocol` for one picture, or `ArlecchinoOptions.ImageProtocol
 private readonly Picture _preview = new() { Protocol = ImageProtocol.Blocks };
 ```
 
-`Detail` is the other half of that: how many pixels a protocol that hands pixels over may write at
-most, whatever size the pane comes to. It sits at half a megapixel, which trades a little sharpness
-for a picture that appears at once on a large pane; `0` lifts the ceiling.
+`Detail` is the other half of that: how many pixels the kitty protocol may write at most, whatever size
+the pane comes to. It sits at half a megapixel, which trades a little sharpness for a picture that
+appears at once on a large pane; `0` lifts the ceiling. Sixel takes no such ceiling — it sizes from the
+cells it was given.
 
 ## What the terminal was asked
 
 Before the first frame the framework asks the terminal what it can do — see
 [`TerminalProbe`](api/arlecchino.rendering.terminals/TerminalProbe.md) — and the answers are in
-`TerminalCapabilities`. A terminal that says nothing costs the wait and leaves every setting as it
-was.
+`TerminalCapabilities`. A terminal that says nothing costs the wait and answers for it: `Sixel`,
+`Kitty` and `Background` are written from what came back, so a value set before the probe does not
+survive it. Only the cell size is left as it was found.
 
 | What was asked | Where the answer is |
 |---|---|

@@ -34,8 +34,9 @@ Widgets are built in the view's constructor, so `options` is the `ArlecchinoOpti
 hands it, and `region` is the [region](layout.md) the view draws the widget into.
 
 The delegate is handed a region as tall as `ContentHeight()` and **already moved up by the offset**, so
-it always writes the first line at row zero and never has to know where the window is. Anything that
-can paint a region fits inside, other widgets included.
+it always writes the first line at row zero and never has to know where the window is. It is also a
+column narrower while the bar is showing, so content never writes under it. Anything that can paint a
+region fits inside, other widgets included.
 
 | Member | Meaning |
 |---|---|
@@ -55,9 +56,11 @@ The content is drawn at an offset that reaches **outside** the pane on purpose.
 outside from landing on a neighbor:
 
 ```csharp
+var content = scrolls && ShowScrollBar ? region.Inset(new Margin(0, 0, 1, 0)) : region;
+
 using (region.Surface.Clip(region))
 {
-    Content(region with { Top = region.Top - offset, Height = contentHeight });
+    Content(content with { Top = content.Top - offset, Height = contentHeight });
 }
 ```
 
@@ -80,7 +83,7 @@ for (var offset = 0; offset < window.Count; offset++)
 
 | Member | Meaning |
 |---|---|
-| `ScrollWindow.Around(selected, total, rows)` | The window that keeps the selection visible |
+| `ScrollWindow.Around(selectedIndex, itemCount, rows)` | The window that keeps the selection visible |
 | `First` | Index of the first item shown |
 | `Count` | How many are shown |
 | `Last` | Index of the last; reads as one before `First` when nothing fits |

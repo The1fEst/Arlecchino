@@ -1,16 +1,16 @@
 ---
 title: Charts
 sidebar_label: Charts
-description: Sparkline, BarChart and Gauge — a series as blocks, a set of things as bars, and one value against a banded range.
+description: Sparkline, BarChart, AreaChart and Gauge — a series as blocks, a set of things as bars, a filled shape, and one value against a banded range.
 ---
 
 # Charts
 
-Three widgets that draw numbers instead of text. Like the [indicators](status-bar.md), they only
+Four widgets that draw numbers instead of text. Like the [indicators](status-bar.md), they only
 draw: none of them takes the focus, all of them implement `IArlecchinoWidget`, and each hands back the
 rows below what it drew.
 
-All three measure in `decimal`, the same type [`ProgressBar`](status-bar.md#progressbar) and the
+All four measure in `decimal`, the same type [`ProgressBar`](status-bar.md#progressbar) and the
 [value modals](modals.md) use.
 
 ## Sparkline
@@ -198,7 +198,8 @@ _disk.Draw(region.Rows(0, 1));
 | `StyleAt(value)` | The style that value is drawn in |
 
 A `GaugeBand` is a value and a style, and it runs up to the start of the next band, so the list is
-given in ascending order and the first band decides the color of everything below it. Each part of
+given in ascending order. Below the first band no band applies, and that stretch is drawn in `Style`
+like the rest of the fill outside every band. Each part of
 the fill keeps the color of the band it lies in, so the tail of the bar shows how far past the line
 the value has gone — and the caption takes the color of the band the value itself is in.
 
@@ -215,14 +216,14 @@ own.
 :::note[Gauge or ProgressBar?]
 
 A [`ProgressBar`](status-bar.md#progressbar) answers *how far along*, and a `Gauge` answers *how bad is
-it now*. The difference is the bands, and a range that need not start at zero. Neither is a subset of
-the other, so pick by the question the screen is asking.
+it now*. The difference is the bands: both take a `Minimum` and a `Maximum`, and neither has to start
+at zero. Pick by the question the screen is asking.
 
 :::
 
 ## What they do not do
 
-There is no plot with axes, ticks and several series — no line chart. These three are meant to be read
+There is no plot with axes, ticks and several series — no line chart. These four are meant to be read
 at a glance next to the text they belong to, which is why they carry no chrome of their own. Put one
 in a titled pane when it needs a caption:
 

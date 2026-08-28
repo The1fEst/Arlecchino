@@ -78,7 +78,7 @@ const features: Feature[] = [
     title: 'State that redraws itself',
     body: (
       <>
-        Atoms notify on change, computed values follow them, tracked atoms undo, and async atoms
+        Atoms notify on change, computed values follow them, history atoms undo, and async atoms
         load on a background thread with a spinner.
       </>
     ),

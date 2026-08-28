@@ -33,8 +33,9 @@ to `IArlecchinoTerminal.Write` as one string. It also compares the composed fram
 one and writes only what changed, jumping the cursor to each changed run — an idle frame writes
 nothing at all.
 
-Four things fall back to sending the whole screen: the first frame, a resize, a fixed size, and
-`ForgetPreviousFrame()`.
+Five things fall back to sending the whole screen: the first frame, a resize, a fixed size,
+`ForgetPreviousFrame()`, and a passthrough payload going away — a [picture](pictures.md) cleared or
+moved, which the cells around it cannot undraw on their own.
 
 Styles are compared by reference, and both style implementations cache their escape sequence, so hold
 on to a style instance rather than building one per cell.
