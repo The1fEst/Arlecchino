@@ -41,7 +41,7 @@ and analysed with everything else — a script beside the repository is checked 
 `oracle`, `keys`, `terminal` and `live` all run on every push, on the Linux leg of the build, against a
 `tmux` the workflow installs. A check nobody is made to run is a check somebody forgets.
 
-- **`pack`** builds the three packages into `artifacts/packages`. That local feed is how an application
+- **`pack`** builds the five packages into `artifacts/packages`. That local feed is how an application
   is tried against a change before it is released; skip it and the application quietly keeps building
   against the version on nuget.org.
 - **`oracle`** holds the screen the tests read frames back from against a real terminal. `ScreenGrid`

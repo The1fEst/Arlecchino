@@ -1,7 +1,8 @@
 # Changelog
 
-Notable changes to the `Arlecchino`, `Arlecchino.Core`, `Arlecchino.Pictures` and `Arlecchino.Testing`
-packages. They ship together and always carry the same version.
+Notable changes to the `Arlecchino`, `Arlecchino.Core`, `Arlecchino.Atoms.History`,
+`Arlecchino.Pictures` and `Arlecchino.Testing` packages. They ship together and always carry the same
+version.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and a version is the
 year, the month and which release of that month it is: `2026.8.1` is the first release of August
@@ -12,53 +13,15 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## 2026.8.5
+## 2026.8.6
 
-A release about names, about what a program says out loud, and about Windows, where what the terminal
-answers about itself was still being read as something a hand did. Every break below is a rename: the
-type, the shape and the meaning are what they were, and the compiler names the member that moved. A name
-that says what a thing is costs nothing to read, and one that says what was done to it — `Selected` for
-an index, `Muted` for a color, `Since` for a moment — costs a release to correct, so they are corrected
-together rather than a few at a time. Beside them, the console is caught rather than left to scroll the
-frame away, and a color can be worked out against the background the terminal turned out to be rather
-than against the one the design was drawn on.
+A release about undo, which left the core for a package of its own; about a form field built over the
+atom it edits rather than over seven delegates handed to it; and about the seconds an application spent
+before drawing anything at all. The breaks are named below and the compiler names most of them for you:
+`Rgb` is `RGB`, the local and tracked atoms are the plain ones, and the field factories moved to
+`Fields`.
 
 ### Added
-
-- **`ArlecchinoStrings.LogWithoutProviders`**, what the log overlay says when the host has no logging
-  provider: the overlay draws what a provider writes to the console, so without one it would have nothing
-  to ever draw, and saying so beats an empty panel.
-
-- **`Oklch`, `Contrast` and `Shade`**, which work a color out against the background it will be read on
-  rather than against the one it was drawn on. `Oklch` is the space where lightness, chroma and hue come
-  apart, so a color can be made lighter without becoming a different color; `Contrast` is the ratio the
-  accessibility guidelines are written in, along with the luminance at which a background stops wanting
-  light text and starts wanting dark; `Shade.Against` solves for the lightness that reaches a wanted
-  contrast, keeping the hue and cutting the chroma only where sRGB cannot hold it.
-
-  Two of it are worth knowing about. The turn from a dark theme to a light one is at luminance 0.179 and
-  not at the half-way gray, that being where white and black are equally far off. And a background near
-  the middle can only reach about 5:1 in either direction, so a ladder written for a near-black terminal
-  flattens on it: `Shade.Scaled` brings the whole ladder down to the room there is, which keeps its steps
-  apart where clamping would land three of them on white.
-
-- **`Shade.Pull` and `Shade.Turn`**, which say how much a background's own color should sway a design drawn
-  for a gray one, and how far to turn the design's hues so they sit at an angle from that background rather
-  than across from it. Turning the whole set by one amount keeps its colors as far apart from each other as
-  they were drawn, so an error and a warning never meet.
-
-  `Pull` is nothing under a chroma of 0.06 and everything over 0.16, which is not a guess: every terminal
-  theme in wide use falls under the first number — gruvbox at 0, dracula and nord near 0.02, solarized dark
-  highest at 0.049 — while a background somebody picked a color for starts around the second, a middling
-  green being 0.177. A design is therefore left exactly as drawn on every theme anyone actually runs.
-
-- **`ArlecchinoOptions.PaletteForBackground`**, which is handed the color the terminal turned out to be and
-  answers with the palette to wear. It runs once, as the application starts and the terminal is asked, and
-  a terminal that will not say leaves `Theme` as it was given.
-
-- **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
-  around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
-  until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.
 
 - **`Arlecchino.Atoms.History`, a package of its own.** Undo left `Arlecchino.Core` entirely: a plain atom
   now holds a value, tells what reads it and forgets what it held, and nothing in it mentions a history.
@@ -81,9 +44,12 @@ than against the one the design was drawn on.
   ```
 
   It is taken the way `Arlecchino.Pictures` is: `Arlecchino` does not reference it, so an application that
-  wants no undo does not carry it. `ArlecchinoOptions` lost `HistoryFileName` and `KeepHistoryFile`, the
-  hosted service no longer readies a history, and the diagnostic report no longer prints `undo depth` —
-  all of it moved behind the call below.
+  wants no undo does not carry it. The hosted service no longer readies a history, and the diagnostic
+  report no longer prints `undo depth`, so `ArlecchinoReport` takes five arguments rather than six — the
+  `AtomHistory` it was handed is gone from the constructor. `Arlecchino.Testing` follows the package:
+  `ArlecchinoTestHost.History` is an `Arlecchino.Atoms.History.AtomHistory` now, and a test that names the
+  type needs the new `using`. `IAtomEdit` moved with the rest, from `Arlecchino.Atoms` to
+  `Arlecchino.Atoms.History`. All of it is behind the call below.
 
 - **A file that outlives the run is read back, a step at a time.** A run that resumes indexes the file it
   finds rather than throwing it away, and appends to it rather than writing over it. What memory holds is
@@ -149,20 +115,27 @@ than against the one the design was drawn on.
   ```
 
   It is yours to choose and has to stay the same between runs, which usually makes it the store and the
-  property. An atom left unnamed still undoes and redoes in memory exactly as before — it simply is not
-  written down.
+  property. It is required rather than optional: an atom on the undo stack that nothing can name is one
+  the file could never write down, so there is no unnamed history atom to explain.
 
   How a value is written is said once for the kind, not once for the atom. `string`, `bool`, `int`,
   `long`, `double`, `decimal`, `Guid`, `DateOnly`, `TimeOnly` and `DateTimeOffset` are already known;
-  `HistoryFile.Writes<T>` is for a type of your own, and written by hand because a trimmed program has no
+  `HistoryFile.Handles<T>` is for a type of your own, and written by hand because a trimmed program has no
   reflection to derive it with:
 
   ```csharp
-  file.Writes<RGB>(static (writer, value) => writer.WriteStringValue(value.Hex));
+  file.Handles<Uri>(
+      static (writer, value) => writer.WriteStringValue(value.ToString()),
+      static element => new(element.GetString()!));
   ```
 
   A group holding one atom that cannot be written is left out whole rather than half, which on being read
   back would move some atoms and not others.
+
+  What a step is made of is public, for an atom of your own that wants to join one: `IAtomEdit` and the
+  `IWritableAtomEdit` that names itself, `IValueWriter` and `IValueReader` for a value and for the items
+  and entries of a collection, and `IRestorableAtom` for an atom the file can put back. Every history
+  atom carries the `Key` it was given and a `Restore` that takes a reader.
 
 - **A collection is named the same way, and what is written for it is what it held.** The five history
   collections take a `key` before what they start with, as required of them as it is of a `HistoryAtom<T>`,
@@ -219,30 +192,142 @@ than against the one the design was drawn on.
 - **`ArlecchinoStrings.NotAnAllowedValue`**, what a form field says when it refuses what was typed. A field says
   which values it takes rather than why the rest are refused, so this is what stands in for the reason.
 
+- **`ArlecchinoHost.CreateBuilder`**, which builds the host a terminal application runs on, and is what the
+  documentation and the samples now start from. It is `Host.CreateApplicationBuilder` without the part of it
+  that watches the file system: the host's own defaults reload configuration from the folder the process was
+  started in, and a folder watched that way is watched along with everything under it. A terminal application
+  is started wherever its user happens to be, and a home directory is one watch per folder under it —
+  hundreds of thousands of them on a machine that has lived a while, taken before the first frame is drawn
+  and held for as long as the application runs.
+
+  Settings are read from the environment and the command line as they were. Files are left to the
+  application, which knows where its own belong and whether they are worth watching, and anything read from
+  one is found next to the application rather than next to the user.
+
 
 ### Changed
 
 - **There is one `AtomHistory` at a time, and a second is refused.** Atoms announce themselves to the
   process rather than to a history they were handed, so two of them collect the same edits into two
   stacks, and an undo on one leaves the other holding steps whose values the atoms no longer hold — a
-  later undo on it then writes something that was never there. The constructor now throws
-  `InvalidOperationException` while another is collecting, rather than letting the two shadow each other.
-  The host registers one; take it from the container. Disposing it lets the next take over, which is what
-  a test that builds an application per case relies on.
+  later undo on it then writes something that was never there. `UseHistory` throws
+  `InvalidOperationException` when it is called a second time, rather than letting the two shadow each
+  other, and the constructor is internal to the package — take the one history from the container.
+  Disposing it lets the next take over, which is what a test that builds an application per case relies
+  on.
 
 - **The five collection atoms share `AtomsCollectionBase`.** Each carried its own listeners, its own
   check that a change is being made on the drawing thread, and its own copy of the seam a subclass
   watches through; `IsObserved` and `Subscribe` now live on the base, and so does the doc block that was
-  written out five times. `FrameMembers.Changing` takes that base rather than an
-  `IReadableAtom<IReadOnlyCollection<T>>`, since the base is what the five have in common.
+  written out five times. `AtomsSet<T>` and `AtomsMap<TKey, TValue>` carry an `OnAdded` seam beside the
+  rest, and the set an `AddSilently`.
 
 - **`AtomsList<T>.Touch()` is `Refresh()`.** Touching is what one does to a file's timestamp; what this
   does is tell everything watching the list to read it again, because an item changed inside itself.
 
-- **An atom is named where it is created.** `HistoryAtom<T>` takes the name between the starting value and
-  the comparer — `HistoryAtom(T initial, string? key = null, IEqualityComparer<T>? comparer = null)` — so
-  the comparer is passed by name. `Atom<T>` takes no name: it is never on the undo stack, so there is
-  nothing of it to write down.
+- **An atom is named where it is created, and the name is required.** `HistoryAtom<T>` takes it between
+  the starting value and the comparer — `HistoryAtom(T initial, string key, IEqualityComparer<T>? comparer
+  = null)` — so the comparer is passed by name; the five history collections take it first, before what
+  they start with. An atom the file cannot name is one it could never write down, so there is no unnamed
+  history atom. `Atom<T>` takes no name: it is never on the undo stack, so there is nothing of it to write
+  down.
+
+- **`IArlecchinoStartup.Start` is `StartAsync`, and answers with a `Task<ViewRoute>`.** What decides the
+  first route is often what a startup has to go and read — a settings file, a session a server still has
+  — and a synchronous signature left an application blocking a thread inside it or racing the first
+  frame with work it started and could not await. A startup that has nothing to wait for answers with
+  `Task.FromResult`. The startups still run in registration order, each applied to the navigator before
+  the terminal is taken.
+
+- **A color is an `RGB`.** The three letters are read out as letters and stand for the three channels the
+  type holds, so `Rgb` spelled them as a word nobody says. The type, its members and its meaning are
+  what they were; every signature around it moves with the name — `RGB.FromHsl`, `RGB.TryParseHex`,
+  `Oklch.Of`, `Oklch.ToRgb`, `Contrast`, `Shade`, `TerminalCapabilities.Background` and
+  `NearestPaletteColor`, `TermColor.ExactForeground` and `ExactBackground`, `RgbTermColor.Foreground` and
+  `Background`, `ArlecchinoOptions.PaletteForBackground`, `ArlecchinoState.RequestColor` and `ColorModal`,
+  `Picture.Show`, and `Raster` with the format readers behind it in `Arlecchino.Pictures`.
+
+- **A form field is built over its atom, and the form works out what to open.** `Field` held seven
+  delegates and answered every question through them — what to show, whether it was on, what confirming
+  it did — so the same atom was read through a lambda the field was handed and written through another,
+  and each factory spelled out which dialog to open. A field is now `Field<T>` over the atom itself:
+  the form reads the value off it, puts it back through `TryReset`, and opens the dialog from the shape
+  of the field rather than from a delegate it was given. The factories moved to `Fields`, one per kind,
+  and what a field says about itself is added on afterwards:
+
+  ```csharp
+  Fields.Text(() => "Profile", settings.Profile)
+      .WithValidation(text => !string.IsNullOrWhiteSpace(text))
+      .WithHelp(() => "shown in the title bar")
+  ```
+
+  `Validation` answers whether a value is allowed rather than handing back a message; `Items` is what a
+  value may be, which is what makes a row one that is picked from, and for a number it is the range it is
+  held between. The rows a value's own type cannot tell apart say which they are — `SecretField`,
+  `SliderField`, `PathField` — and a row with no atom at all is a button, which is what `ActionField` is.
+  `IField` is what the form holds, so rows over different kinds of value stand in one list. `IsEnabled` is
+  a plain `bool` that is written rather than a delegate that is asked, so a button that follows the state
+  of the form is subscribed to it.
+
+  Every factory is narrower for it. What each used to be handed as an argument is now added on where it
+  is wanted: `render` is `WithTemplate`, the `minimum` and `maximum` of a number or a slider are
+  `WithItems`, `validate` is `WithValidation`, and `help` is `WithHelp` — so `Fields.Number`,
+  `Fields.Slider`, `Fields.Date`, `Fields.Time`, `Fields.Toggle` and `Fields.Text` all take a label and an
+  atom and nothing else. `Fields.MultiChoice` takes the `AtomsList<string>` it edits rather than an
+  `Atom<IReadOnlyList<string>>`, since what it does to that list is add and remove. `Field.PathFrom` is
+  `Fields.Path` with `WithStart` for the folder it opens in. The fields are constructible directly too,
+  for a row a factory does not cover.
+
+
+## 2026.8.5
+
+A release about names, about what a program says out loud, and about Windows, where what the terminal
+answers about itself was still being read as something a hand did. Every break below is a rename: the
+type, the shape and the meaning are what they were, and the compiler names the member that moved. A name
+that says what a thing is costs nothing to read, and one that says what was done to it — `Selected` for
+an index, `Muted` for a color, `Since` for a moment — costs a release to correct, so they are corrected
+together rather than a few at a time. Beside them, the console is caught rather than left to scroll the
+frame away, and a color can be worked out against the background the terminal turned out to be rather
+than against the one the design was drawn on.
+
+### Added
+
+- **`ArlecchinoStrings.LogWithoutProviders`**, what the log overlay says when the host has no logging
+  provider: the overlay draws what a provider writes to the console, so without one it would have nothing
+  to ever draw, and saying so beats an empty panel.
+
+- **`Oklch`, `Contrast` and `Shade`**, which work a color out against the background it will be read on
+  rather than against the one it was drawn on. `Oklch` is the space where lightness, chroma and hue come
+  apart, so a color can be made lighter without becoming a different color; `Contrast` is the ratio the
+  accessibility guidelines are written in, along with the luminance at which a background stops wanting
+  light text and starts wanting dark; `Shade.Against` solves for the lightness that reaches a wanted
+  contrast, keeping the hue and cutting the chroma only where sRGB cannot hold it.
+
+  Two of it are worth knowing about. The turn from a dark theme to a light one is at luminance 0.179 and
+  not at the half-way gray, that being where white and black are equally far off. And a background near
+  the middle can only reach about 5:1 in either direction, so a ladder written for a near-black terminal
+  flattens on it: `Shade.Scaled` brings the whole ladder down to the room there is, which keeps its steps
+  apart where clamping would land three of them on white.
+
+- **`Shade.Pull` and `Shade.Turn`**, which say how much a background's own color should sway a design drawn
+  for a gray one, and how far to turn the design's hues so they sit at an angle from that background rather
+  than across from it. Turning the whole set by one amount keeps its colors as far apart from each other as
+  they were drawn, so an error and a warning never meet.
+
+  `Pull` is nothing under a chroma of 0.06 and everything over 0.16, which is not a guess: every terminal
+  theme in wide use falls under the first number — gruvbox at 0, dracula and nord near 0.02, solarized dark
+  highest at 0.049 — while a background somebody picked a color for starts around the second, a middling
+  green being 0.177. A design is therefore left exactly as drawn on every theme anyone actually runs.
+
+- **`ArlecchinoOptions.PaletteForBackground`**, which is handed the color the terminal turned out to be and
+  answers with the palette to wear. It runs once, as the application starts and the terminal is asked, and
+  a terminal that will not say leaves `Theme` as it was given.
+
+- **`IArlecchinoTerminal.TakeControlKeys()` and `GiveBackControlKeys()`**, the pair `TerminalModes` drives
+  around the borrowing above. Both default to doing nothing, so a terminal of your own needs neither
+  until it has something to say about `Ctrl+C`. `FakeTerminal.AreControlKeysTaken` reports it in a test.
+
+### Changed
 
 - **A selection index is `SelectedIndex`.** `ListBox<T>`, `Table<T>`, `Tabs`, `Tree<T>` and `Form` all
   called it `Selected`, which reads as the item rather than as where the item sits — and `Table<T>` has a
@@ -260,13 +345,6 @@ than against the one the design was drawn on.
   `Theme.ActiveSelected` are `Theme.Selection` and `Theme.ActiveSelection`, and the same two on
   `ThemePalette`; `EntryLook.Selected` is `EntryLook.Selection`. `Muted` says how a color was made rather
   than what it is for, so the role it fills names it: `Theme.Secondary`, `ThemePalette.Secondary`.
-
-- **A color is an `RGB`.** The three letters are read out as letters and stand for the three channels the
-  type holds, so `Rgb` spelled them as a word nobody says. The type, its members and its meaning are
-  what they were; every signature around it moves with the name — `RGB.FromHsl`, `RGB.TryParseHex`,
-  `Oklch.Of`, `Oklch.ToRgb`, `Contrast`, `Shade`, `TerminalCapabilities.Background` and
-  `NearestPaletteColor`, `TermColor.ExactForeground` and `ExactBackground`, `ArlecchinoState.RequestColor`
-  and `ColorModal`, and `Raster` with the format readers behind it in `Arlecchino.Pictures`.
 
 - **What a key typed is its `Character`, and what a handler is handed is a `press`.** `KeyStroke.Typed`
   and `KeyBinding.Typed` are `Character`, as is the constructor parameter behind them, matching the
@@ -304,28 +382,6 @@ than against the one the design was drawn on.
   touched. The code the generators write is also laid out the way the repository lays out its own now — a
   registration or a view whose constructor runs past the width is written with one argument to a line
   rather than in one long line — so a diff of the generated sources reads as code and not as a wall.
-
-- **A form field is built over its atom, and the form works out what to open.** `Field` held seven
-  delegates and answered every question through them — what to show, whether it was on, what confirming
-  it did — so the same atom was read through a lambda the field was handed and written through another,
-  and each factory spelled out which dialog to open. A field is now `Field<T>` over the atom itself:
-  the form reads the value off it, puts it back through `TryReset`, and opens the dialog from the shape
-  of the field rather than from a delegate it was given. The factories moved to `Fields`, one per kind,
-  and what a field says about itself is added on afterwards:
-
-  ```csharp
-  Fields.Text(() => "Profile", settings.Profile)
-      .WithValidation(text => !string.IsNullOrWhiteSpace(text))
-      .WithHelp(() => "shown in the title bar")
-  ```
-
-  `Validation` answers whether a value is allowed rather than handing back a message; `Items` is what a
-  value may be, which is what makes a row one that is picked from, and for a number it is the range it is
-  held between. The rows a value's own type cannot tell apart say which they are — `SecretField`,
-  `SliderField`, `PathField` — and a row with no atom at all is a button, which is what `ActionField` is.
-  `IField` is what the form holds, so rows over different kinds of value stand in one list. `IsEnabled` is
-  a plain `bool` that is written rather than a delegate that is asked, so a button that follows the state
-  of the form is subscribed to it.
 
 Everything else the sweep touched is inside the packages — locals, fields and the parameters of members
 no caller can see — and needs nothing from an application.

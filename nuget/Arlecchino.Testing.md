@@ -54,8 +54,9 @@ and every test framework works — the host is a plain disposable class.
 
 | Package | Contents |
 |---|---|
-| [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and atoms with their undo history |
+| [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and the atoms |
 | [`Arlecchino`](https://www.nuget.org/packages/Arlecchino) | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
+| [`Arlecchino.Atoms.History`](https://www.nuget.org/packages/Arlecchino.Atoms.History) | undo and redo: atoms that record their changes, a bounded stack, and the file it is written to |
 | [`Arlecchino.Pictures`](https://www.nuget.org/packages/Arlecchino.Pictures) | PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels |
 | [`Arlecchino.Testing`](https://www.nuget.org/packages/Arlecchino.Testing) | this one — the headless host applications write their tests against |
 

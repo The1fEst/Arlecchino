@@ -19,7 +19,7 @@ internal static class Ship
     private const string Calendar = @"^(\d{4}\.(?:[1-9]|1[0-2]))\.([1-9][0-9]*)$";
 
     private static readonly string[] Packages =
-        ["Arlecchino", "Arlecchino.Core", "Arlecchino.Pictures", "Arlecchino.Testing"];
+        ["Arlecchino", "Arlecchino.Atoms.History", "Arlecchino.Core", "Arlecchino.Pictures", "Arlecchino.Testing"];
 
     /// <summary>Writes the release into the repository.</summary>
     /// <param name="args">The version to release, or nothing to take the next build of this month.</param>

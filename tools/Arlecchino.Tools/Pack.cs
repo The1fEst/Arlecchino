@@ -11,7 +11,7 @@ namespace Arlecchino.Tools;
 internal static class Pack
 {
     private static readonly string[] Packages =
-        ["Arlecchino.Core", "Arlecchino", "Arlecchino.Pictures", "Arlecchino.Testing"];
+        ["Arlecchino.Core", "Arlecchino", "Arlecchino.Atoms.History", "Arlecchino.Pictures", "Arlecchino.Testing"];
 
     /// <summary>Packs every package, stopping at the first that will not build.</summary>
     /// <param name="args"><c>--help</c> to explain itself; nothing else is read.</param>
@@ -22,9 +22,9 @@ internal static class Pack
         {
             Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- pack");
             Console.WriteLine();
-            Console.WriteLine("Packs Arlecchino, Arlecchino.Core, Arlecchino.Pictures and Arlecchino.Testing in");
-            Console.WriteLine("Release into artifacts/packages, the local feed an application is tried against");
-            Console.WriteLine("before a change is released.");
+            Console.WriteLine("Packs Arlecchino, Arlecchino.Core, Arlecchino.Atoms.History, Arlecchino.Pictures");
+            Console.WriteLine("and Arlecchino.Testing in Release into artifacts/packages, the local feed an");
+            Console.WriteLine("application is tried against before a change is released.");
 
             return 0;
         }

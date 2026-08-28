@@ -94,7 +94,7 @@ Starting the application is nine lines:
 ```csharp
 using MyApp.Navigation;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)
@@ -109,6 +109,13 @@ await builder.Build().RunAsync();
 `ViewKind` and `AddGeneratedViews` are written into `$(RootNamespace).Navigation` — `MyApp.Navigation`
 above — so the file that starts the application needs that `using`. Both appear as soon as the package
 is referenced, and `ViewKind` fills up with a route per view.
+
+`ArlecchinoHost.CreateBuilder` is `Host.CreateApplicationBuilder` without the part of it that watches the
+file system. The host's own defaults reload configuration from the folder the process was started in, and
+a folder watched that way is watched along with everything under it. A terminal application is started
+wherever its user happens to be, so started from a home directory that is one watch per folder in it —
+hundreds of thousands of them, and seconds before the first frame appears. Settings files are left to the
+application, and anything read from one is found next to the application rather than next to the user.
 
 Modals for text, passwords, email and links, numbers, sliders, toggles, single and multiple choice,
 dates, times and colours come with the framework, along with a command palette, a hints box and a
@@ -194,8 +201,9 @@ What changed between versions is in the [changelog](CHANGELOG.md).
 
 | Package | Contents |
 |---|---|
-| `Arlecchino.Core` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and atoms with their undo history |
+| `Arlecchino.Core` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and the atoms |
 | `Arlecchino` | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
+| `Arlecchino.Atoms.History` | undo and redo: atoms that record their changes, a bounded stack, and the file it is written to |
 | `Arlecchino.Pictures` | PNG, JPEG, BMP, Netpbm, QOI and Targa read into the pixels the `Picture` widget draws |
 | `Arlecchino.Testing` | `ArlecchinoTestHost` — the headless host applications write their tests against |
 

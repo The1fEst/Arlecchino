@@ -70,8 +70,9 @@ Every type is trimming- and Native AOT-compatible.
 
 | Package | Contents |
 |---|---|
-| [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | the renderer, no DI, and atoms with their undo history |
+| [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | the renderer, no DI, and the atoms |
 | [`Arlecchino`](https://www.nuget.org/packages/Arlecchino) | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
+| [`Arlecchino.Atoms.History`](https://www.nuget.org/packages/Arlecchino.Atoms.History) | undo and redo: atoms that record their changes, a bounded stack, and the file it is written to |
 | [`Arlecchino.Pictures`](https://www.nuget.org/packages/Arlecchino.Pictures) | this one — picture files read into pixels |
 | [`Arlecchino.Testing`](https://www.nuget.org/packages/Arlecchino.Testing) | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
