@@ -157,6 +157,7 @@ jobs:
             dotnet new nugetconfig
             dotnet nuget add source "$GITHUB_WORKSPACE/artifacts/packages" --name arlecchino-local --configfile nuget.config
             dotnet add package Arlecchino --version "$version"
+            dotnet add package Arlecchino.Atoms.History --version "$version"
             dotnet build
           }
 

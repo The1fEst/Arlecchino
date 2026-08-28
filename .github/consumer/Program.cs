@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Local;
-using Arlecchino.Atoms.Tracked;
+using Arlecchino.Atoms.History;
+using Arlecchino.Atoms.History.Hosting;
 using Arlecchino.Commands;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -17,7 +17,7 @@ namespace Consumer;
 
 public sealed class SettingsStore : IArlecchinoStore
 {
-    public Atom<string> Profile { get; } = new TrackedAtom<string>("consumer");
+    public HistoryAtom<string> Profile { get; } = new("consumer", "SettingsStore.Profile");
 }
 
 public sealed class BadgeWidget : IArlecchinoWidget
@@ -55,7 +55,7 @@ public sealed class DefaultView : IArlecchinoView
 
 public sealed class HistoryStore : IArlecchinoStore
 {
-    public Atom<int> Visits { get; } = new LocalAtom<int>(0);
+    public Atom<int> Visits { get; } = new(0);
 }
 
 public sealed class CountWidget : IArlecchinoWidget
@@ -89,6 +89,7 @@ internal static class Program
     {
         var services = new ServiceCollection();
 
+        services.UseHistory();
         services
             .AddArlecchino()
             .AddGeneratedViews()
@@ -110,11 +111,15 @@ internal static class Program
         var badge = provider.GetRequiredService<CountWidget>();
         var commands = provider.GetRequiredService<CommandRegistry>().Commands.Count;
         var ticker = provider.GetRequiredService<Ticker>();
+        var history = provider.GetRequiredService<AtomHistory>();
 
         using var tick = ticker.Every(TimeSpan.FromSeconds(1), static () => { });
 
+        provider.GetRequiredService<SettingsStore>().Profile.Value = "edited";
+
         Console.WriteLine($"resolved {profile}, route {ViewKind.Default.Name}, visits {visits}, " +
                           $"widget {badge is not null}, commands {commands}, " +
-                          $"view commands {navigator.CurrentCommands.Count}, ticker {tick is not null}");
+                          $"view commands {navigator.CurrentCommands.Count}, ticker {tick is not null}, " +
+                          $"undo {history.Undo()}");
     }
 }
