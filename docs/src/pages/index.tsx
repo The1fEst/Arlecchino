@@ -9,7 +9,7 @@ import styles from './index.module.css';
 
 const shortestApp = `using MyApp.Navigation;   // where the generator puts ViewKind and AddGeneratedViews
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)

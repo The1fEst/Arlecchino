@@ -24,7 +24,7 @@ description: Every dialog that ships — text, password, number, slider, toggle,
 | `MultiChoiceModal` | Any number of options, marked with `Space` | `Action<IReadOnlyList<string>>` |
 | `DateModal` | A `yyyy-mm-dd` field edited per segment | `Action<DateOnly>` |
 | `TimeModal` | An `hh:mm` field edited per segment | `Action<TimeOnly>` |
-| `ColorModal` | Hue / saturation / lightness sliders under a live swatch | `Action<Rgb>` |
+| `ColorModal` | Hue / saturation / lightness sliders under a live swatch | `Action<RGB>` |
 | `CommandModal` | The [command palette](commands.md#the-command-palette), opened by the input router | — |
 | Your own | [Whatever the application draws and reads for itself](#a-dialog-of-your-own) | Whatever it decides |
 
@@ -228,15 +228,15 @@ cursor, typing and rendering behavior for free.
 ### Color
 
 ```csharp
-_state.RequestColor("Accent color", new Rgb(63, 169, 245), value => SetAccent(value.Hex));
+_state.RequestColor("Accent color", new RGB(63, 169, 245), value => SetAccent(value.Hex));
 ```
 
 A swatch of the current color with its hex code, and under it three sliders — hue `0..359`, saturation
 and lightness `0..100`. `↑↓` (or `Tab`) pick the channel, `←→` adjust by `Step`, `PgUp` `PgDn` by
-`LargeStep`, `Home` `End` go to the ends of the channel, hue wraps around. `Enter` hands back an `Rgb`.
+`LargeStep`, `Home` `End` go to the ends of the channel, hue wraps around. `Enter` hands back an `RGB`.
 
 The swatch is drawn with a 24-bit ANSI color, so it shows the actual color rather than the nearest of
-the sixteen — see [Colors](colors.md). Channels are integers, so a color that arrives from `Rgb` and
+the sixteen — see [Colors](colors.md). Channels are integers, so a color that arrives from `RGB` and
 comes back out may shift by a unit or two through the HSL round trip.
 
 ## Message and confirmation

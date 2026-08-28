@@ -16,9 +16,10 @@ dotnet add package Arlecchino
 so nothing else has to be referenced. `Microsoft.Extensions.Hosting` is what you need for the host
 itself.
 
-Two packages are added only when they are wanted: `Arlecchino.Pictures` reads image files into the
-pixels a [picture](pictures.md) draws, and `Arlecchino.Testing` is the headless host the
-[tests](testing.md) of your application run on.
+Three packages are added only when they are wanted: `Arlecchino.Atoms.History` is
+[undo and redo](atoms.md#undo-and-redo), `Arlecchino.Pictures` reads image files into the pixels a
+[picture](pictures.md) draws, and `Arlecchino.Testing` is the headless host the [tests](testing.md) of
+your application run on.
 
 ## The smallest app
 
@@ -27,7 +28,7 @@ using Arlecchino.Hosting;
 using Microsoft.Extensions.Hosting;
 using MyApp.Navigation;   // ViewKind and AddGeneratedViews are generated here
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(options => options.MinimumWidth = 60)
@@ -38,6 +39,11 @@ builder.Services
 
 await builder.Build().RunAsync();
 ```
+
+`ArlecchinoHost.CreateBuilder` builds the host, and is `Host.CreateApplicationBuilder` without the part of
+it that watches the file system — the part that costs a terminal application seconds when it is started
+from a folder with a lot under it. [Hosting and options](hosting-and-options.md#building-the-host) is the
+whole of why.
 
 `AddArlecchino` registers the renderer, the navigator, the input router and a hosted service that owns
 the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator,

@@ -69,11 +69,11 @@ camera files. Check its license before you do; the popular ones are not all as f
 
 ## The array
 
-An `Rgb` is three bytes, and the array runs row by row from the top left. Nothing says the pixels have
+An `RGB` is three bytes, and the array runs row by row from the top left. Nothing says the pixels have
 to come from a file — a plot, a heatmap or a gradient is the same array:
 
 ```csharp
-var pixels = new Rgb[width * height];
+var pixels = new RGB[width * height];
 
 for (var row = 0; row < height; row++)
 {

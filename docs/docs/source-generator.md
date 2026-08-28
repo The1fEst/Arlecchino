@@ -90,7 +90,7 @@ whole registration:
 ```csharp
 public sealed class SettingsStore : IArlecchinoStore
 {
-    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
+    public Atom<string> Profile { get; } = new("");
 }
 ```
 

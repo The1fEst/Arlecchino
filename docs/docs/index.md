@@ -61,10 +61,10 @@ does not have.
 
 | Page | What it covers |
 |---|---|
-| [Atoms](atoms.md) | `TrackedAtom` and `LocalAtom`, computed values, undo |
+| [Atoms](atoms.md) | `Atom` and `HistoryAtom`, computed values, undo in a package of its own |
 | [Stores](stores.md) | A class of atoms that registers itself |
 | [Async atoms](async-atoms.md) | Loading in the background, and tying work to a screen |
-| [Forms](forms.md) | `Form` and `Field` |
+| [Forms](forms.md) | `Form`, and the `Field<T>` rows built through `Fields` |
 | [Application state](state.md) | `ArlecchinoState`, the output line, notifications |
 | [Modals](modals.md) | Every dialog that ships, plus stacking and validation |
 
@@ -96,6 +96,8 @@ does not have.
 
 | Page | What it covers |
 |---|---|
+| [What's new in 2026.8.6](whats-new-in-2026.8.6.md) | Undo in a package of its own and outliving the run, a field over its atom, a first frame seconds sooner |
+| [Migrating to 2026.8.6](migrating-to-2026.8.6.md) | The package an application that undoes takes, the atoms it renames, the fields it rebuilds |
 | [Migrating to 2026.8.1](migrating-to-2026.8.1.md) | What a `5.0` application edits: the notification, and the switch that showed the keys |
 | [Migrating to 5.0](migrating-to-5.0.md) | The keys a `4.x` application reads, now that a binding is not a `ConsoleKeyInfo` |
 | [What's new in 4.0](whats-new-in-4.0.md) | Every string gets a name, a dialog draws itself, namespaces follow their folders |
@@ -112,6 +114,7 @@ does not have.
 |---|---|---|
 | `Arlecchino.Core` | `Arlecchino`, `Arlecchino.Rendering`, `Arlecchino.Input`, `Arlecchino.Atoms` | `Surface`, `SurfaceRegion`, `Atom`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI |
 | `Arlecchino` | `Arlecchino.Hosting`, `Arlecchino.Navigation`, `Arlecchino.Commands`, `Arlecchino.Modals`, `Arlecchino.State`, `Arlecchino.Views`, `Arlecchino.Forms`, `Arlecchino.Focus`, `Arlecchino.Widgets`, `Arlecchino.Diagnostics` | views, navigation, modals, commands, forms, widgets, hosting, the file picker |
+| `Arlecchino.Atoms.History` | `Arlecchino.Atoms.History`, `.Collections`, `.Hosting` | `HistoryAtom`, the history collections, `AtomHistory`, `HistoryFile`, `UseHistory` — undo and redo |
 | `Arlecchino.Pictures` | `Arlecchino.Pictures` | `PictureFormats`, `PictureLimits` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels |
 | `Arlecchino.Testing` | `Arlecchino.Testing` | `ArlecchinoTestHost`, `FakeTerminal`, `FrameText` — the headless host for tests |
 | `Arlecchino.Generators` | — | the incremental generator, shipped inside the `Arlecchino` package |
@@ -124,7 +127,7 @@ namespaces rather than folders nobody outside the repository can see:
 | `Arlecchino.Modals` | `.Asking` (text, number), `.Choosing` (choice, palette), `.Setting` (slider, toggle, color, date, time), `.Telling` (message, notification) |
 | `Arlecchino.Widgets` | `.Lists` (list, table, tree, tabs, scrolling), `.Pictures`, `.Readouts` (charts, indicators, status bar, text view) |
 | `Arlecchino.Rendering` | `.Colors` (theme, palette, color types), `.Text` (widths, joinery, symbols), `.Terminals` (capabilities, probe, image protocol) |
-| `Arlecchino.Atoms` | `.Local`, `.Tracked`, `.Collections` |
+| `Arlecchino.Atoms` | `.Collections`, and `.History` with its own `.Collections` and `.Hosting` in the undo package |
 
 What each of them keeps is the vocabulary every file reaches for anyway: `Modal` and `ModalFrame`,
 `Surface` and `SurfaceRegion`, `Margin` and `Align`, `Atom` and the store interfaces.

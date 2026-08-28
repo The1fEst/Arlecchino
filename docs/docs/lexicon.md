@@ -55,7 +55,7 @@ The words used throughout the documentation, with the page that explains each on
 | Term | Means |
 |---|---|
 | **Atom** | One observable cell of state that asks for a repaint when it changes. See [Atoms](atoms.md) |
-| **Tracked / local** | Whether an atom's edits enter the undo history. See [Atoms](atoms.md) |
+| **History atom** | An atom whose edits enter the undo history, from `Arlecchino.Atoms.History`. See [Atoms](atoms.md) |
 | **Computed** | A derived value that tracks whatever it read. See [Atoms](atoms.md#derived-values) |
 | **Store** | A class of atoms that registers itself. See [Stores](stores.md) |
 | **Async atom** | A load in progress, with its status as an atom. See [Async atoms](async-atoms.md) |

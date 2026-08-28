@@ -12,6 +12,7 @@ description: What ships in which package, the local feed, versioning, CI and ben
 |---|---|---|
 | `Arlecchino.Core` | `net8.0`, `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
 | `Arlecchino` | `net8.0`, `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
+| `Arlecchino.Atoms.History` | `net8.0`, `net10.0` | `HistoryAtom<T>`, the history collections, `AtomHistory` and the file behind it — undo and redo; depends on `Arlecchino.Core` |
 | `Arlecchino.Pictures` | `net8.0`, `net10.0` | `PictureFormats` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels; depends on `Arlecchino.Core` and on nothing native |
 | `Arlecchino.Testing` | `net8.0`, `net10.0` | Headless host for testing an application built on Arlecchino |
 
@@ -55,7 +56,7 @@ around 5 MB with no runtime to install.
 dotnet run --project tools/Arlecchino.Tools -- pack
 ```
 
-Builds all four packages in `Release` and drops the `.nupkg` files into `artifacts/packages`, which is
+Builds all five packages in `Release` and drops the `.nupkg` files into `artifacts/packages`, which is
 the local feed a consuming application points its `nuget.config` at:
 
 ```xml
@@ -173,7 +174,7 @@ artifact.
 
 ## Versioning
 
-The four packages ship together and always carry the same version — mixing versions between them is
+The five packages ship together and always carry the same version — mixing versions between them is
 not supported, and there is nothing to gain from it since they are built from one commit.
 
 A version is the year, the month and which release of that month it is: `2026.8.1` is the first
@@ -236,7 +237,7 @@ dotnet run --project tools/Arlecchino.Tools -- ship
 
 It works out the version — this year and month, and the build after the one the repository holds, or
 `1` when the month it holds is not this one — sets `<Version>` to it, moves every recorded entry from
-`Unshipped` into `Shipped` for all four packages, and points `PackageValidationBaselineVersion` at the
+`Unshipped` into `Shipped` for all five packages, and points `PackageValidationBaselineVersion` at the
 release that came before, after checking that release really is on nuget.org, since a baseline that is
 not published fails the pack rather than validating anything. Read the diff, commit, tag.
 
@@ -314,7 +315,7 @@ None of this touches `release.yml`: publishing is triggered by a tag, so it happ
 pushed and never by accident.
 
 `.github/workflows/release.yml` publishes: push a `v2026.8.1` tag and it builds, tests and pushes all
-four packages to NuGet with the version taken from the tag. A tag not shaped `year.month.build` stops
+five packages to NuGet with the version taken from the tag. A tag not shaped `year.month.build` stops
 the run before anything is built.
 
 There is no API key anywhere. The workflow asks GitHub for an OIDC token — which is what
@@ -334,6 +335,7 @@ that is the point of it.
 |---|---|
 | `src/Arlecchino.Core` | Renderer and input primitives |
 | `src/Arlecchino` | Framework, hosting, built-in views |
+| `src/Arlecchino.Atoms.History` | Undo and redo for atoms, published as a package |
 | `src/Arlecchino.Generators` | The incremental generator |
 | `src/Arlecchino.Pictures` | Readers for the picture formats, published as a package |
 | `src/Arlecchino.Testing` | Headless test host published as a package |

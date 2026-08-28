@@ -167,6 +167,9 @@ default, so a partial override is a valid `ArlecchinoStrings`.
 | `HelpKeys(keymap)` | Every key the framework answers to, paired with what it does — the one place to translate the descriptions |
 | `LogTitle(count)` | `Log ({count})` — title of the [log overlay](hosting-and-options.md) |
 | `LogHints` | `↑↓ scroll · End latest · Backspace clear · Esc close` |
+| `NotAnAllowedValue` | `not allowed here` — what a [form field](forms.md) says when it refuses what was typed |
+| `NotificationsOpen` | `open` |
+| `ModalNotificationHints` | The keys a notification modal lists |
 | `LogEmpty` | `nothing logged yet` |
 | `LogWithoutProviders` | What the overlay says when the host has no logging provider left to write with |
 | `ViewFailed(message)` | `error: {message}` — shown when a view or a callback throws |

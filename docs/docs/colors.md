@@ -1,7 +1,7 @@
 ---
 title: Colors
 sidebar_label: Colors
-description: TermColor, RgbTermColor and Rgb, and what TerminalCapabilities decides a terminal can actually show.
+description: TermColor, RgbTermColor and RGB, and what TerminalCapabilities decides a terminal can actually show.
 ---
 
 # Colors
@@ -29,8 +29,8 @@ public sealed class TermColor : IArlecchinoColor
 {
     public TerminalColor Foreground { get; init; } = TerminalColor.Default;
     public TerminalColor Background { get; init; } = TerminalColor.Default;
-    public Rgb? ExactForeground { get; init; }
-    public Rgb? ExactBackground { get; init; }
+    public RGB? ExactForeground { get; init; }
+    public RGB? ExactBackground { get; init; }
     public TextStyle Style { get; init; } = TextStyle.None;
 }
 ```
@@ -43,7 +43,7 @@ degrades to something its author chose:
 Header = new TermColor
 {
     Foreground = TerminalColor.BrightRed,
-    ExactForeground = new Rgb(0xC9, 0x38, 0x2B),
+    ExactForeground = new RGB(0xC9, 0x38, 0x2B),
     Style = TextStyle.Bold,
 };
 ```
@@ -59,7 +59,7 @@ implementation:
 ```csharp
 private readonly Surface _surface;
 
-_surface.WriteAt(row, column, "████", new RgbTermColor { Foreground = new Rgb(63, 169, 245) });
+_surface.WriteAt(row, column, "████", new RgbTermColor { Foreground = new RGB(63, 169, 245) });
 ```
 
 `Foreground` and `Background` are both optional, so a swatch is a background with no foreground. On a
@@ -68,9 +68,9 @@ terminal without 24-bit it falls back to the nearest of the sixteen colors.
 Keep chrome on `Theme`. Palette roles stay on the sixteen-color set because they have to look right
 on a terminal the application does not control.
 
-## Rgb
+## RGB
 
-`Rgb` is a `(Red, Green, Blue)` record struct — what the [color modal](modals.md#color) edits and
+`RGB` is a `(Red, Green, Blue)` record struct — what the [color modal](modals.md#color) edits and
 hands back.
 
 | Member | Meaning |
@@ -109,7 +109,7 @@ becoming a different color:
 `Shade` solves for the color rather than checking one:
 
 ```csharp
-var background = TerminalCapabilities.Background ?? new Rgb(0x14, 0x13, 0x17);
+var background = TerminalCapabilities.Background ?? new RGB(0x14, 0x13, 0x17);
 var warning = Shade.Against(background, hue: 70, chroma: 0.14, contrast: 5.5);
 ```
 
@@ -135,7 +135,7 @@ Both implementations cache their escape sequence, and the frame writer compares 
 reference**. Hold on to a style instance rather than building one per cell:
 
 ```csharp
-private static readonly RgbTermColor Swatch = new() { Background = new Rgb(63, 169, 245) };
+private static readonly RgbTermColor Swatch = new() { Background = new RGB(63, 169, 245) };
 ```
 
 ## What the terminal can actually do

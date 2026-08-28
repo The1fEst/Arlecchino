@@ -1,10 +1,37 @@
 ---
 title: Hosting and options
 sidebar_label: Hosting and options
-description: AddArlecchino, every option, the builder API, and running without the hosted service.
+description: Building the host, AddArlecchino, every option, the builder API, and running without the hosted service.
 ---
 
 # Hosting and options
+
+## Building the host
+
+```csharp
+var builder = ArlecchinoHost.CreateBuilder(args);
+```
+
+`ArlecchinoHost.CreateBuilder` is `Host.CreateApplicationBuilder` without the part of it that watches the
+file system, and it is what an application should start from.
+
+The host's own defaults reload configuration from the folder the process was started in, and a folder
+watched that way is watched along with everything under it. That is the right trade for a service, which
+is started from the folder it was deployed to and has a settings file sitting next to it. A terminal
+application is started wherever its user happens to be, and a home directory is one watch per folder under
+it: on a machine that has lived a while that is hundreds of thousands of them, taken before the first
+frame is drawn and held for as long as the application runs. Measured on one such directory — 340,131
+folders — the difference is five and a half seconds against thirteen milliseconds.
+
+Settings are read from the environment and the command line, and a console logging provider is registered,
+which is what the [log overlay](diagnostics.md#the-log-overlay) draws. Settings files are left to the
+application, which knows where its own belong and whether they are worth watching; anything read from one
+is found next to the application rather than next to the user, because the content root is the folder the
+application lives in.
+
+`Host.CreateApplicationBuilder` still works, and an application that reads a settings file next to itself
+and is only ever started from its own folder will not notice the difference. Started from a home
+directory, it will.
 
 ## AddArlecchino
 
@@ -104,9 +131,13 @@ public sealed class ChooseStartView : IArlecchinoStartup
 
     public ChooseStartView(Settings settings) => _settings = settings;
 
-    public ViewRoute Start() => _settings.Exists ? ViewKind.Default : ViewKind.Setup;
+    public async Task<ViewRoute> StartAsync() =>
+        await _settings.ExistAsync() ? ViewKind.Default : ViewKind.Setup;
 }
 ```
+
+`StartAsync` answers with a `Task<ViewRoute>`, since what decides the first route is often what the
+startup has to go and read. One with nothing to await returns `Task.FromResult`.
 
 Register with `.AddStartup<ChooseStartView>()`. Every startup runs when the hosted service begins, in
 registration order, each one applied to the navigator.

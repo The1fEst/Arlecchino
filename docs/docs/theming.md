@@ -137,13 +137,13 @@ public static class Solarized
         Header = new TermColor
         {
             Foreground = TerminalColor.BrightYellow,
-            ExactForeground = new Rgb(0xB5, 0x89, 0x00),
+            ExactForeground = new RGB(0xB5, 0x89, 0x00),
             Style = TextStyle.Bold,
         },
         Info = new TermColor
         {
             Foreground = TerminalColor.BrightBlack,
-            ExactForeground = new Rgb(0x58, 0x6E, 0x75),
+            ExactForeground = new RGB(0x58, 0x6E, 0x75),
         },
     };
 }

@@ -24,7 +24,7 @@ return ApiDocs.Run(args);
 internal sealed class ApiDocs
 {
     private static readonly string[] Projects =
-        ["Arlecchino.Core", "Arlecchino", "Arlecchino.Pictures", "Arlecchino.Testing"];
+        ["Arlecchino.Core", "Arlecchino", "Arlecchino.Atoms.History", "Arlecchino.Pictures", "Arlecchino.Testing"];
     private static readonly string[] Modifiers = ["static", "abstract", "virtual", "override", "sealed", "readonly"];
 
     private const int Margin = 100;

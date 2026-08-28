@@ -11,10 +11,12 @@ A class of [atoms](atoms.md) is a **store**. Marking it `IArlecchinoStore` is al
 ```csharp
 public sealed class SettingsStore : IArlecchinoStore
 {
-    public Atom<string> Profile { get; } = new TrackedAtom<string>("");
-    public Atom<decimal> Volume { get; } = new TrackedAtom<decimal>(60);
-    public Atom<bool> Fullscreen { get; } = new TrackedAtom<bool>(true);
-    public Atom<int> Cursor { get; } = new LocalAtom<int>(0);
+    private const string HistoryKey = "Settings";
+
+    public HistoryAtom<string> Profile { get; } = new("", $"{HistoryKey}.Profile");
+    public HistoryAtom<decimal> Volume { get; } = new(60, $"{HistoryKey}.Volume");
+    public HistoryAtom<bool> Fullscreen { get; } = new(true, $"{HistoryKey}.Fullscreen");
+    public Atom<int> Cursor { get; } = new(0);
 
     public Computed<bool> IsComplete { get; }
 
@@ -63,7 +65,7 @@ public sealed class DraftStore : IArlecchinoStore
         Title = new Computed<string>(() => $"{_settings.Profile.Value} — {Name.Value}");
     }
 
-    public Atom<string> Name { get; } = new TrackedAtom<string>("");
+    public HistoryAtom<string> Name { get; } = new("", "Draft.Name");
     public Computed<string> Title { get; }
 }
 ```
@@ -84,8 +86,8 @@ public sealed class SettingsStore : ArlecchinoAsyncStore
 
     private sealed record Saved(string Server, decimal Port);
 
-    public TrackedAtom<string> Server { get; } = new("127.0.0.1");
-    public TrackedAtom<decimal> Port { get; } = new(40000);
+    public HistoryAtom<string> Server { get; } = new("127.0.0.1", "Settings.Server");
+    public HistoryAtom<decimal> Port { get; } = new(40000, "Settings.Port");
 
     protected override async Task LoadAsync(CancellationToken token)
     {
@@ -190,7 +192,7 @@ public sealed class SettingsStore : IArlecchinoStore, IDisposable
 
     public SettingsStore(SettingsFile file)
     {
-        Profile = new TrackedAtom<string>(file.Read().Profile);
+        Profile = new HistoryAtom<string>(file.Read().Profile, "Settings.Profile");
         _watch = Profile.Subscribe(() => file.Write(Profile.Value));
     }
 

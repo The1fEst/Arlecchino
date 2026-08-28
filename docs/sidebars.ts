@@ -67,6 +67,8 @@ const sidebars: SidebarsConfig = {
         slug: '/releases',
       },
       items: [
+        'whats-new-in-2026.8.6',
+        'migrating-to-2026.8.6',
         'whats-new-in-2026.8.5',
         'migrating-to-2026.8.5',
         'whats-new-in-2026.8.4',

@@ -43,7 +43,6 @@ away and back, and it is still there.
 ```csharp title="Tasks.cs"
 using System.Collections.Generic;
 using Arlecchino.Atoms;
-using Arlecchino.Atoms.Tracked;
 
 namespace Todo;
 
@@ -51,7 +50,7 @@ public sealed record TodoItem(string Text, bool Done);
 
 public sealed class Tasks : IArlecchinoStore
 {
-    public Atom<IReadOnlyList<TodoItem>> Items { get; } = new TrackedAtom<IReadOnlyList<TodoItem>>([]);
+    public Atom<IReadOnlyList<TodoItem>> Items { get; } = new([]);
 
     public int Left
     {
@@ -104,9 +103,9 @@ public sealed class Tasks : IArlecchinoStore
 Two things are worth stopping on.
 
 The list is an [atom](atoms.md) rather than a field: writing to `Items.Value` asks for a
-repaint by itself, so nothing has to remember to redraw the screen. `TrackedAtom` also puts each edit
-on the [undo stack](atoms.md#undo-and-redo); `LocalAtom` is the same atom without that, for state
-the user did not author.
+repaint by itself, so nothing has to remember to redraw the screen. An atom that should also be
+undoable is a `HistoryAtom<T>` from `Arlecchino.Atoms.History`, which this application does not take —
+see [undo and redo](atoms.md#undo-and-redo).
 
 The atom holds an `IReadOnlyList` and every change makes a new one. A list mutated in place looks
 identical to the atom, which would then have nothing to report.
@@ -261,7 +260,7 @@ using Arlecchino.Hosting;
 using Microsoft.Extensions.Hosting;
 using Todo.Navigation;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(Configure)
@@ -320,7 +319,7 @@ if (args is ["--frame", ..])
     return;
 }
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = ArlecchinoHost.CreateBuilder(args);
 
 builder.Services
     .AddArlecchino(Configure)

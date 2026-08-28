@@ -1,7 +1,7 @@
 ---
 title: Forms
 sidebar_label: Forms
-description: Form and Field — turning a store of atoms into editable rows, each opening the modal that matches its type.
+description: Form and Field&lt;T&gt; — turning a store of atoms into editable rows, each opening the modal that matches its type.
 ---
 
 # Forms
@@ -12,6 +12,8 @@ the [modal](modals.md) that matches its type.
 ```csharp
 private readonly Surface _surface;
 private readonly Form _form;
+private readonly ActionField _apply;
+private readonly IDisposable _complete;
 
 public SettingsView(
     Surface surface,
@@ -21,23 +23,27 @@ public SettingsView(
 {
     _surface = surface;
 
+    _apply = Fields.Action(() => Loc(LocString.Apply), Apply);
+
     _form = new Form(state, options)
     {
         Fields =
         [
-            Field.Text(() => Loc(LocString.Profile), settings.Profile,
-                help: () => Loc(LocString.ProfileHelp)),
-            Field.Secret(() => Loc(LocString.Passphrase), settings.Passphrase),
-            Field.Choice(() => Loc(LocString.Theme), ["dark", "light"], settings.Theme),
-            Field.Slider(() => Loc(LocString.Volume), settings.Volume, 0, 100),
-            Field.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen,
-                value => value ? Yes : No),
-            Field.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings,
+            Fields.Text(() => Loc(LocString.Profile), settings.Profile)
+                .WithHelp(() => Loc(LocString.ProfileHelp)),
+            Fields.Secret(() => Loc(LocString.Passphrase), settings.Passphrase),
+            Fields.Choice(() => Loc(LocString.Theme), ["dark", "light"], settings.Theme),
+            Fields.Slider(() => Loc(LocString.Volume), settings.Volume)
+                .WithItems(() => [.. Enumerable.Range(0, 101)]),
+            Fields.Toggle(() => Loc(LocString.Fullscreen), settings.Fullscreen)
+                .WithTemplate(() => settings.Fullscreen.Value ? Yes : No),
+            Fields.Path(() => Loc(LocString.Folder), settings.Folder, ViewKind.Settings,
                 pickFolder: true),
-            Field.Action(() => Loc(LocString.Apply), Apply,
-                enabled: () => settings.IsComplete.Value),
+            _apply,
         ],
     };
+
+    _complete = settings.IsComplete.Subscribe(() => _apply.IsEnabled = settings.IsComplete.Value);
 }
 
 public void Draw() => _form.Draw(_surface.Content);
@@ -72,30 +78,41 @@ is a solid column of rows rather than a column with gaps in it.
 
 | Factory | Opens |
 |---|---|
-| `Field.Text`, `Field.Secret` | [Text modal](modals.md#text), masked for secrets |
-| `Field.Number`, `Field.Slider` | [Number and slider modals](modals.md#numbers) |
-| `Field.Toggle` | [Toggle modal](modals.md#toggle) |
-| `Field.Choice`, `Field.MultiChoice` | [Choice and multi-choice modals](modals.md#choice) |
-| `Field.Date`, `Field.Time`, `Field.Color` | [Segment editors and the color picker](modals.md#dates-times-and-colors) |
-| `Field.Path`, `Field.PathFrom` | The [file picker](file-picker.md); returns its route so the view navigates |
-| `Field.Action` | Nothing — runs your delegate and returns a route |
+| `Fields.Text`, `Fields.Secret` | [Text modal](modals.md#text), masked for secrets |
+| `Fields.Number`, `Fields.Slider` | [Number and slider modals](modals.md#numbers) |
+| `Fields.Toggle` | [Toggle modal](modals.md#toggle) |
+| `Fields.Choice`, `Fields.MultiChoice` | [Choice and multi-choice modals](modals.md#choice) |
+| `Fields.Date`, `Fields.Time`, `Fields.Color` | [Segment editors and the color picker](modals.md#dates-times-and-colors) |
+| `Fields.Path` | The [file picker](file-picker.md); returns its route so the view navigates |
+| `Fields.Action` | Nothing — runs your delegate and returns a route |
 
-Labels and help are delegates, not strings, so a form follows the current
+Each takes a label and the atom it edits, and nothing else. What the row also wants is added on
+afterwards, one call per thing:
+
+| Call | What it says |
+|---|---|
+| `WithHelp(() => …)` | The line under the row while it is selected |
+| `WithValidation(value => …)` | Whether a value is allowed; refusing one shows `ArlecchinoStrings.NotAnAllowedValue` |
+| `WithItems(() => …)` | What the value may be — the options of a choice, and for a number or a slider the ends of its range |
+| `WithTemplate(() => …)` | How the value reads on the row, where the value's own `ToString` is not what to show |
+| `WithLabel(() => …)` | Replaces the label |
+
+Labels, help and templates are delegates, not strings, so a form follows the current
 [language](localization.md) without being rebuilt.
 
 ### Where a path field starts
 
-`Field.Path` opens the picker at the path the field already holds. While the field is still empty
-there is nothing to open at and the picker lands on the drives, so `Field.PathFrom` says where it
-should start instead:
+`Fields.Path` opens the picker at the path the field already holds. While the field is still empty
+there is nothing to open at and the picker lands on the drives, so `WithStart` says where it should
+start instead:
 
 ```csharp
-Field.PathFrom(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true,
-    start: () => state.PickerLastFolder);
+Fields.Path(() => "Save folder", settings.Folder, ViewKind.Settings, pickFolder: true)
+    .WithStart(() => state.PickerLastFolder);
 ```
 
-A field that already has a value opens there and ignores `start`; a value that no longer exists on
-disk lands on the drives as before. `start` is a delegate rather than a string so that "wherever the
+A field that already has a value opens there and ignores the start; a value that no longer exists on
+disk lands on the drives as before. It is a delegate rather than a string so that "wherever the
 user was last time" is answered when the picker opens rather than when the form is built —
 `ArlecchinoState.PickerLastFolder`, which the [picker](file-picker.md) fills in as it closes, is
 exactly that answer.
@@ -111,18 +128,21 @@ puts both in a ring and stops routing keys by hand.
 
 ## Enabled and disabled
 
-`Field.Action` takes an `enabled` predicate — usually a [`Computed<bool>`](atoms.md#derived-values) —
-and draws itself muted while it is false:
+`IsEnabled` is a plain `bool` on the field, and a row draws itself muted while it is false. A button
+that follows the state of the form is subscribed to it — usually to a
+[`Computed<bool>`](atoms.md#derived-values), which is what makes it follow rather than be asked:
 
 ```csharp
-Field.Action(() => "Apply", Apply, enabled: () => settings.IsComplete.Value)
+var apply = Fields.Action(() => "Apply", Apply);
+
+_complete = settings.IsComplete.Subscribe(() => apply.IsEnabled = settings.IsComplete.Value);
 ```
 
 ## Why atoms rather than properties
 
 Because fields read and write atoms, two things come free:
 
-- an edit made through a modal is already undoable when the atom is `TrackedAtom<T>`;
+- an edit made through a modal is already undoable when the atom is a `HistoryAtom<T>`;
 - a value changed from **outside** the form — by a command, a background load, another screen —
   redraws it without anyone telling it to.
 
