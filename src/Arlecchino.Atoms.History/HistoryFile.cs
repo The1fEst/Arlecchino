@@ -242,7 +242,11 @@ public sealed class HistoryFile : IDisposable
 
         try
         {
-            using var source = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var source = new FileStream(
+                Path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete);
 
             source.Seek(offset, SeekOrigin.Begin);
 
@@ -321,7 +325,11 @@ public sealed class HistoryFile : IDisposable
 
         try
         {
-            using var source = new FileStream(Path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var source = new FileStream(
+                Path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete);
 
             long start = 0;
             long at = 0;

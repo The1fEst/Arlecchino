@@ -202,6 +202,25 @@ public sealed class HistoryFileTests : IDisposable
         Assert.True(file.Exists);
     }
 
+    /// <summary>
+    /// The file is held open for the whole run, where a hand or a housekeeping job can reach it.
+    /// Windows refuses the removal unless the share allows it, where Linux allows it either way.
+    /// </summary>
+    [Fact]
+    public void TheFileCanBeRemovedWhileItIsBeingWrittenTo()
+    {
+        using var file = Scratch();
+        using var history = new AtomHistory(file);
+
+        new HistoryAtom<string>("start", Key).Value = "changed";
+
+        Assert.True(file.Exists);
+
+        File.Delete(file.Path);
+
+        Assert.False(file.Exists);
+    }
+
     private HistoryFile Scratch() => new(Path.Combine(_folder, "scratch.undo"));
 
     private static JsonElement SingleEdit(HistoryFile file)

@@ -53,7 +53,7 @@ internal sealed class StepWriter : IValueWriter
             return null;
         }
 
-        _stream ??= new(path, FileMode.Append, FileAccess.Write, FileShare.Read);
+        _stream ??= new(path, FileMode.Append, FileAccess.Write, FileShare.Read | FileShare.Delete);
         _json ??= new(_stream);
 
         var offset = _stream.Position;
