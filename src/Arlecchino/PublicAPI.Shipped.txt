@@ -287,7 +287,6 @@ Arlecchino.Hosting.ArlecchinoBuilder.UseMouse() -> Arlecchino.Hosting.Arlecchino
 Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(Arlecchino.Input.KeyPress? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseStrings(Arlecchino.Hosting.ArlecchinoStrings! strings) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTerminal<TTerminal>() -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseTextInput(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseTheme(Arlecchino.Rendering.Colors.ThemePalette! palette) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.WithoutHostedService() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.WithoutNotifications() -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -401,6 +400,8 @@ Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Keymap.get -> Arlecchino.Hosting.ArlecchinoKeymap!
 Arlecchino.Hosting.ArlecchinoOptions.Keymap.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.get -> bool
+Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.MinimumHeight.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.MinimumHeight.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.MinimumWidth.get -> int
@@ -423,8 +424,6 @@ Arlecchino.Hosting.ArlecchinoOptions.TargetFramesPerSecond.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.TargetFramesPerSecond.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.TextInput.get -> Arlecchino.Input.TextInputMode
-Arlecchino.Hosting.ArlecchinoOptions.TextInput.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Theme.get -> Arlecchino.Rendering.Colors.ThemePalette!
 Arlecchino.Hosting.ArlecchinoOptions.Theme.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.UseAlternateScreen.get -> bool
@@ -797,7 +796,6 @@ Arlecchino.Modals.ModalFrame.Copy(string! text) -> void
 Arlecchino.Modals.ModalFrame.Depth.get -> int
 Arlecchino.Modals.ModalFrame.Height.get -> int
 Arlecchino.Modals.ModalFrame.Keymap.get -> Arlecchino.Hosting.ArlecchinoKeymap!
-Arlecchino.Modals.ModalFrame.Keys.get -> Arlecchino.Input.KeyText!
 Arlecchino.Modals.ModalFrame.Screen.get -> Arlecchino.Rendering.SurfaceRegion
 Arlecchino.Modals.ModalFrame.Strings.get -> Arlecchino.Hosting.ArlecchinoStrings!
 Arlecchino.Modals.ModalFrame.Width.get -> int
@@ -1006,7 +1004,7 @@ Arlecchino.State.ArlecchinoState.RequestDate(string! title, System.DateOnly init
 Arlecchino.State.ArlecchinoState.RequestEmail(string! title, string! initial, System.Action<string!>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestMessage(string! title, string! text, System.Action? onClosed = null) -> void
 Arlecchino.State.ArlecchinoState.RequestMultiChoice(string! title, System.Collections.Generic.IReadOnlyList<string!>! options, System.Collections.Generic.IReadOnlyList<string!>! selectedKeys, System.Action<System.Collections.Generic.IReadOnlyList<string!>!>! onSubmit) -> void
-Arlecchino.State.ArlecchinoState.RequestNumber(string! title, decimal initial, decimal minimum, decimal maximum, System.Action<decimal>! onSubmit) -> void
+Arlecchino.State.ArlecchinoState.RequestNumber(string! title, decimal initial, decimal minimum, decimal maximum, System.Action<decimal>! onSubmit, int decimals = 0) -> void
 Arlecchino.State.ArlecchinoState.RequestPassword(string! title, System.Action<string!>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestSlider(string! title, decimal initial, decimal minimum, decimal maximum, System.Action<decimal>! onSubmit) -> void
 Arlecchino.State.ArlecchinoState.RequestText(string! title, string! initial, System.Func<string!, string?>? validate, System.Action<string!>! onSubmit) -> void

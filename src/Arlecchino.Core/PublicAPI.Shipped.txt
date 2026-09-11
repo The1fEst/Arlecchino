@@ -160,6 +160,8 @@ Arlecchino.Input.KeyModifiers.None = 0 -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Shift = 2 -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyModifiers.Super = 8 -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyPress
+Arlecchino.Input.KeyPress.ByPosition.get -> char
+Arlecchino.Input.KeyPress.ByPosition.init -> void
 Arlecchino.Input.KeyPress.Character.get -> char
 Arlecchino.Input.KeyPress.Character.init -> void
 Arlecchino.Input.KeyPress.Deconstruct(out System.ConsoleKey Key, out Arlecchino.Input.KeyModifiers Modifiers, out char Character) -> void
@@ -187,9 +189,6 @@ Arlecchino.Input.KeyStroke.Modifiers.get -> Arlecchino.Input.KeyModifiers
 Arlecchino.Input.KeyStroke.Modifiers.init -> void
 Arlecchino.Input.KeyStroke.Replacing(Arlecchino.Input.KeyModifiers from, Arlecchino.Input.KeyModifiers to) -> Arlecchino.Input.KeyStroke
 Arlecchino.Input.KeyText
-Arlecchino.Input.KeyText.KeyText(Arlecchino.Input.TextInputMode mode) -> void
-Arlecchino.Input.KeyText.Mode.get -> Arlecchino.Input.TextInputMode
-Arlecchino.Input.KeyText.Resolve(Arlecchino.Input.KeyPress key) -> char?
 Arlecchino.Input.MouseAction
 Arlecchino.Input.MouseAction.Moved = 2 -> Arlecchino.Input.MouseAction
 Arlecchino.Input.MouseAction.Pressed = 0 -> Arlecchino.Input.MouseAction
@@ -218,9 +217,6 @@ Arlecchino.Input.MouseEvent.MouseEvent() -> void
 Arlecchino.Input.MouseEvent.MouseEvent(Arlecchino.Input.MouseAction Action, Arlecchino.Input.MouseButton Button, int Row, int Column, Arlecchino.Input.KeyModifiers Modifiers) -> void
 Arlecchino.Input.MouseEvent.Row.get -> int
 Arlecchino.Input.MouseEvent.Row.init -> void
-Arlecchino.Input.TextInputMode
-Arlecchino.Input.TextInputMode.ByPosition = 0 -> Arlecchino.Input.TextInputMode
-Arlecchino.Input.TextInputMode.Native = 1 -> Arlecchino.Input.TextInputMode
 Arlecchino.Rendering.Align
 Arlecchino.Rendering.Align.Bottom = 32 -> Arlecchino.Rendering.Align
 Arlecchino.Rendering.Align.Center = 2 -> Arlecchino.Rendering.Align
@@ -494,9 +490,9 @@ static Arlecchino.Input.KeyPress.operator !=(Arlecchino.Input.KeyPress left, Arl
 static Arlecchino.Input.KeyPress.operator ==(Arlecchino.Input.KeyPress left, Arlecchino.Input.KeyPress right) -> bool
 static Arlecchino.Input.KeyStroke.operator !=(Arlecchino.Input.KeyStroke left, Arlecchino.Input.KeyStroke right) -> bool
 static Arlecchino.Input.KeyStroke.operator ==(Arlecchino.Input.KeyStroke left, Arlecchino.Input.KeyStroke right) -> bool
-static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
-static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
-static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
+static Arlecchino.Input.KeyText.ByPosition(Arlecchino.Input.KeyPress key) -> char?
+static Arlecchino.Input.KeyText.Resolve(Arlecchino.Input.KeyPress key) -> char?
+static Arlecchino.Input.KeyText.Shortcut(Arlecchino.Input.KeyPress key) -> char?
 static Arlecchino.Input.MouseEvent.operator !=(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
 static Arlecchino.Input.MouseEvent.operator ==(Arlecchino.Input.MouseEvent left, Arlecchino.Input.MouseEvent right) -> bool
 static Arlecchino.Rendering.Colors.Contrast.Between(Arlecchino.Rendering.Colors.RGB one, Arlecchino.Rendering.Colors.RGB other) -> double
