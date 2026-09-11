@@ -20,7 +20,7 @@ public interface IField
 | Member | Summary |
 |---|---|
 | [`Action`](#action) | What confirming the row does instead of opening the dialog its value would otherwise get. Returning a route navigates and [`ViewRoute.None`](../arlecchino.navigation/ViewRoute.md#none) stays put. |
-| [`Help`](#help) | A line shown under the row while it is selected. Nothing means none is shown. |
+| [`Help`](#help) | What is shown under the row while it is selected, wrapped over as many rows as it takes and broken where it says to. Nothing means none is shown. |
 | [`IsEnabled`](#isenabled) | Whether the row can be used. A disabled row is drawn muted and confirming it does nothing. |
 | [`Label`](#label) | What the row is called. |
 | [`Template`](#template) | How the value is worded, for the values an atom does not write out the way a form should show them — a secret as dots, a date in the order the reader expects. Nothing leaves it to the atom. |
@@ -50,7 +50,7 @@ What confirming the row does instead of opening the dialog its value would other
 public Func<string>? Help { get; }
 ```
 
-A line shown under the row while it is selected. Nothing means none is shown.
+What is shown under the row while it is selected, wrapped over as many rows as it takes and broken where it says to. Nothing means none is shown.
 
 **Type** `Func<TResult>`&lt;`string`&gt;
 

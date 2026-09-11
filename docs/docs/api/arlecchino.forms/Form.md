@@ -7,7 +7,7 @@ sidebar_label: "Form"
 
 **Namespace:** `Arlecchino.Forms` &middot; **Assembly:** `Arlecchino`
 
-A column of fields with their values lined up, and a help line under the selected one. It holds no values of its own, and the atom behind each field decides whether an edit can be undone.
+A column of fields with their values lined up, and the help of the selected one under it. It holds no values of its own, and the atom behind each field decides whether an edit can be undone.
 
 ```csharp
 public sealed class Form : IArlecchinoInteractiveWidget, IArlecchinoWidget, IArlecchinoFocusable
@@ -118,7 +118,7 @@ Draws the fields with their labels aligned, scrolled, so the selection stays in 
 
 | Name | Type | Description |
 |---|---|---|
-| `region` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) | Where to draw, help line included. |
+| `region` | [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) | Where to draw, the help of the selected field included. |
 
 **Returns** [`SurfaceRegion`](../arlecchino.rendering/SurfaceRegion.md) — The region below the fields, which is empty when they filled it.
 

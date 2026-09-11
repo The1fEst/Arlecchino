@@ -20,7 +20,6 @@ public sealed class ModalFrame
 | [`Depth`](#depth) | How many dialogs are already open under this one. Each is offset a row down and three columns along, so a dialog opened from a dialog reads as being on top of it rather than instead of it. |
 | [`Height`](#height) | How many rows tall. |
 | [`Keymap`](#keymap) | Keys to obey. |
-| [`Keys`](#keys) | Turns a key press into the character it stands for. |
 | [`Screen`](#screen) | The whole screen, for a dialog that would rather place itself. |
 | [`Strings`](#strings) | The words the application says things in. |
 | [`Width`](#width) | How many cells wide the frame is. |
@@ -66,16 +65,6 @@ public ArlecchinoKeymap Keymap { get; }
 Keys to obey.
 
 **Type** [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md)
-
-### `Keys` {#keys}
-
-```csharp
-public KeyText Keys { get; }
-```
-
-Turns a key press into the character it stands for.
-
-**Type** [`KeyText`](../arlecchino.input/KeyText.md)
 
 ### `Screen` {#screen}
 

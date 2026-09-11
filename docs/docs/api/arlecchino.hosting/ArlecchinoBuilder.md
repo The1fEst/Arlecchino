@@ -34,13 +34,12 @@ public sealed class ArlecchinoBuilder
 | [`StartAt(ViewRoute)`](#startat-viewroute) | Sets the view the application opens on. |
 | [`StartAt(string)`](#startat-string) | Sets the view the application opens on, by name. |
 | [`UseKeymap(ArlecchinoKeymap)`](#usekeymap-arlecchinokeymap) | Replaces the key bindings, which every widget then follows. |
-| [`UseKeysByPosition()`](#usekeysbyposition) | Takes every character from where its key sits rather than from what the layout makes of it, so shortcuts read the same everywhere and those languages cannot be typed at all. |
+| [`UseKeysByPosition()`](#usekeysbyposition) | Answers a binding named after a character from where that character sits as well as from what the layout makes of the key, so `/` and `:` reach their commands on a layout that types neither. What a field types is left alone: any language is still typed as it is. |
 | [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own, from one instance that outlives the views. A view answering `false` to `IArlecchinoView.UsesLayout` is drawn without it. |
 | [`UseMouse()`](#usemouse) | Turns the mouse on, which stops the terminal from handling selection itself. It is off by default for that reason. |
 | [`UseNotifications(Nullable<KeyPress>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-keypress-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
 | [`UseStrings(ArlecchinoStrings)`](#usestrings-arlecchinostrings) | Replaces the wording the framework itself shows. This is the only way it is localized: nothing is looked up from resources. |
 | [`UseTerminal<TTerminal>()`](#useterminal-tterminal) | Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them. |
-| [`UseTextInput(TextInputMode)`](#usetextinput-textinputmode) | Chooses how typed characters are read. This is a trade-off rather than a preference: reading the terminal's own characters accepts any language but can misread keys on some terminals. |
 | [`UseTheme(ThemePalette)`](#usetheme-themepalette) | Replaces the colors. What actually reaches the screen still depends on what the terminal supports. |
 | [`WithoutHostedService()`](#withouthostedservice) | Stops the application from taking over the terminal when the host starts, leaving everything registered. A test can then drive the loop itself. |
 | [`WithoutNotifications()`](#withoutnotifications) | Leaves the output row off, so nothing the application says is drawn on the frame. |
@@ -206,7 +205,7 @@ Replaces the key bindings, which every widget then follows.
 public ArlecchinoBuilder UseKeysByPosition();
 ```
 
-Takes every character from where its key sits rather than from what the layout makes of it, so shortcuts read the same everywhere and those languages cannot be typed at all.
+Answers a binding named after a character from where that character sits as well as from what the layout makes of the key, so `/` and `:` reach their commands on a layout that types neither. What a field types is left alone: any language is still typed as it is.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
@@ -274,22 +273,6 @@ public ArlecchinoBuilder UseTerminal<TTerminal>();
 ```
 
 Draws to something other than the console, replacing whatever terminal was registered. This is how tests capture frames instead of writing them.
-
-**Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
-
-### `UseTextInput(TextInputMode)` {#usetextinput-textinputmode}
-
-```csharp
-public ArlecchinoBuilder UseTextInput(TextInputMode mode);
-```
-
-Chooses how typed characters are read. This is a trade-off rather than a preference: reading the terminal's own characters accepts any language but can misread keys on some terminals.
-
-**Parameters**
-
-| Name | Type | Description |
-|---|---|---|
-| `mode` | [`TextInputMode`](../arlecchino.input/TextInputMode.md) | The mode to use. |
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

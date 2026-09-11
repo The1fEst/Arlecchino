@@ -25,7 +25,7 @@ place to look a member up.
 | [Arlecchino.Focus](arlecchino.focus/index.md) | `Arlecchino` | 5 |
 | [Arlecchino.Forms](arlecchino.forms/index.md) | `Arlecchino` | 8 |
 | [Arlecchino.Hosting](arlecchino.hosting/index.md) | `Arlecchino` | 11 |
-| [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 10 |
+| [Arlecchino.Input](arlecchino.input/index.md) | `Arlecchino.Core` | 9 |
 | [Arlecchino.Layout](arlecchino.layout/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Modals](arlecchino.modals/index.md) | `Arlecchino` | 3 |
 | [Arlecchino.Modals.Asking](arlecchino.modals.asking/index.md) | `Arlecchino` | 7 |

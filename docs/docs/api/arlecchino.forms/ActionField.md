@@ -37,7 +37,7 @@ public sealed class ActionField : IField
 | Member | Summary |
 |---|---|
 | [`TryReset()`](#tryreset) |  |
-| [`WithHelp(Func<string>)`](#withhelp-func-string) | Gives the button a line of help, shown under it while it is selected. |
+| [`WithHelp(Func<string>)`](#withhelp-func-string) | Gives the button some help, shown under it while it is selected. It wraps over as many rows as it takes, and a line break in it is kept. |
 
 ## Constructors in detail
 
@@ -122,7 +122,7 @@ public bool TryReset();
 public ActionField WithHelp(Func<string> help);
 ```
 
-Gives the button a line of help, shown under it while it is selected.
+Gives the button some help, shown under it while it is selected. It wraps over as many rows as it takes, and a line break in it is kept.
 
 **Parameters**
 

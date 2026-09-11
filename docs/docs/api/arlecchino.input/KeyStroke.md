@@ -36,7 +36,7 @@ public readonly struct KeyStroke : IEquatable<KeyStroke>
 | Member | Summary |
 |---|---|
 | [`Deconstruct(out ConsoleKey, out KeyModifiers)`](#deconstruct-out-consolekey-out-keymodifiers) |  |
-| [`Matches(KeyPress)`](#matches-keypress) | Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift. |
+| [`Matches(KeyPress)`](#matches-keypress) | Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift. A stroke on a character also answers to the key the character sits on, which is what an application that asked to read its keys by position reaches its shortcuts through. |
 | [`Replacing(KeyModifiers, KeyModifiers)`](#replacing-keymodifiers-keymodifiers) | The same stroke with one modifier put in place of another. |
 | [`ToString()`](#tostring) | How the stroke is shown to the user — `Ctrl+S`, `Alt+←`, `Esc`. The palette and the hints box display this, so a rebound key relabels itself everywhere. |
 
@@ -134,7 +134,7 @@ public void Deconstruct(out ConsoleKey Key, out KeyModifiers Modifiers);
 public bool Matches(KeyPress press);
 ```
 
-Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift.
+Whether a key press is this stroke, by the key where one was reported and by the character otherwise. A key that answers to two names matches under either, and a stroke on a character forgives Shift. A stroke on a character also answers to the key the character sits on, which is what an application that asked to read its keys by position reaches its shortcuts through.
 
 **Parameters**
 

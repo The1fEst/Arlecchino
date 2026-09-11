@@ -26,6 +26,7 @@ public readonly struct KeyPress : IEquatable<KeyPress>
 
 | Member | Summary |
 |---|---|
+| [`ByPosition`](#byposition) | The character the key would type where it sits, which a binding named after a character answers to as well. The framework fills it in only for an application that reads its keys by position. |
 | [`Character`](#character) | The character it typed, or `'\0'` for keys that type nothing. |
 | [`IsNothing`](#isnothing) | Whether this is the press a terminal hands back when there was nothing to read — no key, no character, nothing held. |
 | [`Key`](#key) | The key itself, or `default` when the terminal named no key and only sent a character. |
@@ -71,6 +72,16 @@ One key press, as the framework hands it to a view. It is `ConsoleKeyInfo` with 
 | `Character` | `char` | The character it typed, or `'\0'` for keys that type nothing. |
 
 ## Properties in detail
+
+### `ByPosition` {#byposition}
+
+```csharp
+public char ByPosition { get; init; }
+```
+
+The character the key would type where it sits, which a binding named after a character answers to as well. The framework fills it in only for an application that reads its keys by position.
+
+**Type** `char`
 
 ### `Character` {#character}
 

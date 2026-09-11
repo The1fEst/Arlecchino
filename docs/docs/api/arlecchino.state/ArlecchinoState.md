@@ -45,7 +45,7 @@ public class ArlecchinoState
 | [`RequestEmail(string, string, Action<string>)`](#requestemail-string-string-action-string) | Asks for an email address, checked before the dialog will close. |
 | [`RequestMessage(string, string, Action)`](#requestmessage-string-string-action) | Shows a message with nothing to fill in; any of the closing keys dismisses it. |
 | [`RequestMultiChoice(string, IReadOnlyList<string>, IReadOnlyList<string>, Action<IReadOnlyList<string>>)`](#requestmultichoice-string-ireadonlylist-string-ireadonlylist-string-action-ireadonlylist-string) | Asks for any number of options. Marks survive filtering, and the result comes back in the order of `options` rather than the order they were marked. |
-| [`RequestNumber(string, decimal, decimal, decimal, Action<decimal>)`](#requestnumber-string-decimal-decimal-decimal-action-decimal) | Asks for a number within bounds. Typing is restricted to digits, and stepping keys clamp to the range. |
+| [`RequestNumber(string, decimal, decimal, decimal, Action<decimal>, int)`](#requestnumber-string-decimal-decimal-decimal-action-decimal-int) | Asks for a number within bounds. Typing is restricted to digits, and stepping keys clamp to the range. |
 | [`RequestPassword(string, Action<string>)`](#requestpassword-string-action-string) | Asks for a secret. The field shows dots, but the text handed to the callback is untouched. |
 | [`RequestSlider(string, decimal, decimal, decimal, Action<decimal>)`](#requestslider-string-decimal-decimal-decimal-action-decimal) | Asks for a number on a track, adjusted with the arrows rather than typed. |
 | [`RequestText(string, string, Func<string, string>, Action<string>)`](#requesttext-string-string-func-string-string-action-string) | Asks for a line of text. |
@@ -330,7 +330,7 @@ Asks for any number of options. Marks survive filtering, and the result comes ba
 | `selectedKeys` | `IReadOnlyList<T>`&lt;`string`&gt; | Options marked to begin with. |
 | `onSubmit` | `Action<T>`&lt;`IReadOnlyList<T>`&lt;`string`&gt;&gt; | Called with everything marked. |
 
-### `RequestNumber(string, decimal, decimal, decimal, Action<decimal>)` {#requestnumber-string-decimal-decimal-decimal-action-decimal}
+### `RequestNumber(string, decimal, decimal, decimal, Action<decimal>, int)` {#requestnumber-string-decimal-decimal-decimal-action-decimal-int}
 
 ```csharp
 public void RequestNumber(
@@ -338,7 +338,8 @@ public void RequestNumber(
     decimal initial,
     decimal minimum,
     decimal maximum,
-    Action<decimal> onSubmit);
+    Action<decimal> onSubmit,
+    int decimals = 0);
 ```
 
 Asks for a number within bounds. Typing is restricted to digits, and stepping keys clamp to the range.
@@ -352,6 +353,7 @@ Asks for a number within bounds. Typing is restricted to digits, and stepping ke
 | `minimum` | `decimal` | Lowest value allowed. |
 | `maximum` | `decimal` | Highest value allowed. |
 | `onSubmit` | `Action<T>`&lt;`decimal`&gt; | Called with the accepted number. |
+| `decimals` | `int` | Digits kept after the separator. Zero, the default, also means a decimal separator cannot be typed at all, so a field that takes a fraction has to say how precise it is. |
 
 ### `RequestPassword(string, Action<string>)` {#requestpassword-string-action-string}
 

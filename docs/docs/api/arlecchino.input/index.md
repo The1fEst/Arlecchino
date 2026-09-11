@@ -10,7 +10,7 @@ sidebar_position: 0
 
 | Type | Summary |
 |---|---|
-| [`KeyText`](KeyText.md) | Turns a key press into the character it should type. Take it as a constructor parameter instead of reading `KeyPress.Character` yourself — that is what keeps filters and shortcuts working on a non-latin layout. |
+| [`KeyText`](KeyText.md) | Turns a key press into the character it types. Ask this instead of reading `KeyPress.Character` yourself — that is what keeps a field typing on a terminal that names the key and sends no character with it. |
 | [`TerminalInputReader`](TerminalInputReader.md) | Turns what the terminal reports into keys and mouse events, reading an escape together with what follows it. Anything that turns out not to be a sequence is replayed key by key, after a short wait. |
 
 ## Structs
@@ -29,5 +29,4 @@ sidebar_position: 0
 | [`KeyModifiers`](KeyModifiers.md) | Modifiers held with a key. The three the console knows about keep the values `ConsoleModifiers` gives them, so the two agree bit by bit; [`KeyModifiers.Super`](../arlecchino.input/KeyModifiers.md) is the one the console has no room for — Command on a Mac, the Windows key elsewhere. |
 | [`MouseAction`](MouseAction.md) | What the mouse did. |
 | [`MouseButton`](MouseButton.md) | Which button an event belongs to. |
-| [`TextInputMode`](TextInputMode.md) | How a key press becomes a character, which decides what happens on a non-latin layout. |
 

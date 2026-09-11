@@ -40,7 +40,7 @@ public class Field<T> : IField
 |---|---|
 | [`TryReset()`](#tryreset) |  |
 | [`WithAction(Func<ViewRoute>)`](#withaction-func-viewroute) | Makes confirming the row do this rather than open the dialog its value would otherwise get. |
-| [`WithHelp(Func<string>)`](#withhelp-func-string) | Gives the row a line of help, shown under it while it is selected. |
+| [`WithHelp(Func<string>)`](#withhelp-func-string) | Gives the row some help, shown under it while it is selected. It wraps over as many rows as it takes, and a line break in it is kept. |
 | [`WithItems(Func<T[]>)`](#withitems-func-t) | Gives the row the values it is picked from, or the range it moves along. |
 | [`WithLabel(Func<string>)`](#withlabel-func-string) | Names the row. |
 | [`WithTemplate(Func<string>)`](#withtemplate-func-string) | Words the value for the form, where the atom does not write itself out the way it reads. |
@@ -164,7 +164,7 @@ Makes confirming the row do this rather than open the dialog its value would oth
 public Field<T> WithHelp(Func<string> help);
 ```
 
-Gives the row a line of help, shown under it while it is selected.
+Gives the row some help, shown under it while it is selected. It wraps over as many rows as it takes, and a line break in it is kept.
 
 **Parameters**
 
