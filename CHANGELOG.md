@@ -15,10 +15,21 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## 2026.9.1
 
-A release about which key a shortcut is reached by. Reading the keys by position used to cost the
-language they are typed in, and now it costs nothing: the shortcut is looked up by where the key sits
-and the field still takes what the layout made of it. The break is named below and the compiler names
-most of it for you.
+A release about which key a shortcut is reached by, and about what a dialog asking for a number was
+holding its user to. Reading the keys by position used to cost the language they are typed in, and
+now it costs nothing: the shortcut is looked up by where the key sits and the field still takes what
+the layout made of it. The one break is named below and the compiler names most of it for you.
+
+### Added
+
+- **A number asked for through the state can take a fraction.** `ArlecchinoState.RequestNumber` takes
+  the digits to keep after the separator, and the dialog opens on the starting value written out to
+  that many. It defaults to zero, which is what the method was held to before and which also refuses
+  the separator itself, so a field that means to take a fraction has to say how precise it is.
+
+  ```csharp
+  state.RequestNumber("Weight", 1.5m, 0m, 10m, Weigh, decimals: 2);
+  ```
 
 ### Changed
 

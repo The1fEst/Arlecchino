@@ -247,13 +247,24 @@ public class ArlecchinoState
     /// <param name="minimum">Lowest value allowed.</param>
     /// <param name="maximum">Highest value allowed.</param>
     /// <param name="onSubmit">Called with the accepted number.</param>
-    public void RequestNumber(string title, decimal initial, decimal minimum, decimal maximum, Action<decimal> onSubmit)
+    /// <param name="decimals">
+    /// Digits kept after the separator. Zero, the default, also means a decimal separator cannot be typed
+    /// at all, so a field that takes a fraction has to say how precise it is.
+    /// </param>
+    public void RequestNumber(
+        string title,
+        decimal initial,
+        decimal minimum,
+        decimal maximum,
+        Action<decimal> onSubmit,
+        int decimals = 0)
     {
         var modal = new NumberModal
         {
             Title = title,
             Minimum = minimum,
             Maximum = maximum,
+            Decimals = decimals,
             OnSubmit = onSubmit,
         };
 

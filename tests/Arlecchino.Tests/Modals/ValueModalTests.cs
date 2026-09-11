@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using Arlecchino.Input;
 using Arlecchino.Modals.Asking;
 using Arlecchino.Modals.Setting;
 using Arlecchino.Tests.Support;
@@ -53,6 +54,27 @@ public sealed class ValueModalTests
         app.Type("a.2");
 
         Assert.Equal("12", ((NumberModal)app.State.Modal!).Text);
+    }
+
+    /// <summary>
+    /// How precise a number is travels with the request, so a field asked for through the state takes a
+    /// fraction rather than being held to whole numbers.
+    /// </summary>
+    [Fact]
+    public void ARequestedNumberTakesAFractionWhenItSaysHowPreciseItIs()
+    {
+        using var app = new TestApplication();
+        decimal result = 0;
+
+        app.State.RequestNumber("Weight", 1.5m, 0m, 10m, value => result = value, decimals: 2);
+
+        Assert.Equal("1.50", ((NumberModal)app.State.Modal!).Text);
+
+        app.Press(ConsoleKey.U, KeyModifiers.Control);
+        app.Type("2.25");
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(2.25m, result);
     }
 
     [Fact]
