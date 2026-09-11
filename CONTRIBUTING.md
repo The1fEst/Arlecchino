@@ -43,7 +43,10 @@ and analysed with everything else — a script beside the repository is checked 
 
 - **`pack`** builds the five packages into `artifacts/packages`. That local feed is how an application
   is tried against a change before it is released; skip it and the application quietly keeps building
-  against the version on nuget.org.
+  against the version on nuget.org. `pack <version>` makes all five carry that version, the
+  dependencies between them included, and `--to <folder>` puts them in a feed outside the repository.
+  Give a version no release carries — `2026.8.7-local.1` — since a version already in the global
+  packages folder is restored from there and never looked for in a feed.
 - **`oracle`** holds the screen the tests read frames back from against a real terminal. `ScreenGrid`
   and the code that writes the frames were written by the same head, so a wrong idea about the edge of
   a row or the width of a symbol would be held by both and cancel out, leaving every test green and the
