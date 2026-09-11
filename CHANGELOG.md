@@ -13,6 +13,39 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.9.2
+
+A release about one line of startup, and about how late is too late to write it. A Windows console
+comes up on the national code page, and whatever takes hold of its writer before the page is changed
+keeps an encoder that cannot spell the symbols a frame is drawn from — which is what a rounded box
+arriving as `?◆◆◆◆?` was. The page is now set from a module initializer written into the application,
+which runs before its entry point does. Nothing breaks, and an application carrying the workaround by
+hand can drop it.
+
+### Added
+
+- **`SystemTerminal.UseUtf8()`**, which puts the console on UTF-8. An application does not have to call
+  it: the package generates a module initializer that does, and a module initializer in the application's
+  own module runs before its entry point. It is public for an application that builds the terminal by
+  hand rather than through `AddArlecchino`.
+
+### Fixed
+
+- **A frame reaches a Windows console in UTF-8 rather than in the code page it came up on.** A Windows
+  console comes up on the national code page, and the runtime builds a writer around the page in force
+  when the writer is first asked for. The page was being changed by `SystemTerminal`, which is built out
+  of the container and so is built well into startup — by then `AddArlecchino` has taken the console over
+  and kept the writer every frame is drawn through, and that writer holds the encoder it was born with
+  whatever the page becomes afterwards. Frames went out through an encoder still on the national page
+  while the console itself had moved to UTF-8: a symbol the page cannot spell arrived as `?`, and one it
+  can arrived as the single byte it spells it with, which is not UTF-8 and draws as the replacement
+  character. A box with rounded corners came up as `?◆◆◆◆?`.
+
+  The page is now set from a module initializer generated into the application, which is the earliest
+  point there is — before the host builder, before `AddArlecchino`, before anything an application could
+  write for itself. Nothing to add to `Program.cs`, and an application carrying
+  `Console.OutputEncoding = new UTF8Encoding(false)` as a workaround can drop the line.
+
 ## 2026.9.1
 
 A release about which key a shortcut is reached by, and about two things a dialog and a form were

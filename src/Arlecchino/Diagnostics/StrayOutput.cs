@@ -47,6 +47,8 @@ internal sealed class StrayOutput
             return taken;
         }
 
+        SystemTerminal.UseUtf8();
+
         var strays = new StrayOutput(Console.Out);
 
         Console.SetError(new StrayWriter(strays, Console.Error, "stderr", LogLevel.Warning));

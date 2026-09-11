@@ -50,9 +50,10 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     {
         _output = output;
 
+        UseUtf8();
+
         try
         {
-            Console.OutputEncoding = Encoding.UTF8;
             Console.CursorVisible = false;
         }
         catch (IOException) { }
@@ -72,6 +73,20 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     internal bool EscapeSequencesWork => _escapeSequencesWork;
+
+    /// <summary>
+    /// Puts the console on UTF-8, and leaves it as found when the console refuses. Call it before
+    /// anything writes: the runtime builds a writer around the code page in force, and one already
+    /// made keeps that encoder.
+    /// </summary>
+    public static void UseUtf8()
+    {
+        try
+        {
+            Console.OutputEncoding = new UTF8Encoding(false);
+        }
+        catch (IOException) { }
+    }
 
     /// <summary>Window width, or a fixed width when output is redirected.</summary>
     public int Width => Console.IsOutputRedirected ? RedirectedWidth : Math.Max(1, Console.WindowWidth);
