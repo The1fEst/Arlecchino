@@ -16,7 +16,6 @@ internal sealed class PickerInput
     private const int PageRows = 10;
 
     private readonly ArlecchinoKeymap _keymap;
-    private readonly KeyText _keyText;
     private readonly IArlecchinoTerminal _terminal;
     private readonly PickerListing _listing;
     private readonly PickerPlaces _places;
@@ -26,7 +25,6 @@ internal sealed class PickerInput
 
     /// <summary>Reads the picker's input.</summary>
     /// <param name="keymap">Keys to obey.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for, for what is typed.</param>
     /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
     /// <param name="folder">The folder being listed.</param>
     /// <param name="places">The shortcuts down the left.</param>
@@ -35,7 +33,6 @@ internal sealed class PickerInput
     /// <param name="focus">Moves the keyboard to the listing when <c>true</c>, to the shortcuts otherwise.</param>
     public PickerInput(
         ArlecchinoKeymap keymap,
-        KeyText keyText,
         IArlecchinoTerminal terminal,
         PickerListing folder,
         PickerPlaces places,
@@ -44,7 +41,6 @@ internal sealed class PickerInput
         Action<bool> focus)
     {
         _keymap = keymap;
-        _keyText = keyText;
         _terminal = terminal;
         _listing = folder;
         _places = places;
@@ -126,7 +122,7 @@ internal sealed class PickerInput
         {
             GoTo(entries[_table.SelectedIndex].FullPath);
         }
-        else if (_keyText.Resolve(key) is { } typed)
+        else if (KeyText.Resolve(key) is { } typed)
         {
             TextEditing.Insert(_listing.Filter, typed);
             _table.SelectedIndex = 0;

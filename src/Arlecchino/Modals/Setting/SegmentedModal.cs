@@ -163,7 +163,7 @@ public abstract class SegmentedModal : Modal
             return;
         }
 
-        if (frame.Keys.Resolve(key) is { } digit && char.IsAsciiDigit(digit))
+        if (KeyText.Resolve(key) is { } digit && char.IsAsciiDigit(digit))
         {
             TypeDigit(digit);
         }

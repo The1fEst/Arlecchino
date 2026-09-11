@@ -50,13 +50,11 @@ internal sealed class FilePickerView : IArlecchinoView
     /// </summary>
     /// <param name="state">Holds the request that opened the picker.</param>
     /// <param name="surface">The cell grid to draw into.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for, for the filter.</param>
     /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
     /// <param name="options">Supplies the keymap and the wording.</param>
     public FilePickerView(
         ArlecchinoState state,
         Surface surface,
-        KeyText keyText,
         IArlecchinoTerminal terminal,
         ArlecchinoOptions options)
     {
@@ -73,7 +71,7 @@ internal sealed class FilePickerView : IArlecchinoView
         _places = new(_request, strings);
         _table = new(strings);
         _chrome = new(strings, _keymap, _request);
-        _input = new(_keymap, keyText, terminal, _listing, _places, _table, Open, Focus);
+        _input = new(_keymap, terminal, _listing, _places, _table, Open, Focus);
         _clicks = new(_listing, _places, _table, Open, _input.GoTo);
 
         _placesPane = new(_input.Places);

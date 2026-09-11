@@ -17,33 +17,29 @@ internal sealed class CommandPalette
     private readonly Navigator _navigator;
     private readonly CommandRegistry _commands;
     private readonly ArlecchinoOptions _options;
-    private readonly KeyText _keyText;
 
     /// <summary>Opens and reads the palette.</summary>
     /// <param name="state">Where the dialog on top lives.</param>
     /// <param name="navigator">Supplies the current view's commands and applies routes.</param>
     /// <param name="commands">Commands available everywhere.</param>
     /// <param name="options">Settings gathered at startup, for the key that opens it and the words.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for.</param>
     public CommandPalette(
         ArlecchinoState state,
         Navigator navigator,
         CommandRegistry commands,
-        ArlecchinoOptions options,
-        KeyText keyText)
+        ArlecchinoOptions options)
     {
         _state = state;
         _navigator = navigator;
         _commands = commands;
         _options = options;
-        _keyText = keyText;
     }
 
     /// <summary>Whether a key is the one that opens it, which it is not when there is nothing to list.</summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns><c>true</c> when the palette should open.</returns>
     public bool Opens(KeyPress key) =>
-        _commands.Commands.Count > 0 && _keyText.Resolve(key) == _options.CommandPaletteKey;
+        _commands.Commands.Count > 0 && KeyText.Shortcut(key) == _options.CommandPaletteKey;
 
     /// <summary>Opens it.</summary>
     public void Open()

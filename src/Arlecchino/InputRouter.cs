@@ -38,7 +38,6 @@ public class InputRouter
     /// <param name="log">Shown, hidden and scrolled from here.</param>
     /// <param name="commands">Commands available everywhere, which the palette lists.</param>
     /// <param name="options">Settings gathered at startup.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="repaint">Asked for a frame after anything is handled.</param>
     /// <param name="frame">What a dialog is handed while the screen shows it.</param>
     /// <param name="logger">Where handler failures are reported.</param>
@@ -55,7 +54,6 @@ public class InputRouter
         LogOverlay log,
         CommandRegistry commands,
         ArlecchinoOptions options,
-        KeyText keyText,
         Repaint repaint,
         ModalFrame frame,
         ILogger<InputRouter> logger,
@@ -76,7 +74,7 @@ public class InputRouter
         _logger = logger;
         _frame = frame;
 
-        _palette = new(state, navigator, commands, options, keyText);
+        _palette = new(state, navigator, commands, options);
     }
 
     /// <summary>Routes one key press and asks for a frame, whether anything took it.</summary>
@@ -85,7 +83,7 @@ public class InputRouter
     {
         try
         {
-            Route(key);
+            Route(Positioned(key));
             _repaint.Request();
         }
         catch (Exception exception)
@@ -129,6 +127,17 @@ public class InputRouter
             _state.Output = _options.Strings.ViewFailed(exception.Message);
         }
     }
+
+    /// <summary>
+    /// The press with the character its key sits at filled in, which a binding named after a character
+    /// answers to instead of the one the layout typed. Typing is read from the layout either way.
+    /// </summary>
+    /// <param name="key">The key that arrived.</param>
+    /// <returns>The press as everything below it should see it.</returns>
+    private KeyPress Positioned(KeyPress key) =>
+        _options.KeysByPosition && KeyText.ByPosition(key) is { } character
+            ? key with { ByPosition = character }
+            : key;
 
     private void Route(KeyPress key)
     {

@@ -28,6 +28,8 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     /// <summary>
     /// Whether a key press is this stroke, by the key where one was reported and by the character otherwise.
     /// A key that answers to two names matches under either, and a stroke on a character forgives Shift.
+    /// A stroke on a character also answers to the key the character sits on, which is what an application
+    /// that asked to read its keys by position reaches its shortcuts through.
     /// </summary>
     /// <param name="press">The key that was pressed.</param>
     /// <returns><c>true</c> when the press is this combination.</returns>
@@ -35,9 +37,11 @@ public readonly record struct KeyStroke(ConsoleKey Key, KeyModifiers Modifiers =
     {
         if (Character != '\0')
         {
+            var character = press.ByPosition != '\0' ? press.ByPosition : press.Character;
+
             return (press.Modifiers & ~KeyModifiers.Shift) == KeyModifiers.None &&
-                   (press.Character == Character ||
-                    (press.Character == '\0' && new KeyStroke(press.Key).MatchesCharacter(Character)));
+                   (character == Character ||
+                    (character == '\0' && new KeyStroke(press.Key).MatchesCharacter(Character)));
         }
 
         if (press.Modifiers != Modifiers)

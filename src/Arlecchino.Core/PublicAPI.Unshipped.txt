@@ -1,1 +1,15 @@
 #nullable enable
+*REMOVED*Arlecchino.Input.KeyText.KeyText(Arlecchino.Input.TextInputMode mode) -> void
+*REMOVED*Arlecchino.Input.KeyText.Mode.get -> Arlecchino.Input.TextInputMode
+*REMOVED*Arlecchino.Input.KeyText.Resolve(Arlecchino.Input.KeyPress key) -> char?
+*REMOVED*Arlecchino.Input.TextInputMode
+*REMOVED*Arlecchino.Input.TextInputMode.ByPosition = 0 -> Arlecchino.Input.TextInputMode
+*REMOVED*Arlecchino.Input.TextInputMode.Native = 1 -> Arlecchino.Input.TextInputMode
+*REMOVED*static Arlecchino.Input.KeyText.ByPosition.get -> Arlecchino.Input.KeyText!
+*REMOVED*static Arlecchino.Input.KeyText.For(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Input.KeyText!
+*REMOVED*static Arlecchino.Input.KeyText.Native.get -> Arlecchino.Input.KeyText!
+Arlecchino.Input.KeyPress.ByPosition.get -> char
+Arlecchino.Input.KeyPress.ByPosition.init -> void
+static Arlecchino.Input.KeyText.ByPosition(Arlecchino.Input.KeyPress key) -> char?
+static Arlecchino.Input.KeyText.Resolve(Arlecchino.Input.KeyPress key) -> char?
+static Arlecchino.Input.KeyText.Shortcut(Arlecchino.Input.KeyPress key) -> char?

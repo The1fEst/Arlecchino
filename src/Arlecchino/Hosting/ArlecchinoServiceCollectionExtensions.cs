@@ -61,8 +61,6 @@ public static class ArlecchinoServiceCollectionExtensions
             };
         });
         services.AddSingleton(static provider =>
-            KeyText.For(provider.GetRequiredService<ArlecchinoOptions>().TextInput));
-        services.AddSingleton(static provider =>
             provider.GetRequiredService<ArlecchinoOptions>().Keymap);
         services.AddSingleton(static provider =>
             provider.GetRequiredService<ArlecchinoOptions>().Strings);
@@ -126,7 +124,6 @@ public static class ArlecchinoServiceCollectionExtensions
             provider.GetRequiredService<LogOverlay>(),
             provider.GetRequiredService<CommandRegistry>(),
             provider.GetRequiredService<ArlecchinoOptions>(),
-            provider.GetRequiredService<KeyText>(),
             provider.GetRequiredService<Repaint>(),
             provider.GetRequiredService<ModalFrame>(),
             provider.GetRequiredService<ILogger<InputRouter>>(),

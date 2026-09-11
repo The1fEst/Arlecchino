@@ -155,23 +155,16 @@ public sealed class ArlecchinoBuilder
     public ArlecchinoBuilder StartAt(string route) => StartAt(new ViewRoute(route));
 
     /// <summary>
-    /// Chooses how typed characters are read. This is a trade-off rather than a preference: reading the
-    /// terminal's own characters accepts any language but can misread keys on some terminals.
+    /// Answers a binding named after a character from where that character sits as well as from what the
+    /// layout makes of the key, so <c>/</c> and <c>:</c> reach their commands on a layout that types
+    /// neither. What a field types is left alone: any language is still typed as it is.
     /// </summary>
-    /// <param name="mode">The mode to use.</param>
     /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseTextInput(TextInputMode mode)
+    public ArlecchinoBuilder UseKeysByPosition()
     {
-        _options.TextInput = mode;
+        _options.KeysByPosition = true;
         return this;
     }
-
-    /// <summary>
-    /// Takes every character from where its key sits rather than from what the layout makes of it, so
-    /// shortcuts read the same everywhere and those languages cannot be typed at all.
-    /// </summary>
-    /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseKeysByPosition() => UseTextInput(TextInputMode.ByPosition);
 
     /// <summary>Replaces the key bindings, which every widget then follows.</summary>
     /// <param name="keymap">The bindings to use.</param>

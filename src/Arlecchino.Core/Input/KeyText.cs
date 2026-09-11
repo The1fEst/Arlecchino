@@ -3,52 +3,37 @@ using System;
 namespace Arlecchino.Input;
 
 /// <summary>
-/// Turns a key press into the character it should type. Take it as a constructor parameter instead
-/// of reading <c>KeyPress.Character</c> yourself — that is what keeps filters and shortcuts working
-/// on a non-latin layout.
+/// Turns a key press into the character it types. Ask this instead of reading <c>KeyPress.Character</c>
+/// yourself — that is what keeps a field typing on a terminal that names the key and sends no character
+/// with it.
 /// </summary>
-public sealed class KeyText
+public static class KeyText
 {
-    /// <summary>Shared resolver for <see cref="TextInputMode.ByPosition"/>.</summary>
-    public static KeyText ByPosition { get; } = new(TextInputMode.ByPosition);
-
-    /// <summary>Shared resolver for <see cref="TextInputMode.Native"/>.</summary>
-    public static KeyText Native { get; } = new(TextInputMode.Native);
-
-    private readonly TextInputMode _mode;
-
-    /// <summary>Creates a resolver for one mode.</summary>
-    /// <param name="mode">How characters should be resolved.</param>
-    public KeyText(TextInputMode mode)
-    {
-        _mode = mode;
-    }
-
-    /// <summary>Returns the shared resolver for a mode.</summary>
-    /// <param name="mode">The mode wanted.</param>
-    /// <returns>The matching resolver.</returns>
-    public static KeyText For(TextInputMode mode) => mode == TextInputMode.Native ? Native : ByPosition;
-
-    /// <summary>The mode this resolver works in.</summary>
-    public TextInputMode Mode => _mode;
-
     /// <summary>
     /// The character a key press should type, or <c>null</c> for keys that type nothing — function
-    /// keys, arrows, and unmapped combinations.
+    /// keys, arrows, and unmapped combinations. Whatever the layout made of the key is taken as it is,
+    /// so any language is typed without the application asking for it.
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>The character to insert, or <c>null</c>.</returns>
-    public char? Resolve(KeyPress key)
-    {
-        if (_mode == TextInputMode.ByPosition)
-        {
-            return ResolveByPhysicalKey(key);
-        }
+    public static char? Resolve(KeyPress key) =>
+        key.Character != '\0' && !char.IsControl(key.Character) ? key.Character : ByPosition(key);
 
-        return key.Character != '\0' && !char.IsControl(key.Character) ? key.Character : ResolveByPhysicalKey(key);
-    }
+    /// <summary>
+    /// The character a press stands for as a shortcut rather than as text: where its key sits when the
+    /// application reads keys by position, and what the layout typed otherwise.
+    /// </summary>
+    /// <param name="key">The key that was pressed.</param>
+    /// <returns>The character the shortcut is looked up under, or <c>null</c>.</returns>
+    public static char? Shortcut(KeyPress key) => key.ByPosition != '\0' ? key.ByPosition : Resolve(key);
 
-    private static char? ResolveByPhysicalKey(KeyPress key)
+    /// <summary>
+    /// The character the key would type where it sits, whatever the layout makes of it. A key that sits
+    /// nowhere on a US keyboard stands for nothing.
+    /// </summary>
+    /// <param name="key">The key that was pressed.</param>
+    /// <returns>The character its position stands for, or <c>null</c>.</returns>
+    public static char? ByPosition(KeyPress key)
     {
         var shift = key.Modifiers.HasFlag(KeyModifiers.Shift);
 

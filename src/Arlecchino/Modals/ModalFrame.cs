@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Arlecchino.Hosting;
-using Arlecchino.Input;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Modals.Drawing;
@@ -42,13 +41,12 @@ public sealed class ModalFrame
         _box = new(surface);
 
         Keymap = options.Keymap;
-        Keys = KeyText.For(options.TextInput);
         Strings = options.Strings;
 
         Steps = new(state, Keymap);
-        Fields = new(state, Keymap, Keys, terminal, Strings, Steps);
-        Areas = new(state, Keymap, Keys, terminal);
-        Choices = new(state, Keymap, Keys, terminal);
+        Fields = new(state, Keymap, terminal, Strings, Steps);
+        Areas = new(state, Keymap, terminal);
+        Choices = new(state, Keymap, terminal);
         Paint = new(surface, Strings, _box);
         Values = new(Strings, _box);
         Lists = new(surface, Strings, _box);
@@ -93,9 +91,6 @@ public sealed class ModalFrame
 
     /// <summary>Keys to obey.</summary>
     public ArlecchinoKeymap Keymap { get; }
-
-    /// <summary>Turns a key press into the character it stands for.</summary>
-    public KeyText Keys { get; }
 
     /// <summary>
     /// How many dialogs are already open under this one. Each is offset a row down and three columns

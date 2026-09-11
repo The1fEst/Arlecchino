@@ -200,6 +200,7 @@ public sealed class CommandingView : IArlecchinoView
         ViewCommand.For(new KeyBinding(ConsoleKey.Escape, KeyModifiers.Alt),
             static () => "stop",
             static () => Ran.Add("stop")),
+        ViewCommand.For(new KeyBinding('/'), static () => "find", static () => Ran.Add("find")),
     ];
 
     public ViewRoute Handle(KeyPress key)

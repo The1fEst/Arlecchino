@@ -15,23 +15,19 @@ internal sealed class ListKeys
 {
     private readonly ArlecchinoState _state;
     private readonly ArlecchinoKeymap _keymap;
-    private readonly KeyText _keyText;
     private readonly IArlecchinoTerminal _terminal;
 
     /// <summary>Reads keys for the list dialogs.</summary>
     /// <param name="state">Where the dialog on top lives, so that it can be closed.</param>
     /// <param name="keymap">Keys to obey.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="terminal">Reached for the clipboard when the filter is copied or cut.</param>
     public ListKeys(
         ArlecchinoState state,
         ArlecchinoKeymap keymap,
-        KeyText keyText,
         IArlecchinoTerminal terminal)
     {
         _state = state;
         _keymap = keymap;
-        _keyText = keyText;
         _terminal = terminal;
     }
 
@@ -118,7 +114,7 @@ internal sealed class ListKeys
 
         var typedSoFar = modal.Text;
 
-        if (!Filtering(modal, key) && _keyText.Resolve(key) is { } typed)
+        if (!Filtering(modal, key) && KeyText.Resolve(key) is { } typed)
         {
             TextEditing.Insert(modal, typed);
         }

@@ -20,6 +20,12 @@ public readonly record struct KeyPress(
         : this(default, default, character) { }
 
     /// <summary>
+    /// The character the key would type where it sits, which a binding named after a character answers
+    /// to as well. The framework fills it in only for an application that reads its keys by position.
+    /// </summary>
+    public char ByPosition { get; init; }
+
+    /// <summary>
     /// Takes over what a console reported. Nothing is lost: the console cannot report Command in the
     /// first place, which is the whole reason this type exists.
     /// </summary>

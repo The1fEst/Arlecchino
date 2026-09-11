@@ -135,50 +135,42 @@ public sealed class RenderingTests
     }
 
     [Fact]
-    public void KeysByPositionReadTheKeyRatherThanTheLayout()
+    public void ThePositionIsTheKeyAndTheTextIsTheLayout()
     {
-        var byPosition = KeyText.For(TextInputMode.ByPosition);
-        var native = KeyText.For(TextInputMode.Native);
         var cyrillicQ = new KeyPress(ConsoleKey.Q, default, 'й');
 
-        Assert.Equal('q', byPosition.Resolve(cyrillicQ));
-        Assert.Equal('й', native.Resolve(cyrillicQ));
-        Assert.Equal('Q', byPosition.Resolve(new(ConsoleKey.Q, KeyModifiers.Shift, 'Й')));
-        Assert.Null(byPosition.Resolve(new(ConsoleKey.F5)));
+        Assert.Equal('q', KeyText.ByPosition(cyrillicQ));
+        Assert.Equal('й', KeyText.Resolve(cyrillicQ));
+        Assert.Equal('Q', KeyText.ByPosition(new(ConsoleKey.Q, KeyModifiers.Shift, 'Й')));
+        Assert.Null(KeyText.ByPosition(new(ConsoleKey.F5)));
     }
 
     [Fact]
-    public void ThePositionWinsEvenWhenTheLayoutTypedSomethingOrdinary()
+    public void ThePositionIsReadEvenWhenTheLayoutTypedSomethingOrdinary()
     {
-        var byPosition = KeyText.For(TextInputMode.ByPosition);
-        var native = KeyText.For(TextInputMode.Native);
         var press = new KeyPress(ConsoleKey.Q, default, 'a');
 
-        Assert.Equal('q', byPosition.Resolve(press));
-        Assert.Equal('a', native.Resolve(press));
+        Assert.Equal('q', KeyText.ByPosition(press));
+        Assert.Equal('a', KeyText.Resolve(press));
     }
 
     [Fact]
-    public void AKeyWithNoPositionOfItsOwnTypesNothing()
+    public void AKeyWithNoPositionOfItsOwnStandsForNothing()
     {
-        var byPosition = KeyText.For(TextInputMode.ByPosition);
-        var native = KeyText.For(TextInputMode.Native);
         var plain = new KeyPress(ConsoleKey.Oem8, default, '€');
 
-        Assert.Null(byPosition.Resolve(plain));
-        Assert.Equal('€', native.Resolve(plain));
+        Assert.Null(KeyText.ByPosition(plain));
+        Assert.Equal('€', KeyText.Resolve(plain));
     }
 
     [Fact]
     public void EveryPrintableKeyOfAUsKeyboardHasAPosition()
     {
-        var byPosition = KeyText.For(TextInputMode.ByPosition);
-
-        Assert.Equal(' ', byPosition.Resolve(new(ConsoleKey.Spacebar)));
-        Assert.Equal('7', byPosition.Resolve(new(ConsoleKey.D7)));
-        Assert.Equal('&', byPosition.Resolve(new(ConsoleKey.D7, KeyModifiers.Shift)));
-        Assert.Equal('3', byPosition.Resolve(new(ConsoleKey.NumPad3)));
-        Assert.Equal(';', byPosition.Resolve(new(ConsoleKey.Oem1)));
-        Assert.Equal('?', byPosition.Resolve(new(ConsoleKey.Oem2, KeyModifiers.Shift)));
+        Assert.Equal(' ', KeyText.ByPosition(new(ConsoleKey.Spacebar)));
+        Assert.Equal('7', KeyText.ByPosition(new(ConsoleKey.D7)));
+        Assert.Equal('&', KeyText.ByPosition(new(ConsoleKey.D7, KeyModifiers.Shift)));
+        Assert.Equal('3', KeyText.ByPosition(new(ConsoleKey.NumPad3)));
+        Assert.Equal(';', KeyText.ByPosition(new(ConsoleKey.Oem1)));
+        Assert.Equal('?', KeyText.ByPosition(new(ConsoleKey.Oem2, KeyModifiers.Shift)));
     }
 }

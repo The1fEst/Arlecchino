@@ -13,6 +13,34 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.9.1
+
+A release about which key a shortcut is reached by. Reading the keys by position used to cost the
+language they are typed in, and now it costs nothing: the shortcut is looked up by where the key sits
+and the field still takes what the layout made of it. The break is named below and the compiler names
+most of it for you.
+
+### Changed
+
+- **`UseKeysByPosition()` moves the shortcuts and leaves the typing alone.** It used to take every
+  character from where its key sits, which reached the shortcuts on a Cyrillic layout by making that
+  language untypable — a file manager whose `/` works and whose rename dialog cannot spell a Russian
+  name. Now it fills in the character the key sits at beside the one the layout typed, and a binding
+  named after a character answers to the position: `/`, `:` and `!` are reached from their keys on any
+  layout, while a field takes what the layout made of the key as it always did.
+
+  ```csharp
+  builder.UseKeysByPosition();   // Ж opens the palette, and still types Ж into a field
+  ```
+
+  `TextInputMode`, `UseTextInput` and `ArlecchinoOptions.TextInput` are gone with the trade-off they
+  named, replaced by `ArlecchinoOptions.KeysByPosition`. `KeyText` is a static class of three methods:
+  `Resolve` is what a press types, `ByPosition` is the character its key sits at, and `Shortcut` is
+  the one a command is looked up under. Nothing takes it as a constructor parameter any more,
+  `ModalFrame.Keys` is gone with it, and a dialog that reads what was typed calls
+  `KeyText.Resolve(key)`. `KeyPress` carries the position as `ByPosition`, filled in by the framework
+  and `'\0'` for an application that did not ask for it.
+
 ## 2026.8.6
 
 A release about undo, which left the core for a package of its own; about a form field built over the

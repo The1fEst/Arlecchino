@@ -1,1 +1,7 @@
 #nullable enable
+*REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseTextInput(Arlecchino.Input.TextInputMode mode) -> Arlecchino.Hosting.ArlecchinoBuilder!
+*REMOVED*Arlecchino.Hosting.ArlecchinoOptions.TextInput.get -> Arlecchino.Input.TextInputMode
+*REMOVED*Arlecchino.Hosting.ArlecchinoOptions.TextInput.set -> void
+*REMOVED*Arlecchino.Modals.ModalFrame.Keys.get -> Arlecchino.Input.KeyText!
+Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.get -> bool
+Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.set -> void

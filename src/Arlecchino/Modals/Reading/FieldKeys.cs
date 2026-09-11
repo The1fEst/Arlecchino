@@ -14,7 +14,6 @@ internal sealed class FieldKeys
 {
     private readonly ArlecchinoState _state;
     private readonly ArlecchinoKeymap _keymap;
-    private readonly KeyText _keyText;
     private readonly IArlecchinoTerminal _terminal;
     private readonly ArlecchinoStrings _strings;
     private readonly StepKeys _steps;
@@ -22,21 +21,18 @@ internal sealed class FieldKeys
     /// <summary>Reads keys for the fields of one line.</summary>
     /// <param name="state">Where the dialog on top lives, so that it can be closed.</param>
     /// <param name="keymap">Keys to obey.</param>
-    /// <param name="keyText">Turns a key press into the character it stands for.</param>
     /// <param name="terminal">Reached for the clipboard when a field is copied.</param>
     /// <param name="strings">The words the application says things in.</param>
     /// <param name="steps">The keys that move a number without typing it.</param>
     public FieldKeys(
         ArlecchinoState state,
         ArlecchinoKeymap keymap,
-        KeyText keyText,
         IArlecchinoTerminal terminal,
         ArlecchinoStrings strings,
         StepKeys steps)
     {
         _state = state;
         _keymap = keymap;
-        _keyText = keyText;
         _terminal = terminal;
         _strings = strings;
         _steps = steps;
@@ -110,7 +106,7 @@ internal sealed class FieldKeys
             return;
         }
 
-        if (_keyText.Resolve(key) is not { } typed || !modal.AcceptsCharacter(typed))
+        if (KeyText.Resolve(key) is not { } typed || !modal.AcceptsCharacter(typed))
         {
             return;
         }

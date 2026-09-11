@@ -1,5 +1,4 @@
 using System;
-using Arlecchino.Input;
 using Arlecchino.Navigation;
 using Arlecchino.Rendering.Colors;
 using Arlecchino.Rendering.Text;
@@ -46,12 +45,11 @@ public sealed class ArlecchinoOptions
     public char CommandPaletteKey { get; set; } = ':';
 
     /// <summary>
-    /// How a key press becomes a character on a non-latin layout. Whatever the terminal reports is
-    /// taken by default, so any language can be typed without the application asking for it;
-    /// <see cref="ArlecchinoBuilder.UseKeysByPosition"/> trades that for keys that always read the
-    /// same.
+    /// Whether a binding named after a character also answers to the key that character sits on. Off by
+    /// default, so a binding is reached only where the layout types the character; on, a shortcut sits on
+    /// the same key whatever the layout. Typing is untouched either way.
     /// </summary>
-    public TextInputMode TextInput { get; set; } = TextInputMode.Native;
+    public bool KeysByPosition { get; set; }
 
     /// <summary>
     /// Whether to report mouse events. Off by default, because with it on the terminal stops handling
