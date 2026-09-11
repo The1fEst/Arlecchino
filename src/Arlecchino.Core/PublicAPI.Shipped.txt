@@ -570,6 +570,7 @@ static Arlecchino.Rendering.Text.TextWidth.SnapToCluster(string! text, int index
 static Arlecchino.Rendering.Text.TextWidth.Truncate(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.TruncateStart(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.Wrap(string! text, int width) -> System.Collections.Generic.List<string!>!
+static Arlecchino.SystemTerminal.UseUtf8() -> void
 static readonly Arlecchino.Rendering.Colors.Contrast.Pivot -> double
 virtual Arlecchino.Atoms.Atom<T>.OnWritten(T previous, T current) -> void
 virtual Arlecchino.Atoms.Collections.AtomsCollectionBase.IsObserved.get -> bool
