@@ -46,6 +46,7 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | [`ReadMouse()`](#readmouse) | Takes the next mouse event read from the console's event queue. |
 | [`TakeControlKeys()`](#takecontrolkeys) | Takes `Ctrl+C` off the Windows console, which raises it as a signal — and raises the same signal for `Ctrl+Shift+C`, since both type the same character. Whether it was the console's is remembered, so it is given back as found. |
 | [`Unread(KeyPress)`](#unread-keypress) | Puts a key back, so the next read returns it. |
+| [`UseUtf8()`](#useutf8) | Puts the console on UTF-8, and leaves it as found when the console refuses. Call it before anything writes: the runtime builds a writer around the code page in force, and one already made keeps that encoder. |
 | [`Write(string)`](#write-string) | Writes a composed frame, and everything else this terminal says, through the one writer it was given — or the console's own, when it was given none. |
 
 ## Constructors in detail
@@ -219,6 +220,14 @@ Puts a key back, so the next read returns it.
 | Name | Type | Description |
 |---|---|---|
 | `key` | [`KeyPress`](../arlecchino.input/KeyPress.md) | The key to put back. |
+
+### `UseUtf8()` {#useutf8}
+
+```csharp
+public static void UseUtf8();
+```
+
+Puts the console on UTF-8, and leaves it as found when the console refuses. Call it before anything writes: the runtime builds a writer around the code page in force, and one already made keeps that encoder.
 
 ### `Write(string)` {#write-string}
 
