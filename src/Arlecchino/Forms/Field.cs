@@ -58,7 +58,10 @@ public class Field<T> : IField
         return this;
     }
 
-    /// <summary>Gives the row a line of help, shown under it while it is selected.</summary>
+    /// <summary>
+    /// Gives the row some help, shown under it while it is selected. It wraps over as many rows as it
+    /// takes, and a line break in it is kept.
+    /// </summary>
     /// <param name="help">What to say.</param>
     /// <returns>The same row, to go on building it.</returns>
     public Field<T> WithHelp(Func<string> help)

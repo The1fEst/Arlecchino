@@ -15,13 +15,16 @@ using Arlecchino.Widgets;
 namespace Arlecchino.Forms;
 
 /// <summary>
-/// A column of fields with their values lined up, and a help line under the selected one. It holds no values
-/// of its own, and the atom behind each field decides whether an edit can be undone.
+/// A column of fields with their values lined up, and the help of the selected one under it. It holds no
+/// values of its own, and the atom behind each field decides whether an edit can be undone.
 /// </summary>
 public sealed class Form : IArlecchinoInteractiveWidget
 {
     private const string ValueSeparator = " = ";
     private const string ActionMarker = "> ";
+
+    /// <summary>How far in the help is written, which is what sets it apart from the surrounding rows.</summary>
+    private const int HelpIndent = 2;
 
     /// <summary>The ends of a track a field named none of its own, which are the ones it draws by default.</summary>
     private const decimal SliderLowest = 0m;
@@ -63,7 +66,7 @@ public sealed class Form : IArlecchinoInteractiveWidget
     /// the rows below the last one written. Buttons are left out of the alignment, since they have no
     /// value to line up against.
     /// </summary>
-    /// <param name="region">Where to draw, help line included.</param>
+    /// <param name="region">Where to draw, the help of the selected field included.</param>
     /// <returns>The region below the fields, which is empty when they filled it.</returns>
     public SurfaceRegion Draw(SurfaceRegion region)
     {
@@ -83,8 +86,8 @@ public sealed class Form : IArlecchinoInteractiveWidget
             }
         }
 
-        var helpRows = (Current?.Help?.Invoke().Length ?? 0) > 0 ? 1 : 0;
-        var fieldRows = Math.Max(1, region.Height - helpRows);
+        var help = Helped(region.Width - HelpIndent);
+        var fieldRows = Math.Max(1, region.Height - help.Count);
         var first = Math.Clamp(SelectedIndex - fieldRows / 2, 0, Math.Max(0, Fields.Count - fieldRows));
 
         _lastRows = region;
@@ -103,13 +106,21 @@ public sealed class Form : IArlecchinoInteractiveWidget
             _fieldOfRow[row] = index;
             row++;
 
-            if (index != SelectedIndex || helpRows == 0 || row >= region.Height || field.Help == null)
+            if (index != SelectedIndex)
             {
                 continue;
             }
 
-            region.Write(row, 2, field.Help(), Theme.Secondary);
-            row++;
+            foreach (var said in help)
+            {
+                if (row >= region.Height)
+                {
+                    break;
+                }
+
+                region.Write(row, HelpIndent, said, Theme.Secondary);
+                row++;
+            }
         }
 
         return region.Rows(row, region.Height - row);
@@ -332,6 +343,19 @@ public sealed class Form : IArlecchinoInteractiveWidget
     }
 
     private static string Named(IField field) => field.Label?.Invoke() ?? "";
+
+    /// <summary>
+    /// The help of the selected field, broken into the lines it takes at the width it is written in. A
+    /// field that says nothing takes no rows, which is what leaves the fields under it where they were.
+    /// </summary>
+    /// <param name="width">Columns the help is written in.</param>
+    /// <returns>The lines, top to bottom, or none at all.</returns>
+    private List<string> Helped(int width)
+    {
+        var help = Current?.Help?.Invoke();
+
+        return string.IsNullOrEmpty(help) ? [] : TextWidth.Wrap(help, width);
+    }
 
     private string Displayed(IField field)
     {

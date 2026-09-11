@@ -37,7 +37,10 @@ public sealed class ActionField : IField
     /// <inheritdoc />
     public bool IsEnabled { get; set; } = true;
 
-    /// <summary>Gives the button a line of help, shown under it while it is selected.</summary>
+    /// <summary>
+    /// Gives the button some help, shown under it while it is selected. It wraps over as many rows as it
+    /// takes, and a line break in it is kept.
+    /// </summary>
     /// <param name="help">What to say.</param>
     /// <returns>The same button, to go on building it.</returns>
     public ActionField WithHelp(Func<string> help)

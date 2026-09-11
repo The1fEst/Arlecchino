@@ -15,8 +15,8 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## 2026.9.1
 
-A release about which key a shortcut is reached by, and about what a dialog asking for a number was
-holding its user to. Reading the keys by position used to cost the language they are typed in, and
+A release about which key a shortcut is reached by, and about two things a dialog and a form were
+holding their user to. Reading the keys by position used to cost the language they are typed in, and
 now it costs nothing: the shortcut is looked up by where the key sits and the field still takes what
 the layout made of it. The one break is named below and the compiler names most of it for you.
 
@@ -32,6 +32,11 @@ the layout made of it. The one break is named below and the compiler names most 
   ```
 
 ### Changed
+
+- **The help under a form row wraps rather than being cut at the edge of it.** It took one row and
+  whatever did not fit on it was lost, which is a poor way to say the one thing a row of a form gets
+  to say about itself. It now takes as many rows as it needs, keeps a line break where the application
+  wrote one, and the fields below move down by as many rows as it took.
 
 - **`UseKeysByPosition()` moves the shortcuts and leaves the typing alone.** It used to take every
   character from where its key sits, which reached the shortcuts on a Cyrillic layout by making that

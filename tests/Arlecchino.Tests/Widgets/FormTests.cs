@@ -17,6 +17,10 @@ public sealed class FormTests
     private const string TextKey = "Form.Text";
     private const string FlagKey = "Form.Flag";
 
+    /// <summary>Help longer than the eighty columns a row of the test screen has.</summary>
+    private const string WideHelp =
+        "the beginning of what this row is for, said at some length, and the end of it, which does not fit beside";
+
     private static Form CreateForm(
         TestApplication app,
         Atom<string> name,
@@ -259,6 +263,30 @@ public sealed class FormTests
 
         Assert.Equal("", withoutHelp[secondRow + 1].Trim());
         Assert.Equal(secondRow - 1, IndexOfLineContaining(withoutHelp, "First"));
+    }
+
+    /// <summary>
+    /// Help wider than the row it is written on is wrapped rather than cut, and the rows under it move down
+    /// by as many lines as it took.
+    /// </summary>
+    [Fact]
+    public void HelpTooWideForOneRowIsWrappedOverAsManyAsItTakes()
+    {
+        using var app = new TestApplication();
+        var form = new Form(app.State, app.Options)
+        {
+            Fields =
+            [
+                Fields.Text(static () => "First", new HistoryAtom<string>("", TextKey)).WithHelp(static () => WideHelp),
+                Fields.Text(static () => "Second", new HistoryAtom<string>("", TextKey)),
+            ],
+        };
+
+        var lines = Show(app, form).Split("\r\n");
+        var firstRow = IndexOfLineContaining(lines, "First");
+
+        Assert.Equal(WideHelp, $"{lines[firstRow + 1].Trim()} {lines[firstRow + 2].Trim()}");
+        Assert.Equal(firstRow + 3, IndexOfLineContaining(lines, "Second"));
     }
 
     private static int IndexOfLineContaining(string[] lines, string text)

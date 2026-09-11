@@ -19,7 +19,10 @@ public interface IField
     /// <summary>What the row is called.</summary>
     Func<string>? Label { get; }
 
-    /// <summary>A line shown under the row while it is selected. Nothing means none is shown.</summary>
+    /// <summary>
+    /// What is shown under the row while it is selected, wrapped over as many rows as it takes and broken
+    /// where it says to. Nothing means none is shown.
+    /// </summary>
     Func<string>? Help { get; }
 
     /// <summary>
