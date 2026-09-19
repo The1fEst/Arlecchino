@@ -1,1 +1,4 @@
 #nullable enable
+Arlecchino.Testing.FakeTerminal.AreKeyNamesAsked.get -> bool
+Arlecchino.Testing.FakeTerminal.DisableKeyNames() -> void
+Arlecchino.Testing.FakeTerminal.EnableKeyNames() -> void

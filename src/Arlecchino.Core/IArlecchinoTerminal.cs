@@ -65,6 +65,15 @@ public interface IArlecchinoTerminal
     void DisablePaste();
 
     /// <summary>
+    /// Asks the terminal to name every key it sends, and to say which key that is on the base layout.
+    /// A terminal that does not know the request ignores it.
+    /// </summary>
+    void EnableKeyNames() { }
+
+    /// <summary>Stops the key names, leaving the terminal sending what it sent before.</summary>
+    void DisableKeyNames() { }
+
+    /// <summary>
     /// Takes <c>Ctrl+C</c> off the terminal, so it arrives as a key press rather than as a signal. The
     /// terminal cannot tell it from <c>Ctrl+Shift+C</c>, which types the same character; the application can.
     /// </summary>

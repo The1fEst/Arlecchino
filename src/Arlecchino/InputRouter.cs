@@ -135,7 +135,7 @@ public class InputRouter
     /// <param name="key">The key that arrived.</param>
     /// <returns>The press as everything below it should see it.</returns>
     private KeyPress Positioned(KeyPress key) =>
-        _options.KeysByPosition && KeyText.ByPosition(key) is { } character
+        _options.TryKeysByPosition && KeyText.ByPosition(key) is { } character
             ? key with { ByPosition = character }
             : key;
 

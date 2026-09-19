@@ -55,6 +55,11 @@ internal sealed class TerminalModes
         {
             _terminal.EnablePaste();
         }
+
+        if (_options.TryKeysByPosition)
+        {
+            _terminal.EnableKeyNames();
+        }
     }
 
     /// <summary>Gives the terminal back the way it was found, and does nothing when it already has been.</summary>
@@ -63,6 +68,11 @@ internal sealed class TerminalModes
         if (Interlocked.Exchange(ref _left, 1) == 1)
         {
             return;
+        }
+
+        if (_options.TryKeysByPosition)
+        {
+            _terminal.DisableKeyNames();
         }
 
         if (_options.MouseInput)

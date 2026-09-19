@@ -170,8 +170,10 @@ asks it for a frame; a native build that draws nothing fails the build.
 **The keys and the words belong to the application.** The key map is a record, so
 `keymap with { Cancel = new(ConsoleKey.Q) }` rebinds one key and every hint and palette entry
 relabels itself. Every string the framework draws is a delegate, and layouts that are not Latin are
-typed as they are — while `UseKeysByPosition()` has a shortcut named after a character answer to the
-key that character sits on, so `/` and `:` are reached on a layout that types neither.
+typed as they are — while `TryUseKeysByPosition()` asks the terminal to name the keys it sends, so a
+shortcut is reached from the key it sits on and `g`, `/` and `:` answer on a layout that types none of
+them. It is a request: a terminal that will not name its keys leaves the shortcuts where the layout
+puts them, and the Windows console names them without being asked.
 
 ## Where it sits
 

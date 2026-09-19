@@ -1,4 +1,10 @@
 #nullable enable
+*REMOVED*Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
+*REMOVED*Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.get -> bool
+*REMOVED*Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.set -> void
+Arlecchino.Hosting.ArlecchinoBuilder.TryUseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoOptions.TryKeysByPosition.get -> bool
+Arlecchino.Hosting.ArlecchinoOptions.TryKeysByPosition.set -> void
 Arlecchino.Widgets.Readouts.MarkdownStyles
 Arlecchino.Widgets.Readouts.MarkdownStyles.Code.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
 Arlecchino.Widgets.Readouts.MarkdownStyles.Code.init -> void

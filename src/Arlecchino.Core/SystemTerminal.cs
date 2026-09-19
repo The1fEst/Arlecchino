@@ -216,6 +216,27 @@ public sealed partial class SystemTerminal : IArlecchinoTerminal
     }
 
     /// <summary>
+    /// Asks for every key by name, with the key of the base layout behind it and the text it typed
+    /// after it. The flags are pushed rather than set, so the terminal can be given back as found.
+    /// </summary>
+    public void EnableKeyNames()
+    {
+        if (_escapeSequencesWork)
+        {
+            Write("\e[>29u");
+        }
+    }
+
+    /// <summary>Pops the flags, giving the terminal back the keys it was sending before.</summary>
+    public void DisableKeyNames()
+    {
+        if (_escapeSequencesWork)
+        {
+            Write("\e[<u");
+        }
+    }
+
+    /// <summary>
     /// Takes <c>Ctrl+C</c> off the Windows console, which raises it as a signal — and raises the same
     /// signal for <c>Ctrl+Shift+C</c>, since both type the same character. Whether it was the console's is
     /// remembered, so it is given back as found.

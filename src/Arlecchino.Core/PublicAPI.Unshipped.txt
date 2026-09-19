@@ -1,1 +1,5 @@
 #nullable enable
+Arlecchino.IArlecchinoTerminal.DisableKeyNames() -> void
+Arlecchino.IArlecchinoTerminal.EnableKeyNames() -> void
+Arlecchino.SystemTerminal.DisableKeyNames() -> void
+Arlecchino.SystemTerminal.EnableKeyNames() -> void

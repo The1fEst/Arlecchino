@@ -155,14 +155,20 @@ public sealed class ArlecchinoBuilder
     public ArlecchinoBuilder StartAt(string route) => StartAt(new ViewRoute(route));
 
     /// <summary>
-    /// Answers a binding named after a character from where that character sits as well as from what the
-    /// layout makes of the key, so <c>/</c> and <c>:</c> reach their commands on a layout that types
-    /// neither. What a field types is left alone: any language is still typed as it is.
+    /// Asks the terminal to name the keys it sends, and reaches a shortcut by the key it sits on rather
+    /// than by the character the layout types there. What a field types is left alone: any language is
+    /// still typed as it is.
     /// </summary>
+    /// <remarks>
+    /// It is a request rather than a setting, which is why it is named for trying. Where the terminal
+    /// will not name its keys — and a terminal sends a character and nothing else for a letter that is
+    /// not Latin — the shortcuts stay where the layout puts them, as they were before this was asked
+    /// for. The Windows console names its keys itself, so it needs no asking.
+    /// </remarks>
     /// <returns>The builder.</returns>
-    public ArlecchinoBuilder UseKeysByPosition()
+    public ArlecchinoBuilder TryUseKeysByPosition()
     {
-        _options.KeysByPosition = true;
+        _options.TryKeysByPosition = true;
         return this;
     }
 

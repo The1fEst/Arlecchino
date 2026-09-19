@@ -19,7 +19,9 @@ A release about a file that was written to be read. A document has been drawable
 which meant its hashes, its stars and its bars on screen — the marks a reader was meant to be spared,
 and the line breaks of whatever editor it was written in kept as though they were the writer's. What
 those marks say is now drawn instead of the marks themselves, the pictures it names included, and the
-charts such a document tends to carry are read from the shapes they are written as.
+charts such a document tends to carry are read from the shapes they are written as. Beside that, the
+shortcuts stopped working out which key was pressed and started asking the terminal; the one break is
+named below and the compiler names it for you.
 
 ### Added
 
@@ -59,16 +61,33 @@ charts such a document tends to carry are read from the shapes they are written 
   shapes rather than from pixels, it is read at whatever size the caller has a use for: a picture asked
   for larger than the file says comes out sharper rather than enlarged.
 
-### Fixed
+### Changed
 
-- **Keys read by position now find the position on a Cyrillic layout.** `UseKeysByPosition()` worked
-  out where a key sits from the key the terminal named, and a terminal anywhere but Windows names no
-  key at all for a letter that is not Latin — it sends the character and nothing else. So the whole of
-  it was a no-op where it was most wanted: with the layout switched over, a command on a letter was
-  unreachable, and a chord was unreachable along with its leader. The position is now read back out of
-  the character as well, by where that character sits on a Cyrillic keyboard, so `g` is pressed as
-  `п` and the command line opens on `Ж`. Typing is untouched, as before: a field takes the letter the
-  layout made.
+- **`UseKeysByPosition()` is `TryUseKeysByPosition()`, and the position comes from the terminal.**
+  It worked out where a key sits from the key the terminal named, and every terminal but the Windows
+  console names no key at all for a letter that is not Latin — it sends the character and nothing
+  else. So the whole of it was a no-op where it was most wanted: with a Cyrillic layout switched on,
+  a command on a letter was unreachable, and a chord was unreachable along with the `g` it hangs off.
+  The application now asks the terminal to name the keys it sends, and one that answers writes the
+  key of the base layout beside the character — whatever the script, so no list of alphabets is kept
+  anywhere.
+
+  ```csharp
+  builder.TryUseKeysByPosition();   // g is pressed as п, and п still types п
+  ```
+
+  It is named for trying because it is a request, and a terminal is free to ignore it. Where one
+  does, the shortcuts stay where the layout puts them, which is what they did before it was made:
+  nothing breaks by asking, and nothing is gained. Terminals answer where they speak the kitty
+  keyboard protocol, and the Windows console names its keys without being asked.
+
+  `ArlecchinoOptions.KeysByPosition` is `TryKeysByPosition` to match. `IArlecchinoTerminal` grew
+  `EnableKeyNames` and `DisableKeyNames`, both with a body that does nothing, so a terminal of one's
+  own needs no change; `SystemTerminal` pushes the protocol flags on the way in and pops them on the
+  way out, and `FakeTerminal` records the asking as `AreKeyNamesAsked`.
+
+  Nothing about typing moved: a field takes the text the terminal reports, in whatever language it
+  was typed.
 
 ## 2026.9.2
 

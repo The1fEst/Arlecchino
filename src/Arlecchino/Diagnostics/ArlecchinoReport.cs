@@ -86,7 +86,7 @@ public sealed class ArlecchinoReport
         Line(report, "alternate screen", _options.UseAlternateScreen.ToString());
         Line(report, "mouse", _options.MouseInput.ToString());
         Line(report, "bracketed paste", _options.BracketedPaste.ToString());
-        Line(report, "keys by position", _options.KeysByPosition.ToString());
+        Line(report, "keys by position", _options.TryKeysByPosition.ToString());
 
         return report.ToString();
     }

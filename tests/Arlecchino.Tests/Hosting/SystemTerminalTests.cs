@@ -98,6 +98,21 @@ public sealed class SystemTerminalTests : IDisposable
         Assert.Equal(Expected("\e[?2004h\e[?2004l"), output.WrittenText);
     }
 
+    /// <summary>
+    /// The flags are pushed and popped rather than set and cleared, so whatever the terminal was doing
+    /// for the shell this was started from is still there when the application leaves.
+    /// </summary>
+    [Fact]
+    public void KeyNamesArePushedWhileTheyAreWanted()
+    {
+        using var output = new ConsoleOutputScope();
+
+        _terminal.EnableKeyNames();
+        _terminal.DisableKeyNames();
+
+        Assert.Equal(Expected("\e[>29u\e[<u"), output.WrittenText);
+    }
+
     [Fact]
     public void MouseReportingIsAskedForWithSequencesAwayFromWindows()
     {

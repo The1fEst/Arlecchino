@@ -45,11 +45,11 @@ public sealed class ArlecchinoOptions
     public char CommandPaletteKey { get; set; } = ':';
 
     /// <summary>
-    /// Whether a binding named after a character also answers to the key that character sits on. Off by
-    /// default, so a binding is reached only where the layout types the character; on, a shortcut sits on
-    /// the same key whatever the layout. Typing is untouched either way.
+    /// Whether to reach a shortcut by the key it sits on rather than by the character the layout types
+    /// there, as far as the terminal allows it. Off by default; a terminal that will not name its keys
+    /// leaves the shortcuts where they were. Typing is untouched either way.
     /// </summary>
-    public bool KeysByPosition { get; set; }
+    public bool TryKeysByPosition { get; set; }
 
     /// <summary>
     /// Whether to report mouse events. Off by default, because with it on the terminal stops handling

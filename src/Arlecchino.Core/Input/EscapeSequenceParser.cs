@@ -114,7 +114,7 @@ internal static class EscapeSequenceParser
 
         if (final == 'u')
         {
-            return TryParseUnicodeKey(parameters, modifiers, out key);
+            return TryParseUnicodeKey(body, modifiers, out key);
         }
 
         var consoleKey = final switch
@@ -149,33 +149,68 @@ internal static class EscapeSequenceParser
     }
 
     /// <summary>
-    /// Reads the <c>CSI code ; modifiers u</c> form, where the key is named by the character it would have
-    /// typed. A terminal reaches for it where the older shapes cannot spell what happened.
+    /// Reads the <c>CSI code ; modifiers ; text u</c> form, where the key is named by the character it
+    /// would have typed. A terminal that was asked for them writes the key on the layout the shortcuts
+    /// were written for behind the code, and the text the press produced behind the modifiers.
     /// </summary>
-    /// <param name="parameters">The numbers in front of the final byte.</param>
+    /// <param name="body">The sequence without its final byte.</param>
     /// <param name="modifiers">What was held, already read off the second number.</param>
     /// <param name="key">The key, or nothing for a code with no name here.</param>
     /// <returns><c>true</c>, since the shape itself says a key was pressed.</returns>
-    private static bool TryParseUnicodeKey(List<int> parameters, KeyModifiers modifiers, out KeyPress key)
+    private static bool TryParseUnicodeKey(string body, KeyModifiers modifiers, out KeyPress key)
     {
         key = default;
 
-        if (parameters.Count == 0 || parameters[0] <= 0)
+        var parts = body.Split(';');
+        var codes = SubParameters(parts[0]);
+        var code = codes.Count > 0 ? codes[0] : 0;
+
+        if (code <= 0)
         {
             return true;
         }
 
-        var code = parameters[0];
-        var consoleKey = KeyOfCode(code);
+        var sits = codes.Count > 2 && codes[2] > 0 ? codes[2] : code;
+        var consoleKey = KeyOfCode(sits);
+        var text = parts.Length > 2 ? SubParameters(parts[2]) : [];
+        var character = Typed(text.Count > 0 ? text[0] : code);
 
-        if (consoleKey == default && !IsTypeable(code))
+        if (consoleKey == default && character == '\0')
         {
             return true;
         }
 
-        var character = IsTypeable(code) && !char.IsControl((char)code) ? (char)code : '\0';
         key = new(consoleKey, modifiers, character);
         return true;
+    }
+
+    /// <summary>
+    /// The character a code stands for, or <c>'\0'</c> for a code that types nothing — a key with no
+    /// character of its own is named by a code out of the private use area, which no field should be handed.
+    /// </summary>
+    /// <param name="code">The number the terminal wrote.</param>
+    /// <returns>The character, or <c>'\0'</c>.</returns>
+    private static char Typed(int code) =>
+        IsTypeable(code) && !char.IsControl((char)code) ? (char)code : '\0';
+
+    /// <summary>
+    /// The numbers of one parameter, which a terminal writes with colons between them where a parameter
+    /// says more than one thing.
+    /// </summary>
+    /// <param name="part">One parameter of the sequence.</param>
+    /// <returns>Its numbers, in the order they were written.</returns>
+    private static List<int> SubParameters(string part)
+    {
+        var numbers = new List<int>();
+
+        foreach (var piece in part.Split(':'))
+        {
+            numbers.Add(int.TryParse(piece, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+                ? value
+                : 0);
+        }
+
+        return numbers;
     }
 
     /// <summary>
@@ -197,6 +232,17 @@ internal static class EscapeSequenceParser
         '\r' or '\n' => ConsoleKey.Enter,
         '\e' => ConsoleKey.Escape,
         8 or 127 => ConsoleKey.Backspace,
+        ';' or ':' => ConsoleKey.Oem1,
+        '/' or '?' => ConsoleKey.Oem2,
+        '`' or '~' => ConsoleKey.Oem3,
+        '[' or '{' => ConsoleKey.Oem4,
+        '\\' or '|' => ConsoleKey.Oem5,
+        ']' or '}' => ConsoleKey.Oem6,
+        '\'' or '"' => ConsoleKey.Oem7,
+        ',' or '<' => ConsoleKey.OemComma,
+        '.' or '>' => ConsoleKey.OemPeriod,
+        '-' or '_' => ConsoleKey.OemMinus,
+        '=' or '+' => ConsoleKey.OemPlus,
         _ => default,
     };
 

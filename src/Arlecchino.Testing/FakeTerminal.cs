@@ -67,6 +67,9 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
     /// <summary>Whether the application asked for bracketed paste.</summary>
     public bool IsPasteEnabled { get; private set; }
 
+    /// <summary>Whether the application asked the terminal to name the keys it sends.</summary>
+    public bool AreKeyNamesAsked { get; private set; }
+
     /// <summary>Whether the application borrowed Ctrl+C and has not handed it back.</summary>
     public bool AreControlKeysTaken { get; private set; }
 
@@ -164,6 +167,12 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 
     /// <summary>Records that bracketed paste was turned off.</summary>
     public void DisablePaste() => IsPasteEnabled = false;
+
+    /// <summary>Records that the keys were asked for by name.</summary>
+    public void EnableKeyNames() => AreKeyNamesAsked = true;
+
+    /// <summary>Records that the key names were given back.</summary>
+    public void DisableKeyNames() => AreKeyNamesAsked = false;
 
     /// <summary>Records that Ctrl+C was borrowed, so it arrives as a key rather than as a signal.</summary>
     public void TakeControlKeys() => AreControlKeysTaken = true;
