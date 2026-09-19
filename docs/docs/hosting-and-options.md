@@ -75,7 +75,7 @@ it puts in the container are singletons:
 | `Hints` | `HintsShown.Always` | Draw the `Keys` box from whatever holds the focus. `WhileWaiting` draws it only while a chord is half typed, `Never` not at all |
 | `ShowOutputLine` | `true` | Draw `ArlecchinoState.Output` on the last row |
 | `CommandPaletteKey` | `':'` | Key that opens the palette |
-| `KeysByPosition` | `false` | Look a shortcut up by the key its character sits on, leaving typing to the layout — see [Keyboard layouts](keyboard.md#keyboard-layouts) |
+| `TryKeysByPosition` | `false` | Ask the terminal to name its keys, and look a shortcut up by the key it sits on, leaving typing to the layout — see [Keyboard layouts](keyboard.md#keyboard-layouts) |
 | `MouseInput` | `false` | Report clicks, drags and the wheel to views |
 | `BracketedPaste` | `true` | Pasted text arrives as one block instead of a burst of keys |
 | `EscapeTimeout` | `25 ms` | How long the reader waits for the rest of an escape sequence |
@@ -107,7 +107,7 @@ it puts in the container are singletons:
 | `AddCommand<T>()` | Registers one `IArlecchinoCommand` by hand; an alternative to `AddGeneratedCommands()`, not a layer on top |
 | `AddStartup<T>()` | Registers an `IArlecchinoStartup` |
 | `StartAt(route)` | Sets `StartRoute`; also takes a plain string |
-| `UseKeysByPosition()` | Looks a shortcut up by where its key sits, so a binding named after a character is reached on any layout |
+| `TryUseKeysByPosition()` | Asks the terminal to name its keys, so a shortcut is reached from where it sits on any layout — and leaves them where the layout puts them where the terminal will not answer |
 | `UseKeymap(keymap)` | Replaces the key bindings |
 | `UseNotifications(key, timeout, lifetime)` | Turns the output row on, sets both timeouts and the key that opens the notifications screen |
 | `WithoutNotifications()` | Leaves the output row off |

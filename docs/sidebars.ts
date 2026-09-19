@@ -69,6 +69,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'whats-new-in-2026.9.3',
+        'migrating-to-2026.9.3',
         'whats-new-in-2026.9.2',
         'whats-new-in-2026.9.1',
         'migrating-to-2026.9.1',

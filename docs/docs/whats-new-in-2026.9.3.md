@@ -1,14 +1,15 @@
 ---
 title: What's new in 2026.9.3
 sidebar_label: What's new in 2026.9.3
-description: A Markdown document drawn as what its marks say, the pictures it names drawn where it names them, a reader for the flat SVG a chart is written as, and a shortcut by position that works outside a Windows console.
+description: A Markdown document drawn as what its marks say, the pictures it names drawn where it names them, a reader for the flat SVG a chart is written as, and shortcuts reached by the key the terminal names.
 ---
 
 # What's new in 2026.9.3
 
 A release about a file that was written to be read. A document has been drawable as text all along,
 which meant its hashes, its stars and its bars on screen — the marks a reader was meant to be spared.
-Nothing breaks. The
+Beside that, the shortcuts stopped working out which key was pressed and started asking the terminal,
+which is the one break — see [Migrating to 2026.9.3](migrating-to-2026.9.3.md). The
 [changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md#202693) is the full record.
 
 ## `MarkdownView`
@@ -65,12 +66,30 @@ the half that mattered, and a caller handed nothing shows the file as the text i
 Being drawn from shapes rather than from pixels, it is read at whatever size the caller has a use for:
 a picture asked for larger than the file says comes out sharper rather than enlarged.
 
-## Shortcuts by position, outside a Windows console
+## The terminal names the key
 
-`UseKeysByPosition()` worked the position out from the key the terminal named, and a terminal that is
-not a Windows console names no key at all for a letter that is not Latin — it sends the character and
-nothing else. So the setting was a no-op where it was most wanted: with the layout switched over, a
-command on a letter was unreachable, and a chord was unreachable along with its leader.
+`UseKeysByPosition()` worked the position out from the key the terminal named, and every terminal but
+the Windows console names no key at all for a letter that is not Latin — it sends the character and
+nothing else. So the setting was a no-op where it was most wanted: with a Cyrillic layout switched
+on, a command on a letter was unreachable, and a chord was unreachable along with the `g` it hangs
+off.
 
-Where no key is named, the position is now read out of the character itself, by where that character
-sits on a Cyrillic keyboard. Typing is untouched, as before: a field takes the letter the layout made.
+It now asks the terminal to name the keys it sends. A terminal that answers writes the key of the
+base layout beside the character, so the framework is told where the key sits rather than working it
+out — and it is told for Greek, Arabic and Hebrew as readily as for Cyrillic, with no list of
+alphabets kept anywhere:
+
+```csharp
+builder.TryUseKeysByPosition();   // g is pressed as п, and п still types п
+```
+
+The name says trying because it is a request. Terminals answer where they speak the kitty keyboard
+protocol — kitty, foot, Ghostty, WezTerm, Alacritty, rio, contour and iTerm2 among them, with tmux
+passing it through under `extended-keys on`. Where one does not, the shortcuts stay where the layout
+puts them, exactly as before the request was made. The Windows console names its keys without being
+asked.
+
+Typing is untouched, as before: a field takes the text the terminal reports, in whatever language it
+was typed. The rename is the one break of this release — see
+[Migrating to 2026.9.3](migrating-to-2026.9.3.md). `IArlecchinoTerminal` grew `EnableKeyNames` and
+`DisableKeyNames`, both with a body that does nothing, so a terminal of your own needs no change.

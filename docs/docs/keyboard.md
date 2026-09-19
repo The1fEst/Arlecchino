@@ -179,16 +179,26 @@ list, so the descriptions can be translated or the order changed without touchin
 ## Keyboard layouts
 
 A layout that is not Latin costs nothing to type in: what the layout made of a key is what a field
-takes. What it used to cost is the shortcuts — a binding named after `/` or `:` is out of reach on a
-layout that types neither — and that is what `UseKeysByPosition` answers.
+takes. What it costs is the shortcuts — a binding named after `/` or `:` is out of reach on a layout
+that types neither, and so is every command on a letter, the `g` a chord hangs off included — and
+that is what `TryUseKeysByPosition` answers.
 
 ```csharp
-builder.UseKeysByPosition();   // or options.KeysByPosition = true
+builder.TryUseKeysByPosition();   // or options.TryKeysByPosition = true
 ```
 
-It fills in, beside the character the layout typed, the character that key *sits at* on a US layout. A
-binding named after a character is then looked up by the position, and typing is left alone: `Ж` opens
-the palette bound to `:`, and still types `Ж` into a field.
+It asks the terminal to name the keys it sends. A terminal that answers writes, beside the character
+the layout typed, the key that press is on the *base layout* — so the framework is told where the key
+sits rather than working it out. The position is then what a shortcut is looked up by, and typing is
+left alone: `g` is pressed as `п`, `Ж` opens the palette bound to `:`, and both still type themselves
+into a field.
+
+The asking is the whole of it, which is why the name says trying. A terminal answers where it speaks
+the kitty keyboard protocol — kitty, foot, Ghostty, WezTerm, Alacritty, rio, contour and iTerm2 among
+them, with tmux passing it through under `extended-keys on`. Where it does not, the request is ignored
+and the shortcuts stay where the layout puts them, exactly as they were before it was made: nothing
+breaks by asking, and nothing is gained. The Windows console names its keys without being asked, so it
+never needed the request.
 
 `KeyText` is a static class of three methods, and a view that reads what was typed calls one of them
 rather than reading `KeyPress.Character` itself:
@@ -200,10 +210,9 @@ rather than reading `KeyPress.Character` itself:
 | `KeyText.Shortcut(key)` | What a command is looked up under: the position where there is one, and what was typed otherwise |
 
 `KeyPress.ByPosition` carries the position the framework filled in, and is `'\0'` for an application
-that never asked for one. Position covers letters, digits with their shifted symbols, the numpad,
-space and the punctuation keys — and, where the terminal names no key at all for what arrived, the
-Cyrillic letters read back to the keys they sit on. That last one is what makes the setting work
-outside a Windows console, which is the one terminal that names a key for `ж`.
+that never asked for one — and for a terminal that was asked and said nothing. Position covers
+letters, digits with their shifted symbols, the numpad, space and the punctuation keys, whatever the
+script the layout writes in: the terminal names the key, so no list of alphabets is kept anywhere.
 
 ## Paste
 
