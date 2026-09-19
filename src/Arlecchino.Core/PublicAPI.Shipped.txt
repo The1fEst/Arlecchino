@@ -115,8 +115,10 @@ Arlecchino.Atoms.IResettableAtom.TryReset() -> bool
 Arlecchino.FrameThread
 Arlecchino.IArlecchinoTerminal
 Arlecchino.IArlecchinoTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.IArlecchinoTerminal.DisableKeyNames() -> void
 Arlecchino.IArlecchinoTerminal.DisableMouse() -> void
 Arlecchino.IArlecchinoTerminal.DisablePaste() -> void
+Arlecchino.IArlecchinoTerminal.EnableKeyNames() -> void
 Arlecchino.IArlecchinoTerminal.EnableMouse() -> void
 Arlecchino.IArlecchinoTerminal.EnablePaste() -> void
 Arlecchino.IArlecchinoTerminal.EnterFullScreen() -> void
@@ -436,8 +438,10 @@ Arlecchino.Rendering.Text.Joinery.Joinery() -> void
 Arlecchino.Rendering.Text.TextWidth
 Arlecchino.SystemTerminal
 Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.SystemTerminal.DisableKeyNames() -> void
 Arlecchino.SystemTerminal.DisableMouse() -> void
 Arlecchino.SystemTerminal.DisablePaste() -> void
+Arlecchino.SystemTerminal.EnableKeyNames() -> void
 Arlecchino.SystemTerminal.EnableMouse() -> void
 Arlecchino.SystemTerminal.EnablePaste() -> void
 Arlecchino.SystemTerminal.EnterFullScreen() -> void

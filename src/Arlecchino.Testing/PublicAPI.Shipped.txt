@@ -29,11 +29,14 @@ Arlecchino.Testing.ArlecchinoTestHost.Terminal.get -> Arlecchino.Testing.FakeTer
 Arlecchino.Testing.ArlecchinoTestHost.Type(string! text) -> void
 Arlecchino.Testing.FakeTerminal
 Arlecchino.Testing.FakeTerminal.AreControlKeysTaken.get -> bool
+Arlecchino.Testing.FakeTerminal.AreKeyNamesAsked.get -> bool
 Arlecchino.Testing.FakeTerminal.Clear() -> void
 Arlecchino.Testing.FakeTerminal.CopiedText.get -> string?
 Arlecchino.Testing.FakeTerminal.CopyToClipboard(string! text) -> void
+Arlecchino.Testing.FakeTerminal.DisableKeyNames() -> void
 Arlecchino.Testing.FakeTerminal.DisableMouse() -> void
 Arlecchino.Testing.FakeTerminal.DisablePaste() -> void
+Arlecchino.Testing.FakeTerminal.EnableKeyNames() -> void
 Arlecchino.Testing.FakeTerminal.EnableMouse() -> void
 Arlecchino.Testing.FakeTerminal.EnablePaste() -> void
 Arlecchino.Testing.FakeTerminal.Enqueue(Arlecchino.Input.KeyPress key) -> void

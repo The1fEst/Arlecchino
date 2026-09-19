@@ -1,6 +1,1 @@
 #nullable enable
-Arlecchino.Pictures.Formats.Svg.Svg
-Arlecchino.Pictures.Formats.Svg.Svg.Name.get -> string!
-Arlecchino.Pictures.Formats.Svg.Svg.Read(System.ReadOnlySpan<byte> bytes, Arlecchino.Pictures.PictureLimits limits) -> Arlecchino.Pictures.Raster?
-Arlecchino.Pictures.Formats.Svg.Svg.Starts(System.ReadOnlySpan<byte> bytes) -> bool
-Arlecchino.Pictures.Formats.Svg.Svg.Svg() -> void

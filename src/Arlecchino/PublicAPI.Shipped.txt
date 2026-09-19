@@ -280,8 +280,8 @@ Arlecchino.Hosting.ArlecchinoBuilder.Options.get -> Arlecchino.Hosting.Arlecchin
 Arlecchino.Hosting.ArlecchinoBuilder.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
 Arlecchino.Hosting.ArlecchinoBuilder.StartAt(Arlecchino.Navigation.ViewRoute route) -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.StartAt(string! route) -> Arlecchino.Hosting.ArlecchinoBuilder!
+Arlecchino.Hosting.ArlecchinoBuilder.TryUseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseKeymap(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> Arlecchino.Hosting.ArlecchinoBuilder!
-Arlecchino.Hosting.ArlecchinoBuilder.UseKeysByPosition() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseLayout<TLayout>() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseMouse() -> Arlecchino.Hosting.ArlecchinoBuilder!
 Arlecchino.Hosting.ArlecchinoBuilder.UseNotifications(Arlecchino.Input.KeyPress? key = null, System.TimeSpan? timeout = null, System.TimeSpan? lifetime = null) -> Arlecchino.Hosting.ArlecchinoBuilder!
@@ -400,8 +400,6 @@ Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.InputPollInterval.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Keymap.get -> Arlecchino.Hosting.ArlecchinoKeymap!
 Arlecchino.Hosting.ArlecchinoOptions.Keymap.set -> void
-Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.get -> bool
-Arlecchino.Hosting.ArlecchinoOptions.KeysByPosition.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.MinimumHeight.get -> int
 Arlecchino.Hosting.ArlecchinoOptions.MinimumHeight.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.MinimumWidth.get -> int
@@ -426,6 +424,8 @@ Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.get -> System.TimeSpan
 Arlecchino.Hosting.ArlecchinoOptions.TerminalAnswer.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.Theme.get -> Arlecchino.Rendering.Colors.ThemePalette!
 Arlecchino.Hosting.ArlecchinoOptions.Theme.set -> void
+Arlecchino.Hosting.ArlecchinoOptions.TryKeysByPosition.get -> bool
+Arlecchino.Hosting.ArlecchinoOptions.TryKeysByPosition.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.UseAlternateScreen.get -> bool
 Arlecchino.Hosting.ArlecchinoOptions.UseAlternateScreen.set -> void
 Arlecchino.Hosting.ArlecchinoOptions.VerticalPadding.get -> int
@@ -1243,6 +1243,50 @@ Arlecchino.Widgets.Readouts.GaugeBand.GaugeBand() -> void
 Arlecchino.Widgets.Readouts.GaugeBand.GaugeBand(decimal From, Arlecchino.Rendering.Colors.IArlecchinoColor! Style) -> void
 Arlecchino.Widgets.Readouts.GaugeBand.Style.get -> Arlecchino.Rendering.Colors.IArlecchinoColor!
 Arlecchino.Widgets.Readouts.GaugeBand.Style.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles
+Arlecchino.Widgets.Readouts.MarkdownStyles.Code.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Code.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Emphasis.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Emphasis.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Heading.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Heading.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Link.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Link.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.MarkdownStyles() -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Marker.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Marker.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Quote.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Quote.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Rule.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Rule.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Strong.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Strong.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Subheading.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Subheading.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.TableHeader.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.TableHeader.init -> void
+Arlecchino.Widgets.Readouts.MarkdownStyles.Url.get -> Arlecchino.Rendering.Colors.IArlecchinoColor?
+Arlecchino.Widgets.Readouts.MarkdownStyles.Url.init -> void
+Arlecchino.Widgets.Readouts.MarkdownView
+Arlecchino.Widgets.Readouts.MarkdownView.Draw(Arlecchino.Rendering.SurfaceRegion region) -> Arlecchino.Rendering.SurfaceRegion
+Arlecchino.Widgets.Readouts.MarkdownView.Handle(Arlecchino.Input.KeyPress key) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Readouts.MarkdownView.HandleMouse(Arlecchino.Input.MouseEvent mouse) -> Arlecchino.Focus.FocusResult
+Arlecchino.Widgets.Readouts.MarkdownView.IsFocused.get -> bool
+Arlecchino.Widgets.Readouts.MarkdownView.IsFocused.set -> void
+Arlecchino.Widgets.Readouts.MarkdownView.LineCount.get -> int
+Arlecchino.Widgets.Readouts.MarkdownView.MarkdownView(Arlecchino.Hosting.ArlecchinoKeymap! keymap) -> void
+Arlecchino.Widgets.Readouts.MarkdownView.Offset.get -> int
+Arlecchino.Widgets.Readouts.MarkdownView.Offset.set -> void
+Arlecchino.Widgets.Readouts.MarkdownView.PictureRows.get -> int
+Arlecchino.Widgets.Readouts.MarkdownView.PictureRows.set -> void
+Arlecchino.Widgets.Readouts.MarkdownView.Pictures.get -> System.Func<string!, Arlecchino.Widgets.Pictures.Picture?>?
+Arlecchino.Widgets.Readouts.MarkdownView.Pictures.set -> void
+Arlecchino.Widgets.Readouts.MarkdownView.ShowScrollBar.get -> bool
+Arlecchino.Widgets.Readouts.MarkdownView.ShowScrollBar.init -> void
+Arlecchino.Widgets.Readouts.MarkdownView.Styles.get -> Arlecchino.Widgets.Readouts.MarkdownStyles!
+Arlecchino.Widgets.Readouts.MarkdownView.Styles.set -> void
+Arlecchino.Widgets.Readouts.MarkdownView.Text.get -> string!
+Arlecchino.Widgets.Readouts.MarkdownView.Text.set -> void
 Arlecchino.Widgets.Readouts.ProgressBar
 Arlecchino.Widgets.Readouts.ProgressBar.Caption.get -> System.Func<decimal, string!>?
 Arlecchino.Widgets.Readouts.ProgressBar.Caption.init -> void
