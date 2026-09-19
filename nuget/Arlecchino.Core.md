@@ -83,7 +83,7 @@ binary each run and asks it for a frame.
 | [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) | this one — the renderer, no DI, and the atoms |
 | [`Arlecchino`](https://www.nuget.org/packages/Arlecchino) | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
 | [`Arlecchino.Atoms.History`](https://www.nuget.org/packages/Arlecchino.Atoms.History) | undo and redo: atoms that record their changes, a bounded stack, and the file it is written to |
-| [`Arlecchino.Pictures`](https://www.nuget.org/packages/Arlecchino.Pictures) | PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels |
+| [`Arlecchino.Pictures`](https://www.nuget.org/packages/Arlecchino.Pictures) | PNG, JPEG, BMP, Netpbm, QOI, Targa and flat SVG read into pixels |
 | [`Arlecchino.Testing`](https://www.nuget.org/packages/Arlecchino.Testing) | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
 They ship together and always carry the same version.

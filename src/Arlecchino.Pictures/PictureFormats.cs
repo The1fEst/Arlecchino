@@ -5,6 +5,7 @@ using Arlecchino.Pictures.Formats.Jpeg;
 using Arlecchino.Pictures.Formats.Png;
 using Arlecchino.Pictures.Formats.Pnm;
 using Arlecchino.Pictures.Formats.Qoi;
+using Arlecchino.Pictures.Formats.Svg;
 using Arlecchino.Pictures.Formats.Tga;
 
 namespace Arlecchino.Pictures;
@@ -29,6 +30,7 @@ public static class PictureFormats
         new Qoi(),
         new Pnm(),
         new Tga(),
+        new Svg(),
     ];
 
     /// <summary>Every format that is read, in the order a file is offered to them.</summary>

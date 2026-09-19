@@ -13,6 +13,63 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## 2026.9.3
+
+A release about a file that was written to be read. A document has been drawable as text all along,
+which meant its hashes, its stars and its bars on screen — the marks a reader was meant to be spared,
+and the line breaks of whatever editor it was written in kept as though they were the writer's. What
+those marks say is now drawn instead of the marks themselves, the pictures it names included, and the
+charts such a document tends to carry are read from the shapes they are written as.
+
+### Added
+
+- **`MarkdownView`**, a widget for a Markdown document: headings, lists — bulleted, numbered and with
+  boxes for a task list — quotes, code blocks, tables and links, drawn as what they are rather than as
+  the marks that say so. It wraps to the width it is given and scrolls with the movement keys and the
+  wheel, the way `TextView` does, and re-wraps when the width changes. A paragraph the file broke over
+  several lines is one paragraph again, since that break belonged to the editor it was written in and
+  not to the pane it is read in; a table is padded to its columns by what it comes to on screen rather
+  than by what it says in the file; a quote carries its bar down every row it takes, and the rest of an
+  item of a list is set under its first word rather than under its bullet. A code block is fenced with
+  backticks or tildes — an indented block is read as prose — and markup left in the document for a
+  browser is dropped rather than written out. What that markup writes as an entity — `&rarr;`, `&nbsp;`,
+  `&#8594;` — is drawn as the symbol it stands for, a pane being able to take the arrow itself, and stays
+  as it was written inside a code span. A table and a code block are the two things not wrapped, since a
+  line broken in either says something it did not say, so a row of one that runs past the edge is marked
+  as cut in its last column.
+- **`MarkdownStyles`**, what each part of a document is written in. Every one of them is `null` to
+  begin with, which leaves it to `Theme`: an application that has said what its colours are has already
+  said most of this. What is worth setting is what a document needs and a palette has no role for — the
+  weight of a strong word, and the ground behind a block of code, which is painted across the pane.
+- **`MarkdownView.Pictures`**, which draws the pictures a document names — the ones written as
+  `![alt](chart.svg)` and the ones left in it as markup alike. Reading one belongs to the application,
+  since a document says `tables/recoil.svg` and only the application knows what that is beside and
+  whether it is a disk or a server; this is asked while a frame is being drawn and must answer at once,
+  with nothing for a picture that has not arrived. A picture is taken out of the line it was written in
+  and given rows of its own — `MarkdownView.PictureRows` says how many it may take — and two written
+  into one line share that band side by side, a before and an after being what a line of two is for.
+  Until a picture arrives, or for good where nothing can draw it, those rows say what it stands for.
+  A picture is drawn only where the whole of it is on screen: what reaches the terminal as a graphics
+  protocol is placed at a cell rather than written into the frame, and a pane cannot clip that.
+- **`Svg`**, a reader for the flat kind a chart or a diagram is written as: rectangles, lines, runs of
+  lines, polygons, circles and ellipses, dashed or solid, in colours named or written as digits. It is
+  not an SVG renderer and does not pretend to be one — a file carrying a path, text of its own, a
+  transform, a gradient or a style sheet is refused whole rather than drawn as a picture missing the
+  half that mattered, and a caller handed nothing shows the file as the text it is. Being drawn from
+  shapes rather than from pixels, it is read at whatever size the caller has a use for: a picture asked
+  for larger than the file says comes out sharper rather than enlarged.
+
+### Fixed
+
+- **Keys read by position now find the position on a Cyrillic layout.** `UseKeysByPosition()` worked
+  out where a key sits from the key the terminal named, and a terminal anywhere but Windows names no
+  key at all for a letter that is not Latin — it sends the character and nothing else. So the whole of
+  it was a no-op where it was most wanted: with the layout switched over, a command on a letter was
+  unreachable, and a chord was unreachable along with its leader. The position is now read back out of
+  the character as well, by where that character sits on a Cyrillic keyboard, so `g` is pressed as
+  `п` and the command line opens on `Ж`. Typing is untouched, as before: a field takes the letter the
+  layout made.
+
 ## 2026.9.2
 
 A release about one line of startup, and about how late is too late to write it. A Windows console

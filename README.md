@@ -119,7 +119,8 @@ application, and anything read from one is found next to the application rather 
 
 Modals for text, passwords, email and links, numbers, sliders, toggles, single and multiple choice,
 dates, times and colours come with the framework, along with a command palette, a hints box and a
-file picker. Numbers are drawn by `Sparkline`, `BarChart<T>` and `Gauge`.
+file picker. Numbers are drawn by `Sparkline`, `BarChart<T>` and `Gauge`, and a Markdown document by
+`MarkdownView`.
 
 ## Why this one
 
@@ -204,7 +205,7 @@ What changed between versions is in the [changelog](CHANGELOG.md).
 | `Arlecchino.Core` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI — and the atoms |
 | `Arlecchino` | views, navigation, modals, commands, hosting, DI, async stores, and the generator |
 | `Arlecchino.Atoms.History` | undo and redo: atoms that record their changes, a bounded stack, and the file it is written to |
-| `Arlecchino.Pictures` | PNG, JPEG, BMP, Netpbm, QOI and Targa read into the pixels the `Picture` widget draws |
+| `Arlecchino.Pictures` | PNG, JPEG, BMP, Netpbm, QOI, Targa and flat SVG read into the pixels the `Picture` widget draws |
 | `Arlecchino.Testing` | `ArlecchinoTestHost` — the headless host applications write their tests against |
 
 ## Contributing

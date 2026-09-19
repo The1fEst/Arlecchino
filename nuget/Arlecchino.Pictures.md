@@ -6,7 +6,7 @@
 ![Target frameworks](https://img.shields.io/badge/net8.0%20%7C%20net10.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
 [![MIT](https://img.shields.io/badge/license-MIT-EDE6D9?labelColor=141317)](https://github.com/The1fEst/Arlecchino/blob/master/LICENSE)
 
-Picture files read into the pixels the `Picture` widget draws: PNG, JPEG, BMP, Netpbm, QOI and Targa. Every decoder is written against the format itself, so the package has no dependency
+Picture files read into the pixels the `Picture` widget draws: PNG, JPEG, BMP, Netpbm, QOI, Targa and the flat SVG a chart is written as. Every decoder is written against the format itself, so the package has no dependency
 beyond [`Arlecchino.Core`](https://www.nuget.org/packages/Arlecchino.Core) and nothing native to
 carry from platform to platform.
 
@@ -47,6 +47,7 @@ instead.
 | **Netpbm** | P1 to P6, as numbers or as bytes, at any depth |
 | **QOI** | all of it |
 | **Targa** | 8, 15, 16, 24 and 32 bits a pixel, with a color map or without, run-length encoded or not |
+| **SVG** | the flat kind a chart is written as: rectangles, lines, runs of lines, polygons, circles and ellipses. A file carrying a path, text of its own, a transform, a gradient or a style sheet is refused whole rather than drawn as a picture missing the half that mattered. Being drawn from shapes rather than from pixels, it is read at whatever size the caller asks for |
 
 Alpha is read and then dropped: a terminal has nothing to show it against.
 
