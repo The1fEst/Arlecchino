@@ -39,6 +39,7 @@ place to look a member up.
 | [Arlecchino.Pictures.Formats.Png](arlecchino.pictures.formats.png/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Pictures.Formats.Pnm](arlecchino.pictures.formats.pnm/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Pictures.Formats.Qoi](arlecchino.pictures.formats.qoi/index.md) | `Arlecchino.Pictures` | 1 |
+| [Arlecchino.Pictures.Formats.Svg](arlecchino.pictures.formats.svg/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Pictures.Formats.Tga](arlecchino.pictures.formats.tga/index.md) | `Arlecchino.Pictures` | 1 |
 | [Arlecchino.Rendering](arlecchino.rendering/index.md) | `Arlecchino.Core` | 5 |
 | [Arlecchino.Rendering.Colors](arlecchino.rendering.colors/index.md) | `Arlecchino.Core` | 12 |
@@ -49,5 +50,5 @@ place to look a member up.
 | [Arlecchino.Widgets](arlecchino.widgets/index.md) | `Arlecchino` | 2 |
 | [Arlecchino.Widgets.Lists](arlecchino.widgets.lists/index.md) | `Arlecchino` | 9 |
 | [Arlecchino.Widgets.Pictures](arlecchino.widgets.pictures/index.md) | `Arlecchino` | 1 |
-| [Arlecchino.Widgets.Readouts](arlecchino.widgets.readouts/index.md) | `Arlecchino` | 9 |
+| [Arlecchino.Widgets.Readouts](arlecchino.widgets.readouts/index.md) | `Arlecchino` | 11 |
 | [Arlecchino.Widgets.Text](arlecchino.widgets.text/index.md) | `Arlecchino` | 3 |

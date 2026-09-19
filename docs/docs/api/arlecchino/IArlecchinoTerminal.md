@@ -29,8 +29,10 @@ public interface IArlecchinoTerminal
 | Member | Summary |
 |---|---|
 | [`CopyToClipboard(string)`](#copytoclipboard-string) | Puts text on the clipboard of whatever is showing the terminal, which is the local machine even over a remote session. Terminals may refuse it, and none report back. |
+| [`DisableKeyNames()`](#disablekeynames) | Stops the key names, leaving the terminal sending what it sent before. |
 | [`DisableMouse()`](#disablemouse) | Stops reporting mouse events. |
 | [`DisablePaste()`](#disablepaste) | Stops the paste markers. |
+| [`EnableKeyNames()`](#enablekeynames) | Asks the terminal to name every key it sends, and to say which key that is on the base layout. A terminal that does not know the request ignores it. |
 | [`EnableMouse()`](#enablemouse) | Starts reporting mouse events, if the platform supports it. |
 | [`EnablePaste()`](#enablepaste) | Asks the terminal to wrap pasted text in markers, so a paste arrives as one block instead of looking like someone typing very fast. |
 | [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. |
@@ -100,6 +102,14 @@ Puts text on the clipboard of whatever is showing the terminal, which is the loc
 |---|---|---|
 | `text` | `string` | What to copy. |
 
+### `DisableKeyNames()` {#disablekeynames}
+
+```csharp
+public void DisableKeyNames();
+```
+
+Stops the key names, leaving the terminal sending what it sent before.
+
 ### `DisableMouse()` {#disablemouse}
 
 ```csharp
@@ -115,6 +125,14 @@ public void DisablePaste();
 ```
 
 Stops the paste markers.
+
+### `EnableKeyNames()` {#enablekeynames}
+
+```csharp
+public void EnableKeyNames();
+```
+
+Asks the terminal to name every key it sends, and to say which key that is on the base layout. A terminal that does not know the request ignores it.
 
 ### `EnableMouse()` {#enablemouse}
 

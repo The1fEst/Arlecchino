@@ -33,8 +33,8 @@ public sealed class ArlecchinoBuilder
 | [`AddWidget<TWidget>()`](#addwidget-twidget) | Registers one widget as a singleton, for a widget `AddGeneratedWidgets()` cannot see. It is shared by every screen that resolves it, state and focus included. |
 | [`StartAt(ViewRoute)`](#startat-viewroute) | Sets the view the application opens on. |
 | [`StartAt(string)`](#startat-string) | Sets the view the application opens on, by name. |
+| [`TryUseKeysByPosition()`](#tryusekeysbyposition) | Asks the terminal to name the keys it sends, and reaches a shortcut by the key it sits on rather than by the character the layout types there. What a field types is left alone: any language is still typed as it is. |
 | [`UseKeymap(ArlecchinoKeymap)`](#usekeymap-arlecchinokeymap) | Replaces the key bindings, which every widget then follows. |
-| [`UseKeysByPosition()`](#usekeysbyposition) | Answers a binding named after a character from where that character sits as well as from what the layout makes of the key, so `/` and `:` reach their commands on a layout that types neither. What a field types is left alone: any language is still typed as it is. |
 | [`UseLayout<TLayout>()`](#uselayout-tlayout) | Draws every view inside a frame of the application's own, from one instance that outlives the views. A view answering `false` to `IArlecchinoView.UsesLayout` is drawn without it. |
 | [`UseMouse()`](#usemouse) | Turns the mouse on, which stops the terminal from handling selection itself. It is off by default for that reason. |
 | [`UseNotifications(Nullable<KeyPress>, Nullable<TimeSpan>, Nullable<TimeSpan>)`](#usenotifications-nullable-keypress-nullable-timespan-nullable-timespan) | Turns the output row on and says how long a message lives. The row shows the newest notification until `timeout` is up; the message stays readable on the notifications screen — the `Notifications` key, or a click on the row — until `lifetime` is up. |
@@ -183,6 +183,18 @@ Sets the view the application opens on, by name.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 
+### `TryUseKeysByPosition()` {#tryusekeysbyposition}
+
+```csharp
+public ArlecchinoBuilder TryUseKeysByPosition();
+```
+
+Asks the terminal to name the keys it sends, and reaches a shortcut by the key it sits on rather than by the character the layout types there. What a field types is left alone: any language is still typed as it is.
+
+**Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
+
+It is a request rather than a setting, which is why it is named for trying. Where the terminal will not name its keys — and a terminal sends a character and nothing else for a letter that is not Latin — the shortcuts stay where the layout puts them, as they were before this was asked for. The Windows console names its keys itself, so it needs no asking.
+
 ### `UseKeymap(ArlecchinoKeymap)` {#usekeymap-arlecchinokeymap}
 
 ```csharp
@@ -196,16 +208,6 @@ Replaces the key bindings, which every widget then follows.
 | Name | Type | Description |
 |---|---|---|
 | `keymap` | [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md) | The bindings to use. |
-
-**Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
-
-### `UseKeysByPosition()` {#usekeysbyposition}
-
-```csharp
-public ArlecchinoBuilder UseKeysByPosition();
-```
-
-Answers a binding named after a character from where that character sits as well as from what the layout makes of the key, so `/` and `:` reach their commands on a layout that types neither. What a field types is left alone: any language is still typed as it is.
 
 **Returns** [`ArlecchinoBuilder`](../arlecchino.hosting/ArlecchinoBuilder.md) — The builder.
 

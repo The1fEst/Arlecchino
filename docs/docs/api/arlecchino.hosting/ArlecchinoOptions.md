@@ -35,7 +35,6 @@ public sealed class ArlecchinoOptions
 | [`ImageProtocol`](#imageprotocol) | How pictures reach the terminal, installed into [`Glyphs.Picture`](../arlecchino.rendering.text/Glyphs.md#picture) on resolve and settable afterward. [`ImageProtocol.Auto`](../arlecchino.rendering.terminals/ImageProtocol.md) asks the terminal rather than guessing. |
 | [`InputPollInterval`](#inputpollinterval) | How long the input loop sleeps when no key is waiting. |
 | [`Keymap`](#keymap) | Keys the framework itself reacts to. |
-| [`KeysByPosition`](#keysbyposition) | Whether a binding named after a character also answers to the key that character sits on. Off by default, so a binding is reached only where the layout types the character; on, a shortcut sits on the same key whatever the layout. Typing is untouched either way. |
 | [`MinimumHeight`](#minimumheight) | Below this height the view is replaced by a "make the window bigger" notice. |
 | [`MinimumWidth`](#minimumwidth) | Below this width the view is replaced by a "make the window bigger" notice. |
 | [`MouseInput`](#mouseinput) | Whether to report mouse events. Off by default, because with it on the terminal stops handling selection itself and copying text with the mouse no longer works the way the user expects. |
@@ -48,6 +47,7 @@ public sealed class ArlecchinoOptions
 | [`TargetFramesPerSecond`](#targetframespersecond) | How often the loop may draw. Frames are only composed when something asked for one. |
 | [`TerminalAnswer`](#terminalanswer) | How long to wait for the terminal to finish answering. See [`ArlecchinoOptions.AskTerminal`](../arlecchino.hosting/ArlecchinoOptions.md#askterminal). |
 | [`Theme`](#theme) | Colors behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve. |
+| [`TryKeysByPosition`](#trykeysbyposition) | Whether to reach a shortcut by the key it sits on rather than by the character the layout types there, as far as the terminal allows it. Off by default; a terminal that will not name its keys leaves the shortcuts where they were. Typing is untouched either way. |
 | [`UseAlternateScreen`](#usealternatescreen) | Whether to run on the alternate screen, which leaves the user's scrollback untouched on exit. |
 | [`VerticalPadding`](#verticalpadding) | Rows kept free above and below the content area. |
 
@@ -181,16 +181,6 @@ Keys the framework itself reacts to.
 
 **Type** [`ArlecchinoKeymap`](../arlecchino.hosting/ArlecchinoKeymap.md)
 
-### `KeysByPosition` {#keysbyposition}
-
-```csharp
-public bool KeysByPosition { get; set; }
-```
-
-Whether a binding named after a character also answers to the key that character sits on. Off by default, so a binding is reached only where the layout types the character; on, a shortcut sits on the same key whatever the layout. Typing is untouched either way.
-
-**Type** `bool`
-
 ### `MinimumHeight` {#minimumheight}
 
 ```csharp
@@ -310,6 +300,16 @@ public ThemePalette Theme { get; set; }
 Colors behind the roles. Installed into [`ArlecchinoOptions.Theme`](../arlecchino.hosting/ArlecchinoOptions.md#theme) on resolve.
 
 **Type** [`ThemePalette`](../arlecchino.rendering.colors/ThemePalette.md)
+
+### `TryKeysByPosition` {#trykeysbyposition}
+
+```csharp
+public bool TryKeysByPosition { get; set; }
+```
+
+Whether to reach a shortcut by the key it sits on rather than by the character the layout types there, as far as the terminal allows it. Off by default; a terminal that will not name its keys leaves the shortcuts where they were. Typing is untouched either way.
+
+**Type** `bool`
 
 ### `UseAlternateScreen` {#usealternatescreen}
 

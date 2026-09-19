@@ -26,6 +26,7 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 | Member | Summary |
 |---|---|
 | [`AreControlKeysTaken`](#arecontrolkeystaken) | Whether the application borrowed Ctrl+C and has not handed it back. |
+| [`AreKeyNamesAsked`](#arekeynamesasked) | Whether the application asked the terminal to name the keys it sends. |
 | [`CopiedText`](#copiedtext) | The last text copied, or `null` when nothing has been. |
 | [`Height`](#height) | Rows. Assigning simulates a resize. |
 | [`IsFullScreen`](#isfullscreen) | Whether the application took over the screen and has not given it back. |
@@ -43,8 +44,10 @@ public sealed class FakeTerminal : IArlecchinoTerminal, IChecksFrames
 |---|---|
 | [`Clear()`](#clear) | Throws away what has been written, so the next assertion sees one frame rather than all of them. |
 | [`CopyToClipboard(string)`](#copytoclipboard-string) | Keeps what was copied instead of reaching a real clipboard. |
+| [`DisableKeyNames()`](#disablekeynames) | Records that the key names were given back. |
 | [`DisableMouse()`](#disablemouse) | Records that the mouse was released. |
 | [`DisablePaste()`](#disablepaste) | Records that bracketed paste was turned off. |
+| [`EnableKeyNames()`](#enablekeynames) | Records that the keys were asked for by name. |
 | [`EnableMouse()`](#enablemouse) | Records that the mouse was asked for. |
 | [`EnablePaste()`](#enablepaste) | Records that bracketed paste was asked for. |
 | [`Enqueue(KeyPress)`](#enqueue-keypress) | Queues a key press to be read. |
@@ -85,6 +88,16 @@ public bool AreControlKeysTaken { get; }
 ```
 
 Whether the application borrowed Ctrl+C and has not handed it back.
+
+**Type** `bool`
+
+### `AreKeyNamesAsked` {#arekeynamesasked}
+
+```csharp
+public bool AreKeyNamesAsked { get; }
+```
+
+Whether the application asked the terminal to name the keys it sends.
 
 **Type** `bool`
 
@@ -212,6 +225,14 @@ Keeps what was copied instead of reaching a real clipboard.
 |---|---|---|
 | `text` | `string` | What was copied. |
 
+### `DisableKeyNames()` {#disablekeynames}
+
+```csharp
+public void DisableKeyNames();
+```
+
+Records that the key names were given back.
+
 ### `DisableMouse()` {#disablemouse}
 
 ```csharp
@@ -227,6 +248,14 @@ public void DisablePaste();
 ```
 
 Records that bracketed paste was turned off.
+
+### `EnableKeyNames()` {#enablekeynames}
+
+```csharp
+public void EnableKeyNames();
+```
+
+Records that the keys were asked for by name.
 
 ### `EnableMouse()` {#enablemouse}
 

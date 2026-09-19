@@ -13,7 +13,7 @@ One picture format. It claims a file by the head of it and reads the whole of on
 public interface IPictureFormat
 ```
 
-**Implemented by** [`Bmp`](../arlecchino.pictures.formats.bmp/Bmp.md), [`Jpeg`](../arlecchino.pictures.formats.jpeg/Jpeg.md), [`Png`](../arlecchino.pictures.formats.png/Png.md), [`Pnm`](../arlecchino.pictures.formats.pnm/Pnm.md), [`Qoi`](../arlecchino.pictures.formats.qoi/Qoi.md), [`Tga`](../arlecchino.pictures.formats.tga/Tga.md)
+**Implemented by** [`Bmp`](../arlecchino.pictures.formats.bmp/Bmp.md), [`Jpeg`](../arlecchino.pictures.formats.jpeg/Jpeg.md), [`Png`](../arlecchino.pictures.formats.png/Png.md), [`Pnm`](../arlecchino.pictures.formats.pnm/Pnm.md), [`Qoi`](../arlecchino.pictures.formats.qoi/Qoi.md), [`Svg`](../arlecchino.pictures.formats.svg/Svg.md), [`Tga`](../arlecchino.pictures.formats.tga/Tga.md)
 
 ## Properties
 

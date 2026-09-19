@@ -35,8 +35,10 @@ public sealed class SystemTerminal : IArlecchinoTerminal
 | Member | Summary |
 |---|---|
 | [`CopyToClipboard(string)`](#copytoclipboard-string) | Copies through the terminal as base64, the only way to the clipboard of whoever is watching a remote session, and then through `ClipboardPrograms`, which a silent terminal is not. |
+| [`DisableKeyNames()`](#disablekeynames) | Pops the flags, giving the terminal back the keys it was sending before. |
 | [`DisableMouse()`](#disablemouse) | Stops mouse reporting and gives the console back the mode it had. |
 | [`DisablePaste()`](#disablepaste) | Turns bracketed paste off again. |
+| [`EnableKeyNames()`](#enablekeynames) | Asks for every key by name, with the key of the base layout behind it and the text it typed after it. The flags are pushed rather than set, so the terminal can be given back as found. |
 | [`EnableMouse()`](#enablemouse) | Starts reporting presses, releases, drags and the wheel: as SGR reports in the key stream, or record by record on Windows. Quick-edit mode is turned off while this is on. |
 | [`EnablePaste()`](#enablepaste) | Turns on bracketed paste. Terminals that do not know the mode ignore it. |
 | [`EnterFullScreen()`](#enterfullscreen) | Switches to the alternate screen and hides the cursor. The keyboard protocol is left unasked for, since asking it moves the function keys onto sequences the runtime reads as other keys. |
@@ -117,6 +119,14 @@ Copies through the terminal as base64, the only way to the clipboard of whoever 
 |---|---|---|
 | `text` | `string` | What to copy. |
 
+### `DisableKeyNames()` {#disablekeynames}
+
+```csharp
+public void DisableKeyNames();
+```
+
+Pops the flags, giving the terminal back the keys it was sending before.
+
 ### `DisableMouse()` {#disablemouse}
 
 ```csharp
@@ -132,6 +142,14 @@ public void DisablePaste();
 ```
 
 Turns bracketed paste off again.
+
+### `EnableKeyNames()` {#enablekeynames}
+
+```csharp
+public void EnableKeyNames();
+```
+
+Asks for every key by name, with the key of the base layout behind it and the text it typed after it. The flags are pushed rather than set, so the terminal can be given back as found.
 
 ### `EnableMouse()` {#enablemouse}
 
