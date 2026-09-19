@@ -67,7 +67,15 @@ the local feed a consuming application points its `nuget.config` at:
 
 `Directory.Build.props` holds one version for the whole repository. Because it does not change between
 builds, NuGet may serve a cached copy after a repack — clear `~/.nuget/packages/arlecchino*` if a
-consumer seems to be building against stale code.
+consumer seems to be building against stale code, or pack under a version of its own:
+
+```
+dotnet run --project tools/Arlecchino.Tools -- pack 2026.9.4-local.1 --to ../feed
+```
+
+`pack <version>` makes all five carry that version, the dependencies between them included, and
+`--to <folder>` puts them in a feed outside the repository. Give a version no release carries: one
+already in the global packages folder is restored from there and never looked for in a feed.
 
 For a plain compile of everything, including the sample:
 

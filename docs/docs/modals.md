@@ -124,6 +124,13 @@ A link is accepted when it parses as an absolute `http` or `https` URI; an addre
 _state.RequestNumber("Weight", initial: 1200, minimum: 0, maximum: 5000, value => SetWeight(value));
 ```
 
+`decimals` says how many digits to keep after the separator, and defaults to none — which is also what
+refuses the separator itself, so a field that means to take a fraction has to say how precise it is:
+
+```csharp
+_state.RequestNumber("Weight", 1.5m, 0m, 10m, SetWeight, decimals: 2);
+```
+
 Or with everything spelled out:
 
 ```csharp

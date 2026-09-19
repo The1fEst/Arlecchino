@@ -79,6 +79,7 @@ does not have.
 | [Tabs](tabs.md) | A strip of titles across a pane |
 | [Scrolling](scrolling.md) | `ScrollPane`, `ScrollWindow` and `ScrollBar` |
 | [TextView](text-view.md) | A block of text, wrapped and cached |
+| [MarkdownView](markdown-view.md) | A Markdown document drawn as what its marks say, pictures and all |
 | [Status bar and indicators](status-bar.md) | `StatusBar`, `ProgressBar`, `Spinner` |
 | [Charts](charts.md) | `Sparkline`, `BarChart`, `Gauge` |
 | [File picker](file-picker.md) | Requesting a path, the places sidebar, filters and keys |
@@ -96,6 +97,10 @@ does not have.
 
 | Page | What it covers |
 |---|---|
+| [What's new in 2026.9.3](whats-new-in-2026.9.3.md) | A Markdown document drawn as what its marks say, the pictures it names, and the flat SVG a chart is written as |
+| [What's new in 2026.9.2](whats-new-in-2026.9.2.md) | A Windows console put on UTF-8 before anything takes hold of its writer |
+| [What's new in 2026.9.1](whats-new-in-2026.9.1.md) | A shortcut reached by where its key sits, a number with a fraction, help that wraps |
+| [Migrating to 2026.9.1](migrating-to-2026.9.1.md) | The input mode that is gone, and the static `KeyText` that replaces the one built from it |
 | [What's new in 2026.8.6](whats-new-in-2026.8.6.md) | Undo in a package of its own and outliving the run, a field over its atom, a first frame seconds sooner |
 | [Migrating to 2026.8.6](migrating-to-2026.8.6.md) | The package an application that undoes takes, the atoms it renames, the fields it rebuilds |
 | [Migrating to 2026.8.1](migrating-to-2026.8.1.md) | What a `5.0` application edits: the notification, and the switch that showed the keys |

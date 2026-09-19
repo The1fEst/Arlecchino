@@ -20,7 +20,7 @@ public interface IArlecchinoInteractiveWidget : IArlecchinoWidget, IArlecchinoFo
 
 | Widget | Contract |
 |---|---|
-| [`ListBox<T>`](lists.md), [`Table<T>`](table.md), [`Tree<T>`](tree.md), [`Tabs`](tabs.md), [`ScrollPane`](scrolling.md), [`TextView`](text-view.md), [`Form`](forms.md) | `IArlecchinoInteractiveWidget` |
+| [`ListBox<T>`](lists.md), [`Table<T>`](table.md), [`Tree<T>`](tree.md), [`Tabs`](tabs.md), [`ScrollPane`](scrolling.md), [`TextView`](text-view.md), [`MarkdownView`](markdown-view.md), [`Form`](forms.md) | `IArlecchinoInteractiveWidget` |
 | [`ProgressBar`](status-bar.md#progressbar), [`StatusBar`](status-bar.md), [`Spinner`](status-bar.md#spinner), [`Sparkline`](charts.md#sparkline), [`BarChart<T>`](charts.md#barchart), [`AreaChart`](charts.md#areachart), [`Gauge`](charts.md#gauge), [`Picture`](pictures.md) | `IArlecchinoWidget` |
 
 ## Draw returns what is left

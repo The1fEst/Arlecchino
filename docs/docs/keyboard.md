@@ -178,29 +178,32 @@ list, so the descriptions can be translated or the order changed without touchin
 
 ## Keyboard layouts
 
-Text input — modal fields, list filters, the palette key — goes through `KeyText`, which turns a
-`KeyPress` into a character.
-
-| Mode | Behavior |
-|---|---|
-| `TextInputMode.Native` (default) | Any non-control character is taken as typed, so a layout that is not Latin works without being asked for |
-| `TextInputMode.ByPosition` | Every character comes from where its key sits on the keyboard rather than from what the layout makes of it, so the key left of `S` types `a` whether the layout says `a`, `ф` or `α` |
+A layout that is not Latin costs nothing to type in: what the layout made of a key is what a field
+takes. What it used to cost is the shortcuts — a binding named after `/` or `:` is out of reach on a
+layout that types neither — and that is what `UseKeysByPosition` answers.
 
 ```csharp
-.UseKeysByPosition()   // or options.TextInput = TextInputMode.ByPosition
+builder.UseKeysByPosition();   // or options.KeysByPosition = true
 ```
 
-Position covers letters, digits (with shifted symbols), the numpad, space and the OEM punctuation
-keys. The price of that mode is worth stating plainly: in it, the languages those layouts exist for
-cannot be typed at all.
+It fills in, beside the character the layout typed, the character that key *sits at* on a US layout. A
+binding named after a character is then looked up by the position, and typing is left alone: `Ж` opens
+the palette bound to `:`, and still types `Ж` into a field.
 
-:::tip
+`KeyText` is a static class of three methods, and a view that reads what was typed calls one of them
+rather than reading `KeyPress.Character` itself:
 
-`KeyText` is registered as a singleton. A view that reads typed characters itself should take it as a
-constructor parameter rather than reading `KeyPress.Character` — that is what keeps filters working on
-a non-latin layout.
+| Method | What it answers |
+|---|---|
+| `KeyText.Resolve(key)` | What the press types: the layout's own character, or `null` for a key that types nothing |
+| `KeyText.ByPosition(key)` | The character the key sits at, whatever the layout made of it |
+| `KeyText.Shortcut(key)` | What a command is looked up under: the position where there is one, and what was typed otherwise |
 
-:::
+`KeyPress.ByPosition` carries the position the framework filled in, and is `'\0'` for an application
+that never asked for one. Position covers letters, digits with their shifted symbols, the numpad,
+space and the punctuation keys — and, where the terminal names no key at all for what arrived, the
+Cyrillic letters read back to the keys they sit on. That last one is what makes the setting work
+outside a Windows console, which is the one terminal that names a key for `ж`.
 
 ## Paste
 

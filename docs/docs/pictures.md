@@ -38,8 +38,16 @@ if (PictureFormats.Read(File.ReadAllBytes(path)) is { } raster)
 }
 ```
 
-PNG, JPEG, BMP, Netpbm, QOI and Targa, each written against its own specification, depending on
-`Arlecchino.Core` and on nothing native. JPEG is read both ways round, baseline and progressive.
+PNG, JPEG, BMP, Netpbm, QOI, Targa and the flat SVG a chart is written as, each written against its own
+specification, depending on `Arlecchino.Core` and on nothing native. JPEG is read both ways round,
+baseline and progressive.
+
+SVG is the odd one, and deliberately a narrow one: rectangles, lines, runs of lines, polygons, circles
+and ellipses, dashed or solid, in colors named or written as digits. A file carrying a path, text of
+its own, a transform, a gradient or a style sheet is refused whole rather than drawn as a picture
+missing the half that mattered — so what it reads is the chart a build wrote, not the drawing an
+illustrator did. Being shapes rather than pixels, it is read at whatever size the caller asks for:
+a picture asked for larger than the file says comes out sharper rather than enlarged.
 
 A file is recognized by what is in it rather than by what it is called — `PictureFormats.For` says
 which format claimed the bytes, and `PictureFormats.All` is the list. Nothing throws: what cannot be

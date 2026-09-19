@@ -69,7 +69,7 @@ public bool Handle(KeyPress key)
         return true;
     }
 
-    if (KeyText.For(_options.TextInput).Resolve(key) is { } typed)
+    if (KeyText.Resolve(key) is { } typed)
     {
         TextEditing.Insert(_line, typed);
 

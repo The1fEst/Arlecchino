@@ -198,7 +198,7 @@ the options the application was built with:
 
 ```
 [Arlecchino]
-version: 2026.8.6
+version: 2026.9.3
 runtime: .NET 10.0.10
 platform: Microsoft Windows 10.0.26200 (X64)
 

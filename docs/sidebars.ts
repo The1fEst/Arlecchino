@@ -45,6 +45,7 @@ const sidebars: SidebarsConfig = {
         'tabs',
         'scrolling',
         'text-view',
+        'markdown-view',
         'status-bar',
         'charts',
         'pictures',
@@ -67,6 +68,10 @@ const sidebars: SidebarsConfig = {
         slug: '/releases',
       },
       items: [
+        'whats-new-in-2026.9.3',
+        'whats-new-in-2026.9.2',
+        'whats-new-in-2026.9.1',
+        'migrating-to-2026.9.1',
         'whats-new-in-2026.8.6',
         'migrating-to-2026.8.6',
         'whats-new-in-2026.8.5',

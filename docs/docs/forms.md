@@ -72,7 +72,9 @@ under it, actions as `> Label`:
 ```
 
 The help line exists only when the selected field actually has help, so a form of fields without any
-is a solid column of rows rather than a column with gaps in it.
+is a solid column of rows rather than a column with gaps in it. Help longer than the form is wide
+wraps rather than being cut at the edge, keeps a line break where the application wrote one, and the
+fields below move down by as many rows as it took.
 
 ## The fields
 
