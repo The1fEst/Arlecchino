@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using Arlecchino.Diagnostics;
 
@@ -5,7 +6,9 @@ namespace Arlecchino.Hosting;
 
 /// <summary>
 /// The modes an application puts a terminal into and has to take it back out of: the alternate screen, the
-/// mouse, bracketed paste, and Ctrl+C. Leaving runs once however many times it is asked for.
+/// mouse, bracketed paste, and Ctrl+C. Leaving runs once however many times it is asked for. A terminal
+/// whose window has closed refuses every write, and is walked past rather than thrown at the signal
+/// handler that asked, since an exception there ends the process.
 /// </summary>
 internal sealed class TerminalModes
 {
@@ -39,27 +42,31 @@ internal sealed class TerminalModes
 
         _strays.Hold();
 
-        _terminal.TakeControlKeys();
-
-        if (_options.UseAlternateScreen)
+        try
         {
-            _terminal.EnterFullScreen();
-        }
+            _terminal.TakeControlKeys();
 
-        if (_options.MouseInput)
-        {
-            _terminal.EnableMouse();
-        }
+            if (_options.UseAlternateScreen)
+            {
+                _terminal.EnterFullScreen();
+            }
 
-        if (_options.BracketedPaste)
-        {
-            _terminal.EnablePaste();
-        }
+            if (_options.MouseInput)
+            {
+                _terminal.EnableMouse();
+            }
 
-        if (_options.TryKeysByPosition)
-        {
-            _terminal.EnableKeyNames();
+            if (_options.BracketedPaste)
+            {
+                _terminal.EnablePaste();
+            }
+
+            if (_options.TryKeysByPosition)
+            {
+                _terminal.EnableKeyNames();
+            }
         }
+        catch (IOException) { }
     }
 
     /// <summary>Gives the terminal back the way it was found, and does nothing when it already has been.</summary>
@@ -70,23 +77,27 @@ internal sealed class TerminalModes
             return;
         }
 
-        if (_options.TryKeysByPosition)
+        try
         {
-            _terminal.DisableKeyNames();
-        }
+            if (_options.TryKeysByPosition)
+            {
+                _terminal.DisableKeyNames();
+            }
 
-        if (_options.MouseInput)
-        {
-            _terminal.DisableMouse();
-        }
+            if (_options.MouseInput)
+            {
+                _terminal.DisableMouse();
+            }
 
-        if (_options.BracketedPaste)
-        {
-            _terminal.DisablePaste();
-        }
+            if (_options.BracketedPaste)
+            {
+                _terminal.DisablePaste();
+            }
 
-        _terminal.LeaveFullScreen();
-        _terminal.GiveBackControlKeys();
+            _terminal.LeaveFullScreen();
+            _terminal.GiveBackControlKeys();
+        }
+        catch (IOException) { }
 
         _strays.Release();
     }

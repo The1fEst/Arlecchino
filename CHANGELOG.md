@@ -13,6 +13,17 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Fixed
+
+- **Closing the terminal window ends the application by the hangup rather than by a crash with a core
+  dump.** A terminal that hangs up sends `SIGHUP` and then `SIGCONT`, and the shell in front of the
+  application sends a `SIGHUP` of its own. Each handler went to give the screen back, or to take it again,
+  on a terminal that answers every write with `EIO`. The `IOException` that came out was thrown on the
+  thread pool, where nothing catches it, and the runtime aborted the process. A terminal that refuses the
+  write is now walked past, and the hangup ends the process the way it was always going to.
+
 ## 2026.9.3
 
 A release about a file that was written to be read. A document has been drawable as text all along,

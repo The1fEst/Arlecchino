@@ -1,8 +1,11 @@
 using System;
 using System.IO;
+using System.Text;
 using Arlecchino.Diagnostics;
 using Arlecchino.Hosting;
+using Arlecchino.Rendering.Terminals;
 using Arlecchino.Testing;
+using Arlecchino.Tests.Support;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -148,6 +151,19 @@ public sealed class StrayOutputTests
         Assert.False(log.Strays.Holding);
     }
 
+    [Fact]
+    public void ATerminalThatHungUpIsTakenAndGivenBackWithoutThrowing()
+    {
+        using var colors = new ColorSupportScope(TerminalCapabilities.Color);
+        using var log = new LogScope();
+        var modes = new TerminalModes(new SystemTerminal(new HungUpWriter()), new(), log.Strays);
+
+        modes.Enter();
+        modes.Leave();
+
+        Assert.False(log.Strays.Holding);
+    }
+
     private static StrayWriter Writer(StrayOutput strays, TextWriter console) =>
         new(strays, console, "stdout", LogLevel.Information);
 
@@ -176,5 +192,13 @@ public sealed class StrayOutputTests
             Strays.Release();
             _repaint.Dispose();
         }
+    }
+
+    /// <summary>Fails every write the way a terminal does once its window has closed.</summary>
+    private sealed class HungUpWriter : TextWriter
+    {
+        public override Encoding Encoding => Encoding.UTF8;
+
+        public override void Write(char value) => throw new IOException("Input/output error");
     }
 }
