@@ -23,7 +23,7 @@ internal sealed class PickerListing
     public PickerListing(FilePickerRequest request, string start)
     {
         _request = request;
-        Folder = StartingFolder(start, request.PickFolder);
+        Folder = StartingFolder(start);
 
         Load();
     }
@@ -71,36 +71,23 @@ internal sealed class PickerListing
     /// <summary>Which row a file or folder is on, for putting the cursor on the one that was asked for.</summary>
     /// <param name="fullPath">The file or folder.</param>
     /// <returns>The row, or <c>-1</c> when it is not listed here.</returns>
-    public int IndexOf(string fullPath)
-    {
-        if (fullPath.Length == 0)
-        {
-            return -1;
-        }
-
-        var path = Path.TrimEndingDirectorySeparator(Path.GetFullPath(fullPath));
-
-        return _entries.FindIndex(entry => string.Equals(entry.FullPath, path, StringComparison.OrdinalIgnoreCase));
-    }
+    public int IndexOf(string fullPath) =>
+        _entries.FindIndex(entry => string.Equals(entry.FullPath, fullPath, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
-    /// Where browsing starts: the one holding what was asked for, so that the cursor can be put on it. A
-    /// folder asked for while files are picked is listed itself. Anything that is no longer there falls
-    /// back to the drives.
+    /// Where browsing starts: the folder asked for, or the one holding the file asked for. Anything that is
+    /// no longer there falls back to the drives.
     /// </summary>
-    /// <param name="path">What the request asked for.</param>
-    /// <param name="pickFolder">Whether folders are what is picked.</param>
+    /// <param name="folder">What the request asked for.</param>
     /// <returns>The folder to list, or an empty string for the drives.</returns>
-    public static string StartingFolder(string path, bool pickFolder)
+    public static string StartingFolder(string folder)
     {
-        if (Directory.Exists(path) && !pickFolder)
+        if (Directory.Exists(folder))
         {
-            return path;
+            return folder;
         }
 
-        return Directory.Exists(path) || File.Exists(path)
-            ? Path.GetDirectoryName(Path.TrimEndingDirectorySeparator(Path.GetFullPath(path))) ?? ""
-            : "";
+        return File.Exists(folder) ? Path.GetDirectoryName(folder) ?? "" : "";
     }
 
     private void Load()

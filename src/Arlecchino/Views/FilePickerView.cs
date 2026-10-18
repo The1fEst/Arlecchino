@@ -71,7 +71,7 @@ internal sealed class FilePickerView : IArlecchinoView
         _places = new(_request, strings);
         _table = new(strings);
         _chrome = new(strings, _keymap, _request);
-        _input = new(_keymap, terminal, _listing, _places, _table, Confirm, Focus);
+        _input = new(_keymap, terminal, _listing, _places, _table, Open, Focus);
         _clicks = new(_listing, _places, _table, Open, _input.GoTo);
 
         _placesPane = new(_input.Places);
@@ -144,7 +144,9 @@ internal sealed class FilePickerView : IArlecchinoView
     }
 
     /// <summary>
-    /// Cancels, picks the folder being browsed, or hands the key to whichever pane has focus.
+    /// Cancels, picks the folder being browsed, or hands the key to whichever pane has focus. Confirming in
+    /// the listing picks the folder being browsed whatever is under the cursor, so an empty folder can be
+    /// picked too; in the drives there is no such folder, and confirming opens the drive under the cursor.
     /// </summary>
     /// <param name="key">The key that was pressed.</param>
     /// <returns>Where to go, or <see cref="ViewRoute.None"/> to stay put.</returns>
@@ -155,7 +157,10 @@ internal sealed class FilePickerView : IArlecchinoView
             return Cancel();
         }
 
-        if (_keymap.PickCurrentFolder.Matches(key) && _request.PickFolder && _listing.Folder.Length > 0)
+        var isPickKey = _keymap.PickCurrentFolder.Matches(key) ||
+                        _keymap.Confirm.Matches(key) && _listPane.IsFocused;
+
+        if (isPickKey && _request.PickFolder && _listing.Folder.Length > 0)
         {
             return Pick(_listing.Folder);
         }
@@ -182,12 +187,6 @@ internal sealed class FilePickerView : IArlecchinoView
     /// <summary>No hint box: the picker draws its own key line as part of its layout.</summary>
     /// <returns>An empty list.</returns>
     public (string Key, string Description)[] Hints() => [];
-
-    /// <summary>Picks the folder under the cursor when folders are what was asked for, or opens the row.</summary>
-    /// <param name="entry">The row the cursor is on.</param>
-    /// <returns>Where to go.</returns>
-    private ViewRoute Confirm(PickerEntry entry) =>
-        _request.PickFolder && entry.IsDirectory ? Pick(entry.FullPath) : Open(entry);
 
     /// <summary>Browses into a folder, or picks a file when files are what was asked for.</summary>
     /// <param name="entry">The row that was opened.</param>

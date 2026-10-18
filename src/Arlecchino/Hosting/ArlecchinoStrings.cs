@@ -333,9 +333,6 @@ public sealed class ArlecchinoStrings
         /// <summary>Legend entry for picking the folder that is open.</summary>
         public Func<string> HintPickCurrentFolder { get; set; } = static () => "pick this folder";
 
-        /// <summary>Legend entry for picking the folder under the cursor.</summary>
-        public Func<string> HintPickFolder { get; set; } = static () => "pick folder";
-
         /// <summary>Legend entry for leaving without picking anything.</summary>
         public Func<string> HintCancel { get; set; } = static () => "cancel";
 

@@ -15,22 +15,16 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## Unreleased
 
-### Added
-
-- **`ArlecchinoStrings.FilePickerStrings.HintPickFolder`**, the legend entry for picking the folder
-  under the cursor. Defaults to `pick folder`.
-
 ### Fixed
 
 - **A folder can be picked in a terminal on Linux and macOS.** Picking a folder was bound only to
   `PickCurrentFolder`, which is `Ctrl+Enter`, and a Unix terminal sends `Ctrl+Enter` as the same `\r`
   it sends for `Enter`, so the picker read it as `Enter` and opened the folder under the cursor instead.
-  While folders are being picked, `Enter` now picks the folder under the cursor, the first match
-  included while the filter narrows the listing. `→` opens a folder, a second click still opens one,
-  and `←` goes up with the cursor on the folder that was left. The picker opens on the folder above the
-  one asked for, with that one under the cursor, so `Enter` straight away keeps it. `Ctrl+Enter` still
-  picks the folder being listed where the terminal can tell it apart, as a Windows console can. A
-  `PathField` with `PickFolder` opens the same picker.
+  While folders are being picked, `Enter` now picks the folder being listed, whatever is under the
+  cursor and whatever the filter narrows the listing to, so an empty folder can be picked too. `→` and a
+  second click open the folder under the cursor, and `←` goes up with the cursor on the folder that was
+  left. In the drives, where no folder is being listed, `Enter` opens the drive under the cursor.
+  `Ctrl+Enter` still picks as well. A `PathField` with `PickFolder` opens the same picker.
 - **Closing the terminal window ends the application by the hangup rather than by a crash with a core
   dump.** A terminal that hangs up sends `SIGHUP` and then `SIGCONT`, and the shell in front of the
   application sends a `SIGHUP` of its own. Each handler went to give the screen back, or to take it again,

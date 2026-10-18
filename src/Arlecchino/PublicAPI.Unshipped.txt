@@ -1,3 +1,1 @@
 #nullable enable
-Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.HintPickFolder.get -> System.Func<string!>!
-Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.HintPickFolder.set -> void

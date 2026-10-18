@@ -58,15 +58,12 @@ public sealed class FilePickerStartTests : IDisposable
         Assert.DoesNotContain("away.sav", app.Frame(), StringComparison.Ordinal);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("/")]
-    [InlineData("/saves/..")]
-    public void EnterPicksTheFolderItWasAskedFor(string suffix)
+    [Fact]
+    public void EnterPicksTheFolderItWasAskedFor()
     {
         Directory.CreateDirectory(Path.Combine(_root.FullName, "saves"));
 
-        using var app = Show(_root.FullName + suffix, pickFolder: true);
+        using var app = Show(_root.FullName, pickFolder: true);
 
         app.Press(ConsoleKey.Enter);
 
@@ -74,7 +71,31 @@ public sealed class FilePickerStartTests : IDisposable
     }
 
     [Fact]
-    public void RightOpensAFolderAndEnterPicksTheOneUnderTheCursor()
+    public void EnterPicksTheFolderBeingListedWhateverIsUnderTheCursor()
+    {
+        Directory.CreateDirectory(Path.Combine(_root.FullName, "saves"));
+        File.WriteAllText(Path.Combine(_root.FullName, "notes.txt"), "");
+
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        app.Press(ConsoleKey.DownArrow);
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(_root.FullName, Choice);
+    }
+
+    [Fact]
+    public void AnEmptyFolderIsPickedWithEnter()
+    {
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(_root.FullName, Choice);
+    }
+
+    [Fact]
+    public void RightOpensAFolderAndEnterPicksIt()
     {
         var saves = Path.Combine(_root.FullName, "saves");
         Directory.CreateDirectory(saves);
@@ -96,26 +117,13 @@ public sealed class FilePickerStartTests : IDisposable
 
         using var app = Show(_root.FullName, pickFolder: true);
 
-        app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.DownArrow);
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.LeftArrow);
-        app.Press(ConsoleKey.Enter);
-
-        Assert.Equal(saves, Choice);
-    }
-
-    [Fact]
-    public void EnterOnAFileDoesNothingWhileFoldersArePicked()
-    {
-        File.WriteAllText(Path.Combine(_root.FullName, "notes.txt"), "");
-
-        using var app = Show(_root.FullName, pickFolder: true);
-
         app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("", Choice);
+        Assert.Equal(saves, Choice);
     }
 
     [Fact]

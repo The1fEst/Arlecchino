@@ -164,11 +164,7 @@ public sealed class ModalMouseTests
             var choice = "";
             using var app = new TestApplication(100, 26);
 
-            app.State.FilePicker = new("Pick",
-                PickFolder: true,
-                Path.Combine(root.FullName, "alpha-folder"),
-                ViewRoute.None,
-                picked => choice = picked);
+            app.State.FilePicker = new("Pick", PickFolder: true, root.FullName, ViewRoute.None, path => choice = path);
             app.Navigator.Apply(Routes.FilePicker);
 
             var (row, column) = RowOf(app, "beta-folder");
