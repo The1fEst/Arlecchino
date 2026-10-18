@@ -58,12 +58,15 @@ public sealed class FilePickerStartTests : IDisposable
         Assert.DoesNotContain("away.sav", app.Frame(), StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void EnterOnTheFirstRowPicksTheFolderItStartedIn()
+    [Theory]
+    [InlineData("")]
+    [InlineData("/")]
+    [InlineData("/saves/..")]
+    public void EnterPicksTheFolderItWasAskedFor(string suffix)
     {
         Directory.CreateDirectory(Path.Combine(_root.FullName, "saves"));
 
-        using var app = Show(_root.FullName, pickFolder: true);
+        using var app = Show(_root.FullName + suffix, pickFolder: true);
 
         app.Press(ConsoleKey.Enter);
 
@@ -71,47 +74,63 @@ public sealed class FilePickerStartTests : IDisposable
     }
 
     [Fact]
-    public void EnterOnAFolderOpensItAndThenPicksIt()
+    public void RightOpensAFolderAndEnterPicksTheOneUnderTheCursor()
     {
         var saves = Path.Combine(_root.FullName, "saves");
         Directory.CreateDirectory(saves);
 
         using var app = Show(_root.FullName, pickFolder: true);
 
-        app.Press(ConsoleKey.DownArrow);
-        app.Press(ConsoleKey.Enter);
-
-        Assert.Equal("", Choice);
-
+        app.Press(ConsoleKey.RightArrow);
         app.Press(ConsoleKey.Enter);
 
         Assert.Equal(saves, Choice);
     }
 
     [Fact]
-    public void AnEmptyFolderCanBePickedAndCountsNoItems()
+    public void LeftPutsTheCursorOnTheFolderItLeft()
     {
+        Directory.CreateDirectory(Path.Combine(_root.FullName, "alpha"));
+        var saves = Path.Combine(_root.FullName, "saves");
+        Directory.CreateDirectory(saves);
+
         using var app = Show(_root.FullName, pickFolder: true);
 
-        var frame = app.Frame();
-
-        Assert.Contains(app.Options.Strings.FilePicker.RowPickCurrentFolder(), frame, StringComparison.Ordinal);
-        Assert.Contains(app.Options.Strings.FilePicker.ItemCount(0), frame, StringComparison.Ordinal);
-
+        app.Press(ConsoleKey.RightArrow);
+        app.Press(ConsoleKey.DownArrow);
+        app.Press(ConsoleKey.RightArrow);
+        app.Press(ConsoleKey.LeftArrow);
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal(_root.FullName, Choice);
+        Assert.Equal(saves, Choice);
     }
 
     [Fact]
-    public void PickingFilesHasNoRowForTheFolder()
+    public void EnterOnAFileDoesNothingWhileFoldersArePicked()
     {
+        File.WriteAllText(Path.Combine(_root.FullName, "notes.txt"), "");
+
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        app.Press(ConsoleKey.RightArrow);
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal("", Choice);
+    }
+
+    [Fact]
+    public void EnterOnAFolderStillOpensItWhileFilesArePicked()
+    {
+        var saves = Directory.CreateDirectory(Path.Combine(_root.FullName, "saves"));
+        var game = Path.Combine(saves.FullName, "game.sav");
+        File.WriteAllText(game, "");
+
         using var app = Show(_root.FullName);
 
-        Assert.DoesNotContain(
-            app.Options.Strings.FilePicker.RowPickCurrentFolder(),
-            app.Frame(),
-            StringComparison.Ordinal);
+        app.Press(ConsoleKey.Enter);
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(game, Choice);
     }
 
     private string Choice { get; set; } = "";

@@ -84,7 +84,7 @@ internal sealed class PickerChrome
             $"{_keymap.MoveLeft} {_strings.HintUp()}",
             $"{_keymap.NextField} {_strings.HintPlaces()}",
             _request.PickFolder
-                ? $"{_keymap.PickCurrentFolder} {_strings.HintPickCurrentFolder()}"
+                ? $"{_keymap.Confirm} {_strings.HintPickFolder()}"
                 : $"{_keymap.Confirm} {_strings.HintOpenFolderOrPickFile()}",
             $"{_keymap.Cancel} {_strings.HintCancel()}");
 

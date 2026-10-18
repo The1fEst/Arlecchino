@@ -73,8 +73,9 @@ public sealed class FilePickerFilterTests : IDisposable
     }
 
     [Fact]
-    public void TypingPutsTheCursorOnTheFirstMatchRatherThanOnTheFolder()
+    public void EnterPicksTheFirstMatch()
     {
+        Directory.CreateDirectory(Path.Combine(_root.FullName, "alpha"));
         var saves = Path.Combine(_root.FullName, "saves");
         Directory.CreateDirectory(saves);
 
@@ -83,8 +84,7 @@ public sealed class FilePickerFilterTests : IDisposable
         app.Type("sav");
         app.Press(ConsoleKey.Enter);
 
-        Assert.Equal("", Choice);
-        Assert.Equal(saves, Folder(app));
+        Assert.Equal(saves, Choice);
     }
 
     private string Choice { get; set; } = "";
@@ -102,6 +102,12 @@ public sealed class FilePickerFilterTests : IDisposable
         return Choice;
     }
 
+    /// <summary>
+    /// Opens a folder picker inside a folder. It opens on the folder above with the one asked for under the
+    /// cursor, so the folder is stepped into.
+    /// </summary>
+    /// <param name="startAt">The folder to be inside, or the root of the test when left out.</param>
+    /// <returns>The application under test.</returns>
     private TestApplication Show(string? startAt = null)
     {
         var app = new TestApplication(100, 30);
@@ -113,6 +119,7 @@ public sealed class FilePickerFilterTests : IDisposable
             ViewRoute.None,
             choice => Choice = choice);
         app.Navigator.Apply(Routes.FilePicker);
+        app.Press(ConsoleKey.RightArrow);
 
         return app;
     }

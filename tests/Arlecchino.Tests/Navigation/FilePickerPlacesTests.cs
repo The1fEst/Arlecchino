@@ -78,7 +78,7 @@ public sealed class FilePickerPlacesTests : IDisposable
         var app = new TestApplication(100, 30);
 
         app.State.FilePicker = new("Pick",
-            PickFolder: true,
+            PickFolder: false,
             startAt ?? _root.FullName,
             ViewRoute.None,
             static _ => { })

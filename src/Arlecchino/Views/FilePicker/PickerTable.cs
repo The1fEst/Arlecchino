@@ -76,11 +76,9 @@ internal sealed class PickerTable
 
             var style = start + offset == SelectedIndex
                 ? focused ? Theme.ActiveSelection : Theme.Selection
-                : entry.IsCurrentFolder
-                    ? Theme.Accent
-                    : entry.IsDirectory
-                        ? Theme.Info
-                        : Theme.Default;
+                : entry.IsDirectory
+                    ? Theme.Info
+                    : Theme.Default;
 
             list.Write(1 + offset, 0, PickerText.Pad(Row(entry, widths), list.Width), style);
         }
@@ -110,11 +108,6 @@ internal sealed class PickerTable
 
     private string Row(PickerEntry entry, Widths widths)
     {
-        if (entry.IsCurrentFolder)
-        {
-            return "✓ " + _strings.RowPickCurrentFolder();
-        }
-
         var line = (entry.IsDirectory ? "▸ " : "  ") + PickerText.Pad(entry.Name, widths.Name);
 
         if (widths.Date > 0)

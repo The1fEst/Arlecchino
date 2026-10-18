@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -72,7 +71,7 @@ internal sealed class FilePickerView : IArlecchinoView
         _places = new(_request, strings);
         _table = new(strings);
         _chrome = new(strings, _keymap, _request);
-        _input = new(_keymap, terminal, _listing, _places, _table, Open, Focus);
+        _input = new(_keymap, terminal, _listing, _places, _table, Confirm, Focus);
         _clicks = new(_listing, _places, _table, Open, _input.GoTo);
 
         _placesPane = new(_input.Places);
@@ -109,10 +108,8 @@ internal sealed class FilePickerView : IArlecchinoView
         PickerChrome.SplitBorder(browser, SidebarWidth);
 
         _places.Draw(sidebar, _placesPane.IsFocused);
-        var entries = _listing.Matching();
-
-        _table.Draw(list.Inset(new Margin(1, 0, 0, 0)), entries, _listing.Error, _listPane.IsFocused);
-        _chrome.Status(status, entries.Count(static entry => !entry.IsCurrentFolder));
+        _table.Draw(list.Inset(new Margin(1, 0, 0, 0)), _listing.Matching(), _listing.Error, _listPane.IsFocused);
+        _chrome.Status(status, _listing.Matching().Count);
     }
 
     /// <summary>
@@ -186,19 +183,17 @@ internal sealed class FilePickerView : IArlecchinoView
     /// <returns>An empty list.</returns>
     public (string Key, string Description)[] Hints() => [];
 
-    /// <summary>
-    /// Browses into a folder, picks the folder being listed from the row that stands for it, or picks a file
-    /// when files are what was asked for.
-    /// </summary>
+    /// <summary>Picks the folder under the cursor when folders are what was asked for, or opens the row.</summary>
+    /// <param name="entry">The row the cursor is on.</param>
+    /// <returns>Where to go.</returns>
+    private ViewRoute Confirm(PickerEntry entry) =>
+        _request.PickFolder && entry.IsDirectory ? Pick(entry.FullPath) : Open(entry);
+
+    /// <summary>Browses into a folder, or picks a file when files are what was asked for.</summary>
     /// <param name="entry">The row that was opened.</param>
     /// <returns>Where to go.</returns>
     private ViewRoute Open(PickerEntry entry)
     {
-        if (entry.IsCurrentFolder)
-        {
-            return Pick(entry.FullPath);
-        }
-
         if (!entry.IsDirectory)
         {
             return _request.PickFolder ? ViewRoute.None : Pick(entry.FullPath);

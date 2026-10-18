@@ -20,7 +20,7 @@ internal sealed class PickerInput
     private readonly PickerListing _listing;
     private readonly PickerPlaces _places;
     private readonly PickerTable _table;
-    private readonly Func<PickerEntry, ViewRoute> _open;
+    private readonly Func<PickerEntry, ViewRoute> _confirm;
     private readonly Action<bool> _focus;
 
     /// <summary>Reads the picker's input.</summary>
@@ -29,7 +29,7 @@ internal sealed class PickerInput
     /// <param name="folder">The folder being listed.</param>
     /// <param name="places">The shortcuts down the left.</param>
     /// <param name="table">The listing on the right.</param>
-    /// <param name="open">What opening a row comes to: browsing into it, or picking it.</param>
+    /// <param name="confirm">What confirming a row comes to: picking it, or browsing into it.</param>
     /// <param name="focus">Moves the keyboard to the listing when <c>true</c>, to the shortcuts otherwise.</param>
     public PickerInput(
         ArlecchinoKeymap keymap,
@@ -37,7 +37,7 @@ internal sealed class PickerInput
         PickerListing folder,
         PickerPlaces places,
         PickerTable table,
-        Func<PickerEntry, ViewRoute> open,
+        Func<PickerEntry, ViewRoute> confirm,
         Action<bool> focus)
     {
         _keymap = keymap;
@@ -45,7 +45,7 @@ internal sealed class PickerInput
         _listing = folder;
         _places = places;
         _table = table;
-        _open = open;
+        _confirm = confirm;
         _focus = focus;
     }
 
@@ -92,12 +92,12 @@ internal sealed class PickerInput
 
         if (_keymap.Confirm.Matches(key) && entries.Count > 0)
         {
-            return FocusResult.Navigate(_open(entries[_table.SelectedIndex]));
+            return FocusResult.Navigate(_confirm(entries[_table.SelectedIndex]));
         }
 
         if (_keymap.Erase.Matches(key) && _listing.Filter.Text.Length == 0)
         {
-            _listing.Up();
+            GoUp();
 
             return FocusResult.Handled;
         }
@@ -227,8 +227,23 @@ internal sealed class PickerInput
             return;
         }
 
-        _listing.Up();
+        GoUp();
+    }
+
+    /// <summary>
+    /// Lists the folder above with the cursor on the folder that was left, so that confirming straight
+    /// away picks the folder that was being looked at.
+    /// </summary>
+    private void GoUp()
+    {
+        var left = _listing.Folder;
+
+        if (!_listing.Up())
+        {
+            return;
+        }
+
         _places.SyncTo(_listing.Folder);
-        _table.SelectedIndex = 0;
+        _table.SelectedIndex = Math.Max(0, _listing.IndexOf(left));
     }
 }

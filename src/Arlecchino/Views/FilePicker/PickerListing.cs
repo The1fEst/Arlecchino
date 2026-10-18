@@ -23,7 +23,7 @@ internal sealed class PickerListing
     public PickerListing(FilePickerRequest request, string start)
     {
         _request = request;
-        Folder = StartingFolder(start);
+        Folder = StartingFolder(start, request.PickFolder);
 
         Load();
     }
@@ -37,19 +37,12 @@ internal sealed class PickerListing
     /// <summary>Whatever has been typed to narrow the rows.</summary>
     public TextEntry Filter { get; } = new();
 
-    /// <summary>
-    /// The rows that pass what has been typed, in the order they are listed. The row that picks the folder
-    /// itself goes once something is typed, so that the cursor lands on the first match.
-    /// </summary>
+    /// <summary>The rows that pass what has been typed, in the order they are listed.</summary>
     /// <returns>The rows to draw.</returns>
     public List<PickerEntry> Matching() =>
         Filter.Text.Length == 0
             ? _entries
-            :
-            [
-                .. _entries.Where(entry =>
-                    !entry.IsCurrentFolder && entry.Name.Contains(Filter.Text, StringComparison.OrdinalIgnoreCase)),
-            ];
+            : [.. _entries.Where(entry => entry.Name.Contains(Filter.Text, StringComparison.OrdinalIgnoreCase))];
 
     /// <summary>Lists another folder, forgetting what was typed to narrow the last one.</summary>
     /// <param name="path">The folder, or an empty string for the drives.</param>
@@ -75,26 +68,39 @@ internal sealed class PickerListing
         return true;
     }
 
-    /// <summary>Which row a file is on, for putting the cursor on the one that was asked for.</summary>
-    /// <param name="fullPath">The file.</param>
+    /// <summary>Which row a file or folder is on, for putting the cursor on the one that was asked for.</summary>
+    /// <param name="fullPath">The file or folder.</param>
     /// <returns>The row, or <c>-1</c> when it is not listed here.</returns>
-    public int IndexOf(string fullPath) =>
-        _entries.FindIndex(entry => string.Equals(entry.FullPath, fullPath, StringComparison.OrdinalIgnoreCase));
-
-    /// <summary>
-    /// Where browsing starts: the folder asked for, or the one holding the file asked for. Anything that is
-    /// no longer there falls back to the drives.
-    /// </summary>
-    /// <param name="folder">What the request asked for.</param>
-    /// <returns>The folder to list, or an empty string for the drives.</returns>
-    public static string StartingFolder(string folder)
+    public int IndexOf(string fullPath)
     {
-        if (Directory.Exists(folder))
+        if (fullPath.Length == 0)
         {
-            return folder;
+            return -1;
         }
 
-        return File.Exists(folder) ? Path.GetDirectoryName(folder) ?? "" : "";
+        var path = Path.TrimEndingDirectorySeparator(Path.GetFullPath(fullPath));
+
+        return _entries.FindIndex(entry => string.Equals(entry.FullPath, path, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Where browsing starts: the one holding what was asked for, so that the cursor can be put on it. A
+    /// folder asked for while files are picked is listed itself. Anything that is no longer there falls
+    /// back to the drives.
+    /// </summary>
+    /// <param name="path">What the request asked for.</param>
+    /// <param name="pickFolder">Whether folders are what is picked.</param>
+    /// <returns>The folder to list, or an empty string for the drives.</returns>
+    public static string StartingFolder(string path, bool pickFolder)
+    {
+        if (Directory.Exists(path) && !pickFolder)
+        {
+            return path;
+        }
+
+        return Directory.Exists(path) || File.Exists(path)
+            ? Path.GetDirectoryName(Path.TrimEndingDirectorySeparator(Path.GetFullPath(path))) ?? ""
+            : "";
     }
 
     private void Load()
@@ -124,11 +130,7 @@ internal sealed class PickerListing
                 new PickerEntry(file.Name, file.FullName, false, SafeTime(file), SafeLength(file), false))
             .OrderBy(static entry => entry.Name, StringComparer.OrdinalIgnoreCase);
 
-        List<PickerEntry> currentFolder = _request.PickFolder
-            ? [new("", path, IsDirectory: false, default, 0, IsVolume: false, IsCurrentFolder: true)]
-            : [];
-
-        return [.. currentFolder, .. directories, .. files];
+        return [.. directories, .. files];
     }
 
     private static List<PickerEntry> Drives() =>

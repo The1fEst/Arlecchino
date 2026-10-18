@@ -161,9 +161,14 @@ public sealed class ModalMouseTests
             Directory.CreateDirectory(Path.Combine(root.FullName, "alpha-folder"));
             Directory.CreateDirectory(Path.Combine(root.FullName, "beta-folder"));
 
+            var choice = "";
             using var app = new TestApplication(100, 26);
 
-            app.State.FilePicker = new("Pick", PickFolder: true, root.FullName, ViewRoute.None, static _ => { });
+            app.State.FilePicker = new("Pick",
+                PickFolder: true,
+                Path.Combine(root.FullName, "alpha-folder"),
+                ViewRoute.None,
+                picked => choice = picked);
             app.Navigator.Apply(Routes.FilePicker);
 
             var (row, column) = RowOf(app, "beta-folder");
@@ -177,35 +182,7 @@ public sealed class ModalMouseTests
             var frame = app.Frame();
             Assert.Contains("beta-folder", frame, StringComparison.Ordinal);
             Assert.DoesNotContain("alpha-folder", frame, StringComparison.Ordinal);
-        }
-        finally
-        {
-            root.Delete(recursive: true);
-        }
-    }
-
-    [Fact]
-    public void ClickingTheRowForTheFolderTwicePicksIt()
-    {
-        var root = Directory.CreateTempSubdirectory("arlecchino-picker");
-
-        try
-        {
-            Directory.CreateDirectory(Path.Combine(root.FullName, "alpha-folder"));
-
-            var choice = "";
-            using var app = new TestApplication(100, 26);
-
-            app.State.FilePicker = new("Pick", PickFolder: true, root.FullName, ViewRoute.None, picked => choice = picked);
-            app.Navigator.Apply(Routes.FilePicker);
-
-            var (row, column) = RowOf(app, app.Options.Strings.FilePicker.RowPickCurrentFolder());
-            Assert.True(row > 0);
-
-            app.Click(row, column);
-            app.Click(row, column);
-
-            Assert.Equal(root.FullName, choice);
+            Assert.Equal("", choice);
         }
         finally
         {
