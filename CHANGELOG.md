@@ -15,8 +15,21 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## Unreleased
 
+### Added
+
+- **`ArlecchinoStrings.FilePickerStrings.RowPickCurrentFolder`**, the wording of the row that picks the
+  folder being listed. Defaults to `Pick this folder`.
+
 ### Fixed
 
+- **A folder can be picked in a terminal on Linux and macOS.** Picking the folder being listed was
+  bound only to `PickCurrentFolder`, which is `Ctrl+Enter`, and a Unix terminal sends `Ctrl+Enter` as
+  the same `\r` it sends for `Enter`, so the picker read it as `Enter` and opened the folder under the
+  cursor instead. While folders are being picked, the first row of the listing is now `Pick this
+  folder`: `Enter` on it, or a second click, picks the folder being listed. The row goes while something
+  is typed into the filter, so `Enter` still opens the first match, and it is not counted among the
+  items. `Ctrl+Enter` still picks where the terminal can tell it apart, as a Windows console can. A
+  `PathField` with `PickFolder` opens the same picker and gets the same row.
 - **Closing the terminal window ends the application by the hangup rather than by a crash with a core
   dump.** A terminal that hangs up sends `SIGHUP` and then `SIGCONT`, and the shell in front of the
   application sends a `SIGHUP` of its own. Each handler went to give the screen back, or to take it again,

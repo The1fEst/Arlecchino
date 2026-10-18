@@ -58,13 +58,69 @@ public sealed class FilePickerStartTests : IDisposable
         Assert.DoesNotContain("away.sav", app.Frame(), StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void EnterOnTheFirstRowPicksTheFolderItStartedIn()
+    {
+        Directory.CreateDirectory(Path.Combine(_root.FullName, "saves"));
+
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(_root.FullName, Choice);
+    }
+
+    [Fact]
+    public void EnterOnAFolderOpensItAndThenPicksIt()
+    {
+        var saves = Path.Combine(_root.FullName, "saves");
+        Directory.CreateDirectory(saves);
+
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        app.Press(ConsoleKey.DownArrow);
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal("", Choice);
+
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(saves, Choice);
+    }
+
+    [Fact]
+    public void AnEmptyFolderCanBePickedAndCountsNoItems()
+    {
+        using var app = Show(_root.FullName, pickFolder: true);
+
+        var frame = app.Frame();
+
+        Assert.Contains(app.Options.Strings.FilePicker.RowPickCurrentFolder(), frame, StringComparison.Ordinal);
+        Assert.Contains(app.Options.Strings.FilePicker.ItemCount(0), frame, StringComparison.Ordinal);
+
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal(_root.FullName, Choice);
+    }
+
+    [Fact]
+    public void PickingFilesHasNoRowForTheFolder()
+    {
+        using var app = Show(_root.FullName);
+
+        Assert.DoesNotContain(
+            app.Options.Strings.FilePicker.RowPickCurrentFolder(),
+            app.Frame(),
+            StringComparison.Ordinal);
+    }
+
     private string Choice { get; set; } = "";
 
-    private TestApplication Show(string startAt)
+    private TestApplication Show(string startAt, bool pickFolder = false)
     {
         var app = new TestApplication(100, 30);
 
-        app.State.FilePicker = new("Pick", PickFolder: false, startAt, ViewRoute.None, choice => Choice = choice);
+        app.State.FilePicker = new("Pick", pickFolder, startAt, ViewRoute.None, choice => Choice = choice);
         app.Navigator.Apply(Routes.FilePicker);
 
         return app;

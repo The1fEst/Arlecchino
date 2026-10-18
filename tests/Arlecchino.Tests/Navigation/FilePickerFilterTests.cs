@@ -72,6 +72,21 @@ public sealed class FilePickerFilterTests : IDisposable
         Assert.Equal(_root.FullName, Folder(app));
     }
 
+    [Fact]
+    public void TypingPutsTheCursorOnTheFirstMatchRatherThanOnTheFolder()
+    {
+        var saves = Path.Combine(_root.FullName, "saves");
+        Directory.CreateDirectory(saves);
+
+        using var app = Show();
+
+        app.Type("sav");
+        app.Press(ConsoleKey.Enter);
+
+        Assert.Equal("", Choice);
+        Assert.Equal(saves, Folder(app));
+    }
+
     private string Choice { get; set; } = "";
 
     /// <summary>

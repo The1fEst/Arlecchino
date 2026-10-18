@@ -285,6 +285,9 @@ public sealed class ArlecchinoStrings
         /// <summary>How many entries the current folder shows, on the status row.</summary>
         public Func<int, string> ItemCount { get; set; } = static count => count == 1 ? "1 item" : $"{count} items";
 
+        /// <summary>The first row of the listing while picking folders, which picks the folder being listed.</summary>
+        public Func<string> RowPickCurrentFolder { get; set; } = static () => "Pick this folder";
+
         /// <summary>Kind shown for a directory.</summary>
         public Func<string> KindFolder { get; set; } = static () => "Folder";
 

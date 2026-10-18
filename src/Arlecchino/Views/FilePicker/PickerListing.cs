@@ -37,12 +37,19 @@ internal sealed class PickerListing
     /// <summary>Whatever has been typed to narrow the rows.</summary>
     public TextEntry Filter { get; } = new();
 
-    /// <summary>The rows that pass what has been typed, in the order they are listed.</summary>
+    /// <summary>
+    /// The rows that pass what has been typed, in the order they are listed. The row that picks the folder
+    /// itself goes once something is typed, so that the cursor lands on the first match.
+    /// </summary>
     /// <returns>The rows to draw.</returns>
     public List<PickerEntry> Matching() =>
         Filter.Text.Length == 0
             ? _entries
-            : [.. _entries.Where(entry => entry.Name.Contains(Filter.Text, StringComparison.OrdinalIgnoreCase))];
+            :
+            [
+                .. _entries.Where(entry =>
+                    !entry.IsCurrentFolder && entry.Name.Contains(Filter.Text, StringComparison.OrdinalIgnoreCase)),
+            ];
 
     /// <summary>Lists another folder, forgetting what was typed to narrow the last one.</summary>
     /// <param name="path">The folder, or an empty string for the drives.</param>
@@ -117,7 +124,11 @@ internal sealed class PickerListing
                 new PickerEntry(file.Name, file.FullName, false, SafeTime(file), SafeLength(file), false))
             .OrderBy(static entry => entry.Name, StringComparer.OrdinalIgnoreCase);
 
-        return [.. directories, .. files];
+        List<PickerEntry> currentFolder = _request.PickFolder
+            ? [new("", path, IsDirectory: false, default, 0, IsVolume: false, IsCurrentFolder: true)]
+            : [];
+
+        return [.. currentFolder, .. directories, .. files];
     }
 
     private static List<PickerEntry> Drives() =>

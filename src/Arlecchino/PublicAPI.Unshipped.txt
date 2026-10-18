@@ -1,1 +1,3 @@
 #nullable enable
+Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.RowPickCurrentFolder.get -> System.Func<string!>!
+Arlecchino.Hosting.ArlecchinoStrings.FilePickerStrings.RowPickCurrentFolder.set -> void

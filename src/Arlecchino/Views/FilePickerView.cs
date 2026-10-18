@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using Arlecchino.Focus;
 using Arlecchino.Hosting;
 using Arlecchino.Input;
@@ -108,8 +109,10 @@ internal sealed class FilePickerView : IArlecchinoView
         PickerChrome.SplitBorder(browser, SidebarWidth);
 
         _places.Draw(sidebar, _placesPane.IsFocused);
-        _table.Draw(list.Inset(new Margin(1, 0, 0, 0)), _listing.Matching(), _listing.Error, _listPane.IsFocused);
-        _chrome.Status(status, _listing.Matching().Count);
+        var entries = _listing.Matching();
+
+        _table.Draw(list.Inset(new Margin(1, 0, 0, 0)), entries, _listing.Error, _listPane.IsFocused);
+        _chrome.Status(status, entries.Count(static entry => !entry.IsCurrentFolder));
     }
 
     /// <summary>
@@ -183,11 +186,19 @@ internal sealed class FilePickerView : IArlecchinoView
     /// <returns>An empty list.</returns>
     public (string Key, string Description)[] Hints() => [];
 
-    /// <summary>Browses into a folder, or picks a file when files are what was asked for.</summary>
+    /// <summary>
+    /// Browses into a folder, picks the folder being listed from the row that stands for it, or picks a file
+    /// when files are what was asked for.
+    /// </summary>
     /// <param name="entry">The row that was opened.</param>
     /// <returns>Where to go.</returns>
     private ViewRoute Open(PickerEntry entry)
     {
+        if (entry.IsCurrentFolder)
+        {
+            return Pick(entry.FullPath);
+        }
+
         if (!entry.IsDirectory)
         {
             return _request.PickFolder ? ViewRoute.None : Pick(entry.FullPath);
