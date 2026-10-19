@@ -561,6 +561,8 @@ static Arlecchino.Rendering.Text.Glyphs.Graph.get -> Arlecchino.Rendering.Text.G
 static Arlecchino.Rendering.Text.Glyphs.Graph.set -> void
 static Arlecchino.Rendering.Text.Glyphs.Picture.get -> Arlecchino.Rendering.Terminals.ImageProtocol
 static Arlecchino.Rendering.Text.Glyphs.Picture.set -> void
+static Arlecchino.Rendering.Text.TextWidth.Clip(string! text, int maxWidth) -> string!
+static Arlecchino.Rendering.Text.TextWidth.ClipStart(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.CountClusters(string! text) -> int
 static Arlecchino.Rendering.Text.TextWidth.NextClusterEnd(string! text, int index) -> int
 static Arlecchino.Rendering.Text.TextWidth.NextClusterLength(string! text, int index) -> int

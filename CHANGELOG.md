@@ -13,7 +13,12 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## Unreleased
+## 2026.10.2
+
+A release about the drives the file picker offers. On Linux it listed every mount the system has, the
+kernel's own file systems among them, and cut long paths at the end where they differ; it now lists the
+drives anyone means to browse and keeps the end of a path in view. The cutting it does is now
+`TextWidth.Clip` and `TextWidth.ClipStart`, for anything else that fits text to a column. Nothing breaks.
 
 ### Added
 
