@@ -153,9 +153,9 @@ internal sealed class PickerPlaces
 
         rows.Add(new(_strings.Drives(), "", "▣"));
 
-        foreach (var drive in DriveInfo.GetDrives().Where(static drive => drive.IsReady))
+        foreach (var drive in PickerDrives.GetDrives())
         {
-            rows.Add(new(drive.Name.TrimEnd(Path.DirectorySeparatorChar), drive.Name, "▤"));
+            rows.Add(new(PickerDrives.GetName(drive.Name), drive.Name, "▤"));
         }
 
         return rows;

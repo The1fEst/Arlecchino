@@ -122,11 +122,10 @@ internal sealed class PickerListing
 
     private static List<PickerEntry> Drives() =>
     [
-        .. DriveInfo.GetDrives()
-            .Where(static drive => drive.IsReady)
+        .. PickerDrives.GetDrives()
             .Select(static drive => new PickerEntry(
                 drive.VolumeLabel.Length > 0
-                    ? $"{drive.VolumeLabel} ({drive.Name.TrimEnd(Path.DirectorySeparatorChar)})"
+                    ? $"{drive.VolumeLabel} ({PickerDrives.GetName(drive.Name)})"
                     : drive.Name,
                 drive.Name,
                 IsDirectory: true,

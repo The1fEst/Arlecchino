@@ -13,6 +13,20 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Fixed
+
+- **The file picker lists the drives anyone means to browse on Linux, and names the root `/`.** The
+  drives under `Locations` and under `This computer` were every mount the system has: `/proc`, `/sys`,
+  `/dev`, `/run`, the cgroup and tracing file systems, and the folders a distribution puts on partitions
+  or subvolumes of their own. File systems the kernel keeps for itself are now left out, and so is
+  anything mounted under `/proc`, `/sys`, `/dev`, `/run`, `/boot`, `/efi`, `/tmp`, `/var`, `/usr`, `/opt`,
+  `/srv`, `/root`, `/swap` or `/.snapshots`, and `/home` itself, the user's own folder being listed first.
+  A drive udisks mounts under `/run/media` is still offered. On macOS the volumes under `/System/Volumes`
+  are left out the same way. A mount that cannot be read is skipped rather than emptying the list. The root was listed as an empty row, its name being what is left of `/` once the separator is
+  trimmed.
+
 ## 2026.10.1
 
 Two fixes: a folder can be picked with `Enter` in a terminal that sends `Ctrl+Enter` as `Enter`, and an
