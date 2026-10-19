@@ -13,7 +13,10 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
-## Unreleased
+## 2026.10.1
+
+Two fixes: a folder can be picked with `Enter` in a terminal that sends `Ctrl+Enter` as `Enter`, and an
+application closed with its terminal window ends by the hangup rather than by a crash. Nothing breaks.
 
 ### Fixed
 
