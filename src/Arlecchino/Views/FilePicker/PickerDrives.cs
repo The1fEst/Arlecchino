@@ -71,5 +71,5 @@ internal static class PickerDrives
     /// <param name="root">Where it is mounted.</param>
     /// <returns>The name, which is the separator itself for the root of a Unix machine.</returns>
     public static string GetName(string root) =>
-        root.Length > 1 ? root.TrimEnd(Path.DirectorySeparatorChar) : root;
+        root.Length > 1 ? root.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) : root;
 }
