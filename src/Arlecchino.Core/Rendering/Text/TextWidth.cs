@@ -249,6 +249,23 @@ public static class TextWidth
         return text[start..];
     }
 
+    /// <summary>Cuts the text down to a column width, ending it in an ellipsis when anything was left out.</summary>
+    /// <param name="text">The text to cut.</param>
+    /// <param name="maxWidth">Columns available.</param>
+    /// <returns>The text as it fits.</returns>
+    public static string Clip(string text, int maxWidth) =>
+        maxWidth <= 0 ? "" : Of(text) > maxWidth ? Truncate(text, maxWidth - 1) + "…" : text;
+
+    /// <summary>
+    /// Cuts the text down to a column width from the other end, opening it with an ellipsis when anything
+    /// was left out. The end of a path is what tells it from its neighbors.
+    /// </summary>
+    /// <param name="text">The text to cut.</param>
+    /// <param name="maxWidth">Columns available.</param>
+    /// <returns>The text as it fits.</returns>
+    public static string ClipStart(string text, int maxWidth) =>
+        maxWidth <= 0 ? "" : Of(text) > maxWidth ? "…" + TruncateStart(text, maxWidth - 1) : text;
+
     /// <summary>How many symbols the text is made of, as the user would count them.</summary>
     /// <param name="text">The text to count.</param>
     /// <returns>The number of grapheme clusters.</returns>

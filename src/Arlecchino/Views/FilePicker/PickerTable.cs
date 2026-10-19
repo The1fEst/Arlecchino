@@ -4,6 +4,7 @@ using System.IO;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 
 namespace Arlecchino.Views.FilePicker;
 
@@ -53,14 +54,14 @@ internal sealed class PickerTable
 
         if (error.Length > 0)
         {
-            list.Write(1, 0, PickerText.Clip(error, list.Width), Theme.Error);
+            list.Write(1, 0, TextWidth.Clip(error, list.Width), Theme.Error);
 
             return;
         }
 
         if (entries.Count == 0)
         {
-            list.Write(1, 0, PickerText.Clip(_strings.ItemCount(0), list.Width), Theme.Secondary);
+            list.Write(1, 0, TextWidth.Clip(_strings.ItemCount(0), list.Width), Theme.Secondary);
 
             return;
         }
@@ -80,27 +81,28 @@ internal sealed class PickerTable
                     ? Theme.Info
                     : Theme.Default;
 
-            list.Write(1 + offset, 0, PickerText.Pad(Row(entry, widths), list.Width), style);
+            var line = TextWidth.PadRight(TextWidth.Clip(Row(entry, widths), list.Width), list.Width);
+            list.Write(1 + offset, 0, line, style);
         }
     }
 
     private string Header(Widths widths)
     {
-        var line = "  " + PickerText.Pad(_strings.ColumnName(), widths.Name);
+        var line = "  " + TextWidth.PadRight(TextWidth.Clip(_strings.ColumnName(), widths.Name), widths.Name);
 
         if (widths.Date > 0)
         {
-            line += PickerText.Pad(_strings.ColumnDateModified(), widths.Date);
+            line += TextWidth.PadRight(TextWidth.Clip(_strings.ColumnDateModified(), widths.Date), widths.Date);
         }
 
         if (widths.Size > 0)
         {
-            line += PickerText.PadLeft(_strings.ColumnSize(), widths.Size);
+            line += TextWidth.PadLeft(TextWidth.Clip(_strings.ColumnSize(), widths.Size), widths.Size);
         }
 
         if (widths.Kind > 0)
         {
-            line += "  " + PickerText.Pad(_strings.ColumnKind(), widths.Kind);
+            line += "  " + TextWidth.PadRight(TextWidth.Clip(_strings.ColumnKind(), widths.Kind), widths.Kind);
         }
 
         return line;
@@ -108,16 +110,19 @@ internal sealed class PickerTable
 
     private string Row(PickerEntry entry, Widths widths)
     {
-        var line = (entry.IsDirectory ? "▸ " : "  ") + PickerText.Pad(entry.Name, widths.Name);
+        var line = (entry.IsDirectory ? "▸ " : "  ") +
+                   TextWidth.PadRight(TextWidth.Clip(entry.Name, widths.Name), widths.Name);
 
         if (widths.Date > 0)
         {
-            line += PickerText.Pad(entry.Modified == default ? "" : _strings.DateModified(entry.Modified), widths.Date);
+            var date = entry.Modified == default ? "" : _strings.DateModified(entry.Modified);
+            line += TextWidth.PadRight(TextWidth.Clip(date, widths.Date), widths.Date);
         }
 
         if (widths.Size > 0)
         {
-            line += PickerText.PadLeft(entry.IsDirectory ? "--" : _strings.Size(entry.Length), widths.Size);
+            var size = entry.IsDirectory ? "--" : _strings.Size(entry.Length);
+            line += TextWidth.PadLeft(TextWidth.Clip(size, widths.Size), widths.Size);
         }
 
         if (widths.Kind <= 0)
@@ -131,7 +136,7 @@ internal sealed class PickerTable
                 ? _strings.KindFolder()
                 : _strings.KindOf(Path.GetExtension(entry.Name));
 
-        return line + "  " + PickerText.Pad(kind, widths.Kind);
+        return line + "  " + TextWidth.PadRight(TextWidth.Clip(kind, widths.Kind), widths.Kind);
     }
 
     private static Widths Columns(int width)

@@ -5,6 +5,7 @@ using System.Linq;
 using Arlecchino.Hosting;
 using Arlecchino.Rendering;
 using Arlecchino.Rendering.Colors;
+using Arlecchino.Rendering.Text;
 using Arlecchino.State;
 
 namespace Arlecchino.Views.FilePicker;
@@ -105,13 +106,19 @@ internal sealed class PickerPlaces
 
         _firstVisible = start;
 
+        var textWidth = sidebar.Width - 1;
+
         for (var offset = 0; offset < sidebar.Height && start + offset < _rows.Count; offset++)
         {
             var row = _rows[start + offset];
 
             if (row.Path is null)
             {
-                sidebar.Write(offset, 0, PickerText.Pad(row.Label, sidebar.Width), Theme.Secondary);
+                sidebar.Write(
+                    offset,
+                    0,
+                    TextWidth.PadRight(TextWidth.Clip(row.Label, textWidth), sidebar.Width),
+                    Theme.Secondary);
 
                 continue;
             }
@@ -120,7 +127,13 @@ internal sealed class PickerPlaces
                 ? focused ? Theme.ActiveSelection : Theme.Selection
                 : Theme.Default;
 
-            sidebar.Write(offset, 0, PickerText.Pad($" {row.Icon} {row.Label}", sidebar.Width), style);
+            var prefix = $" {row.Icon} ";
+            var label = row.ClipsStart
+                ? TextWidth.ClipStart(row.Label, textWidth - TextWidth.Of(prefix))
+                : row.Label;
+
+            var line = TextWidth.PadRight(TextWidth.Clip(prefix + label, textWidth), sidebar.Width);
+            sidebar.Write(offset, 0, line, style);
         }
     }
 
@@ -155,7 +168,7 @@ internal sealed class PickerPlaces
 
         foreach (var drive in PickerDrives.GetDrives())
         {
-            rows.Add(new(PickerDrives.GetName(drive.Name), drive.Name, "▤"));
+            rows.Add(new(PickerDrives.GetName(drive.Name), drive.Name, "▤", ClipsStart: true));
         }
 
         return rows;
@@ -194,5 +207,5 @@ internal sealed class PickerPlaces
         rows.Add(new(name, path, icon));
     }
 
-    private sealed record Place(string Label, string? Path, string Icon);
+    private sealed record Place(string Label, string? Path, string Icon, bool ClipsStart = false);
 }

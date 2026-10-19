@@ -40,6 +40,22 @@ public sealed class TextWidthTests
         Assert.Equal(Emoji, TextWidth.Truncate(Emoji, 2));
     }
 
+    [Theory]
+    [InlineData("/home/user/Disks/Data", 12, "/home/user/…", "…/Disks/Data")]
+    [InlineData(Wide, 5, "日本…", "…本語")]
+    [InlineData("/mnt/backup", 12, "/mnt/backup", "/mnt/backup")]
+    [InlineData("/mnt/backup", 0, "", "")]
+    public void ClipMarksWhatWasLeftOutWithAnEllipsis(
+        string text,
+        int maxWidth,
+        string clippedText,
+        string startClippedText)
+    {
+        Assert.Equal(
+            (clippedText, startClippedText),
+            (TextWidth.Clip(text, maxWidth), TextWidth.ClipStart(text, maxWidth)));
+    }
+
     [Fact]
     public void PaddingCountsColumnsNotCharacters()
     {

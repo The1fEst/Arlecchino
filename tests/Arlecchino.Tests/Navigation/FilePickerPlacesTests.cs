@@ -74,6 +74,18 @@ public sealed class FilePickerPlacesTests : IDisposable
         Assert.Contains("Second", frame, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ANameTooLongForTheSidebarLeavesAColumnBeforeTheList()
+    {
+        using var app = Show([new("Projects with a name far too long for the sidebar", _root.FullName)]);
+
+        var (row, column) = RowOf(app, "▪ Projects");
+        var line = app.FrameLines()[row];
+        var ellipsis = line.IndexOf('…', column);
+
+        Assert.Equal(' ', line[ellipsis + 1]);
+    }
+
     [Theory]
     [InlineData("/", "btrfs", true)]
     [InlineData("/home/user/Data", "btrfs", true)]

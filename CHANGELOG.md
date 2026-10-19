@@ -15,6 +15,12 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## Unreleased
 
+### Added
+
+- **`TextWidth.Clip` and `TextWidth.ClipStart`**, which cut text to a column width the way `Truncate`
+  and `TruncateStart` do and mark what was left out with an ellipsis — at the end, or at the start,
+  where the end of a path is what tells it from its neighbors.
+
 ### Fixed
 
 - **The file picker lists the drives anyone means to browse on Linux, and names the root `/`.** The
@@ -24,8 +30,11 @@ from `1.0.0` on breaking the public API meant a new major. See
   anything mounted under `/proc`, `/sys`, `/dev`, `/run`, `/boot`, `/efi`, `/tmp`, `/var`, `/usr`, `/opt`,
   `/srv`, `/root`, `/swap` or `/.snapshots`, and `/home` itself, the user's own folder being listed first.
   A drive udisks mounts under `/run/media` is still offered. On macOS the volumes under `/System/Volumes`
-  are left out the same way. A mount that cannot be read is skipped rather than emptying the list. The root was listed as an empty row, its name being what is left of `/` once the separator is
-  trimmed.
+  are left out the same way. A mount that cannot be read is skipped rather than emptying the list. The
+  root was listed as an empty row, its name being what is left of `/` once the separator is trimmed.
+- **A drive whose path runs past the picker's sidebar is cut from the start.** The end of a path is
+  what tells two drives apart, so `…/Disks/Data` and `…/Disks/Trash` no longer both read
+  `/home/user/Disks/…`.
 
 ## 2026.10.1
 

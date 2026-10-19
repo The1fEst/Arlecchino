@@ -1,1 +1,3 @@
 #nullable enable
+static Arlecchino.Rendering.Text.TextWidth.Clip(string! text, int maxWidth) -> string!
+static Arlecchino.Rendering.Text.TextWidth.ClipStart(string! text, int maxWidth) -> string!
