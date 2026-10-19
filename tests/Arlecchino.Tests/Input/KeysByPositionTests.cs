@@ -10,6 +10,8 @@ namespace Arlecchino.Tests.Input;
 
 public sealed class KeysByPositionTests
 {
+    private const uint ShiftKey = 0x0010;
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -72,6 +74,25 @@ public sealed class KeysByPositionTests
         app.ReadFromTerminal(CyrillicKey(character: 'и', capital: 'И', key: 'b'));
 
         Assert.Equal(["build"], CommandingView.Ran);
+    }
+
+    /// <summary>
+    /// The Windows console drops the Shift that only typed the character, which leaves the key under
+    /// <c>;</c> with nothing held. The palette on <c>:</c> is still reached from it.
+    /// </summary>
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void ThePaletteKeyIsReachedFromTheWindowsConsole(bool byPosition, bool opens)
+    {
+        using var app = new TestApplication(
+            configure: Configured(byPosition, static builder => builder.AddCommand<ProbeCommand>()));
+
+        app.Frame();
+
+        Read(app, WindowsInputTranslator.ToKeyPress((ushort)ConsoleKey.Oem1, 'Ж', ShiftKey));
+
+        Assert.Equal(opens, app.State.Modal is not null);
     }
 
     [Fact]
@@ -158,9 +179,12 @@ public sealed class KeysByPositionTests
         rest?.Invoke(builder);
     };
 
-    private static void Press(TestApplication app, char character, ConsoleKey key, KeyModifiers modifiers = default)
+    private static void Press(TestApplication app, char character, ConsoleKey key, KeyModifiers modifiers = default) =>
+        Read(app, new(key, modifiers, character));
+
+    private static void Read(TestApplication app, KeyPress press)
     {
-        app.Terminal.Enqueue(new(key, modifiers, character));
+        app.Terminal.Enqueue(press);
 
         ((TerminalInputReader)app.Services.GetService(typeof(TerminalInputReader))!).ReadPending();
 

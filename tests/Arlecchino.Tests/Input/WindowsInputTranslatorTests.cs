@@ -46,6 +46,21 @@ public sealed class WindowsInputTranslatorTests
         Assert.Equal(KeyModifiers.None, capital.Modifiers);
     }
 
+    [Theory]
+    [InlineData(ConsoleKey.Oem1, ':', ShiftKey, ':')]
+    [InlineData(ConsoleKey.Oem1, 'Ж', ShiftKey, ':')]
+    [InlineData(ConsoleKey.D1, '!', ShiftKey, '!')]
+    [InlineData(ConsoleKey.Oem1, ';', 0u, ';')]
+    [InlineData(ConsoleKey.F6, '\0', ShiftKey, '\0')]
+    public void WhereTheKeySitsIsReadWithTheShiftThatIsDropped(
+        ConsoleKey key,
+        char character,
+        uint controlKeyState,
+        char position)
+    {
+        Assert.Equal(position, WindowsInputTranslator.ToKeyPress((ushort)key, character, controlKeyState).ByPosition);
+    }
+
     [Fact]
     public void ShiftOnAKeyThatTypesNothingIsHeld()
     {

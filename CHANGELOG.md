@@ -13,6 +13,15 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
 
+## Unreleased
+
+### Fixed
+
+- **A shortcut on a character typed with Shift is reached on Windows when keys are read by position.**
+  The Windows console drops the Shift that only typed the character, and the position was read after
+  it went, so Shift and the key under `;` stood for `;` rather than `:`, and a shortcut on `:` or `!`
+  never answered. The position is now read before Shift is dropped.
+
 ## 2026.10.2
 
 A release about the drives the file picker offers. On Linux it listed every mount the system has, the

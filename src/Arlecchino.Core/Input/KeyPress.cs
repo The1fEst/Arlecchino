@@ -21,7 +21,8 @@ public readonly record struct KeyPress(
 
     /// <summary>
     /// The character the key would type where it sits, which a binding named after a character answers
-    /// to as well. The framework fills it in only for an application that reads its keys by position.
+    /// to as well. The Windows console fills it in as it reads the key, and the framework hands it on only
+    /// to an application that reads its keys by position.
     /// </summary>
     public char ByPosition { get; init; }
 

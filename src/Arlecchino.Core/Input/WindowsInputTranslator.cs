@@ -21,14 +21,23 @@ internal sealed class WindowsInputTranslator
 
     /// <summary>
     /// Reads one key event from the console, dropping Shift where it did nothing but type the character the
-    /// event already carries. Shift on a key that types nothing stays, as the modifier it is.
+    /// event already carries. Shift on a key that types nothing stays, as the modifier it is. Where the key
+    /// sits is read before Shift is dropped, so Shift and the key under <c>;</c> still stand for <c>:</c>.
     /// </summary>
     /// <param name="virtualKeyCode">The virtual key the console reported.</param>
     /// <param name="character">The character that key typed, or zero.</param>
     /// <param name="controlKeyState">The modifier flags the console reported.</param>
     /// <returns>The key press, as the rest of the library reads one.</returns>
-    public static KeyPress ToKeyPress(ushort virtualKeyCode, ushort character, uint controlKeyState) =>
-        new(Named(virtualKeyCode, character), Held(character, controlKeyState), (char)character);
+    public static KeyPress ToKeyPress(ushort virtualKeyCode, ushort character, uint controlKeyState)
+    {
+        var press = new KeyPress(Named(virtualKeyCode, character), ToModifiers(controlKeyState), (char)character);
+
+        return press with
+        {
+            Modifiers = Held(character, controlKeyState),
+            ByPosition = KeyText.ByPosition(press) ?? '\0',
+        };
+    }
 
     /// <summary>
     /// The key behind an event. What a terminal answers with is relayed character by character with no key

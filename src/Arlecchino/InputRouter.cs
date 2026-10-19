@@ -130,14 +130,26 @@ public class InputRouter
 
     /// <summary>
     /// The press with the character its key sits at filled in, which a binding named after a character
-    /// answers to instead of the one the layout typed. Typing is read from the layout either way.
+    /// answers to instead of the one the layout typed. Typing is read from the layout either way. The
+    /// Windows console reads the position itself, before it drops the Shift the position depends on, and
+    /// that reading is kept; an application that does not read by position gets none at all.
     /// </summary>
     /// <param name="key">The key that arrived.</param>
     /// <returns>The press as everything below it should see it.</returns>
-    private KeyPress Positioned(KeyPress key) =>
-        _options.TryKeysByPosition && KeyText.ByPosition(key) is { } character
-            ? key with { ByPosition = character }
-            : key;
+    private KeyPress Positioned(KeyPress key)
+    {
+        if (!_options.TryKeysByPosition)
+        {
+            return key with { ByPosition = '\0' };
+        }
+
+        if (key.ByPosition != '\0')
+        {
+            return key;
+        }
+
+        return KeyText.ByPosition(key) is { } character ? key with { ByPosition = character } : key;
+    }
 
     private void Route(KeyPress key)
     {
