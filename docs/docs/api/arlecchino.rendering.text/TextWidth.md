@@ -17,6 +17,8 @@ public static class TextWidth
 
 | Member | Summary |
 |---|---|
+| [`Clip(string, int)`](#clip-string-int) | Cuts the text down to a column width, ending it in an ellipsis when anything was left out. |
+| [`ClipStart(string, int)`](#clipstart-string-int) | Cuts the text down to a column width from the other end, opening it with an ellipsis when anything was left out. The end of a path is what tells it from its neighbors. |
 | [`CountClusters(string)`](#countclusters-string) | How many symbols the text is made of, as the user would count them. |
 | [`NextClusterEnd(string, int)`](#nextclusterend-string-int) | Where the symbol at an index ends. This is what a forward delete has to remove. |
 | [`NextClusterLength(string, int)`](#nextclusterlength-string-int) | How many `char` values the next symbol occupies, starting at an index. |
@@ -32,6 +34,40 @@ public static class TextWidth
 | [`Wrap(string, int)`](#wrap-string-int) | Breaks text into lines that fit a column width, at spaces where there is one and mid-word only for a word wider than the space. Line breaks already in the text are kept. |
 
 ## Methods in detail
+
+### `Clip(string, int)` {#clip-string-int}
+
+```csharp
+public static string Clip(string text, int maxWidth);
+```
+
+Cuts the text down to a column width, ending it in an ellipsis when anything was left out.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `text` | `string` | The text to cut. |
+| `maxWidth` | `int` | Columns available. |
+
+**Returns** `string` — The text as it fits.
+
+### `ClipStart(string, int)` {#clipstart-string-int}
+
+```csharp
+public static string ClipStart(string text, int maxWidth);
+```
+
+Cuts the text down to a column width from the other end, opening it with an ellipsis when anything was left out. The end of a path is what tells it from its neighbors.
+
+**Parameters**
+
+| Name | Type | Description |
+|---|---|---|
+| `text` | `string` | The text to cut. |
+| `maxWidth` | `int` | Columns available. |
+
+**Returns** `string` — The text as it fits.
 
 ### `CountClusters(string)` {#countclusters-string}
 
