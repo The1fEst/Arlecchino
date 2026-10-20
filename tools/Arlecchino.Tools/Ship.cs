@@ -9,14 +9,16 @@ using System.Threading.Tasks;
 namespace Arlecchino.Tools;
 
 /// <summary>
-/// Prepares a release: sets the version and moves the recorded public API from unshipped to shipped. Run
-/// it, read the diff, commit, tag.
+/// Prepares a release: sets the version, names the changelog section after it and moves the recorded public
+/// API from unshipped to shipped. Run it, read the diff, commit, tag.
 /// </summary>
 internal static class Ship
 {
     private const string Header = "#nullable enable";
     private const string Removal = "*REMOVED*";
     private const string Calendar = @"^(\d{4}\.(?:[1-9]|1[0-2]))\.([1-9][0-9]*)$";
+    private const string UnreleasedHeading = "## Unreleased";
+    private const string VersionElement = "<Version>([^<]+)</Version>";
 
     private static readonly string[] Packages =
         ["Arlecchino", "Arlecchino.Atoms.History", "Arlecchino.Core", "Arlecchino.Pictures", "Arlecchino.Testing"];
@@ -33,7 +35,7 @@ internal static class Ship
 
         var props = Path.Combine(Program.Root(), "Directory.Build.props");
         var text = await File.ReadAllTextAsync(props);
-        var current = Regex.Match(text, "<Version>([^<]+)</Version>").Groups[1].Value;
+        var current = Regex.Match(text, VersionElement).Groups[1].Value;
 
         if (current.Length == 0)
         {
@@ -43,6 +45,25 @@ internal static class Ship
         }
 
         var version = args.Length == 1 ? args[0] : Next(current);
+        var changelog = Path.Combine(Program.Root(), "CHANGELOG.md");
+        var changelogText = await File.ReadAllTextAsync(changelog);
+        var unreleasedPattern = new Regex($"^{UnreleasedHeading}(?=\r?$)", RegexOptions.Multiline);
+
+        if (unreleasedPattern.IsMatch(changelogText))
+        {
+            await File.WriteAllTextAsync(changelog, unreleasedPattern.Replace(changelogText, $"## {version}", 1));
+            Console.WriteLine($"changelog: {UnreleasedHeading} -> ## {version}");
+        }
+        else if (Regex.IsMatch(changelogText, $"^## {Regex.Escape(version)}\r?$", RegexOptions.Multiline))
+        {
+            Console.WriteLine($"changelog already has ## {version}");
+        }
+        else
+        {
+            Console.WriteLine($"{changelog} has no {UnreleasedHeading} section to release");
+
+            return 1;
+        }
 
         if (current == version)
         {
@@ -50,7 +71,7 @@ internal static class Ship
         }
         else
         {
-            text = Regex.Replace(text, "<Version>[^<]+</Version>", $"<Version>{version}</Version>");
+            text = Regex.Replace(text, VersionElement, $"<Version>{version}</Version>");
             Console.WriteLine($"version {current} -> {version}");
         }
 
@@ -64,12 +85,19 @@ internal static class Ship
         return 0;
     }
 
+    /// <summary>The version the repository is set to.</summary>
+    /// <returns>What <c>Directory.Build.props</c> says, or an empty string when it says nothing.</returns>
+    internal static string GetVersion() =>
+        Regex.Match(File.ReadAllText(Path.Combine(Program.Root(), "Directory.Build.props")), VersionElement)
+            .Groups[1].Value;
+
     private static int Usage()
     {
         Console.WriteLine("usage: dotnet run --project tools/Arlecchino.Tools -- ship [version]");
         Console.WriteLine();
-        Console.WriteLine("Prepares a release: sets the version and moves the recorded public API from");
-        Console.WriteLine("Unshipped to Shipped. Run it, read the diff, commit, tag.");
+        Console.WriteLine("Prepares a release: sets the version, renames ## Unreleased in CHANGELOG.md to it");
+        Console.WriteLine("and moves the recorded public API from Unshipped to Shipped. Run it, read the diff,");
+        Console.WriteLine("commit, tag.");
         Console.WriteLine();
         Console.WriteLine("A version is year.month.build: 2026.8.1 is the first release of August 2026.");
         Console.WriteLine("Given none, the version in Directory.Build.props says which build this is.");

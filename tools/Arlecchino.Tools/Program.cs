@@ -18,6 +18,7 @@ internal static class Program
         ["live", .. var rest] => Task.FromResult(Live.Run(rest)),
         ["oracle", .. var rest] => Task.FromResult(Oracle.Run(rest)),
         ["pack", .. var rest] => Task.FromResult(Pack.Run(rest)),
+        ["release", .. var rest] => Release.Run(rest),
         ["ship", .. var rest] => Ship.Run(rest),
         ["terminal", .. var rest] => Task.FromResult(Terminal.Run(rest)),
         _ => Task.FromResult(Usage()),
@@ -31,6 +32,7 @@ internal static class Program
         Console.WriteLine("  live [options]    run an application in a real terminal and see it give it back");
         Console.WriteLine("  oracle [name]     compare the screen the frames leave against a real terminal");
         Console.WriteLine("  pack [version]    build the five packages into the local feed");
+        Console.WriteLine("  release [version] ship, push, wait for the build, then offer the tag that publishes");
         Console.WriteLine("  ship [version]    prepare a release: the version and the public API it carries");
         Console.WriteLine("  terminal [check]  ask, copy and paste against a real terminal");
         Console.WriteLine();
