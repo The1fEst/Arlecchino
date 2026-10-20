@@ -6,6 +6,7 @@ on:
     paths-ignore: ['**.md', 'LICENSE']
   pull_request:
     paths-ignore: ['**.md', 'LICENSE']
+  workflow_call:
 
 env:
   COVERAGE_LINES: 85
