@@ -97,6 +97,8 @@ does not have.
 
 | Page | What it covers |
 |---|---|
+| [What's new in 2026.10.2](whats-new-in-2026.10.2.md) | The drives the file picker offers, a long drive path cut from the start, and `TextWidth.Clip` and `ClipStart` |
+| [What's new in 2026.10.1](whats-new-in-2026.10.1.md) | A folder picked with `Enter` in a Unix terminal, and a terminal window closed without a core dump |
 | [What's new in 2026.9.3](whats-new-in-2026.9.3.md) | A Markdown document drawn as what its marks say, the pictures it names, and the flat SVG a chart is written as |
 | [What's new in 2026.9.2](whats-new-in-2026.9.2.md) | A Windows console put on UTF-8 before anything takes hold of its writer |
 | [What's new in 2026.9.1](whats-new-in-2026.9.1.md) | A shortcut reached by where its key sits, a number with a fraction, help that wraps |
