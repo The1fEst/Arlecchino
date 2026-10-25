@@ -10,9 +10,9 @@ const config: Config = {
   favicon: 'img/arlecchino-icon-64.png',
 
   url: 'https://the1fest.github.io',
-  baseUrl: '/Arlecchino.Docs/',
+  baseUrl: '/Arlecchino/',
   organizationName: 'The1fEst',
-  projectName: 'Arlecchino.Docs',
+  projectName: 'Arlecchino',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -63,7 +63,7 @@ const config: Config = {
         docs: {
           routeBasePath: '/docs',
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/The1fEst/Arlecchino.Docs/tree/master/',
+          editUrl: 'https://github.com/The1fEst/Arlecchino/tree/master/docs/',
           showLastUpdateTime: true,
         },
         blog: false,
@@ -143,7 +143,7 @@ const config: Config = {
             {label: 'Source', href: 'https://github.com/The1fEst/Arlecchino'},
             {label: 'Changelog', href: 'https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md'},
             {label: 'Issues', href: 'https://github.com/The1fEst/Arlecchino/issues'},
-            {label: 'This site', href: 'https://github.com/The1fEst/Arlecchino.Docs'},
+            {label: 'This site', href: 'https://github.com/The1fEst/Arlecchino/tree/master/docs'},
           ],
         },
       ],

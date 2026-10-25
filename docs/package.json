@@ -6,10 +6,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/The1fEst/Arlecchino.Docs"
+    "url": "https://github.com/The1fEst/Arlecchino",
+    "directory": "docs"
   },
   "scripts": {
-    "api": "dotnet run apidocs/ApiDocs.cs -- --repo ../Arlecchino --out docs/api",
+    "api": "dotnet run apidocs/ApiDocs.cs -- --repo .. --out docs/api",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "serve": "docusaurus serve",
