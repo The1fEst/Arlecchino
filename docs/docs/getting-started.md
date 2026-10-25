@@ -1,0 +1,159 @@
+---
+title: Getting started
+sidebar_label: Getting started
+description: Installing the package, the smallest application that runs, and the first view.
+---
+
+# Getting started
+
+## Install
+
+```
+dotnet add package Arlecchino
+```
+
+`Arlecchino` pulls in `Arlecchino.Core` (the renderer) and carries the source generator inside the package,
+so nothing else has to be referenced. `Microsoft.Extensions.Hosting` is what you need for the host
+itself.
+
+Three packages are added only when they are wanted: `Arlecchino.Atoms.History` is
+[undo and redo](atoms.md#undo-and-redo), `Arlecchino.Pictures` reads image files into the pixels a
+[picture](pictures.md) draws, and `Arlecchino.Testing` is the headless host the [tests](testing.md) of
+your application run on.
+
+## The smallest app
+
+```csharp
+using Arlecchino.Hosting;
+using Microsoft.Extensions.Hosting;
+using MyApp.Navigation;   // ViewKind and AddGeneratedViews are generated here
+
+var builder = ArlecchinoHost.CreateBuilder(args);
+
+builder.Services
+    .AddArlecchino(options => options.MinimumWidth = 60)
+    .AddGeneratedViews()
+    .AddGeneratedStores()
+    .AddGeneratedCommands()
+    .StartAt(ViewKind.Default);
+
+await builder.Build().RunAsync();
+```
+
+`ArlecchinoHost.CreateBuilder` builds the host, and is `Host.CreateApplicationBuilder` without the part of
+it that watches the file system — the part that costs a terminal application seconds when it is started
+from a folder with a lot under it. [Hosting and options](hosting-and-options.md#building-the-host) is the
+whole of why.
+
+`AddArlecchino` registers the renderer, the navigator, the input router and a hosted service that owns
+the render loop. `AddGeneratedViews` plugs in the factory emitted by the generator,
+`AddGeneratedStores` registers every `IArlecchinoStore` it found alongside it,
+`AddGeneratedCommands` does the same for every `IArlecchinoCommand`, and `StartAt`
+picks the route shown on the first frame. Everything after `AddArlecchino` is a call on
+`ArlecchinoBuilder` — see [Hosting and options](hosting-and-options.md).
+
+That first `using` is the one thing not visible from the code: `ViewKind` and `AddGeneratedViews` are
+written by the generator into `$(RootNamespace).Navigation`, not into a namespace of the package, so
+the file wiring the application up has to import it. Both exist from the moment the package is
+referenced — before the first view is written `ViewKind` simply holds no routes and the generator
+says so as `ARL004`. See [Source generator](source-generator.md) to put them somewhere else.
+
+## The first view
+
+A view is a class implementing `IArlecchinoView`. Constructor parameters are resolved from the container:
+
+```csharp
+using Arlecchino.Input;
+using Arlecchino.Navigation;
+using Arlecchino.Rendering;
+using Arlecchino.Rendering.Colors;
+using MyApp.Navigation;
+
+public class DefaultView : IArlecchinoView
+{
+    private readonly Surface _surface;
+
+    public DefaultView(Surface surface) => _surface = surface;
+
+    public void Draw()
+    {
+        _surface.AppendLine("hello", Theme.Header, Align.Center);
+    }
+
+    public ViewRoute Handle(KeyPress key) =>
+        key.Key == ConsoleKey.A ? ViewKind.About : ViewRoute.None;
+
+    public (string Key, string Description)[] Hints() => [("a", "about")];
+}
+```
+
+`ViewKind.About` in that `Handle` is a second view: the routes are generated from the views that exist,
+so until an `AboutView` sits beside this one the name is not there and the compiler says so. Return
+`ViewRoute.None` from every key while there is one view.
+
+`Draw` is called once per frame, `Handle` gets every key the framework did not consume itself, and the
+route it returns navigates. `Hints` fills the box in the bottom-right corner. `HandleMouse`,
+`HandlePaste` and `Commands` have defaults, so a view implements only what it uses. Details in
+[Views and navigation](views-and-navigation.md) and [Rendering](rendering.md).
+
+The colors live in `Arlecchino.Rendering.Colors` and the surface in `Arlecchino.Rendering`; since
+`4.0` those are two namespaces rather than one, and it is the commonest thing to be missing a `using`
+for — see [Migrating to 4.0](migrating-to-4.0.md#namespaces-follow-their-folders).
+
+The `DefaultView` class name is what produces `ViewKind.Default`: the generator strips the `View`
+suffix. The view itself may live in any namespace — the generated factory imports whatever it needs.
+Set `<ArlecchinoViewNamespace>` in your csproj to choose where `ViewKind` lands instead of
+`$(RootNamespace).Navigation` — see [Source generator](source-generator.md).
+
+## Running the samples
+
+Three of them ship in the repository. `Arlecchino.Sample` is the gallery — a default view, an about view,
+a settings form, the widget page, a command palette and the file picker:
+
+```
+dotnet run --project samples/Arlecchino.Sample
+```
+
+It also renders a single frame headlessly, which is the fastest way to look at a layout:
+
+```
+dotnet run --project samples/Arlecchino.Sample -- --frame picker 130x30
+```
+
+The frame goes to stdout as ANSI text; the view name is `default`, `about`, `picker`, or one of
+`password`, `number`, `slider`, `toggle`, `multi`, `date`, `time`, `color` to render the matching
+modal over the default view, and the size is `<width>x<height>`. `Surface.SetFixedSize` is what makes this possible in your own app — see
+[Rendering](rendering.md).
+
+`Arlecchino.Processes` is the other kind of sample: a small application that does real work rather than
+showing off widgets. It lists the processes on the machine in a sortable [table](table.md), reads
+them on a background thread through `AsyncAtom` with a spinner while it loads, filters them from a
+text modal, and opens a details screen for the selected row:
+
+```
+dotnet run --project samples/Arlecchino.Processes
+```
+
+`r` re-reads the list, `m` and `n` sort, `f` filters, `Enter` opens the details. All four are
+[view commands](commands.md), so they appear in the palette and in the hints box without
+being written down twice. It renders headlessly too — `--frame processes 110x26` or
+`--frame details 90x18`.
+
+[`Arlecchino.Commander`](https://github.com/The1fEst/Arlecchino.Commander) is the largest of the
+three, and the one with a repository of its own: a file manager with two panels over a local disk, an
+SFTP server or an FTP one, with tabs, leader keys and a command line of its own. It takes the
+framework from NuGet, the way an application of yours would.
+
+```
+dotnet run --project src/Arlecchino.Commander -- C:\some\folder C:\another
+```
+
+Each panel is a [widget](widgets.md) of its own and each dialog is a [`Modal`](modals.md) of its own,
+which is how it wears a look the framework does not bring; the menu behind `F9` is one list per
+section. Copy, move and delete ask their questions as modals and then run off the drawing thread,
+reporting themselves as [notifications](diagnostics.md#work-that-takes-a-while) with a bar and a key
+that stops them.
+
+It runs without the output line, so the bottom row belongs to the screen's own status bar. Every
+screen renders headlessly as `--frame 132x26`, with `--keys` to play keys first and `--connect` to
+open a panel on a server.
