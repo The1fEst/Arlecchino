@@ -1,0 +1,3 @@
+<Project>
+  <!-- Without this file the repository root's Directory.Build.props, which turns warnings into errors, applies to the generator. -->
+</Project>

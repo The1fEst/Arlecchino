@@ -497,7 +497,7 @@ internal sealed class ApiDocs
         page.AppendLine();
     }
 
-    private void WriteDelegate(StringBuilder page, Type type)
+    private static void WriteDelegate(StringBuilder page, Type type)
     {
         if (type.GetMethod("Invoke") is not { } invoke)
         {
@@ -821,7 +821,7 @@ internal sealed class ApiDocs
         yield return body[start..];
     }
 
-    private string Declaration(Type type)
+    private static string Declaration(Type type)
     {
         var builder = new StringBuilder();
 
