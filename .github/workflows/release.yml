@@ -106,3 +106,4 @@ jobs:
     uses: ./.github/workflows/docs.yml
     with:
       ref: ${{ github.ref_name }}
+      deploy: true

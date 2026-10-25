@@ -67,9 +67,10 @@ The build runs with `onBrokenLinks: 'throw'`, so a link that does not resolve fa
 
 ## Deploying
 
-The site is built and published by the `docs` workflow (`.github/workflows/docs.yml`). The release
-workflow calls it once the packages are published, passing the tag, so the reference is generated from
-the code that was released. Pushes do not publish it.
+The `docs` workflow (`.github/workflows/docs.yml`) builds the site for every pull request and every push
+to `master` that touches `docs/`, so a broken link or a broken generator fails there, before a release.
+It publishes only when the release workflow calls it once the packages are out, passing the tag, so the
+reference is generated from the code that was released.
 
 To publish without a release, run the `docs` workflow by hand from the Actions tab. It builds the branch
 it is run on, unless a tag is given as `ref`.
