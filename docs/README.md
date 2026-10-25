@@ -72,8 +72,9 @@ to `master` that touches `docs/`, so a broken link or a broken generator fails t
 It publishes only when the release workflow calls it once the packages are out, passing the tag, so the
 reference is generated from the code that was released.
 
-To publish without a release, run the `docs` workflow by hand from the Actions tab. It builds the branch
-it is run on, unless a tag is given as `ref`.
+To publish without a release, run the `docs` workflow by hand from the Actions tab. With no `ref` it builds
+the latest `v*` tag, so unreleased API on `master` never reaches the site; give a tag as `ref` to build
+another one.
 
 Set **Settings → Pages → Source** to *GitHub Actions* once for the repository.
 

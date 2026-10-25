@@ -10,7 +10,8 @@ on:
     inputs:
       ref:
         description: >
-          A tag to build, such as v2026.10.2. Left empty, the branch the run was started on.
+          A tag to build, such as v2026.10.2. Left empty, the latest v* tag is built, not master, so
+          unreleased API never reaches the site.
         type: string
         required: false
         default: ''
@@ -37,6 +38,19 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           fetch-depth: 0
+
+      - name: Check out the latest release
+        if: github.event_name == 'workflow_dispatch' && inputs.ref == ''
+        run: |
+          git fetch --tags --force origin
+          tag=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+
+          if [ -z "$tag" ]; then
+            echo "::error::There is no v* tag to build."
+            exit 1
+          fi
+
+          git checkout --detach "$tag"
 
       - uses: actions/setup-dotnet@v6
         with:
