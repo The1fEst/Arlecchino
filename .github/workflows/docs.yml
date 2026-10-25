@@ -1,0 +1,79 @@
+name: docs
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: >
+          A tag to build, such as v2026.10.2. Left empty, the branch the run was started on.
+        type: string
+        required: false
+        default: ''
+  workflow_call:
+    inputs:
+      ref:
+        description: The tag to build, so the reference is generated from the code that was released.
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the framework
+        run: dotnet build Arlecchino.slnx --configuration Release
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install
+        working-directory: docs
+        run: npm ci
+
+      - name: Generate the API reference
+        working-directory: docs
+        run: npm run api
+
+      - name: Build
+        working-directory: docs
+        run: npm run build
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
