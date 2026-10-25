@@ -62,7 +62,19 @@ Cancelling leaves it holding whatever the last pick did.
 
 Favorites comes first, and the request's own `Places` are the top of it, above Desktop, Documents,
 Downloads, Pictures, Music and Videos — each of those skipped when the folder does not exist. Then
-Locations: the home folder, `This computer`, and every ready drive. Section headers are not selectable.
+Locations: the home folder, `This computer`, and the drives under it. Section headers are not selectable.
+
+## Drives
+
+`This computer` lists the drives anyone means to browse: the ones that are mounted and ready, without the
+file systems the kernel keeps for itself, such as `proc`, `sysfs` and `tmpfs`. On Linux a mount under
+`/proc`, `/sys`, `/dev`, `/run`, `/boot`, `/efi`, `/tmp`, `/var`, `/usr`, `/opt`, `/srv`, `/root`, `/swap`
+or `/.snapshots` is left out, and so is `/home` itself; a drive udisks mounts under `/run/media` is kept.
+On macOS the volumes under `/System/Volumes` are left out. The root is listed as `/`, and a mount that
+cannot be read is skipped.
+
+In the sidebar, a drive whose path is longer than the sidebar is cut from the start rather than the end,
+so the end of the path, which tells two drives apart, stays in view.
 
 ## Keys
 
@@ -72,12 +84,16 @@ Locations: the home folder, `This computer`, and every ready drive. Section head
 | `PgUp` `PgDn` `Home` `End` | Jump ten rows / to the ends | — |
 | `→` | Enter the selected folder | Focus the list |
 | `←` | Go to the parent folder, or focus the sidebar when already at the drive list | — |
-| `Enter` | Open a folder; pick a file when picking files | Go to the place and focus the list |
-| `Ctrl+Enter` | Pick the current folder when picking folders | — |
+| `Enter` | Open the row under the cursor, or pick a file when picking files. When picking folders, pick the folder being listed, whatever is under the cursor; in the drives, open the drive under the cursor | Go to the place and focus the list |
+| `Ctrl+Enter` | Pick the folder being listed when picking folders | Pick the folder being listed when picking folders |
 | `Tab` | Switch panes | Switch panes |
 | `Backspace` | Shorten the filter, or go up when it is empty | — |
 | any character | Appends to the filter | — |
 | `Esc` | Cancel and return to `ReturnView` | Cancel |
+
+A Unix terminal sends `Ctrl+Enter` as `Enter`, which is why `Enter` picks the folder being listed when folders
+are picked, and an empty folder can be picked that way too. Walking into a folder is `→` or a second click on
+its row: with the mouse, the first click selects a row and the second opens it.
 
 Typed characters go through `KeyText`, so filtering works on a non-latin layout — see
 [Keyboard](keyboard.md).
