@@ -34,6 +34,8 @@ where it should.
 |---|---|
 | `Truncate(text, maxWidth)` | Cuts to a column width on a symbol boundary |
 | `TruncateStart(text, maxWidth)` | The same from the other end, keeping the tail — what a field scrolled to the right shows |
+| `Clip(text, maxWidth)` | Cuts to a column width the way `Truncate` does, ending the text in `…` when anything was left out |
+| `ClipStart(text, maxWidth)` | The same from the other end, opening with `…` — what a long path shows, its end being what tells it apart |
 | `Wrap(text, width)` | Breaks into lines that fit, at spaces where there is one and mid-word only when a single word is wider than the space; existing line breaks are kept |
 
 ### Padding
