@@ -119,6 +119,23 @@ stay plain Markdown with absolute image URLs and no `<details>`. A change to the
 packages table or what the framework claims for itself belongs in `README.md` and in
 `nuget/Arlecchino.md`.
 
+## The documentation
+
+The documentation site is in `docs/`, a Docusaurus site whose pages are plain CommonMark in `docs/docs/`.
+To run it locally, build the framework first, then start the site:
+
+```bash
+dotnet build Arlecchino.slnx --configuration Release
+cd docs
+npm install
+npm run api
+npm start
+```
+
+The API reference in `docs/docs/api` is generated from the built assemblies by `npm run api`, and is not
+committed. The release workflow publishes the site after the packages are out, through `docs.yml`, so the
+reference matches the code that was released. A link that does not resolve fails the build.
+
 ## Versions
 
 A version is the year, the month and which release of that month it is: `2026.8.1` is the first
