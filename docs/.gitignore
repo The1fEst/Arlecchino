@@ -2,6 +2,7 @@ node_modules/
 build/
 .docusaurus/
 .cache-loader/
+/docs/api/
 
 .DS_Store
 Thumbs.db
