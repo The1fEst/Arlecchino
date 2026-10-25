@@ -63,7 +63,7 @@ internal sealed class ApiDocs
 
     public static int Run(string[] args)
     {
-        var repo = Path.GetFullPath(Argument(args, "--repo") ?? "../Arlecchino");
+        var repo = Path.GetFullPath(Argument(args, "--repo") ?? "..");
         var output = Path.GetFullPath(Argument(args, "--out") ?? "docs/api");
         var configuration = Argument(args, "--configuration") ?? "Release";
         var framework = Argument(args, "--framework") ?? "net10.0";
