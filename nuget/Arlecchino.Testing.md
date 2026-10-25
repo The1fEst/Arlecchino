@@ -65,8 +65,8 @@ only.
 
 ## Links
 
-[Documentation](https://the1fest.github.io/Arlecchino.Docs/) ·
-[Testing](https://the1fest.github.io/Arlecchino.Docs/docs/testing) ·
+[Documentation](https://the1fest.github.io/Arlecchino/) ·
+[Testing](https://the1fest.github.io/Arlecchino/docs/testing) ·
 [Changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md) ·
 [Source and issues](https://github.com/The1fEst/Arlecchino)
 

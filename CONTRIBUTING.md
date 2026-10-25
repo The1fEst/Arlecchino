@@ -90,7 +90,7 @@ and analysed with everything else — a script beside the repository is checked 
 | `/// <summary>` on everything public in a package | It is the documentation an application sees in its IDE, and the build fails without it |
 | `new()` where the type is already written | `IDE0090`, plus the ReSharper half for arguments |
 | Braces on every branch, file-scoped namespaces, no unused `using` | `IDE0011`, `IDE0161`, `IDE0005` |
-| A new public member recorded in `PublicAPI.Unshipped.txt` | `RS0016`; see [Packages and building](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building) |
+| A new public member recorded in `PublicAPI.Unshipped.txt` | `RS0016`; see [Packages and building](https://the1fest.github.io/Arlecchino/docs/packages-and-building) |
 | Coverage at or above 80% of lines and 65% of branches | Code that arrives without tests fails the run |
 
 Recording a new public member is mechanical:
@@ -105,10 +105,10 @@ Two questions come up often enough to answer here:
 
 - **No component tree.** Reusable UI is a widget: a class with `Draw(SurfaceRegion)`, and
   `IArlecchinoInteractiveWidget` when it handles keys. There is no layout container hierarchy, and
-  adding one is not on the table — see [Widgets](https://the1fest.github.io/Arlecchino.Docs/docs/widgets).
+  adding one is not on the table — see [Widgets](https://the1fest.github.io/Arlecchino/docs/widgets).
 - **No user-visible string in the framework is hardcoded.** Everything goes through
   `ArlecchinoStrings` as a delegate, so an application can translate it — see
-  [Localization](https://the1fest.github.io/Arlecchino.Docs/docs/localization).
+  [Localization](https://the1fest.github.io/Arlecchino/docs/localization).
 
 ## The readmes
 

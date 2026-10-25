@@ -9,7 +9,7 @@
 - [ ] `jb inspectcode Arlecchino.slnx --severity=WARNING` — nothing reported
 - [ ] New public members recorded in `PublicAPI.Unshipped.txt`
 - [ ] `CHANGELOG.md` updated under `Unreleased`
-- [ ] Documentation updated in [Arlecchino.Docs](https://github.com/The1fEst/Arlecchino.Docs), if behaviour changed
+- [ ] Documentation updated in [docs](https://github.com/The1fEst/Arlecchino/tree/master/docs), if behaviour changed
 
 ## Breaking change?
 

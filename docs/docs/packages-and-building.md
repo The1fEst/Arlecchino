@@ -355,12 +355,12 @@ that is the point of it.
 | `artifacts/packages` | Local package feed produced by the `pack` tool |
 
 This documentation is not among them: it lives in
-[Arlecchino.Docs](https://github.com/The1fEst/Arlecchino.Docs), and a release asks that repository to
-regenerate the API reference from the assemblies it just published.
+[`docs/`](https://github.com/The1fEst/Arlecchino/tree/master/docs), and a release builds the API
+reference from the assemblies it just published.
 
 ## Conventions
 
-- No comments in the source; names carry the meaning, and documentation lives in its own repository.
+- No comments in the source; names carry the meaning, and documentation lives in `docs/`.
 - No user-visible string at a call site — every one of them is a delegate on
   [`ArlecchinoStrings`](localization.md).
 - No application domain types in the framework; extension points are interfaces (`IArlecchinoView`,

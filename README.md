@@ -196,7 +196,7 @@ picker come with it, and every string they draw is a delegate an application can
 translations. It is also younger than all four by a wide margin, and the only one that still builds
 for `net8.0` — the others require .NET 10. Checked in July 2026.
 
-## [Documentation](https://the1fest.github.io/Arlecchino.Docs/)
+## [Documentation](https://the1fest.github.io/Arlecchino/)
 
 What changed between versions is in the [changelog](CHANGELOG.md).
 

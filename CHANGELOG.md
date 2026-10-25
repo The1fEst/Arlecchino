@@ -11,7 +11,7 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 `2026.8.1` was numbered under [Semantic Versioning](https://semver.org/spec/v2.0.0.html): up to
 `1.0.0` a breaking change only bumped the minor, which is why the `0.x` entries are full of them, and
 from `1.0.0` on breaking the public API meant a new major. See
-[Versioning](https://the1fest.github.io/Arlecchino.Docs/docs/packages-and-building).
+[Versioning](https://the1fest.github.io/Arlecchino/docs/packages-and-building).
 
 ## Unreleased
 
@@ -1043,7 +1043,7 @@ A release about names and about frames. Text gets a name the compiler checks ins
 twice; a dialog, a list row and the whole screen around a view become things an application writes for
 itself rather than things the framework decides. The one break is namespaces — nothing was renamed or
 removed, and a build that fails on it is fixed by adding a sub-namespace to a `using`. See
-[Migrating to 4.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-4.0).
+[Migrating to 4.0](https://the1fest.github.io/Arlecchino/docs/migrating-to-4.0).
 
 ### Added
 
@@ -1742,7 +1742,7 @@ Found by reading the whole of it rather than by anything failing.
 
   The list held in an `Atom<IReadOnlyList<T>>` and replaced wholesale is still the right answer for a
   handful of things that change on a keystroke; the new type is for the ones appended to often or
-  long enough that copying hurts. [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms) says
+  long enough that copying hurts. [Atoms](https://the1fest.github.io/Arlecchino/docs/atoms) says
   which to reach for.
 
 ## 2.7.0
@@ -2024,7 +2024,7 @@ Found by reading the whole of it rather than by anything failing.
   Nothing about a frame is kept in the tree — sizes are worked out per `Draw`, so one tree fits every
   terminal and a resize needs no bookkeeping. A region too small for what it holds leaves the panes
   that did not fit empty rather than overlapping them, and drawing into an empty region writes
-  nothing. See [Layout](https://the1fest.github.io/Arlecchino.Docs/docs/layout).
+  nothing. See [Layout](https://the1fest.github.io/Arlecchino/docs/layout).
 
   It is a layout description and not a component system: the tree decides where things go and nothing
   else — no lifetimes, no state, no re-render pass — and a view that splits regions by hand keeps
@@ -2052,7 +2052,7 @@ Found by reading the whole of it rather than by anything failing.
 ## 2.0.0
 
 The three breaking changes `1.x` announced, delivered together.
-[Migrating to 2.0](https://the1fest.github.io/Arlecchino.Docs/docs/migrating-to-2.0) is the edit
+[Migrating to 2.0](https://the1fest.github.io/Arlecchino/docs/migrating-to-2.0) is the edit
 list; nothing here needs more than a rename, a delete or a decision about colour.
 
 ### Changed
@@ -2323,7 +2323,7 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
   `assets/`: the harlequin mask as an icon on its plate, transparent, and as a single-colour glyph
   that inherits `currentColor`, plus the banner and the social card — SVG throughout, with the raster
   sizes rendered beside them.
-- [Rendering](https://the1fest.github.io/Arlecchino.Docs/docs/rendering) ends with the terminals the
+- [Rendering](https://the1fest.github.io/Arlecchino/docs/rendering) ends with the terminals the
   framework has actually run in and what each one showed — plain `xterm-256color`,
   `COLORTERM=truecolor`, `NO_COLOR`, `TERM=dumb`, tmux, macOS on Arm — and, just as usefully, the
   ones it has not: conhost without virtual terminal support, Terminal.app, PuTTY, kitty and friends.
@@ -2510,7 +2510,7 @@ waiting for — everything under **Changed** is breaking, and it is the last rel
 
 - The two atom types are named where an atom is described rather than only in the state chapter: the
   XML documentation of `Field` and `Form`, the page tables, and the opening of
-  [Atoms](https://the1fest.github.io/Arlecchino.Docs/docs/atoms).
+  [Atoms](https://the1fest.github.io/Arlecchino/docs/atoms).
 
 ### Continuous integration
 

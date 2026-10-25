@@ -81,7 +81,7 @@ They ship together and always carry the same version.
 
 ## Links
 
-[Documentation](https://the1fest.github.io/Arlecchino.Docs/) ·
+[Documentation](https://the1fest.github.io/Arlecchino/) ·
 [Changelog](https://github.com/The1fEst/Arlecchino/blob/master/CHANGELOG.md) ·
 [Source and issues](https://github.com/The1fEst/Arlecchino)
 
