@@ -17,6 +17,14 @@ public sealed class PicturesView : IArlecchinoView
 {
     private const string Resource = "Arlecchino.Sample.card.png";
 
+    private static readonly LocString[] Notes =
+    [
+        LocString.BlocksNote,
+        LocString.SixelNote,
+        LocString.KittyNote,
+        LocString.UnsupportedNote,
+    ];
+
     private readonly Surface _surface;
     private readonly Picture _picture = new() { Background = Theme.Default };
 
@@ -33,45 +41,40 @@ public sealed class PicturesView : IArlecchinoView
     {
         var (left, right) = _surface.Content.SplitLeft(_surface.Content.Width - 26);
 
-        _picture.Draw(left.Border(Theme.Info, $"{_picture.PixelWidth}×{_picture.PixelHeight} pixels"));
+        _picture.Draw(left.Border(Theme.Info, Loc(LocString.PictureSize, _picture.PixelWidth, _picture.PixelHeight)));
 
-        var notes = right.Border(Theme.Info, "how").Flow();
+        var notes = right.Border(Theme.Info, Loc(LocString.HowTitle)).Flow();
         var size = Protocol();
         var image = TerminalCapabilities.Resolve(size);
 
-        notes.AppendLine(size == image ? $"drawn as {image}" : $"{size} → {image}", Theme.Accent);
+        notes.AppendLine(size == image ? Loc(LocString.DrawnAs, image) : $"{size} → {image}", Theme.Accent);
         notes.SkipLine();
-        notes.AppendLine("The terminal says:", Theme.Secondary);
-        notes.AppendLine($"  sixel {Said(TerminalCapabilities.Sixel)}", Theme.Secondary);
-        notes.AppendLine($"  kitty {Said(TerminalCapabilities.Kitty)}", Theme.Secondary);
+        notes.AppendLine(Loc(LocString.TerminalSays), Theme.Secondary);
+        notes.AppendLine(Loc(LocString.SixelSupport, Said(TerminalCapabilities.Sixel)), Theme.Secondary);
+        notes.AppendLine(Loc(LocString.KittySupport, Said(TerminalCapabilities.Kitty)), Theme.Secondary);
         notes.AppendLine(
-            $"  cell {Glyphs.CellWidth}x{Glyphs.CellHeight} " +
-            (TerminalCapabilities.CellSizeKnown ? "reported" : "guessed"),
+            Loc(LocString.CellSize,
+                Glyphs.CellWidth,
+                Glyphs.CellHeight,
+                Loc(TerminalCapabilities.CellSizeKnown ? LocString.CellSizeReported : LocString.CellSizeGuessed)),
             Theme.Secondary);
 
         notes.AppendLine(
-            $"  behind {TerminalCapabilities.Background?.Hex ?? "unknown"}",
+            Loc(LocString.BehindColor, TerminalCapabilities.Background?.Hex ?? Loc(LocString.UnknownColor)),
             Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("p walks the four.", Theme.Secondary);
+        notes.AppendLine(Loc(LocString.ProtocolNote), Theme.Secondary);
         notes.SkipLine();
-        notes.AppendLine("Blocks work in every", Theme.Secondary);
-        notes.AppendLine("terminal: two pixels", Theme.Secondary);
-        notes.AppendLine("to a cell, upper half", Theme.Secondary);
-        notes.AppendLine("block over background.", Theme.Secondary);
-        notes.SkipLine();
-        notes.AppendLine("Sixel: Windows Terminal,", Theme.Secondary);
-        notes.AppendLine("xterm, foot, WezTerm.", Theme.Secondary);
-        notes.AppendLine("256 colors taken from", Theme.Secondary);
-        notes.AppendLine("the picture. Measured", Theme.Secondary);
-        notes.AppendLine("in pixels, not cells.", Theme.Secondary);
-        notes.SkipLine();
-        notes.AppendLine("Kitty: kitty, WezTerm,", Theme.Secondary);
-        notes.AppendLine("Ghostty. Full color.", Theme.Secondary);
-        notes.SkipLine();
-        notes.AppendLine("A terminal that cannot", Theme.Secondary);
-        notes.AppendLine("speak one shows the", Theme.Secondary);
-        notes.AppendLine("escape as text.", Theme.Secondary);
+
+        foreach (var note in Notes)
+        {
+            foreach (var line in TextWidth.Wrap(Loc(note), notes.Region.Width))
+            {
+                notes.AppendLine(line, Theme.Secondary);
+            }
+
+            notes.SkipLine();
+        }
     }
 
     public ViewRoute Handle(KeyPress key)
@@ -101,9 +104,9 @@ public sealed class PicturesView : IArlecchinoView
 
     public ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;
 
-    public (string Key, string Description)[] Hints() => [("p", "protocol"), ("Esc", "back")];
+    public (string Key, string Description)[] Hints() => [("p", Loc(LocString.HintProtocol)), ("Esc", Loc(LocString.Back))];
 
-    private static string Said(bool yes) => yes ? "yes" : "no";
+    private static string Said(bool yes) => Loc(yes ? LocString.AnswerYes : LocString.AnswerNo);
 
     private ImageProtocol Protocol() => _picture.Protocol ?? Glyphs.Picture;
 

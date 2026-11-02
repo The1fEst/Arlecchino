@@ -58,20 +58,20 @@ public sealed class ChartsView : IArlecchinoView
     private readonly Sparkline _downloads = new()
     {
         Values = Downloads,
-        Caption = static value => $"{value:0}/s",
+        Caption = static value => Loc(LocString.PerSecond, value),
     };
 
     private readonly Sparkline _failures = new()
     {
         Values = Failures,
         Minimum = 0,
-        Caption = static value => $"{value:0}/s",
+        Caption = static value => Loc(LocString.PerSecond, value),
     };
 
     private readonly Sparkline _latency = new()
     {
         Values = Latency,
-        Caption = static value => $"{value:0}ms",
+        Caption = static value => Loc(LocString.Milliseconds, value),
     };
 
     private readonly Gauge _disk = new()
@@ -103,12 +103,12 @@ public sealed class ChartsView : IArlecchinoView
         var panes = Branch(
             Rows,
             0.5,
-            Leaf(_mirrors, static () => "downloads by mirror, MB"),
+            Leaf(_mirrors, static () => Loc(LocString.DownloadsByMirror)),
             Branch(
                 Columns,
                 0.5,
-                Leaf(DrawTrends, static () => "last 20 minutes"),
-                Leaf(DrawHost, static () => "host")));
+                Leaf(DrawTrends, static () => Loc(LocString.LastMinutes)),
+                Leaf(DrawHost, static () => Loc(LocString.HostPane))));
 
         _layout = panes.Gaps(inner: 1, outer: 1);
     }
@@ -120,11 +120,11 @@ public sealed class ChartsView : IArlecchinoView
 
     public ViewRoute HandleMouse(MouseEvent mouse) => ViewRoute.None;
 
-    public (string Key, string Description)[] Hints() => [("Esc", "back")];
+    public (string Key, string Description)[] Hints() => [("Esc", Loc(LocString.Back))];
 
     private static void Labelled(SurfaceRegion region, int row, string label, IArlecchinoWidget widget)
     {
-        var (name, rest) = region.Rows(row, 1).SplitLeft(9);
+        var (name, rest) = region.Rows(row, 1).SplitLeft(14);
 
         name.WriteLine(0, label, Theme.Secondary);
         widget.Draw(rest);
@@ -132,15 +132,15 @@ public sealed class ChartsView : IArlecchinoView
 
     private void DrawTrends(SurfaceRegion region)
     {
-        Labelled(region, 0, "downloads", _downloads);
-        Labelled(region, 2, "failures", _failures);
-        Labelled(region, 4, "latency", _latency);
+        Labelled(region, 0, Loc(LocString.Downloads), _downloads);
+        Labelled(region, 2, Loc(LocString.Failures), _failures);
+        Labelled(region, 4, Loc(LocString.Latency), _latency);
     }
 
     private void DrawHost(SurfaceRegion region)
     {
-        Labelled(region, 0, "disk", _disk);
-        Labelled(region, 2, "memory", _memory);
-        Labelled(region, 4, "queue", _queue);
+        Labelled(region, 0, Loc(LocString.Disk), _disk);
+        Labelled(region, 2, Loc(LocString.Memory), _memory);
+        Labelled(region, 4, Loc(LocString.Queue), _queue);
     }
 }

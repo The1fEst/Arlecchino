@@ -41,16 +41,21 @@ public sealed class WidgetsView : IArlecchinoView
 
         _tabs = new(options.Keymap)
         {
-            Titles = [static () => "Installed", static () => "Available", static () => "Updates"],
+            Titles =
+            [
+                static () => Loc(LocString.InstalledTab),
+                static () => Loc(LocString.AvailableTab),
+                static () => Loc(LocString.UpdatesTab),
+            ],
         };
 
         _table = new(options.Keymap)
         {
             Columns =
             [
-                new() { Header = static () => "Name", Cell = static mod => mod.Name, Sort = static (first, second) => string.CompareOrdinal(first.Name, second.Name) },
-                new() { Header = static () => "Author", Cell = static mod => mod.Author, Width = 12 },
-                new() { Header = static () => "Files", Cell = static mod => mod.Files.ToString(CultureInfo.InvariantCulture), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
+                new() { Header = static () => Loc(LocString.Name), Cell = static mod => mod.Name, Sort = static (first, second) => string.CompareOrdinal(first.Name, second.Name) },
+                new() { Header = static () => Loc(LocString.Author), Cell = static mod => mod.Author, Width = 12 },
+                new() { Header = static () => Loc(LocString.Files), Cell = static mod => mod.Files.ToString(CultureInfo.InvariantCulture), Width = 6, AlignRight = true, Sort = static (first, second) => first.Files.CompareTo(second.Files) },
             ],
             ItemStyle = static mod => mod.Enabled ? Theme.Default : Theme.Secondary,
             Rows = Catalog,
@@ -64,8 +69,17 @@ public sealed class WidgetsView : IArlecchinoView
 
         _status = new()
         {
-            Left = [() => $"{Catalog.Length} mods", () => _spinner.Current + " syncing"],
-            Right = [static () => "Tab panes", static () => "s sort", static () => "Esc back"],
+            Left =
+            [
+                static () => Loc(LocString.ModCount, Catalog.Length),
+                () => _spinner.Current + " " + Loc(LocString.SyncStatus),
+            ],
+            Right =
+            [
+                static () => Loc(LocString.StatusPanes),
+                static () => Loc(LocString.StatusSort),
+                static () => Loc(LocString.StatusBack),
+            ],
         };
 
         _focus = new(options.Keymap);
@@ -110,11 +124,11 @@ public sealed class WidgetsView : IArlecchinoView
 
     public (string Key, string Description)[] Hints() =>
     [
-        ("Tab", "panes"),
-        ("↑↓", "move"),
-        ("s", "sort"),
-        ("Space", "spin"),
-        ("Esc", "back"),
+        ("Tab", Loc(LocString.HintPanes)),
+        ("↑↓", Loc(LocString.Move)),
+        ("s", Loc(LocString.Sort)),
+        ("Space", Loc(LocString.Spin)),
+        ("Esc", Loc(LocString.Back)),
     ];
 
     private static List<string> Authors()

@@ -1,8 +1,10 @@
 using Arlecchino.Atoms.History.Hosting;
 using Arlecchino.Hosting;
+using Arlecchino.Sample;
 using Arlecchino.Sample.Frames;
 using Arlecchino.Sample.Probes;
 using Arlecchino.Sample.Views;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 if (args is ["--frame", ..])
@@ -36,7 +38,12 @@ builder.Services
     .AddGeneratedViews()
     .AddGeneratedStores()
     .AddGeneratedCommands()
+    .UseStrings(SampleStrings.Create())
     .UseMouse()
     .StartAt(ViewKind.Default);
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+host.Services.GetRequiredService<SettingsStore>().ApplyLanguage();
+
+await host.RunAsync();

@@ -38,24 +38,27 @@ public sealed class PanesView : IArlecchinoView
 
         var status = new StatusBar
         {
-            Left = [static () => "Tab walks the panes in the order the tree lays them out"],
-            Right = [static () => "Esc back"],
+            Left = [static () => Loc(LocString.PaneOrderStatus)],
+            Right = [static () => Loc(LocString.StatusBack)],
         };
 
         var panes = Branch(
             Rows,
             3,
             Leaf(
-                static region => region.WriteLine(0, "three rows, whatever the terminal is", Theme.Secondary),
-                static () => "toolbar"),
+                static region => region.WriteLine(0, Loc(LocString.ToolbarText), Theme.Secondary),
+                static () => Loc(LocString.Toolbar)),
             Branch(
                 Rows,
                 PaneSize.CellsFromEnd(2),
                 Branch(
                     Columns,
                     0.25,
-                    Leaf(files, static () => "files"),
-                    Branch(0.7, Leaf(authors, static () => "authors"), Leaf(Log, static () => "log"))),
+                    Leaf(files, static () => Loc(LocString.FilesPane)),
+                    Branch(
+                        0.7,
+                        Leaf(authors, static () => Loc(LocString.AuthorsPane)),
+                        Leaf(Log, static () => Loc(LocString.LogPane)))),
                 Leaf(status)));
 
         _layout = panes.Gaps(inner: 0, outer: 1);
@@ -71,14 +74,14 @@ public sealed class PanesView : IArlecchinoView
 
     public (string Key, string Description)[] Hints() =>
     [
-        ("Tab", "next pane"),
-        ("↑↓", "move"),
-        ("Esc", "back"),
+        ("Tab", Loc(LocString.NextPane)),
+        ("↑↓", Loc(LocString.Move)),
+        ("Esc", Loc(LocString.Back)),
     ];
 
     private static void Log(SurfaceRegion region)
     {
-        region.WriteLine(0, "the rest of it", Theme.Secondary);
+        region.WriteLine(0, Loc(LocString.LogText), Theme.Secondary);
 
         if (region.Height > 2)
         {

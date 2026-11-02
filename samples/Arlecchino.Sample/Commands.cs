@@ -12,7 +12,7 @@ public sealed class AboutCommand : IArlecchinoCommand
 {
     public KeyBinding Binding => new(ConsoleKey.A);
     public string Icon => "?";
-    public string Label => "About";
+    public string Label => Loc(LocString.About);
     public ViewRoute Execute() => ViewKind.About;
 }
 
@@ -27,16 +27,16 @@ public sealed class PickFolderCommand : IArlecchinoCommand
 
     public KeyBinding Binding => new(ConsoleKey.F);
     public string Icon => "▸";
-    public string Label => "Pick a folder";
+    public string Label => Loc(LocString.PickFolder);
 
     public ViewRoute Execute()
     {
         _state.FilePicker = new(
-            "Pick a folder",
+            Loc(LocString.PickFolder),
             PickFolder: true,
             Environment.CurrentDirectory,
             ViewKind.Default,
-            path => _state.Output = $"picked: {path}");
+            path => _state.Output = Loc(LocString.PickedOutput, path));
 
         return Routes.FilePicker;
     }
@@ -53,7 +53,7 @@ public sealed class QuitCommand : IArlecchinoCommand
 
     public KeyBinding Binding => new(ConsoleKey.Q);
     public string Icon => "×";
-    public string Label => "Quit";
+    public string Label => Loc(LocString.Quit);
 
     public ViewRoute Execute()
     {

@@ -10,11 +10,13 @@ namespace Arlecchino.Sample;
 public sealed class SettingsStore : IArlecchinoStore
 {
     private const string HistoryKey = "Settings";
+    private const string AutoLanguage = "auto";
 
     public SettingsStore()
     {
         Summary = new(() => $"{Profile.Value} · {Theme.Value} · {Volume.Value}%");
         IsComplete = new(() => Profile.Value.Length > 0 && Theme.Value.Length > 0);
+        Language.Subscribe(ApplyLanguage);
     }
 
     public Atom<string> Profile { get; } = new HistoryAtom<string>("", $"{HistoryKey}.Profile");
@@ -22,6 +24,8 @@ public sealed class SettingsStore : IArlecchinoStore
     public Atom<string> Passphrase { get; } = new HistoryAtom<string>("", $"{HistoryKey}.Passphrase");
 
     public Atom<string> Theme { get; } = new HistoryAtom<string>("dark", $"{HistoryKey}.Theme");
+
+    public Atom<string> Language { get; } = new HistoryAtom<string>(AutoLanguage, $"{HistoryKey}.Language");
 
     public Atom<decimal> Volume { get; } = new HistoryAtom<decimal>(60, $"{HistoryKey}.Volume");
 
@@ -36,4 +40,7 @@ public sealed class SettingsStore : IArlecchinoStore
     public Computed<string> Summary { get; }
 
     public Computed<bool> IsComplete { get; }
+
+    public void ApplyLanguage() =>
+        Localization.Language = Language.Value == AutoLanguage ? Localization.SystemLanguage : Language.Value;
 }

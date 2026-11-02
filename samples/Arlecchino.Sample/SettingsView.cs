@@ -29,34 +29,36 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         _history = history;
         _state = state;
 
-        var apply = Fields.Action(static () => "Apply", Apply)
-            .WithHelp(static () => "enabled once profile and theme are set");
+        var apply = Fields.Action(static () => Loc(LocString.Apply), Apply)
+            .WithHelp(static () => Loc(LocString.ApplyHelp));
 
         _form = new(state, options)
         {
             Fields =
             [
-                Fields.Text(static () => "Profile", settings.Profile)
+                Fields.Text(static () => Loc(LocString.Profile), settings.Profile)
                     .WithValidation(static text => !string.IsNullOrWhiteSpace(text))
-                    .WithHelp(static () => "shown in the title bar"),
-                Fields.Secret(static () => "Passphrase", settings.Passphrase)
-                    .WithHelp(static () => "never rendered in clear text"),
-                Fields.Choice(static () => "Theme", ["dark", "light", "high contrast"], settings.Theme)
-                    .WithHelp(static () => "color palette of the application"),
-                Fields.Slider(static () => "Volume", settings.Volume)
+                    .WithHelp(static () => Loc(LocString.ProfileHelp)),
+                Fields.Secret(static () => Loc(LocString.Passphrase), settings.Passphrase)
+                    .WithHelp(static () => Loc(LocString.PassphraseHelp)),
+                Fields.Choice(static () => Loc(LocString.Theme), ["dark", "light", "high contrast"], settings.Theme)
+                    .WithHelp(static () => Loc(LocString.ThemeHelp)),
+                Fields.Choice(static () => Loc(LocString.LanguageLabel), ["auto", .. Languages], settings.Language)
+                    .WithHelp(static () => Loc(LocString.LanguageHelp)),
+                Fields.Slider(static () => Loc(LocString.Volume), settings.Volume)
                     .WithItems(static () => [.. Enumerable.Range(0, 101)])
-                    .WithHelp(static () => "←→ inside the modal, or type a number"),
-                Fields.Toggle(static () => "Fullscreen", settings.Fullscreen),
-                Fields.MultiChoice(static () => "Columns", ["Name", "Date Modified", "Size", "Kind"], settings.Columns),
-                Fields.Date(static () => "Release", settings.Release),
-                Fields.Color(static () => "Accent", settings.Accent),
-                Fields.Path(static () => "Folder", settings.Profile, ViewKind.Settings, pickFolder: true)
-                    .WithHelp(static () => "opens the file picker"),
+                    .WithHelp(static () => Loc(LocString.VolumeHelp)),
+                Fields.Toggle(static () => Loc(LocString.Fullscreen), settings.Fullscreen),
+                Fields.MultiChoice(static () => Loc(LocString.Columns), ["Name", "Date Modified", "Size", "Kind"], settings.Columns),
+                Fields.Date(static () => Loc(LocString.Release), settings.Release),
+                Fields.Color(static () => Loc(LocString.Accent), settings.Accent),
+                Fields.Path(static () => Loc(LocString.Folder), settings.Profile, ViewKind.Settings, pickFolder: true)
+                    .WithHelp(static () => Loc(LocString.FolderHelp)),
                 apply,
             ],
         };
 
-        _watch = settings.Summary.Subscribe(() => _state.Output = $"settings: {settings.Summary.Value}");
+        _watch = settings.Summary.Subscribe(() => _state.Output = Loc(LocString.SettingsOutput, settings.Summary.Value));
         _complete = settings.IsComplete.Subscribe(() => apply.IsEnabled = settings.IsComplete.Value);
         apply.IsEnabled = settings.IsComplete.Value;
     }
@@ -64,10 +66,11 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
     public void Draw()
     {
         var content = _surface.Content;
-        content.WriteLine(0, "Settings", Theme.Header);
+        content.WriteLine(0, Loc(LocString.SettingsTitle), Theme.Header);
         content.WriteLine(1, _settings.Summary.Value, Theme.Secondary);
+        content.WriteLine(2, FormatSystemLanguage(), Theme.Secondary);
 
-        _form.Draw(content.Rows(3, content.Height - 3));
+        _form.Draw(content.Rows(4, content.Height - 4));
     }
 
     public ViewRoute Handle(KeyPress key)
@@ -75,10 +78,10 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
         switch (key.Key)
         {
             case ConsoleKey.Z when key.Modifiers.HasFlag(KeyModifiers.Control):
-                _state.Output = _history.Undo() ? "undo" : "nothing to undo";
+                _state.Output = Loc(_history.Undo() ? LocString.Undo : LocString.NothingToUndo);
                 return ViewRoute.None;
             case ConsoleKey.Y when key.Modifiers.HasFlag(KeyModifiers.Control):
-                _state.Output = _history.Redo() ? "redo" : "nothing to redo";
+                _state.Output = Loc(_history.Redo() ? LocString.Redo : LocString.NothingToRedo);
                 return ViewRoute.None;
             case ConsoleKey.Escape:
                 return ViewKind.Default;
@@ -92,9 +95,9 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
     public (string Key, string Description)[] Hints() =>
     [
         .. _form.Hints(),
-        ("Ctrl+Z", "undo"),
-        ("Ctrl+Y", "redo"),
-        ("Esc", "back"),
+        ("Ctrl+Z", Loc(LocString.Undo)),
+        ("Ctrl+Y", Loc(LocString.Redo)),
+        ("Esc", Loc(LocString.Back)),
     ];
 
     public void Dispose()
@@ -104,4 +107,13 @@ public sealed class SettingsView : IArlecchinoView, IDisposable
     }
 
     private static ViewRoute Apply() => ViewKind.Default;
+
+    private static string FormatSystemLanguage()
+    {
+        var languages = SystemLanguages.GetPreferred();
+
+        return Loc(LocString.SystemLanguageInfo,
+            languages.Count == 0 ? Loc(LocString.NothingReported) : string.Join(", ", languages),
+            Localization.Language);
+    }
 }

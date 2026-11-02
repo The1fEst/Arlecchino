@@ -348,7 +348,7 @@ that is the point of it.
 | `src/Arlecchino.Pictures` | Readers for the picture formats, published as a package |
 | `src/Arlecchino.Testing` | Headless test host published as a package |
 | `tools/Arlecchino.Tools` | Everything the repository is maintained with, one file to a tool |
-| `samples/Arlecchino.Sample` | Gallery of every modal and widget, also the headless `--frame` renderer |
+| `samples/Arlecchino.Sample` | Gallery of every modal and widget in English, Russian and German, also the headless `--frame` renderer |
 | `samples/Arlecchino.Processes` | A real application: the process list, live-loaded and sortable |
 | `benchmarks/Arlecchino.Benchmarks` | Frame composition, text measurement, input and atoms |
 | `tests/Arlecchino.Tests` | Test suite: rendering, navigation, every modal, color conversion |

@@ -29,22 +29,22 @@ public sealed class DefaultView : IArlecchinoView
 
         _own =
         [
-            ViewCommand.For(ConsoleKey.N, static () => "text", AskName),
-            ViewCommand.For(ConsoleKey.P, static () => "password", AskPassphrase),
-            ViewCommand.For(ConsoleKey.E, static () => "email", AskEmail),
-            ViewCommand.For(ConsoleKey.U, static () => "url", AskHomepage),
-            ViewCommand.For(ConsoleKey.M, static () => "number", AskPrice),
-            ViewCommand.For(ConsoleKey.R, static () => "slider", AskVolume),
-            ViewCommand.For(ConsoleKey.T, static () => "toggle", AskFullscreen),
-            ViewCommand.For(ConsoleKey.C, static () => "multi-choice", AskColumns),
-            ViewCommand.For(ConsoleKey.D, static () => "date", AskReleaseDate),
-            ViewCommand.For(ConsoleKey.I, static () => "time", AskStartTime),
-            ViewCommand.For(ConsoleKey.K, static () => "color", AskAccent),
-            ViewCommand.Navigating(ConsoleKey.S, static () => "settings", static () => ViewKind.Settings),
-            ViewCommand.Navigating(ConsoleKey.W, static () => "widgets", static () => ViewKind.Widgets),
-            ViewCommand.Navigating(ConsoleKey.L, static () => "panes", static () => ViewKind.Panes),
-            ViewCommand.Navigating(ConsoleKey.G, static () => "charts", static () => ViewKind.Charts),
-            ViewCommand.Navigating(ConsoleKey.J, static () => "pictures", static () => ViewKind.Pictures),
+            Bind.To(new(ConsoleKey.N), LocString.TextCommand, AskName),
+            Bind.To(new(ConsoleKey.P), LocString.PasswordCommand, AskPassphrase),
+            Bind.To(new(ConsoleKey.E), LocString.EmailCommand, AskEmail),
+            Bind.To(new(ConsoleKey.U), LocString.UrlCommand, AskHomepage),
+            Bind.To(new(ConsoleKey.M), LocString.NumberCommand, AskPrice),
+            Bind.To(new(ConsoleKey.R), LocString.SliderCommand, AskVolume),
+            Bind.To(new(ConsoleKey.T), LocString.ToggleCommand, AskFullscreen),
+            Bind.To(new(ConsoleKey.C), LocString.MultiChoiceCommand, AskColumns),
+            Bind.To(new(ConsoleKey.D), LocString.DateCommand, AskReleaseDate),
+            Bind.To(new(ConsoleKey.I), LocString.TimeCommand, AskStartTime),
+            Bind.To(new(ConsoleKey.K), LocString.ColorCommand, AskAccent),
+            Bind.Going(new(ConsoleKey.S), LocString.SettingsCommand, static () => ViewKind.Settings),
+            Bind.Going(new(ConsoleKey.W), LocString.WidgetsCommand, static () => ViewKind.Widgets),
+            Bind.Going(new(ConsoleKey.L), LocString.PanesCommand, static () => ViewKind.Panes),
+            Bind.Going(new(ConsoleKey.G), LocString.ChartsCommand, static () => ViewKind.Charts),
+            Bind.Going(new(ConsoleKey.J), LocString.PicturesCommand, static () => ViewKind.Pictures),
         ];
     }
 
@@ -52,7 +52,7 @@ public sealed class DefaultView : IArlecchinoView
     {
         _surface.SkipLine();
         _surface.AppendLine("A R L E C C H I N O", Theme.Header, Align.Center);
-        _surface.AppendLine("a terminal UI framework", Theme.Secondary, Align.Center, new(0, 0, 0, 2));
+        _surface.AppendLine(Loc(LocString.Tagline), Theme.Secondary, Align.Center, new(0, 0, 0, 2));
 
         for (var i = 0; i < _commands.Commands.Count; i++)
         {
@@ -107,21 +107,26 @@ public sealed class DefaultView : IArlecchinoView
     }
 
     private void AskName() =>
-        _state.RequestText("Your name",
+        _state.RequestText(Loc(LocString.NameTitle),
             "",
-            static text => text.Length == 0 ? "must not be empty" : null,
-            text => _state.Output = $"hello, {text}");
+            static text => text.Length == 0 ? Loc(LocString.MustNotBeEmpty) : null,
+            text => _state.Output = Loc(LocString.Greeting, text));
 
     private void AskPassphrase() =>
-        _state.RequestPassword("Passphrase", value => _state.Output = $"passphrase: {value.Length} characters");
+        _state.RequestPassword(Loc(LocString.Passphrase),
+            value => _state.Output = Loc(LocString.PassphraseLength, value.Length));
 
-    private void AskEmail() => _state.RequestEmail("Email", "", value => _state.Output = $"email: {value}");
+    private void AskEmail() =>
+        _state.RequestEmail(Loc(LocString.Email), "", value => _state.Output = Loc(LocString.EmailOutput, value));
 
-    private void AskHomepage() => _state.RequestUrl("Homepage", "https://", value => _state.Output = $"url: {value}");
+    private void AskHomepage() =>
+        _state.RequestUrl(Loc(LocString.Homepage),
+            "https://",
+            value => _state.Output = Loc(LocString.UrlOutput, value));
 
     private void AskPrice() => _state.Modal = new NumberModal
     {
-        Title = "Price",
+        Title = Loc(LocString.Price),
         Text = "10",
         Minimum = 0,
         Maximum = 500,
@@ -129,36 +134,41 @@ public sealed class DefaultView : IArlecchinoView
         LargeStep = 50,
         Decimals = 2,
         Prefix = "$ ",
-        OnSubmit = value => _state.Output = $"price: {value}",
+        OnSubmit = value => _state.Output = Loc(LocString.PriceOutput, value),
     };
 
     private void AskVolume() => _state.Modal = new SliderModal
     {
-        Title = "Volume",
+        Title = Loc(LocString.Volume),
         Value = 60,
         Step = 5,
         Suffix = " %",
-        OnSubmit = value => _state.Output = $"volume: {value}",
+        OnSubmit = value => _state.Output = Loc(LocString.VolumeOutput, value),
     };
 
     private void AskFullscreen() =>
-        _state.RequestToggle("Fullscreen", true, value => _state.Output = $"fullscreen: {value}");
+        _state.RequestToggle(Loc(LocString.Fullscreen),
+            true,
+            value => _state.Output = Loc(LocString.FullscreenOutput,
+                Loc(value ? LocString.AnswerYes : LocString.AnswerNo)));
 
     private void AskColumns() =>
         _state.RequestMultiChoice(
-            "Columns",
+            Loc(LocString.Columns),
             ["Name", "Date Modified", "Size", "Kind"],
             ["Name", "Size"],
-            picked => _state.Output = $"columns: {string.Join(", ", picked)}");
+            picked => _state.Output = Loc(LocString.ColumnsOutput, string.Join(", ", picked)));
 
     private void AskReleaseDate() =>
-        _state.RequestDate("Release date",
+        _state.RequestDate(Loc(LocString.ReleaseDate),
             DateOnly.FromDateTime(DateTime.Today),
-            value => _state.Output = $"date: {value:yyyy-MM-dd}");
+            value => _state.Output = Loc(LocString.DateOutput, value));
 
     private void AskStartTime() =>
-        _state.RequestTime("Start at", new(9, 41), value => _state.Output = $"time: {value:HH\\:mm}");
+        _state.RequestTime(Loc(LocString.StartAt), new(9, 41), value => _state.Output = Loc(LocString.TimeOutput, value));
 
     private void AskAccent() =>
-        _state.RequestColor("Accent color", new(63, 169, 245), value => _state.Output = $"color: {value.Hex}");
+        _state.RequestColor(Loc(LocString.AccentColor),
+            new(63, 169, 245),
+            value => _state.Output = Loc(LocString.ColorOutput, value.Hex));
 }
