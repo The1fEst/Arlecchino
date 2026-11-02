@@ -436,6 +436,7 @@ Arlecchino.Rendering.Text.Joinery.Down(Arlecchino.Rendering.SurfaceRegion region
 Arlecchino.Rendering.Text.Joinery.Draw(Arlecchino.Rendering.SurfaceRegion region, Arlecchino.Rendering.Colors.IArlecchinoColor! style) -> void
 Arlecchino.Rendering.Text.Joinery.Joinery() -> void
 Arlecchino.Rendering.Text.TextWidth
+Arlecchino.SystemLanguages
 Arlecchino.SystemTerminal
 Arlecchino.SystemTerminal.CopyToClipboard(string! text) -> void
 Arlecchino.SystemTerminal.DisableKeyNames() -> void
@@ -576,6 +577,7 @@ static Arlecchino.Rendering.Text.TextWidth.SnapToCluster(string! text, int index
 static Arlecchino.Rendering.Text.TextWidth.Truncate(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.TruncateStart(string! text, int maxWidth) -> string!
 static Arlecchino.Rendering.Text.TextWidth.Wrap(string! text, int width) -> System.Collections.Generic.List<string!>!
+static Arlecchino.SystemLanguages.GetPreferred() -> System.Collections.Generic.IReadOnlyList<string!>!
 static Arlecchino.SystemTerminal.UseUtf8() -> void
 static readonly Arlecchino.Rendering.Colors.Contrast.Pivot -> double
 virtual Arlecchino.Atoms.Atom<T>.OnWritten(T previous, T current) -> void

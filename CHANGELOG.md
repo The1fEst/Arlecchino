@@ -13,7 +13,7 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino/docs/packages-and-building).
 
-## Unreleased
+## 2026.11.1
 
 A release about the language an application starts in. One that ships several translations now starts in
 the language the user's system is set to, also under `InvariantGlobalization` and in a NativeAOT build,

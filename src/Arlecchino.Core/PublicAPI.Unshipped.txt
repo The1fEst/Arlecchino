@@ -1,3 +1,1 @@
 #nullable enable
-Arlecchino.SystemLanguages
-static Arlecchino.SystemLanguages.GetPreferred() -> System.Collections.Generic.IReadOnlyList<string!>!
