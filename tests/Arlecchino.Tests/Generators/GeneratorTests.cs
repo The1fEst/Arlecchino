@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -41,6 +44,15 @@ public sealed class GeneratorTests
         [strings]
         Copy = "Copy"
         CopyManyTitle = "Copy {0} items"
+        """;
+
+    private const string Russian = """
+        [localization]
+        language = "ru"
+
+        [strings]
+        Copy = "Копировать"
+        CopyManyTitle = "Копировать {0} объектов"
         """;
 
     private const string TwoStores = """
@@ -810,6 +822,41 @@ public sealed class GeneratorTests
         Assert.Contains("Label = () => Localization.Loc(name)", output, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// The language starts at what the operating system prefers, read when the application starts rather
+    /// than from <c>CultureInfo</c>, which knows no language under <c>InvariantGlobalization</c>.
+    /// </summary>
+    [Fact]
+    public void LocalizationStartsInTheLanguageOfTheOperatingSystem()
+    {
+        var (output, diagnostics) = RunLocalization(Words, Russian);
+
+        Assert.Empty(diagnostics);
+        Assert.Contains("string Language { get; set; } = SystemLanguage;", output, StringComparison.Ordinal);
+        Assert.Contains("string SystemLanguage => Nearest(SystemLanguages.GetPreferred());", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("CurrentUICulture", output, StringComparison.Ordinal);
+        Assert.NotNull(Load(output).GetType("Sample.Localization"));
+    }
+
+    /// <summary>The first preference that has text wins, and a regional tag finds its language.</summary>
+    [Theory]
+    [InlineData("de-AT,ru", "ru")]
+    [InlineData("ru-RU,en", "ru")]
+    [InlineData("en-GB,ru", "en")]
+    [InlineData("de,fr", "en")]
+    [InlineData("", "en")]
+    public void NearestOfAListTakesTheFirstPreferenceThatHasText(string preferences, string expected)
+    {
+        var (output, _) = RunLocalization(Words, Russian);
+        var nearest = Load(output)
+            .GetType("Sample.Localization")!
+            .GetMethod("Nearest", [typeof(IEnumerable<string>)])!;
+
+        var cultures = preferences.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.Equal(expected, nearest.Invoke(null, [cultures]));
+    }
+
     /// <summary>A localization missing the default language is an error rather than a silent miss.</summary>
     [Fact]
     public void ALocalizationWithoutTheDefaultLanguageIsAnError()
@@ -839,7 +886,25 @@ public sealed class GeneratorTests
         return single;
     }
 
-    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunLocalization(string toml)
+    private static CSharpCompilation Compile(string source) => CSharpCompilation.Create(
+        "Generated" + Guid.NewGuid().ToString("N"),
+        [CSharpSyntaxTree.ParseText(source)],
+        LoadedReferences(),
+        new(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+
+    private static Assembly Load(string source)
+    {
+        using var image = new MemoryStream();
+        var result = Compile(source).Emit(image);
+
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
+
+        return Assembly.Load(image.ToArray());
+    }
+
+    private static (string Source, ImmutableArray<Diagnostic> Diagnostics) RunLocalization(
+        string toml,
+        params string[] translations)
     {
         var compilation = CSharpCompilation.Create(
             "SampleApplication",
@@ -852,7 +917,11 @@ public sealed class GeneratorTests
         var driver = CSharpGeneratorDriver
             .Create(
                 [new LocalizationGenerator().AsSourceGenerator()],
-                additionalTexts: [new Toml("Localization/Localization.toml", toml)],
+                additionalTexts:
+                [
+                    new Toml("Localization/Localization.toml", toml),
+                    .. translations.Select((text, index) => new Toml($"Localization/Localization.{index}.toml", text)),
+                ],
                 optionsProvider: new FixedOptions(options))
             .RunGenerators(compilation);
 

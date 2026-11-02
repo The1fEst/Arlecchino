@@ -15,8 +15,22 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## Unreleased
 
+### Added
+
+- **`SystemLanguages.GetPreferred()` and `Localization.SystemLanguage`.** `GetPreferred()` reads the user's
+  interface languages from the operating system when asked: the preferred UI languages on Windows, the
+  gettext environment (`LANGUAGE`, `LC_ALL`, `LC_MESSAGES`, `LANG`) elsewhere. In a generated
+  `Localization`, `SystemLanguage` is the language there is text for that is nearest them, which is what
+  an `auto` choice in an application's settings assigns to `Language`, and `Nearest` also takes a list of
+  cultures. `Nearest(null)` no longer compiles, since `null` fits both overloads; `Nearest((string?)null)`
+  does.
+
 ### Fixed
 
+- **An application with translations starts in the user's language under `InvariantGlobalization`.**
+  `Localization.Language` started at the nearest match to `CultureInfo.CurrentUICulture`, which is empty
+  in invariant mode, so every such application started in the default language whatever the system was
+  set to. It starts at `SystemLanguage`.
 - **A shortcut on a character typed with Shift is reached on Windows when keys are read by position.**
   The Windows console drops the Shift that only typed the character, and the position was read after
   it went, so Shift and the key under `;` stood for `;` rather than `:`, and a shortcut on `:` or `!`

@@ -64,10 +64,35 @@ Copy = "Копировать"
 CopyManyTitle = "Копировать {0} объектов"
 ```
 
-`Localization.Language` decides which is drawn and starts at the closest match to the machine's own
-`CurrentUICulture` — `ru-RU` finds `ru` — falling back to the default when there is nothing near. Set
-it at runtime and the next frame is in the new language; nothing is rebuilt, because resolving is a
-`switch` over a closed set rather than a dictionary anyone has to reload.
+`Localization.Language` decides which is drawn. Set it at runtime and the next frame is in the new
+language; nothing is rebuilt, because resolving is a `switch` over a closed set rather than a
+dictionary anyone has to reload.
+
+It starts at `Localization.SystemLanguage`, the language there is text for that is nearest the
+operating system's own. `SystemLanguages.GetPreferred()` reads those from the system when asked, as tags in
+order of preference, and the nearest is the first one that is a language there is text for or whose
+root is — `ru-RU` finds `ru`. When none is, the default is drawn. `CultureInfo` is not consulted, so
+this works under `InvariantGlobalization`, where `CurrentUICulture` is empty, and in a NativeAOT build.
+
+- **Windows** asks for the user's preferred UI languages.
+- **Linux, macOS and the BSDs** read the environment the way gettext does. The locale is the first
+  of `LC_ALL`, `LC_MESSAGES` and `LANG` that is set. `LANGUAGE`, a colon-separated list, is put ahead
+  of it, except when the locale is `C` or `POSIX`, which names no language and leaves the list empty.
+  `ru_RU.UTF-8@euro` becomes `ru-RU`.
+
+An application that offers `auto`, `en` and `ru` as a setting keeps `auto` reachable by assigning
+`SystemLanguage` rather than naming a language:
+
+```csharp
+Localization.Language = setting switch
+{
+    "auto" => Localization.SystemLanguage,
+    _ => setting,
+};
+```
+
+`Nearest(culture)` and `Nearest(cultures)` do the matching for a tag or a list of them, for an
+application that keeps its own idea of what the user prefers.
 
 | The generator says | When |
 |---|---|

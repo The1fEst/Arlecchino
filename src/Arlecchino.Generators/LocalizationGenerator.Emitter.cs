@@ -33,6 +33,7 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("using System;");
         source.AppendLine("using System.Collections.Generic;");
         source.AppendLine("using System.Globalization;");
+        source.AppendLine("using Arlecchino;");
         source.AppendLine("using Arlecchino.Commands;");
         source.AppendLine("using Arlecchino.Input;");
         source.AppendLine("using Arlecchino.Navigation;");
@@ -68,8 +69,11 @@ public sealed partial class LocalizationGenerator
                     .Select(Quote)))
             .AppendLine(" };");
         source.AppendLine();
-        source.AppendLine("    /// <summary>Which one is being drawn, taken from the machine's own setting.</summary>");
-        source.AppendLine("    public static string Language { get; set; } = Nearest(CultureInfo.CurrentUICulture.Name);");
+        source.AppendLine("    /// <summary>Which one is being drawn. It starts as <see cref=\"SystemLanguage\"/>.</summary>");
+        source.AppendLine("    public static string Language { get; set; } = SystemLanguage;");
+        source.AppendLine();
+        source.AppendLine("    /// <summary>The language there is text for that is nearest the operating system's own.</summary>");
+        source.AppendLine("    public static string SystemLanguage => Nearest(SystemLanguages.GetPreferred());");
         source.AppendLine();
         source.AppendLine("    /// <summary>The text behind a name.</summary>");
         source.AppendLine("    /// <param name=\"key\">Which text.</param>");
@@ -125,11 +129,33 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("    /// <summary>The closest language there is text for, falling back to the default.</summary>");
         source.AppendLine("    /// <param name=\"culture\">The culture the machine asked for.</param>");
         source.AppendLine("    /// <returns>The one to draw in.</returns>");
-        source.AppendLine("    public static string Nearest(string? culture)");
+        source.AppendLine("    public static string Nearest(string? culture) => Match(culture) ?? Standard;");
+        source.AppendLine();
+        source.AppendLine("    /// <summary>");
+        source.AppendLine("    /// The closest language there is text for to the first culture of the list that has one, falling back");
+        source.AppendLine("    /// to the default.");
+        source.AppendLine("    /// </summary>");
+        source.AppendLine("    /// <param name=\"cultures\">The cultures the machine asked for, the most wanted first.</param>");
+        source.AppendLine("    /// <returns>The one to draw in.</returns>");
+        source.AppendLine("    public static string Nearest(IEnumerable<string> cultures)");
+        source.AppendLine("    {");
+        source.AppendLine("        foreach (var culture in cultures)");
+        source.AppendLine("        {");
+        source.AppendLine("            var language = Match(culture);");
+        source.AppendLine("            if (language != null)");
+        source.AppendLine("            {");
+        source.AppendLine("                return language;");
+        source.AppendLine("            }");
+        source.AppendLine("        }");
+        source.AppendLine();
+        source.AppendLine("        return Standard;");
+        source.AppendLine("    }");
+        source.AppendLine();
+        source.AppendLine("    private static string? Match(string? culture)");
         source.AppendLine("    {");
         source.AppendLine("        if (string.IsNullOrWhiteSpace(culture))");
         source.AppendLine("        {");
-        source.AppendLine("            return Standard;");
+        source.AppendLine("            return null;");
         source.AppendLine("        }");
         source.AppendLine();
         source.AppendLine("        var tag = culture!.Replace('_', '-').ToLowerInvariant();");
@@ -145,7 +171,7 @@ public sealed partial class LocalizationGenerator
         source.AppendLine("            }");
         source.AppendLine("        }");
         source.AppendLine();
-        source.AppendLine("        return Standard;");
+        source.AppendLine("        return null;");
         source.AppendLine("    }");
         source.AppendLine("}");
 
