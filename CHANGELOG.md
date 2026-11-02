@@ -15,6 +15,12 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 ## Unreleased
 
+A release about the language an application starts in. One that ships several translations now starts in
+the language the user's system is set to, also under `InvariantGlobalization` and in a NativeAOT build,
+and the sample is in English, Russian and German. A shortcut on a character typed with Shift, such as `:`
+or `!`, now answers on Windows when keys are read by position. One call stops compiling:
+`Localization.Nearest(null)` with a bare `null`, which fits both overloads; write `Nearest((string?)null)`.
+
 ### Added
 
 - **`SystemLanguages.GetPreferred()` and `Localization.SystemLanguage`.** `GetPreferred()` reads the user's
