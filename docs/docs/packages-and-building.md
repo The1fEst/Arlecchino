@@ -98,9 +98,9 @@ testing an application of your own.
 `Arlecchino.2026.8.1.nupkg` carries `lib/net10.0/Arlecchino.dll` and `lib/net11.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
 page. The two libraries are the same source: `net10.0` is the long-term support release and `net11.0`
-the current one, so an application on .NET 9 or older cannot reference the packages. Symbols ship separately as `.snupkg`,
-builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
-the build runs in GitHub Actions.
+the current one, so an application on .NET 9 or older cannot reference the packages. Symbols ship
+separately as `.snupkg`, builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild`
+switches itself on when the build runs in GitHub Actions.
 
 ## Code style is part of the build
 

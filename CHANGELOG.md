@@ -17,7 +17,8 @@ from `1.0.0` on breaking the public API meant a new major. See
 
 The packages move to the supported .NET releases: `net10.0` and `net11.0` replace `net8.0` and `net10.0`.
 An application on .NET 8 or .NET 9 can no longer reference them, and the source generator needs the
-compiler of the .NET 10 SDK or newer; nothing else about the API changes.
+compiler of the .NET 10 SDK or newer; nothing else about the API changes. See
+[Migrating to 2026.11.2](https://the1fest.github.io/Arlecchino/docs/migrating-to-2026.11.2).
 
 ### Added
 
