@@ -10,11 +10,11 @@ description: What ships in which package, the local feed, versioning, CI and ben
 
 | Package | Target | Contents |
 |---|---|---|
-| `Arlecchino.Core` | `net8.0`, `net10.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
-| `Arlecchino` | `net8.0`, `net10.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
-| `Arlecchino.Atoms.History` | `net8.0`, `net10.0` | `HistoryAtom<T>`, the history collections, `AtomHistory` and the file behind it — undo and redo; depends on `Arlecchino.Core` |
-| `Arlecchino.Pictures` | `net8.0`, `net10.0` | `PictureFormats` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels; depends on `Arlecchino.Core` and on nothing native |
-| `Arlecchino.Testing` | `net8.0`, `net10.0` | Headless host for testing an application built on Arlecchino |
+| `Arlecchino.Core` | `net10.0`, `net11.0` | `Surface`, `Theme`, `TermColor`, `KeyText`, `IArlecchinoTerminal` — the renderer, no DI, no hosting |
+| `Arlecchino` | `net10.0`, `net11.0` | Views, navigation, modals, commands, the file picker, hosting and DI; depends on `Arlecchino.Core` |
+| `Arlecchino.Atoms.History` | `net10.0`, `net11.0` | `HistoryAtom<T>`, the history collections, `AtomHistory` and the file behind it — undo and redo; depends on `Arlecchino.Core` |
+| `Arlecchino.Pictures` | `net10.0`, `net11.0` | `PictureFormats` — PNG, JPEG, BMP, Netpbm, QOI and Targa read into pixels; depends on `Arlecchino.Core` and on nothing native |
+| `Arlecchino.Testing` | `net10.0`, `net11.0` | Headless host for testing an application built on Arlecchino |
 
 `Arlecchino` also carries the generators as `analyzers/dotnet/cs` and a `build/Arlecchino.props` that
 makes `RootNamespace`, `ArlecchinoViewNamespace`, `ArlecchinoGenerateViews`,
@@ -25,12 +25,12 @@ them. Referencing `Arlecchino` is enough to get everything — see
 `Arlecchino.Generators` itself targets `netstandard2.0` (Roslyn's requirement for analyzers) and is never
 published on its own.
 
-Its reference to `Microsoft.CodeAnalysis.CSharp` is pinned low on purpose, and Dependabot is told to
-leave it alone. A generator runs inside the compiler the *application* is built with, not the one it
-was built with: raise that reference and the generator stops loading for anyone on an older SDK, so
-`AddGeneratedViews` simply is not there and the error they see is `cannot resolve symbol`. The version
-is the oldest Roslyn the package supports, and moving it is a deliberate change with a floor to raise
-in the documentation, not a dependency bump.
+Its reference to `Microsoft.CodeAnalysis.CSharp` is `5.0.0`, the Roslyn that ships in the .NET 10.0.100
+SDK, and Dependabot is told to leave its major and minor alone. A generator runs inside the compiler the
+*application* is built with, not the one it was built with: raise that reference above the compiler and
+the generator is skipped with `CS9057`, so `AddGeneratedViews` simply is not there and the error they
+see is `cannot resolve symbol`. The version is the oldest Roslyn the packages support, and moving it is a
+deliberate change with a floor to raise in the documentation, not a dependency bump.
 
 The libraries are marked `IsAotCompatible`, and the whole repository builds with
 `TreatWarningsAsErrors`. Generic parameters that reach `ActivatorUtilities` or
@@ -95,11 +95,10 @@ testing an application of your own.
 
 ## What ends up in the package
 
-`Arlecchino.2026.8.1.nupkg` carries `lib/net8.0/Arlecchino.dll` and `lib/net10.0/Arlecchino.dll`, the
+`Arlecchino.2026.8.1.nupkg` carries `lib/net10.0/Arlecchino.dll` and `lib/net11.0/Arlecchino.dll`, the
 generator under `analyzers/dotnet/cs`, `build/Arlecchino.props` and the README shown on the package
-page. The two libraries are the same source: `net8.0` is there because that is the long-term support
-release most applications sit on, and the code avoids anything newer — that is why `LogBuffer` locks
-on a plain object rather than `System.Threading.Lock`. Symbols ship separately as `.snupkg`,
+page. The two libraries are the same source: `net10.0` is the long-term support release and `net11.0`
+the current one, so an application on .NET 9 or older cannot reference the packages. Symbols ship separately as `.snupkg`,
 builds are deterministic, and SourceLink is on — `ContinuousIntegrationBuild` switches itself on when
 the build runs in GitHub Actions.
 
@@ -255,7 +254,7 @@ a release is put back where it belongs after a false start.
 ### And checked against the last release
 
 The API files say what the source declares. `EnablePackageValidation` checks the package that comes
-out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net8.0` and `net10.0`
+out of it: `dotnet pack` runs APICompat over the two target frameworks, so `net10.0` and `net11.0`
 cannot drift apart, and over the previous release once there is one to compare with.
 
 ```xml
@@ -288,7 +287,7 @@ them. The Windows leg uploads the packages as a build artifact.
 | Every benchmark as a dry job (Linux leg) | A benchmark that stopped compiling or started throwing. Numbers from a shared runner are worthless, so none are recorded — this is a check that the code still runs |
 | The sample published with `PublishAot` and run (Linux leg) | What `IsAotCompatible` only warns about. The native binary has to draw a frame, so a registration the trimmer removed or a type built by reflection fails the run rather than the user's `publish` |
 | `jb inspectcode` (Windows leg) | What the compiler has no rule for — the `resharper_*` half of `.editorconfig`. A warning fails the build and is annotated on the line it came from |
-| An application built against the packages, on both SDKs | Whatever only breaks on the way through NuGet: a generator that emits nothing, a missing `build/*.props`, a namespace that does not exist for a consumer. It is built once on the .NET 10 SDK and once on the .NET 8 one, because a generator is loaded by the compiler the *consumer* has |
+| An application built against the packages, on both SDKs | Whatever only breaks on the way through NuGet: a generator that emits nothing, a missing `build/*.props`, a namespace that does not exist for a consumer. It is built once on the .NET 11 SDK and once on the .NET 10.0.100 one, because a generator is loaded by the compiler the *consumer* has |
 
 That last step is the one worth keeping. It creates a console application from scratch, points it at
 the freshly packed `.nupkg` files, writes views, a store, a widget and a command in it, and builds —

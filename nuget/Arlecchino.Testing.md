@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Arlecchino.Testing?logo=nuget&label=Arlecchino.Testing&color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino.Testing)
 [![Downloads](https://img.shields.io/nuget/dt/Arlecchino.Testing?color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino.Testing)
 [![Build](https://img.shields.io/github/actions/workflow/status/The1fEst/Arlecchino/build.yml?branch=master&logo=github&labelColor=141317)](https://github.com/The1fEst/Arlecchino/actions/workflows/build.yml)
-![Target frameworks](https://img.shields.io/badge/net8.0%20%7C%20net10.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
+![Target frameworks](https://img.shields.io/badge/net10.0%20%7C%20net11.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
 [![MIT](https://img.shields.io/badge/license-MIT-EDE6D9?labelColor=141317)](https://github.com/The1fEst/Arlecchino/blob/master/LICENSE)
 
 The headless host for applications built on the

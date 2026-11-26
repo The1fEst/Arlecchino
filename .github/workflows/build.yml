@@ -27,8 +27,9 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
-            8.0.x
+            10.0.100
             10.0.x
+            11.0.x
 
       - name: Restore
         run: dotnet restore Arlecchino.slnx
@@ -42,7 +43,7 @@ jobs:
       - name: Coverage
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet test tests/Arlecchino.Tests/Arlecchino.Tests.csproj --configuration Release --framework net10.0 --no-build --collect:"XPlat Code Coverage" --results-directory coverage
+          dotnet test tests/Arlecchino.Tests/Arlecchino.Tests.csproj --configuration Release --framework net11.0 --no-build --collect:"XPlat Code Coverage" --results-directory coverage
 
           $report = Get-ChildItem coverage -Recurse -Filter coverage.cobertura.xml | Select-Object -First 1
           if (-not $report) {
@@ -152,7 +153,7 @@ jobs:
             mkdir -p "$work"
             cd "$work"
 
-            printf '{ "sdk": { "version": "%s", "rollForward": "latestFeature" } }\n' "$sdk" > global.json
+            printf '{ "sdk": { "version": "%s", "rollForward": "latestPatch" } }\n' "$sdk" > global.json
             dotnet new console -n Consumer -o .
             cp "$GITHUB_WORKSPACE/.github/consumer/Program.cs" .
             dotnet new nugetconfig
@@ -162,8 +163,8 @@ jobs:
             dotnet build
           }
 
+          consume 11.0.100
           consume 10.0.100
-          consume 8.0.100
         shell: bash
 
       - name: Upload packages

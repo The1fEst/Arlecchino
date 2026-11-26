@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Arlecchino.Atoms.History?logo=nuget&label=Arlecchino.Atoms.History&color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino.Atoms.History)
 [![Downloads](https://img.shields.io/nuget/dt/Arlecchino.Atoms.History?color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino.Atoms.History)
 [![Build](https://img.shields.io/github/actions/workflow/status/The1fEst/Arlecchino/build.yml?branch=master&logo=github&labelColor=141317)](https://github.com/The1fEst/Arlecchino/actions/workflows/build.yml)
-![Target frameworks](https://img.shields.io/badge/net8.0%20%7C%20net10.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
+![Target frameworks](https://img.shields.io/badge/net10.0%20%7C%20net11.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
 
 Undo and redo for `Arlecchino.Core` atoms.
 

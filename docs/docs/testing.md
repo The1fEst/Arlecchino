@@ -230,7 +230,7 @@ captured that way would hold whatever a person typed into them.
 applications use, so it is exercised by every run — and it runs twice, once per target framework:
 
 ```bash
-dotnet test tests/Arlecchino.Tests -f net8.0
+dotnet test tests/Arlecchino.Tests -f net10.0
 ```
 
 In this repository `ProbeView` / `OtherView` also keep the [source generator](source-generator.md)

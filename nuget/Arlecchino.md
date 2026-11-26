@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/Arlecchino?logo=nuget&color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino)
 [![Downloads](https://img.shields.io/nuget/dt/Arlecchino?color=C9382B&labelColor=141317)](https://www.nuget.org/packages/Arlecchino)
 [![Build](https://img.shields.io/github/actions/workflow/status/The1fEst/Arlecchino/build.yml?branch=master&logo=github&labelColor=141317)](https://github.com/The1fEst/Arlecchino/actions/workflows/build.yml)
-![Target frameworks](https://img.shields.io/badge/net8.0%20%7C%20net10.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
+![Target frameworks](https://img.shields.io/badge/net10.0%20%7C%20net11.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317)
 [![MIT](https://img.shields.io/badge/license-MIT-EDE6D9?labelColor=141317)](https://github.com/The1fEst/Arlecchino/blob/master/LICENSE)
 
 A terminal UI framework for .NET where a view is a plain class built by
@@ -145,8 +145,7 @@ closest in intent — dependency injection, the Generic Host, ASP.NET Core-style
 through reactive MVVM.
 
 Arlecchino keeps the view a plain class: constructor injection, a `Draw`, a `Handle`, and routes the
-generator writes from the views it finds. It is also younger than all four by a wide margin, and the
-only one that still builds for `net8.0` — the others require .NET 10. Checked in July 2026. The longer
+generator writes from the views it finds. It is also younger than all four by a wide margin. The longer
 comparison is in the [readme on GitHub](https://github.com/The1fEst/Arlecchino#where-it-sits).
 
 ## Packages

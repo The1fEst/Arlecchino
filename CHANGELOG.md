@@ -13,6 +13,26 @@ entry is what to read — a break is written down here whichever digit moved. Ev
 from `1.0.0` on breaking the public API meant a new major. See
 [Versioning](https://the1fest.github.io/Arlecchino/docs/packages-and-building).
 
+## Unreleased
+
+The packages move to the supported .NET releases: `net10.0` and `net11.0` replace `net8.0` and `net10.0`.
+An application on .NET 8 or .NET 9 can no longer reference them, and the source generator needs the
+compiler of the .NET 10 SDK or newer; nothing else about the API changes.
+
+### Added
+
+- **The packages target `net11.0`.** The suite runs on it as well as on `net10.0`.
+
+### Changed
+
+- **`net8.0` is dropped.** `Arlecchino.Core`, `Arlecchino`, `Arlecchino.Atoms.History`,
+  `Arlecchino.Pictures` and `Arlecchino.Testing` carry `lib/net10.0` and `lib/net11.0`, so a `net8.0` or
+  `net9.0` application can no longer reference them; move it to `net10.0`. `LogBuffer` and `HistoryFile`
+  lock on `System.Threading.Lock`.
+- **The source generator needs a .NET 10 SDK or newer.** It is built against Roslyn 5.0.0, which the
+  compiler of an older SDK skips with `CS9057`, so no routes, stores, commands or widgets are generated
+  there.
+
 ## 2026.11.1
 
 A release about the language an application starts in. One that ships several translations now starts in

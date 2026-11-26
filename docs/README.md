@@ -47,7 +47,7 @@ was built. Both need `npm run api` to have run first, since the sidebar's API se
 
 `npm run api` is `dotnet run apidocs/ApiDocs.cs -- --repo .. --out docs/api`. It reads the Release
 build of each published assembly under `src/`, so the library must be built first, and it needs the
-.NET 10 SDK. It deletes and rewrites `docs/api` every time.
+.NET 11 SDK. It deletes and rewrites `docs/api` every time.
 
 The reference is generated from the code being built, and is not committed.
 

@@ -20,11 +20,7 @@ public sealed class LogBuffer
 {
     private readonly ConcurrentQueue<LogEntry> _entries = new();
 
-#if NET9_0_OR_GREATER
     private readonly System.Threading.Lock _trimmingLock = new();
-#else
-    private readonly object _trimmingLock = new();
-#endif
 
     private readonly Repaint _repaint;
 

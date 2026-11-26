@@ -18,11 +18,7 @@ public sealed class HistoryFile : IDisposable
 
     private const byte LineFeed = (byte)'\n';
 
-#if NET9_0_OR_GREATER
     private readonly System.Threading.Lock _writing = new();
-#else
-    private readonly object _writing = new();
-#endif
 
     private readonly StepWriter _writer = new();
     private readonly StepReader _reader = new();

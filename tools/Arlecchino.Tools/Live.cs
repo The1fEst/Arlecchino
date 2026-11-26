@@ -180,7 +180,7 @@ internal static class Live
     private static string Sample()
     {
         var project = Path.Combine(Program.Root(), "samples", "Arlecchino.Sample");
-        var binary = Path.Combine(project, "bin", "Release", "net10.0", "Arlecchino.Sample");
+        var binary = Path.Combine(project, "bin", "Release", "net11.0", "Arlecchino.Sample");
 
         if (File.Exists(binary))
         {

@@ -6,7 +6,7 @@
   <a href="https://www.nuget.org/packages/Arlecchino"><img src="https://img.shields.io/nuget/v/Arlecchino?logo=nuget&color=C9382B&labelColor=141317" alt="NuGet"></a>
   <a href="https://www.nuget.org/packages/Arlecchino"><img src="https://img.shields.io/nuget/dt/Arlecchino?color=C9382B&labelColor=141317" alt="Downloads"></a>
   <a href="https://github.com/The1fEst/Arlecchino/actions/workflows/build.yml"><img src="https://github.com/The1fEst/Arlecchino/actions/workflows/build.yml/badge.svg" alt="Build"></a>
-  <img src="https://img.shields.io/badge/net8.0%20%7C%20net10.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317" alt="Target frameworks">
+  <img src="https://img.shields.io/badge/net10.0%20%7C%20net11.0-512BD4?logo=dotnet&logoColor=white&labelColor=141317" alt="Target frameworks">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-EDE6D9?labelColor=141317" alt="MIT"></a>
 </p>
 
@@ -193,8 +193,7 @@ and declarative layout trees.
 Arlecchino keeps the view a plain class: constructor injection, a `Draw`, a `Handle`, and routes the
 generator writes from the views it finds. Modals, the command palette, the keys screen and the file
 picker come with it, and every string they draw is a delegate an application can point at its own
-translations. It is also younger than all four by a wide margin, and the only one that still builds
-for `net8.0` — the others require .NET 10. Checked in July 2026.
+translations. It is also younger than all four by a wide margin.
 
 ## [Documentation](https://the1fest.github.io/Arlecchino/)
 
